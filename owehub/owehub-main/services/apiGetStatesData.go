@@ -97,7 +97,7 @@ func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
 			name = ""
 		}
 
-		// Create a new GetSaleTypeData object
+		// Create a new GetStateTypeData object
 		statesData := models.GetStatesData{
 			Record_id: RecordId,
 			Abbr:      abbr,

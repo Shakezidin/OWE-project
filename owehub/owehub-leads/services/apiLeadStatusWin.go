@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -40,21 +41,21 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in Won Request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from user err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal the status won request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal status won request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal status won request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,7 +63,7 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "failed to retrieve user email from context %v", err)
-		FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -72,7 +73,7 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get user_id from database: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get user_id from database", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user_id from database", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -80,14 +81,14 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 	dataLength = len(data)
 	if dataLength == 0 {
 		log.FuncErrorTrace(0, "Data is blank")
-		FormAndSendHttpResp(resp, "Data is blank", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Data is blank", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
 	creatorUserId, ok := data[0]["user_id"].(int64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get the user_id from leads info table: %+v\n", data[0])
-		FormAndSendHttpResp(resp, "Failed to get the user_id from leads info table", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Failed to get the user_id from leads info table", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
@@ -98,7 +99,7 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get appointmentDate from database: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get appointmentDate from database", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get appointmentDate from database", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -106,7 +107,7 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 	dataLength = len(data)
 	if dataLength == 0 {
 		log.FuncErrorTrace(0, "appointment date could be in future or could be null")
-		FormAndSendHttpResp(resp, "appointment date could be in future or could be null", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "appointment date could be in future or could be null", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
@@ -119,9 +120,9 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update the won status details in db : %v", err)
-		FormAndSendHttpResp(resp, "Failed to update the won status details in db", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update the won status details in db", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Won status updated successfully", http.StatusOK, nil, 0)
+	appserver.FormAndSendHttpResp(resp, "Won status updated successfully", http.StatusOK, nil, 0)
 }

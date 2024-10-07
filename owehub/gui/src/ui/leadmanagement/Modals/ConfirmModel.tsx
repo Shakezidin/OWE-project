@@ -14,6 +14,8 @@ import Pen from '../Modals/Modalimages/Vector.png';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format } from 'date-fns';
+import CreateProposal from './CreateProposal'; // Import the new component
+import axios from 'axios';
 import {
   getLeadById,
   getLeads,
@@ -28,6 +30,7 @@ interface EditModalProps {
   leadId?: number;
   refresh?: number;
   setRefresh?: (value: number) => void;
+  reschedule?: boolean
 }
 interface LeadData {
   first_name: string;
@@ -45,8 +48,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   isOpen1,
   onClose1,
   leadId,
-  refresh,
-  setRefresh,
+  reschedule
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +57,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [selectedTime, setSelectedTime] = useState('');
   const [load, setLoad] = useState(false);
   const [leadData, setLeadData] = useState<LeadData | null>(null);
+  const [showCreateProposal, setShowCreateProposal] = useState(false);
+  const [loadingProposal, setLoadingProposal] = useState(false);
+  const [error, setError] = useState('');
+  const [proposalLink, setProposalLink] = useState<string | null>(null);
+  const [iframeSrc, setIframeSrc] = useState<string | null>(null); // State for iframe source
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -94,7 +101,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
-        setVisibleDiv(2);
+        setVisibleDiv(1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -129,6 +136,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
           if (response.status === 200) {
             setLeadData(response.data);
+            if (reschedule === true) {
+              setVisibleDiv(0);
+            } else {
+              setVisibleDiv(response.data?.status_id);
+            }
           } else if (response.status >= 201) {
             toast.warn(response.data.message);
           }
@@ -142,6 +154,149 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       fetchData();
     }
   }, [isAuthenticated, leadId, isModalOpen]);
+
+  console.log(reschedule, "asgdhgfsdghf")
+
+  useEffect(() => {
+    const handleEscapeKey = (event: any) => {
+      if (event.key === 'Escape') {
+        onClose1();
+      }
+    };
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, []);
+
+    // Function to create project, design, and proposal in sequence
+
+  const handleCreateProposal = async () => {
+    if (!leadData) {
+      toast.error('Lead data not available. Please try again.');
+      return;
+    }
+
+    setLoadingProposal(true);
+    setError('');
+
+    try {
+      // Generate a timestamp
+      const timestamp = new Date().getTime();
+    
+      // Create Project
+      const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
+        project: {
+          location: {
+            property_address: leadData.street_address,
+          },
+          external_provider_id: leadId?.toString() || 'YourId123',
+          name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+          customer_salutation: 'Mr./Mrs.',
+          customer_first_name: leadData.first_name,
+          customer_last_name: leadData.last_name,
+          mailing_address: leadData.street_address,
+          customer_email: leadData.email_id,
+          customer_phone: leadData.phone_number,
+          status: 'Remote Assessment Completed',
+          preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+          tags: ['third_party_1'],
+        },
+      });
+      console.log('Project created:', projectResponse.data);
+      const projectId = projectResponse.data.project.id;
+    
+      // Create Design
+      const designResponse = await axios.post('http://localhost:5000/api/create-design', {
+        design: {
+          external_provider_id: leadId?.toString() || 'YourId123',
+          project_id: projectId,
+          name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+        },
+      });
+      console.log('Design created:', designResponse.data);
+      const designId = designResponse.data.design.id;
+    
+      // Create Proposal
+      const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+      console.log('Proposal created:', proposalResponse.data);
+      setProposalLink(proposalResponse.data.proposal.proposal_link);
+      toast.success('Proposal created successfully');
+    
+      // Open the proposal in a new tab
+      window.open(proposalResponse.data.proposal.proposal_link, '_blank');
+    
+    } catch (error) {
+      const err = error as any;
+      console.error('Error during proposal creation:', err.response?.data || err.message);
+      setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+      toast.error('Failed to create proposal. Please try again.');
+    } finally {
+      setLoadingProposal(false);
+      HandleModal();
+    }
+  };
+
+    // const handleCreateProposal = async () => {
+    //   setLoadingProposal(true);
+    //   setError('');
+  
+    //   try {
+    //     // Create Project
+    //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
+    //       project: {
+    //         location: {
+    //           latitude: 37.77960043,
+    //           longitude: -122.39530086,
+    //         },
+    //         external_provider_id: 'YourId123',
+    //         name: 'My first test project',
+    //         customer_salutation: 'Mrs.',
+    //         customer_first_name: 'Jane',
+    //         customer_last_name: 'Doe',
+    //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
+    //         customer_email: 'jane@example.com',
+    //         customer_phone: '(555) 111-5151',
+    //         status: 'Remote Assessment Completed',
+    //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+    //         tags: ['third_party_1'],
+    //       },
+    //     });
+    //     console.log('Project created:', projectResponse.data);
+    //     const projectId = projectResponse.data.project.id;
+  
+    //     // Create Design
+    //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
+    //       design: {
+    //         external_provider_id: 'YourId123',
+    //         project_id: projectId,
+    //         name: `Mydesign${projectId}`,
+    //       },
+    //     });
+    //     console.log('Design created:', designResponse.data);
+    //     const designId = designResponse.data.design.id;
+  
+    //     // Create Proposal
+    //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+    //     console.log('Proposal created:', proposalResponse.data);
+    //     setProposalLink(proposalResponse.data.proposal.proposal_link);
+    //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
+    //     toast.success('Proposal created successfully'); // Notify success
+  
+    //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
+    //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
+        
+    //     // Close the component/modal after success
+    //     // setShowCreateProposal(false);
+  
+    //   } catch (error) {
+    //     const err = error as any; // Type assertion to 'any'
+    //     console.error('Error during proposal creation:', err.response?.data || err.message);
+    //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+    //   } finally {
+    //     setLoadingProposal(false);
+    //   }
+    // };
 
   return (
     <div>
@@ -177,11 +332,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   </div>
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
-                    {leadData?.street_address
+                      {leadData?.street_address
                       ? leadData.street_address.length > 20
-                        ? `${leadData.street_address.slice(0, 20)}...`
+                          ? `${leadData.street_address.slice(0, 30)}...`
                         : leadData.street_address
-                      : 'N/A'}
+                        : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
@@ -220,7 +375,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                     <div>
                       {visibleDiv === 0 ||
-                        (visibleDiv === 1 && (
+                        (visibleDiv === 11 && (
                           <div
                             className={classes.edit_modal_openMediaScreen}
                             onClick={handleOpenModal}
@@ -243,7 +398,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               )}
               <div>
-                {(visibleDiv === 0 || visibleDiv === 1) && (
+                {(visibleDiv === 0 || visibleDiv === 11) && (
                   <div
                     className={classes.edit_modal_open}
                     onClick={handleOpenModal}
@@ -272,7 +427,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 onTimeChange={handleTimeChange}
               />
             )}
-            {visibleDiv === 1 && (
+            {visibleDiv === 11 && (
               <>
                 {' '}
                 <div>
@@ -316,7 +471,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               </>
             )}
             {/* FROM HERE  WE DO NOT NEED EDIT BUTTON */}
-            {visibleDiv === 2 && (
+            {visibleDiv === 1 && (
               <>
                 <div className={classes.success_not}>
                   <div>
@@ -346,13 +501,13 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 3 && (
+            {visibleDiv === 2 && (
               <>
                 <div className={classes.success_not}>
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      onClick={() => setVisibleDiv(4)}
+                      // onClick={() => setVisibleDiv(4)}
                       height="140px"
                       width="140px"
                       src={SignatureICON}
@@ -378,7 +533,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 4 && (
+            {visibleDiv === 67 && (
               <>
                 <div className={classes.success_not}>
                   <div>
@@ -389,7 +544,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.closedButtonQuestionmark}>
                   <button
                     className={classes.self}
-                    onClick={() => setVisibleDiv(6)}
+                    onClick={() => setVisibleDiv(4)}
                     style={{
                       backgroundColor: '#3AC759',
                       color: '#FFFFFF',
@@ -430,7 +585,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 5 && (
+            {visibleDiv === 3 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited2}>
                   <div className={classes.success_not_Edited4Model}>
@@ -475,7 +630,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 6 && (
+            {visibleDiv === 5 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited}>
                   <div className={classes.success_not_Edited4Model}>
@@ -503,13 +658,35 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     <button
                       className={classes.self}
                       style={{
-                        backgroundColor: '#3AC759',
+                        backgroundColor: `${loadingProposal ? '#FFFFFF' :'#3AC759'}`,
                         color: '#FFFFFF',
-                        border: 'none',
+                        border:'none'
                       }}
+                      onClick={handleCreateProposal} 
+                      disabled={loadingProposal}
                     >
-                      CREATE PROPOSAL
+                      {loadingProposal ? (
+                        <div style={{display:'flex',justifyContent: 'center', alignItems:'center', color:'#3AC759',
+                          border:'1px solid #3AC759', borderRadius:10
+                        }}>
+                          Creating Proposal...
+                          <div style={{ display: 'flex', justifyContent: 'center',transform:'scale(0.5)' }}>
+                            <MicroLoader />
+                          </div>
+                        </div>
+                      ) : 'Create Proposal'}
                     </button>
+                      {/* <button
+                        className={classes.self}
+                        style={{
+                          backgroundColor: '#3AC759',
+                          color: '#FFFFFF',
+                          border: 'none',
+                        }}
+                        onClick={() => setShowCreateProposal(true)} // Show the create proposal component
+                      >
+                        CREATE PROPOSAL
+                      </button> */}
                     <span className={classes.n}>
                       {' '}
                       <img src={FileAttach} /> Attach proposal
@@ -518,6 +695,16 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}{' '}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {/* Display iframe if proposal link exists */}
+            {iframeSrc && (
+              <iframe
+                src={iframeSrc}
+                style={{ width: '100%', height: '600px', border: 'none' }}
+                title="Proposal"
+              ></iframe>
+            )}
           </div>
         </div>
       )}
