@@ -615,7 +615,7 @@ const Table = ({
       // setLeaderTable(tableData.data.leader_board_list
       // );
       setLeaderTable(tableData?.data?.leader_board_list);
-      setTotalCount(tableData?.data?.dbRecCount);
+      setTotalCount(tableData.dbRecCount);
     }
   }, [
     activeHead,
@@ -630,6 +630,9 @@ const Table = ({
     tableData,
   ]);
 
+
+  console.log(leaderTable?.length, "fkjgh")
+  console.log(totalCount, "totalcount")
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {
