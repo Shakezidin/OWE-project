@@ -15,12 +15,14 @@
   line-height: 21px;
   font-family: 'Poppins';
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .newfile_botton:hover {
   border: 1px solid #377cf6;
   background-color: #eff5ff;
   color: #377cf6;
+  transform: scale(1.05);
 }
 .newfilelibrary_uploadbutton_container {
   list-style: none;

@@ -60,6 +60,29 @@ interface StatusData {
   value: number;
   color: string;
 }
+interface Design {
+  id: string;
+  external_provider_id: string;
+  name: string;
+  created_at: string;
+  system_size_stc: number;
+  system_size_ptc: number;
+  system_size_ac: number;
+  milestone: string | null;
+}
+
+interface Proposal {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  proposal_template_id: string;
+  proposal_link: string;
+}
+
+interface WebProposal {
+  url: string;
+  url_expired: boolean;
+}
 
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -419,7 +442,7 @@ const CustomTooltip = ({
         style={{
           backgroundColor: 'white',
           padding: '5px 10px',
-          // border: '1px solid #f0f0f0',
+          zIndex:"99",
           borderRadius: '4px',
           // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
@@ -457,7 +480,7 @@ const LeadManagementDashboard = () => {
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
-  const [proposal, setProposal] = useState(null);
+  const [proposal, setProposal] = useState<Proposal | null>(null);
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -512,6 +535,9 @@ const LeadManagementDashboard = () => {
   const isMobile = useMatchMedia('(max-width: 1024px)');
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
+  const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
+
+
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -733,11 +759,11 @@ const LeadManagementDashboard = () => {
             },
             true
           );
-
+  
           if (response.status === 200) {
             const apiData = response.data.leads;
             const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => {
+              (acc: DefaultData, item: any) => { 
                 acc[item.status_name] = {
                   name: defaultData[item.status_name].name,
                   value: item.count,
@@ -761,10 +787,10 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-
+  
       fetchData();
     }
-  }, [isAuthenticated, selectedDates, refresh]);
+  }, [isAuthenticated, selectedDates,ref,isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -781,6 +807,7 @@ const LeadManagementDashboard = () => {
   );
 
   const getAuroraData = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get('http://localhost:5000/api/projects');
       // Handle the response as needed
@@ -788,8 +815,11 @@ const LeadManagementDashboard = () => {
       setProjects(response.data.projects);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -814,7 +844,7 @@ const LeadManagementDashboard = () => {
           statusId = 5;
           break;
         default:
-          statusId = 0;
+        statusId = 0;
       }
 
       const data = {
@@ -888,37 +918,103 @@ const LeadManagementDashboard = () => {
   };
 
   // Function to fetch project details
-  const fetchProjectDetails = async (projectId: string) => {
-    try {
+const fetchProjectDetails = async (projectId: string) => {
+  try {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}`
       );
-      setSelectedProject(response.data); // Set the selected project details
-      fetchDesigns(projectId); // Fetch designs for the selected project
-    } catch (error) {
-      console.error('Error fetching project details:', error);
-    }
-  };
+    setSelectedProject(response.data); // Set the selected project details
+    fetchDesigns(projectId); // Fetch designs for the selected project
+  } catch (error) {
+    console.error('Error fetching project details:', error);
+  }
+};
 
-  // Function to fetch designs for a project
-  const fetchDesigns = async (projectId: string) => {
-    try {
-      const response = await axios.get(`/api/designs?projectId=${projectId}`);
-      setDesigns(response.data.designs); // Set the designs for the selected project
-    } catch (error) {
-      console.error('Error fetching designs:', error);
+// Function to fetch designs for a project
+const fetchDesigns = async (projectId: string) => {
+  try {
+    const response = await axios.get(`http://localhost:5000/api/designs/${projectId}`);
+    setDesigns(response.data.designs); // Set the designs for the selected project
+    
+    // Find the most recently created design
+    if (response.data.designs && response.data.designs.length > 0) {
+      const sortedDesigns = response.data.designs.sort((a: Design, b: Design) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      const latestDesign = sortedDesigns[0];
+      
+      // Call fetchProposal with the latest design's ID
+      // fetchProposal(latestDesign.id);
+      // fetchWebProposal(latestDesign.id);
+      generateWebProposalUrl(latestDesign.id);
+    } else {
+      console.log('No designs found for this project');
     }
-  };
+  } catch (error) {
+    console.error('Error fetching designs:', error);
+  }
+};
 
-  // Function to fetch proposal for a design
-  const fetchProposal = async (designId: string) => {
-    try {
-      const response = await axios.get(`/api/proposals?designId=${designId}`);
-      setProposal(response.data); // Set the proposal details
-    } catch (error) {
-      console.error('Error fetching proposal:', error);
+// Function to fetch proposal for a design
+const fetchProposal = async (designId: string) => {
+  try {
+    const response = await axios.get<{ proposal: Proposal }>(`http://localhost:5000/api/proposals/${designId}`);
+    setProposal(response.data.proposal);
+    
+    // Automatically open the proposal link in a new tab
+    openProposalLink(response.data.proposal.proposal_link);
+  } catch (error) {
+    console.error('Error fetching proposal:', error);
+  }
+};
+
+// Function to fetch Web Proposal for a design
+const fetchWebProposal = async (designId: string) => {
+  try {
+    const response = await axios.get<{ web_proposal: WebProposal }>(
+      `http://localhost:5000/api/web-proposals/${designId}`
+    );
+    
+    // Set the web proposal in state if you want to store it
+    setWebProposal(response.data.web_proposal);
+    
+    // Automatically open the web proposal link in a new tab
+    openProposalLink(response.data.web_proposal.url);
+  } catch (error) {
+    console.error('Error fetching web proposal:', error);
+  }
+};
+
+// const generateWebProposalUrl = async (designId: string) => {
+//   try {
+//     const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
+//     console.log('Generated Web Proposal URL:', response.data);
+//     // Handle the response data as needed (e.g., open the URL in a new tab)
+//   } catch (error) {
+//     console.error('Error generating web proposal URL:', error);
+//   }
+// };
+
+const generateWebProposalUrl = async (designId: string) => {
+  try {
+    const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
+    const proposalUrl = response.data.web_proposal.url;
+    
+    if (!response.data.web_proposal.url_expired) {
+      console.log('Generated Web Proposal URL:', proposalUrl);
+      openProposalLink(proposalUrl); // Open the proposal URL in a new tab
+    } else {
+      console.error('The web proposal URL has expired.');
     }
-  };
+  } catch (error) {
+    console.error('Error generating web proposal URL:', error);
+  }
+};
+
+// Function to open the proposal link in a new tab
+const openProposalLink = (link: string) => {
+  window.open(link, '_blank', 'noopener,noreferrer');
+};
 
   //************************************************************************************************ */
   return (
@@ -1129,6 +1225,7 @@ const LeadManagementDashboard = () => {
                     ...baseStyles,
                     width: '140px',
                     marginTop: '0px',
+                    zIndex:"100"
                   }),
                 }}
               />
@@ -1252,12 +1349,12 @@ const LeadManagementDashboard = () => {
                       </button>
                     );
                   })}
-                  <button
+                   <button
                     onClick={handleNewButtonClick}
                     className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
-                  >
+                    >
                     <p className={styles.statusInactive}></p>
-                    Aurora Projects
+                        Aurora Projects
                   </button>
                 </div>
 
@@ -1315,64 +1412,26 @@ const LeadManagementDashboard = () => {
                 ) : currentFilter == 'Projects' && projects.length > 0 ? (
                   projects.map((project: any, index: number) => (
                     <React.Fragment key={index}>
-                      {/* <tr className={styles.history_lists}>
-                          <td className={styles.project_list}>
-                         
-                           <div style={{fontWeight:"bold"}}>
-                              Project Name
-                            </div>
-
-                            <div>
-                               Property Address
-                            </div>
-                        
-                            <div>
-                              Created At
-                            </div>
-                            <div>
-                              Project ID
-                            </div>
-                          </td>
-                    </tr> */}
-                      {/* <tr key={project.id} className={styles.history_lists}>
-                          <td className={styles.project_list}>
-                         
-                           <div style={{fontWeight:"bold"}}>
-                              {project.name}
-                            </div>
-
-                            <div>
-                              {project.property_address}
-                            </div>
-                        
-                            <div>
-                              {new Date(project.created_at).toLocaleString()}
-                            </div>
-                            <div>
-                              {project.id}
-                            </div>
-                          </td>
-                        </tr> */}
                       <tr
                         key={project.id}
                         className={styles.history_lists}
                         onClick={() => fetchProjectDetails(project.id)}
                       >
-                        <td className={styles.project_list}>
+                          <td className={styles.project_list}>
                           <div style={{ fontWeight: 'bold' }}>
-                            {project.name}
-                          </div>
+                              {project.name}
+                            </div>
 
                           <div>{project.property_address}</div>
 
-                          <div>
-                            {new Date(project.created_at).toLocaleString()}
-                          </div>
+                            <div>
+                              {new Date(project.created_at).toLocaleString()}
+                            </div>
                           <div>{project.id}</div>
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  ))
+                          </td>
+                        </tr>
+                        </React.Fragment>
+                      ))
                 ) : leadsData.length > 0 ? (
                   leadsData.map((lead: any, index: number) => (
                     <React.Fragment key={index}>
@@ -1381,16 +1440,14 @@ const LeadManagementDashboard = () => {
                           className={`${
                             lead.status === 'Declined' ||
                             lead.status === 'Action Needed'
-                              ? styles.history_list_inner_declined
-                              : styles.history_list_inner
-                          }`}
+                            ? styles.history_list_inner_declined
+                            : styles.history_list_inner
+                            }`}
                           onClick={(e) => {
                             setLeadId(lead['leads_id']);
                             if (
                               !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest(
-                                `.${styles.chevron_down}`
-                              )
+                              !(e.target as HTMLElement).closest('#icon-closest')
                             ) {
                               if (
                                 currentFilter !== 'Declined' &&
@@ -1399,7 +1456,7 @@ const LeadManagementDashboard = () => {
                                 setReschedule(false);
                                 setAction(false);
                                 handleOpenModal();
-                              }
+                                                              }
                             }
                           }}
                         >
@@ -1493,8 +1550,16 @@ const LeadManagementDashboard = () => {
                           )}
 
                           <div
+                            id='icon-closest'
                             className={styles.chevron_down}
                             onClick={() => handleChevronClick(lead['leads_id'])}
+                            style={{
+                              marginLeft: currentFilter !== 'Declined' && currentFilter !== 'Action Needed'
+                                ? "57px"
+                                : currentFilter === 'Declined'
+                                  ? "-11px"
+                                  : ""
+                            }}
                           >
                             <img
                               src={

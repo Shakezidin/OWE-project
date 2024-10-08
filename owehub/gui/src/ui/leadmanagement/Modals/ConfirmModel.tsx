@@ -143,7 +143,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
             if (reschedule === true) {
               setVisibleDiv(0);
             } else if (action == true) {
-              setVisibleDiv(67);
+               setVisibleDiv(67);
             } else {
               setVisibleDiv(response.data?.status_id);
             }
@@ -159,7 +159,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId,isOpen1, isModalOpen]);
+  }, [isAuthenticated, leadId, isOpen1, isModalOpen]);
 
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
@@ -276,7 +276,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-  // Function to create project, design, and proposal in sequence
+    // Function to create project, design, and proposal in sequence
 
   const handleCreateProposal = async () => {
     if (!leadData) {
@@ -290,46 +290,46 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     try {
       // Generate a timestamp
       const timestamp = new Date().getTime();
-
+    
       // Create Project
       const projectResponse = await axios.post(
         'http://localhost:5000/api/create-project',
         {
-          project: {
-            location: {
-              property_address: leadData.street_address,
-            },
-            external_provider_id: leadId?.toString() || 'YourId123',
-            name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-            customer_salutation: 'Mr./Mrs.',
-            customer_first_name: leadData.first_name,
-            customer_last_name: leadData.last_name,
-            mailing_address: leadData.street_address,
-            customer_email: leadData.email_id,
-            customer_phone: leadData.phone_number,
-            status: 'Remote Assessment Completed',
-            preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-            tags: ['third_party_1'],
+        project: {
+          location: {
+            property_address: leadData.street_address,
           },
+          external_provider_id: leadId?.toString() || 'YourId123',
+          name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+          customer_salutation: 'Mr./Mrs.',
+          customer_first_name: leadData.first_name,
+          customer_last_name: leadData.last_name,
+          mailing_address: leadData.street_address,
+          customer_email: leadData.email_id,
+          customer_phone: leadData.phone_number,
+          status: 'Remote Assessment Completed',
+          preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+          tags: ['third_party_1'],
+        },
         }
       );
       console.log('Project created:', projectResponse.data);
       const projectId = projectResponse.data.project.id;
-
+    
       // Create Design
       const designResponse = await axios.post(
         'http://localhost:5000/api/create-design',
         {
-          design: {
-            external_provider_id: leadId?.toString() || 'YourId123',
-            project_id: projectId,
-            name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-          },
+        design: {
+          external_provider_id: leadId?.toString() || 'YourId123',
+          project_id: projectId,
+          name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+        },
         }
       );
       console.log('Design created:', designResponse.data);
       const designId = designResponse.data.design.id;
-
+    
       // Create Proposal
       const proposalResponse = await axios.post(
         'http://localhost:5000/api/create-proposal',
@@ -338,7 +338,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.log('Proposal created:', proposalResponse.data);
       setProposalLink(proposalResponse.data.proposal.proposal_link);
       toast.success('Proposal created successfully');
-
+    
       // Open the proposal in a new tab
       window.open(proposalResponse.data.proposal.proposal_link, '_blank');
     } catch (error) {
@@ -357,66 +357,66 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-  // const handleCreateProposal = async () => {
-  //   setLoadingProposal(true);
-  //   setError('');
-
-  //   try {
-  //     // Create Project
-  //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
-  //       project: {
-  //         location: {
-  //           latitude: 37.77960043,
-  //           longitude: -122.39530086,
-  //         },
-  //         external_provider_id: 'YourId123',
-  //         name: 'My first test project',
-  //         customer_salutation: 'Mrs.',
-  //         customer_first_name: 'Jane',
-  //         customer_last_name: 'Doe',
-  //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
-  //         customer_email: 'jane@example.com',
-  //         customer_phone: '(555) 111-5151',
-  //         status: 'Remote Assessment Completed',
-  //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-  //         tags: ['third_party_1'],
-  //       },
-  //     });
-  //     console.log('Project created:', projectResponse.data);
-  //     const projectId = projectResponse.data.project.id;
-
-  //     // Create Design
-  //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
-  //       design: {
-  //         external_provider_id: 'YourId123',
-  //         project_id: projectId,
-  //         name: `Mydesign${projectId}`,
-  //       },
-  //     });
-  //     console.log('Design created:', designResponse.data);
-  //     const designId = designResponse.data.design.id;
-
-  //     // Create Proposal
-  //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
-  //     console.log('Proposal created:', proposalResponse.data);
-  //     setProposalLink(proposalResponse.data.proposal.proposal_link);
-  //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
-  //     toast.success('Proposal created successfully'); // Notify success
-
-  //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
-  //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
-
-  //     // Close the component/modal after success
-  //     // setShowCreateProposal(false);
-
-  //   } catch (error) {
-  //     const err = error as any; // Type assertion to 'any'
-  //     console.error('Error during proposal creation:', err.response?.data || err.message);
-  //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
-  //   } finally {
-  //     setLoadingProposal(false);
-  //   }
-  // };
+    // const handleCreateProposal = async () => {
+    //   setLoadingProposal(true);
+    //   setError('');
+  
+    //   try {
+    //     // Create Project
+    //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
+    //       project: {
+    //         location: {
+    //           latitude: 37.77960043,
+    //           longitude: -122.39530086,
+    //         },
+    //         external_provider_id: 'YourId123',
+    //         name: 'My first test project',
+    //         customer_salutation: 'Mrs.',
+    //         customer_first_name: 'Jane',
+    //         customer_last_name: 'Doe',
+    //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
+    //         customer_email: 'jane@example.com',
+    //         customer_phone: '(555) 111-5151',
+    //         status: 'Remote Assessment Completed',
+    //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+    //         tags: ['third_party_1'],
+    //       },
+    //     });
+    //     console.log('Project created:', projectResponse.data);
+    //     const projectId = projectResponse.data.project.id;
+  
+    //     // Create Design
+    //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
+    //       design: {
+    //         external_provider_id: 'YourId123',
+    //         project_id: projectId,
+    //         name: `Mydesign${projectId}`,
+    //       },
+    //     });
+    //     console.log('Design created:', designResponse.data);
+    //     const designId = designResponse.data.design.id;
+  
+    //     // Create Proposal
+    //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+    //     console.log('Proposal created:', proposalResponse.data);
+    //     setProposalLink(proposalResponse.data.proposal.proposal_link);
+    //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
+    //     toast.success('Proposal created successfully'); // Notify success
+  
+    //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
+    //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
+        
+    //     // Close the component/modal after success
+    //     // setShowCreateProposal(false);
+  
+    //   } catch (error) {
+    //     const err = error as any; // Type assertion to 'any'
+    //     console.error('Error during proposal creation:', err.response?.data || err.message);
+    //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+    //   } finally {
+    //     setLoadingProposal(false);
+    //   }
+    // };
 
 
   useEffect(() => {
@@ -465,15 +465,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
                       {leadData?.street_address
-                        ? leadData.street_address.length > 20
+                      ? leadData.street_address.length > 20
                           ? `${leadData.street_address.slice(0, 30)}...`
-                          : leadData.street_address
+                        : leadData.street_address
                         : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
                       {/* <span className={classes.verified}> */}
-                      {/* <svg
+                        {/* <svg
                           className={classes.verifiedMarked}
                           width="13"
                           height="13"
@@ -502,7 +502,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                             </clipPath>
                           </defs>
                         </svg>{' '} */}
-                      {/* <span className={classes.verifyLetter}> Verified</span>
+                        {/* <span className={classes.verifyLetter}> Verified</span>
                       </span> */}
                     </span>
                     <div>
@@ -618,15 +618,31 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.ApptSentConfirm}>
                     Appointment sent successfully{' '}
                   </span>
+                  {/* <span className={classes.ApptSentDate}>
+                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
+                    {selectedTime}
+                  </span> */}
+                  {leadData?.appointment_date ? (
+                    <span className={classes.ApptSentDate}>
+                      {format(new Date(leadData.appointment_date), 'dd MMM, yyyy.  hh:mm a')}
+                    </span>
+                  ) : (
                   <span className={classes.ApptSentDate}>
                     {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                     {selectedTime}
                   </span>
+                  )}
                 </div>
                 <div className={classes.survey_button}>
+                  {leadData?.appointment_scheduled_date ? (
+                    <span className={classes.AppSentDate2}>
+                      Appointment sent on {format(new Date(leadData?.appointment_scheduled_date), 'dd MMM, yyyy')}
+                    </span>
+                  ) : (
                   <span className={classes.AppSentDate2}>
                     Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
                   </span>
+                  )}
                   <span className={classes.AppSentDate2}>
                     Waiting for confirmation
                   </span>
@@ -722,7 +738,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                     className={classes.other}
-                    onClick={() => setVisibleDiv(3)}
+                    onClick={() => setVisibleDiv(0)}
                   >
                     Reschedule Appointment
                   </button>
@@ -815,7 +831,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         color: '#FFFFFF',
                         border: 'none',
                       }}
-                      onClick={handleCreateProposal}
+                      onClick={handleCreateProposal} 
                       disabled={loadingProposal}
                     >
                       {loadingProposal ? (
@@ -844,7 +860,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         'Create Proposal'
                       )}
                     </button>
-                    {/* <button
+                      {/* <button
                         className={classes.self}
                         style={{
                           backgroundColor: '#3AC759',
@@ -863,7 +879,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}{' '}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (
               <iframe
