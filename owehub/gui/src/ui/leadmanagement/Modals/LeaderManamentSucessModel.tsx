@@ -76,7 +76,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
   }, [authData]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isArcOpen) {
       const fetchData = async () => {
         try {
           setIsLoading(true);
@@ -102,7 +102,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId]);
+  }, [isAuthenticated, leadId, isArcOpen]);
 
   return (
     <div>

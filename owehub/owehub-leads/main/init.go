@@ -149,6 +149,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_get_proposal",
+		apiHandler.HandleAuroraGetProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************

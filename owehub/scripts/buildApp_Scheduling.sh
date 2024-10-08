@@ -12,7 +12,7 @@ function moduleinit()
 function make_all() 
 {
 	cd $AppRoot/build
-	make -f Makefile-OweHub-Utils
+	make -f Makefile-OweHub-Scheduling
 	cd -
 }
 
@@ -20,21 +20,21 @@ function make_docker()
 {
 
 	cd $AppRoot/build
-	make -f Makefile-OweHub-Utils docker
+	make -f Makefile-OweHub-Scheduling docker
 	cd -
 }
 
 function make_clean()
 {
 	cd $AppRoot/build
-	make -f Makefile-OweHub-Utils clean
+	make -f Makefile-OweHub-Scheduling clean
 	cd -
 }
 
 function make_dockerclean()
 {
     cd $AppRoot/build
-	make -f Makefile-OweHub-Utils dockerpushclean
+	make -f Makefile-OweHub-Scheduling dockerpushclean
 	cd -
 }
 

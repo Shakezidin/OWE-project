@@ -126,7 +126,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   }, [authData]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isOpen1) {
       const fetchData = async () => {
         try {
           setIsLoading(true);
@@ -159,7 +159,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId, isModalOpen]);
+  }, [isAuthenticated, leadId, isOpen1, isModalOpen]);
 
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
@@ -418,6 +418,18 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   //   }
   // };
 
+
+  useEffect(() => {
+    if (reschedule === true) {
+      setVisibleDiv(0);
+    } else if (action === true) {
+      setVisibleDiv(67);
+    } else if (leadData) {
+      setVisibleDiv(leadData.status_id);
+    }
+  }, [reschedule, action, leadData]);
+
+
   return (
     <div>
       {isOpen1 && (
@@ -606,15 +618,31 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.ApptSentConfirm}>
                     Appointment sent successfully{' '}
                   </span>
-                  <span className={classes.ApptSentDate}>
+                  {/* <span className={classes.ApptSentDate}>
                     {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                     {selectedTime}
-                  </span>
+                  </span> */}
+                  {leadData?.appointment_date ? (
+                    <span className={classes.ApptSentDate}>
+                      {format(new Date(leadData.appointment_date), 'dd MMM, yyyy.  hh:mm a')}
+                    </span>
+                  ) : (
+                    <span className={classes.ApptSentDate}>
+                      {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
+                      {selectedTime}
+                    </span>
+                  )}
                 </div>
                 <div className={classes.survey_button}>
-                  <span className={classes.AppSentDate2}>
-                    Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
-                  </span>
+                  {leadData?.appointment_scheduled_date ? (
+                    <span className={classes.AppSentDate2}>
+                      Appointment sent on {format(new Date(leadData?.appointment_scheduled_date), 'dd MMM, yyyy')}
+                    </span>
+                  ) : (
+                    <span className={classes.AppSentDate2}>
+                      Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
+                    </span>
+                  )}
                   <span className={classes.AppSentDate2}>
                     Waiting for confirmation
                   </span>
@@ -644,8 +672,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.remaningDate}>
                     {leadData?.appointment_accepted_date
                       ? calculateRemainingDays(
-                          leadData.appointment_accepted_date
-                        )
+                        leadData.appointment_accepted_date
+                      )
                       : ''}
                   </span>
                 </div>
@@ -710,7 +738,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                     className={classes.other}
-                    onClick={() => setVisibleDiv(3)}
+                    onClick={() => setVisibleDiv(0)}
                   >
                     Reschedule Appointment
                   </button>

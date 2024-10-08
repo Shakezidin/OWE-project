@@ -1389,9 +1389,7 @@ const LeadManagementDashboard = () => {
                             setLeadId(lead['leads_id']);
                             if (
                               !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest(
-                                `.${styles.chevron_down}`
-                              )
+                              !(e.target as HTMLElement).closest('#icon-closest')
                             ) {
                               if (
                                 currentFilter !== 'Declined' &&
@@ -1456,7 +1454,7 @@ const LeadManagementDashboard = () => {
                               </button>
                               {isTablet ? (
                                 <button
-                                  onClick={() => handleArchive(lead)}
+                                  onClick={() => handleOpenArcModal()}
                                   className={styles.archiveButton}
                                 >
                                   <img src={ICONS.declinedArchive} />
@@ -1494,13 +1492,12 @@ const LeadManagementDashboard = () => {
                           )}
 
                           <div
-                            // className={lead.status==='Accepted' ? styles.chevron_downAccepted :  styles.chevron_down}
-                            className={`${lead.status === 'Accepted' && isMobileFixed ||
-                              lead.status === 'Action Needed' && isMobileFixed
-                              ? styles.chevron_downAccepted
-                              : styles.chevron_down
-                              }`}
+                            id='icon-closest'
+                            className={styles.chevron_down}
                             onClick={() => handleChevronClick(lead['leads_id'])}
+                            style={{
+                              marginLeft: currentFilter !== 'Declined' && currentFilter !== 'Action Needed' ? "57px" : ""
+                            }}
                           >
                             <img
                               src={

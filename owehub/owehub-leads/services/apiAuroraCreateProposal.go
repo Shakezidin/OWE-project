@@ -36,6 +36,8 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		createProjectResp  *leadsService.AuroraCreateProjectApiResponse
 		createDesignResp   *leadsService.AuroraCreateDesignApiResponse
 		createProposalResp *leadsService.AuroraCreateProposalApiResponse
+		updateQuery        string
+		updateEleList      []interface{}
 	)
 	log.EnterFn(0, "HandleAuroraCreateProjectRequest")
 	defer func() { log.ExitFn(0, "HandleAuroraCreateProjectRequest", err) }()
@@ -175,6 +177,11 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		ProjectId:          projectId,
 	}
 	createDesignResp, err = createDesignApi.Call()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create aurora design err %v", err)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		return
+	}
 
 	designId, ok := createDesignResp.Design["id"].(string)
 	if !ok {
@@ -193,6 +200,41 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to create aurora proposal err %v", err)
 		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		return
+	}
+
+	proposalId, ok := createProposalResp.Proposal["id"].(string)
+	if !ok {
+		err = fmt.Errorf("proposal_id not found in create design response")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve proposal id from create proposal response", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// update the lead info record
+	updateQuery = `
+		UPDATE
+			leads_info
+		SET
+			aurora_project_id = $1,
+			aurora_design_id = $2,
+			aurora_proposal_id = $3,
+			updated_at = CURRENT_TIMESTAMP,
+			proposal_created_date = CURRENT_TIMESTAMP
+		WHERE
+			leads_id = $4
+	`
+	updateEleList = append(updateEleList,
+		projectId,
+		designId,
+		proposalId,
+		dataReq.LeadsId,
+	)
+
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, updateQuery, updateEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update leads info in DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to update leads info in DB", http.StatusInternalServerError, nil)
 		return
 	}
 
