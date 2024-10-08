@@ -26,6 +26,13 @@ import { useAppSelector } from '../../redux/hooks';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import VideoPlayer from './components/VideoPlayer/VideoPlayer';
+import audioFile from './assetss/audioFile.svg'
+import myDocument from './assetss/myDocument.svg';
+import powerpoint from './assetss/powerpoint.svg';
+import textFile from './assetss/textFile.svg';
+import wordFile from './assetss/wordFile.svg';
+import zipFolder from './assetss/zipFolder.svg';
+import defauult from './assetss/default.svg';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -33,9 +40,8 @@ const LibraryHomepage = () => {
   >('files');
   const [isHovered, setIsHovered] = useState(false);
   const [selectedType, setSelectedType] = useState('All');
-  const [sortOption, setSortOption] = useState<
-    'none' | 'name' | 'date' | 'size'
-  >('none');
+  const [sortOption, setSortOption] = useState<'name' | 'date' | 'size'
+  >('date');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isRecycleBinView, setIsRecycleBinView] = useState(false);
   const [toggleClick, setToggleClick] = useState(false);
@@ -113,7 +119,9 @@ const LibraryHomepage = () => {
     url: string;
     date: string;
     iconName: string;
-
+    video?:{
+      duration?:string
+    };
     // File size in bytes
     // Include any other properties you expect
   }
@@ -364,10 +372,11 @@ const LibraryHomepage = () => {
     setActiveSection(section);
     setSearchValue('');
   };
+  console.log("File data - ",fileData);
 
   const filteredData = fileData.filter((data) => {
     const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && data.file?.mimeType === 'image/png') || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
+    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg')) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
     return matchesSearch && matchesType;
   });
 
@@ -580,7 +589,7 @@ const LibraryHomepage = () => {
               className={styles.searchInput}
             />
           </div>
-          <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} />
+          <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />
 
           <Link
             className={styles.recycleBin}
@@ -697,7 +706,9 @@ const LibraryHomepage = () => {
       return (
         <div>
           {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => data.file?.mimeType === 'mp4')} />}
+            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' ||  data.file?.mimeType === 'video/quicktime' ))} onClick={(url:string)=>{setIsVideoModalOpen(true)
+              setVideoUrl(url)
+            }} />}
         </div>
       );
     }
@@ -724,12 +735,12 @@ const LibraryHomepage = () => {
               }}>
                 <img
                   className={styles.cardImg}
-                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? '' : data['@microsoft.graph.downloadUrl']}
+                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType==="application/vnd.openxmlformats-officedocument.wordprocessingml.document"? wordFile: data.file?.mimeType==="image/jpeg"? data['@microsoft.graph.downloadUrl']: defauult}
                   alt={`null`}
                   loading='lazy'
                 />
                 <div>
-                  <p className={styles.name}>{data.name.substring(0, 10)}</p>
+                <p className={styles.name}>{data.name.substring(0, 16)}</p>
                   <p className={styles.size}>
                     {data.size < 1024
                       ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
