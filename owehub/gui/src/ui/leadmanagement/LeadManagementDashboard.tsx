@@ -1455,7 +1455,7 @@ const LeadManagementDashboard = () => {
                               </button>
                               {isTablet ? (
                                 <button
-                                  onClick={() => handleArchive(lead)}
+                                  onClick={() => handleOpenArcModal()}
                                   className={styles.archiveButton}
                                 >
                                   <img src={ICONS.declinedArchive} />
