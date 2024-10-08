@@ -459,8 +459,6 @@ const LeadManagementDashboard = () => {
   const [designs, setDesigns] = useState([]);
   const [proposal, setProposal] = useState(null);
 
-
-
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   // shams start
@@ -510,12 +508,11 @@ const LeadManagementDashboard = () => {
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
-  const [projects, setProjects] = useState([])
+  const [projects, setProjects] = useState([]);
   const isMobile = useMatchMedia('(max-width: 1024px)');
   const isMobileFixed = useMatchMedia('(min-width: 320px) and (max-width: 480px)');
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
-
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -639,9 +636,9 @@ const LeadManagementDashboard = () => {
 
   const [isArcModalOpen, setIsArcModalOpen] = useState(false);
   const handleOpenArcModal = () => {
-    console.log("click on arch")
+    console.log('click on arch');
     setIsArcModalOpen(true);
-    console.log(isArcModalOpen)
+    console.log(isArcModalOpen);
   };
 
   const handleCloseArcModal = () => {
@@ -737,11 +734,11 @@ const LeadManagementDashboard = () => {
             },
             true
           );
-  
+
           if (response.status === 200) {
             const apiData = response.data.leads;
             const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => { 
+              (acc: DefaultData, item: any) => {
                 acc[item.status_name] = {
                   name: defaultData[item.status_name].name,
                   value: item.count,
@@ -765,7 +762,7 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-  
+
       fetchData();
     }
   }, [isAuthenticated, selectedDates, refresh]);
@@ -786,16 +783,14 @@ const LeadManagementDashboard = () => {
 
   const getAuroraData = async () => {
     try {
-        const response = await axios.get('http://localhost:5000/api/projects');
-        // Handle the response as needed
-        console.log("response.data", response.data);
-        setProjects(response.data.projects)
-        
+      const response = await axios.get('http://localhost:5000/api/projects');
+      // Handle the response as needed
+      console.log('response.data', response.data);
+      setProjects(response.data.projects);
     } catch (error) {
-        console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error);
     }
-}
-
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -820,7 +815,7 @@ const LeadManagementDashboard = () => {
           statusId = 5;
           break;
         default:
-        statusId = 0;
+          statusId = 0;
       }
 
       const data = {
@@ -836,10 +831,9 @@ const LeadManagementDashboard = () => {
         page_number: archive ? 1 : page,
       };
 
-      if(statusId == 5) {
+      if (statusId == 5) {
         getAuroraData(); // Call the function to get Aurora Project data
-      }
-      else{
+      } else {
         dispatch(getLeads(data));
       }
     }
@@ -852,7 +846,7 @@ const LeadManagementDashboard = () => {
     page,
     currentFilter,
     refresh,
-    ref
+    ref,
   ]);
 
   useEffect(() => {
@@ -895,36 +889,37 @@ const LeadManagementDashboard = () => {
   };
 
   // Function to fetch project details
-const fetchProjectDetails = async (projectId: string) => {
-  try {
-    const response = await axios.get(`http://localhost:5000/api/projects/${projectId}`);
-    setSelectedProject(response.data); // Set the selected project details
-    fetchDesigns(projectId); // Fetch designs for the selected project
-  } catch (error) {
-    console.error('Error fetching project details:', error);
-  }
-};
+  const fetchProjectDetails = async (projectId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/projects/${projectId}`
+      );
+      setSelectedProject(response.data); // Set the selected project details
+      fetchDesigns(projectId); // Fetch designs for the selected project
+    } catch (error) {
+      console.error('Error fetching project details:', error);
+    }
+  };
 
-// Function to fetch designs for a project
-const fetchDesigns = async (projectId: string) => {
-  try {
-    const response = await axios.get(`/api/designs?projectId=${projectId}`);
-    setDesigns(response.data.designs); // Set the designs for the selected project
-  } catch (error) {
-    console.error('Error fetching designs:', error);
-  }
-};
+  // Function to fetch designs for a project
+  const fetchDesigns = async (projectId: string) => {
+    try {
+      const response = await axios.get(`/api/designs?projectId=${projectId}`);
+      setDesigns(response.data.designs); // Set the designs for the selected project
+    } catch (error) {
+      console.error('Error fetching designs:', error);
+    }
+  };
 
-// Function to fetch proposal for a design
-const fetchProposal = async (designId: string) => {
-  try {
-    const response = await axios.get(`/api/proposals?designId=${designId}`);
-    setProposal(response.data); // Set the proposal details
-  } catch (error) {
-    console.error('Error fetching proposal:', error);
-  }
-}
-  
+  // Function to fetch proposal for a design
+  const fetchProposal = async (designId: string) => {
+    try {
+      const response = await axios.get(`/api/proposals?designId=${designId}`);
+      setProposal(response.data); // Set the proposal details
+    } catch (error) {
+      console.error('Error fetching proposal:', error);
+    }
+  };
 
   //************************************************************************************************ */
   return (
@@ -942,7 +937,6 @@ const fetchProposal = async (designId: string) => {
         </div>
       </div>
 
-
       <ConfirmModel
         isOpen1={isModalOpen}
         onClose1={handleCloseModal}
@@ -953,8 +947,6 @@ const fetchProposal = async (designId: string) => {
         action={action}
       />
 
-
-
       <ArchiveModal
         isArcOpen={isArcModalOpen}
         onArcClose={handleCloseArcModal}
@@ -962,7 +954,6 @@ const fetchProposal = async (designId: string) => {
         activeIndex={ref}
         setActiveIndex={setRef}
       />
-
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
@@ -1262,16 +1253,12 @@ const fetchProposal = async (designId: string) => {
                       </button>
                     );
                   })}
-                   <button
+                  <button
                     onClick={handleNewButtonClick}
                     className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
-                    >
-                     <p
-                          className={styles.statusInactive}
-                        >
-                          
-                        </p>
-                        Aurora Projects
+                  >
+                    <p className={styles.statusInactive}></p>
+                    Aurora Projects
                   </button>
                 </div>
 
@@ -1326,12 +1313,10 @@ const fetchProposal = async (designId: string) => {
                       </div>
                     </td>
                   </tr>
-                ) : 
-                
-                currentFilter == "Projects" && projects.length > 0 ? 
-                  projects.map((project:any , index:number) => (
+                ) : currentFilter == 'Projects' && projects.length > 0 ? (
+                  projects.map((project: any, index: number) => (
                     <React.Fragment key={index}>
-                    {/* <tr className={styles.history_lists}>
+                      {/* <tr className={styles.history_lists}>
                           <td className={styles.project_list}>
                          
                            <div style={{fontWeight:"bold"}}>
@@ -1350,7 +1335,7 @@ const fetchProposal = async (designId: string) => {
                             </div>
                           </td>
                     </tr> */}
-                    {/* <tr key={project.id} className={styles.history_lists}>
+                      {/* <tr key={project.id} className={styles.history_lists}>
                           <td className={styles.project_list}>
                          
                            <div style={{fontWeight:"bold"}}>
@@ -1369,42 +1354,44 @@ const fetchProposal = async (designId: string) => {
                             </div>
                           </td>
                         </tr> */}
-                        <tr key={project.id} className={styles.history_lists} onClick={() => fetchProjectDetails(project.id)}>
-                          <td className={styles.project_list}>
-                            <div style={{ fontWeight: "bold" }}>
-                              {project.name}
-                            </div>
+                      <tr
+                        key={project.id}
+                        className={styles.history_lists}
+                        onClick={() => fetchProjectDetails(project.id)}
+                      >
+                        <td className={styles.project_list}>
+                          <div style={{ fontWeight: 'bold' }}>
+                            {project.name}
+                          </div>
 
-                            <div>
-                              {project.property_address}
-                            </div>
+                          <div>{project.property_address}</div>
 
-                            <div>
-                              {new Date(project.created_at).toLocaleString()}
-                            </div>
-                            <div>
-                              {project.id}
-                            </div>
-                          </td>
-                        </tr>
-                        </React.Fragment>
-                      ))
-                  :
-                leadsData.length > 0 ? (
+                          <div>
+                            {new Date(project.created_at).toLocaleString()}
+                          </div>
+                          <div>{project.id}</div>
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  ))
+                ) : leadsData.length > 0 ? (
                   leadsData.map((lead: any, index: number) => (
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${lead.status === 'Declined' ||
+                          className={`${
+                            lead.status === 'Declined' ||
                             lead.status === 'Action Needed'
-                            ? styles.history_list_inner_declined
-                            : styles.history_list_inner
-                            }`}
+                              ? styles.history_list_inner_declined
+                              : styles.history_list_inner
+                          }`}
                           onClick={(e) => {
                             setLeadId(lead['leads_id']);
                             if (
                               !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
+                              !(e.target as HTMLElement).closest(
+                                `.${styles.chevron_down}`
+                              )
                             ) {
                               if (
                                 currentFilter !== 'Declined' &&
@@ -1414,7 +1401,6 @@ const fetchProposal = async (designId: string) => {
                                 setAction(false);
                                 handleOpenModal();
                               }
-
                             }
                           }}
                         >
@@ -1438,17 +1424,16 @@ const fetchProposal = async (designId: string) => {
                               {lead.first_name} {lead.last_name}
                             </h2>
                             <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
+                              {currentFilter === 'Action Needed'
+                                ? lead.action_needed_message
+                                : currentFilter}
                             </p>
                           </div>
                           <div className={styles.phone_number}>
                             {lead.phone_number}
                           </div>
                           <div className={styles.email}>
-                            <span>
-                              {lead.email_id}
-                            </span>
-                            
+                            <span>{lead.email_id}</span>
                           </div>
                           <div className={styles.address}>
                             {lead?.street_address
@@ -1491,14 +1476,19 @@ const fetchProposal = async (designId: string) => {
                             <div className={styles.actionButtons}>
                               <button
                                 onClick={() => {
-                                  if (lead.action_needed_message === "Update Status") {
+                                  if (
+                                    lead.action_needed_message ===
+                                    'Update Status'
+                                  ) {
                                     handleOpenModal();
                                     setAction(true);
                                   }
                                 }}
                                 className={styles.rescheduleButton}
                               >
-                                {lead.action_needed_message === "Update Status" ? "Update Status" : "Create Proposal"}
+                                {lead.action_needed_message === 'Update Status'
+                                  ? 'Update Status'
+                                  : 'Create Proposal'}
                               </button>
                             </div>
                           )}
@@ -1533,10 +1523,7 @@ const fetchProposal = async (designId: string) => {
                           <td colSpan={5} className={styles.detailsRow}>
                             <div className={''}>{lead.phone_number}</div>
                             <div className={''}>
-                              <span>
-                                {lead.email_id}
-                                
-                              </span>
+                              <span>{lead.email_id}</span>
                             </div>
                             <div className={''}>
                               {lead?.street_address
@@ -1579,7 +1566,6 @@ const fetchProposal = async (designId: string) => {
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
                 />
-
               </div>
             </div>
           )}

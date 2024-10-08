@@ -8,7 +8,7 @@ const auroraApiUrl = 'https:///v2.aurorasolar.com/settings/api/tokens'; // Repla
 const auroraApi = axios.create({
   baseURL: auroraApiUrl,
   headers: {
-    'Authorization': `Bearer ${bearerToken}`,
+    Authorization: `Bearer ${bearerToken}`,
     'Content-Type': 'application/json',
   },
 });
@@ -26,12 +26,11 @@ export const fetchProjects = async () => {
 
 // You can add more functions for other endpoints
 export const fetchProjectDesigns = async (projectId: string) => {
-    try {
-      const response = await auroraApi.get(`/projects/${projectId}/designs`);
-      return response.data; // Returns the list of designs
-    } catch (error) {
-      console.error('Error fetching project designs:', error);
-      throw error;
-    }
-  };
-  
+  try {
+    const response = await auroraApi.get(`/projects/${projectId}/designs`);
+    return response.data; // Returns the list of designs
+  } catch (error) {
+    console.error('Error fetching project designs:', error);
+    throw error;
+  }
+};

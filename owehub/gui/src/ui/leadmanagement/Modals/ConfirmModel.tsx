@@ -31,8 +31,8 @@ interface EditModalProps {
   leadId?: number;
   refresh?: number;
   setRefresh?: (value: number) => void;
-  reschedule?: boolean
-  action?: boolean
+  reschedule?: boolean;
+  action?: boolean;
 }
 interface LeadData {
   first_name: string;
@@ -51,7 +51,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   onClose1,
   leadId,
   reschedule,
-  action
+  action,
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +84,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  console.log(action, "do something new")
+  console.log(action, 'do something new');
 
   const handleSendAppointment = async () => {
     setLoad(true);
@@ -176,7 +176,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseWon = async () => {
     setLoad(true);
     try {
-
       const response = await postCaller(
         'update_lead_status',
         {
@@ -197,9 +196,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       setLoad(false);
       console.error('Error submitting form:', error);
     }
-  }
+  };
 
-  const [reason, setReason] = useState('')
+  const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
 
   const handleInputChange = (event: any) => {
@@ -229,7 +228,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         {
           leads_id: leadId,
           status_id: 5,
-          reason: reason
+          reason: reason,
         },
         true
       );
@@ -293,51 +292,64 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       const timestamp = new Date().getTime();
 
       // Create Project
-      const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
-        project: {
-          location: {
-            property_address: leadData.street_address,
+      const projectResponse = await axios.post(
+        'http://localhost:5000/api/create-project',
+        {
+          project: {
+            location: {
+              property_address: leadData.street_address,
+            },
+            external_provider_id: leadId?.toString() || 'YourId123',
+            name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+            customer_salutation: 'Mr./Mrs.',
+            customer_first_name: leadData.first_name,
+            customer_last_name: leadData.last_name,
+            mailing_address: leadData.street_address,
+            customer_email: leadData.email_id,
+            customer_phone: leadData.phone_number,
+            status: 'Remote Assessment Completed',
+            preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+            tags: ['third_party_1'],
           },
-          external_provider_id: leadId?.toString() || 'YourId123',
-          name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-          customer_salutation: 'Mr./Mrs.',
-          customer_first_name: leadData.first_name,
-          customer_last_name: leadData.last_name,
-          mailing_address: leadData.street_address,
-          customer_email: leadData.email_id,
-          customer_phone: leadData.phone_number,
-          status: 'Remote Assessment Completed',
-          preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-          tags: ['third_party_1'],
-        },
-      });
+        }
+      );
       console.log('Project created:', projectResponse.data);
       const projectId = projectResponse.data.project.id;
 
       // Create Design
-      const designResponse = await axios.post('http://localhost:5000/api/create-design', {
-        design: {
-          external_provider_id: leadId?.toString() || 'YourId123',
-          project_id: projectId,
-          name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-        },
-      });
+      const designResponse = await axios.post(
+        'http://localhost:5000/api/create-design',
+        {
+          design: {
+            external_provider_id: leadId?.toString() || 'YourId123',
+            project_id: projectId,
+            name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+          },
+        }
+      );
       console.log('Design created:', designResponse.data);
       const designId = designResponse.data.design.id;
 
       // Create Proposal
-      const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+      const proposalResponse = await axios.post(
+        'http://localhost:5000/api/create-proposal',
+        { designId }
+      );
       console.log('Proposal created:', proposalResponse.data);
       setProposalLink(proposalResponse.data.proposal.proposal_link);
       toast.success('Proposal created successfully');
 
       // Open the proposal in a new tab
       window.open(proposalResponse.data.proposal.proposal_link, '_blank');
-
     } catch (error) {
       const err = error as any;
-      console.error('Error during proposal creation:', err.response?.data || err.message);
-      setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+      console.error(
+        'Error during proposal creation:',
+        err.response?.data || err.message
+      );
+      setError(
+        `Error during proposal creation: ${err.response?.data?.message || err.message}`
+      );
       toast.error('Failed to create proposal. Please try again.');
     } finally {
       setLoadingProposal(false);
@@ -625,10 +637,16 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     Appointment Accepted{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    {leadData?.appointment_accepted_date ? formatDate(leadData?.appointment_accepted_date) : ""}
+                    {leadData?.appointment_accepted_date
+                      ? formatDate(leadData?.appointment_accepted_date)
+                      : ''}
                   </span>
                   <span className={classes.remaningDate}>
-                    {leadData?.appointment_accepted_date ? calculateRemainingDays(leadData.appointment_accepted_date) : ""}
+                    {leadData?.appointment_accepted_date
+                      ? calculateRemainingDays(
+                          leadData.appointment_accepted_date
+                        )
+                      : ''}
                   </span>
                 </div>
 
@@ -696,12 +714,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   >
                     Reschedule Appointment
                   </button>
-                  <span className={classes.getAppointment}>
-
-                  </span>
-                  <span className={classes.notAvailableCtmr}>
-
-                  </span>
+                  <span className={classes.getAppointment}></span>
+                  <span className={classes.notAvailableCtmr}></span>
                 </div>
               </>
             )}
@@ -787,22 +801,36 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       style={{
                         backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
                         color: '#FFFFFF',
-                        border: 'none'
+                        border: 'none',
                       }}
                       onClick={handleCreateProposal}
                       disabled={loadingProposal}
                     >
                       {loadingProposal ? (
-                        <div style={{
-                          display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#3AC759',
-                          border: '1px solid #3AC759', borderRadius: 10
-                        }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            color: '#3AC759',
+                            border: '1px solid #3AC759',
+                            borderRadius: 10,
+                          }}
+                        >
                           Creating Proposal...
-                          <div style={{ display: 'flex', justifyContent: 'center', transform: 'scale(0.5)' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              transform: 'scale(0.5)',
+                            }}
+                          >
                             <MicroLoader />
                           </div>
                         </div>
-                      ) : 'Create Proposal'}
+                      ) : (
+                        'Create Proposal'
+                      )}
                     </button>
                     {/* <button
                         className={classes.self}
@@ -824,7 +852,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               </>
             )}{' '}
             {error && <p style={{ color: 'red' }}>{error}</p>}
-
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (
               <iframe

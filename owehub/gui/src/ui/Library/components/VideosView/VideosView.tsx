@@ -8,7 +8,7 @@ interface VideoData {
   name: string;
   date: string;
   iconName: string;
-  size: string;
+  size: number;
   FileType?: string; // Marking it as optional if some entries don't have it
   url_play?: string;
   duration?: string;

@@ -77,9 +77,8 @@ const SaleRepCustomerForm = () => {
               >
                 {step > 1 && (
                   <div className={`${styles.back_btn} curosr-pointer ml3`}>
-
                     <MdKeyboardBackspace
-                      style={{ cursor: 'pointer' }}                
+                      style={{ cursor: 'pointer' }}
                       onClick={() => setStep(1)}
                     />
                   </div>
@@ -120,19 +119,26 @@ const SaleRepCustomerForm = () => {
             className="flex items-center flex-column justify-center"
             style={{ width: '100%', height: '500px' }}
           >
-             <h5 className={` mb2  ${shardeStyles.selected_time}`} style={{fontSize:18,fontWeight:300}}>
+            <h5
+              className={` mb2  ${shardeStyles.selected_time}`}
+              style={{ fontSize: 18, fontWeight: 300 }}
+            >
               {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
               {selectedTime?.time}{' '}
             </h5>
-            <h3 className={`${shardeStyles.survey_success_message} text-center mb2`}>
+            <h3
+              className={`${shardeStyles.survey_success_message} text-center mb2`}
+            >
               Site survey appointment information submitted 👍
             </h3>
-            <p  style={{fontSize:14,textAlign:"center",fontWeight:300}}>The team will review the information and schedule the survey. 
+            <p style={{ fontSize: 14, textAlign: 'center', fontWeight: 300 }}>
+              The team will review the information and schedule the survey.
               <br />
-              You will be notified via email once the arrangements are made</p>
-             
-            <Link to="/login" className={styles.navigate_btn} >
-            Go to dashboard
+              You will be notified via email once the arrangements are made
+            </p>
+
+            <Link to="/login" className={styles.navigate_btn}>
+              Go to dashboard
             </Link>
           </div>
         )}
