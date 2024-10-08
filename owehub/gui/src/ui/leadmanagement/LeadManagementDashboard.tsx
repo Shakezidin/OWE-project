@@ -512,6 +512,7 @@ const LeadManagementDashboard = () => {
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([])
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const isMobileFixed = useMatchMedia('(min-width: 320px) and (max-width: 480px)');
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
 
@@ -1503,7 +1504,12 @@ const fetchProposal = async (designId: string) => {
                           )}
 
                           <div
-                            className={styles.chevron_down}
+                            // className={lead.status==='Accepted' ? styles.chevron_downAccepted :  styles.chevron_down}
+                            className={`${lead.status === 'Accepted' && isMobileFixed ||
+                              lead.status === 'Action Needed' && isMobileFixed
+                              ? styles.chevron_downAccepted
+                              : styles.chevron_down
+                              }`}
                             onClick={() => handleChevronClick(lead['leads_id'])}
                           >
                             <img
