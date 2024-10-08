@@ -126,7 +126,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   }, [authData]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isOpen1) {
       const fetchData = async () => {
         try {
           setIsLoading(true);
@@ -159,7 +159,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId, isModalOpen]);
+  }, [isAuthenticated, leadId,isOpen1, isModalOpen]);
 
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
@@ -417,6 +417,18 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   //     setLoadingProposal(false);
   //   }
   // };
+
+
+  useEffect(() => {
+    if (reschedule === true) {
+      setVisibleDiv(0);
+    } else if (action === true) {
+      setVisibleDiv(67);
+    } else if (leadData) {
+      setVisibleDiv(leadData.status_id);
+    }
+  }, [reschedule, action, leadData]);
+
 
   return (
     <div>
