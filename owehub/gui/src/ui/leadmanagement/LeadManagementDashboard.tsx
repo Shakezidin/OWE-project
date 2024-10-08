@@ -765,7 +765,7 @@ const LeadManagementDashboard = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates, refresh]);
+  }, [isAuthenticated, selectedDates,ref,isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -1496,7 +1496,11 @@ const LeadManagementDashboard = () => {
                             className={styles.chevron_down}
                             onClick={() => handleChevronClick(lead['leads_id'])}
                             style={{
-                              marginLeft: currentFilter !== 'Declined' && currentFilter !== 'Action Needed' ? "57px" : ""
+                              marginLeft: currentFilter !== 'Declined' && currentFilter !== 'Action Needed'
+                                ? "57px"
+                                : currentFilter === 'Declined'
+                                  ? "-11px"
+                                  : ""
                             }}
                           >
                             <img
