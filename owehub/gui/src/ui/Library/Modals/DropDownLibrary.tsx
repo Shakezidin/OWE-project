@@ -61,7 +61,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
           borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
         }}
       >
-        <BsThreeDotsVertical
+        <BsThreeDotsVertical 
           style={{
             height: '25px',
             width: '20px',
@@ -74,7 +74,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
           <li
             onClick={() => handleSelect('All')}
-            className={`${classes.dropdownItem} ${selectedType === 'All' ? classes.selected : ''}`}
+            className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
           >
             All
           </li>
