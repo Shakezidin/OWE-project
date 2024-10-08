@@ -450,9 +450,7 @@
   margin-right: 12px;
 }
 
-/* 
 .project-card-container-1::-webkit-scrollbar {
-  width: 10px;
   height: 10px;
 }
 
@@ -475,8 +473,8 @@
 }
 
 .project-card-container-1::-webkit-scrollbar-corner {
-  background-color: transparent;
-} */
+  background-color: transparent; 
+} 
 
 .project-card-container-1 .project-card {
   position: relative;
