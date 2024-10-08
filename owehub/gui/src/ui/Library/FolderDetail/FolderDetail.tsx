@@ -14,12 +14,17 @@ import DeleteFileModal from '../Modals/DeleteFileModal';
 import { format } from 'date-fns';
 import DataNotFound from '../../components/loader/DataNotFound';
 import NewFile from '../Modals/NewFile';
+import { useAppSelector } from '../../../redux/hooks';
+import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
 const FolderDetail = () => {
     const path = useParams()
     const [files, setFiles] = useState<IFiles[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [slectedDeleteId, setSelectedDeleteId] = useState("")
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+    const { microsoftGraphAccessToken } = useAppSelector(state => state.auth)
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+    const [videoUrl, setVideoUrl] = useState("")
     const navigate = useNavigate()
     const getFolderChilds = async () => {
         try {
@@ -42,10 +47,10 @@ const FolderDetail = () => {
     }
 
     useEffect(() => {
-        if (path) {
+        if (path && microsoftGraphAccessToken) {
             getFolderChilds()
         }
-    }, [path])
+    }, [path, microsoftGraphAccessToken])
 
     const getContentThumbnail = (type: string) => {
         switch (type) {
@@ -77,7 +82,7 @@ const FolderDetail = () => {
             case "video/webm":
             case "video/x-msvideo":
             case "video/quicktime":
-                return ICONS.viedoplay;
+                return ICONS.videoPlayerIcon;
 
             case "folder":
                 return ICONS.folderImage;
@@ -85,6 +90,21 @@ const FolderDetail = () => {
 
         }
     };
+
+    const isVideo = (mimeType: string) => {
+        if (
+            mimeType === "video/mp4" ||
+            mimeType === "video/mpeg" ||
+            mimeType === "video/ogg" ||
+            mimeType === "video/webm" ||
+            mimeType === "video/x-msvideo" ||
+            mimeType === "video/quicktime"
+        ) {
+            return true
+        } else {
+            return false
+        }
+    }
 
 
     const downloadFile = (fileUrl: string, fileName: string) => {
@@ -119,7 +139,6 @@ const FolderDetail = () => {
     const refetch = async () => {
         await getFolderChilds()
     }
-    console.log(path["*"], "pathhhh")
     return (
         <div className={styles.libraryContainer}>
             <div className={styles.libraryHeader}>
@@ -158,6 +177,7 @@ const FolderDetail = () => {
                             files.length ?
                                 files.map((file) => {
                                     const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
+                                    const isValidVideo = isVideo(file.file?.mimeType!)
                                     return <div key={file.id} className={styles.libGridItem} >
                                         {
                                             file.folder ?
@@ -171,9 +191,18 @@ const FolderDetail = () => {
                                                     </div>
                                                 </Link>
 
-                                                : <div className={`${styles.file_icon} ${styles.image_div}`}>
+                                                : <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                                                    if (isValidVideo) {
+                                                        setIsVideoModalOpen(true)
+                                                        setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                    }
+
+                                                }}>
                                                     <img
                                                         src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
+                                                        style={{width:isValidVideo?32:undefined,
+                                                            height:isValidVideo?32:undefined
+                                                        }}
                                                     />
                                                     <div>
                                                         <p className={styles.name}>{file.name}</p>
@@ -208,6 +237,9 @@ const FolderDetail = () => {
 
             {
                 isDeleteModalVisible && <DeleteFileModal onDelete={handleDelete} setIsVisible={setIsDeleteModalVisible} />
+            }
+            {
+                isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
             }
 
         </div>
