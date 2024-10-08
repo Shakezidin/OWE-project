@@ -23,6 +23,9 @@ import { format } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { FileOrFolder } from './types';
 import { useAppSelector } from '../../redux/hooks';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../routes/routes';
+import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -40,6 +43,8 @@ const LibraryHomepage = () => {
   const [checkedFolders, setCheckedFolders] = useState<number[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [recycleBinItems, setRecycleBinItems] = useState<any[]>([]);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [videoUrl, setVideoUrl] = useState("")
   const [selectedDelete, setSelecetedDelete] = useState("");
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
@@ -399,380 +404,414 @@ const LibraryHomepage = () => {
   //check handler
   const [allIds, setAllIds] = useState<string[]>([]);
 
+  const downloadFile = (fileUrl: string, fileName: string) => {
+    const anchor = document.createElement("a");
+    anchor.href = fileUrl;
+    anchor.download = fileName || "download";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  }
+  const isVideo = (mimeType: string) => {
+    if (
+      mimeType === "video/mp4" ||
+      mimeType === "video/mpeg" ||
+      mimeType === "video/ogg" ||
+      mimeType === "video/webm" ||
+      mimeType === "video/x-msvideo" ||
+      mimeType === "video/quicktime"
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
 
 
-    const handleCheckboxChange = (
-      isChecked: boolean,
-      index: number,
-      id: string
-    ) => {
-      setCheckedItems((prev) => (isChecked ? prev + 1 : prev - 1));
-      setCheckedFolders((prev) =>
-        isChecked ? [...prev, index] : prev.filter((item) => item !== index)
+  const handleCheckboxChange = (
+    isChecked: boolean,
+    index: number,
+    id: string
+  ) => {
+    setCheckedItems((prev) => (isChecked ? prev + 1 : prev - 1));
+    setCheckedFolders((prev) =>
+      isChecked ? [...prev, index] : prev.filter((item) => item !== index)
+    );
+    if (isChecked) setAllIds((prev) => [...prev, id]);
+  };
+
+
+  const handleBackClick = () => {
+    setCurrentFolder(null);
+    setCurrentFolderContent([]);
+    fetchDataFromGraphAPI();
+  };
+  const handleDelete = async () => {
+    // const newLibData = libData.filter((_, index) => !checkedFolders.includes(index));
+    // setLibData(newLibData);
+    // const newData = folderData.filter((idata) =>
+    //   !allIds.some((i) => i === idata.id)
+    // );
+    const count = allIds.length;
+    await Promise.all(allIds.map((id) => DeleteHandler(id)));
+    setAllIds([]);
+    setCheckedItems(0);
+    setCheckedFolders([]);
+
+
+    {
+      count === 1 ?
+        toast.error(`Deleted 1 Folder`) :
+        toast.error(`Deleted ${count} Folders`)
+    }
+
+
+    fetchDataFromGraphAPI();
+  };
+
+  const handleUndo = () => {
+    setCheckedItems(0);
+    setCheckedFolders([]);
+  };
+
+  const renderHeaderContent = () => {
+    if (currentFolder) {
+      return (
+        <div className={styles.folderHeader}>
+          <div className={styles.undoButton} onClick={handleBackClick}>
+            <BiArrowBack style={{
+              height: '20px',
+              width: '20px',
+            }} />
+          </div>
+          <p className={styles.recycle_p}>{currentFolder.name}</p>
+
+        </div>
       );
-      if (isChecked) setAllIds((prev) => [...prev, id]);
-    };
+    }
 
-
-    const handleBackClick = () => {
-      setCurrentFolder(null);
-      setCurrentFolderContent([]);
-      fetchDataFromGraphAPI();
-    };
-    const handleDelete = async () => {
-      // const newLibData = libData.filter((_, index) => !checkedFolders.includes(index));
-      // setLibData(newLibData);
-      // const newData = folderData.filter((idata) =>
-      //   !allIds.some((i) => i === idata.id)
-      // );
-      const count = allIds.length;
-      await Promise.all(allIds.map((id) => DeleteHandler(id)));
-      setAllIds([]);
-      setCheckedItems(0);
-      setCheckedFolders([]);
-
-
-      {
-        count === 1 ?
-          toast.error(`Deleted 1 Folder`) :
-          toast.error(`Deleted ${count} Folders`)
-      }
-
-
-      fetchDataFromGraphAPI();
-    };
-
-    const handleUndo = () => {
-      setCheckedItems(0);
-      setCheckedFolders([]);
-    };
-
-    const renderHeaderContent = () => {
-      if (currentFolder) {
-        return (
-          <div className={styles.folderHeader}>
-            <div className={styles.undoButton} onClick={handleBackClick}>
-              <BiArrowBack style={{
+    if (checkedItems > 0) {
+      return (
+        <>
+          <div className={styles.delete_left}>
+            <div className={styles.undoButton} onClick={handleUndo}>
+              <FaXmark style={{
                 height: '20px',
                 width: '20px',
               }} />
             </div>
-            <p className={styles.recycle_p}>{currentFolder.name}</p>
-
+            <span className={styles.selectedCount}>
+              {checkedItems} folder{checkedItems > 1 ? 's' : ''} selected
+            </span>
           </div>
-        );
-      }
-
-      if (checkedItems > 0) {
-        return (
-          <>
-            <div className={styles.delete_left}>
-              <div className={styles.undoButton} onClick={handleUndo}>
-                <FaXmark style={{
-                  height: '20px',
-                  width: '20px',
-                }} />
-              </div>
-              <span className={styles.selectedCount}>
-                {checkedItems} folder{checkedItems > 1 ? 's' : ''} selected
-              </span>
-            </div>
-            <div className={styles.delete_right}>
-              <button className={styles.DeleteButton} onClick={handleDelete}>
-                Delete
-              </button>
-            </div>
-          </>
-        );
-      }
-
-      return (
-        <>
-          <div className={styles.libSecHeader_left}>
-            <button
-              onClick={() => handleSectionClick('files')}
-              className={`${styles.buttons} ${activeSection === 'files' ? styles.clickedButton : ''}`}
-              style={{
-                color: activeSection === 'files' ? '#ffffff' : '',
-                backgroundColor: activeSection === 'files' ? '#377CF6' : '',
-                border: activeSection === 'files' ? '0px solid #377CF6' : '',
-              }}
-            >
-              Files
+          <div className={styles.delete_right}>
+            <button className={styles.DeleteButton} onClick={handleDelete}>
+              Delete
             </button>
-
-            <button
-              onClick={() => handleSectionClick('folders')}
-              className={`${styles.buttons} ${activeSection === 'folders' ? styles.clickedButton : ''}`}
-              style={{
-                color: activeSection === 'folders' ? '#ffffff' : '',
-                backgroundColor: activeSection === 'folders' ? '#377CF6' : '',
-                border: activeSection === 'folders' ? '0px solid #377CF6' : '',
-              }}
-            >
-              Folders
-            </button>
-
-            {activeSection !== 'folders' && (
-              <div
-                ref={dropdownRef}
-                onClick={handleDivClick}
-                style={toggleClick ? { borderColor: '#377cf6' } : {}}
-              >
-                <DropDownLibrary
-                  selectedType={selectedType}
-                  onSelectType={(type: string) => {
-                    setSelectedType(type);
-                    setActiveSection(activeSection);
-                  }}
-                />
-              </div>
-            )}
-
-            {selectedType !== 'All' &&
-              activeSection !== 'folders' &&
-              ['Excel', 'PDF Format', 'Images', 'Videos'].includes(selectedType) ? (
-              <button className={styles.filter_button}>
-                {selectedType}
-                <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
-              </button>
-            ) : null}
-          </div>
-
-          <div className={styles.libSecHeader_right}>
-            <SortByLibrary onSort={handleSort} />
-
-            <div className={styles.searchWrapper}>
-              <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
-              {/* SEARCHINGGGG */}
-              <input
-                type="text"
-                value={searchValue}
-                onChange={HandleSearch}
-                placeholder="Search by file name or person"
-                className={styles.searchInput}
-              />
-            </div>
-            <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} />
-
-            {activeSection == 'files' ? (<div
-              className={styles.recycleBin}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              onClick={handleRecycleBinClick}
-            >
-              <img
-                src={isHovered ? ICONS.recycleBinColor : ICONS.recycleBin}
-                alt="recycle-bin"
-              />
-              <span className={styles.recycleSpan}>Recycle Bin</span>
-            </div>) : ""}
-
-
           </div>
         </>
       );
-    };
+    }
 
-    const renderContent = () => {
-      if (currentFolder) {
-        if (loading) {
-          return (
-            <div className={styles.filesLoader}>
-              <MicroLoader />
+    return (
+      <>
+        <div className={styles.libSecHeader_left}>
+          <button
+            onClick={() => handleSectionClick('files')}
+            className={`${styles.buttons} ${activeSection === 'files' ? styles.clickedButton : ''}`}
+            style={{
+              color: activeSection === 'files' ? '#ffffff' : '',
+              backgroundColor: activeSection === 'files' ? '#377CF6' : '',
+              border: activeSection === 'files' ? '0px solid #377CF6' : '',
+            }}
+          >
+            Files
+          </button>
+
+          <button
+            onClick={() => handleSectionClick('folders')}
+            className={`${styles.Folderbuttons} ${activeSection === 'folders' ? styles.clickedButton : ''}`}
+            style={{
+              color: activeSection === 'folders' ? '#ffffff' : '',
+              backgroundColor: activeSection === 'folders' ? '#377CF6' : '',
+              border: activeSection === 'folders' ? '0px solid #377CF6' : '',
+            }}
+          >
+            Folders
+          </button>
+
+          {activeSection !== 'folders' && (
+            <div
+              ref={dropdownRef}
+              onClick={handleDivClick}
+              style={toggleClick ? { borderColor: '#377cf6' } : {}}
+            >
+              <DropDownLibrary
+                selectedType={selectedType}
+                onSelectType={(type: string) => {
+                  setSelectedType(type);
+                  setActiveSection(activeSection);
+                }}
+              />
             </div>
-          );
-        }
+          )}
 
-        if (currentFolderContent.length === 0) {
-          return <p className={styles.noParagraph}>No items in this folder.</p>;
-        }
+          {selectedType !== 'All' &&
+            activeSection !== 'folders' &&
+            ['Excel', 'PDF Format', 'Images', 'Videos'].includes(selectedType) ? (
+            <button className={styles.filter_button}>
+              {selectedType}
+              <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
+            </button>
+          ) : null}
+        </div>
 
+        <div className={styles.libSecHeader_right}>
+          <SortByLibrary onSort={handleSort} />
+
+          <div className={styles.searchWrapper}>
+            <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
+            {/* SEARCHINGGGG */}
+            <input
+              type="text"
+              value={searchValue}
+              onChange={HandleSearch}
+              placeholder="Search by file name or person"
+              className={styles.searchInput}
+            />
+          </div>
+          <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} />
+
+          <Link
+            className={styles.recycleBin}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            to={ROUTES.LIBRARY_RECYCLE_BIN}
+          >
+            <img
+              src={isHovered ? ICONS.recycleBinColor : ICONS.recycleBin}
+              alt="recycle-bin"
+            />
+            <span className={styles.recycleSpan}>Recycle Bin</span>
+          </Link>
+
+
+        </div>
+      </>
+    );
+  };
+
+  const renderContent = () => {
+    if (currentFolder) {
+      if (loading) {
         return (
-          <div className={styles.libSectionWrapper}>
-            <div className={styles.lib_Grid_Header}>
-              <div className={`${styles.grid_item} ${styles.table_name}`}>
-                Name
-              </div>
-              <div className={styles.grid_item}>Uploaded by</div>
-              <div className={styles.grid_item}>Uploaded Date</div>
-              <div className={styles.grid_item}>Actions</div>
-            </div>
-
-            {currentFolderContent.map((item) => (
-              <div className={styles.libGridItem} key={item.id}>
-                <div className={`${styles.file_icon} ${styles.image_div}`}>
-                  <img
-                    className={styles.cardImg}
-                    src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
-                    alt={item.name}
-                  />
-                  <div>
-                    <p className={styles.name}>{item.name}</p>
-                    <p className={styles.size}>
-                      {item.size < 1024
-                        ? item.size
-                        : Math.round(item.size / 1024)}{' '}
-                      {item.size < 1024 ? 'KB' : 'MB'}
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.grid_item}>
-                  {item.lastModifiedBy?.user?.displayName || 'Unknown'}
-                </div>
-                <div className={styles.grid_item}>
-                  {format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}
-                </div>
-                <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                  <RxDownload
-                    className={styles.icons}
-                    style={{ height: '18px', width: '18px', color: '#667085' }}
-                  />
-                  <RiDeleteBinLine
-                    className={styles.icons}
-                    style={{ height: '18px', width: '18px', color: '#667085' }}
-                    onClick={() => handleClickdeleted(item.id)}
-                  />
-                </div>
-              </div>
-            ))}
+          <div className={styles.filesLoader}>
+            <MicroLoader />
           </div>
         );
       }
 
-
-
-      if (isRecycleBinView) {
-        return (
-          <div className={styles.recycleBinContent}>
-            {recycleBinItems.length === 0 ? (
-              <p></p>
-            ) : (
-              recycleBinItems.map((item, index) => <div key={index}></div>)
-            )}
-          </div>
-        );
-      }
-
-      if (activeSection === 'folders') {
-        return (
-          <FolderView
-            onCheckboxChange={handleCheckboxChange}
-            sortOption={sortOption}
-            checkedFolders={checkedFolders}
-            folderData={folderData}
-          />
-        );
-      }
-
-      if (selectedType === 'Videos') {
-        return (
-          <div>
-            {selectedType === 'Videos' && <VideosView videoData={sortedData
-              .filter((data) => data.file?.mimeType === 'mp4')} />}
-          </div>
-        );
+      if (currentFolderContent.length === 0) {
+        return <p className={styles.noParagraph}>No items in this folder.</p>;
       }
 
       return (
         <div className={styles.libSectionWrapper}>
           <div className={styles.lib_Grid_Header}>
-            <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
+            <div className={`${styles.grid_item} ${styles.table_name}`}>
+              Name
+            </div>
             <div className={styles.grid_item}>Uploaded by</div>
             <div className={styles.grid_item}>Uploaded Date</div>
             <div className={styles.grid_item}>Actions</div>
           </div>
 
-          {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : fileData.length > 0 ? (
-            sortedData.map((data) => (
-              <div className={styles.libGridItem} key={data.id}>
-                <div className={`${styles.file_icon} ${styles.image_div}`}>
-                  <img
-                    className={styles.cardImg}
-                    src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? '' : data['@microsoft.graph.downloadUrl']}
-                    alt={`null`}
-                    loading='lazy'
-                  />
-                  <div>
-                    <p className={styles.name}>{data.name.substring(0, 10)}</p>
-                    <p className={styles.size}>
-                      {data.size < 1024
-                        ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
-                        : data.size < 1048576
-                          ? `${Math.round(data.size / 1024)} KB`
-                          : `${Math.round(data.size / 1048576)} MB`}
-                    </p>
-
-                  </div>
+          {currentFolderContent.map((item) => {
+            return <div className={styles.libGridItem} key={item.id}>
+              <div className={`${styles.file_icon} ${styles.image_div}`} >
+                <img
+                  className={styles.cardImg}
+                  src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
+                  alt={item.name}
+                />
+                <div>
+                  <p className={styles.name}>{item.name}</p>
+                  <p className={styles.size}>
+                    {item.size < 1024
+                      ? item.size
+                      : Math.round(item.size / 1024)}{' '}
+                    {item.size < 1024 ? 'KB' : 'MB'}
+                  </p>
                 </div>
-                <div className={styles.grid_item}>{data.lastModifiedBy.user.displayName}</div>
-                <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                  {isRecycleBinView ? (
+              </div>
+              <div className={styles.grid_item}>
+                {item.lastModifiedBy?.user?.displayName || 'Unknown'}
+              </div>
+              <div className={styles.grid_item}>
+                {format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}
+              </div>
+              <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                <RxDownload
+                  className={styles.icons}
+                  onClick={() => downloadFile(item.url, item.name)}
+                  style={{ height: '18px', width: '18px', color: '#667085' }}
+                />
+                <RiDeleteBinLine
+                  className={styles.icons}
+                  style={{ height: '18px', width: '18px', color: '#667085' }}
+                  onClick={() => handleClickdeleted(item.id)}
+                />
+              </div>
+            </div>
+          })}
+        </div>
+      );
+    }
+
+
+
+    if (isRecycleBinView) {
+      return (
+        <div className={styles.recycleBinContent}>
+          {recycleBinItems.length === 0 ? (
+            <p></p>
+          ) : (
+            recycleBinItems.map((item, index) => <div key={index}></div>)
+          )}
+        </div>
+      );
+    }
+
+    if (activeSection === 'folders') {
+      return (
+        <FolderView
+          onCheckboxChange={handleCheckboxChange}
+          sortOption={sortOption}
+          checkedFolders={checkedFolders}
+          folderData={folderData}
+        />
+      );
+    }
+
+    if (selectedType === 'Videos') {
+      return (
+        <div>
+          {selectedType === 'Videos' && <VideosView videoData={sortedData
+            .filter((data) => data.file?.mimeType === 'mp4')} />}
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.libSectionWrapper}>
+        <div className={styles.lib_Grid_Header}>
+          <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
+          <div className={styles.grid_item}>Uploaded by</div>
+          <div className={styles.grid_item}>Uploaded Date</div>
+          <div className={styles.grid_item}>Actions</div>
+        </div>
+
+        {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : fileData.length > 0 ? (
+          sortedData.map((data) => {
+            const isValidVideo = isVideo(data.file?.mimeType!)
+            return <div className={styles.libGridItem} key={data.id}>
+              <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                if (isValidVideo) {
+                  setIsVideoModalOpen(true)
+                  setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
+                }
+
+              }}>
+                <img
+                  className={styles.cardImg}
+                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? '' : data['@microsoft.graph.downloadUrl']}
+                  alt={`null`}
+                  loading='lazy'
+                />
+                <div>
+                  <p className={styles.name}>{data.name.substring(0, 10)}</p>
+                  <p className={styles.size}>
+                    {data.size < 1024
+                      ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
+                      : data.size < 1048576
+                        ? `${Math.round(data.size / 1024)} KB`
+                        : `${Math.round(data.size / 1048576)} MB`}
+                  </p>
+
+                </div>
+              </div>
+              <div className={styles.grid_item}>{data.lastModifiedBy.user.displayName}</div>
+              <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+              <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                {isRecycleBinView ? (
+                  <div>
+                    <RiDeleteBinLine
+                      className={styles.icons}
+                      style={{
+                        height: '16px',
+                        width: '16px',
+                        color: '#667085',
+                      }}
+                      onClick={() => handleClickdeleted(data.id)} />
+                    {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(data.id)} />)}
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <RxDownload
+                        className={styles.icons}
+                        onClick={() => downloadFile(data.url, data.name)}
+                        style={{
+                          height: '18px',
+                          width: '18px',
+                          color: '#667085',
+                        }}
+                      />
+                    </div>
                     <div>
                       <RiDeleteBinLine
                         className={styles.icons}
                         style={{
-                          height: '16px',
-                          width: '16px',
+                          height: '18px',
+                          width: '18px',
                           color: '#667085',
-                        }}
-                        onClick={() => handleClickdeleted(data.id)} />
-                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(data.id)} />)}
+                        }} onClick={() => {
+                          OpenModal()
+                          setSelecetedDelete(data.id)
+                        }} />
+                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => deleteMyFiles()} />)}
                     </div>
-                  ) : (
-                    <>
-                      <div>
-                        <RxDownload
-                          className={styles.icons}
-                          style={{
-                            height: '18px',
-                            width: '18px',
-                            color: '#667085',
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <RiDeleteBinLine
-                          className={styles.icons}
-                          style={{
-                            height: '18px',
-                            width: '18px',
-                            color: '#667085',
-                          }} onClick={() => {
-                            OpenModal()
-                            setSelecetedDelete(data.id)
-                          }} />
-                        {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => deleteMyFiles()} />)}
-                      </div>
-                    </>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
-            ))
-          ) : (
-            <p className={styles.noParagraph}>No files found.</p>
-          )}
-        </div>
-      );
-    };
-
-    return (
-      <div className={styles.libraryContainer}>
-        <div className={styles.libraryHeader}>
-          <h3>Library</h3>
-        </div>
-
-        {isRecycleBinView ? (
-          <RecycleBinView />
+            </div>
+          })
         ) : (
-          <div className={styles.libSecHeader}>{renderHeaderContent()}</div>
+          <p className={styles.noParagraph}>No files found.</p>
         )}
-
-        {renderContent()}
       </div>
     );
-  
+  };
+
+  return (
+    <div className={styles.libraryContainer}>
+      <div className={styles.libraryHeader}>
+        <h3>Library</h3>
+      </div>
+
+      {isRecycleBinView ? (
+        <RecycleBinView />
+      ) : (
+        <div className={styles.libSecHeader}>{renderHeaderContent()}</div>
+      )}
+
+      {renderContent()}
+      {
+        isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
+      }
+    </div>
+  );
+
 }
 
 export default LibraryHomepage;
