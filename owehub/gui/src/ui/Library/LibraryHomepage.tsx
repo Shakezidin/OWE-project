@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { FileOrFolder } from './types';
+import { useAppSelector } from '../../redux/hooks';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<'files' | 'folders' | 'dropdown' | null>('files');
@@ -38,6 +39,7 @@ const LibraryHomepage = () => {
   const [selectedDelete, setSelecetedDelete] = useState("");
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
+  const {microsoftGraphAccessToken} = useAppSelector(state=>state.auth)
   const fetchFolderContent = async (folderId: string) => {
     setLoading(true);
     const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${folderId}/children`;
@@ -69,37 +71,14 @@ const LibraryHomepage = () => {
   // const [expirationTime, setExpirationTime] = useState<number | null>(null);
 
   const [isFetchingToken, setIsFetchingToken] = useState(false);
-  const getToken = async () => {
-    if (isFetchingToken) return; // Prevent duplicate calls
-    setLoading(true);
-    setIsFetchingToken(true);
-    try {
-      const response = await postCaller("get_graph_api_access_token", {});
-      const token = await response.data.access_token;
-      const tokenDuration = await response.data.expires_in;
-      const currentTime = new Date()
-      const expTime = new Date(Date.now() + 100)
-      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60))
-      Cookies.set('myToken', token, { expires: expTime, path: "/" });
-      fetchDataFromGraphAPI();
-    } catch (error) {
-      console.error(error);
-    }
-    finally {
-      setIsFetchingToken(false);
-    }
-  };
+
 
 
   useEffect(() => {
-    const token = Cookies.get('myToken');
-    if (!token) {
-      getToken();
-    }
-    else {
+    if (microsoftGraphAccessToken) {    
       fetchDataFromGraphAPI();
     }
-  }, []);
+  }, [microsoftGraphAccessToken]);
   interface User {
     // Define the properties of the user object as needed
     id: string;
