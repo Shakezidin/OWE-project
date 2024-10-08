@@ -71,7 +71,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
 
 		// Check if new phone_number already exists
-		phoneCheckQuery := "SELECT 1 FROM leads_info WHERE phone_number = $1 AND leads_id = $2"
+		phoneCheckQuery := "SELECT 1 FROM leads_info WHERE phone_number = $1 AND leads_id != $2"
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, phoneCheckQuery, []interface{}{dataReq.PhoneNumber, dataReq.LeadId})
 
 		if err != nil {
@@ -92,7 +92,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
 
 		// Check if new email_id already exists
-		emailCheckQuery := "SELECT 1 FROM leads_info WHERE email_id = $1 AND leads_id = $2"
+		emailCheckQuery := "SELECT 1 FROM leads_info WHERE email_id = $1 AND leads_id != $2"
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, emailCheckQuery, []interface{}{dataReq.EmailId, dataReq.LeadId})
 
 		if err != nil {
