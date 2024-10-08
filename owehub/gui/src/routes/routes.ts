@@ -90,4 +90,5 @@ export const ROUTES = {
   LEAD_MANAGEMENT_SUCCESS_MODAl: '/lead-mgmt-success-modal',
   MAP_ADDRESS: '/map-address',
   SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
+  FOLDER_DETAIL:"/library/*"
 };

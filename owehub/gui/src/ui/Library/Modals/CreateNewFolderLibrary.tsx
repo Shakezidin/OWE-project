@@ -9,13 +9,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 interface propGets {
   setIsVisibleNewFolder: (visible: boolean) => void;
-  onDelete: () => void;
+  uploadPath?: string;
+  handleSuccess?: () => void
 }
 
-const CreateNewFolderLibrary: React.FC<propGets> = ({
-  setIsVisibleNewFolder,
-}) => {
+const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, uploadPath, handleSuccess }) => {
+
   const [folderName, setFolderName] = useState('');
+  const [isPending,setIsPending] = useState(false)
   const handleDelete = () => {
     setIsVisibleNewFolder(false);
   };
@@ -24,28 +25,40 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({
     setFolderName(event.target.value);
   };
 
+
   const createFolder = async () => {
     try {
-      const token = Cookies.get('myToken');
-      const response = await axios.post(
-        'https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/root/children',
-        { name: folderName, folder: {} },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const token = Cookies.get("myToken");
+      setIsPending(true)
+      const url = uploadPath
+        ? `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${uploadPath}:/children`
+        : `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children`;
+      const response = await axios.post(url, { "name": folderName, 
+        "folder": {},
+         "@microsoft.graph.conflictBehavior": "fail"
+         }, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
-      console.log(response);
+      })
+
+      await handleSuccess?.()
       toast.success(`Folder "${folderName}" created successfully!`);
+     
       // alert(`Folder Name: ${response}`);
     } catch (error) {
       console.error(error);
       toast.error('Failed to create folder. Please try again.');
     }
+    finally{
+      setIsPending(false)
+      setIsVisibleNewFolder(false);
+    }
 
-    setIsVisibleNewFolder(false);
-  };
+  }
+
+
+
 
   return (
     <div>
@@ -76,11 +89,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({
               </div>
             </div>
             <div className={classes.survey_button}>
-              <button
-                id="otherButtonId"
-                className={classes.other}
-                onClick={createFolder}
-              >
+              <button disabled={isPending} id="otherButtonId" className={classes.other} onClick={createFolder}>
                 Create
               </button>
             </div>

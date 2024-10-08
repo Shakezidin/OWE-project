@@ -42,6 +42,7 @@ import ArchivedPages from './ui/leadmanagement/ArchievedPages';
 import DealerPayments from './ui/oweHub/configure/dealerPayments/DealerPayments';
 import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedule';
 import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
+import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -123,6 +124,7 @@ function App() {
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
+          <Route path={ROUTES.FOLDER_DETAIL} element={<FolderDetail />} />
 
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
