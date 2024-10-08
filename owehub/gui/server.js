@@ -196,6 +196,102 @@ app.get('/api/projects/:projectId', async (req, res) => {
   }
 });
 
+// Retrieve Project Details
+app.get('/api/designs/:projectId', async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const response = await axios.get(
+      `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/projects/${projectId}/designs`,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`
+        }
+      }
+    );
+    console.log('Project details fetched successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching project details:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve Proposal Details
+app.get('/api/proposals/:designId', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/proposals/default`;
+  
+  console.log('Retrieving proposal. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Proposal retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving proposal:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve Web Proposal Details
+app.get('/api/web-proposals/:designId', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/web_proposal`;
+  
+  console.log('Retrieving web proposal. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Web proposal retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving web proposal:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Generate Web Proposal URL
+app.post('/api/web-proposals/:designId/generate', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/web_proposal/generate_url`;
+  
+  console.log('Generating web proposal URL. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.post(
+      auroraEndpoint,
+      {}, // Empty object as body, adjust if the API requires specific data in the request body
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Web proposal URL generated successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error generating web proposal URL:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
