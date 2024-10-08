@@ -697,7 +697,7 @@ const ProjectStatus = () => {
                           </p>
                           <span className="span-para">
                             {el.key === 'adders_total' ||
-                            el.key === 'contract_amount'
+                              el.key === 'contract_amount'
                               ? '$'
                               : ''}
 
@@ -731,23 +731,20 @@ const ProjectStatus = () => {
                               {
                                 // @ts-ignore
                                 projectDetail.adder_breakdown_and_total &&
-                                  Object.keys(
-                                    // @ts-ignore
-                                    projectDetail.adder_breakdown_and_total
-                                  ).map((item, ind) => {
-                                    // @ts-ignore
-                                    return (
-                                      <li key={ind} className="order-list-name">
-                                        {' '}
-                                        {item} :{' '}
-                                        {
-                                          // @ts-ignore
-                                          projectDetail
-                                            .adder_breakdown_and_total[item]
-                                        }{' '}
-                                      </li>
-                                    );
-                                  })
+                                Object.keys(
+                                  // @ts-ignore
+                                  projectDetail.adder_breakdown_and_total
+                                ).map((item, ind) => {
+                                  // @ts-ignore
+                                  return (
+                                    <li key={ind} className="order-list-name">
+                                      {' '}
+                                      {item} :{' '}
+                                      {(projectDetail as any).adder_breakdown_and_total[item]
+                                      }{' '}
+                                    </li>
+                                  );
+                                })
                               }
                             </ol>
                           </div>
@@ -890,7 +887,7 @@ const ProjectStatus = () => {
                         ) : (
                           filteredStatusData.map((item: any, i: any) => (
                             <>
-                              <div className="project-status-table">
+                              <div key={item.id || i} className="project-status-table">
                                 <div
                                   className="project-status-card"
                                   style={{
@@ -925,6 +922,7 @@ const ProjectStatus = () => {
                                 {item.childStatusData.map(
                                   (el: any, index: any) => (
                                     <div
+                                      key={el.key || i}
                                       className="notch-corner"
                                       style={{
                                         background: el.bgColor,
@@ -944,19 +942,19 @@ const ProjectStatus = () => {
                                         {!(
                                           el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ]
                                         ) && (
-                                          <span
-                                            className="date-para"
-                                            style={{
-                                              color: el.color,
-                                              fontSize: '9px',
-                                            }}
-                                          >
-                                            ETA
-                                          </span>
-                                        )}
+                                            <span
+                                              className="date-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '9px',
+                                              }}
+                                            >
+                                              ETA
+                                            </span>
+                                          )}
                                         <p
                                           style={{
                                             color: el.color,
@@ -964,22 +962,22 @@ const ProjectStatus = () => {
                                           }}
                                         >
                                           {el.key &&
-                                          projectDetail[
+                                            projectDetail[
                                             el.key as keyof typeof projectDetail
-                                          ]
+                                            ]
                                             ? format(
-                                                new Date(
-                                                  projectDetail[
-                                                    el.key as keyof typeof projectDetail
-                                                  ]
-                                                ),
-                                                'dd MMMM'
-                                              ).slice(0, 6)
+                                              new Date(
+                                                projectDetail[
+                                                el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)
                                             : 'N/A'}
                                         </p>
                                         {el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ] && (
                                             <p
                                               className="stage-1-para"
@@ -992,7 +990,7 @@ const ProjectStatus = () => {
                                               {format(
                                                 new Date(
                                                   projectDetail[
-                                                    el.key as keyof typeof projectDetail
+                                                  el.key as keyof typeof projectDetail
                                                   ]
                                                 ),
                                                 'yyyy'
