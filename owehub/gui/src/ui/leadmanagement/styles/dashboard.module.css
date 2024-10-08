@@ -527,13 +527,8 @@ input[type='checkbox']:checked {
     color: #757575; /* Gray color */
     border: 1px solid #757575;
     /* padding: 8px 16px; */
-<<<<<<< HEAD
-    border-radius: 50%;
-    transform:translate(16px, 30px);
-=======
     border-radius: 20px;
     transform: translate(16px, 30px);
->>>>>>> 6872b0891d0da06138acc8a141318f8a751a0561
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
