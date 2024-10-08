@@ -530,7 +530,7 @@ const LibraryHomepage = () => {
 
           <button
             onClick={() => handleSectionClick('folders')}
-            className={`${styles.buttons} ${activeSection === 'folders' ? styles.clickedButton : ''}`}
+            className={`${styles.Folderbuttons} ${activeSection === 'folders' ? styles.clickedButton : ''}`}
             style={{
               color: activeSection === 'folders' ? '#ffffff' : '',
               backgroundColor: activeSection === 'folders' ? '#377CF6' : '',
