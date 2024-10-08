@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
 
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
@@ -25,7 +26,7 @@ import (
 func HandleGetGraphNotificationRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
-		subscriptionBody models.SubscriptionReq
+		subscriptionBody models.GraphNotification
 		// changeType       string
 		// resourse         string
 	)
@@ -57,16 +58,17 @@ func HandleGetGraphNotificationRequest(resp http.ResponseWriter, req *http.Reque
 	log.FuncInfoTrace(0, "BODY 1 -> %v", string(respBody))
 
 	if len(string(respBody)) > 0 {
-		log.FuncInfoTrace(0, "BODY 2 -> %v", string(respBody))
 		err = json.Unmarshal(respBody, &subscriptionBody)
 		if err != nil {
 			log.FuncErrorTrace(0, "Error unmarshalling subscription response: %v", err)
 		}
 
 		log.FuncInfoTrace(0, "SUB BODY %v -> ", subscriptionBody)
-		err = routingBasedOnChangeType(subscriptionBody.ChangeType, subscriptionBody.Resource)
-		if err != nil {
-			log.FuncErrorTrace(0, "Error routing requests: %v", err)
+		if len(subscriptionBody.Value) > 0 {
+			err = routingBasedOnChangeType(subscriptionBody.Value[0].ChangeType, subscriptionBody.Value[0].Resource)
+			if err != nil {
+				log.FuncErrorTrace(0, "Error routing requests: %v", err)
+			}
 		}
 	}
 
@@ -87,6 +89,7 @@ func HandleGetGraphNotificationRequest(resp http.ResponseWriter, req *http.Reque
 * DATE			: 28-Aug-2024
 **************************************************************************/
 func routingBasedOnChangeType(changeType, resource string) error {
+	var eventDetails models.EventDetails
 	eventId := getEventIdFromSubsReq(resource)
 	entraId := getEntraIdFromResource(resource)
 
@@ -95,18 +98,21 @@ func routingBasedOnChangeType(changeType, resource string) error {
 		OwnerMail: entraId,
 	}
 
-	log.FuncInfoTrace(0, "REQUEST -> %v -> ", request)
 	eventTable, err := outlook.GetOutlookEvent(request)
 	if err != nil {
 		log.FuncErrorTrace(0, "Error getting event details: %v", err)
-		return err
+		if strings.Contains(err.Error(), "he specified object was not found in the store") {
+			changeType = "deleted"
+		}
 	}
 
-	log.FuncInfoTrace(0, "EVENT -> %v -> ", eventTable)
-	eventDetails, err := ParseEventDetails(eventTable)
-	if err != nil {
-		log.FuncErrorTrace(0, "Error parsing event details: %v", err)
-		return err
+	if changeType == "deleted" {
+	} else {
+		eventDetails, err = ParseEventDetails(eventTable)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error parsing event details: %v", err)
+			return err
+		}
 	}
 
 	eventDetails.EventId = eventId
@@ -145,40 +151,44 @@ func routingBasedOnChangeType(changeType, resource string) error {
 * DESCRIPTION	:
 * DATE			: 28-Aug-2024
 **************************************************************************/
-func ParseEventDetails(event graphmodels.Eventable) (*models.EventDetails, error) {
+func ParseEventDetails(event graphmodels.Eventable) (models.EventDetails, error) {
 	if event == nil {
-		return nil, fmt.Errorf("event is nil")
+		return models.EventDetails{}, fmt.Errorf("event is nil")
 	}
 
 	startTime := event.GetStart().GetDateTime()
 	if startTime == nil {
-		return nil, fmt.Errorf("start time is nil")
+		return models.EventDetails{}, fmt.Errorf("start time is nil")
 	}
 
 	endTime := event.GetEnd().GetDateTime()
 	if endTime == nil {
-		return nil, fmt.Errorf("end time is nil")
+		return models.EventDetails{}, fmt.Errorf("end time is nil")
 	}
 
-	startDateTime, err := time.Parse(time.RFC3339, *startTime)
+	const graphTimeFormat = "2006-01-02T15:04:05.0000000"
+	startDateTime, err := time.Parse(graphTimeFormat, *startTime)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing start time: %v", err)
+		return models.EventDetails{}, fmt.Errorf("error parsing start time: %v", err)
 	}
 
-	endDateTime, err := time.Parse(time.RFC3339, *endTime)
+	endDateTime, err := time.Parse(graphTimeFormat, *endTime)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing end time: %v", err)
+		return models.EventDetails{}, fmt.Errorf("error parsing end time: %v", err)
 	}
 
-	return &models.EventDetails{
+	eventDetails := models.EventDetails{
 		Date:          startDateTime.Format("2006-01-02"),
 		Day:           startDateTime.Weekday().String(),
 		StartTime:     startDateTime.Format("15:04"),
 		EndTime:       endDateTime.Format("15:04"),
 		StartDate:     startDateTime,
 		EndDate:       endDateTime,
-		TransactionID: *event.GetTransactionId(),
-	}, nil
+		TransactionID: event.GetTransactionId(),
+		TimeZone:      event.GetOriginalStartTimeZone(),
+	}
+
+	return eventDetails, nil
 }
 
 /**************************************************************************

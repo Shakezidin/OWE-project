@@ -50,11 +50,24 @@ type EventCancellationRequest struct {
 	OwnerMail string // This is the mail from which the event is created
 }
 
-type SubscriptionReq struct {
-	SubscriptionId                 string `json:"subscriptionId"`
-	SubscriptionExpirationDateTime string `json:"subscriptionExpirationDateTime"`
-	ChangeType                     string `json:"changeType"`
-	Resource                       string `json:"resource"`
+type GraphNotification struct {
+	Value []NotificationValue `json:"value"`
+}
+
+type NotificationValue struct {
+	SubscriptionID                 string    `json:"subscriptionId"`
+	SubscriptionExpirationDateTime time.Time `json:"subscriptionExpirationDateTime"`
+	ChangeType                     string    `json:"changeType"`
+	Resource                       string    `json:"resource"`
+	ResourceData                   EventData `json:"resourceData"`
+	TenantID                       string    `json:"tenantId"`
+}
+
+type EventData struct {
+	ODataType string `json:"@odata.type"`
+	ODataID   string `json:"@odata.id"`
+	ODataEtag string `json:"@odata.etag"`
+	ID        string `json:"id"`
 }
 
 type EventDetails struct {
@@ -64,8 +77,9 @@ type EventDetails struct {
 	EndTime         string
 	StartDate       time.Time
 	EndDate         time.Time
-	TransactionID   string
+	TransactionID   *string
 	EventId         string
 	SurveyorEntraId string
-	EventStatus string
+	EventStatus     string
+	TimeZone        *string
 }

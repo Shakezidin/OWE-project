@@ -28,7 +28,7 @@ func GetOutlookEvent(request models.EventGetRequest) (graphmodels.Eventable, err
 	headers.Add("Prefer", "outlook.timezone=\"Pacific Standard Time\"")
 
 	requestParameters := &graphusers.ItemEventsEventItemRequestBuilderGetQueryParameters{
-		Select: []string{"subject", "body", "bodyPreview", "organizer", "attendees", "start", "end", "location", "hideAttendees"},
+		Select: []string{"subject", "body", "bodyPreview", "organizer", "attendees", "start", "end", "location", "hideAttendees", "transactionId", "originalStartTimeZone"},
 	}
 	configuration := &graphusers.ItemEventsEventItemRequestBuilderGetRequestConfiguration{
 		Headers:         headers,
