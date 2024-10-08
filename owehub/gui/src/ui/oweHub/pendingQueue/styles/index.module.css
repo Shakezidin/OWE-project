@@ -159,7 +159,7 @@
     position: relative;
     margin-bottom: 2.5rem;
   }
-  .pendingBoxContainer{
+  .pendingBoxContainer {
     position: absolute !important;
     top: 62px;
     left: 20px;
@@ -193,7 +193,7 @@
   .pending_stats {
     padding-right: 18px;
   }
-  .pendingBoxContainer{
+  .pendingBoxContainer {
     position: absolute !important;
     top: 190px;
     left: 50%;

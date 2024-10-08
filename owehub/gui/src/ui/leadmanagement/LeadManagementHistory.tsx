@@ -292,7 +292,14 @@ const LeradManagementHistory = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue, refresh]);
+  }, [
+    isAuthenticated,
+    selectedDates,
+    itemsPerPage,
+    page,
+    selectedValue,
+    refresh,
+  ]);
 
   const handlePeriodChange = (
     selectedOption: SingleValue<DateRangeWithLabel>
@@ -321,7 +328,7 @@ const LeradManagementHistory = () => {
       );
 
       if (response.status === 200) {
-        setRefresh((prev) => (prev + 1));
+        setRefresh((prev) => prev + 1);
         toast.success('Lead History deleted successfully');
         setRemove(false);
         handleCrossClick();
@@ -395,11 +402,18 @@ const LeradManagementHistory = () => {
         item.zipcode,
         item.deal_date,
         item.deal_status,
-        item.timeline.find((event: any) => event.label === 'Appoitment Scheduled')?.date || '',
-        item.timeline.find((event: any) => event.label === 'Appointment Accepted')?.date || '',
-        item.timeline.find((event: any) => event.label === 'Appointment Date')?.date || '',
-        item.timeline.find((event: any) => event.label === 'Deal Won')?.date || '',
-        item.timeline.find((event: any) => event.label === 'Proposal Sent')?.date || '',
+        item.timeline.find(
+          (event: any) => event.label === 'Appoitment Scheduled'
+        )?.date || '',
+        item.timeline.find(
+          (event: any) => event.label === 'Appointment Accepted'
+        )?.date || '',
+        item.timeline.find((event: any) => event.label === 'Appointment Date')
+          ?.date || '',
+        item.timeline.find((event: any) => event.label === 'Deal Won')?.date ||
+          '',
+        item.timeline.find((event: any) => event.label === 'Proposal Sent')
+          ?.date || '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -446,8 +460,8 @@ const LeradManagementHistory = () => {
               <div className={styles.top_filters}>
                 <div>
                   {isMobile &&
-                    selectedDates.startDate &&
-                    selectedDates.endDate ? (
+                  selectedDates.startDate &&
+                  selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -498,8 +512,8 @@ const LeradManagementHistory = () => {
                     )}
                   </div>
                   {!isMobile &&
-                    selectedDates.startDate &&
-                    selectedDates.endDate ? (
+                  selectedDates.startDate &&
+                  selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -621,10 +635,10 @@ const LeradManagementHistory = () => {
                       <MdDownloading
                         className="downloading-animation"
                         size={20}
-                        color='white'
+                        color="white"
                       />
                     ) : (
-                      <LuImport size={20} color='white' />
+                      <LuImport size={20} color="white" />
                     )}
                   </div>
 
@@ -650,11 +664,17 @@ const LeradManagementHistory = () => {
             </>
           )}
           {checkedCount != 0 && (
-            <div style={{
-              pointerEvents: remove ? 'none' : 'auto',
-              opacity: remove ? 0.6 : 1,
-              cursor: remove ? 'not-allowed' : 'pointer',
-            }} onClick={deleteLeads} className={styles.lead_his_remove}>{remove ? "Removing..." : "Remove"}</div>
+            <div
+              style={{
+                pointerEvents: remove ? 'none' : 'auto',
+                opacity: remove ? 0.6 : 1,
+                cursor: remove ? 'not-allowed' : 'pointer',
+              }}
+              onClick={deleteLeads}
+              className={styles.lead_his_remove}
+            >
+              {remove ? 'Removing...' : 'Remove'}
+            </div>
           )}
         </div>
 
@@ -675,11 +695,11 @@ const LeradManagementHistory = () => {
                 style={
                   expandedItemIds.includes(item.leads_id)
                     ? {
-                      width: '100%',
-                      backgroundColor: '#EEF5FF',
-                      borderTopLeftRadius: '8px',
-                      borderTopRightRadius: '8px',
-                    }
+                        width: '100%',
+                        backgroundColor: '#EEF5FF',
+                        borderTopLeftRadius: '8px',
+                        borderTopRightRadius: '8px',
+                      }
                     : {}
                 }
                 className={styles.history_lists}
@@ -816,7 +836,6 @@ const LeradManagementHistory = () => {
                         <p>{item.email_id ? item.email_id : 'N/A'}</p>
                       </div>
                       <div className={styles.address}>
-
                         {item?.street_address
                           ? item.street_address.length > 20
                             ? `${item.street_address.slice(0, 20)}...`

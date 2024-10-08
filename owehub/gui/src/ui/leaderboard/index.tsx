@@ -132,7 +132,7 @@ const Index = () => {
             type: activeHead,
             sort_by: active,
             page_size: 25,
-            page_number: 1,
+            page_number: page,
             start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
             end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
             dealer: selectDealer.map((item) => item.value),
@@ -163,6 +163,7 @@ const Index = () => {
     isAuthenticated,
     isFetched,
     authData,
+    page
   ]);
 
   console.log(tableData, 'data');

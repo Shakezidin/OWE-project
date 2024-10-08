@@ -53,7 +53,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             selected={selectedDate}
             onChange={handleDateChange}
             inline
-            
             renderCustomHeader={({
               date,
               decreaseMonth,
@@ -117,7 +116,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             if (selectedTime && selectedDate) {
               setVisibleDiv(11);
             } else {
-             toast.warn('Please select date & time before proceeding.');
+              toast.warn('Please select date & time before proceeding.');
             }
           }}
         >

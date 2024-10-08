@@ -212,7 +212,7 @@ const MyMapComponent: React.FC = () => {
     { miles: 10 },
     { miles: 20 },
     { miles: 50 },
-    {miles:100},
+    { miles: 100 },
   ];
 
   const [selectedMiles, setSelectedMiles] = useState<any>(1); // Default to 10 miles

@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
 interface EditModalProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
     mobile_number: '',
     address: '',
   });
-  
+
   useEffect(() => {
     if (leadData) {
       setFormData({
@@ -109,7 +109,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
           'edit_leads',
           {
             leads_id: leadData?.leads_id,
-            email_id:  formData.email_id,
+            email_id: formData.email_id,
             phone_number: formData.mobile_number,
             street_address: formData.address,
           },
@@ -165,7 +165,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   <span className={classes.emailStyle}>
                     {leadData?.email_id}{' '}
                     {/* <span className={classes.verified}> */}
-                      {/* <svg
+                    {/* <svg
                         className={classes.verifiedMarked}
                         width="13"
                         height="13"
@@ -194,7 +194,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                           </clipPath>
                         </defs>
                       </svg>{' '} */}
-                      {/* Verified
+                    {/* Verified
                     </span> */}
                   </span>
                 </div>
@@ -216,7 +216,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   onChange={handleInputChange}
                   name="email_id"
                   maxLength={100}
-                // backgroundColor="#9cc3fb"
+                  // backgroundColor="#9cc3fb"
                 />
                 <Input
                   type="text"
@@ -225,7 +225,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   onChange={handleInputChange}
                   name="address"
                   maxLength={100}
-                // backgroundColor="#9cc3fb"
+                  // backgroundColor="#9cc3fb"
                 />
               </div>
 
@@ -246,7 +246,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   }}
                   onClick={handleConfrm}
                 >
-                  {load ? "Updating...." : "CONFIRM"}
+                  {load ? 'Updating....' : 'CONFIRM'}
                 </button>
               </div>
             </div>

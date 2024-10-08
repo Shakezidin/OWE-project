@@ -39,15 +39,16 @@ type Lead = {
   status: string;
 };
 
-
-
-const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedirectProps) => {
+const ArchivedPages = ({
+  activeIndex,
+  setActiveIndex,
+  setArchive,
+}: HistoryRedirectProps) => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
-
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -91,15 +92,12 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
     setArchive(false);
   };
 
-
   const handleChevronClick = (itemId: number) => {
     console.log(itemId);
     setToggledId((prevToggledId) =>
       prevToggledId.includes(itemId) ? [] : [itemId]
     );
   };
-
-
 
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
@@ -112,7 +110,6 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
@@ -133,7 +130,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
   const [pending3, setPending3] = useState(false);
 
   const deleteLeads = async () => {
-    setPending(true)
+    setPending(true);
     try {
       const response = await postCaller(
         'delete_lead',
@@ -145,7 +142,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
 
       if (response.status === 200) {
         setSelectedLeads([]);
-        setActiveIndex((prev) => (prev + 1));
+        setActiveIndex((prev) => prev + 1);
         toast.success('Leads deleted successfully');
       } else {
         toast.warn(response.message);
@@ -157,7 +154,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
   };
 
   const unArchiveLeads = async () => {
-    setPending1(true)
+    setPending1(true);
     try {
       const response = await postCaller(
         'toggle_archive',
@@ -170,7 +167,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
 
       if (response.status === 200) {
         setSelectedLeads([]);
-        setActiveIndex((prev) => (prev + 1));
+        setActiveIndex((prev) => prev + 1);
         toast.success('Leads Unarcived successfully');
       } else {
         toast.warn(response.message);
@@ -178,11 +175,11 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
     } catch (error) {
       console.error('Error deleting leads:', error);
     }
-    setPending1(false)
+    setPending1(false);
   };
 
   const deleteLead = async (leadId: number) => {
-    setPending2(true)
+    setPending2(true);
     try {
       const response = await postCaller(
         'delete_lead',
@@ -193,9 +190,9 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
       );
 
       if (response.status === 200) {
-        setActiveIndex((prev) => (prev + 1));
-        setSelectedLeads(prevSelectedLeads =>
-          prevSelectedLeads.filter(id => id !== leadId)
+        setActiveIndex((prev) => prev + 1);
+        setSelectedLeads((prevSelectedLeads) =>
+          prevSelectedLeads.filter((id) => id !== leadId)
         );
         toast.success('Lead deleted successfully');
       } else {
@@ -204,7 +201,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
     } catch (error) {
       console.error('Error deleting lead:', error);
     }
-    setPending2(false)
+    setPending2(false);
   };
 
   const handleUnArchiveSelected = async (leadId: number) => {
@@ -219,7 +216,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
         true
       );
       if (response.status === 200) {
-        setActiveIndex((prev) => (prev + 1));
+        setActiveIndex((prev) => prev + 1);
         toast.success('Leads UnArchieved successfully');
         setSelectedLeads([]);
       } else {
@@ -273,12 +270,16 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                     style={{ visibility: 'visible' }}
                   >
                     <div className={styles.selectionHeader}>
-                      <button className={styles.archieveButtonA} onClick={unArchiveLeads} style={{
-                        pointerEvents: pending1 ? 'none' : 'auto',
-                        opacity: pending1 ? 0.6 : 1,
-                        cursor: pending1 ? 'not-allowed' : 'pointer',
-                      }}>
-                        {pending1 ? "Unarchiving..." : "Unarchive"}
+                      <button
+                        className={styles.archieveButtonA}
+                        onClick={unArchiveLeads}
+                        style={{
+                          pointerEvents: pending1 ? 'none' : 'auto',
+                          opacity: pending1 ? 0.6 : 1,
+                          cursor: pending1 ? 'not-allowed' : 'pointer',
+                        }}
+                      >
+                        {pending1 ? 'Unarchiving...' : 'Unarchive'}
                       </button>
                     </div>{' '}
                     <div>
@@ -291,7 +292,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           cursor: pending ? 'not-allowed' : 'pointer',
                         }}
                       >
-                        {pending ? "Removing..." : "Remove"}
+                        {pending ? 'Removing...' : 'Remove'}
                       </button>
                     </div>
                   </div>
@@ -350,16 +351,17 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                   <React.Fragment key={index}>
                     <tr className={styles.history_lists}>
                       <td
-                        className={`${lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
+                        className={`${
+                          lead.status === 'Declined' ||
+                          lead.status === 'Action Needed'
                             ? styles.history_list_inner_declined
-
-                            : (selectedLeads.length > 0 && isMobile ?
-                              styles.history_list_inner_Mobile_View
-                              : (selectedLeads.length > 0 &&
-                                isTablet ? styles.history_list_inner_Tablet_View : styles.history_list_inner))
-                          }`}
-                      // onClick={handleOpenModal}
+                            : selectedLeads.length > 0 && isMobile
+                              ? styles.history_list_inner_Mobile_View
+                              : selectedLeads.length > 0 && isTablet
+                                ? styles.history_list_inner_Tablet_View
+                                : styles.history_list_inner
+                        }`}
+                        // onClick={handleOpenModal}
                       >
                         <label>
                           <input
@@ -386,10 +388,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           {lead.phone_number}
                         </div>
                         <div className={styles.email}>
-                          <span>
-                            {lead.email_id}
-
-                          </span>
+                          <span>{lead.email_id}</span>
                         </div>
                         <div className={styles.address}>
                           {/* {lead.street_address ? lead.street_address : 'N/A'} */}
@@ -416,7 +415,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                                 cursor: pending3 ? 'not-allowed' : 'pointer',
                               }}
                             >
-                              {pending3 ? "Unarchiving..." : "Unarchive"}
+                              {pending3 ? 'Unarchiving...' : 'Unarchive'}
                             </button>
                           </div>
                         )}
@@ -425,7 +424,8 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                         ) : (
                           <div>
                             {isMobile || isTablet ? (
-                              <div className={styles.BOXDelete}
+                              <div
+                                className={styles.BOXDelete}
                                 onClick={() => {
                                   deleteLead(lead.leads_id);
                                 }}
@@ -450,7 +450,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                                 }}
                               >
                                 {' '}
-                                {pending2 ? "Removing..." : "Remove"}
+                                {pending2 ? 'Removing...' : 'Remove'}
                               </button>
                             )}
                           </div>
@@ -483,10 +483,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                         <td colSpan={5} className={styles.detailsRow}>
                           <div className={''}>{lead.phone_number}</div>
                           <div className={''}>
-                            <span>
-                              {lead.email_id}
-
-                            </span>
+                            <span>{lead.email_id}</span>
                           </div>
                           <div className={''}>
                             {/* {lead.street_address ? lead.street_address : 'N/A'} */}
@@ -505,13 +502,9 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                         <td colSpan={5} className={styles.detailsRow}>
                           <div className={''}>{lead.phone}</div>
                           <div className={''}>
-                            <span>
-                              {lead.email_id}
-
-                            </span>
+                            <span>{lead.email_id}</span>
                           </div>
                           <div className={''}>
-
                             {lead?.street_address
                               ? lead.street_address.length > 20
                                 ? `${lead.street_address.slice(0, 20)}...`
