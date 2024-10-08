@@ -91,37 +91,48 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-			 SELECT ud.user_id AS record_id, ud.name AS name, 
-			 ud.user_code, 
-			 ud.db_username,
-			 ud.mobile_number, 
-			 ud.email_id, 
-			 ud.password_change_required, 
-			 ud.created_at,
-			 ud.updated_at, 
-			 COALESCE(ud1.name, 'NA') AS reporting_manager, 
-			 COALESCE(vd.dealer_name, 'NA') AS dealer_owner, 
-			 ud.user_status, 
-			 ud.user_designation, 
-			 ud.description, 
-			 ud.region,
-			 ud.street_address, 
-			 ud.city, 
-			 ud.country,
-			 st.name AS state_name,
-			 ur.role_name,
-			 zc.zipcode,
-			 vd.dealer_name as dealer,
-			 vd.dealer_logo,
-			 vd.bg_colour,
-			 ud.tables_permissions
-			 FROM user_details ud
-			 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
-			 LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
-			 LEFT JOIN states st ON ud.state = st.state_id
-			 LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			 LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
-			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id`
+			 SELECT 
+				ud.user_id AS record_id, 
+				ud.name AS name, 
+				ud.user_code, 
+				ud.db_username,
+				ud.mobile_number, 
+				ud.email_id, 
+				ud.password_change_required, 
+				ud.created_at,
+				ud.updated_at, 
+				COALESCE(ud1.name, 'NA') AS reporting_manager, 
+				ud.user_status, 
+				ud.user_designation, 
+				ud.description, 
+				ud.region,
+				ud.street_address, 
+				ud.city, 
+				ud.country,
+				st.name AS state_name,
+				ur.role_name,
+				zc.zipcode,
+				sp.sales_partner_name AS dealer,
+				pd.bg_colour,
+				ud.tables_permissions,
+				-- Fields from partner_details
+				pd.partner_code, 
+				pd.partner_logo, 
+				pd.bg_colour AS partner_bg_colour
+			FROM 
+				user_details ud
+			LEFT JOIN 
+				user_details ud1 ON ud.reporting_manager = ud1.user_id
+			LEFT JOIN 
+				states st ON ud.state = st.state_id
+			LEFT JOIN 
+				user_roles ur ON ud.role_id = ur.role_id
+			LEFT JOIN 
+				zipcodes zc ON ud.zipcode = zc.id
+			LEFT JOIN 
+				sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+			LEFT JOIN 
+				partner_details pd ON sp.item_id = pd.partner_id `
 
 	if len(dataReq.SalesRepStatus) > 0 {
 		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false, true)
@@ -207,12 +218,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ReportingManager = ""
 		}
 
-		// DealerOwner
-		DealerOwner, dealerownerOk := item["dealer_owner"].(string)
-		if !dealerownerOk || DealerOwner == "" {
-			log.FuncErrorTrace(0, "Failed to get DealerOwner for Item: %+v\n", item)
-			DealerOwner = ""
-		}
+		// // DealerOwner
+		// DealerOwner, dealerownerOk := item["dealer_owner"].(string)
+		// if !dealerownerOk || DealerOwner == "" {
+		// 	log.FuncErrorTrace(0, "Failed to get DealerOwner for Item: %+v\n", item)
+		// 	DealerOwner = ""
+		// }
 
 		// UserStatus
 		UserStatus, statusOk := item["user_status"].(string)
@@ -270,7 +281,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Dealer
-		DealerLogo, dealerlogoOk := item["dealer_logo"].(string)
+		DealerLogo, dealerlogoOk := item["partner_logo"].(string)
 		if !dealerlogoOk || DealerLogo == "" {
 			DealerLogo = ""
 		}
@@ -280,6 +291,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if !bgcolouroOk || BgColour == "" {
 			BgColour = ""
 		}
+
+		// Dealer
+		DealerCode, dealerCodeOk := item["partner_code"].(string)
+		if !dealerCodeOk || DealerCode == "" {
+			DealerCode = ""
+		}
+
 		DBUsername, ok := item["db_username"].(string)
 		if !ok {
 			DBUsername = ""
@@ -307,7 +325,6 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			UserCode:          UserCode,
 			PasswordChangeReq: PasswordChangeReq,
 			ReportingManager:  ReportingManager,
-			DealerOwner:       DealerOwner,
 			UserStatus:        UserStatus,
 			Description:       Description,
 			Region:            Region,
@@ -319,6 +336,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Dealer:            Dealer,
 			DealerLogo:        DealerLogo,
 			BgColour:          BgColour,
+			DealerCode:        DealerCode,
 			TablePermission:   tablePermissions,
 		}
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
@@ -454,9 +472,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			case "role_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ur.role_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "dealer_owner":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud2.name) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "steet_address":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.street_address) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -473,7 +488,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sp.sales_partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "db_username":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.db_username) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -516,7 +531,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.db_username, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
+		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.db_username, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, pd.partner_logo, pd.bg_colour, sp.sales_partner_name, pd.partner_code")
 	} else if nameSearch {
 	} else if SalesRepStatus {
 	} else {

@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS sales_partner_dbhub_schema (
     item_id bigint unique,
     podio_link TEXT,
+    item_created_on TIMESTAMP,
     label TEXT,
     sales_partner_name TEXT,
     data_entry_dealer_id TEXT,
@@ -70,4 +71,13 @@ CREATE TABLE IF NOT EXISTS sales_partner_dbhub_schema (
     today TEXT
 );
 
-
+COPY sales_partner_dbhub_schema(item_id, podio_link, item_created_on, label, sales_partner_name, data_entry_dealer_id, leaderboard_name, creation_date, 
+	days_to_first_sale, days_to_first_pv_install_complete, partner_id, partner_tier, partner_type, partner_status, partner_notes, 
+	monthly_install_volume, selling_market_s, puma2, account_manager2, account_executive, project_manager, project_coordinator_s, 
+	redline, redline_amount, adder_responsibility, adder_responsibility_breakdown, adders, retention_opt_out_option, happiness, 
+	send_stage_updates, cc_on_hold_jeopardy_emails_comma_separated, recruiter, "source", source_new, on_boarding_checklist, partner_recruiter_updated, 
+	sales_ai_access, show_rebate_amount_field, ct_included, owner_s, point_s_of_contact, onboarding_manager, account_manager, 
+	reps, share_customers_with, puma, puma_x_round_robin, tier, zooli_json, documents_stauts, pay_details_update, terminated_date, 
+	docusign_nda_envelope_id, docusign_msa_envelope_id, cancel_jeopardy_hold_custom_messaging, no_longer_in_cancel_jeopardy_hold_custom_messaging, 
+	last_deal_sold, days_since_last_deal, inactvity_band, account_executive_name, total_kw_install, json_webhook_header, json_webhook, 
+	hook_site, dealer_db_zooli_json, dealer_pid_h, today) FROM '/docker-entrypoint-initdb.d/sales_partner_dbhub_schema.csv' DELIMITER ',' CSV;

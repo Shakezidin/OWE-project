@@ -96,7 +96,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	role, _ := req.Context().Value("rolename").(string)
 
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT vd.sales_partner_name FROM user_details ud JOIN sales_partner_dbhub_schema vd ON ud.dealer_id = vd.partner_id WHERE ud.email_id = '%v'", userEmail)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)

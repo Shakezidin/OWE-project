@@ -25,6 +25,7 @@ import { FileOrFolder } from './types';
 import { useAppSelector } from '../../redux/hooks';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
+import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -42,6 +43,8 @@ const LibraryHomepage = () => {
   const [checkedFolders, setCheckedFolders] = useState<number[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [recycleBinItems, setRecycleBinItems] = useState<any[]>([]);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [videoUrl, setVideoUrl] = useState("")
   const [selectedDelete, setSelecetedDelete] = useState("");
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
@@ -401,6 +404,28 @@ const LibraryHomepage = () => {
   //check handler
   const [allIds, setAllIds] = useState<string[]>([]);
 
+  const downloadFile = (fileUrl: string, fileName: string) => {
+    const anchor = document.createElement("a");
+    anchor.href = fileUrl;
+    anchor.download = fileName || "download";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  }
+  const isVideo = (mimeType: string) => {
+    if (
+      mimeType === "video/mp4" ||
+      mimeType === "video/mpeg" ||
+      mimeType === "video/ogg" ||
+      mimeType === "video/webm" ||
+      mimeType === "video/x-msvideo" ||
+      mimeType === "video/quicktime"
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
 
 
   const handleCheckboxChange = (
@@ -601,9 +626,9 @@ const LibraryHomepage = () => {
             <div className={styles.grid_item}>Actions</div>
           </div>
 
-          {currentFolderContent.map((item) => (
-            <div className={styles.libGridItem} key={item.id}>
-              <div className={`${styles.file_icon} ${styles.image_div}`}>
+          {currentFolderContent.map((item) => {
+            return <div className={styles.libGridItem} key={item.id}>
+              <div className={`${styles.file_icon} ${styles.image_div}`} >
                 <img
                   className={styles.cardImg}
                   src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
@@ -628,6 +653,7 @@ const LibraryHomepage = () => {
               <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                 <RxDownload
                   className={styles.icons}
+                  onClick={() => downloadFile(item.url, item.name)}
                   style={{ height: '18px', width: '18px', color: '#667085' }}
                 />
                 <RiDeleteBinLine
@@ -637,7 +663,7 @@ const LibraryHomepage = () => {
                 />
               </div>
             </div>
-          ))}
+          })}
         </div>
       );
     }
@@ -686,12 +712,19 @@ const LibraryHomepage = () => {
         </div>
 
         {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : fileData.length > 0 ? (
-          sortedData.map((data) => (
-            <div className={styles.libGridItem} key={data.id}>
-              <div className={`${styles.file_icon} ${styles.image_div}`}>
+          sortedData.map((data) => {
+            const isValidVideo = isVideo(data.file?.mimeType!)
+            return <div className={styles.libGridItem} key={data.id}>
+              <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                if (isValidVideo) {
+                  setIsVideoModalOpen(true)
+                  setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
+                }
+
+              }}>
                 <img
                   className={styles.cardImg}
-                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? '' : data['@microsoft.graph.downloadUrl']}
+                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? '' : data['@microsoft.graph.downloadUrl']}
                   alt={`null`}
                   loading='lazy'
                 />
@@ -727,6 +760,7 @@ const LibraryHomepage = () => {
                     <div>
                       <RxDownload
                         className={styles.icons}
+                        onClick={() => downloadFile(data.url, data.name)}
                         style={{
                           height: '18px',
                           width: '18px',
@@ -751,7 +785,7 @@ const LibraryHomepage = () => {
                 )}
               </div>
             </div>
-          ))
+          })
         ) : (
           <p className={styles.noParagraph}>No files found.</p>
         )}
@@ -772,6 +806,9 @@ const LibraryHomepage = () => {
       )}
 
       {renderContent()}
+      {
+        isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
+      }
     </div>
   );
 

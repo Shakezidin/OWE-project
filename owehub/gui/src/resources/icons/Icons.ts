@@ -155,9 +155,11 @@ import folderImage from '../assets/folderimage.svg';
 import viedoImageOne from '../assets/videos-library-one.svg';
 import viedoplay from '../assets/video_play.svg';
 import DeleteICONBOX from '../assets/DeleteICONBOX.svg';
+import videoPlayerIcon from '../assets/video_player_icon.png';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
+  videoPlayerIcon,
   LOGO: logo,
   MENU_1: require('../../resources/assets/menu_1.png'),
   sidebarLogo: require('../../resources/assets/comissionlogo.png'),
