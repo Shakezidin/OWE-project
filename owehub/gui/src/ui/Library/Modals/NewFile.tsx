@@ -17,7 +17,7 @@ interface NewFileProps {
 
 type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
-const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath,folderUploadPath }) => {
+const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath, folderUploadPath }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
   const [isVisibleuploadFile, setIsVisibleuploadFile] = useState(false);
@@ -28,6 +28,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
   const [files, setFiles] = useState<File[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [isCreateFolder, setIsCreateFolder] = useState(false)
+  const [pendingState, sePendingState] = useState<"uploading" | "creating" | "">("")
 
   const handleClick = () => {
     setIsVisible(!isVisible);
@@ -58,9 +59,11 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || "/"}`;
 
     try {
+      sePendingState("uploading")
+      setIsVisible(false)
       await Promise.all(files.map(async (file) => {
         const apiUrl = `${apiUrlBase}${file.name}:/createUploadSession`;
- 
+
         const sessionResponse = await axios.post(apiUrl, {
           item: { "@microsoft.graph.conflictBehavior": "rename" }
         }, {
@@ -71,7 +74,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
         });
 
         const uploadUrl = sessionResponse.data.uploadUrl;
-        const chunkSize = 320 * 1024; 
+        const chunkSize = 320 * 1024;
         const totalChunks = Math.ceil(file.size / chunkSize);
 
         for (let i = 0; i < totalChunks; i++) {
@@ -88,12 +91,20 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
         }
 
         await handleSuccess?.();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""
+
+        }
+        setFiles([])
         setIsVisible(false)
         toast.success(`File "${file.name}" uploaded successfully!`);
       }));
     } catch (error) {
       console.error('Error during file upload:', error);
       toast.error('Error during file upload. Please try again.');
+    }
+    finally {
+      sePendingState("")
     }
   };
 
@@ -116,38 +127,14 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     setIsVisible(false);
   };
 
-  const uploadFile = async () => {
-    if (!file) return;
 
-    const accessToken = Cookies.get("myToken")
-    const apiUrl = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${file.name}:/content`;
 
-    try {
-      const resp = await axios.put(apiUrl, file, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': file.type || 'application/octet-stream',
-        },
-      });
 
-      console.log('File uploaded successfully', resp);
-      toast.success(`File "${file.name}" uploaded successfully!`);
-    } catch (error) {
-      console.error('Error during file upload:', error);
-      toast.error('Error during file upload. Please try again.');
-    }
-  };
 
-  useEffect(() => {
-    if (file) {
-      uploadFile();
-    }
-  }, [file]);
-
-  const closeOnSuccess = ()=>{
+  const closeOnSuccess = () => {
     handleSuccess?.()
     setIsVisible(false)
-    
+
   }
 
 
@@ -178,39 +165,42 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     <div className={classes.newfile_container} ref={dropdownRef}>
       <button
         onClick={handleClick}
+        disabled={pendingState === "uploading"}
         className={classes.newfile_botton}
         style={
           isVisible ? { backgroundColor: '#377cf6', color: '#ffffff' } : {}
         }
       >
-        + New
+        {pendingState === "uploading" ?  <span style={{fontSize:10}} >
+          uploading...
+        </span>   : " + New"}
       </button>
       {isVisible && (
         <ul className={classes.dropdownMenu}>
-      
-            <>
-              <>
-                <input id="file-upload" type="file" onChange={handleFolderChange}
-                  ref={FolderInputRef}
-                  style={{ display: 'none' }}
-                  className={classes.folderInput}
-                  multiple
-                />
-                <li
-                  className={`${classes.dropdownItem} ${selectedOption === 'Upload folder' ? classes.selected : ''}`}
-                  onClick={handleOptionClick}
-                >
-                  + Upload file
-                </li>
-              </>
 
-            {activeSection === 'folders' &&  <li
-                className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
-                onClick={handleOptionClickFile}
+          <>
+            <>
+              <input id="file-upload" type="file" onChange={handleFolderChange}
+                ref={FolderInputRef}
+                style={{ display: 'none' }}
+                className={classes.folderInput}
+                multiple
+              />
+              <li
+                className={`${classes.dropdownItem} ${selectedOption === 'Upload folder' ? classes.selected : ''}`}
+                onClick={handleOptionClick}
               >
-                + New folder
-              </li>}
-            </>       
+                + Upload file
+              </li>
+            </>
+
+            {activeSection === 'folders' && <li
+              className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
+              onClick={handleOptionClickFile}
+            >
+              + New folder
+            </li>}
+          </>
         </ul>
       )}
 
