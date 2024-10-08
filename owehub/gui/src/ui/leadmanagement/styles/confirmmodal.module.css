@@ -696,3 +696,15 @@
     margin: 0px 0px 5px 12px;
   }
 }
+
+
+@media screen and (max-width: 767px) {
+  .survey_button button {
+    width: 270px;
+    height: 38px;
+  }
+  .customer_wrapper_list_edit {
+    margin-top: 56px;
+  }
+
+}
