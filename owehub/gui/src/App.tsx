@@ -43,6 +43,7 @@ import DealerPayments from './ui/oweHub/configure/dealerPayments/DealerPayments'
 import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedule';
 import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
 import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
+import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -124,6 +125,7 @@ function App() {
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
+          <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
           <Route path={ROUTES.FOLDER_DETAIL} element={<FolderDetail />} />
 
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
