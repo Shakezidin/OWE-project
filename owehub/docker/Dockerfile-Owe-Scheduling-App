@@ -43,10 +43,10 @@ RUN rm go$GOLANG_VERSION.linux-amd64.tar.gz
 
 #deploying app
 
-ADD owehub-utils/bin /app/bin
-ADD owehub-utils/json /app/bin/json
+ADD owehub-scheduling/bin /app/bin
+ADD owehub-scheduling/json /app/bin/json
 WORKDIR /app/bin/
 RUN cd /app/bin/
-RUN chmod +x /app/bin/owehub-utils.bin
-CMD ./owehub-utils.bin
+RUN chmod +x /app/bin/owehub-scheduling.bin
+CMD ./owehub-scheduling.bin
 

@@ -23,8 +23,13 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 
+	apiHandler "OWEApp/owehub-scheduling/services"
+
 	"github.com/google/uuid"
 	"gopkg.in/natefinch/lumberjack.v2"
+
+	azidentity "github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 )
 
 type CfgFilePaths struct {
@@ -32,6 +37,7 @@ type CfgFilePaths struct {
 	LoggingConfJsonPath string
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
+	OutlookApiConfig    string
 }
 
 var (
@@ -45,17 +51,38 @@ const (
 var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
-		"/owe-utils-service/v1/loggingconf",
-		handleDynamicLoggingConf,
+		"/owe-commisions-service/v1/scheduling_home",
+		apiHandler.HandleGetSchedulingHomeRequest,
 		false,
-		[]types.UserGroup{},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-utils-service/v1/notification_graph",
-		handleDynamicLoggingConf,
+		"/owe-commisions-service/v1/create_scheduling_project",
+		apiHandler.HandleCreateSchedulingProjectRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_scheduling_project",
+		apiHandler.HandleUpdateSchedulingProjectRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-schedule-service/v1/get_scheduling_projects",
+		apiHandler.HandleGetSalesRepSchedulingProjectsRequest,
 		false,
-		[]types.UserGroup{},
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-schedule-service/v1/notification_graphs",
+		apiHandler.HandleGetGraphNotificationRequest,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 }
 
@@ -112,13 +139,13 @@ func init() {
 	var err error
 	defer func() {
 		if err != nil {
-			log.ConfInfoTrace(0, "Owe-Calculation Service Initialization failed. Exiting... %+v", err)
+			log.ConfInfoTrace(0, "Owe-Scheduling Service Initialization failed. Exiting... %+v", err)
 			os.Exit(1)
 		}
-		log.ConfDebugTrace(0, "Owe-Calculation Service Initialized Successfully")
+		log.ConfDebugTrace(0, "Owe-Scheduling Service Initialized Successfully")
 	}()
 	/* Initializing Logger package */
-	initLogger("OWEHUB-CALC", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/owehub-calc.log", 100, 28, 3)
+	initLogger("OWEHUB-SCHEDULING", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/owehub-scheduling.log", 100, 28, 3)
 	if !ValidateRequiredEnv() {
 		err = fmt.Errorf("missing required env variables")
 		return
@@ -161,23 +188,107 @@ func init() {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
 	}
 
+	/* Initializing Graph Api Connection */
+	err = FetchgraphApiCfg()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to get Graph Api Cfg error = %+v", err)
+		return
+	} else {
+		log.FuncDebugTrace(0, "Successfully Fetched Graph Api Cgf")
+	}
+
+	/* Creating outlook client */
+	err = GenerateGraphApiClient()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to get generate Graph Api Client error = %+v", err)
+		return
+	} else {
+		log.FuncDebugTrace(0, "Successfully created Graph Api Client")
+	}
+
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
 	PrintSvcGlbConfig(types.CommGlbCfg)
 
 	/*Initialize logger package again with new configuraion*/
-	initLogger("OWEHUB-CALC", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
+	initLogger("OWEHUB-SCHEDULING", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 }
 
 func handleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) {
 	types.CommGlbCfg.LogCfg = HandleDynamicLoggingConf(resp, req)
-	initLogger("OWEHUB-CALC", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
+	initLogger("OWEHUB-SCHEDULING", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 
 }
 
 func handleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) {
 	types.CommGlbCfg.HTTPCfg = HandleDynamicHttpConf(resp, req)
+}
+
+/******************************************************************************
+* FUNCTION:        FetchgraphApiCfg
+*
+* DESCRIPTION:   function is used to get the Graph Api configurations
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func FetchgraphApiCfg() (err error) {
+	log.EnterFn(0, "FetchgraphApiCfg")
+	defer func() { log.ExitFn(0, "FetchgraphApiCfg", err) }()
+
+	var graphApiCfg models.GraphApiConfInfo
+
+	log.ConfDebugTrace(0, "Reading Graph Api Config from: %+v", gCfgFilePaths.OutlookApiConfig)
+	file, err := os.Open(gCfgFilePaths.OutlookApiConfig)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.OutlookApiConfig, err)
+		panic(err)
+	}
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &graphApiCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.OutlookApiConfig, err)
+		panic(err)
+	}
+
+	types.CommGlbCfg.GraphApiCfg = graphApiCfg
+	log.ConfDebugTrace(0, "Graph Api Configurations: %+v", types.CommGlbCfg.GraphApiCfg)
+
+	return err
+}
+
+/******************************************************************************
+* FUNCTION:        GenerateGraphApiClient
+*
+* DESCRIPTION:   function is used to generate the Graph Api client
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func GenerateGraphApiClient() error {
+	cred, err := azidentity.NewClientSecretCredential(
+		types.CommGlbCfg.GraphApiCfg.TenantId,
+		types.CommGlbCfg.GraphApiCfg.ClientId,
+		types.CommGlbCfg.GraphApiCfg.ClientSecret,
+		nil,
+	)
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to GenerateGraphApiClient: %v", err)
+		return err
+	}
+
+	client, err := msgraphsdk.NewGraphServiceClientWithCredentials(cred, []string{
+		"https://graph.microsoft.com/.default",
+	})
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to create Graph client: %v", err)
+		return err
+	}
+
+	types.CommGlbCfg.ScheduleGraphApiClient = client
+	log.ConfDebugTrace(0, "Graph Client Created: %+v", types.CommGlbCfg.ScheduleGraphApiClient)
+	return nil
 }
 
 /******************************************************************************
@@ -259,7 +370,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
-
+	gCfgFilePaths.OutlookApiConfig = gCfgFilePaths.CfgJsonDir + "outlookGraphConfig.json"
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
 
@@ -371,7 +482,7 @@ func InitHttpCallbackPath() {
  ******************************************************************************/
 func PrintSvcGlbConfig(cfg models.SvcConfig) {
 	log.EnterFn(0, "PrintSvcGlbConfig")
-	log.SysConfTrace(0, "owehub-calc Service Configuration: %+v", cfg)
+	log.SysConfTrace(0, "owehub-scheduling Service Configuration: %+v", cfg)
 	log.ExitFn(0, "PrintSvcGlbConfig", nil)
 }
 
