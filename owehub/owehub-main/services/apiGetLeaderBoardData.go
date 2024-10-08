@@ -92,6 +92,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
 		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) {
 		if len(dataReq.DealerName) == 0 {
+			LeaderBoardList.TopLeaderBoardList = []models.GetLeaderBoard{}
 			LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
 
 			log.FuncErrorTrace(0, "no dealer name selected")
