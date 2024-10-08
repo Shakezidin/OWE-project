@@ -477,13 +477,13 @@ input[type='checkbox']:checked {
   }
 }
 
-@media screen and (min-width: 349px) and (max-width: 405px) {
+@media screen and (max-width: 767px) {
   .date_calendar {
     display: flex !important;
     flex-direction: row !important;
     gap: 4px !important;
-    padding: 17px 16px 17px 35px !important;
-    margin: 17px 16px 17px 35px !important;
+    /* padding: 17px 16px 17px 35px !important;
+    margin: 17px 16px 17px 35px !important; */
   }
 }
 
@@ -849,7 +849,11 @@ input[type='checkbox']:checked {
   }
 
   .cardContent {
-   padding: 10px 10px 18px 2px;
+   padding: 10px 10px 18px 0px;
+  }
+
+  .legend {
+    padding-left: 16px;
   }
   
 }

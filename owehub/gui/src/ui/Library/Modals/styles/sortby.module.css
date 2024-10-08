@@ -23,10 +23,12 @@
   justify-content: center;
   gap: 10px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 .logo_sortby_botton:hover {
   border: 1px solid #377cf6;
   color: #377cf6;
+  transform: scale(1.05);
 }
 .sortlibrary_inner_div {
   list-style: none;
@@ -58,11 +60,7 @@
   background-color: #d6e5ff;
 }
 
-.selected {
-  background-color: #377cf6;
-  color: #ffffff;
-  border-radius: 3px;
-}
+
 
 .icon_active {
   transition: 500ms;
@@ -87,12 +85,23 @@
 .dropdownItem {
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 21px;
 }
 
 .dropdownItem:hover {
   background-color: #d6e5ff;
-  border-radius: 3px;
+  /* border-radius: 3px; */
+}
+.selected {
+  background-color: #377cf6;
+  color: #ffffff;
+  /* border-radius: 3px; */
+}
+
+.selected:hover {
+  background-color: #377cf6;
+  color: #ffffff;
+  /* border-radius: 3px; */
 }

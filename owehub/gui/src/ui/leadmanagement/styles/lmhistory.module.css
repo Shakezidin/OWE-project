@@ -48,11 +48,11 @@
   transition: all 0.3s ease;
 }
 
-.history_list_inner > *:last-child {
+.history_list_inner>*:last-child {
   justify-self: center;
 }
 
-.history_list_inner > *:nth-child(4) {
+.history_list_inner>*:nth-child(4) {
   justify-self: start;
   padding-left: 85px;
 }
@@ -403,6 +403,7 @@
     height: 1.3px;
     background-color: #929292;
   }
+
   .act_head {
     text-align: left;
   }
@@ -424,6 +425,7 @@
   .filters {
     gap: 4px;
   }
+
   .activity_info {
     align-items: start;
   }
@@ -480,6 +482,7 @@
 .lead__datepicker_btns button:first-child {
   margin-right: 0.5rem;
 }
+
 .lead__datepicker_wrapper {
   position: relative;
   line-height: 0;
@@ -487,6 +490,7 @@
   transition: transform 0.3s ease;
   z-index: 11;
 }
+
 .lead__datepicker_wrapper:hover {
   z-index: 11;
 }
@@ -498,9 +502,16 @@
 
   .lead__datepicker_content {
     margin-top: 5px;
-    right: 5px;
+    position: absolute;
+    left: -103px;
+    z-index: 100;
+    background-color: var(--white-color);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
   }
 }
+
+
 
 @media screen and (max-width: 1024px) {
   .history_list_inner {
@@ -512,11 +523,11 @@
     padding-right: 6px;
   }
 
-  .history_list_inner > *:last-child {
+  .history_list_inner>*:last-child {
     justify-self: center;
   }
 
-  .history_list_inner > *:nth-child(4) {
+  .history_list_inner>*:nth-child(4) {
     justify-self: start;
     padding-left: 0;
   }
