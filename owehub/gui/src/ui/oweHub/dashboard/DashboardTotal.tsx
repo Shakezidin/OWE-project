@@ -117,7 +117,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                           el.doller.length > 5 ? 'break-all' : 'normal',
                       }}
                     >
-                      {el.doller}
+                      {/* {el.doller} */}
+                      {"N/A"}
                     </h4>
                   </div>
                   <div className="teamImg">
