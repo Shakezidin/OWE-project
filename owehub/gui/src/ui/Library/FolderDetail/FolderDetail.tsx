@@ -157,7 +157,7 @@ const FolderDetail = () => {
                 </div>
 
                 <div className={styles.libSecHeader_right}>
-                    <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="folders" />
+                <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="folders" setLoading={setIsLoading} />
                 </div>
             </div>
 
