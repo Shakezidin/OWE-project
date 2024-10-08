@@ -442,7 +442,7 @@ const CustomTooltip = ({
         style={{
           backgroundColor: 'white',
           padding: '5px 10px',
-          // border: '1px solid #f0f0f0',
+          zIndex:"99",
           borderRadius: '4px',
           // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
@@ -1225,6 +1225,7 @@ const openProposalLink = (link: string) => {
                     ...baseStyles,
                     width: '140px',
                     marginTop: '0px',
+                    zIndex:"100"
                   }),
                 }}
               />
