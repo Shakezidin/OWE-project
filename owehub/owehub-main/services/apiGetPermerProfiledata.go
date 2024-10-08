@@ -63,9 +63,9 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	query = `SELECT tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email, ud.user_code as user_code
 			FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
 			LEFT JOIN teams tm ON ud.team_id = tm.team_id
-			WHERE vd.dealer_name = $1 AND ud.name = $2`
+			WHERE sp.sales_partner_name = $1 AND ud.name = $2`
 
 	//* adding personal details for only sale rep
 	if dataReq.DataType == "sale_rep" {
