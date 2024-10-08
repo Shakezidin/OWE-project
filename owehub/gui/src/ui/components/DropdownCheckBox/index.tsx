@@ -18,7 +18,6 @@ interface DropdownCheckboxProps {
   placeholder?: string;
   label?: string;
   disabled?: boolean;
- 
 }
 
 const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
@@ -28,7 +27,6 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   placeholder = 'Search...',
   label,
   disabled,
-  
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');

@@ -7,36 +7,37 @@ import Cookies from 'js-cookie';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 interface NewFileProps {
   activeSection: 'files' | 'folders' | 'dropdown' | null;
   onSort?: (option: string) => void;
+  handleSuccess?: () => void,
+  uploadPath?: string
+  folderUploadPath?: string
 }
 
 type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
-const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
+const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath, folderUploadPath }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
-  const [isVisibleuploadFile,setIsVisibleuploadFile]=useState(false);
+  const [isVisibleuploadFile, setIsVisibleuploadFile] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const FolderInputRef=useRef<HTMLInputElement | null>(null);
+  const FolderInputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [file, setFile] = useState<File | null>(null);
-
-
+  const [isCreateFolder, setIsCreateFolder] = useState(false)
+  const [pendingState, sePendingState] = useState<"uploading" | "creating" | "">("")
 
   const handleClick = () => {
     setIsVisible(!isVisible);
     setIsVisibleuploadFile(false);
-
   };
   const handleClickNewFolder = () => {
     setIsVisibleNewFolder(!isVisibleNewFolder);
 
-    
+
   };
   // Api code start for uploadFolder
   const handleFolderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,31 +45,66 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
     if (selectedFiles) {
       const fileArray = Array.from(selectedFiles);
       setFiles(fileArray);
-      console.log('Selected files:', fileArray.map(file => file.name));
+      console.log(
+        'Selected files:',
+        fileArray.map((file) => file.name)
+      );
     }
   };
 
   const uploadFiles = async () => {
     if (files.length === 0) return;
 
-    const accessToken = Cookies.get("myToken")
-    const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:/images:/children`; 
+    const accessToken = Cookies.get("myToken");
+    const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || "/"}`;
 
     try {
+      sePendingState("uploading")
+      setIsVisible(false)
       await Promise.all(files.map(async (file) => {
-        const apiUrl = `${apiUrlBase}${file.name}/content`;
-        const resp = await axios.put(apiUrl, file, {
+        const apiUrl = `${apiUrlBase}${file.name}:/createUploadSession`;
+
+        const sessionResponse = await axios.post(apiUrl, {
+          item: { "@microsoft.graph.conflictBehavior": "rename" }
+        }, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': file.type || 'application/octet-stream',
+            'Content-Type': 'application/json',
           },
         });
-        console.log('File uploaded successfully', resp);
+
+        const uploadUrl = sessionResponse.data.uploadUrl;
+        const chunkSize = 320 * 1024;
+        const totalChunks = Math.ceil(file.size / chunkSize);
+
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * chunkSize;
+          const end = Math.min(start + chunkSize, file.size);
+          const chunk = file.slice(start, end);
+
+          await axios.put(uploadUrl, chunk, {
+            headers: {
+              'Content-Range': `bytes ${start}-${end - 1}/${file.size}`,
+              'Content-Type': file.type || 'application/octet-stream',
+            },
+          });
+        }
+
+        await handleSuccess?.();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""
+
+        }
+        setFiles([])
+        setIsVisible(false)
         toast.success(`File "${file.name}" uploaded successfully!`);
       }));
     } catch (error) {
       console.error('Error during file upload:', error);
       toast.error('Error during file upload. Please try again.');
+    }
+    finally {
+      sePendingState("")
     }
   };
 
@@ -80,53 +116,33 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
 
   const handleOptionClick = () => {
     FolderInputRef.current?.click();
-
-
   };
 
   //api code end for uploadFolder
 
-// Api code start for uploadFile
-const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const selectedFile = event.target.files?.[0] || null;
-      setFile(selectedFile);
-      setIsVisible(false);
-};
+  // Api code start for uploadFile
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0] || null;
+    setFile(selectedFile);
+    setIsVisible(false);
+  };
 
-const uploadFile = async () => {
-  if (!file) return;
 
-  const accessToken = Cookies.get("myToken") 
-  const apiUrl = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${file.name}:/content`;
 
-  try {
-      const resp = await axios.put(apiUrl, file, {
-          headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': file.type || 'application/octet-stream',
-          },
-      });
 
-      console.log('File uploaded successfully', resp);
-      toast.success(`File "${file.name}" uploaded successfully!`);
-  } catch (error) {
-      console.error('Error during file upload:', error);
-      toast.error('Error during file upload. Please try again.');
+
+  const closeOnSuccess = () => {
+    handleSuccess?.()
+    setIsVisible(false)
+
   }
-};
 
-useEffect(() => {
-  if (file) {
-      uploadFile(); 
+
+  const handleOptionClickFile = () => {
+
+    setIsCreateFolder(true)
+
   }
-}, [file]); 
-
-
-const handleOptionClickFile=()=>{
-  
-  fileInputRef.current?.click();
-
-}
   // api code end for uploadFile
 
   useEffect(() => {
@@ -149,69 +165,49 @@ const handleOptionClickFile=()=>{
     <div className={classes.newfile_container} ref={dropdownRef}>
       <button
         onClick={handleClick}
+        disabled={pendingState === "uploading"}
         className={classes.newfile_botton}
         style={
           isVisible ? { backgroundColor: '#377cf6', color: '#ffffff' } : {}
         }
       >
-        + New
+        {pendingState === "uploading" ?  <span style={{fontSize:10}} >
+          uploading...
+        </span>   : " + New"}
       </button>
       {isVisible && (
         <ul className={classes.dropdownMenu}>
-          {activeSection === 'folders' ? (
+
+          <>
             <>
-            <>
-            <input id="file-upload" type="file" onChange={handleFolderChange} 
-             ref={FolderInputRef}
-             style={{ display: 'none' }}
-            className={classes.folderInput}
-            multiple
-            />
-              <li 
+              <input id="file-upload" type="file" onChange={handleFolderChange}
+                ref={FolderInputRef}
+                style={{ display: 'none' }}
+                className={classes.folderInput}
+                multiple
+              />
+              <li
                 className={`${classes.dropdownItem} ${selectedOption === 'Upload folder' ? classes.selected : ''}`}
                 onClick={handleOptionClick}
               >
-                + Upload folder
+                + Upload file
               </li>
-            </> 
-              
-              <li 
-                className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
-                onClick={handleClickNewFolder}
-              >
-                + New folder
-              </li>
-              {isVisibleNewFolder && (<CreateNewFolderLibrary setIsVisibleNewFolder={setIsVisibleNewFolder}  onDelete={function (): void {
-                throw new Error('Function not implemented.');
-              } }/>)}
-           
             </>
-          ) : (
-            <>
-            <input id="file-upload" type="file" onChange={handleFileUpload} 
-             ref={fileInputRef}
-             style={{ display: 'none' }}
-            className={classes.fileInput}
-            multiple
-            />
-            <li className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
-              onClick={handleOptionClickFile}>
-                   + Upload file
-                   
-                   </li>
-                  
-                   
-                  
-           
-               
-            </>  
-          )}
-         
+
+            {activeSection === 'folders' && <li
+              className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
+              onClick={handleOptionClickFile}
+            >
+              + New folder
+            </li>}
+          </>
         </ul>
-        
       )}
+
+      {
+        isCreateFolder && <CreateNewFolderLibrary uploadPath={folderUploadPath} setIsVisibleNewFolder={setIsCreateFolder} handleSuccess={closeOnSuccess} />
+      }
     </div>
-    
   );
 };
 
@@ -227,4 +223,3 @@ function convertFileToBase64(selectedFile: File) {
 function setUploadedImage(base64File: void) {
   throw new Error('Function not implemented.');
 }
-

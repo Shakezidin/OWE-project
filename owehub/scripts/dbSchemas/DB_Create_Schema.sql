@@ -63,3 +63,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 /* Battery Backup Calcuator Schema */
 \i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspect.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspectLoad.sql';
+
+/* Scheduling Schema */
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateSchedulingProject.sql';

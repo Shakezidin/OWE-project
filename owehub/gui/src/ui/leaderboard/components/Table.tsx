@@ -328,12 +328,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -615,7 +615,8 @@ const Table = ({
       // setLeaderTable(tableData.data.leader_board_list
       // );
       setLeaderTable(tableData?.data?.leader_board_list);
-      setTotalCount(tableData?.data?.dbRecCount);
+      setTotalCount(tableData?.dbRecCount);
+      setTotalStats(tableData?.data);
     }
   }, [
     activeHead,
@@ -630,6 +631,9 @@ const Table = ({
     tableData,
   ]);
 
+
+  console.log(leaderTable?.length, "fkjgh")
+  console.log(totalCount, "totalcount")
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {
@@ -991,10 +995,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                role === TYPE_OF_USER.ACCOUNT_MANAGER
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -1012,7 +1016,7 @@ const Table = ({
               KW
             </div>
             <div
-              onClick={() => isLoading && setActiveHead('count')}
+              onClick={() => !isLoading && setActiveHead('count')}
               className={`tab ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count

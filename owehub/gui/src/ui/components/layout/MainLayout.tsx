@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../../redux/hooks';
 import {
   activeSessionTimeout,
   logout,
+  setToken,
 } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
@@ -18,6 +19,8 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
 import useIdleTimer from '../../../hooks/useIdleTimer';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import Cookies from 'js-cookie';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -32,6 +35,27 @@ const MainLayout = () => {
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
 
+  const getToken = async () => {
+    try {
+      const response = await postCaller("get_graph_api_access_token", {});
+      const token = await response.data.access_token;
+      const tokenDuration = await response.data.expires_in;
+      const expTime = new Date(Date.now() + 100)
+      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60))
+      Cookies.set('myToken', token, { expires: expTime, path: "/" });
+      dispatch(setToken(token))
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const token = Cookies.get('myToken');
+    if (!token) {
+      getToken()
+    }
+  }, [])
+
   /** logout  */
   const logoutUser = (message?: string) => {
     dispatch(activeSessionTimeout());
@@ -45,6 +69,8 @@ const MainLayout = () => {
 
   /** check idle time  */
   useIdleTimer({ onIdle: logoutUser, timeout: 900000 });
+
+
 
   /** reset paswword */
   useEffect(() => {

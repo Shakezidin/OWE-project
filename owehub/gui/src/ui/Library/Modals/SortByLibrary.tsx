@@ -3,21 +3,21 @@ import classes from './styles/sortby.module.css';
 import { FaChevronDown } from 'react-icons/fa6';
 
 interface SortByLibraryProps {
-  onSort: (option: 'none' | 'name' | 'date' | 'size') => void;
+  onSort: (option:'name' | 'date' | 'size') => void;
 }
 
 const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<
-    'none' | 'name' | 'date' | 'size'
-  >('none');
+    'name' | 'date' | 'size'
+  >('date');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleClick = () => {
     setIsVisible((prev) => !prev);
   };
 
-  const handleSortChange = (option: 'none' | 'name' | 'date' | 'size') => {
+  const handleSortChange = (option:'name' | 'date' | 'size') => {
     setSelectedOption(option);
     onSort(option);
     setIsVisible(false);
@@ -53,11 +53,11 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
 
       {isVisible && (
         <ul className={classes.dropdownMenu}>
-          {['none', 'name', 'date', 'size'].map((option) => (
+          {['name', 'date', 'size'].map((option) => (
             <li
               key={option}
               onClick={() =>
-                handleSortChange(option as 'none' | 'name' | 'date' | 'size')
+                handleSortChange(option as 'name' | 'date' | 'size')
               }
               className={`${classes.dropdownItem} ${selectedOption === option ? classes.selected : ''}`}
             >

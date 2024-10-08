@@ -7,6 +7,7 @@
   background-color: #eff5ff;
 }
 
+
 .libraryHeader {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -38,6 +39,7 @@
   height: 36.68px;
   width: 32px;
   border-radius: 2.8px;
+  flex-shrink: 0;
 }
 
 .libSecHeader {
@@ -303,7 +305,7 @@
 .recycleBinContent {
   position: absolute;
   top: 165px;
-  right: 35px;
+  right: 45px;
   font-size: 12px;
   color: #377cf6;
   font-weight: 600;
@@ -404,19 +406,17 @@
   visibility: visible;
 }
 
-.folderHeader{
+.folderHeader {
   display: flex;
   flex-direction: row;
-  gap: 15px;  
+  gap: 15px;
 }
-
-
 
 /* ajay chaudhary */
 
-.filesLoader{
-  width:100%;
-  height:100%;
+.filesLoader {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

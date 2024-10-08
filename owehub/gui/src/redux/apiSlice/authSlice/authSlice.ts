@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { loginAction } from '../../apiActions/auth/authActions';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+import { set } from 'date-fns';
 
 interface AuthState {
   loading: boolean;
@@ -14,6 +16,7 @@ interface AuthState {
   isPasswordChangeRequired: boolean;
   status: number | null;
   sessionTimeout: boolean;
+  microsoftGraphAccessToken: string
 }
 
 const initialState: AuthState = {
@@ -28,6 +31,7 @@ const initialState: AuthState = {
     ? true
     : false,
   sessionTimeout: false,
+  microsoftGraphAccessToken: Cookies.get('myToken') || ""
 };
 
 const authSlice = createSlice({
@@ -52,6 +56,9 @@ const authSlice = createSlice({
     },
     initializeAuth(state) {
       state.isAuthenticated = state.access_token !== null;
+    },
+    setToken(state, action) {
+      state.microsoftGraphAccessToken = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -92,5 +99,6 @@ export const {
   initializeAuth,
   activeSessionTimeout,
   diableSessionTimeout,
+  setToken
 } = authSlice.actions;
 export default authSlice.reducer;

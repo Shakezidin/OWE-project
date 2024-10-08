@@ -24,14 +24,15 @@ import { useDispatch } from 'react-redux';
 import useAuth from '../../../hooks/useAuth';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
+import Input from '../../scheduler/SaleRepCustomerForm/component/Input/Input';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
   leadId?: number;
   refresh?: number;
   setRefresh?: (value: number) => void;
-  reschedule?: boolean
-  action?:boolean
+  reschedule?: boolean;
+  action?: boolean;
 }
 interface LeadData {
   first_name: string;
@@ -50,7 +51,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   onClose1,
   leadId,
   reschedule,
-  action
+  action,
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,7 +84,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  const dispatch = useDispatch();
+  console.log(action, 'do something new');
 
   const handleSendAppointment = async () => {
     setLoad(true);
@@ -116,6 +117,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
+
   const [loading, setIsLoading] = useState(false);
   useEffect(() => {
     const isPasswordChangeRequired =
@@ -140,8 +142,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
             setLeadData(response.data);
             if (reschedule === true) {
               setVisibleDiv(0);
-            }else if(action == true){
-               setVisibleDiv(67);
+            } else if (action == true) {
+              setVisibleDiv(67);
             } else {
               setVisibleDiv(response.data?.status_id);
             }
@@ -159,8 +161,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   }, [isAuthenticated, leadId, isModalOpen]);
 
-  console.log(reschedule, "asgdhgfsdghf")
-
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
       if (event.key === 'Escape') {
@@ -173,7 +173,110 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
-    // Function to create project, design, and proposal in sequence
+  const handleCloseWon = async () => {
+    setLoad(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setVisibleDiv(5);
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  const [reason, setReason] = useState('');
+  const [reasonError, setReasonError] = useState('');
+
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    if (name === 'reason') {
+      if (value.trim() !== '') {
+        setReason(value);
+        setReasonError(''); // Clear any previous error message
+      } else {
+        setReason('');
+        setReasonError('Reason cannot be empty'); // Set an error message
+      }
+    }
+  };
+
+  const handleCloseLost = async () => {
+    if (reason.trim() === '') {
+      setReasonError('Reason cannot be empty');
+      return;
+    }
+
+    setLoad(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+          reason: reason,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        HandleModal();
+        setReason('');
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', options);
+  };
+
+  const calculateRemainingDays = (appointmentDate: string): string => {
+    const currentDate = new Date();
+    const appointmentDateTime = new Date(appointmentDate);
+    const timeDiff = appointmentDateTime.getTime() - currentDate.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    if (daysDiff === 1) {
+      return '1 Day Left';
+    } else if (daysDiff > 1) {
+      return `${daysDiff} Days Left`;
+    } else {
+      return 'Appointment Date Passed';
+    }
+  };
+
+  // Function to create project, design, and proposal in sequence
 
   const handleCreateProposal = async () => {
     if (!leadData) {
@@ -187,53 +290,66 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     try {
       // Generate a timestamp
       const timestamp = new Date().getTime();
-    
+
       // Create Project
-      const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
-        project: {
-          location: {
-            property_address: leadData.street_address,
+      const projectResponse = await axios.post(
+        'http://localhost:5000/api/create-project',
+        {
+          project: {
+            location: {
+              property_address: leadData.street_address,
+            },
+            external_provider_id: leadId?.toString() || 'YourId123',
+            name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+            customer_salutation: 'Mr./Mrs.',
+            customer_first_name: leadData.first_name,
+            customer_last_name: leadData.last_name,
+            mailing_address: leadData.street_address,
+            customer_email: leadData.email_id,
+            customer_phone: leadData.phone_number,
+            status: 'Remote Assessment Completed',
+            preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+            tags: ['third_party_1'],
           },
-          external_provider_id: leadId?.toString() || 'YourId123',
-          name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-          customer_salutation: 'Mr./Mrs.',
-          customer_first_name: leadData.first_name,
-          customer_last_name: leadData.last_name,
-          mailing_address: leadData.street_address,
-          customer_email: leadData.email_id,
-          customer_phone: leadData.phone_number,
-          status: 'Remote Assessment Completed',
-          preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-          tags: ['third_party_1'],
-        },
-      });
+        }
+      );
       console.log('Project created:', projectResponse.data);
       const projectId = projectResponse.data.project.id;
-    
+
       // Create Design
-      const designResponse = await axios.post('http://localhost:5000/api/create-design', {
-        design: {
-          external_provider_id: leadId?.toString() || 'YourId123',
-          project_id: projectId,
-          name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-        },
-      });
+      const designResponse = await axios.post(
+        'http://localhost:5000/api/create-design',
+        {
+          design: {
+            external_provider_id: leadId?.toString() || 'YourId123',
+            project_id: projectId,
+            name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+          },
+        }
+      );
       console.log('Design created:', designResponse.data);
       const designId = designResponse.data.design.id;
-    
+
       // Create Proposal
-      const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+      const proposalResponse = await axios.post(
+        'http://localhost:5000/api/create-proposal',
+        { designId }
+      );
       console.log('Proposal created:', proposalResponse.data);
       setProposalLink(proposalResponse.data.proposal.proposal_link);
       toast.success('Proposal created successfully');
-    
+
       // Open the proposal in a new tab
       window.open(proposalResponse.data.proposal.proposal_link, '_blank');
-    
     } catch (error) {
       const err = error as any;
-      console.error('Error during proposal creation:', err.response?.data || err.message);
-      setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+      console.error(
+        'Error during proposal creation:',
+        err.response?.data || err.message
+      );
+      setError(
+        `Error during proposal creation: ${err.response?.data?.message || err.message}`
+      );
       toast.error('Failed to create proposal. Please try again.');
     } finally {
       setLoadingProposal(false);
@@ -241,66 +357,66 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-    // const handleCreateProposal = async () => {
-    //   setLoadingProposal(true);
-    //   setError('');
-  
-    //   try {
-    //     // Create Project
-    //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
-    //       project: {
-    //         location: {
-    //           latitude: 37.77960043,
-    //           longitude: -122.39530086,
-    //         },
-    //         external_provider_id: 'YourId123',
-    //         name: 'My first test project',
-    //         customer_salutation: 'Mrs.',
-    //         customer_first_name: 'Jane',
-    //         customer_last_name: 'Doe',
-    //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
-    //         customer_email: 'jane@example.com',
-    //         customer_phone: '(555) 111-5151',
-    //         status: 'Remote Assessment Completed',
-    //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-    //         tags: ['third_party_1'],
-    //       },
-    //     });
-    //     console.log('Project created:', projectResponse.data);
-    //     const projectId = projectResponse.data.project.id;
-  
-    //     // Create Design
-    //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
-    //       design: {
-    //         external_provider_id: 'YourId123',
-    //         project_id: projectId,
-    //         name: `Mydesign${projectId}`,
-    //       },
-    //     });
-    //     console.log('Design created:', designResponse.data);
-    //     const designId = designResponse.data.design.id;
-  
-    //     // Create Proposal
-    //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
-    //     console.log('Proposal created:', proposalResponse.data);
-    //     setProposalLink(proposalResponse.data.proposal.proposal_link);
-    //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
-    //     toast.success('Proposal created successfully'); // Notify success
-  
-    //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
-    //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
-        
-    //     // Close the component/modal after success
-    //     // setShowCreateProposal(false);
-  
-    //   } catch (error) {
-    //     const err = error as any; // Type assertion to 'any'
-    //     console.error('Error during proposal creation:', err.response?.data || err.message);
-    //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
-    //   } finally {
-    //     setLoadingProposal(false);
-    //   }
-    // };
+  // const handleCreateProposal = async () => {
+  //   setLoadingProposal(true);
+  //   setError('');
+
+  //   try {
+  //     // Create Project
+  //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
+  //       project: {
+  //         location: {
+  //           latitude: 37.77960043,
+  //           longitude: -122.39530086,
+  //         },
+  //         external_provider_id: 'YourId123',
+  //         name: 'My first test project',
+  //         customer_salutation: 'Mrs.',
+  //         customer_first_name: 'Jane',
+  //         customer_last_name: 'Doe',
+  //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
+  //         customer_email: 'jane@example.com',
+  //         customer_phone: '(555) 111-5151',
+  //         status: 'Remote Assessment Completed',
+  //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+  //         tags: ['third_party_1'],
+  //       },
+  //     });
+  //     console.log('Project created:', projectResponse.data);
+  //     const projectId = projectResponse.data.project.id;
+
+  //     // Create Design
+  //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
+  //       design: {
+  //         external_provider_id: 'YourId123',
+  //         project_id: projectId,
+  //         name: `Mydesign${projectId}`,
+  //       },
+  //     });
+  //     console.log('Design created:', designResponse.data);
+  //     const designId = designResponse.data.design.id;
+
+  //     // Create Proposal
+  //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+  //     console.log('Proposal created:', proposalResponse.data);
+  //     setProposalLink(proposalResponse.data.proposal.proposal_link);
+  //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
+  //     toast.success('Proposal created successfully'); // Notify success
+
+  //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
+  //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
+
+  //     // Close the component/modal after success
+  //     // setShowCreateProposal(false);
+
+  //   } catch (error) {
+  //     const err = error as any; // Type assertion to 'any'
+  //     console.error('Error during proposal creation:', err.response?.data || err.message);
+  //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+  //   } finally {
+  //     setLoadingProposal(false);
+  //   }
+  // };
 
   return (
     <div>
@@ -337,15 +453,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
                       {leadData?.street_address
-                      ? leadData.street_address.length > 20
+                        ? leadData.street_address.length > 20
                           ? `${leadData.street_address.slice(0, 30)}...`
-                        : leadData.street_address
+                          : leadData.street_address
                         : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
                       {/* <span className={classes.verified}> */}
-                        {/* <svg
+                      {/* <svg
                           className={classes.verifiedMarked}
                           width="13"
                           height="13"
@@ -374,7 +490,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                             </clipPath>
                           </defs>
                         </svg>{' '} */}
-                        {/* <span className={classes.verifyLetter}> Verified</span>
+                      {/* <span className={classes.verifyLetter}> Verified</span>
                       </span> */}
                     </span>
                     <div>
@@ -521,9 +637,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     Appointment Accepted{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    27 Aug ,2024. 12:00 PM
+                    {leadData?.appointment_accepted_date
+                      ? formatDate(leadData?.appointment_accepted_date)
+                      : ''}
                   </span>
-                  <span className={classes.remaningDate}>6 Days Left</span>
+                  <span className={classes.remaningDate}>
+                    {leadData?.appointment_accepted_date
+                      ? calculateRemainingDays(
+                          leadData.appointment_accepted_date
+                        )
+                      : ''}
+                  </span>
                 </div>
 
                 <div className={classes.AfterAppointment}>
@@ -548,22 +672,28 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.closedButtonQuestionmark}>
                   <button
                     className={classes.self}
-                    onClick={() => setVisibleDiv(4)}
+                    onClick={handleCloseWon}
                     style={{
                       backgroundColor: '#3AC759',
                       color: '#FFFFFF',
                       border: 'none',
+                      pointerEvents: load || loading ? 'none' : 'auto',
+                      opacity: load || loading ? 0.6 : 1,
+                      cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                   >
                     CLOSED WON
                   </button>
                   <button
-                    onClick={() => setVisibleDiv(5)}
+                    onClick={() => setVisibleDiv(3)}
                     id="otherButtonId"
                     style={{
                       backgroundColor: '#CD4040',
                       color: '#FFFFFF',
                       border: 'none',
+                      pointerEvents: load || loading ? 'none' : 'auto',
+                      opacity: load || loading ? 0.6 : 1,
+                      cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                     className={classes.other}
                   >
@@ -575,17 +705,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#D3D3D3',
                       color: '#888888',
                       border: 'none',
+                      pointerEvents: load || loading ? 'none' : 'auto',
+                      opacity: load || loading ? 0.6 : 1,
+                      cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                     className={classes.other}
+                    onClick={() => setVisibleDiv(3)}
                   >
                     Reschedule Appointment
                   </button>
-                  <span className={classes.getAppointment}>
-                    
-                  </span>
-                  <span className={classes.notAvailableCtmr}>
-                    
-                  </span>
+                  <span className={classes.getAppointment}></span>
+                  <span className={classes.notAvailableCtmr}></span>
                 </div>
               </>
             )}
@@ -609,14 +739,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       Why did customer denied?
                     </span>
                   </div>
+                  {/* className={classes.dropdownContainerModal} */}
                   <div className={classes.dropdownContainerModal}>
-                    <select className={classes.dropdownModal}>
-                      <option value="option1">
-                        Moving to different city in few months
-                      </option>
-                      <option value="option2">Rabindra Kumar </option>
-                      <option value="option3">Sharma</option>
-                    </select>
+                    <input
+                      type="text"
+                      value={reason}
+                      placeholder="Please Enter Reason"
+                      onChange={handleInputChange}
+                      name="reason"
+                      maxLength={100}
+                    />
+                    {reasonError && <p className="error">{reasonError}</p>}
                   </div>
 
                   <div className={classes.survey_button}>
@@ -626,7 +759,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: '#377CF6',
                         color: '#FFFFFF',
                         border: 'none',
+                        pointerEvents: load ? 'none' : 'auto',
+                        opacity: load ? 0.6 : 1,
+                        cursor: load ? 'not-allowed' : 'pointer',
                       }}
+                      onClick={handleCloseLost}
                     >
                       SUBMIT
                     </button>
@@ -662,25 +799,40 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     <button
                       className={classes.self}
                       style={{
-                        backgroundColor: `${loadingProposal ? '#FFFFFF' :'#3AC759'}`,
+                        backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
                         color: '#FFFFFF',
-                        border:'none'
+                        border: 'none',
                       }}
-                      onClick={handleCreateProposal} 
+                      onClick={handleCreateProposal}
                       disabled={loadingProposal}
                     >
                       {loadingProposal ? (
-                        <div style={{display:'flex',justifyContent: 'center', alignItems:'center', color:'#3AC759',
-                          border:'1px solid #3AC759', borderRadius:10
-                        }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            color: '#3AC759',
+                            border: '1px solid #3AC759',
+                            borderRadius: 10,
+                          }}
+                        >
                           Creating Proposal...
-                          <div style={{ display: 'flex', justifyContent: 'center',transform:'scale(0.5)' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              transform: 'scale(0.5)',
+                            }}
+                          >
                             <MicroLoader />
                           </div>
                         </div>
-                      ) : 'Create Proposal'}
+                      ) : (
+                        'Create Proposal'
+                      )}
                     </button>
-                      {/* <button
+                    {/* <button
                         className={classes.self}
                         style={{
                           backgroundColor: '#3AC759',
@@ -700,7 +852,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               </>
             )}{' '}
             {error && <p style={{ color: 'red' }}>{error}</p>}
-
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (
               <iframe
