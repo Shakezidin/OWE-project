@@ -44,18 +44,18 @@ clean: ## Remove previous build
 docker: ## Create Docker Image
 	@echo "Building owehub-scheduling Docker Image $SERVICE_ROOT"
 		cd $(SERVICE_ROOT)/../ || exit 1 ; \
-		docker build -f docker/Dockerfile-Owe-Scheduling-App -t owehub-scheduling:v1 .; 
+		docker build -f docker/Dockerfile-Owe-Scheduling-App -t owehub-scheduler:v2 .; 
 		
 dockerpush: ## Create Docker Image
 	@echo "Build and push owehub-scheduling Docker Image"
 	@echo "Registry Name $(DOCKER_REGISTRY)"
 		cd $(SERVICE_ROOT)/../ || exit 1 ; \
-		docker build -f docker/Dockerfile-Owe-Scheduling-App -t owehub-scheduling:v1 .; \
-        docker push owehub-scheduling:v1 ; 
+		docker build -f docker/Dockerfile-Owe-Scheduling-App -t owehub-scheduler:v2 .; \
+        docker push owehub-scheduler:v2 ; 
 
 dockerpushclean: ## Create Docker Image
 	@echo "Clean owehub-scheduling docker Images From Registry.."
-	echo "Removing Image owehub-scheduling:v1" ; \
+	echo "Removing Image owehub-scheduler:v2" ; \
 	cd $(SERVICE_ROOT)/../ ; \
-	docker rmi owehub-scheduling:v1 ; 
+	docker rmi owehub-scheduler:v2 ; 
 
