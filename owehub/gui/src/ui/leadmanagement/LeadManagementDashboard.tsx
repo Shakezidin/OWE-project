@@ -1549,6 +1549,7 @@ const openProposalLink = (link: string) => {
                                   ? 'Update Status'
                                   : 'Create Proposal'}
                               </button>
+                              
                             </div>
                           )}
 
