@@ -632,8 +632,7 @@ const Table = ({
   ]);
 
 
-  console.log(leaderTable?.length, "fkjgh")
-  console.log(totalCount, "totalcount")
+   
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {

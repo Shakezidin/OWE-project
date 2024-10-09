@@ -54,7 +54,8 @@ const TableHeader = (props: TableProps) => {
               >
                 View Archive
               </label>
-              <Switch checked={viewArchive} onChange={onPressViewArchive} />
+              <Switch checked={viewArchive} onChange={onPressViewArchive} disabled />
+
             </div>
           </div>
         ) : null}
@@ -111,9 +112,12 @@ const TableHeader = (props: TableProps) => {
               // background: `var(--primary-color)`,
               color: 'white',
               border: '1px solid var(--primary-color)',
+              opacity:'0.7',
+              cursor:'not-allowed'
+              
             }}
             // className="hover-btn"
-            onClick={onpressAddNew}
+            // onClick={onpressAddNew}
           >
             <img
               src={ICONS.AddIcon}
