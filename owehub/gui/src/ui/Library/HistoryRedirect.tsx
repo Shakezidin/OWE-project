@@ -56,8 +56,8 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
 
   return (
-    <div className="relative drop-ref-container">
-      <div className={classes.filtericonHistory} ref={clickableDivRef} onClick={HistoryButtonCalled}>
+    <div className="relative drop-ref-container" ref={clickableDivRef}>
+      <div className={classes.filtericonHistory} onClick={HistoryButtonCalled}>
         <img
           className={classes.ICONSTYLETHREEDOT}
           src={ThreeDotsImage}
