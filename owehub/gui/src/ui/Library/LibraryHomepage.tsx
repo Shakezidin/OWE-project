@@ -34,6 +34,7 @@ import wordFile from './assetss/wordFile.svg';
 import zipFolder from './assetss/zipFolder.svg';
 import defauult from './assetss/default.svg';
 import DataNotFound from '../components/loader/DataNotFound';
+import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -55,7 +56,8 @@ const LibraryHomepage = () => {
   const [selectedDelete, setSelecetedDelete] = useState("");
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
-  const { microsoftGraphAccessToken } = useAppSelector(state => state.auth)
+  const { microsoftGraphAccessToken, role_name } = useAppSelector(state => state.auth)
+
   const fetchFolderContent = async (folderId: string) => {
     setLoading(true);
     const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${folderId}/children`;
@@ -120,8 +122,8 @@ const LibraryHomepage = () => {
     url: string;
     date: string;
     iconName: string;
-    video?:{
-      duration?:string
+    video?: {
+      duration?: string
     };
     // File size in bytes
     // Include any other properties you expect
@@ -284,23 +286,23 @@ const LibraryHomepage = () => {
   const HandleSearch = (e: any) => {
     const inputValue = e.target.value;
     const validCharacters = /^[a-zA-Z0-9._-]*$/;
-  
+
     // Check if the last character is valid
     if (!validCharacters.test(inputValue.slice(-1))) {
       // Ignore the last character if it's invalid
       return; // Exit early without updating searchValue
     }
-  
+
     // Set the search value
     setSearchValue(inputValue);
-  
+
     // Handle empty search case
     if (inputValue === '') {
       setFileData(originalFileData);
       setFolderData(originalFolderData);
       return; // Exit early to avoid further processing
     }
-  
+
     // Filter based on the active section
     if (activeSection === 'files') {
       const filteredData = originalFileData.filter((file) =>
@@ -384,7 +386,7 @@ const LibraryHomepage = () => {
     setActiveSection(section);
     setSearchValue('');
   };
-  console.log("File data - ",fileData);
+  console.log("File data - ", fileData);
 
   const filteredData = fileData.filter((data) => {
     const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
@@ -602,7 +604,7 @@ const LibraryHomepage = () => {
               maxLength={50}
             />
           </div>
-          <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />
+          {role_name === TYPE_OF_USER.ADMIN && <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />}
 
           <Link
             className={styles.recycleBin}
@@ -678,11 +680,11 @@ const LibraryHomepage = () => {
                   onClick={() => downloadFile(item.url, item.name)}
                   style={{ height: '18px', width: '18px', color: '#667085' }}
                 />
-                <RiDeleteBinLine
+                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
                   className={styles.icons}
                   style={{ height: '18px', width: '18px', color: '#667085' }}
                   onClick={() => handleClickdeleted(item.id)}
-                />
+                />}
               </div>
             </div>
           })}
@@ -719,7 +721,8 @@ const LibraryHomepage = () => {
       return (
         <div>
           {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' ||  data.file?.mimeType === 'video/quicktime' ))} onClick={(url:string)=>{setIsVideoModalOpen(true)
+            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string) => {
+              setIsVideoModalOpen(true)
               setVideoUrl(url)
             }} />}
         </div>
@@ -748,12 +751,12 @@ const LibraryHomepage = () => {
               }}>
                 <img
                   className={styles.cardImg}
-                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType==="application/vnd.openxmlformats-officedocument.wordprocessingml.document"? wordFile: data.file?.mimeType==="image/jpeg"? data['@microsoft.graph.downloadUrl']: defauult}
+                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : data.file?.mimeType === "image/jpeg" ? data['@microsoft.graph.downloadUrl'] : defauult}
                   alt={`null`}
                   loading='lazy'
                 />
                 <div>
-                <p className={styles.name}>{data.name.substring(0, 50)}</p>
+                  <p className={styles.name}>{data.name.substring(0, 50)}</p>
                   <p className={styles.size}>
                     {data.size < 1024
                       ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -769,14 +772,14 @@ const LibraryHomepage = () => {
               <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                 {isRecycleBinView ? (
                   <div>
-                    <RiDeleteBinLine
+                    {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
                       className={styles.icons}
                       style={{
                         height: '16px',
                         width: '16px',
                         color: '#667085',
                       }}
-                      onClick={() => handleClickdeleted(data.id)} />
+                      onClick={() => handleClickdeleted(data.id)} />}
                     {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(data.id)} />)}
                   </div>
                 ) : (
@@ -793,7 +796,7 @@ const LibraryHomepage = () => {
                       />
                     </div>
                     <div>
-                      <RiDeleteBinLine
+                      {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
                         className={styles.icons}
                         style={{
                           height: '18px',
@@ -802,7 +805,7 @@ const LibraryHomepage = () => {
                         }} onClick={() => {
                           OpenModal()
                           setSelecetedDelete(data.id)
-                        }} />
+                        }} />}
                       {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => deleteMyFiles()} />)}
                     </div>
                   </>
@@ -812,8 +815,8 @@ const LibraryHomepage = () => {
           })
         ) : (
           <div className={` bg-white py2 ${styles.filesLoader}`}>
-                                    <DataNotFound />
-                                </div>
+            <DataNotFound />
+          </div>
         )}
       </div>
     );
