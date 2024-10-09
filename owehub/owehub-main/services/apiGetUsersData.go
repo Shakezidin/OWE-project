@@ -501,7 +501,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if len(dataFilter.UserRoles) > 0 {
-		log.FuncErrorTrace(0, "dataaa = %v", dataFilter.UserRoles)
 		if whereAdder {
 			filtersBuilder.WriteString(" AND ")
 		} else {
@@ -523,9 +522,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 
 	if len(dataFilter.DealerName) > 0 {
 		if whereAdder {
-			filtersBuilder.WriteString(fmt.Sprintf(" AND vd.dealer_name = $%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf(" AND sp.sales_partner_name = $%d", len(whereEleList)+1))
 		} else {
-			filtersBuilder.WriteString(fmt.Sprintf(" WHERE vd.dealer_name = $%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf(" WHERE sp.sales_partner_name = $%d", len(whereEleList)+1))
 		}
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
