@@ -2,6 +2,9 @@ ALTER TABLE teams
 ADD COLUMN partner_id BIGINT;
 
 ALTER TABLE teams
+ALTER COLUMN dealer_id DROP NOT NULL;
+
+ALTER TABLE teams
     ADD CONSTRAINT teams_dealer_fkey
         FOREIGN KEY (partner_id)
         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
