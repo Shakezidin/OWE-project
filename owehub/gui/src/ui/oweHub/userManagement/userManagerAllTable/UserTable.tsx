@@ -171,7 +171,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
-                  <td>{el.dealer_owner ? el.dealer_owner : 'NA'}</td>
+                  <td>{el.dealer ? el.dealer : 'NA'}</td>
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
