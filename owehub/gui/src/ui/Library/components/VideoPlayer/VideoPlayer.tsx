@@ -13,40 +13,30 @@ interface IPlayer {
 
 const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }: IPlayer) => {
     const playerRef = useRef<ReactPlayer | null>(null);
-    
-    const handleClose = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent event bubbling
-        if (playerRef.current) {
-            playerRef.current.getInternalPlayer().pause(); // Explicitly pause the video
-        }
-        if (onClose) {
-            onClose(); // Call the onClose handler
-        }
-    };
+
+
 
     return (
-        <div className='transparent-model' onClick={handleClose}>
-            <div>
-                <p className='videoName'>{videoName}</p>
-            </div>
-            <button 
-                className='close-btn' 
-                onClick={(e) => {
-                    e.stopPropagation(); // Prevent bubbling to the parent
-                    handleClose(e); // Call handleClose
-                }}
-            >
-                <MdClose color='#000' size={32}/>
-            </button>
-            <div className="bg-white">
+        <div className='transparent-model' >
+
+            <div style={{ minHeight: 400, maxWidth: width,width:"100%",borderRadius:12 }} className="bg-white p2 relative">
+
+                <div className='flex mb2 items-center justify-between' >
+                    <h4 > {videoName} </h4>
+                    <button
+                        className='close-btn'
+                        onClick={(e) => {
+                           onClose?.()
+                        }}
+                    >
+                        <MdClose color='#000' size={32} />
+                    </button>
+                </div>
                 <ReactPlayer
-                    ref={playerRef}
                     url={url}
-                    width={width}
-                    height={height}
+                    width={"100%"}
+                    height={"100%"}
                     controls={true}
-                    onReady={() => console.log('Player is ready')}
-                    onPause={() => console.log('Video paused')} // Debugging log
                 />
             </div>
         </div>

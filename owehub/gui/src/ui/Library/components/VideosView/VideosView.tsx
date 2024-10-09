@@ -22,7 +22,7 @@ interface VideoData {
 
 interface VideosViewProps {
   videoData: VideoData[]; // Expect an array of VideoData objects
-  onClick:(url:string)=>void;
+  onClick:(url:string,name?:string)=>void;
 }
 console.log();
 
@@ -30,7 +30,7 @@ function VideosView({ videoData, onClick}: VideosViewProps) {
   return (
     <div className={styles.folderMain_wrapper}>
       {videoData.map((Video: VideoData, index: number) => (
-        <div className={styles.folderDiv} key={index} onClick={()=>onClick(Video["@microsoft.graph.downloadUrl"])}>
+        <div className={styles.folderDiv} key={index} onClick={()=>onClick(Video["@microsoft.graph.downloadUrl"],Video.name)}>
           <div className={styles.videoImage_wrapper}>
             <div className={styles.transparent_play}>
               <img

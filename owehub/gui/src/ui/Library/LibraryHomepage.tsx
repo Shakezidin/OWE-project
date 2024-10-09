@@ -133,6 +133,7 @@ const LibraryHomepage = () => {
 
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [videoName,setVideoName] = useState("")
   const fetchDataFromGraphAPI = async () => {
     setLoading(true);
     const url = 'https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children'; //endpoint
@@ -723,9 +724,10 @@ if (currentFolderContent.length === 0) {
       return (
         <div>
           {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string) => {
+            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string,name) => {
               setIsVideoModalOpen(true)
               setVideoUrl(url)
+              setVideoName(name!)
               
             }} />}
         </div>
@@ -749,6 +751,7 @@ if (currentFolderContent.length === 0) {
                 if (isValidVideo) {
                   setIsVideoModalOpen(true)
                   setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
+                  setVideoName(data.name!)
                 }
 
               }}>
@@ -839,7 +842,7 @@ if (currentFolderContent.length === 0) {
 
       {renderContent()}
       {
-        isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => {setIsVideoModalOpen(false)
+        isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {setIsVideoModalOpen(false)
           console.log("video modal close");}
         } />
       }
