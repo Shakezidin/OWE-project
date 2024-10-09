@@ -305,14 +305,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       }, 500);
                     }}
                     className={`side-icon-container ${
-                      location.pathname === oth.path
+                      location.pathname.includes(oth.path)
                         ? 'active-link-bg'
                         : 'not-active-link'
                     }`}
                   >
                     <div
                       className={
-                        location.pathname === oth.path
+                        location.pathname.includes(oth.path)
                           ? 'sidebaricon'
                           : 'sidebariconn'
                       }
@@ -326,7 +326,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         borderRadius: 4,
                         marginLeft: !toggleOpen ? '' : '-1px',
                         background:
-                          toggleOpen && location.pathname === oth.path
+                          toggleOpen && location.pathname.includes(oth.path)
                             ? ''
                             : toggleOpen
                               ? 'transparent'
@@ -339,7 +339,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {toggleOpen && !isTablet ? null : (
                       <p
                         className={
-                          location.pathname === oth.path
+                          location.pathname.includes(oth.path)
                             ? 'tablink'
                             : 'tablinkk'
                         }
