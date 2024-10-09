@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS partner_details (
     partner_logo VARCHAR(255),
     bg_colour VARCHAR(255),
     preferred_name VARCHAR(255),
+    description VARCHAR(255),
     partner_id BIGINT,
     FOREIGN KEY (partner_id) REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE CASCADE
 );

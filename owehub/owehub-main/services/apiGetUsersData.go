@@ -70,7 +70,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail := req.Context().Value("emailid").(string)
 	role := req.Context().Value("rolename").(string)
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT sp.sales_partner_name as dealer_name FROM user_details ud JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id WHERE ud.email_id = '%v'", userEmail)
 
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {

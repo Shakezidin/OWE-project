@@ -93,7 +93,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 			 ud.mobile_number AS phone_number,
 			 COUNT(CASE WHEN tm.role_in_team = 'member' THEN 1 END) OVER (PARTITION BY tm.team_id) AS member_count,
 			 COUNT(CASE WHEN tm.role_in_team = 'manager' THEN 1 END) OVER (PARTITION BY tm.team_id) AS manager_count,
-			 vd.dealer_name
+			 sp.sales_partner_name as dealer_name
 		 FROM
 				 team_members tm
 		 JOIN
@@ -101,7 +101,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 JOIN
 				 teams t ON tm.team_id = t.team_id
 		 JOIN
-				 v_dealer vd ON t.dealer_id = vd.id
+				 sales_partner_dbhub_schema sp ON t.partner_id = sp.item_id
 		 WHERE
 				 tm.team_id = $1
 	 `
@@ -189,7 +189,7 @@ func PrepareTeamsFilters(tableName string, dataFilter models.GetTeamRequest, for
 	var filtersBuilder strings.Builder
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY ud.user_code, t.team_name, tm.role_in_team, ud.name, ud.email_id, tm.team_member_id, ud.mobile_number, vd.dealer_name")
+		filtersBuilder.WriteString(" GROUP BY ud.user_code, t.team_name, tm.role_in_team, ud.name, ud.email_id, tm.team_member_id, ud.mobile_number, sp.sales_partner_name")
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
