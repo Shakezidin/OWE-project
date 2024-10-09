@@ -112,7 +112,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["id"].(int64))
+		dealerId = int(data[0]["item_id"].(int64))
 	}
 
 	if dataReq.TeamId > 0 {
