@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"time"
 	//"time"
+	//graphApi "OWEApp/shared/graphApi"
 )
 
 /******************************************************************************
@@ -85,15 +86,35 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil, 0)
 		return
 	}
-	ClientEmail, ok := data[0]["email_id"].(string)
+	_, ok := data[0]["email_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get the email_id from leads info table: %+v\n", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get the email_id from leads info table", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
+	// Creating a new model instance
+	// model := models.OutlookEventRequest{
+	// 	Subject:   "Team Meeting",
+	// 	Body:      "Let's discuss about the proposal",
+	// 	StartTime: dataReq.AppointmentDate + "T" + dataReq.AppointmentTime,
+	// 	EndTime:   dataReq.AppointmentDate + "T" + dataReq.AppointmentTime, //pending
+	// 	TimeZone:  "Pacific Standard Time",
+	// 	Location:  "Conference Room A",
+	// 	AttendeeEmails: []models.Attendee{
+	// 		{
+	// 			Email: ClientEmail,
+	// 			Name:  "John Doe", // pending
+	// 			Type:  "required",
+	// 		},
+	// 	},
+	// 	AllowNewTimeProposals: true,
+	// 	TransactionID:         "unique-transaction-id",
+	// }
+
 	// Email Function Call
-	err = sentAppointmentEmail(ClientEmail, &aptDate, true)
+	//err = sentAppointmentEmail(ClientEmail, &aptDate, true)
+	//_, err = graphApi.CreateOutlookEvent(model)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send the email to the client %v", err)
