@@ -10,6 +10,7 @@ import { EndPoints } from '../api_client/EndPoints';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
+const CONFIG_URL = `https://staging.owe-hub.com/api/owe-calc-service/v1`;
 // authService.ts
 
 export interface LoginResponse {
@@ -52,6 +53,41 @@ export const postCaller = async (
   try {
     const response: AxiosResponse = await axios.post(
       `${hasChangedBaseUrl ? LEADS_BASE_URL : BASE_URL}/${endpoint}`,
+      postData,
+      config
+    );
+    return response.data; // Return the data from the response
+  } catch (error) {
+    console.log('axios error', error);
+
+    if (isAxiosError(error)) {
+      if (error.response) return error.response.data;
+
+      // handle network error
+      if (error.message === 'Network Error')
+        return new Error('No internet connection');
+    }
+
+    throw new Error('Failed to fetch data');
+  }
+};
+
+
+export const configPostCaller = async (
+  endpoint: string,
+  postData: any,
+  hasChangedBaseUrl: boolean = false
+): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      Authorization: `${localStorage.getItem('token')}`,
+      // 'Content-Type': 'application/json',
+    },
+  };
+
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${CONFIG_URL}/${endpoint}`,
       postData,
       config
     );
