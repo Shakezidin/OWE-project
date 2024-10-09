@@ -4,6 +4,7 @@ import styles from './folderView.module.css';
 import { format } from 'date-fns';
 import { FileOrFolder } from '../../types';
 import { Link, useNavigate } from 'react-router-dom';
+import DataNotFound from '../../../components/loader/DataNotFound';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
@@ -49,7 +50,7 @@ function FolderView({
 
   return (
     <div className={styles.folderMain_wrapper}>
-      {myFolderData.map((folder, index) => (
+      {myFolderData.length>0?  myFolderData.map((folder, index) => (
         <div
           className={styles.folderDiv}
           key={folder.id}
@@ -91,7 +92,11 @@ function FolderView({
             </div>
           </div>
         </div>
-      ))}
+      )) : <div style={{ width: '100%' }}>
+      <div className={`bg-white py2 ${styles.filesLoader}`}>
+        <DataNotFound />
+      </div>
+    </div>}
     </div>
   );
 }

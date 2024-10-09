@@ -275,7 +275,7 @@ const LibraryHomepage = () => {
 
     }
     catch (err) {
-      toast.error("Sorry, ERROR");
+      toast.error("ERROR");
     }
     setLoading(false);
   }
@@ -330,7 +330,7 @@ const LibraryHomepage = () => {
     try {
 
       const response = await axios.delete(url, config);
-      toast.success("Deleted.......");
+      toast.success("Deleted Successfully");
       fetchDataFromGraphAPI();
     }
     catch (err) {
@@ -386,7 +386,6 @@ const LibraryHomepage = () => {
     setActiveSection(section);
     setSearchValue('');
   };
-  console.log("File data - ", fileData);
 
   const filteredData = fileData.filter((data) => {
     const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
@@ -428,7 +427,6 @@ const LibraryHomepage = () => {
   const [allIds, setAllIds] = useState<string[]>([]);
 
   const downloadFile = (fileUrl: string, fileName: string) => {
-    console.log(fileUrl,"fileurllll")
     const anchor = document.createElement("a");
     anchor.href = fileUrl;
     anchor.download = fileName || "download";
@@ -607,7 +605,7 @@ const LibraryHomepage = () => {
           </div>
           {role_name === TYPE_OF_USER.ADMIN && <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />}
 
-          <Link
+          {/* <Link
             className={styles.recycleBin}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -618,7 +616,7 @@ const LibraryHomepage = () => {
               alt="recycle-bin"
             />
             <span className={styles.recycleSpan}>Recycle Bin</span>
-          </Link>
+          </Link> */}
 
 
         </div>
@@ -636,9 +634,12 @@ const LibraryHomepage = () => {
         );
       }
 
-      if (currentFolderContent.length === 0) {
-        return <p className={styles.noParagraph}>No items in this folder.</p>;
-      }
+      
+if (currentFolderContent.length === 0) {
+  return   <div className={` bg-white py2 ${styles.filesLoader}`}>
+  <DataNotFound />
+</div>
+}
 
       return (
         <div className={styles.libSectionWrapper}>
@@ -725,6 +726,7 @@ const LibraryHomepage = () => {
             .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string) => {
               setIsVideoModalOpen(true)
               setVideoUrl(url)
+              
             }} />}
         </div>
       );
@@ -739,10 +741,9 @@ const LibraryHomepage = () => {
           <div className={styles.grid_item}>Actions</div>
         </div>
 
-        {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : fileData.length > 0 ? (
+        {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : sortedData.length > 0 ? (
           sortedData.map((data) => {
             const isValidVideo = isVideo(data.file?.mimeType!)
-            console.log(data,"data")
             return <div className={styles.libGridItem} key={data.id}>
               <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                 if (isValidVideo) {
@@ -838,7 +839,9 @@ const LibraryHomepage = () => {
 
       {renderContent()}
       {
-        isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
+        isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => {setIsVideoModalOpen(false)
+          console.log("video modal close");}
+        } />
       }
     </div>
   );
