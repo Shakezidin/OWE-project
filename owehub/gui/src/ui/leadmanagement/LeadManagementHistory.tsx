@@ -752,8 +752,8 @@ const LeradManagementHistory = () => {
                       </div>
                       <div className={styles.address}>
                         {item?.street_address
-                          ? item.street_address.length > 20
-                            ? `${item.street_address.slice(0, 20)}...`
+                          ? item.street_address.length > 49
+                            ? `${item.street_address.slice(0, 49)}...`
                             : item.street_address
                           : 'N/A'}
                       </div>
@@ -837,8 +837,8 @@ const LeradManagementHistory = () => {
                       </div>
                       <div className={styles.address}>
                         {item?.street_address
-                          ? item.street_address.length > 20
-                            ? `${item.street_address.slice(0, 20)}...`
+                          ? item.street_address.length > 40
+                            ? `${item.street_address.slice(0, 40)}...`
                             : item.street_address
                           : 'N/A'}
                       </div>
