@@ -9,6 +9,9 @@ import { MdKeyboardBackspace } from 'react-icons/md';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoClose } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
+import { FaXmark } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
+
 const timeSlots = [
   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
   { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
@@ -36,14 +39,15 @@ const SaleRepCustomerForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    prospectId: '48594',
-    name: 'Peter Parket',
-    phoneNo: '983 4785 9298',
-    email: 'john@gmail.com',
-    address: '103, avenue street, Colorado, 267531',
-    salesRep: 'Ajay Negi',
+    prospectId: '',
+    name: '',
+    phoneNo: '',
+    email: '',
+    address: '',
+    salesRep: '',
   });
 
   const isSmallScreen = useMatchMedia('(max-width:968px)');
@@ -55,6 +59,10 @@ const SaleRepCustomerForm = () => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -157,6 +165,26 @@ const SaleRepCustomerForm = () => {
               }}
               className={`${styles.form_content}  ${step === 2 ? styles.mobile_hidden : ''} py3 ${step === 2 ? 'px4' : ''} `}
             >
+              <div
+                onClick={handleBack}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  marginBottom: '10px',
+                  cursor: 'pointer',
+                }}
+              >
+                <FaXmark
+                  style={{
+                    height: '20px',
+                    width: '20px',
+                    color: '#000000',
+                    fontWeight: '600',
+                  }}
+                />
+              </div>
               <div className="mb2">
                 <Input
                   label="Prospect ID"
@@ -173,6 +201,7 @@ const SaleRepCustomerForm = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  showIsEditing={formData.name !== ''}
                 />
               </div>
               <div className="mb2">
@@ -181,6 +210,7 @@ const SaleRepCustomerForm = () => {
                   name="phoneNo"
                   value={formData.phoneNo}
                   onChange={handleChange}
+                  showIsEditing={formData.phoneNo !== ''}
                 />
               </div>
               <div className="mb2">
@@ -189,6 +219,7 @@ const SaleRepCustomerForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  showIsEditing={formData.email !== ''}
                 />
               </div>
               <div className="mb2">
@@ -197,6 +228,7 @@ const SaleRepCustomerForm = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
+                  showIsEditing={formData.address !== ''}
                 />
               </div>
               <div>

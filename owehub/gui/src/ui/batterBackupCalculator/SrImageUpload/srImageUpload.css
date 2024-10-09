@@ -1,5 +1,8 @@
 .sr-image-container {
   background-color: #f2f2f2;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  height: 100vh;
 }
 
 .form-container {
@@ -11,8 +14,22 @@
   max-width: 700px;
   margin: auto;
   box-sizing: border-box;
-  min-height: 100vh;
+  height: 100vh;
 }
+
+::-webkit-scrollbar {
+  display: block !important;
+  width: 3px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: white !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: grey !important;
+}
+
 .absolute_info_icon {
   position: absolute;
   top: 50%;
