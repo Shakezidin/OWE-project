@@ -428,6 +428,7 @@ const LibraryHomepage = () => {
   const [allIds, setAllIds] = useState<string[]>([]);
 
   const downloadFile = (fileUrl: string, fileName: string) => {
+    console.log(fileUrl,"fileurllll")
     const anchor = document.createElement("a");
     anchor.href = fileUrl;
     anchor.download = fileName || "download";
@@ -677,7 +678,7 @@ const LibraryHomepage = () => {
               <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                 <RxDownload
                   className={styles.icons}
-                  onClick={() => downloadFile(item.url, item.name)}
+                  onClick={() => downloadFile(item["@microsoft.graph.downloadUrl"], item.name)}
                   style={{ height: '18px', width: '18px', color: '#667085' }}
                 />
                 {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
@@ -741,6 +742,7 @@ const LibraryHomepage = () => {
         {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : fileData.length > 0 ? (
           sortedData.map((data) => {
             const isValidVideo = isVideo(data.file?.mimeType!)
+            console.log(data,"data")
             return <div className={styles.libGridItem} key={data.id}>
               <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                 if (isValidVideo) {
@@ -787,7 +789,7 @@ const LibraryHomepage = () => {
                     <div>
                       <RxDownload
                         className={styles.icons}
-                        onClick={() => downloadFile(data.url, data.name)}
+                        onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
                         style={{
                           height: '18px',
                           width: '18px',
