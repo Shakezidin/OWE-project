@@ -534,6 +534,7 @@ const LeadManagementDashboard = () => {
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const isMobileFixed = useMatchMedia('(min-width: 320px) and (max-width: 480px)');
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
   const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
@@ -1516,6 +1517,7 @@ const LeadManagementDashboard = () => {
                                 onClick={() => {
                                   handleOpenModal();
                                   setReschedule(true);
+                                  setAction(false);
                                 }}
                                 className={styles.rescheduleButton}
                               >
@@ -1547,6 +1549,7 @@ const LeadManagementDashboard = () => {
                                     lead.action_needed_message ===
                                     'Update Status'
                                   ) {
+                                    setReschedule(false)
                                     handleOpenModal();
                                     setAction(true);
                                   }
@@ -1557,6 +1560,7 @@ const LeadManagementDashboard = () => {
                                   ? 'Update Status'
                                   : 'Create Proposal'}
                               </button>
+                              
                             </div>
                           )}
 

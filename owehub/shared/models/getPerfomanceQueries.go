@@ -238,10 +238,10 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 	AdminDlrSaleRepRetrieveQuery := `
     SELECT ud.name AS name,
         ur.role_name AS role_name,
-        d.dealer_name AS dealer_name
+        d.sales_partner_name AS dealer_name
     FROM user_details ud
     JOIN user_roles ur ON ud.role_id = ur.role_id
-    LEFT JOIN v_dealer d ON ud.dealer_id = d.id
+    LEFT JOIN sales_partner_dbhub_schema d ON ud.partner_id = d.item_id
     WHERE ud.email_id = $1;
     `
 	return AdminDlrSaleRepRetrieveQuery

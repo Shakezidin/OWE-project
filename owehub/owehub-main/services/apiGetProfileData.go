@@ -35,38 +35,48 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleGetProfileDataRequest", err) }()
 
 	query = `
-			 SELECT ud.user_id AS record_id, ud.name AS name, 
-			 ud.user_code, 
-			 ud.mobile_number, 
-			 ud.email_id, 
-			 ud.password_change_required, 
-			 ud.created_at,
-			 ud.updated_at, 
-			 COALESCE(ud1.name, 'NA') AS reporting_manager, 
-			 COALESCE(ud2.name, 'NA') AS dealer_owner, 
-			 ud.user_status, 
-			 ud.user_designation, 
-			 ud.description, 
-			 ud.region,
-			 ud.street_address, 
-			 ud.city, 
-			 ud.country,
-			 st.name AS state_name,
-			 ur.role_name,
-			 zc.zipcode,
-			 vd.dealer_name as dealer,
-			 vd.dealer_logo,
-			 vd.bg_colour,
-			 vd.preferred_name,
-			 vd.dealer_code,
-			 ud.tables_permissions
-			 FROM user_details ud
-			 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
-			 LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
-			 LEFT JOIN states st ON ud.state = st.state_id
-			 LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			 LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
-			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = $1`
+			 SELECT 
+				ud.user_id AS record_id, 
+				ud.name AS name, 
+				ud.user_code, 
+				ud.db_username,
+				ud.mobile_number, 
+				ud.email_id, 
+				ud.password_change_required, 
+				ud.created_at,
+				ud.updated_at, 
+				COALESCE(ud1.name, 'NA') AS reporting_manager, 
+				ud.user_status, 
+				ud.user_designation, 
+				ud.description, 
+				ud.region,
+				ud.street_address, 
+				ud.city, 
+				ud.country,
+				st.name AS state_name,
+				ur.role_name,
+				zc.zipcode,
+				sp.sales_partner_name AS dealer,
+				pd.bg_colour,
+				ud.tables_permissions,
+				-- Fields from partner_details
+				pd.partner_code, 
+				pd.partner_logo, 
+				pd.bg_colour AS partner_bg_colour
+			FROM 
+				user_details ud
+			LEFT JOIN 
+				user_details ud1 ON ud.reporting_manager = ud1.user_id
+			LEFT JOIN 
+				states st ON ud.state = st.state_id
+			LEFT JOIN 
+				user_roles ur ON ud.role_id = ur.role_id
+			LEFT JOIN 
+				zipcodes zc ON ud.zipcode = zc.id
+			LEFT JOIN 
+				sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+			LEFT JOIN 
+				partner_details pd ON sp.item_id = pd.partner_id WHERE ud.email_id = $1`
 
 	emailId := req.Context().Value("emailid").(string)
 

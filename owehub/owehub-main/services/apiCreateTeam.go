@@ -104,7 +104,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 		userEmail := TeamData.Email
 		query = `
-						 SELECT dealer_id 
+						 SELECT partner_id 
 						 FROM user_details 
 						 WHERE email_id = $1
 				 `
@@ -122,15 +122,15 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["dealer_id"].(int64))
+		dealerId = int(data[0]["partner_id"].(int64))
 
 	} else {
 		// Get dealer_id based on dealer_name
 		dealerName := TeamData.DealerName
 		query = `
-						 SELECT id 
-						 FROM v_dealer 
-						 WHERE LOWER(dealer_name) = LOWER($1)
+						 SELECT item_id 
+						 FROM sales_partner_dbhub_schema 
+						 WHERE LOWER(sales_partner_name) = LOWER($1)
 				 `
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {
@@ -146,7 +146,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["id"].(int64))
+		dealerId = int(data[0]["item_id"].(int64))
 	}
 
 	queryParameters = append(queryParameters, TeamData.TeamName)
