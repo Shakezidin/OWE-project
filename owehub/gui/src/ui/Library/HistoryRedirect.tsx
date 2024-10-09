@@ -9,7 +9,7 @@ interface HistoryRedirectProps {
 const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
-  const divRef = useRef<HTMLDivElement | null>(null);
+  const clickableDivRef = useRef<HTMLDivElement>(null);
 
   const handleHistory = () => {
     navigate('/leadmng-history');
@@ -20,39 +20,44 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   };
 
   /* HERE FOR RESPONSIVESNESS */
-  const [styles, setStyles] = useState({
-    transform: 'scale(1) translate(0, 0)',
-    marginRight: '15px',
-    marginLeft: '0px',
-    marginTop: '0px',
-    marginBottom: '0px', // Corrected from marginBotton
-    paddingRight: '36px',
-    paddingTop: '0px',
-    paddingBottom: '0px',
-  });
+  // const [styles, setStyles] = useState({
+  //   transform: 'scale(1) translate(0, 0)',
+  //   marginRight: '15px',
+  //   marginLeft: '0px',
+  //   marginTop: '0px',
+  //   marginBottom: '0px',
+  //   paddingRight: '36px',
+  //   paddingTop: '0px',
+  //   paddingBottom: '0px',
+  // });
 
-  const HistoryButtonCalled = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    console.log('called');
+  const HistoryButtonCalled = () => {
     setModalOpenClick((prevState) => !prevState);
   };
+  const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+    const target = event.target as Node;
+
+    if (clickableDivRef.current && !clickableDivRef.current.contains(target)) {
+      setModalOpenClick(false);
+    }
+  };
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (divRef.current && !divRef.current.contains(event.target as Node)) {
-        setModalOpenClick(false);
-      }
-    };
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
+
 
   // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
 
   return (
     <div className="relative drop-ref-container">
-      <div className={classes.filtericonHistory} onClick={HistoryButtonCalled}>
+      <div className={classes.filtericonHistory} ref={clickableDivRef} onClick={HistoryButtonCalled}>
         <img
           className={classes.ICONSTYLETHREEDOT}
           src={ThreeDotsImage}
@@ -65,8 +70,6 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
         <div
           id="dropdowninHistoryRedirect"
           className="pr-dropdown editedinParent"
-          onClick={(event) => event.stopPropagation()}
-          ref={divRef}
         >
           <ul>
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>

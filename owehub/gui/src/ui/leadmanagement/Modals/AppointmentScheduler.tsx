@@ -11,12 +11,16 @@ interface AppointmentSchedulerProps {
   onTimeChange: (time: string) => void;
 }
 
+const today = new Date();
+const CurrentDate =today.toISOString().split('T')[0];
+// 2024-10-09
+
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   setVisibleDiv,
   onDateChange,
   onTimeChange,
 }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date('2024-08-25'));
+  const [selectedDate, setSelectedDate] = useState(new Date(CurrentDate));
   const [selectedTime, setSelectedTime] = useState('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
 
@@ -52,6 +56,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
           <DatePicker
             selected={selectedDate}
             onChange={handleDateChange}
+            minDate={new Date()}
             inline
             renderCustomHeader={({
               date,
