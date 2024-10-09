@@ -1,8 +1,8 @@
 .close-btn {
     position: absolute;
-    top: 50px;
+    top: 90px;
     border: none;
-    right: 50px;
+    right: 410px;
     transition: all 0.3s ease-in-out;
     background-color: transparent;
     cursor: pointer;
@@ -11,4 +11,7 @@
 .close-btn:hover {
     transform: scale(1.1);
     transition: all 0.3s ease-in-out;
+}
+.videoName{
+    color:black;
 }

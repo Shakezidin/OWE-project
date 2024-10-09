@@ -22,6 +22,11 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    const validCharacters = /^[a-zA-Z0-9._-]*$/;
+    if (!validCharacters.test(inputValue.slice(-1))) {
+      return;
+    }
     setFolderName(event.target.value);
   };
 
@@ -43,12 +48,12 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
       })
 
       await handleSuccess?.()
-      toast.success(`Folder "${folderName}" created successfully!`);
+      toast.success(`Folder created successfully!`);
      
       // alert(`Folder Name: ${response}`);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to create folder. Please try again.');
+      toast.error('Failed to create folder, Please try again.');
     }
     finally{
       setIsPending(false)
