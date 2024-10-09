@@ -1505,6 +1505,7 @@ const openProposalLink = (link: string) => {
                                 onClick={() => {
                                   handleOpenModal();
                                   setReschedule(true);
+                                  setAction(false);
                                 }}
                                 className={styles.rescheduleButton}
                               >
@@ -1536,6 +1537,7 @@ const openProposalLink = (link: string) => {
                                     lead.action_needed_message ===
                                     'Update Status'
                                   ) {
+                                    setReschedule(false)
                                     handleOpenModal();
                                     setAction(true);
                                   }
