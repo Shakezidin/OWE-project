@@ -368,8 +368,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         color: 'black',
                       }}
                     >
-                      <Link
-                        to="#"
+                      <span
                         className=""
                         style={{
                           display: 'block',
@@ -387,7 +386,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       >
                         {' '}
                         {cords.text}
-                      </Link>
+                      </span>
                     </div>
                   </Link>
                 ))}

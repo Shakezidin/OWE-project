@@ -13,11 +13,12 @@ interface NewFileProps {
   handleSuccess?: () => void,
   uploadPath?: string
   folderUploadPath?: string
+  setLoading:(val:boolean)=>void;
 }
 
 type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
-const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath, folderUploadPath }) => {
+const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath, folderUploadPath,setLoading }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
   const [isVisibleuploadFile, setIsVisibleuploadFile] = useState(false);
@@ -54,7 +55,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
 
   const uploadFiles = async () => {
     if (files.length === 0) return;
-
+    setLoading(true);
     const accessToken = Cookies.get("myToken");
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || "/"}`;
 
@@ -106,6 +107,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     finally {
       sePendingState("")
     }
+    setLoading(false);
   };
 
   useEffect(() => {
