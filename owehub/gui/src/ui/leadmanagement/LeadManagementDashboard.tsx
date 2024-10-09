@@ -921,12 +921,18 @@ const LeadManagementDashboard = () => {
 
   // Function to fetch project details
   const fetchProjectDetails = async (projectId: string) => {
+
+    const monthlyEnergy = [100, 200, 150, 100, 250, 300, 100, 400, 100, 350, 450, 100]; // Example data
+    const monthlyBill = [50, 75, 60, 50, 80, 90, 90, 100, 110, 120, 50, 60]; // Example data
     try {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}`
       );
       setSelectedProject(response.data); // Set the selected project details
       fetchDesigns(projectId); // Fetch designs for the selected project
+      fetchConsumptionProfile(projectId) // Fetch Consumption Profile for the selected project
+      updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
+
     } catch (error) {
       console.error('Error fetching project details:', error);
     }
@@ -946,9 +952,12 @@ const LeadManagementDashboard = () => {
         const latestDesign = sortedDesigns[0];
 
         // Call fetchProposal with the latest design's ID
-        // fetchProposal(latestDesign.id);
-        // fetchWebProposal(latestDesign.id);
-        generateWebProposalUrl(latestDesign.id);
+        // fetchProposal(latestDesign.id); //Open Proposal in edit mode for Sales Rep.
+        // fetchWebProposal(latestDesign.id); // Open Proposal URL.
+        generateWebProposalUrl(latestDesign.id); //Generate new URL every time.
+        fetchDesignSummary(latestDesign.id);
+        fetchDesignPricing(latestDesign.id);
+        fetchFinanceListing(latestDesign.id);
       } else {
         console.log('No designs found for this project');
       }
@@ -987,16 +996,6 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  // const generateWebProposalUrl = async (designId: string) => {
-  //   try {
-  //     const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
-  //     console.log('Generated Web Proposal URL:', response.data);
-  //     // Handle the response data as needed (e.g., open the URL in a new tab)
-  //   } catch (error) {
-  //     console.error('Error generating web proposal URL:', error);
-  //   }
-  // };
-
   const generateWebProposalUrl = async (designId: string) => {
     try {
       const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
@@ -1013,11 +1012,121 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  const fetchDesignSummary = async (designId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/summary`);
+      console.log('Retrieved Design Summary:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design summary:', error);
+      throw error;
+    }
+  };
+
+  const fetchDesignPricing = async (designId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/pricing`);
+      console.log('Retrieved Design Pricing:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design pricing:', error);
+      throw error;
+    }
+  };
+
+  const fetchFinanceListing = async (designId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/financings`);
+      const financings = response.data.financings;
+  
+      console.log('Retrieved Financings:', financings);
+  
+      if (financings && financings.length > 0) {
+        // Assuming you want to use the first financing ID
+        const financingId = financings[0].id;
+  
+        // Call the next API using the financing ID
+        fetchFinancingDetails(designId, financingId);
+      } else {
+        console.error('No financings found');
+      }
+    } catch (error) {
+      console.error('Error fetching financings:', error);
+    }
+  };
+
+  const fetchFinancingDetails = async (designId: string, financingId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/financings/${financingId}`);
+      console.log('Financing details fetched successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching financing details:', error);
+      throw error;
+    }
+  };
+  
+  const fetchConsumptionProfile = async (projectId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/projects/${projectId}/consumption_profile`);
+      console.log('Retrieved Consumption Profile:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching consumption profile:', error);
+      throw error;
+    }
+  };
+
+  const updateConsumptionProfile = async (projectId: string, monthlyEnergy: (number | null)[], monthlyBill: (number | null)[]) => {
+
+    try {
+      const response = await axios.put(`http://localhost:5000/api/projects/${projectId}/consumption_profile`, {
+        consumption_profile: {
+          monthly_energy: monthlyEnergy,
+          // monthly_bill: monthlyBill,
+        },
+      });
+      console.log('Consumption Profile Updated:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating consumption profile:', error);
+      throw error;
+    }
+  };
+  
+  
+
   // Function to open the proposal link in a new tab
   const openProposalLink = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
   };
 
+  const downloadFile = async () => {
+    const fileUrl = 'https://v2-sandbox.aurorasolar.com/e-proposal/zWR9Gc7vzU2jzne8jNrPCrYC3hmUNKW1FynAhFaDnks';
+    try {
+      // Fetch the file
+      const response = await fetch(fileUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch the file');
+      }
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a link element, set its href to the Blob, and click it to trigger download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'proposal.pdf'; // Change filename if needed
+      link.click();
+      // Cleanup the object URL
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -1059,6 +1168,10 @@ const LeadManagementDashboard = () => {
             <div>Total leads: {totalValue ? totalValue : '0'}</div>
           </div>
           <div className={styles.cardContent}>
+          {/* <div>
+            <h2>Download Aurora Proposal</h2>
+            <button onClick={downloadFile}>Download Proposal</button>
+          </div> */}
             {loading ? (
               <div
                 style={{
