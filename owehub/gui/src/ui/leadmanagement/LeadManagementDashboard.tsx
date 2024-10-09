@@ -532,6 +532,7 @@ const LeadManagementDashboard = () => {
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
+  const isMobileChevron = useMatchMedia('(max-width: 767px)');
   const isMobile = useMatchMedia('(max-width: 1024px)');
   const isMobileFixed = useMatchMedia('(min-width: 320px) and (max-width: 480px)');
   const [reschedule, setReschedule] = useState(false);
@@ -1583,12 +1584,16 @@ const openProposalLink = (link: string) => {
 
                       {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
-                          <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
-                            <div className={''}>
-                              <span>{lead.email_id}</span>
+                          <td
+                            colSpan={5}
+                            className={styles.detailsRow}
+                            style={isMobileChevron ? { paddingLeft: '48px' } : {}}
+                          >
+                            <div style={{ marginBottom: '6px' }}>{lead.phone_number}</div>
+                            <div style={{ marginBottom: '6px' }}>
+                              <span >{lead.email_id}</span>
                             </div>
-                            <div className={''}>
+                            <div>
                               {lead?.street_address
                                 ? lead.street_address.length > 20
                                   ? `${lead.street_address.slice(0, 20)}...`
