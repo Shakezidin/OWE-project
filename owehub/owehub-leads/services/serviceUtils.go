@@ -14,6 +14,8 @@ import (
 
 	models "OWEApp/shared/models"
 
+	graphApi "OWEApp/shared/graphApi"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -173,6 +175,60 @@ func ValidateCreateLeadsRequest(req models.CreateLeadsReq) error {
 }
 
 // dummy [TODO: call outlook api]
-func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isReschedule bool) error {
+func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isReschedule bool, name string) error {
+	// Creating a new model instance
+	var (
+		err                error
+		appointmentTimeStr string
+		model              models.OutlookEventRequest
+		appointmentEndTime string
+	)
+
+	appointmentTimeStr = appointmentDate.Format(time.UnixDate)
+	appointmentEndTime = appointmentDate.Add(30 * time.Minute).Format(time.UnixDate)
+	if isReschedule {
+		model = models.OutlookEventRequest{
+			Subject:   "Team Meeting",
+			Body:      "Let's discuss about the proposal, we have rescheduled your meeting",
+			StartTime: appointmentTimeStr,
+			EndTime:   appointmentEndTime, //pending - need to confirm
+			TimeZone:  "Pacific Standard Time",
+			Location:  "Conference Room A",
+			AttendeeEmails: []models.Attendee{
+				{
+					Email: clientEmail,
+					Name:  name,
+					Type:  "required",
+				},
+			},
+			AllowNewTimeProposals: true,
+			TransactionID:         "unique-transaction-id",
+		}
+	} else if !isReschedule {
+		model = models.OutlookEventRequest{
+			Subject:   "Team Meeting",
+			Body:      "Let's discuss about the proposal",
+			StartTime: appointmentTimeStr,
+			EndTime:   appointmentTimeStr, //pending - need to confirm
+			TimeZone:  "Pacific Standard Time",
+			Location:  "Conference Room A",
+			AttendeeEmails: []models.Attendee{
+				{
+					Email: clientEmail,
+					Name:  name,
+					Type:  "required",
+				},
+			},
+			AllowNewTimeProposals: true,
+			TransactionID:         "unique-transaction-id",
+		}
+	}
+
+	//  OUTLOOK FUNCTION CALL
+	event, err := graphApi.CreateOutlookEvent(model)
+	if err != nil {
+		return err
+	}
+	log.FuncDebugTrace(0, "got response from create outlook event %+v", event)
 	return nil
 }
