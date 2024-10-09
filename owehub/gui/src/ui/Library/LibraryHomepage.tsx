@@ -33,6 +33,7 @@ import textFile from './assetss/textFile.svg';
 import wordFile from './assetss/wordFile.svg';
 import zipFolder from './assetss/zipFolder.svg';
 import defauult from './assetss/default.svg';
+import DataNotFound from '../components/loader/DataNotFound';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -281,27 +282,38 @@ const LibraryHomepage = () => {
   }
 
   const HandleSearch = (e: any) => {
-    setSearchValue(e.target.value);
-    // setFileData(fileData.filter((file)=>file.name.toLowerCase().includes(searchValue.toLowerCase())));
-    if (e.target.value === '') {
+    const inputValue = e.target.value;
+    const validCharacters = /^[a-zA-Z0-9._-]*$/;
+  
+    // Check if the last character is valid
+    if (!validCharacters.test(inputValue.slice(-1))) {
+      // Ignore the last character if it's invalid
+      return; // Exit early without updating searchValue
+    }
+  
+    // Set the search value
+    setSearchValue(inputValue);
+  
+    // Handle empty search case
+    if (inputValue === '') {
       setFileData(originalFileData);
       setFolderData(originalFolderData);
-    } if (activeSection === 'files') {
-
-      // Filter the file data based on the search input
+      return; // Exit early to avoid further processing
+    }
+  
+    // Filter based on the active section
+    if (activeSection === 'files') {
       const filteredData = originalFileData.filter((file) =>
-        file.name.toLowerCase().includes(e.target.value.toLowerCase())
+        file.name.toLowerCase().includes(inputValue.toLowerCase())
       );
       setFileData(filteredData);
-
-    }
-    else if (activeSection === 'folders') {
+    } else if (activeSection === 'folders') {
       const filteredData = originalFolderData.filter((folder) =>
-        folder.name.toLowerCase().includes(e.target.value.toLowerCase())
+        folder.name.toLowerCase().includes(inputValue.toLowerCase())
       );
       setFolderData(filteredData);
     }
-  }
+  };
 
 
   //Function for Deleting files
@@ -587,6 +599,7 @@ const LibraryHomepage = () => {
               onChange={HandleSearch}
               placeholder="Search by file name or person"
               className={styles.searchInput}
+              maxLength={50}
             />
           </div>
           <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />
@@ -740,7 +753,7 @@ const LibraryHomepage = () => {
                   loading='lazy'
                 />
                 <div>
-                <p className={styles.name}>{data.name.substring(0, 16)}</p>
+                <p className={styles.name}>{data.name.substring(0, 50)}</p>
                   <p className={styles.size}>
                     {data.size < 1024
                       ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -798,7 +811,9 @@ const LibraryHomepage = () => {
             </div>
           })
         ) : (
-          <p className={styles.noParagraph}>No files found.</p>
+          <div className={` bg-white py2 ${styles.filesLoader}`}>
+                                    <DataNotFound />
+                                </div>
         )}
       </div>
     );
