@@ -2,6 +2,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import styles from './styles/index.module.css';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { FaCheck } from 'react-icons/fa6';
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   showIsEditing?: boolean;
@@ -23,6 +24,7 @@ const Input: React.FC<InputProps> = ({
     if (isEditing && showIsEditing) {
       inputRef.current?.focus();
     }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -31,13 +33,21 @@ const Input: React.FC<InputProps> = ({
         setIsEditing(false);
       }
     };
+
     if (showIsEditing) {
       document.addEventListener('mousedown', handleClickOutside);
     }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isEditing, showIsEditing]);
+
+  const handleFocus = () => {
+    if (!isEditing) {
+      setIsEditing(true);
+    }
+  };
 
   return (
     <div>
@@ -53,6 +63,7 @@ const Input: React.FC<InputProps> = ({
           {...rest}
           readOnly={showIsEditing ? !isEditing : readOnly}
           className={`${styles.input_field} ${className}`}
+          onFocus={handleFocus}  
         />
         {showIsEditing && (
           <span

@@ -10,6 +10,8 @@ import { errorSwal } from '../../components/alert/ShowAlert';
 import { RiCloseLine } from 'react-icons/ri';
 import { sendMail } from '../../../utiles';
 import s3Upload from '../../../utiles/s3Upload';
+import { FaXmark } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
 const primaryApplicances = [
   { name: 'Water heater', id: 1 },
   { name: 'Cooking appliances', id: 2 },
@@ -38,6 +40,7 @@ const FormComponent: React.FC = () => {
   const [squareFeet, setSquareFeet] = useState('');
   const [systemSize, setSystemSize] = useState('');
   const [files, setFiles] = useState<File[]>([]);
+  const navigate = useNavigate();
   const [error, setError] = useState<{
     email?: string;
     prospectName?: string;
@@ -239,6 +242,10 @@ OWE Battery Calc
   const lightHouseAmpSize = Math.ceil(
     ((parseFloat(squareFeet) * 1.5) / 120) * 0.6
   );
+
+  const handleBack = () => {
+    navigate(-1);
+  };
   return (
     <div>
       <div className="sr-image-container">
@@ -248,7 +255,28 @@ OWE Battery Calc
             Fill all required prospect panel details
           </p>
         </div>
+
         <div className="form-container">
+          <div
+            onClick={handleBack}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              paddingTop: '13px',
+              cursor: 'pointer',
+            }}
+          >
+            <FaXmark
+              style={{
+                height: '20px',
+                width: '20px',
+                color: '#000000',
+                fontWeight: '600',
+              }}
+            />
+          </div>
           <div className="prospect-input-field mt2">
             <input
               type="text"
