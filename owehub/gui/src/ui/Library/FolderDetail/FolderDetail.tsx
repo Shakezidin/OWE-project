@@ -159,7 +159,7 @@ const FolderDetail = () => {
                 </div>
 
                 <div className={styles.libSecHeader_right}>
-                    {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="folders" setLoading={setIsLoading} />}
+                    {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
                 </div>
             </div>
 
