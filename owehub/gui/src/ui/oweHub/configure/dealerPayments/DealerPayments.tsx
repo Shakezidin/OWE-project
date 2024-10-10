@@ -37,13 +37,14 @@ const DealerPayments: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  const { totalCount } = useAppSelector((state) => state.dealer);
+ 
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false)
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+  const [totalCount, setTotalCount] = useState<number>(0)
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -62,19 +63,19 @@ const DealerPayments: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
-  const getnewformData = async () => {
-    const tableData = {
-      tableNames: ['sub_dealer', 'dealer', 'states'],
-    };
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setDealer((prev) => ({ ...prev, ...res.data }));
-  };
+  // const getnewformData = async () => {
+  //   const tableData = {
+  //     tableNames: ['sub_dealer', 'dealer', 'states'],
+  //   };
+  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
+  //   setDealer((prev) => ({ ...prev, ...res.data }));
+  // };
 
 
 
-  useEffect(() => {
-    getnewformData();
-  }, []);
+  // useEffect(() => {
+  //   getnewformData();
+  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -91,7 +92,7 @@ const DealerPayments: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
   useEffect(() => {
    
     (async () => {
@@ -108,6 +109,7 @@ const DealerPayments: React.FC = () => {
           return;
         }
         setData(data?.data?.DealerPaymentsData)
+        setTotalCount(data.dbRecCount)
         setLoading(false);
          
       } catch (error) {
@@ -128,6 +130,8 @@ const DealerPayments: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen();
   };
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -398,7 +402,7 @@ const DealerPayments: React.FC = () => {
           </table>
         </div>
 
-        {dealerList?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}

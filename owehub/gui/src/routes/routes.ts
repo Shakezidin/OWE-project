@@ -53,6 +53,7 @@ export const ROUTES = {
   CONFIG_DEALERPAYMENTS: '/config/dealer-payments',
   CONFIG_FINANCE_SCHEDULE: '/config/finance-schedule',
   CONFIG_SALES_PARTNER_PAY: '/config/sales-partner-commision',
+  CONFIG_FINANCE_TYPES: '/config/finance-types',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
