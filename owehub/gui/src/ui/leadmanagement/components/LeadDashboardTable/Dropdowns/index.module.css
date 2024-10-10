@@ -15,27 +15,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  /* Adjust the size of the circle */
-  height: 30px;
-  /* Make height equal to width for a perfect circle */
   border: none;
-  /* Border for the circle */
-  border-radius: 50%;
-  /* This makes the div a circle */
+  padding: 5px 8px;
+  border-radius: 6px;
   cursor: pointer;
   background-color: #377cf6;
-  /* Optional: Set a background color */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  /* Optional: Add a subtle shadow */
-  transition: background-color 0.2s ease;
-  /* Optional: Add a hover effect */
   color: #fff;
+  gap: 5px;
   transition: all 0.3s ease;
 }
 
 .verticalDots:hover {
   transition: all 0.3s ease;
+  transform: scale(1.1);
+}
+
+.verticalDots2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 8px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  border-radius: 50%; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: #377cf6;
+  background-color: transparent;
+  border: 1px solid #377cf6;
+  transition: all 0.3s ease;
+}
+
+.verticalDots2:hover {
+  background-color: #d6e5ff;
   transform: scale(1.1);
 }
 
@@ -50,7 +63,7 @@
   border: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  width: 175px;
+  width: 195px;
   border-radius: 5px;
 }
 
@@ -60,7 +73,6 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 21px;
-
 }
 
 .dropdownItem {
@@ -68,7 +80,7 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
-  line-height: 21px;
+  line-height: 18px;
 }
 
 .dropdownItem:hover {

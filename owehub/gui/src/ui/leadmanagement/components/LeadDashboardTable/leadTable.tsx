@@ -7,7 +7,7 @@ import { PiSortAscendingLight } from 'react-icons/pi';
 import { FaAngleRight } from 'react-icons/fa';
 import ChangeStatus from './Dropdowns/ChangeStatus';
 import { IoIosInformation } from 'react-icons/io';
-import { IoChevronForward } from 'react-icons/io5';
+import { IoChevronForward, IoInformationOutline } from 'react-icons/io5';
 import { useAppSelector } from '../../../../redux/hooks';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -16,7 +16,7 @@ const LeadTable = () => {
 
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [selectedType, setSelectedType] = useState('All');
-  const [selected,setSelected]  = useState(-1)
+  const [selected, setSelected] = useState(-1)
   const [activeSection, setActiveSection] = useState<
     'files' | 'folders' | 'dropdown' | null
   >('files');
@@ -34,7 +34,7 @@ const LeadTable = () => {
         : [...prev, leadId]
     );
   };
-console.log(selected,"slecteddd")
+  console.log(selected, "slecteddd")
   return (
     <div className={styles.dashTabTop}>
 
@@ -120,7 +120,7 @@ console.log(selected,"slecteddd")
                     <td>Loan</td>
                     <td>Bajaj Finance</td>
                     <td>XYZ</td>
-                    <td className={styles.FixedColumn} style={{zIndex:selected===index?101:0}}>
+                    <td className={styles.FixedColumn} style={{ zIndex: selected === index ? 101 : 0 }}>
                       <div>
                         <DropDownLeadTable
                           selectedType={selectedType}
@@ -128,19 +128,28 @@ console.log(selected,"slecteddd")
                             setSelectedType(type);
                             setActiveSection(activeSection);
                           }}
-                          cb={()=>{
+                          cb={() => {
                             setSelected(index)
                           }}
-                          />
+                        />
                         {/* <div className={styles.progress_status}>
                        <span>Last Updated 2 Days Ago</span>
                        <p className={styles.prop_send}>View Proposal <IoChevronForward /><IoChevronForward /></p>
                     </div> */}
                         {/* <button className={styles.create_proposal}>Create Proposal</button> */}
                       </div>
-                      <div><ChangeStatus /></div>
+                      <div><ChangeStatus
+                        selectedType={selectedType}
+                        onSelectType={(type: string) => {
+                          setSelectedType(type);
+                          setActiveSection(activeSection);
+                        }}
+                        cb={() => {
+                          setSelected(index)
+                        }}
+                      /></div>
                       <div className={styles.infoIcon}>
-                        <IoIosInformation />
+                        <IoInformationOutline />
                       </div>
                     </td>
                   </tr>

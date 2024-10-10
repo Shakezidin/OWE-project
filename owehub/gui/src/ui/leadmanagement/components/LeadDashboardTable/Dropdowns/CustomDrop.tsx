@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classes from './index.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FaAngleRight } from 'react-icons/fa';
+import { FaAngleDown } from 'react-icons/fa6';
 
 interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
-  cb?:()=>void
+  cb?: () => void
 }
 
 const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
@@ -59,42 +61,39 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.verticalDots}
-        
+
       >
-        <BsThreeDotsVertical 
-          style={{
-            height: '25px',
-            width: '20px',
-            color: '#fff' 
-          }}
-        />
+        Action <FaAngleDown />
       </div>
 
       {isVisible && (
-        <ul ref={dropdownRef} className={classes.dropdownMenu}>
+        <ul
+          ref={dropdownRef}
+          className={classes.dropdownMenu}
+        >
           <li
             onClick={() => handleSelect('All')}
             className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
           >
-            All
+          View Proposal
           </li>
           <li
             onClick={() => handleSelect('Excel')}
             className={`${classes.dropdownItem} ${selectedType === 'Excel' ? classes.selected : ''}`}
           >
-            Excel
+            Download Proposal
           </li>
           <li
             onClick={() => handleSelect('PDF Format')}
             className={`${classes.dropdownItem} ${selectedType === 'PDF Format' ? classes.selected : ''}`}
           >
-            PDF Format
+            Create New Proposal
           </li>
           <li
             onClick={() => handleSelect('Images')}
             className={`${classes.dropdownItem} ${selectedType === 'Images' ? classes.selected : ''}`}
           >
-            Images
+            Schedule Appointment
           </li>
           <li
             onClick={() => handleSelect('Videos')}

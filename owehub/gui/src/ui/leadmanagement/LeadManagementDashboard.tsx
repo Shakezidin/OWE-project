@@ -1513,8 +1513,6 @@ const LeadManagementDashboard = () => {
           </div>
         )}
         <div className={styles.cardContent}>
-
-          <LeadTable/>
           {archive == false && (
             <table className={styles.table}>
               <tbody>
@@ -1742,9 +1740,6 @@ const LeadManagementDashboard = () => {
               </tbody>
             </table>
           )}
-
-
-
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
