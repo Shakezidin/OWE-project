@@ -456,6 +456,8 @@ const LibraryHomepage = () => {
   const handleSectionClick = (section: 'files' | 'folders' | 'dropdown') => {
     setActiveSection(section);
     setSearchValue('');
+    setFolderData(originalFolderData);
+    setFileData(originalFileData);
   };
 
   const filteredData = fileData.filter((data) => {
