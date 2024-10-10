@@ -17,6 +17,7 @@ import NewFile from '../Modals/NewFile';
 import { useAppSelector } from '../../../redux/hooks';
 import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import FileViewer from '../components/FileViewer/FileViewer';
 const FolderDetail = () => {
     const path = useParams()
     const [files, setFiles] = useState<IFiles[]>([])
@@ -27,6 +28,12 @@ const FolderDetail = () => {
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [videoUrl, setVideoUrl] = useState("")
     const { role_name } = useAppSelector(state => state.auth)
+    const [fileInfo, setFileInfo] = useState({
+        name: "",
+        fileType: "",
+        url: ""
+    })
+    const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
     const navigate = useNavigate()
     const getFolderChilds = async () => {
         try {
@@ -193,10 +200,16 @@ const FolderDetail = () => {
                                                     </div>
                                                 </Link>
 
-                                                : <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                                                : <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                                                     if (isValidVideo) {
                                                         setIsVideoModalOpen(true)
                                                         setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                    }
+                                                    if (fileType === "image") {
+                                                        setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
+                                                        setIsFileViewerOpen(true)
+                                                    } else {
+                                                        window.open(file.webUrl, "_blank")
                                                     }
 
                                                 }}>
@@ -244,7 +257,9 @@ const FolderDetail = () => {
             {
                 isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
             }
-
+            {
+                isFileViewerOpen && <FileViewer onClose={() => setIsFileViewerOpen(false)} fileUrl={fileInfo.url} fileType={fileInfo.fileType} name={fileInfo.name} />
+            }
         </div>
     )
 }
