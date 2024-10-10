@@ -84,6 +84,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-schedule-service/v1/get_sales_rep_calendar",
+		apiHandler.HandleGetSalesRepCalenderRequest,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************

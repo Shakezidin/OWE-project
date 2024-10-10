@@ -44,6 +44,7 @@ import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedu
 import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
 import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
 import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
+import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
       { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
       { path: ROUTES.CONFIG_FINANCE_SCHEDULE, element: <FinanceSchedule /> },
       { path: ROUTES.CONFIG_SALES_PARTNER_PAY, element: <SalesPartnerSchedule /> },
+      { path: ROUTES.CONFIG_FINANCE_TYPES, element: <FinanceTypes /> },
       { path: ROUTES.SS_ONBOARDING, element: <SsOnboarding/> },
     ];
   };

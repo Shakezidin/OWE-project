@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classes from './styles/createfolderlibrary.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ICONS } from '../../../resources/icons/Icons';
-import axios from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,14 +16,15 @@ interface propGets {
 const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, uploadPath, handleSuccess }) => {
 
   const [folderName, setFolderName] = useState('');
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false)
+  const [error, setError] = useState("")
   const handleDelete = () => {
     setIsVisibleNewFolder(false);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-    const validCharacters = /^[a-zA-Z0-9._-]*$/;
+    const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
     if (!validCharacters.test(inputValue.slice(-1))) {
       return;
     }
@@ -32,16 +33,20 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
 
   const createFolder = async () => {
+    if (!folderName.trim()) {
+      setError("Folder name cannot be empty")
+    }
     try {
       const token = Cookies.get("myToken");
       setIsPending(true)
       const url = uploadPath
         ? `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${uploadPath}:/children`
         : `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children`;
-      const response = await axios.post(url, { "name": folderName, 
+      const response = await axios.post(url, {
+        "name": folderName,
         "folder": {},
-         "@microsoft.graph.conflictBehavior": "fail"
-         }, {
+        "@microsoft.graph.conflictBehavior": "fail"
+      }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -49,16 +54,17 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
       await handleSuccess?.()
       toast.success(`Folder created successfully!`);
-     
-      // alert(`Folder Name: ${response}`);
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to create folder, Please try again.');
-    }
-    finally{
       setIsPending(false)
       setIsVisibleNewFolder(false);
+      // alert(`Folder Name: ${response}`);
+    } catch (error) {
+      setIsPending(false)
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast.error(error.response?.data?.error?.message);
+      }
+
     }
+
 
   }
 
@@ -92,6 +98,10 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                   onChange={handleInputChange}
                 ></input>
               </div>
+              {error && <div className='mx-auto' style={{ maxWidth: 548 }}>
+
+                <span className="error"> {error} </span>
+              </div>}
             </div>
             <div className={classes.survey_button}>
               <button disabled={isPending} id="otherButtonId" className={classes.other} onClick={createFolder}>
