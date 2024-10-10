@@ -5,11 +5,13 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
+  cb?:()=>void
 }
 
 const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
   selectedType,
   onSelectType,
+  cb
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -20,6 +22,7 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
     setIsClicked(!isClicked);
+    cb?.()
   };
 
   const handleSelect = (type: string) => {

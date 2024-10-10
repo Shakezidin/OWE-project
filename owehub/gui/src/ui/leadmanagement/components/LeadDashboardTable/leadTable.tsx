@@ -16,6 +16,7 @@ const LeadTable = () => {
 
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [selectedType, setSelectedType] = useState('All');
+  const [selected,setSelected]  = useState(-1)
   const [activeSection, setActiveSection] = useState<
     'files' | 'folders' | 'dropdown' | null
   >('files');
@@ -33,7 +34,7 @@ const LeadTable = () => {
         : [...prev, leadId]
     );
   };
-
+console.log(selected,"slecteddd")
   return (
     <div className={styles.dashTabTop}>
 
@@ -119,14 +120,18 @@ const LeadTable = () => {
                     <td>Loan</td>
                     <td>Bajaj Finance</td>
                     <td>XYZ</td>
-                    <td className={styles.FixedColumn}>
+                    <td className={styles.FixedColumn} style={{zIndex:selected===index?101:0}}>
                       <div>
                         <DropDownLeadTable
                           selectedType={selectedType}
                           onSelectType={(type: string) => {
                             setSelectedType(type);
                             setActiveSection(activeSection);
-                          }} />
+                          }}
+                          cb={()=>{
+                            setSelected(index)
+                          }}
+                          />
                         {/* <div className={styles.progress_status}>
                        <span>Last Updated 2 Days Ago</span>
                        <p className={styles.prop_send}>View Proposal <IoChevronForward /><IoChevronForward /></p>
