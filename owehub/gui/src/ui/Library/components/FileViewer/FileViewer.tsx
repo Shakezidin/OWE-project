@@ -8,8 +8,23 @@ interface IProps {
     name?:string
 }
 
-const FileViewer = ({ fileUrl = "", fileType = "", onClose,name }: IProps) => {
+const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            console.log('Key pressed:', event.key); 
+            if (event.key === 'Escape') {
+                console.log('Escape key pressed'); 
+                onClose?.();
+            }
+        };
+console.log("evenene")
+        window.addEventListener('keydown', handleKeyDown);
+        
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
 
     return (
         <div className='transparent-model' >

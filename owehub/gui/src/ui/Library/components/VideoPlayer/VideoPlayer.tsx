@@ -16,7 +16,9 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
+            console.log('Key pressed:', event.key); 
             if (event.key === 'Escape') {
+                console.log('Escape key pressed'); 
                 onClose?.();
             }
         };
