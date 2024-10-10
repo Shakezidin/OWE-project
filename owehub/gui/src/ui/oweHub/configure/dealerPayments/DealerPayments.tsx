@@ -101,6 +101,7 @@ const DealerPayments: React.FC = () => {
         const data = await configPostCaller('get_dealerpayment', {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters
         });
 
         if (data.status > 201) {

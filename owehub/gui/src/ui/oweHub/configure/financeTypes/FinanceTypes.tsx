@@ -110,6 +110,7 @@ const  FinanceTypes: React.FC = () => {
         const data = await configPostCaller('get_finacetypes', {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         });
 
         if (data.status > 201) {
