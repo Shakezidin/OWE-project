@@ -212,7 +212,7 @@ const DashBoardTable = ({
                   </tr>
                 ))
               ) : (
-                <tr style={{ border: 0 }}>
+                <tr style={{ border: 0, background: "none"}}>
                   <td colSpan={8}>
                     <DataNotFound />
                   </td>
