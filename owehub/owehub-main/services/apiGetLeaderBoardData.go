@@ -105,8 +105,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
 		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
 			where ud.email_id = '%v';
 		`, dataReq.Email)
 
@@ -143,8 +143,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer" {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
 			where ud.email_id = '%v';
 		`, dataReq.Email)
 
@@ -219,7 +219,9 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 
 			dealerQuery := fmt.Sprintf(
-				"SELECT dealer_name, dealer_code FROM v_dealer WHERE dealer_name IN (%s)",
+				"SELECT sp.sales_partner_name as dealer_name, pd.dealer_code FROM sales_partner_dbhub_schema sp"+
+					" LEFT JOIN partner_details pd ON sp.item_id = pd.partner_id "+
+					"WHERE sp.sales_partner_name IN (%s)",
 				strings.Join(placeholders, ","),
 			)
 
@@ -330,7 +332,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		LeaderBoardList.LeaderBoardList[i].Rank = i + 1
 	}
 
-	LeaderBoardList.TopLeaderBoardList = LeaderBoardList.LeaderBoardList[:3]
+	LeaderBoardList.TopLeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, 1, 3)
+
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
 
 	if (dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter)) && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {

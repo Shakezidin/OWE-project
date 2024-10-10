@@ -292,6 +292,180 @@ app.post('/api/web-proposals/:designId/generate', async (req, res) => {
   }
 });
 
+// Retrieve Design Summary
+app.get('/api/designs/:designId/summary', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/summary`;
+  
+  console.log('Retrieving design summary. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Design summary retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving design summary:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve Design Summary
+app.get('/api/designs/:designId/summary', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/summary`;
+  
+  console.log('Retrieving design summary. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Design summary retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving design summary:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve Design Pricing
+app.get('/api/designs/:designId/pricing', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/pricing`;
+  
+  console.log('Retrieving design pricing. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Design pricing retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving design pricing:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve Design Pricing
+app.get('/api/designs/:designId/financings', async (req, res) => {
+  const { designId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/financings`;
+  
+  console.log('Retrieving financings pricing. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Design pricing retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving design financings:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve specific Financing by ID
+app.get('/api/designs/:designId/financings/:financingId', async (req, res) => {
+  const { designId, financingId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/financings/${financingId}`;
+  
+  console.log('Retrieving specific financing. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(
+      auroraEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log('Specific financing retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving specific financing:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Retrieve Consumption Profile for a Project
+app.get('/api/projects/:projectId/consumption_profile', async (req, res) => {
+  const { projectId } = req.params;
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/projects/${projectId}/consumption_profile`;
+
+  console.log('Retrieving consumption profile. Aurora endpoint:', auroraEndpoint);
+
+  try {
+    const response = await axios.get(auroraEndpoint, {
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`, // Ensure bearerToken is properly set
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('Consumption profile retrieved successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error retrieving consumption profile:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+// Update Consumption Profile for a Project
+app.put('/api/projects/:projectId/consumption_profile', async (req, res) => {
+  const { projectId } = req.params;
+  const { consumption_profile } = req.body; // Extract the consumption profile data from the request body
+  const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/projects/${projectId}/consumption_profile`;
+
+  console.log('Updating consumption profile. Aurora endpoint:', auroraEndpoint);
+  console.log('Consumption profile data:', consumption_profile);
+
+  try {
+    const response = await axios.put(auroraEndpoint, { consumption_profile }, {
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`, // Ensure bearerToken is properly set
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('Consumption profile updated successfully:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error updating consumption profile:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || error.message);
+  }
+});
+
+
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

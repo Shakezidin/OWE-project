@@ -70,7 +70,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 		userEmail := dataReq.Email
 		query = `
-						 SELECT dealer_id 
+						 SELECT partner_id 
 						 FROM user_details 
 						 WHERE email_id = $1
 				 `
@@ -88,15 +88,15 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["dealer_id"].(int64))
+		dealerId = int(data[0]["partner_id"].(int64))
 
 	} else {
 		// Get dealer_id based on dealer_name
 		dealerName := dataReq.DealerName
 		query = `
-						 SELECT id 
-						 FROM v_dealer 
-						 WHERE LOWER(dealer_name) = LOWER($1)
+						 SELECT item_id 
+						 FROM sales_partner_dbhub_schema 
+						 WHERE LOWER(sales_partner_name) = LOWER($1)
 				 `
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {
@@ -112,7 +112,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["id"].(int64))
+		dealerId = int(data[0]["item_id"].(int64))
 	}
 
 	if dataReq.TeamId > 0 {
@@ -120,7 +120,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			SELECT ur.role_name, ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
 			FROM user_details ud
 			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			WHERE ud.dealer_id = $1
+			WHERE ud.partner_id = $1
 			AND NOT EXISTS (
 				SELECT 1
 				FROM team_members tm
@@ -134,7 +134,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			SELECT ur.role_name, ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
 			FROM user_details ud
 			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			WHERE ud.dealer_id = $1
+			WHERE ud.partner_id = $1
 		`
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerId})
 	}

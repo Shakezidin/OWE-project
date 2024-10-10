@@ -98,6 +98,22 @@ const LogoPicker = ({
   const handleFileInputChange = () => {
     const file = fileInputRef.current?.files?.[0];
     if (!file) return;
+
+    // Validate file type (only allow image types)
+    const validImageTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'image/gif',
+      'image/webp',
+    ];
+    if (!validImageTypes.includes(file.type)) {
+      toast.error(
+        'Please upload a valid image file (PNG, JPEG, JPG, GIF, WEBP)'
+      );
+      return;
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -141,6 +157,8 @@ const LogoPicker = ({
         <GoUpload size={16} />
         <span>Upload</span>
       </button>
+      <small className="upload-notice">Upload Only PNG, JPEG, or JPG files</small>
+
     </>
   );
 };

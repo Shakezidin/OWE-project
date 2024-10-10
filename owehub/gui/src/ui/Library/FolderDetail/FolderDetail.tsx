@@ -16,6 +16,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import NewFile from '../Modals/NewFile';
 import { useAppSelector } from '../../../redux/hooks';
 import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 const FolderDetail = () => {
     const path = useParams()
     const [files, setFiles] = useState<IFiles[]>([])
@@ -25,6 +26,7 @@ const FolderDetail = () => {
     const { microsoftGraphAccessToken } = useAppSelector(state => state.auth)
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [videoUrl, setVideoUrl] = useState("")
+    const { role_name } = useAppSelector(state => state.auth)
     const navigate = useNavigate()
     const getFolderChilds = async () => {
         try {
@@ -157,7 +159,7 @@ const FolderDetail = () => {
                 </div>
 
                 <div className={styles.libSecHeader_right}>
-                <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="folders" setLoading={setIsLoading} />
+                    {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="folders" setLoading={setIsLoading} />}
                 </div>
             </div>
 
@@ -200,8 +202,9 @@ const FolderDetail = () => {
                                                 }}>
                                                     <img
                                                         src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
-                                                        style={{width:isValidVideo?32:undefined,
-                                                            height:isValidVideo?32:undefined
+                                                        style={{
+                                                            width: isValidVideo ? 32 : undefined,
+                                                            height: isValidVideo ? 32 : undefined
                                                         }}
                                                     />
                                                     <div>

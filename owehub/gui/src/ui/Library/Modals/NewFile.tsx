@@ -55,7 +55,6 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
 
   const uploadFiles = async () => {
     if (files.length === 0) return;
-    setLoading(true);
     const accessToken = Cookies.get("myToken");
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || "/"}`;
 
@@ -107,7 +106,6 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     finally {
       sePendingState("")
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -188,12 +186,12 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
                 className={classes.folderInput}
                 multiple
               />
-              <li
-                className={`${classes.dropdownItem} ${selectedOption === 'Upload folder' ? classes.selected : ''}`}
+              {activeSection !== 'folders' && <li
+                className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
                 onClick={handleOptionClick}
               >
                 + Upload file
-              </li>
+              </li>}
             </>
 
             {activeSection === 'folders' && <li
