@@ -485,6 +485,8 @@ input[type='checkbox']:checked {
     /* padding: 17px 16px 17px 35px !important;
     margin: 17px 16px 17px 35px !important; */
   }
+  .detailsRowChev {
+  }
 }
 
 /* Smartphones in both portrait and landscape */
@@ -509,12 +511,12 @@ input[type='checkbox']:checked {
     grid-template-columns: auto 2fr 1fr auto auto !important ;
     align-items: baseline;
   }
- 
+
   .actionButtons {
     /* transform: scale(0.7) translate(0, -10px); */
     gap: 3px;
   }
-  
+
   .hist_date {
     font-size: 10px !important;
   }
@@ -823,7 +825,7 @@ input[type='checkbox']:checked {
     border: 1px solid var(--border-color);
     top: 57px;
   }
-  .rescheduleButton{
+  .rescheduleButton {
     width: 120px;
     font-size: 12px;
   }
@@ -849,13 +851,12 @@ input[type='checkbox']:checked {
   }
 
   .cardContent {
-   padding: 10px 10px 18px 0px;
+    padding: 10px 10px 18px 0px;
   }
 
   .legend {
     padding-left: 16px;
   }
-  
 }
 
 @media screen and (max-width: 767px) {
@@ -865,6 +866,7 @@ input[type='checkbox']:checked {
     align-items: flex-start;
     gap: 10px;
     margin-top: 10px;
+    padding-left: 16px;
   }
 }
 

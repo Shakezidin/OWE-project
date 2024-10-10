@@ -60,6 +60,29 @@ interface StatusData {
   value: number;
   color: string;
 }
+interface Design {
+  id: string;
+  external_provider_id: string;
+  name: string;
+  created_at: string;
+  system_size_stc: number;
+  system_size_ptc: number;
+  system_size_ac: number;
+  milestone: string | null;
+}
+
+interface Proposal {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  proposal_template_id: string;
+  proposal_link: string;
+}
+
+interface WebProposal {
+  url: string;
+  url_expired: boolean;
+}
 
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -419,7 +442,7 @@ const CustomTooltip = ({
         style={{
           backgroundColor: 'white',
           padding: '5px 10px',
-          // border: '1px solid #f0f0f0',
+          zIndex: "99",
           borderRadius: '4px',
           // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
@@ -457,7 +480,8 @@ const LeadManagementDashboard = () => {
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
-  const [proposal, setProposal] = useState(null);
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -509,9 +533,14 @@ const LeadManagementDashboard = () => {
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
+  const isMobileChevron = useMatchMedia('(max-width: 767px)');
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const isMobileFixed = useMatchMedia('(min-width: 320px) and (max-width: 480px)');
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
+  const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
+
+
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -764,7 +793,7 @@ const LeadManagementDashboard = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates,ref,isModalOpen, refresh]);
+  }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -781,6 +810,7 @@ const LeadManagementDashboard = () => {
   );
 
   const getAuroraData = async () => {
+    setIsProjectLoading(true); // Start project-specific loader
     try {
       const response = await axios.get('http://localhost:5000/api/projects');
       // Handle the response as needed
@@ -788,8 +818,11 @@ const LeadManagementDashboard = () => {
       setProjects(response.data.projects);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setIsProjectLoading(false); // Stop project-specific loader
     }
   };
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -889,12 +922,18 @@ const LeadManagementDashboard = () => {
 
   // Function to fetch project details
   const fetchProjectDetails = async (projectId: string) => {
+
+    const monthlyEnergy = [100, 200, 150, 100, 250, 300, 100, 400, 100, 350, 450, 100]; // Example data
+    const monthlyBill = [50, 75, 60, 50, 80, 90, 90, 100, 110, 120, 50, 60]; // Example data
     try {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}`
       );
       setSelectedProject(response.data); // Set the selected project details
       fetchDesigns(projectId); // Fetch designs for the selected project
+      fetchConsumptionProfile(projectId) // Fetch Consumption Profile for the selected project
+      updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
+
     } catch (error) {
       console.error('Error fetching project details:', error);
     }
@@ -903,8 +942,26 @@ const LeadManagementDashboard = () => {
   // Function to fetch designs for a project
   const fetchDesigns = async (projectId: string) => {
     try {
-      const response = await axios.get(`/api/designs?projectId=${projectId}`);
+      const response = await axios.get(`http://localhost:5000/api/designs/${projectId}`);
       setDesigns(response.data.designs); // Set the designs for the selected project
+
+      // Find the most recently created design
+      if (response.data.designs && response.data.designs.length > 0) {
+        const sortedDesigns = response.data.designs.sort((a: Design, b: Design) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        const latestDesign = sortedDesigns[0];
+
+        // Call fetchProposal with the latest design's ID
+        // fetchProposal(latestDesign.id); //Open Proposal in edit mode for Sales Rep.
+        // fetchWebProposal(latestDesign.id); // Open Proposal URL.
+        generateWebProposalUrl(latestDesign.id); //Generate new URL every time.
+        fetchDesignSummary(latestDesign.id);
+        fetchDesignPricing(latestDesign.id);
+        fetchFinanceListing(latestDesign.id);
+      } else {
+        console.log('No designs found for this project');
+      }
     } catch (error) {
       console.error('Error fetching designs:', error);
     }
@@ -913,13 +970,164 @@ const LeadManagementDashboard = () => {
   // Function to fetch proposal for a design
   const fetchProposal = async (designId: string) => {
     try {
-      const response = await axios.get(`/api/proposals?designId=${designId}`);
-      setProposal(response.data); // Set the proposal details
+      const response = await axios.get<{ proposal: Proposal }>(`http://localhost:5000/api/proposals/${designId}`);
+      setProposal(response.data.proposal);
+
+      // Automatically open the proposal link in a new tab
+      openProposalLink(response.data.proposal.proposal_link);
     } catch (error) {
       console.error('Error fetching proposal:', error);
     }
   };
 
+  // Function to fetch Web Proposal for a design
+  const fetchWebProposal = async (designId: string) => {
+    try {
+      const response = await axios.get<{ web_proposal: WebProposal }>(
+        `http://localhost:5000/api/web-proposals/${designId}`
+      );
+
+      // Set the web proposal in state if you want to store it
+      setWebProposal(response.data.web_proposal);
+
+      // Automatically open the web proposal link in a new tab
+      openProposalLink(response.data.web_proposal.url);
+    } catch (error) {
+      console.error('Error fetching web proposal:', error);
+    }
+  };
+
+  const generateWebProposalUrl = async (designId: string) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
+      const proposalUrl = response.data.web_proposal.url;
+
+      if (!response.data.web_proposal.url_expired) {
+        console.log('Generated Web Proposal URL:', proposalUrl);
+        openProposalLink(proposalUrl); // Open the proposal URL in a new tab
+      } else {
+        console.error('The web proposal URL has expired.');
+      }
+    } catch (error) {
+      console.error('Error generating web proposal URL:', error);
+    }
+  };
+
+  const fetchDesignSummary = async (designId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/summary`);
+      console.log('Retrieved Design Summary:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design summary:', error);
+      throw error;
+    }
+  };
+
+  const fetchDesignPricing = async (designId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/pricing`);
+      console.log('Retrieved Design Pricing:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design pricing:', error);
+      throw error;
+    }
+  };
+
+  const fetchFinanceListing = async (designId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/financings`);
+      const financings = response.data.financings;
+  
+      console.log('Retrieved Financings:', financings);
+  
+      if (financings && financings.length > 0) {
+        // Assuming you want to use the first financing ID
+        const financingId = financings[0].id;
+  
+        // Call the next API using the financing ID
+        fetchFinancingDetails(designId, financingId);
+      } else {
+        console.error('No financings found');
+      }
+    } catch (error) {
+      console.error('Error fetching financings:', error);
+    }
+  };
+
+  const fetchFinancingDetails = async (designId: string, financingId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/designs/${designId}/financings/${financingId}`);
+      console.log('Financing details fetched successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching financing details:', error);
+      throw error;
+    }
+  };
+  
+  const fetchConsumptionProfile = async (projectId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/projects/${projectId}/consumption_profile`);
+      console.log('Retrieved Consumption Profile:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching consumption profile:', error);
+      throw error;
+    }
+  };
+
+  const updateConsumptionProfile = async (projectId: string, monthlyEnergy: (number | null)[], monthlyBill: (number | null)[]) => {
+
+    try {
+      const response = await axios.put(`http://localhost:5000/api/projects/${projectId}/consumption_profile`, {
+        consumption_profile: {
+          monthly_energy: monthlyEnergy,
+          // monthly_bill: monthlyBill,
+        },
+      });
+      console.log('Consumption Profile Updated:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating consumption profile:', error);
+      throw error;
+    }
+  };
+  
+  
+
+  // Function to open the proposal link in a new tab
+  const openProposalLink = (link: string) => {
+    window.open(link, '_blank', 'noopener,noreferrer');
+  };
+
+  const downloadFile = async () => {
+    const fileUrl = 'https://v2-sandbox.aurorasolar.com/e-proposal/zWR9Gc7vzU2jzne8jNrPCrYC3hmUNKW1FynAhFaDnks';
+    try {
+      // Fetch the file
+      const response = await fetch(fileUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch the file');
+      }
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a link element, set its href to the Blob, and click it to trigger download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'proposal.pdf'; // Change filename if needed
+      link.click();
+      // Cleanup the object URL
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -961,6 +1169,10 @@ const LeadManagementDashboard = () => {
             <div>Total leads: {totalValue ? totalValue : '0'}</div>
           </div>
           <div className={styles.cardContent}>
+          {/* <div>
+            <h2>Download Aurora Proposal</h2>
+            <button onClick={downloadFile}>Download Proposal</button>
+          </div> */}
             {loading ? (
               <div
                 style={{
@@ -1129,6 +1341,7 @@ const LeadManagementDashboard = () => {
                     ...baseStyles,
                     width: '140px',
                     marginTop: '0px',
+                    zIndex: "100"
                   }),
                 }}
               />
@@ -1312,78 +1525,50 @@ const LeadManagementDashboard = () => {
                       </div>
                     </td>
                   </tr>
-                ) : currentFilter == 'Projects' && projects.length > 0 ? (
-                  projects.map((project: any, index: number) => (
-                    <React.Fragment key={index}>
-                      {/* <tr className={styles.history_lists}>
+                ) : currentFilter === 'Projects' ? (
+                  isProjectLoading ? (
+                    // Show loader if project data is still loading
+                    <tr>
+                      <td colSpan={leadsData.length || 5}>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <MicroLoader />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : projects.length > 0 ? (
+                    projects.map((project: any, index: number) => (
+                      <React.Fragment key={index}>
+                        <tr
+                          key={project.id}
+                          className={styles.history_lists}
+                          onClick={() => fetchProjectDetails(project.id)}
+                        >
                           <td className={styles.project_list}>
-                         
-                           <div style={{fontWeight:"bold"}}>
-                              Project Name
-                            </div>
-
-                            <div>
-                               Property Address
-                            </div>
-                        
-                            <div>
-                              Created At
-                            </div>
-                            <div>
-                              Project ID
-                            </div>
+                            <div style={{ fontWeight: 'bold' }}>{project.name}</div>
+                            <div>{project.property_address}</div>
+                            <div>{new Date(project.created_at).toLocaleString()}</div>
+                            <div>{project.id}</div>
                           </td>
-                    </tr> */}
-                      {/* <tr key={project.id} className={styles.history_lists}>
-                          <td className={styles.project_list}>
-                         
-                           <div style={{fontWeight:"bold"}}>
-                              {project.name}
-                            </div>
-
-                            <div>
-                              {project.property_address}
-                            </div>
-                        
-                            <div>
-                              {new Date(project.created_at).toLocaleString()}
-                            </div>
-                            <div>
-                              {project.id}
-                            </div>
-                          </td>
-                        </tr> */}
-                      <tr
-                        key={project.id}
-                        className={styles.history_lists}
-                        onClick={() => fetchProjectDetails(project.id)}
-                      >
-                        <td className={styles.project_list}>
-                          <div style={{ fontWeight: 'bold' }}>
-                            {project.name}
-                          </div>
-
-                          <div>{project.property_address}</div>
-
-                          <div>
-                            {new Date(project.created_at).toLocaleString()}
-                          </div>
-                          <div>{project.id}</div>
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  ))
+                        </tr>
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <tr style={{ border: 0 }}>
+                      <td colSpan={10}>
+                        <DataNotFound />
+                      </td>
+                    </tr>
+                  )
                 ) : leadsData.length > 0 ? (
                   leadsData.map((lead: any, index: number) => (
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${
-                            lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
+                          className={`${lead.status === 'Declined' ||
+                              lead.status === 'Action Needed'
                               ? styles.history_list_inner_declined
                               : styles.history_list_inner
-                          }`}
+                            }`}
                           onClick={(e) => {
                             setLeadId(lead['leads_id']);
                             if (
@@ -1446,6 +1631,7 @@ const LeadManagementDashboard = () => {
                                 onClick={() => {
                                   handleOpenModal();
                                   setReschedule(true);
+                                  setAction(false);
                                 }}
                                 className={styles.rescheduleButton}
                               >
@@ -1477,6 +1663,7 @@ const LeadManagementDashboard = () => {
                                     lead.action_needed_message ===
                                     'Update Status'
                                   ) {
+                                    setReschedule(false)
                                     handleOpenModal();
                                     setAction(true);
                                   }
@@ -1487,6 +1674,7 @@ const LeadManagementDashboard = () => {
                                   ? 'Update Status'
                                   : 'Create Proposal'}
                               </button>
+                              
                             </div>
                           )}
 
@@ -1520,12 +1708,16 @@ const LeadManagementDashboard = () => {
 
                       {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
-                          <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
-                            <div className={''}>
-                              <span>{lead.email_id}</span>
+                          <td
+                            colSpan={5}
+                            className={styles.detailsRow}
+                            style={isMobileChevron ? { paddingLeft: '48px' } : {}}
+                          >
+                            <div style={{ marginBottom: '6px' }}>{lead.phone_number}</div>
+                            <div style={{ marginBottom: '6px' }}>
+                              <span >{lead.email_id}</span>
                             </div>
-                            <div className={''}>
+                            <div>
                               {lead?.street_address
                                 ? lead.street_address.length > 20
                                   ? `${lead.street_address.slice(0, 20)}...`
@@ -1547,6 +1739,8 @@ const LeadManagementDashboard = () => {
               </tbody>
             </table>
           )}
+
+
 
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>

@@ -77,8 +77,8 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 	if len(dataReq.Role) <= 0 {
 		query = `
 				SELECT name, user_code FROM user_details
-				WHERE dealer_id IN (
-					SELECT partner_id FROM sales_partner_dbhub_schema
+				WHERE partner_id IN (
+					SELECT item_id FROM sales_partner_dbhub_schema
 					WHERE LOWER(sales_partner_name) = LOWER($1)
 				)
 				`

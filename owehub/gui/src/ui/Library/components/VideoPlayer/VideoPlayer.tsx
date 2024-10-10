@@ -1,24 +1,46 @@
-import React, { useState } from 'react'
-import ReactPlayer from 'react-player'
+import React, { useState, useRef } from 'react';
+import ReactPlayer from 'react-player';
 import { MdClose } from 'react-icons/md';
-import "./index.css"
+import "./index.css";
+
 interface IPlayer {
-    width?: number | undefined;
-    height?: number | undefined;
-    url?: string | undefined;
+    width?: number;
+    height?: number;
+    url?: string;
     onClose?: () => void;
+    videoName?: string;
 }
-const VideoPlayer = ({ width = 900, height = 650, url = "", onClose }: IPlayer) => {
-    const [isLoading, setIsLoading] = useState(true);
+
+const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }: IPlayer) => {
+    const playerRef = useRef<ReactPlayer | null>(null);
+
+
 
     return (
         <div className='transparent-model' >
-            <button  className='close-btn' onClick={onClose} ><MdClose color='#fff' size={32} />  </button>
-            <div className="bg-white" >
-                <ReactPlayer   onReady={() => setIsLoading(false)} style={{ background: "#fff" }} url={url} width={width} height={height} controls={true} />
+
+            <div style={{ minHeight: 400, maxWidth: width,width:"100%",borderRadius:12 }} className="bg-white p2 relative">
+
+                <div className='flex mb2 items-center justify-between' >
+                    <h4 > {videoName} </h4>
+                    <button
+                        className='close-btn'
+                        onClick={(e) => {
+                           onClose?.()
+                        }}
+                    >
+                        <MdClose color='#000' size={32} />
+                    </button>
+                </div>
+                <ReactPlayer
+                    url={url}
+                    width={"100%"}
+                    height={"100%"}
+                    controls={true}
+                />
             </div>
         </div>
-    )
+    );
 }
 
-export default VideoPlayer
+export default VideoPlayer;

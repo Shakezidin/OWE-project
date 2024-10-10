@@ -373,6 +373,7 @@ const UserManagement: React.FC = () => {
     }
   };
   console.log(userRoleBasedList, 'userRoleBasedList');
+  console.log(formData, "formdata")
   /** render UI */
   return (
     <>

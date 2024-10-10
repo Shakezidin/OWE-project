@@ -90,7 +90,7 @@ export const createUserObject = (
     email_id: formData.email_id,
     mobile_number: formData.mobile_number,
     role_name: formData.role_name,
-    designation: 'SE',
+    designation: formData.role_name,
     description: formData.description,
     zip_code: formData.zip_code,
     podio_checked: formData.podioChecked,

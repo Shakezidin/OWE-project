@@ -505,23 +505,21 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       {/* <span className={classes.verifyLetter}> Verified</span>
                       </span> */}
                     </span>
-                    <div>
-                      {visibleDiv === 0 ||
-                        (visibleDiv === 11 && (
-                          <div
-                            className={classes.edit_modal_openMediaScreen}
-                            onClick={handleOpenModal}
-                          >
-                            <span className={classes.edit_modal_button2}>
-                              <img
-                                className={classes.editPenStyle}
-                                src={Pen}
-                              ></img>{' '}
-                              Edit
-                            </span>
-                          </div>
-                        ))}
-                    </div>
+                    {(visibleDiv === 0 || visibleDiv === 11) && (
+                      <div
+                        className={classes.edit_modal_open}
+                        onClick={handleOpenModal}
+                      >
+                        <span className={classes.edit_modal_button}>
+                          <img
+                            className={classes.editPenStyle}
+                            src={Pen}
+                            alt="Edit Pen"
+                          />{' '}
+                          Edit
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -529,7 +527,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   "No Data Found"
                 </div>
               )}
-              <div>
+              {/* <div>
                 {(visibleDiv === 0 || visibleDiv === 11) && (
                   <div
                     className={classes.edit_modal_open}
@@ -545,7 +543,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
             <EditModal
               isOpen={isModalOpen}
@@ -879,7 +877,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}{' '}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (
               <iframe

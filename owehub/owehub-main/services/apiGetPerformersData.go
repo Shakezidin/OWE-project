@@ -74,12 +74,14 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) {
 
 	} else if role == string(types.RoleDealerOwner) || role == string(types.RoleSubDealerOwner) {
-		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud 
-				JOIN v_dealer vd ON ud.dealer_id = vd.id
+		query = `SELECT sp.sales_partner_name as dealer_name, ud.name as owner_name, pd.partner_logo as dealer_logo, pd.bg_colour as bg_color, sp.item_id as dealer_id FROM user_details ud 
+				LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+				LEFT JOIN partner_details pd ON ud.partner_id = pd.partner_id
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud
-					JOIN v_dealer vd ON ud.dealer_id = vd.id
+		query = `SELECT sp.sales_partner_name as dealer_name, pd.partner_logo as dealer_logo, pd.bg_colour as bg_color, sp.item_id as dealer_id FROM user_details ud
+					LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+					LEFT JOIN partner_details pd ON ud.partner_id = pd.partner_id
 				  WHERE ud.email_id = $1`
 	}
 
@@ -106,8 +108,8 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	queryForDealerOwner := fmt.Sprintf(`
 	select * from user_details ud
-	join v_dealer vd on ud.dealer_id = vd.id
-	where (role_id = 2 or role_id = 3) and dealer_id = %d
+	LEFT join sales_partner_dbhub_schema sp on ud.partner_id = sp.item_id
+	where (role_id = 2 or role_id = 3) and ud.partner_id = %d
 	`, performerData.DealerId)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForDealerOwner, nil)
@@ -124,12 +126,12 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `SELECT
     (SELECT COUNT(DISTINCT t.team_id)
      FROM teams t
-     WHERE t.dealer_id = $1) AS total_teams,
+     WHERE t.partner_id = $1) AS total_teams,
 
     (SELECT COUNT(tm.team_member_id)
      FROM team_members tm
      LEFT JOIN teams t ON tm.team_id = t.team_id
-     WHERE t.dealer_id = $2) AS total_team_strength`
+     WHERE t.partner_id = $2) AS total_team_strength`
 
 	whereEleList = append(whereEleList, performerData.DealerId, performerData.DealerId)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)

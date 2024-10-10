@@ -70,7 +70,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail := req.Context().Value("emailid").(string)
 	role := req.Context().Value("rolename").(string)
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT sp.sales_partner_name as dealer_name FROM user_details ud JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id WHERE ud.email_id = '%v'", userEmail)
 
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
@@ -501,7 +501,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if len(dataFilter.UserRoles) > 0 {
-		log.FuncErrorTrace(0, "dataaa = %v", dataFilter.UserRoles)
 		if whereAdder {
 			filtersBuilder.WriteString(" AND ")
 		} else {
@@ -523,9 +522,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 
 	if len(dataFilter.DealerName) > 0 {
 		if whereAdder {
-			filtersBuilder.WriteString(fmt.Sprintf(" AND vd.dealer_name = $%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf(" AND sp.sales_partner_name = $%d", len(whereEleList)+1))
 		} else {
-			filtersBuilder.WriteString(fmt.Sprintf(" WHERE vd.dealer_name = $%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf(" WHERE sp.sales_partner_name = $%d", len(whereEleList)+1))
 		}
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}

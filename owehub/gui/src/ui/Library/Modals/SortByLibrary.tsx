@@ -45,7 +45,7 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
         onClick={handleClick}
         className={`${classes.logo_sortby_botton} ${isVisible ? classes.active : ''}`}
       >
-        Sort by
+        Sort by {selectedOption.replace(selectedOption[0], selectedOption[0].toUpperCase())}
         <FaChevronDown
           className={`${classes.icon} ${isVisible ? classes.icon_active : ''}`}
         />

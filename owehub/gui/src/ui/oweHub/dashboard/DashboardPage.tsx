@@ -140,7 +140,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <>
-      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+      <div className='dealer-bread' style={{ marginLeft: '6px', marginTop: '6px' }}>
         <Breadcrumb
           head=""
           linkPara="Dealer Pay"
@@ -153,7 +153,7 @@ export const DashboardPage: React.FC = () => {
         <div className="white-back">
           <div className="DashboardPage-container">
             <div className="rep-manage-user">
-              <div className="dash-head-input" style={{ minWidth: '185px' }}>
+              <div className="dash-head-input dealer-commission" style={{ minWidth: '185px' }}>
                 <div
                   className="rep-drop_label"
                   style={{ backgroundColor: '#57B3F1' }}
@@ -259,15 +259,13 @@ export const DashboardPage: React.FC = () => {
                     Sales Partner
                   </label>
                   <Select
-                    options={
-                      [
-                        { label: 'All', value: 'ALL' },
-                        ...dealers?.map?.((item) => ({
-                          label: item,
-                          value: item,
-                        })),
-                      ] || []
-                    }
+                    options={[
+                      { label: 'All', value: 'ALL' },
+                      ...(dealers.length > 0 ? dealers.map((item) => ({
+                        label: item,
+                        value: item,
+                      })) : []),
+                    ]}
                     value={dealer}
                     onChange={(newValue) => {
                       if (newValue) {
@@ -358,7 +356,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="dash-head-input" style={{ width: '250px' }}>
+              <div className="dash-head-input dealer-payroll">
                 <div
                   className="rep-drop_label"
                   style={{ backgroundColor: '#C470C7' }}
@@ -399,7 +397,7 @@ export const DashboardPage: React.FC = () => {
                         : 'Select Date'}
                     </label>
                     {showDatePicker && (
-                      <div className="calender-container">
+                      <div className="calender-container dealer-calendar">
                         <Calendar
                           date={selectionRange || new Date()}
                           onChange={handleSelect}
@@ -428,9 +426,8 @@ export const DashboardPage: React.FC = () => {
             <div className="dashboard-payroll">
               <div className="line-graph">
                 <div
-                  className={`filter-line ${
-                    active === 0 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -440,9 +437,8 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
+                    }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (
@@ -480,8 +476,8 @@ export const DashboardPage: React.FC = () => {
                   className={`performance-exportbtn  mt0 `}
                   style={{ height: '36px', padding: '8px 12px' }}
                 >
-                  <FaUpload size={12} className="mr-1" />
-                  <span>{' Export '}</span>
+                  <FaUpload size={12} className="mr-1 dealer-exp-svg" />
+                  <span className='dealer-export-mob'>{' Export '}</span>
                 </button>
               </div>
             </div>
@@ -502,7 +498,7 @@ export const DashboardPage: React.FC = () => {
           fetchFunction={fetchFunction}
         />
 
-        <div className="" style={{ marginTop: '8px' }}>
+        <div className="dealer-pay-table">
           {active === 0 && (
             <DashBoardTable
               currentPage={currentPage}

@@ -196,7 +196,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid #cbcbcb;
+  border: 1px solid #000;
   border-radius: 8px;
   padding: 5px 10px;
   cursor: pointer;
