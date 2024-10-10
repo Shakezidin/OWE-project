@@ -19,8 +19,6 @@ func HandleGetSalesRepCalenderRequest(resp http.ResponseWriter, req *http.Reques
 
 	dummyResponse := models.CalendarResponse{
 		CustomerEmail: "axy@pqr.com",
-		Status:        200,
-		Message:       "Success",
 		Details: []models.CalendarDay{
 			{
 				Date:      "2024-10-10",
