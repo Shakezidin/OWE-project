@@ -19,7 +19,7 @@ import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { FileOrFolder } from './types';
 import { useAppSelector } from '../../redux/hooks';
@@ -35,6 +35,7 @@ import zipFolder from './assetss/zipFolder.svg';
 import defauult from './assetss/default.svg';
 import DataNotFound from '../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../resources/static_data/Constant';
+import FileViewer from './components/FileViewer/FileViewer';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -57,6 +58,13 @@ const LibraryHomepage = () => {
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
   const { microsoftGraphAccessToken, role_name } = useAppSelector(state => state.auth)
+  const [fileInfo, setFileInfo] = useState({
+    name: "",
+    fileType: "",
+    url: ""
+  })
+
+  const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
 
   const fetchFolderContent = async (folderId: string) => {
     setLoading(true);
@@ -133,7 +141,7 @@ const LibraryHomepage = () => {
 
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [videoName,setVideoName] = useState("")
+  const [videoName, setVideoName] = useState("")
   const fetchDataFromGraphAPI = async () => {
     setLoading(true);
     const url = 'https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children'; //endpoint
@@ -348,6 +356,45 @@ const LibraryHomepage = () => {
     setToggleClick(!toggleClick);
   };
 
+  const getContentThumbnail = (type: string) => {
+    switch (type) {
+        case "image/jpeg":
+        case "image/png":
+        case "image/jpg":
+        case "image/gif":
+        case "image/webp":
+        case "image/bmp":
+        case "image/tiff":
+        case "image/svg+xml":
+        case "image/x-icon":
+        case "image/heif":
+        case "image/heic":
+            return "image";
+
+        case "application/pdf":
+            return ICONS.pdf;
+
+        case "application/vnd.ms-excel":
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+        case "application/vnd.ms-excel.sheet.macroEnabled.12":
+            return ICONS.excelIcon;
+
+        case "video/mp4":
+        case "video/mpeg":
+        case "video/ogg":
+        case "video/webm":
+        case "video/x-msvideo":
+        case "video/quicktime":
+            return ICONS.videoPlayerIcon;
+
+        case "folder":
+            return ICONS.folderImage;
+
+
+    }
+};
+
   const handleRecycleBinClick = () => {
     setIsRecycleBinView(!isRecycleBinView);
     setIsHovered(false);
@@ -372,6 +419,25 @@ const LibraryHomepage = () => {
       <p className={styles.recycle_p}>Recycle Bin</p>
     </div>
   );
+
+  const isImage = (mimeType: string) => {
+    switch (mimeType) {
+      case "image/jpeg":
+      case "image/png":
+      case "image/jpg":
+      case "image/gif":
+      case "image/webp":
+      case "image/bmp":
+      case "image/tiff":
+      case "image/svg+xml":
+      case "image/x-icon":
+      case "image/heif":
+      case "image/heic":
+        return true;
+      default:
+        return false
+    }
+  }
 
   const handleClickdeleted = (index: string) => {
     DeleteHandler(index);
@@ -405,6 +471,10 @@ const LibraryHomepage = () => {
   //     default: return sizeNumber;
   //   }
   // };
+
+
+
+
 
   const sortedData = [...filteredData].sort((a, b) => {
     switch (sortOption) {
@@ -635,12 +705,12 @@ const LibraryHomepage = () => {
         );
       }
 
-      
-if (currentFolderContent.length === 0) {
-  return   <div className={` bg-white py2 ${styles.filesLoader}`}>
-  <DataNotFound />
-</div>
-}
+
+      if (currentFolderContent.length === 0) {
+        return <div className={` bg-white py2 ${styles.filesLoader}`}>
+          <DataNotFound />
+        </div>
+      }
 
       return (
         <div className={styles.libSectionWrapper}>
@@ -724,11 +794,10 @@ if (currentFolderContent.length === 0) {
       return (
         <div>
           {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string,name) => {
+            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string, name) => {
               setIsVideoModalOpen(true)
               setVideoUrl(url)
               setVideoName(name!)
-              
             }} />}
         </div>
       );
@@ -746,18 +815,24 @@ if (currentFolderContent.length === 0) {
         {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : sortedData.length > 0 ? (
           sortedData.map((data) => {
             const isValidVideo = isVideo(data.file?.mimeType!)
+            const isValidImage = isImage(data.file?.mimeType!)
             return <div className={styles.libGridItem} key={data.id}>
-              <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+              <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                 if (isValidVideo) {
                   setIsVideoModalOpen(true)
                   setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
                   setVideoName(data.name!)
                 }
-
+                if (isValidImage) {
+                  setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
+                  setIsFileViewerOpen(true)
+                } else {
+                  window.open(data.webUrl, "_blank")
+                }
               }}>
                 <img
                   className={styles.cardImg}
-                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : data.file?.mimeType === "image/jpeg" ? data['@microsoft.graph.downloadUrl'] : defauult}
+                  src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
                   alt={`null`}
                   loading='lazy'
                 />
@@ -842,9 +917,13 @@ if (currentFolderContent.length === 0) {
 
       {renderContent()}
       {
-        isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {setIsVideoModalOpen(false)
-          console.log("video modal close");}
+        isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
+          setIsVideoModalOpen(false)
+        }
         } />
+      }
+      {
+        isFileViewerOpen && <FileViewer onClose={() => setIsFileViewerOpen(false)} fileUrl={fileInfo.url} fileType={fileInfo.fileType} name={fileInfo.name} />
       }
     </div>
   );
