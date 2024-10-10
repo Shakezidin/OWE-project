@@ -3,6 +3,7 @@ import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './videosview.module.css';
 import dummyVideoThumbnail from '../../assetss/dummyVideoThumbnail.svg'
 import playBtn from '../../assetss/playBtn.svg'
+import { PiLineVerticalThin } from "react-icons/pi";
 // Define the interface for the video data
 interface VideoData {
   url: string;
@@ -65,9 +66,10 @@ function VideosView({ videoData, onClick}: VideosViewProps) {
             <div className={styles.videosview_name}>{Video.iconName}</div>
             <div className={styles.videoInfo_wrapper}>
               <div className={styles.videosSize}>{Video.size}</div>
-              <div className={styles.videos_piline}></div>
+              <PiLineVerticalThin className={styles.videos_LineVertical} />
               <div className={styles.videosdate}>{Video.lastModifiedDateTime.substring(0,10)}</div>
-              <div className={styles.videos_piline}></div>
+           
+              <PiLineVerticalThin  className={styles.videos_LineVertical}/>
               <div className={styles.video_name}>{Video.name.substring(0,20)}</div>
             </div>
           </div>
