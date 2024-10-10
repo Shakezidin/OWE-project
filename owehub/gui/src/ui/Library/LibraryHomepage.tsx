@@ -36,6 +36,7 @@ import defauult from './assetss/default.svg';
 import DataNotFound from '../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import FileViewer from './components/FileViewer/FileViewer';
+import { useSearchParams } from 'react-router-dom';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -63,9 +64,9 @@ const LibraryHomepage = () => {
     fileType: "",
     url: ""
   })
-
+  const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
-
+  const query = searchParams.get("from")
   const fetchFolderContent = async (folderId: string) => {
     setLoading(true);
     const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${folderId}/children`;
@@ -100,7 +101,10 @@ const LibraryHomepage = () => {
     if (microsoftGraphAccessToken) {
       fetchDataFromGraphAPI();
     }
-  }, [microsoftGraphAccessToken]);
+    if (query) {
+      setActiveSection(query as "folders")
+    }
+  }, [microsoftGraphAccessToken, query]);
   interface User {
     // Define the properties of the user object as needed
     id: string;
@@ -358,42 +362,42 @@ const LibraryHomepage = () => {
 
   const getContentThumbnail = (type: string) => {
     switch (type) {
-        case "image/jpeg":
-        case "image/png":
-        case "image/jpg":
-        case "image/gif":
-        case "image/webp":
-        case "image/bmp":
-        case "image/tiff":
-        case "image/svg+xml":
-        case "image/x-icon":
-        case "image/heif":
-        case "image/heic":
-            return "image";
+      case "image/jpeg":
+      case "image/png":
+      case "image/jpg":
+      case "image/gif":
+      case "image/webp":
+      case "image/bmp":
+      case "image/tiff":
+      case "image/svg+xml":
+      case "image/x-icon":
+      case "image/heif":
+      case "image/heic":
+        return "image";
 
-        case "application/pdf":
-            return ICONS.pdf;
+      case "application/pdf":
+        return ICONS.pdf;
 
-        case "application/vnd.ms-excel":
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-        case "application/vnd.ms-excel.sheet.macroEnabled.12":
-            return ICONS.excelIcon;
+      case "application/vnd.ms-excel":
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+      case "application/vnd.ms-excel.sheet.macroEnabled.12":
+        return ICONS.excelIcon;
 
-        case "video/mp4":
-        case "video/mpeg":
-        case "video/ogg":
-        case "video/webm":
-        case "video/x-msvideo":
-        case "video/quicktime":
-            return ICONS.videoPlayerIcon;
+      case "video/mp4":
+      case "video/mpeg":
+      case "video/ogg":
+      case "video/webm":
+      case "video/x-msvideo":
+      case "video/quicktime":
+        return ICONS.videoPlayerIcon;
 
-        case "folder":
-            return ICONS.folderImage;
+      case "folder":
+        return ICONS.folderImage;
 
 
     }
-};
+  };
 
   const handleRecycleBinClick = () => {
     setIsRecycleBinView(!isRecycleBinView);
@@ -822,10 +826,12 @@ const LibraryHomepage = () => {
                   setIsVideoModalOpen(true)
                   setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
                   setVideoName(data.name!)
+                  return
                 }
                 if (isValidImage) {
                   setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
                   setIsFileViewerOpen(true)
+                  return
                 } else {
                   window.open(data.webUrl, "_blank")
                 }

@@ -3,7 +3,7 @@ import styles from '../LibraryHomepage.module.css';
 import { BiArrowBack } from 'react-icons/bi';
 import { RxDownload } from 'react-icons/rx';
 import { RiDeleteBinLine } from 'react-icons/ri';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -34,6 +34,22 @@ const FolderDetail = () => {
         url: ""
     })
     const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
+    const location = useLocation();
+    const [searchParams] = useSearchParams()
+
+    console.log(location.state, "location")
+    const handleBackWithQuery = () => {
+        const previousUrl = location.state?.from;
+        const query = searchParams.get("from")
+        const queryString = `?from=${query}`;
+        if (query) {
+            navigate(`${previousUrl}${queryString}`);
+            return;
+        } else {
+            navigate(-1);
+        }
+
+    };
     const navigate = useNavigate()
     const getFolderChilds = async () => {
         try {
@@ -156,7 +172,7 @@ const FolderDetail = () => {
             <div className={styles.libSecHeader}>
                 <div className={styles.folderHeader}>
                     <div className={styles.undoButton} >
-                        <BiArrowBack onClick={() => navigate(-1)} style={{
+                        <BiArrowBack onClick={() => handleBackWithQuery()} style={{
                             height: '20px',
                             width: '20px',
                         }} />
