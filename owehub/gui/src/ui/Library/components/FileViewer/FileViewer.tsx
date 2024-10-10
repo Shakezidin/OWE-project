@@ -25,7 +25,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose,name }: IProps) => {
                         <MdClose color='#000' size={32} />
                     </button>
                 </div>
-                <img className='mx-auto block' src={fileUrl} alt={name} style={{maxWidth:"100%",maxHeight:"100%"}} />
+                <img className='mx-auto block'  src={fileUrl} alt={name} style={{maxWidth:"100%",maxHeight:500}} />
             </div>
 
         </div>
