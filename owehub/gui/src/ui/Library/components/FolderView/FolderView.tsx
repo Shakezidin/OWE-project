@@ -56,7 +56,7 @@ function FolderView({
           key={folder.id}
           onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
           onMouseLeave={() => setHoveredIndex(null)}
-          onDoubleClick={() => navigate(`/library/${folder.name.substring(0, 10)}`)}
+          onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`,{ state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
             <p className={styles.createdBy}>Created by</p>
