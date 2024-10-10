@@ -253,10 +253,10 @@ const FolderDetail = () => {
                                         <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                         <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                                             <RxDownload className={styles.icons} style={{ height: '18px', width: '18px', color: file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085', cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)} />
-                                            <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => {
+                                        {role_name===TYPE_OF_USER.ADMIN &&    <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => {
                                                 setIsDeleteModalVisible(true)
                                                 setSelectedDeleteId(file.id)
-                                            }} />
+                                            }} />}
                                         </div>
                                     </div>
                                 })

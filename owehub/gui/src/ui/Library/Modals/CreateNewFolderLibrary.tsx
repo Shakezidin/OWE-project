@@ -17,13 +17,14 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
   const [folderName, setFolderName] = useState('');
   const [isPending, setIsPending] = useState(false)
+  const [error, setError] = useState("")
   const handleDelete = () => {
     setIsVisibleNewFolder(false);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-    const validCharacters = inputValue.length===1?/^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
+    const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
     if (!validCharacters.test(inputValue.slice(-1))) {
       return;
     }
@@ -32,6 +33,9 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
 
   const createFolder = async () => {
+    if (!folderName.trim()) {
+      setError("Folder name cannot be empty")
+    }
     try {
       const token = Cookies.get("myToken");
       setIsPending(true)
@@ -94,6 +98,10 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                   onChange={handleInputChange}
                 ></input>
               </div>
+              {error && <div className='mx-auto' style={{ maxWidth: 548 }}>
+
+                <span className="error"> {error} </span>
+              </div>}
             </div>
             <div className={classes.survey_button}>
               <button disabled={isPending} id="otherButtonId" className={classes.other} onClick={createFolder}>
