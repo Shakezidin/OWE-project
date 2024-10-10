@@ -212,7 +212,9 @@ const FolderDetail = () => {
                                                     />
                                                     <div>
                                                         <p className={styles.name}>{file.name}</p>
-                                                        <p className={styles.size}>{Math.round(file.size / 1024)} KB</p>
+                                                        <p className={styles.size}> {(file.size > 1024 * 1024)
+                                                                ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                                                                : `${Math.round(file.size / 1024)} KB`}</p>
                                                     </div>
                                                 </Link>
 
