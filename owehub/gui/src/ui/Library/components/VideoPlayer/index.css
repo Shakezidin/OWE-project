@@ -1,8 +1,5 @@
 .close-btn {
-    position: absolute;
-    top: 90px;
     border: none;
-    right: 410px;
     transition: all 0.3s ease-in-out;
     background-color: transparent;
     cursor: pointer;
