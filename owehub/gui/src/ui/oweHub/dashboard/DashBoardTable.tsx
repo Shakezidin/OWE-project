@@ -52,7 +52,7 @@ const DashBoardTable = ({
     setCurrentPage(currentPage + 1);
   };
 
-  const goToPrevPage = () => {
+  const goToPrevPage : any = () => {
     setCurrentPage(currentPage - 1);
   };
 
@@ -94,36 +94,34 @@ const DashBoardTable = ({
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
-            {!!currentPageData.length && (
-              <thead>
-                <tr>
-                  {dealerPayColumn?.map((item, key) => (
-                    <SortableHeader
-                      key={key}
-                      isCheckbox={item.isCheckbox}
-                      titleName={item.displayName}
-                      data={data}
-                      isAllRowsSelected={isAllRowsSelected}
-                      isAnyRowSelected={isAnyRowSelected}
-                      selectAllChecked={selectAllChecked}
-                      setSelectAllChecked={setSelectAllChecked}
-                      selectedRows={selectedRows}
-                      setSelectedRows={setSelectedRows}
-                      sortKey={item.name}
-                      sortDirection={
-                        sortKey === item.name ? sortDirection : undefined
-                      }
-                      onClick={() => handleSort(item.name)}
-                    />
-                  ))}
-                </tr>
-              </thead>
-            )}
+            <thead>
+              <tr>
+                {dealerPayColumn?.map((item, key) => (
+                  <SortableHeader
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={data}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={
+                      sortKey === item.name ? sortDirection : undefined
+                    }
+                    onClick={() => handleSort(item.name)}
+                  />
+                ))}
+              </tr>
+            </thead>
             <tbody>
               {loading ? (
                 <tr>
                   <td colSpan={8}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
@@ -159,87 +157,43 @@ const DashBoardTable = ({
                         </span>
                       </div>
                     </td>
-                    <td style={{ color: '#101828' }}>{el.rep1 || 'N/A'}</td>
-                    <td style={{ color: '#101828' }}>
-                      {el.home_owner || 'N/A'}
-                    </td>
+                    <td style={{ color: '#101828' }}>{el.home_owner || 'N/A'}</td>
+                    <td>{el.current_status || 'N/A'}</td>
+                    <td>{el.dealer_code || 'N/A'}</td>
+                    <td>{el.sys_size || 'N/A'}</td>
+                    <td>{el.contract || 'N/A'}</td>
+                    <td>{el.OtherAdders || 'N/A'}</td>
+                    <td>{el.rep1 || 'N/A'}</td>                    
+                    <td>{el.rep2 || 'N/A'}</td> 
+                    <td>{el.setter || 'N/A'}</td>
+                    <td>{el.st || 'N/A'}</td>
                     <td style={{ color: '#101828' }}>
                       {(el.contract_date && dateFormat(el.contract_date)) ||
                         'N/A'}
                     </td>
+                    <td>{el.loan_fee || 'N/A'}</td>
+                    <td>
+                      {el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}
+                    </td>
+                    <td style={{ color: '#15C31B', fontWeight: '500' }}>
+                      {el.credit ?? 'N/A'}
+                    </td>
+                    <td>{el.draw_amt || 'N/A'}</td>
+                    <td>{el.rl || 'N/A'}</td>
+                    <td>{el.ntp_complete_date || 'N/A'}</td>
+                    <td>{el.pv_complete_date || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.today || 'N/A'}</td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
                       ${el.amount ?? 'N/A'}
                     </td>
+                    <td>{el.epc ? Number(el.epc).toFixed(2) : 'N/A'}</td>
                     <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
                       ${el.amt_paid ?? 'N/A'}
                     </td>
                     <td style={{ color: '#379DE3', fontWeight: '500' }}>
                       ${el.balance ?? 'N/A'}
                     </td>
-                    <td style={{ color: '#15C31B', fontWeight: '500' }}>
-                      {el.credit ?? 'N/A'}
-                    </td>
-
-                    {/* <td>
-                        {el.ps === 'Active' ? (
-                          <span style={{ color: '#15C31B' }}>
-                            <span
-                              style={{
-                                display: 'inline-block',
-                                width: '8px',
-                                height: '8px',
-                                borderRadius: '50%',
-                                backgroundColor: '#15C31B',
-                                marginRight: '5px',
-                              }}
-                            ></span>
-                            Active
-                          </span>
-                        ) : (
-                          <span style={{ color: '#F82C2C' }}>
-                            <span
-                              style={{
-                                display: 'inline-block',
-                                width: '8px',
-                                height: '8px',
-                                borderRadius: '50%',
-                                backgroundColor: '#F82C2C',
-                                marginRight: '5px',
-                              }}
-                            ></span>
-                            Inactive
-                          </span>
-                        )}
-                      </td> */}
-                    <td>{el.epc ? Number(el.epc).toFixed(2) : 'N/A'}</td>
-                    <td>
-                      {el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}
-                    </td>
-                    <td>{el.net_rev ? el.net_rev : 'N/A'}</td>
-                    <td>{el.current_status || 'N/A'}</td>
-                    <td>{el.dba || 'N/A'}</td>
-                    <td>{el.status_date || 'N/A'}</td>
-                    <td>{el.sys_size || 'N/A'}</td>
-                    <td>{el.dealer_code || 'N/A'}</td>
-                    <td>{el.type || 'N/A'}</td>
-                    <td>{el.today || 'N/A'}</td>
-                    <td>{el.contract || 'N/A'}</td>
-                    <td>{el.setter || 'N/A'}</td>
-                    <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.state || 'N/A'}</td>
-                    <td>{el.sub_total || 'N/A'}</td>
-                    <td>{el.loan_fee || 'N/A'}</td>
-                    <td>{el.draw_amt || 'N/A'}</td>
-                    <td>{el.rl || 'N/A'}</td>
-                    <td>{el.OtherAdders || 'N/A'}</td>
-                    <td>{el.rep2 || 'N/A'}</td>
-                    {/* <td
-                        style={{ cursor: "pointer", color: "#101828" }}
-                        onClick={() => handleIconOpen()}
-                        className="zoom-out-help"
-                      >
-                        <BiSupport className="bi-support-icon" />
-                      </td> */}
                     <td className="zoom-out-help">
                       <img
                         src={ICONS.online}
