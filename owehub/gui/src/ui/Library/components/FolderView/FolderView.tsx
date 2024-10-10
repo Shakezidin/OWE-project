@@ -55,6 +55,7 @@ function FolderView({
     <div className={styles.folderMain_wrapper}>
       {myFolderData.length > 0 ? myFolderData.map((folder, index) => (
         <div
+          style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
           onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
