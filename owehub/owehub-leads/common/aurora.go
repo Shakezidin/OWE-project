@@ -16,9 +16,10 @@ import (
 )
 
 type AuroraConfig struct {
-	TenantId    string `json:"tenantId"`
-	BearerToken string `json:"bearerToken"`
-	ApiBaseUrl  string `json:"apiBaseUrl"`
+	TenantId               string `json:"tenantId"`
+	BearerToken            string `json:"bearerToken"`
+	ApiBaseUrl             string `json:"apiBaseUrl"`
+	AppointmentSenderEmail string `json:"appointmentSenderEmail"`
 }
 
 var AuroraCfg AuroraConfig

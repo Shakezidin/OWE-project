@@ -82,7 +82,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	// fetch lead details, also thereby veryfing authenticated user has access to the lead
-	query = "SELECT status_id, email_id, appointment_date FROM get_leads_info_hierarchy($1) WHERE leads_id = $2"
+	query = "SELECT status_id, first_name, last_name, email_id, appointment_date FROM get_leads_info_hierarchy($1) WHERE leads_id = $2"
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail, dataReq.LeadsId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead details from database: %v", err)
@@ -124,21 +124,6 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to assert email_id to string type Item: %+v", data[0])
 			appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
-			return
-		}
-
-		/////////////////////////////////////////////////////////////////////////////////////
-		// fetch first name and last name of lead from lead_info table
-		query = "SELECT first_name, last_name FROM get_leads_info_hierarchy($1) WHERE leads_id = $2"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail, dataReq.LeadsId})
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get lead details from database: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
-			return
-		}
-		if len(data) <= 0 {
-			log.FuncErrorTrace(0, "Lead with leads_id %d not found", dataReq.LeadsId)
-			appserver.FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil, 0)
 			return
 		}
 
