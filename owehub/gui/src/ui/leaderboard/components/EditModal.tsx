@@ -104,12 +104,11 @@ const LogoPicker = ({
       'image/png',
       'image/jpeg',
       'image/jpg',
-      'image/gif',
       'image/webp',
     ];
     if (!validImageTypes.includes(file.type)) {
       toast.error(
-        'Please upload a valid image file (PNG, JPEG, JPG, GIF, WEBP)'
+        'Please upload a valid image file (PNG, JPEG, JPG, WEBP)'
       );
       return;
     }
@@ -157,7 +156,7 @@ const LogoPicker = ({
         <GoUpload size={16} />
         <span>Upload</span>
       </button>
-      <small className="upload-notice">Upload Only PNG, JPEG, or JPG files</small>
+      <small className="upload-notice">Upload Only PNG, JPEG, JPG, WEBP Files</small>
 
     </>
   );
