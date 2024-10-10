@@ -7,13 +7,8 @@
   justify-content: center;
 }
 
-::-webkit-scrollbar {
-  display: block !important;
-  width: 5px !important;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+.form_conatiner::-webkit-scrollbar {
+  display: block !important; 
 }
 
 .header_title {
@@ -219,5 +214,11 @@
   }
   .date_time_container {
     margin-inline: 12px;
+  }
+
+  .calendar_h3{
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
   }
 }

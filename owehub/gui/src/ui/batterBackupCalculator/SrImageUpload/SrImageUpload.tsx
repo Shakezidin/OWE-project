@@ -248,7 +248,7 @@ OWE Battery Calc
   };
   return (
     <div>
-      <div className="sr-image-container">
+      <div className="for_scroll sr-image-container">
         <div className=" sr-form-header" style={{ backgroundColor: '#313752' }}>
           <h3 style={{ color: '#fff' }}>Prospect panel form</h3>
           <p style={{ fontSize: 12, color: '#fff' }}>

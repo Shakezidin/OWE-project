@@ -57,6 +57,7 @@ export const ROUTES = {
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
+  SS_ONBOARDING: '/ss-onboarding',
 
 
   // other routes

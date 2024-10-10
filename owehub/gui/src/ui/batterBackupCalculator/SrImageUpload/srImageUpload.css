@@ -5,6 +5,10 @@
   height: 100vh;
 }
 
+.sr-image-container::-webkit-scrollbar {
+  display: block !important; 
+}
+
 .form-container {
   color: white;
   padding-inline: 79px;
@@ -17,7 +21,9 @@
   height: 100vh;
 }
 
-::-webkit-scrollbar {
+
+
+/* ::-webkit-scrollbar {
   display: block !important;
   width: 3px !important;
 }
@@ -28,7 +34,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: grey !important;
-}
+} */
 
 .absolute_info_icon {
   position: absolute;

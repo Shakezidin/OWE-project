@@ -51,7 +51,10 @@ const ConfigurePage: React.FC = () => {
     },
     {
       title: 'Common',
-      data: [{ title: 'Slack Config', route: ROUTES.CONFIG_SLACK }],
+      data: [{ title: 'Slack Config', route: ROUTES.CONFIG_SLACK },
+        { title: 'Site Survey Onboarding', route: ROUTES.SS_ONBOARDING },
+
+      ],
       state: useState<boolean>(true),
     },
   ];
