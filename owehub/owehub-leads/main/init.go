@@ -159,6 +159,15 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+
+	// WEBHOOKS
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/webhooks/project_status_changed",
+		apiHandler.HandleWebhookProjectStatusChanged,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 }
 
 /******************************************************************************
