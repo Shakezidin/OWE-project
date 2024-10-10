@@ -90,8 +90,8 @@ func SalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema.unique_id,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
-            internal_ops_metrics_schema.cad_ready,
-            internal_ops_metrics_schema.cad_complete_date,
+            planset_cad_schema.item_created_on AS cad_ready,
+            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
@@ -121,8 +121,8 @@ func SalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema
         LEFT JOIN survey_survey_schema 
             ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN internal_ops_metrics_schema 
-           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN planset_cad_schema 
+           ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         LEFT JOIN permit_fin_pv_permits_schema 
             ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN ic_ic_pto_schema 
@@ -165,8 +165,8 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema.sale_date AS contract_date,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
-            internal_ops_metrics_schema.cad_ready,
-            internal_ops_metrics_schema.cad_complete_date,
+            planset_cad_schema.item_created_on AS cad_ready,
+            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
@@ -195,8 +195,8 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema
         LEFT JOIN survey_survey_schema 
             ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN internal_ops_metrics_schema 
-           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN planset_cad_schema 
+           ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         LEFT JOIN permit_fin_pv_permits_schema 
             ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN ic_ic_pto_schema 
@@ -303,8 +303,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
         trenching_service_electrical_schema.completion_date AS trenching_completed,
         customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
         sales_metrics_schema.adders_total,
-        internal_ops_metrics_schema.cad_complete_date,
-        internal_ops_metrics_schema.cad_ready,
+        planset_cad_schema.item_created_on AS cad_ready,
+        planset_cad_schema.plan_set_complete_day AS cad_complete_date,
         batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
         batteries_service_electrical_schema.completion_date AS battery_complete_date,
         fin_permits_fin_schema.created_on AS fin_created_date,
@@ -344,6 +344,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
            ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN sales_metrics_schema
             ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN planset_cad_schema 
+           ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         `
 	return ProjectMngmntRetrieveQuery
 }

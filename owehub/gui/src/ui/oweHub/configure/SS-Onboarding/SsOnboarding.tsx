@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../configure.css';
-import CreateSalesPartner from './createSalesPartner';
+// import CreateSalesPartner from './createSalesPartner';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 import { ICONS } from '../../../../resources/icons/Icons';
@@ -10,16 +10,14 @@ import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
-import {PartnerPayScheduleColumn}  from '../../../../resources/static_data/configureHeaderData/partnerPayScheduleColumn';
+import { DealerPaymentsColumn } from '../../../../resources/static_data/configureHeaderData/DealerPaymentsColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -27,8 +25,9 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
+import { SsOnboardingColumn } from '../../../../resources/static_data/configureHeaderData/ssOnboardingColumn';
 
-const  SalesPartnerSchedule: React.FC = () => {
+const  SsOnboarding: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -37,17 +36,13 @@ const  SalesPartnerSchedule: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  
+  const { loading, totalCount } = useAppSelector((state) => state.dealer);
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [totalCount, setTotalCount] = useState<number>(0)
-  
-  const [data,setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const itemsPerPage = 25;
+  const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,7 +86,7 @@ const  SalesPartnerSchedule: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
-
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const filter = () => {
     setFilterOpen(true);
@@ -101,39 +96,9 @@ const  SalesPartnerSchedule: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen();
   };
-
-  useEffect(() => {
-   
-    (async () => {
-      setLoading(true);
-      try {
-        const data = await configPostCaller('get_partnerpayschedule', {
-          page_number: currentPage,
-          page_size: itemsPerPage,
-        });
-
-        if (data.status > 201) {
-          toast.error(data.message);
-          setLoading(false);
-          return;
-        }
-        setData(data?.data?.PartnerPayScheduleData)
-        setTotalCount(data?.dbRecCount)
-        setLoading(false);
-         
-      } catch (error) {
-        console.error(error);
-      } finally {
-      }
-    })();
-  
-}, [
-  currentPage, viewArchived, filters
-]);
-const totalPages = Math.ceil(totalCount / itemsPerPage);
-  const currentPageData = data?.slice();
+  const currentPageData = dealerList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === data?.length;
+  const isAllRowsSelected = selectedRows.size === dealerList?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
@@ -270,11 +235,11 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="partner-pay-schedule"
+        linkparaSecond="Site Survey Onboarding"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Sales Partner Pay Schedule"
+          title="Site Survey Onboarding"
           onPressViewArchive={() => {
             handleViewArchiveToggle();
             setCurrentPage(1);
@@ -295,13 +260,13 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
-          columns={PartnerPayScheduleColumn}
+          columns={DealerPaymentsColumn}
           fetchFunction={fetchFunction}
           page_number={currentPage}
           page_size={itemsPerPage}
         />
 
-        {open && (
+        {/* {open && (
           <CreateSalesPartner
             handleClose={handleClose}
             dealerData={editedDealer}
@@ -310,7 +275,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
             dealer={dealer}
             page_size={itemsPerPage}
           />
-        )}
+        )} */}
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -318,7 +283,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           <table>
             <thead>
               <tr>
-                {PartnerPayScheduleColumn.map((item, key) => (
+                {SsOnboardingColumn.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
@@ -337,13 +302,12 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-               
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={PartnerPayScheduleColumn.length}>
+                  <td colSpan={SsOnboardingColumn.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -365,22 +329,41 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                             )
                           }
                         />
-                        {el.sales_partner || 'N/A'}
+                        {el.sub_dealer || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.finance_partner || 'N/A'}</td>
-                    <td>{el.spps_ref || 'N/A'}</td>
+                    <td>{el.dealer || 'N/A'}</td>
+                    <td>{el.pay_rate || 'N/A'}</td>
                     <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{el.sug || 'N/A'}</td>
-                    <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.redline || 'N/A'}</td>
-                    <td>{el.m1_sales_partner_draw_percentage|| 'N/A'}</td>
-                    <td>{el.m1_sales_partner_not_to_exceed || 'N/A'}</td>
-                    <td>{el.m1_sales_rep_draw_percentage || 'N/A'}</td>
-                    <td>{el.m1_sales_rep_not_to_exceed || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
-                     
+                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
+                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
+
+                    <td>
+                      <div className="action-icon">
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
+                          {/* <span className="tooltiptext">Archive</span> */}
+                        </div>
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() => !notAllowed && handleEditDealer(el)}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                          {/* <span className="tooltiptext">Edit</span> */}
+                        </div>
+                      </div>
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -394,7 +377,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           </table>
         </div>
 
-        {data?.length > 0 ? (
+        {dealerList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}
@@ -417,4 +400,4 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   );
 };
 
-export default  SalesPartnerSchedule;
+export default SsOnboarding;

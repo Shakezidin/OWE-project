@@ -1,18 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import ReactPlayer from 'react-player';
-import { MdClose } from 'react-icons/md';
-import "./index.css";
+import React, { useState, useEffect } from 'react';
 
-interface IPlayer {
-    width?: number;
-    height?: number;
-    url?: string;
-    onClose?: () => void;
-    videoName?: string;
+import { MdClose } from 'react-icons/md'
+interface IProps {
+    fileUrl?: string | undefined;
+    fileType?: string | undefined;
+    onClose?: () => void
+    name?:string
 }
 
-const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }: IPlayer) => {
-    const playerRef = useRef<ReactPlayer | null>(null);
+const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -22,7 +18,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                 onClose?.();
             }
         };
-
+console.log("evenene")
         window.addEventListener('keydown', handleKeyDown);
         
         return () => {
@@ -32,29 +28,23 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
 
     return (
         <div className='transparent-model' >
-
-            <div style={{ minHeight: 400, maxWidth: width,width:"100%",borderRadius:12 }} className="bg-white p2 relative">
-
+            <div className='bg-white p2' style={{maxWidth:800 ,borderRadius:12,width:"100%",minHeight:200}}>
                 <div className='flex mb2 items-center justify-between' >
-                    <h4 > {videoName} </h4>
+                    <h4 style={{fontSize:14}} > {name} </h4>
                     <button
                         className='close-btn'
                         onClick={(e) => {
-                           onClose?.()
+                            onClose?.()
                         }}
                     >
                         <MdClose color='#000' size={32} />
                     </button>
                 </div>
-                <ReactPlayer
-                    url={url}
-                    width={"100%"}
-                    height={"100%"}
-                    controls={true}
-                />
+                <img className='mx-auto block'  src={fileUrl} alt={name} style={{maxWidth:"100%",maxHeight:500}} />
             </div>
+
         </div>
-    );
+    )
 }
 
-export default VideoPlayer;
+export default FileViewer

@@ -44,6 +44,8 @@ import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedu
 import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
 import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
 import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
+import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
+import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -65,7 +67,9 @@ function App() {
       { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
       { path: ROUTES.CONFIG_FINANCE_SCHEDULE, element: <FinanceSchedule /> },
       { path: ROUTES.CONFIG_SALES_PARTNER_PAY, element: <SalesPartnerSchedule /> },
-    ];
+      { path: ROUTES.SS_ONBOARDING, element: <SsOnboarding/> },
+      { path: ROUTES.CONFIG_FINANCE_TYPES, element: <FinanceTypes /> },
+        ];
   };
 
   /** Create route with role based */

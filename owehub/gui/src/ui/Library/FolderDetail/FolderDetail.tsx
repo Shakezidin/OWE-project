@@ -3,7 +3,7 @@ import styles from '../LibraryHomepage.module.css';
 import { BiArrowBack } from 'react-icons/bi';
 import { RxDownload } from 'react-icons/rx';
 import { RiDeleteBinLine } from 'react-icons/ri';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -17,6 +17,7 @@ import NewFile from '../Modals/NewFile';
 import { useAppSelector } from '../../../redux/hooks';
 import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import FileViewer from '../components/FileViewer/FileViewer';
 const FolderDetail = () => {
     const path = useParams()
     const [files, setFiles] = useState<IFiles[]>([])
@@ -27,6 +28,28 @@ const FolderDetail = () => {
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [videoUrl, setVideoUrl] = useState("")
     const { role_name } = useAppSelector(state => state.auth)
+    const [fileInfo, setFileInfo] = useState({
+        name: "",
+        fileType: "",
+        url: ""
+    })
+    const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
+    const location = useLocation();
+    const [searchParams] = useSearchParams()
+
+    console.log(location.state, "location")
+    const handleBackWithQuery = () => {
+        const previousUrl = location.state?.from;
+        const query = searchParams.get("from")
+        const queryString = `?from=${query}`;
+        if (query) {
+            navigate(`${previousUrl}${queryString}`);
+            return;
+        } else {
+            navigate(-1);
+        }
+
+    };
     const navigate = useNavigate()
     const getFolderChilds = async () => {
         try {
@@ -149,7 +172,7 @@ const FolderDetail = () => {
             <div className={styles.libSecHeader}>
                 <div className={styles.folderHeader}>
                     <div className={styles.undoButton} >
-                        <BiArrowBack onClick={() => navigate(-1)} style={{
+                        <BiArrowBack onClick={() => handleBackWithQuery()} style={{
                             height: '20px',
                             width: '20px',
                         }} />
@@ -159,7 +182,7 @@ const FolderDetail = () => {
                 </div>
 
                 <div className={styles.libSecHeader_right}>
-                    {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="folders" setLoading={setIsLoading} />}
+                    {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
                 </div>
             </div>
 
@@ -189,14 +212,22 @@ const FolderDetail = () => {
                                                     />
                                                     <div>
                                                         <p className={styles.name}>{file.name}</p>
-                                                        <p className={styles.size}>{Math.round(file.size / 1024)} KB</p>
+                                                        <p className={styles.size}> {(file.size > 1024 * 1024)
+                                                                ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                                                                : `${Math.round(file.size / 1024)} KB`}</p>
                                                     </div>
                                                 </Link>
 
-                                                : <div style={{ cursor: isValidVideo ? "pointer" : undefined }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                                                : <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                                                     if (isValidVideo) {
                                                         setIsVideoModalOpen(true)
                                                         setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                    }
+                                                    if (fileType === "image") {
+                                                        setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
+                                                        setIsFileViewerOpen(true)
+                                                    } else {
+                                                        window.open(file.webUrl, "_blank")
                                                     }
 
                                                 }}>
@@ -222,10 +253,10 @@ const FolderDetail = () => {
                                         <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                         <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                                             <RxDownload className={styles.icons} style={{ height: '18px', width: '18px', color: file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085', cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)} />
-                                            <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => {
+                                        {role_name===TYPE_OF_USER.ADMIN &&    <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => {
                                                 setIsDeleteModalVisible(true)
                                                 setSelectedDeleteId(file.id)
-                                            }} />
+                                            }} />}
                                         </div>
                                     </div>
                                 })
@@ -244,7 +275,9 @@ const FolderDetail = () => {
             {
                 isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
             }
-
+            {
+                isFileViewerOpen && <FileViewer onClose={() => setIsFileViewerOpen(false)} fileUrl={fileInfo.url} fileType={fileInfo.fileType} name={fileInfo.name} />
+            }
         </div>
     )
 }

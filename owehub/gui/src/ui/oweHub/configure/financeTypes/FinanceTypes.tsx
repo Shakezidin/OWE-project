@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../configure.css';
-import CreateSalesPartner from './createSalesPartner';
+import createFinanceTypes from './createFinanceTypes'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 import { ICONS } from '../../../../resources/icons/Icons';
@@ -12,7 +12,7 @@ import { DealerModel } from '../../../../core/models/configuration/create/Dealer
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
-import {PartnerPayScheduleColumn}  from '../../../../resources/static_data/configureHeaderData/partnerPayScheduleColumn';
+import { FinanceTypesColumn } from '../../../../resources/static_data/configureHeaderData/financeTypesColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
@@ -28,7 +28,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
 
-const  SalesPartnerSchedule: React.FC = () => {
+const  FinanceTypes: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const  SalesPartnerSchedule: React.FC = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
+ 
   
   const error = useAppSelector((state) => state.dealer.error);
 
@@ -64,17 +64,17 @@ const  SalesPartnerSchedule: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
-  const getnewformData = async () => {
-    const tableData = {
-      tableNames: ['sub_dealer', 'dealer', 'states'],
-    };
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setDealer((prev) => ({ ...prev, ...res.data }));
-  };
+//   const getnewformData = async () => {
+//     const tableData = {
+//       tableNames: ['sub_dealer', 'dealer', 'states'],
+//     };
+//     const res = await postCaller(EndPoints.get_newFormData, tableData);
+//     setDealer((prev) => ({ ...prev, ...res.data }));
+//   };
 
-  useEffect(() => {
-    getnewformData();
-  }, []);
+//   useEffect(() => {
+//     getnewformData();
+//   }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -107,7 +107,7 @@ const  SalesPartnerSchedule: React.FC = () => {
     (async () => {
       setLoading(true);
       try {
-        const data = await configPostCaller('get_partnerpayschedule', {
+        const data = await configPostCaller('get_finacetypes', {
           page_number: currentPage,
           page_size: itemsPerPage,
         });
@@ -117,7 +117,7 @@ const  SalesPartnerSchedule: React.FC = () => {
           setLoading(false);
           return;
         }
-        setData(data?.data?.PartnerPayScheduleData)
+        setData(data?.data?.FinanceTypesData)
         setTotalCount(data?.dbRecCount)
         setLoading(false);
          
@@ -175,7 +175,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => dealerList[index].record_id
+        (index) => data[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -270,11 +270,11 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="partner-pay-schedule"
+        linkparaSecond="finance-types"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Sales Partner Pay Schedule"
+          title="Finance Types"
           onPressViewArchive={() => {
             handleViewArchiveToggle();
             setCurrentPage(1);
@@ -295,14 +295,14 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
-          columns={PartnerPayScheduleColumn}
+          columns={FinanceTypesColumn}
           fetchFunction={fetchFunction}
           page_number={currentPage}
           page_size={itemsPerPage}
         />
 
-        {open && (
-          <CreateSalesPartner
+        {/* {open && (
+          <createFinanceTypes
             handleClose={handleClose}
             dealerData={editedDealer}
             editMode={editMode}
@@ -310,7 +310,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
             dealer={dealer}
             page_size={itemsPerPage}
           />
-        )}
+        )} */}
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -318,12 +318,12 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           <table>
             <thead>
               <tr>
-                {PartnerPayScheduleColumn.map((item, key) => (
+                {FinanceTypesColumn.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={dealerList}
+                    data={data}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -343,7 +343,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={PartnerPayScheduleColumn.length}>
+                  <td colSpan={FinanceTypesColumn.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -365,22 +365,34 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                             )
                           }
                         />
-                        {el.sales_partner || 'N/A'}
+                         
+                      {el.product_code
+                        ? el.product_code.replace(/<\/?[^>]+(>|$)/g, '')
+                        : 'N/A'}
+                    
+                       
                       </div>
                     </td>
-                    <td>{el.finance_partner || 'N/A'}</td>
-                    <td>{el.spps_ref || 'N/A'}</td>
-                    <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{el.sug || 'N/A'}</td>
-                    <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.redline || 'N/A'}</td>
-                    <td>{el.m1_sales_partner_draw_percentage|| 'N/A'}</td>
-                    <td>{el.m1_sales_partner_not_to_exceed || 'N/A'}</td>
-                    <td>{el.m1_sales_rep_draw_percentage || 'N/A'}</td>
-                    <td>{el.m1_sales_rep_not_to_exceed || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
-                     
+                    <td>{el.relationship || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.term_years || 'N/A'}</td>
+                    <td>{el.sub_record || 'N/A'}</td>
+                    <td>{el.finance_company || 'N/A'}</td>
+                    <td>{el[" finance_type_name"]}</td>  
+                    <td>{el.finance_company_for_search || 'N/A'}</td>
+                    <td>{el.finance_type_slug_portion_h || 'N/A'}</td>
+                    <td>{el.finance_fee || 'N/A'}</td>
+                    <td>{el.finance_type_uid || 'N/A'}</td>
+                    <td>{el.finance_type_uid_for_import || 'N/A'}</td>
+                    <td>{el.installer || 'N/A'}</td>
+                    <td>{el.payment_start_date_based_on || 'N/A'}</td>
+                    <td>{el.payment_start_date_days || 'N/A'}</td>
+                    <td>{el.ar_rate || 'N/A'}</td>
+                    <td>{el.dealer_fee || 'N/A'}</td>
+                    <td>{el.f_type || 'N/A'}</td>
+                    <td>{el[" status"] || 'N/A'}</td>
+                   <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+                   <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
                   </tr>
                 ))
               ) : (
@@ -417,4 +429,4 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   );
 };
 
-export default  SalesPartnerSchedule;
+export default  FinanceTypes;
