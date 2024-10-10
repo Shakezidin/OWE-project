@@ -826,10 +826,12 @@ const LibraryHomepage = () => {
                   setIsVideoModalOpen(true)
                   setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
                   setVideoName(data.name!)
+                  return
                 }
                 if (isValidImage) {
                   setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
                   setIsFileViewerOpen(true)
+                  return
                 } else {
                   window.open(data.webUrl, "_blank")
                 }
