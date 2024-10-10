@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { MdClose } from 'react-icons/md';
 import "./index.css";
@@ -14,7 +14,21 @@ interface IPlayer {
 const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }: IPlayer) => {
     const playerRef = useRef<ReactPlayer | null>(null);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            console.log('Key pressed:', event.key); 
+            if (event.key === 'Escape') {
+                console.log('Escape key pressed'); 
+                onClose?.();
+            }
+        };
 
+        window.addEventListener('keydown', handleKeyDown);
+        
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
 
     return (
         <div className='transparent-model' >
