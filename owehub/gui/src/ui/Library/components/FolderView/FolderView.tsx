@@ -5,6 +5,8 @@ import { format } from 'date-fns';
 import { FileOrFolder } from '../../types';
 import { Link, useNavigate } from 'react-router-dom';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { useAppSelector } from '../../../../redux/hooks';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
@@ -23,6 +25,7 @@ function FolderView({
   const navigate = useNavigate();
 
   const [myFolderData, setMyFolderData] = useState(folderData);
+  const { role_name } = useAppSelector(state => state.auth)
   useEffect(() => {
     const sortedData = [...myFolderData].sort((a, b) => {
       switch (sortOption) {
@@ -50,13 +53,13 @@ function FolderView({
 
   return (
     <div className={styles.folderMain_wrapper}>
-      {myFolderData.length>0?  myFolderData.map((folder, index) => (
+      {myFolderData.length > 0 ? myFolderData.map((folder, index) => (
         <div
           className={styles.folderDiv}
           key={folder.id}
           onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
           onMouseLeave={() => setHoveredIndex(null)}
-          onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`,{ state: { from: location.pathname } })}
+          onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
             <p className={styles.createdBy}>Created by</p>
@@ -67,7 +70,7 @@ function FolderView({
             <img src={ICONS.folderImage} alt="" />
             <div className={styles.checkboxWrapper}>
               <p className={styles.quantity}>{folder.childCount}</p>
-              <input
+              {role_name === TYPE_OF_USER.ADMIN && <input
                 className={`${styles.folderInput} ${checkedFolders.includes(parseInt(folder.id)) || hoveredIndex === parseInt(folder.id)
                   ? styles.visible
                   : styles.hidden
@@ -78,7 +81,7 @@ function FolderView({
                   onCheckboxChange(e.target.checked, index, folder.id)
                 }}
                 checked={checkedFolders.includes(index)}
-              />
+              />}
             </div>
           </div>
 
@@ -93,10 +96,10 @@ function FolderView({
           </div>
         </div>
       )) : <div style={{ width: '100%' }}>
-      <div className={`bg-white py2 ${styles.filesLoader}`}>
-        <DataNotFound />
-      </div>
-    </div>}
+        <div className={`bg-white py2 ${styles.filesLoader}`}>
+          <DataNotFound />
+        </div>
+      </div>}
     </div>
   );
 }
