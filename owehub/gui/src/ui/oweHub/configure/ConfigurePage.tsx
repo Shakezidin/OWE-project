@@ -45,6 +45,7 @@ const ConfigurePage: React.FC = () => {
         { title: 'Dealer Payments', route: ROUTES.CONFIG_DEALERPAYMENTS },
         { title: 'Finance Schedule', route: ROUTES.CONFIG_FINANCE_SCHEDULE },
         { title: 'Sales Partner Pay Schedule', route: ROUTES.CONFIG_SALES_PARTNER_PAY },
+        { title: 'Finance Types', route: ROUTES.CONFIG_FINANCE_TYPES },
       ],
       state: useState<boolean>(true),
     },

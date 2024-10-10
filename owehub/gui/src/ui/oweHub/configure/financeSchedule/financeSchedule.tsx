@@ -118,7 +118,7 @@ const  FinanceSchedule: React.FC = () => {
           return;
         }
         setData(data?.data?.FinanceScheduleData)
-        setTotalCount(data?.data?.dbRecCount)
+        setTotalCount(data?.dbRecCount)
         setLoading(false);
          
       } catch (error) {

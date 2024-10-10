@@ -1,13 +1,12 @@
 .customer_wrapper_list {
   flex-basis: calc(100%);
-  border-radius: 16px;
+   border-radius: 8px; 
   background-color: #fff;
   max-width: 593px;
   width: 620px;
   height: 422px;
   border: 1px solid #377cf6;
-  /* margin-top: 210px;
-  margin-left: 90px; */
+  
 }
 
 .transparent_lib {

@@ -13,12 +13,12 @@ interface NewFileProps {
   handleSuccess?: () => void,
   uploadPath?: string
   folderUploadPath?: string
-  setLoading:(val:boolean)=>void;
+  setLoading: (val: boolean) => void;
 }
 
 type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
-const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath, folderUploadPath,setLoading }) => {
+const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath, folderUploadPath, setLoading }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
   const [isVisibleuploadFile, setIsVisibleuploadFile] = useState(false);
@@ -171,9 +171,9 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
           isVisible ? { backgroundColor: '#377cf6', color: '#ffffff' } : {}
         }
       >
-        {pendingState === "uploading" ?  <span style={{fontSize:10}} >
+        {pendingState === "uploading" ? <span style={{ fontSize: 10 }} >
           uploading...
-        </span>   : " + New"}
+        </span> : " + New"}
       </button>
       {isVisible && (
         <ul className={classes.dropdownMenu}>
@@ -186,7 +186,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
                 className={classes.folderInput}
                 multiple
               />
-              {activeSection !== 'folders' && <li
+              {(activeSection === 'files' || activeSection === "dropdown") && <li
                 className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
                 onClick={handleOptionClick}
               >
@@ -194,7 +194,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
               </li>}
             </>
 
-            {activeSection === 'folders' && <li
+            {(activeSection === 'folders' || activeSection === "dropdown") && <li
               className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
               onClick={handleOptionClickFile}
             >

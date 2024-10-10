@@ -47,6 +47,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
+import LeadTable from './components/LeadDashboardTable/leadTable';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -1739,9 +1740,6 @@ const LeadManagementDashboard = () => {
               </tbody>
             </table>
           )}
-
-
-
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
