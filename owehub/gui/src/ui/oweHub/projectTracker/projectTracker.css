@@ -1410,6 +1410,7 @@
   .performance-milestone-table .milestone-data{
     overflow-x: scroll;
     margin: 0 6px;
+    background: var(--white-color);
   }
 }
 
