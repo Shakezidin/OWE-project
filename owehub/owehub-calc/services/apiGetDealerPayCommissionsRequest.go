@@ -29,7 +29,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		err            error
 		dataReq        models.DealerPayReportRequest
 		RecordCount    int
-		dlsPayCommResp models.DealerPayComm
+		dlsPayCommResp models.DealerPayCommissions
 	)
 
 	log.EnterFn(0, "HandleGetDealerPayCommissionsRequest")
@@ -81,10 +81,10 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	dlrPay.Amt_Paid = 10.100
 	dlrPay.Balance = "TestBalance"
 
-	dlsPayCommResp.DealerPaymentsData = append(dlsPayCommResp.DealerPaymentsData, dlrPay)
-	RecordCount = len(dlsPayCommResp.DealerPaymentsData)
+	dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
+	RecordCount = len(dlsPayCommResp.DealerPayComm)
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealerpay commissions List fetched : %v list %+v", len(dlsPayCommResp.DealerPaymentsData), dlsPayCommResp.DealerPaymentsData)
-	appserver.FormAndSendHttpResp(resp, "Dealerpay commissions Data", http.StatusOK, dlsPayCommResp.DealerPaymentsData, int64(RecordCount))
+	log.FuncInfoTrace(0, "Number of dealerpay commissions List fetched : %v list %+v", len(dlsPayCommResp.DealerPayComm), dlsPayCommResp.DealerPaymentsData)
+	appserver.FormAndSendHttpResp(resp, "Dealerpay commissions Data", http.StatusOK, dlsPayCommResp.DealerPayComm, int64(RecordCount))
 }

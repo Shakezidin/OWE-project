@@ -9,6 +9,9 @@ package models
 import "time"
 
 type DealerPayReportRequest struct {
+	Filters     []Filter `json:"filters"`
+	PageNumber  int      `json:"page_number"`
+	PageSize    int      `json:"page_size"`
 	PartnerName []string `json:"partner_name"`
 	PayroleDate string   `json:"payrole_date"`
 }
