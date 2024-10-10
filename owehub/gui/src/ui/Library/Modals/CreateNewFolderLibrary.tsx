@@ -23,7 +23,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-    const validCharacters = /^[a-zA-Z0-9._-]*$/;
+    const validCharacters = inputValue.length===1?/^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
     if (!validCharacters.test(inputValue.slice(-1))) {
       return;
     }
