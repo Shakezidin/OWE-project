@@ -567,7 +567,7 @@ const LibraryHomepage = () => {
     setIsPending(true)
     Promise.all(Array.from(selectedCheckbox).map((id) => DeleteHandler(id as string)))
       .then((res) => {
-        toast.error(`Deleted ${res.length} ${res.length > 1 ? "files" : "file"}`)
+        toast.success(`Deleted ${res.length} ${res.length > 1 ? "files" : "file"}`)
         reset()
         fetchDataFromGraphAPI()
         setIsPending(false)
@@ -982,7 +982,9 @@ const LibraryHomepage = () => {
                               color: '#667085',
                             }} onClick={() => {
                               OpenModal()
-                              setSelecetedDelete(data.id)
+                              const prev = Array.from(selectedCheckbox)
+                              prev.push(data.id)
+                              setSelectedCheckbox(new Set(prev))
                             }} />}
                         </div>
                       </>
@@ -1011,7 +1013,9 @@ const LibraryHomepage = () => {
                 }}
                 onDelete={(id: string) => {
                   OpenModal()
-                  setSelecetedDelete(id)
+                  const prev = Array.from(selectedCheckbox)
+                  prev.push(id)
+                  setSelectedCheckbox(new Set(prev))
                 }}
                 files={sortedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
