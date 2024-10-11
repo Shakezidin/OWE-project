@@ -155,6 +155,8 @@ import folderImage from '../assets/folderimage.svg';
 import viedoImageOne from '../assets/videos-library-one.svg';
 import viedoplay from '../assets/video_play.svg';
 import DeleteICONBOX from '../assets/DeleteICONBOX.svg';
+import DownArrowDashboard from "../assets/AboverArrow.svg"
+import ChecronUpX from "../assets/UpArrowDashboard.svg"
 import videoPlayerIcon from '../assets/video_player_icon.png';
 
 export const ICONS = {
@@ -187,9 +189,11 @@ export const ICONS = {
   cutOff,
 
   groupActiveIcon: groupActive,
+  ChecronUpX:ChecronUpX,
   DeleteICONBOX: DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,
+  DownArrowDashboard:DownArrowDashboard,
   dashHead: dashHead,
   dashActive: dashActive,
   cross: crossIcon,
