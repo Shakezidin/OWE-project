@@ -5,6 +5,17 @@ import { LuDownload } from "react-icons/lu";
 import { format } from 'date-fns';
 import { useAppSelector } from '../../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import excel from '../../../../resources/icons/excel.png'
+import image from '../../../../resources/icons/image.png'
+import pdf from '../../../../resources/icons/pdf.png'
+import powerpoint from '../../../../resources/icons/powerpoint.png'
+import video from '../../../../resources/icons/video.png'
+import word from '../../../../resources/icons/word.png'
+import folderImage from '../../../../resources/icons/folderimage.svg'
+import text from '../../assetss/textFile.svg'
+import defaultImage from '../../assetss/default.svg'
+
+
 export interface IFiles {
     createdDateTime: string;
     id: string;
@@ -13,6 +24,14 @@ export interface IFiles {
     size: number;
     "@microsoft.graph.downloadUrl"?: string;
     mimeType?:string
+}
+const downloadFile = (fileUrl: string, fileName: string) => {
+  const anchor = document.createElement("a");
+  anchor.href = fileUrl;
+  anchor.download = fileName || "download";
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
 }
 
 const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelete: (id: string) => void,onFilePreview:(url:string,type:string,name:string)=>void; }) => {
@@ -73,16 +92,16 @@ const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelet
             case "image/x-icon":
             case "image/heif":
             case "image/heic":
-                 // return ; icons to be returned
+                 return image
 
             case "application/pdf":
-         // return ; icons to be returned
+            return pdf
 
             case "application/vnd.ms-excel":
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
             case "application/vnd.ms-excel.sheet.macroEnabled.12":
-                // return ; icons to be returned
+                return excel;
 
             case "video/mp4":
             case "video/mpeg":
@@ -90,11 +109,15 @@ const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelet
             case "video/webm":
             case "video/x-msvideo":
             case "video/quicktime":
-                   // return ; icons to be returned
+                   return video
 
             case "folder":
-                  // return ; icons to be returned
+                  return folderImage
 
+            case "text/plain":
+                  return text
+            default:
+              return defaultImage
 
         }
     };
@@ -106,7 +129,7 @@ const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelet
                 <div className={styles.avatar_circle}>
                     {file?.name?.[0]}
                 </div>
-                <img src={file?.['@microsoft.graph.downloadUrl']} width={48} height={46} alt="" />
+                <img src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
             </div>
 
             <div>
@@ -117,7 +140,7 @@ const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelet
                             <GoTrash size={14} />
                         </span>}
                         <span className={styles.card_btn}>
-                            <LuDownload size={14} />
+                            <LuDownload size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !==undefined? file?.["@microsoft.graph.downloadUrl"]: '', file?.name !== undefined?file?.name:'')}/>
                         </span>
                     </div>
                 </div>
