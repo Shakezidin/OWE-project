@@ -143,7 +143,7 @@ const LibraryHomepage = () => {
     date: string;
     iconName: string;
     video?: {
-      duration?: string
+      duration?: number
     };
     // File size in bytes
     // Include any other properties you expect

@@ -14,25 +14,36 @@ interface VideoData {
   size: number;
   FileType?: string; // Marking it as optional if some entries don't have it
   url_play?: string;
-  video?:{
-    duration?:string;
+  video?: {
+    duration?: number;
   }
   "@microsoft.graph.downloadUrl": string;
   fileType?: string; // Optional, only relevant for video files
-  
+
 }
 
 interface VideosViewProps {
   videoData: VideoData[]; // Expect an array of VideoData objects
-  onClick:(url:string,name?:string)=>void;
+  onClick: (url: string, name?: string) => void;
 }
-console.log();
 
-function VideosView({ videoData, onClick}: VideosViewProps) {
+function VideosView({ videoData, onClick }: VideosViewProps) {
+
+  const converted = (duration: number) => {
+    const durationMs = duration;
+    const totalSeconds = durationMs / 1000;
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = (totalSeconds % 60).toFixed(2);
+
+    return `${hours > 0 ? hours + 'h ' : ''}${minutes > 0 ? minutes + 'm ' : ''}${seconds}s`;
+  }
+  console.log("videoData", videoData)
   return (
     <div className={styles.folderMain_wrapper}>
       {videoData.map((Video: VideoData, index: number) => (
-        <div className={styles.folderDiv} key={index} onClick={()=>onClick(Video["@microsoft.graph.downloadUrl"],Video.name)}>
+        <div className={styles.folderDiv} key={index} onClick={() => onClick(Video["@microsoft.graph.downloadUrl"], Video.name)}>
           <div className={styles.videoImage_wrapper}>
             <div className={styles.transparent_play}>
               <img
@@ -42,19 +53,8 @@ function VideosView({ videoData, onClick}: VideosViewProps) {
               />
             </div>
             <div className={styles.video_time}>
-          {Video.video?.duration !== undefined 
-          ? (() => {
-          const durationMs = parseInt(Video.video.duration);
-          const totalSeconds = durationMs / 1000;
-
-          const hours = Math.floor(totalSeconds / 3600);
-          const minutes = Math.floor((totalSeconds % 3600) / 60);
-          const seconds = (totalSeconds % 60).toFixed(2);
-
-          return `${hours > 0 ? hours + 'h ' : ''}${minutes > 0 ? minutes + 'm ' : ''}${seconds}s`;
-      })() 
-    : ''}
-</div>
+              {converted(Video.video?.duration!) || "N/A"}
+            </div>
 
             <img
               src={dummyThumbnail}
@@ -64,14 +64,14 @@ function VideosView({ videoData, onClick}: VideosViewProps) {
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            <div className={styles.videosview_name}>{Video.name.substring(0,50)}</div>
+            <div className={styles.videosview_name}>{Video.name.substring(0, 50)}</div>
             <div className={styles.videoInfo_wrapper}>
-              
-            <div className={styles.videosSize}>
-            {(Video.size / (1024 * 1024)).toFixed(2)} MB
-            </div>
+
+              <div className={styles.videosSize}>
+                {(Video.size / (1024 * 1024)).toFixed(2)} MB
+              </div>
               <PiLineVerticalThin className={styles.videos_LineVertical} />
-              <div className={styles.videosdate}>{Video.lastModifiedDateTime.substring(0,10)}</div>
+              <div className={styles.videosdate}>{Video.lastModifiedDateTime.substring(0, 10)}</div>
             </div>
           </div>
         </div>
