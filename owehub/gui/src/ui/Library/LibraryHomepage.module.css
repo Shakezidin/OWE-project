@@ -488,8 +488,6 @@
 }
 
 .view_btn:not(.active_tile):hover {
- 
-
   background-color: #377cf6;
   color: #fff;
   transition: all 500ms;
@@ -498,9 +496,10 @@
 }
 
 .view_btn.active_tile {
-  color: #377cf6;
+  color: #fff;
   transition: all 500ms;
-  border: 1px solid #377cf6;
+  background-color: #377cf6;
+  border: 1px solid #fff;
 }
 
 .view_btn.active_tile:hover{
