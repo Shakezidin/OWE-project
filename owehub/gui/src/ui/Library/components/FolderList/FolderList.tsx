@@ -6,6 +6,7 @@ import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { useAppSelector } from '../../../../redux/hooks';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import CheckBox from '../../../components/chekbox/CheckBox';
 interface IFolder {
     name?: string;
     size?: number,
@@ -13,6 +14,8 @@ interface IFolder {
     createdDate?: string
     id?: string
     onDelete?: (id: string) => void
+    onCheck?: (id: string) => void
+    checkedValues?: Set<string>
 }
 const FolderList = (props: IFolder) => {
     const { role_name } = useAppSelector(state => state.auth)
@@ -21,23 +24,28 @@ const FolderList = (props: IFolder) => {
     return (
         <div className={sharedStyles.libGridItem} >
             <div style={{ cursor: "pointer" }} className={`${sharedStyles.file_icon} ${sharedStyles.image_div}`}>
-                <div className="relative" onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
-                    <img
-                        src={ICONS.folderImage}
-                        width={35}
-                        height={35}
-                        alt={`null`}
-                        loading='lazy'
-                    />
-                    <span style={{
-                        position: 'absolute',
-                        fontSize: '7px',
-                        whiteSpace: 'nowrap',
-                        top: '40%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        color: '#BB8617',
-                    }}  > {props.childCount} ${(props?.childCount || 0) > 1 ? "files" : "file"} </span>
+                <div className="flex items-center">
+                    <div className="mr1" style={{marginTop:-7}}>
+                        <CheckBox checked={!!props.checkedValues?.has(props.id!)} onChange={() => { props.onCheck?.(props.id!) }} />
+                    </div>
+                    <div className="relative" onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
+                        <img
+                            src={ICONS.folderImage}
+                            width={35}
+                            height={35}
+                            alt={`null`}
+                            loading='lazy'
+                        />
+                        <span style={{
+                            position: 'absolute',
+                            fontSize: '7px',
+                            whiteSpace: 'nowrap',
+                            top: '40%',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: '#BB8617',
+                        }}  > {props.childCount} ${(props?.childCount || 0) > 1 ? "files" : "file"} </span>
+                    </div>
                 </div>
                 <div onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
                     <p className={sharedStyles.name}>  {props.name}</p>

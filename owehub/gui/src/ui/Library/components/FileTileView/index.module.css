@@ -2,11 +2,24 @@
     background-color: #F2F2F2;
     position: relative;
     width: 100%;
-    cursor: pointer;
+  
     height: 108px;
     display: grid;
     border-radius: 8px;
     place-items: center;
+}
+
+.checkbox_wrapper{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.thumbnail_wrapper:hover .checkbox_wrapper{
+ opacity: 1;
+}
+.checkbox_wrapper:not(.selected){
+    opacity: 0;
 }
 
 .avatar_circle {
