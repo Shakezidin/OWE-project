@@ -42,6 +42,7 @@ import { useSearchParams } from 'react-router-dom';
 import FilesTileViewList from './components/FilesTileViewList/FilesTileViewList';
 import Input from '../components/text_input/Input';
 import CheckBox from '../components/chekbox/CheckBox';
+import FolderListView from './components/FolderListView/FolderListView';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -53,7 +54,7 @@ const LibraryHomepage = () => {
   >('date');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isRecycleBinView, setIsRecycleBinView] = useState(false);
-  const [filesView, setFilesView] = useState<"list" | "tiles">("list")
+  const [filesView, setFilesView] = useState<"list" | "tiles">("tiles")
   const [toggleClick, setToggleClick] = useState(false);
   const [checkedItems, setCheckedItems] = useState<number>(0);
   const [checkedFolders, setCheckedFolders] = useState<string[]>([]);
@@ -830,12 +831,23 @@ const LibraryHomepage = () => {
 
     if (activeSection === 'folders') {
       return (
-        <FolderView
-          onCheckboxChange={handleCheckboxChange}
-          sortOption={sortOption}
-          checkedFolders={checkedFolders}
-          folderData={folderData}
-        />
+        filesView === "list" ?
+          <FolderListView folders={folderData.map((item) => ({
+            name: item.name,
+            size: item.size,
+            childCount: item.childCount,
+            createdDate: item.createdDateTime,
+            id: item.id
+          }))} onDelete={(id) => {
+            OpenModal()
+            setAllIds(prev => [...prev, id])
+          }} />
+          : <FolderView
+            onCheckboxChange={handleCheckboxChange}
+            sortOption={sortOption}
+            checkedFolders={checkedFolders}
+            folderData={folderData}
+          />
       );
     }
 
