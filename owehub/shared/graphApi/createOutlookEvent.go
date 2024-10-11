@@ -18,7 +18,7 @@ import (
 )
 
 func CreateOutlookEvent(request models.OutlookEventRequest) (graphmodels.Eventable, error) {
-	
+
 	var err error
 	log.EnterFn(0, "CreateOutlookEvent")
 	defer func() { log.ExitFn(0, "CreateOutlookEvent", err) }()

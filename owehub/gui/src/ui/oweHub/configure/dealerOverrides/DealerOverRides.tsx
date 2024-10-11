@@ -110,6 +110,7 @@ const DealerOverRides: React.FC = () => {
         const data = await configPostCaller('get_dealeroverride', {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters
         });
 
         if (data.status > 201) {
