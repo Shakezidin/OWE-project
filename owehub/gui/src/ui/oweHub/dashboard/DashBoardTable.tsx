@@ -180,8 +180,6 @@ const DashBoardTable = ({
                     </td>
                     <td>{el.draw_amt || 'N/A'}</td>
                     <td>{el.rl || 'N/A'}</td>
-                    <td>{el.ntp_complete_date || 'N/A'}</td>
-                    <td>{el.pv_complete_date || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
                     <td>{el.today || 'N/A'}</td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>

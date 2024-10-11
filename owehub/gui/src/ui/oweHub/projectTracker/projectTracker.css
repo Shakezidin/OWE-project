@@ -1099,6 +1099,7 @@
   right: -24px;
   color: #000;
   transform: skewX(20deg);
+  display: flex;
 }
 
 .strips-data {
