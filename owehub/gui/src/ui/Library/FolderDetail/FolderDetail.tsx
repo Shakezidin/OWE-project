@@ -18,6 +18,8 @@ import { useAppSelector } from '../../../redux/hooks';
 import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import FileViewer from '../components/FileViewer/FileViewer';
+import CheckBox from '../../components/chekbox/CheckBox';
+import { FaXmark } from 'react-icons/fa6';
 const FolderDetail = () => {
     const path = useParams()
     const [files, setFiles] = useState<IFiles[]>([])
@@ -26,6 +28,7 @@ const FolderDetail = () => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
     const { microsoftGraphAccessToken } = useAppSelector(state => state.auth)
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+    const [selected, setSelected] = useState<Set<string>>(new Set())
     const [videoUrl, setVideoUrl] = useState("")
     const { role_name } = useAppSelector(state => state.auth)
     const [fileInfo, setFileInfo] = useState({
@@ -169,28 +172,72 @@ const FolderDetail = () => {
             <div className={styles.libraryHeader}>
                 <h3>Library</h3>
             </div>
-            <div className={styles.libSecHeader}>
-                <div className={styles.folderHeader}>
-                    <div className={styles.undoButton} >
-                        <BiArrowBack onClick={() => handleBackWithQuery()} style={{
-                            height: '20px',
-                            width: '20px',
-                        }} />
+            {
+                selected.size ?
+                    <div className='flex items-center justify-between p2 bg-white'>
+                        <div className={styles.delete_left}>
+                            <div className={styles.undoButton} onClick={() => {
+                                setSelected(new Set())
+
+
+                            }}>
+                                <FaXmark style={{
+                                    height: '20px',
+                                    width: '20px',
+                                }} />
+                            </div>
+                            <span className={styles.selectedCount}>
+                                {selected.size}  selected
+                            </span>
+                        </div>
+                        <div className={styles.delete_right}>
+                            <button className={styles.DeleteButton} >
+                                Delete
+                            </button>
+                        </div>
                     </div>
-                    <p className={styles.recycle_p}> {parent?.[parent?.length - 1] || "Unknown"} </p>
+                    : <div className={styles.libSecHeader}>
+                        <div className={styles.folderHeader}>
+                            <div className={styles.undoButton} >
+                                <BiArrowBack onClick={() => handleBackWithQuery()} style={{
+                                    height: '20px',
+                                    width: '20px',
+                                }} />
+                            </div>
+                            <p className={styles.recycle_p}> {parent?.[parent?.length - 1] || "Unknown"} </p>
 
-                </div>
+                        </div>
 
-                <div className={styles.libSecHeader_right}>
-                    {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
-                </div>
-            </div>
+                        <div className={styles.libSecHeader_right}>
+                            {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
+                        </div>
+                    </div>
+            }
 
 
             {
                 <div className={styles.libSectionWrapper}>
+
+
                     <div className={styles.lib_Grid_Header}>
-                        <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
+                        <div className={`${styles.grid_item} ${styles.table_name}`}>
+                            <div className="flex items-center">
+                                <div className="mr1">
+                                    <CheckBox checked={selected.size === files.length && !!files.length} onChange={() => {
+                                        if (selected.size === files.length) {
+                                            setSelected(new Set())
+                                        } else {
+                                            const newChecked = new Set(files.map((item) => item.id))
+                                            setSelected(newChecked)
+                                        }
+                                    }} />
+                                </div>
+                                <span>
+
+                                    Name
+                                </span>
+                            </div>
+                        </div>
                         <div className={styles.grid_item}>Uploaded Date</div>
                         <div className={styles.grid_item}>Actions</div>
                     </div>
@@ -205,54 +252,82 @@ const FolderDetail = () => {
                                     return <div key={file.id} className={styles.libGridItem} >
                                         {
                                             file.folder ?
-                                                <Link to={`/library/${path["*"]}/${file.name}`} className={`${styles.file_icon} ${styles.image_div}`}>
-                                                    <img
-                                                        src={ICONS.folderImage}
-                                                    />
-                                                    <div>
-                                                        <p className={styles.name}>{file.name}</p>
-                                                        <p className={styles.size}> {(file.size > 1024 * 1024)
+                                                <div>
+                                                    <div className="mr1">
+                                                        <CheckBox checked={selected.has(file.id)} onChange={() => {
+                                                            if (selected.has(file.id)) {
+                                                                setSelected(new Set(Array.from(selected).filter((item) => item !== file.id)))
+                                                            } else {
+                                                                const prev = Array.from(selected)
+                                                                prev.push(file.id)
+                                                                setSelected(new Set(prev))
+                                                            }
+                                                        }} />
+                                                    </div>
+                                                    <Link to={`/library/${path["*"]}/${file.name}`} className={`${styles.file_icon} ${styles.image_div}`}>
+                                                        <img
+                                                            src={ICONS.folderImage}
+                                                        />
+                                                        <div>
+                                                            <p className={styles.name}>{file.name}</p>
+                                                            <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
                                                                 : `${Math.round(file.size / 1024)} KB`}</p>
+                                                        </div>
+                                                    </Link>
+                                                </div>
+
+                                                :
+                                                <div className="flex items-center">
+                                                    <div className="mr1">
+                                                        <CheckBox checked={selected.has(file.id)} onChange={() => {
+                                                            if (selected.has(file.id)) {
+                                                                setSelected(new Set(Array.from(selected).filter((item) => item !== file.id)))
+                                                            } else {
+                                                                const prev = Array.from(selected)
+                                                                prev.push(file.id)
+                                                                setSelected(new Set(prev))
+                                                            }
+                                                        }} />
                                                     </div>
-                                                </Link>
+                                                    <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                                                        if (isValidVideo) {
+                                                            setIsVideoModalOpen(true)
+                                                            setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                        }
+                                                        if (fileType === "image") {
+                                                            setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
+                                                            setIsFileViewerOpen(true)
+                                                        } else {
+                                                            window.open(file.webUrl, "_blank")
+                                                        }
 
-                                                : <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
-                                                    if (isValidVideo) {
-                                                        setIsVideoModalOpen(true)
-                                                        setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
-                                                    }
-                                                    if (fileType === "image") {
-                                                        setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
-                                                        setIsFileViewerOpen(true)
-                                                    } else {
-                                                        window.open(file.webUrl, "_blank")
-                                                    }
+                                                    }}>
 
-                                                }}>
-                                                    <img
-                                                        src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
-                                                        style={{
-                                                            width: isValidVideo ? 32 : undefined,
-                                                            height: isValidVideo ? 32 : undefined
-                                                        }}
-                                                    />
-                                                    <div>
-                                                        <p className={styles.name}>{file.name}</p>
-                                                        <p className={styles.size}>
-                                                            {(file.size > 1024 * 1024)
-                                                                ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                                                                : `${Math.round(file.size / 1024)} KB`}
-                                                        </p>
+                                                        <img
+                                                            src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
+                                                            style={{
+                                                                width: isValidVideo ? 32 : undefined,
+                                                                height: isValidVideo ? 32 : undefined
+                                                            }}
+                                                        />
+                                                        <div>
+                                                            <p className={styles.name}>{file.name}</p>
+                                                            <p className={styles.size}>
+                                                                {(file.size > 1024 * 1024)
+                                                                    ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                                                                    : `${Math.round(file.size / 1024)} KB`}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
 
                                         }
-                                       
+
                                         <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                         <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                                             <RxDownload className={styles.icons} style={{ height: '18px', width: '18px', color: file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085', cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)} />
-                                        {role_name===TYPE_OF_USER.ADMIN &&    <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => {
+                                            {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => {
                                                 setIsDeleteModalVisible(true)
                                                 setSelectedDeleteId(file.id)
                                             }} />}

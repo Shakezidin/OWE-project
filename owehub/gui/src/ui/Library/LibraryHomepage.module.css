@@ -1,9 +1,8 @@
 .lib_Grid_Header {
 
-  /* display: grid;
-  grid-template-columns: 1fr 1fr 1fr ; */
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr ;
+
   /* gap: 136px; */
   padding: 20px 24px;
   font-size: large;
@@ -30,11 +29,8 @@
 }
 
 .libGridItem {
-  /* display: grid;
-  grid-template-columns: 1fr 1fr 1fr; */
-  display: flex;
-  justify-content: space-between;
-  
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; 
   padding: 25px;
   background-color: #ffffff;
   align-items: center;
@@ -320,8 +316,7 @@
   font-size: 14px;
   font: poppins;
   font-weight: 400;
-  position: relative;
-  right: 50px;
+  text-align: center;
    /* border: 1px solid black;  */
 }
 .libGridItem .grid_item_delete{
@@ -483,7 +478,7 @@
   color: #FFFFFF;
   background-color: #ff0000;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .DeleteButton:disabled{
