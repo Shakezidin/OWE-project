@@ -21,6 +21,7 @@
     left: 10px;
     font-size: 12px;
     color: #fff;
+    visibility: hidden;
 }
 .card_title{
     font-size: 12px;

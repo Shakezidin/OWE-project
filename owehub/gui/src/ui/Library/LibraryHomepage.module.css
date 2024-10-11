@@ -99,10 +99,17 @@
   font-family: poppins;
   font-weight: 500;
   font-size: 16px;
-  color: #8c8c8c;
+  color: #3E3E3E;
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
+
+}
+.buttons:hover {
+  color: #eff5ff;
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+  transform: scale(1.05);
 
 }
 
@@ -113,7 +120,7 @@
   font-family: poppins;
   font-weight: 500;
   font-size: 16px;
-  color: #8c8c8c;
+  color:#3E3E3E;
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -144,13 +151,7 @@
   cursor: pointer;
 }
 
-.buttons:hover {
-  color: #377cf6;
-  background-color: #eff5ff;
-  border: 1px solid #377cf6;
-  transform: scale(1.05);
 
-}
 
 .recycleBin {
   position: relative;
@@ -201,7 +202,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid #000;
+  border: 1px solid #8C8C8C;
   border-radius: 8px;
   padding: 5px 10px;
   cursor: pointer;
@@ -217,6 +218,8 @@
   width: 100%;
   overflow: hidden;
   text-overflow: initial;
+  color: black;
+ 
 }
 
 .customer_wrapper_list {
