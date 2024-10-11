@@ -309,14 +309,28 @@ const LibraryHomepage = () => {
   }
 
   const HandleSearch = (e: any) => {
-    const inputValue = e.target.value;
-    const validCharacters = /^[a-zA-Z0-9._-]*$/;
-
-    // Check if the last character is valid
-    if (!validCharacters.test(inputValue.slice(-1))) {
-      // Ignore the last character if it's invalid
-      return; // Exit early without updating searchValue
+    let inputValue :string = e.target.value;
+    const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+    if(inputValue.length===1 && inputValue===' ')
+    {
+      inputValue='';
     }
+    if (inputValue.length > 0 && (inputValue.charAt(0) === ' ' || !validCharacters.test(inputValue.charAt(0)))) {
+      return; // Exit early if the first character is a space or invalid
+    }
+    // Check if the last character is valid
+
+
+    // if (!validCharacters.test(inputValue.slice(-1))) {
+    //   // Ignore the last character if it's invalid
+    //   return; // Exit early without updating searchValue
+    // }
+    // for(let i=0;i<inputValue.length;i++)
+    // {
+    //   if(!validCharacters.test(inputValue.slice(i)))
+    //     return;
+    // }
+    
 
     // Set the search value
     setSearchValue(inputValue);
@@ -479,7 +493,17 @@ const LibraryHomepage = () => {
 
   const filteredData = fileData.filter((data) => {
     const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg')) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
+    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg' ||
+      data.file?.mimeType === 'image/jpeg' ||
+      data.file?.mimeType === 'image/gif' ||
+      data.file?.mimeType === 'image/webp' ||
+      data.file?.mimeType === 'image/bmp' ||
+      data.file?.mimeType === 'image/tiff' ||
+      data.file?.mimeType === 'image/svg+xml' ||
+      data.file?.mimeType === 'image/heif' ||
+      data.file?.mimeType === 'image/heic'
+
+    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
     return matchesSearch && matchesType;
   });
 
