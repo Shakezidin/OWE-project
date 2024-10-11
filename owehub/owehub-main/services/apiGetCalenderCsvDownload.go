@@ -119,6 +119,7 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 	if RecordCount == 0 {
 		log.FuncInfoTrace(0, "Number of calender csv download List fetched : %v list %+v", 1, data)
 		appserver.FormAndSendHttpResp(resp, "No sales available", http.StatusOK, data, RecordCount)
+		return
 	}
 
 	log.FuncInfoTrace(0, "Number of calender csv download List fetched : %v list %+v", 1, data)
