@@ -40,6 +40,8 @@ import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import FileViewer from './components/FileViewer/FileViewer';
 import { useSearchParams } from 'react-router-dom';
 import FilesTileViewList from './components/FilesTileViewList/FilesTileViewList';
+import Input from '../components/text_input/Input';
+import CheckBox from '../components/chekbox/CheckBox';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -68,6 +70,7 @@ const LibraryHomepage = () => {
     fileType: "",
     url: ""
   })
+  const [selectedCheckbox, setSelectedCheckbox] = useState(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
   const query = searchParams.get("from")
@@ -827,7 +830,14 @@ const LibraryHomepage = () => {
     return (
       <div className={styles.libSectionWrapper}>
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
-          <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
+          <div className={`${styles.grid_item} ${styles.table_name}`}>
+            <div className="flex items-center">
+              {/* <CheckBox checked={selectedCheckbox.size===sortedData.length} onChange={} /> */}
+              <span>
+                Name
+              </span>
+            </div>
+          </div>
           <div className={styles.grid_item}>Uploaded Date</div>
           <div className={styles.grid_item}>Actions</div>
         </div>}
@@ -840,7 +850,6 @@ const LibraryHomepage = () => {
 
 
           sortedData.length > 0 ? (
-
             filesView === "list" ?
               sortedData.map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
@@ -923,7 +932,26 @@ const LibraryHomepage = () => {
                   </div>
                 </div>
               })
-              : <FilesTileViewList onDelete={(id: string) => {
+              : <FilesTileViewList 
+
+              onFilePreview={(url,type,name) => {
+                const isValidVideo = isVideo(type)
+                const isValidImage = isImage(type)
+                if (isValidVideo) {
+                  setIsVideoModalOpen(true)
+                  setVideoUrl(url)
+                  setVideoName(name)
+                  return
+                }
+                if (isValidImage) {
+                  setFileInfo({ name: name, fileType: type!, url: url })
+                  setIsFileViewerOpen(true)
+                  return
+                } else {
+                  window.open(url, "_blank")
+                }
+              }}
+              onDelete={(id: string) => {
                 OpenModal()
                 setSelecetedDelete(id)
               }}
@@ -934,7 +962,8 @@ const LibraryHomepage = () => {
                   webUrl: item.webUrl,
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,
-                  file: item.file
+                  file: item.file,
+                  mimeType:item.file?.mimeType
                 }))} />
           )
 
