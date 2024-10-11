@@ -743,7 +743,7 @@ const LibraryHomepage = () => {
       </>
     );
   };
-  console.log(filesView, "viewwww", filesView === "tiles", currentFolder)
+
   const renderContent = () => {
     if (currentFolder) {
       if (loading) {

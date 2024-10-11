@@ -1,6 +1,7 @@
 import React from 'react'
 import sharedStyles from "../../LibraryHomepage.module.css"
 import FolderList from '../FolderList/FolderList'
+import DataNotFound from '../../../components/loader/DataNotFound';
 interface IFolder {
     name: string;
     size: number,
@@ -12,7 +13,7 @@ interface IProp {
     folders?: IFolder[]
     onDelete?: (id: string) => void
 }
-const FolderListView = ({ folders,onDelete }: IProp) => {
+const FolderListView = ({ folders, onDelete }: IProp) => {
     return (
         <div className={sharedStyles.libSectionWrapper}>
             <div className={sharedStyles.lib_Grid_Header}>
@@ -24,9 +25,14 @@ const FolderListView = ({ folders,onDelete }: IProp) => {
                 <div className={sharedStyles.grid_item}>Actions</div>
             </div>
             {
-                folders?.map((folder) => {
+                folders?.length ? folders?.map((folder) => {
                     return <FolderList onDelete={onDelete} {...folder} key={folder.id} />
                 })
+                    : <div style={{ width: '100%' }}>
+                        <div className={`bg-white py2 ${sharedStyles.filesLoader}`}>
+                            <DataNotFound />
+                        </div>
+                    </div>
             }
 
 
