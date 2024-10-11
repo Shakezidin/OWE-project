@@ -52,9 +52,9 @@ func HandleAuroraWebhookAction(resp http.ResponseWriter, req *http.Request) {
 		logLn(fmt.Sprintf("status: %s, project_id: %s", status, projectId))
 	}
 	if action == "project_created" {
-		status := req.URL.Query().Get("status")
+		projectId := req.URL.Query().Get("project_id")
 		source := req.URL.Query().Get("source")
-		logLn(fmt.Sprintf("status: %s, source: %s", status, source))
+		logLn(fmt.Sprintf("project_id: %s, source: %s", projectId, source))
 	}
 }
 
