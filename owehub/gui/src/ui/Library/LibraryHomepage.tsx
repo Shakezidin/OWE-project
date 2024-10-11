@@ -626,7 +626,10 @@ const LibraryHomepage = () => {
       return (
         <>
           <div className={styles.delete_left}>
-            <div className={styles.undoButton} onClick={handleUndo}>
+            <div className={styles.undoButton} onClick={()=>{
+              setSelectedCheckbox(new Set())
+              setCheckedItems(0)
+            }}>
               <FaXmark style={{
                 height: '20px',
                 width: '20px',
@@ -870,7 +873,7 @@ const LibraryHomepage = () => {
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
               <div className='mr1'>
-                <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading} onChange={() => {
+                <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
                   } else {
