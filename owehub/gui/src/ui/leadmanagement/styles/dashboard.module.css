@@ -130,7 +130,6 @@
 
 .cardHeader {
   padding: 16px;
- 
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -290,8 +289,8 @@ table tbody tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 39px;
-  width: 39px;
+  height: 38px;
+  width: 38px;
   border-radius: 50%;
   background-color: #377cf6;
   cursor: pointer;
@@ -302,14 +301,14 @@ table tbody tr:hover {
   transform: scale(1.04);
 }
 .filtericon img {
-  height: 24px;
-  width: 24px;
+  height: 22px;
+  width: 22px;
 }
 .filterCallToAction {
   display: flex;
-  gap: 3px;
   transform: scale(0.75);
   position: relative;
+  align-items: center;
   /* top: -2pc; */
   /* right: -8px; */
 }
@@ -808,6 +807,23 @@ input[type='checkbox']:checked {
 }
 
 .calender:hover {
+  transform: scale(1.06);
+  background-color: #0b4cbd;
+}
+
+.export_btn {
+  background-color: #377cf6;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 500ms ease;
+}
+
+.export_btn:hover {
   transform: scale(1.06);
   background-color: #0b4cbd;
 }

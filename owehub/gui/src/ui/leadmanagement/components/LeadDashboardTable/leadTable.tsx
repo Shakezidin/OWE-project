@@ -15,6 +15,7 @@ import DropDownLeadTable from './Dropdowns/CustomDrop';
 import ConfirmaModel from '../../Modals/ConfirmModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import HistoryRedirect from '../../../Library/HistoryRedirect';
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -23,7 +24,7 @@ interface LeadSelectionProps {
 
 const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
 
-  
+
   const [selectedType, setSelectedType] = useState('');
   const [selected, setSelected] = useState(-1)
   const [activeSection, setActiveSection] = useState<
@@ -60,17 +61,19 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
   useEffect(() => {
     if (selectedType === 'app_sched') {
       handleOpenModal();
+      setAction(false);
       setReschedule(true);
       setSelectedType('');
-    }else if (selectedType === 'Deal Loss') {
+    } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
+      setReschedule(false);
       setAction(true);
       setSelectedType('');
-    }else if (selectedType === 'Deal Won') {
+    } else if (selectedType === 'Deal Won') {
       handleCloseWon();
       setSelectedType('');
     }
-  },[selectedType])
+  }, [selectedType])
 
   const [load, setLoad] = useState(false);
   const handleCloseWon = async () => {
@@ -84,7 +87,6 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
         },
         true
       );
-
       if (response.status === 200) {
         toast.success('Status Updated Successfully');
       } else if (response.status >= 201) {
@@ -154,7 +156,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
                         </label>
                         <div style={{}}>
                           <div className={styles.name}>{lead.first_name} {lead.last_name}</div>
-                          <div className={styles.ids}>OWE1024</div>
+                          <div className={styles.ids}>OWE{lead.leads_id}</div>
                         </div>
                       </td>
                       <td>
@@ -222,7 +224,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
                             cb={() => {
                               setSelected(index)
                             }}
-                          /></div>
+                          />
+                        </div>
                         <div className={styles.infoIcon}>
                           <IoInformationOutline />
                         </div>
@@ -248,4 +251,4 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
 export default LeadTable
 
 
-{/* <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads}/> */}
+{/* <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads}/> */ }

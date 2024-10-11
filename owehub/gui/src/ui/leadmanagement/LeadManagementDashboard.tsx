@@ -47,6 +47,9 @@ import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAc
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
+import { MdDownloading } from 'react-icons/md';
+import { LuImport } from 'react-icons/lu';
+import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -1159,6 +1162,12 @@ const LeadManagementDashboard = () => {
     console.log(isToggledX);
   };
 
+  const [exporting, setIsExporting] = useState(false);
+ 
+  const exportCsv = async () => {
+    setIsExporting(true);
+  };
+
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -1195,7 +1204,7 @@ const LeadManagementDashboard = () => {
       {/* //WORKING DIRECTORY */}
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
-        {isToggledX &&<div className={`${styles.customLeft} ${styles.custom1}`}>Overview</div>}
+          {isToggledX && <div className={`${styles.customLeft} ${styles.custom1}`}>Overview</div>}
           <div className={`${styles.customLeft} ${styles.custom2}`}>Total leads: {totalValue ? totalValue : '0'}</div>
           {isToggledX && <div className={`${styles.customLeft} ${styles.custom3}`}>Total Won Lost</div>}
           <div className={styles.date_calendar}>
@@ -1249,7 +1258,7 @@ const LeadManagementDashboard = () => {
             )}
 
 
-           { isToggledX &&<Select
+            {isToggledX && <Select
               value={selectedPeriod}
               onChange={handlePeriodChange}
               options={periodFilterOptions}
@@ -1316,7 +1325,7 @@ const LeadManagementDashboard = () => {
                 }),
               }}
             />}
-           { isToggledX &&<div
+            {isToggledX && <div
               ref={toggleRef}
               className={styles.calender}
               onClick={toggleCalendar}
@@ -1524,10 +1533,31 @@ const LeadManagementDashboard = () => {
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
                 <HistoryRedirect setArchive={setArchive} />
-
+                 <LeadTableFilter setArchive={() => {}} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                  </div>
+
+                  <div
+                    className={styles.export_btn}
+                    onClick={exportCsv}
+                    data-tooltip-id="export"
+                    style={{
+                      pointerEvents: exporting ? 'none' : 'auto',
+                      opacity: exporting ? 0.6 : 1,
+                      cursor: exporting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {exporting ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={20}
+                        color="white"
+                      />
+                    ) : (
+                      <LuImport size={20} color="white" />
+                    )}
                   </div>
                 </div>
               </>
