@@ -6,7 +6,7 @@ export const DealerTableData: Column[] = [
     name: 'sub_dealer',
     displayName: 'Sub Dealer',
     type: 'string',
-    isCheckbox: true,
+    isCheckbox: false,
   },
   { name: 'dealer', displayName: 'Dealer', type: 'string', isCheckbox: false },
   {
