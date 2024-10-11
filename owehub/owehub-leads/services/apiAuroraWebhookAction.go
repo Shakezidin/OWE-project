@@ -1,5 +1,5 @@
 /**************************************************************************
- *      Function        : webhookProjectStatusChanged.go
+ *      Function        : apiAuroraWebhookAction.go
  *      DESCRIPTION     : This file contains functions to handle webhooks
  *						 for project status changed
  *      DATE            : 11-Sept-2024
@@ -19,17 +19,21 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:        HandleWebhookProjectStatusChanged
+ * FUNCTION:        HandleAuroraWebhookAction
  *
  * DESCRIPTION:     function to handle webhooks for project status changed
  * INPUT:
  * RETURNS:
  ******************************************************************************/
-func HandleWebhookProjectStatusChanged(resp http.ResponseWriter, req *http.Request) {
-	var err error
+func HandleAuroraWebhookAction(resp http.ResponseWriter, req *http.Request) {
+	var (
+		err    error
+		auth   []string
+		action string
+	)
 
-	log.EnterFn(0, "HandleWebhookProjectStatusChanged")
-	defer func() { log.ExitFn(0, "HandleWebhookProjectStatusChanged", err) }()
+	log.EnterFn(0, "HandleAuroraWebhookAction")
+	defer func() { log.ExitFn(0, "HandleAuroraWebhookAction", err) }()
 
 	// MUST RESPOND ASAP
 	appserver.FormAndSendHttpResp(resp, "Success", http.StatusOK, nil)
@@ -37,14 +41,21 @@ func HandleWebhookProjectStatusChanged(resp http.ResponseWriter, req *http.Reque
 	logLn, logClose := initLogging()
 	defer logClose(err)
 
-	status := req.URL.Query().Get("status")
-	project_id := req.URL.Query().Get("project_id")
-
-	auth := req.Header.Values("X-OWEHUB-AUTH")
-
-	logLn(fmt.Sprintf("status: %s, project_id: %s", status, project_id))
+	auth = req.Header.Values("X-OWEHUB-AUTH")
 	logLn(fmt.Sprintf("auth: %v", auth))
 
+	action = req.URL.Query().Get("action")
+
+	if action == "project_status_changed" {
+		status := req.URL.Query().Get("status")
+		projectId := req.URL.Query().Get("project_id")
+		logLn(fmt.Sprintf("status: %s, project_id: %s", status, projectId))
+	}
+	if action == "project_created" {
+		status := req.URL.Query().Get("status")
+		source := req.URL.Query().Get("source")
+		logLn(fmt.Sprintf("status: %s, source: %s", status, source))
+	}
 }
 
 // TEST ONLY; COPIED FROM USER API MAIN SVC

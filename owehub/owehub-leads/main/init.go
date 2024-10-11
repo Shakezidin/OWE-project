@@ -163,8 +163,8 @@ var apiRoutes = appserver.ApiRoutes{
 	// WEBHOOKS
 	{
 		strings.ToUpper("GET"),
-		"/owe-leads-service/v1/webhooks/project_status_changed",
-		apiHandler.HandleWebhookProjectStatusChanged,
+		"/owe-leads-service/v1/aurora_webhook",
+		apiHandler.HandleAuroraWebhookAction,
 		false,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
