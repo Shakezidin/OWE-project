@@ -905,13 +905,15 @@ const LibraryHomepage = () => {
                   }
                 }} />
               </div>
-              <span>
+              <span  className={styles.libname_heading}>
                 Name
               </span>
             </div>
           </div>
-          <div className={styles.grid_item}>Uploaded Date</div>
-          <div className={styles.grid_item}>Actions</div>
+          <div className={styles.grid_item_uploaded}>
+            <div className={styles.grid_item}>Uploaded Date</div>
+            <div className={styles.grid_item}>Actions</div>
+          </div>        
         </div>}
 
         {loading ?
@@ -973,8 +975,9 @@ const LibraryHomepage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                  <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                  <div className={styles.grid_item_dates_upload}> 
+                    <div className={styles.grid_item_dates}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                    <div className={`${styles.grid_item_delete} ${styles.grid_icon}`}>
                     {isRecycleBinView ? (
                       <div>
                         {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
@@ -991,23 +994,15 @@ const LibraryHomepage = () => {
                       <>
                         <div>
                           <RxDownload
-                            className={styles.icons}
+                            className={styles.icons_download}
                             onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              color: '#667085',
-                            }}
+                           
                           />
                         </div>
                         <div>
                           {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                            className={styles.icons}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              color: '#667085',
-                            }} onClick={() => {
+                            className={styles.icons_delete}
+                             onClick={() => {
                               OpenModal()
                               const prev = Array.from(selectedCheckbox)
                               prev.push(data.id)
@@ -1016,6 +1011,7 @@ const LibraryHomepage = () => {
                         </div>
                       </>
                     )}
+                  </div>
                   </div>
                 </div>
               })
