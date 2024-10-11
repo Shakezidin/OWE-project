@@ -134,7 +134,7 @@ const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelet
 
             <div>
                 <div className="flex items-center justify-between mt2">
-                    <h4 className={styles.card_title} > {file?.name}  </h4>
+                    <h4 className={styles.card_title} > {file?.name} </h4>
                     <div className="flex items-center">
                         {role_name === TYPE_OF_USER.ADMIN && <span onClick={() => onDelete(file?.id!)} className={styles.card_btn}>
                             <GoTrash size={14} />

@@ -1,10 +1,20 @@
 .lib_Grid_Header {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr ;
-  gap: 16px;
+
+  /* display: grid;
+  grid-template-columns: 1fr 1fr 1fr ; */
+  display: flex;
+  justify-content: space-between;
+  /* gap: 136px; */
   padding: 20px 24px;
   font-size: large;
   background-color: #eff5ff;
+  /* border: 1px solid black; */
+}
+.grid_item_uploaded{
+  /* border: 1px solid black; */
+  display: flex;
+  gap: 280px;
+  /* justify-content: space-between; */
 }
 
 
@@ -20,9 +30,11 @@
 }
 
 .libGridItem {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  /* display: grid;
+  grid-template-columns: 1fr 1fr 1fr; */
+  display: flex;
+  justify-content: space-between;
+  
   padding: 25px;
   background-color: #ffffff;
   align-items: center;
@@ -282,12 +294,15 @@
   text-align: center;
   justify-content: center;
   align-items: center;
+  
 }
 
 .table_name {
-  text-align: start;
+   text-align: start;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: flex-start; 
+ 
+  
 }
 
 .sorting p {
@@ -298,14 +313,38 @@
   font-size: 16px;
   font: poppins;
   font-weight: 500;
+  /* border: 1px solid black; */
 }
 
-.libGridItem .grid_item {
+.libGridItem .grid_item_dates{
   font-size: 14px;
   font: poppins;
   font-weight: 400;
+  position: relative;
+  right: 50px;
+   /* border: 1px solid black;  */
+}
+.libGridItem .grid_item_delete{
+  font-size: 14px;
+  font: poppins;
+  font-weight: 400;
+  position: relative;
+  right: 8px;
+  
+
 }
 
+
+.libname_heading{
+  position: relative;
+  left: 10px;
+}
+.grid_item_dates_upload{
+  
+  /* border: 1px solid black;  */
+  display: flex;
+  gap: 280px;
+}
 .libGridItem {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -356,9 +395,34 @@
 }
 
 .icons {
-  cursor: pointer;
+  cursor: pointer; 
+  
+  
 }
+.icons_download{
+  cursor: pointer; 
+  height: 18px;
+  width: 18px;
+  color: #667085;
+  transition: all 0.3s ease;
 
+}
+.icons_download:hover{
+  color: #377CF6;
+    transform: scale(1.09);
+}
+.icons_delete{
+  cursor: pointer; 
+  height: 18px;
+  width: 18px;
+  color: #667085;
+  transition: all 0.3s ease;
+
+}
+.icons_delete:hover{
+    color: #377CF6;
+    transform: scale(1.09);
+}
 .searchWrapper:hover {
   border: 1px solid #377cf6;
 }
