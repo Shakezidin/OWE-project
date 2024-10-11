@@ -280,7 +280,7 @@
   overflow-x: hidden;
 }
 .dealer-pay-table{
-  margin-top: 1rem;
+  margin: 1.2rem 0 0.7rem 0;
 }
 .help-section {
   display: flex;
@@ -375,7 +375,7 @@
   padding: 0.5rem 1.2rem;
   flex: 1;
   overflow-y: scroll;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 80px);
   scroll-behavior: smooth;
 }
 .breakdown-table::-webkit-scrollbar {
