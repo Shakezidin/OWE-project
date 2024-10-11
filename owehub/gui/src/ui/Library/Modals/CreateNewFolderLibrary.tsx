@@ -24,10 +24,29 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-    const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
-    if (!validCharacters.test(inputValue.slice(-1))) {
+
+// Define valid character regex based on the length of inputValue
+const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
+
+// Check if the first character is valid and not a space
+if (inputValue.length > 0 && (inputValue.charAt(0) === ' ' || !validCharacters.test(inputValue.charAt(0)))) {
+  return; // Exit early if the first character is a space or invalid
+}
+
+// Check for more than 5 continuous spaces
+if (inputValue.split(' ').some(space => space.length === 0 && space.length > 5)) {
+  return; // Exit early if there are more than 5 continuous spaces
+}
+
+// Check if the last character is valid
+if (!validCharacters.test(inputValue.slice(-1))) {
+  return; // Exit early without updating searchValue
+}
+for(let i=0;i<inputValue.length;i++)
+  {
+    if(!validCharacters.test(inputValue.slice(i)))
       return;
-    }
+  }
     setFolderName(event.target.value);
   };
 
@@ -96,6 +115,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                   placeholder="Add your folder Name"
                   value={folderName}
                   onChange={handleInputChange}
+                  maxLength={50}
                 ></input>
               </div>
               {error && <div className='mx-auto' style={{ maxWidth: 548 }}>

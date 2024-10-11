@@ -1,6 +1,6 @@
 .list_grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 150px)); /* Use auto-fit for better behavior */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 160px)); /* Use auto-fit for better behavior */
     column-gap: 42px;
     row-gap: 62px;
     /* justify-content: center; */
