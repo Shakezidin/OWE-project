@@ -12,14 +12,97 @@ export interface IFiles {
     webUrl: string;
     size: number;
     "@microsoft.graph.downloadUrl"?: string;
+    mimeType?:string
 }
 
-const FileTileView = ({ file, onDelete }: { file?: IFiles, onDelete: (id: string) => void }) => {
+const FileTileView = ({ file, onDelete,onFilePreview }: { file?: IFiles, onDelete: (id: string) => void,onFilePreview:(url:string,type:string,name:string)=>void; }) => {
     const { role_name } = useAppSelector(state => state.auth)
 
+    const isVideo = (mimeType: string) => {
+        if (
+          mimeType === "video/mp4" ||
+          mimeType === "video/mpeg" ||
+          mimeType === "video/ogg" ||
+          mimeType === "video/webm" ||
+          mimeType === "video/x-msvideo" ||
+          mimeType === "video/quicktime"
+        ) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      const isImage = (mimeType: string) => {
+        switch (mimeType) {
+          case "image/jpeg":
+          case "image/png":
+          case "image/jpg":
+          case "image/gif":
+          case "image/webp":
+          case "image/bmp":
+          case "image/tiff":
+          case "image/svg+xml":
+          case "image/x-icon":
+          case "image/heif":
+          case "image/heic":
+            return true;
+          default:
+            return false
+        }
+      }
+      const getUrl = ()=>{
+        if(isImage(file?.mimeType!) || isVideo(file?.mimeType!)){
+          return file?.['@microsoft.graph.downloadUrl']
+        }
+        else{
+            return file?.webUrl!
+        }
+      }
+
+      const getContentThumbnail = (type: string) => {
+        switch (type) {
+            case "image/jpeg":
+            case "image/png":
+            case "image/jpg":
+            case "image/gif":
+            case "image/webp":
+            case "image/bmp":
+            case "image/tiff":
+            case "image/svg+xml":
+            case "image/x-icon":
+            case "image/heif":
+            case "image/heic":
+                 // return ; icons to be returned
+
+            case "application/pdf":
+         // return ; icons to be returned
+
+            case "application/vnd.ms-excel":
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+            case "application/vnd.ms-excel.sheet.macroEnabled.12":
+                // return ; icons to be returned
+
+            case "video/mp4":
+            case "video/mpeg":
+            case "video/ogg":
+            case "video/webm":
+            case "video/x-msvideo":
+            case "video/quicktime":
+                   // return ; icons to be returned
+
+            case "folder":
+                  // return ; icons to be returned
+
+
+        }
+    };
     return (
         <div className='bg-white'>
-            <div className={styles.thumbnail_wrapper}>
+            <div className={styles.thumbnail_wrapper} onClick={()=>{   
+                onFilePreview(getUrl()!,file?.mimeType!,file?.name!)
+            }}>
                 <div className={styles.avatar_circle}>
                     {file?.name?.[0]}
                 </div>
