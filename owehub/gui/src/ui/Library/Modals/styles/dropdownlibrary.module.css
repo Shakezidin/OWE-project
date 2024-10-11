@@ -19,26 +19,28 @@
   /* Adjust the size of the circle */
   height: 30px;
   /* Make height equal to width for a perfect circle */
-  border: none;
+  /* border: none; */
   /* Border for the circle */
   border-radius: 50%;
   /* This makes the div a circle */
   cursor: pointer;
-  background-color: #377cf6;
+
   /* Optional: Set a background color */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   /* Optional: Add a subtle shadow */
   transition: background-color 0.2s ease;
   /* Optional: Add a hover effect */
-  color: #fff;
+ border: 1px solid #8C8C8C;
+ color: #3E3E3E;
   transition: all 0.3s ease;
 }
 
 .verticalDots:hover {
-  transition: all 0.3s ease;
+ /* color: #fff;  */
+  background-color: #377cf6;
   transform: scale(1.1);
+  border: none;
 }
-
 .dropdownMenu {
   list-style: none;
   padding: 0;

@@ -67,7 +67,7 @@ function FolderView({
             <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
           <div className={styles.folderIcon_wrapper}>
-            <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
+             <div className={styles.charDiv}>{folder.name.charAt(0)}</div> 
             <img src={ICONS.folderImage} alt="" />
             <div className={styles.checkboxWrapper}>
               <p className={styles.quantity}>{folder.childCount}</p>
