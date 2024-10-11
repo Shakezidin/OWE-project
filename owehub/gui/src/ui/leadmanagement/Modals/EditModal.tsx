@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 
 interface EditModalProps {
   isOpen: boolean;
@@ -136,36 +136,38 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
         <div
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
-          <div className={classes.customer_wrapper_list_edit}>
-            <div className={classes.Edit_DetailsMcontainer}>
-              <div className={classes.edit_closeicon} onClick={onClose}>
-                <RiArrowDropDownLine
-                  style={{ height: '34px', width: '34px', fontWeight: '400' }}
-                />
-              </div>
-
-              <div className={classes.notEditable}>
-                <div className={classes.Column1DetailsEdited_Mode}>
-                  <span className={classes.main_name}>
-                    {' '}
-                    {leadData?.first_name} {leadData?.last_name}{' '}
-                  </span>
-                  <span className={classes.mobileNumber}>
-                    {leadData?.phone_number}
-                  </span>
+         
+            <div className={classes.customer_wrapper_list_edit}>
+              <div className={classes.Edit_DetailsMcontainer}>
+                <div className={classes.edit_closeicon} onClick={onClose}>
+                  <RiArrowDropDownLine
+                    style={{ height: '34px', width: '34px', fontWeight: '400' }}
+                  />
                 </div>
-                <div className={classes.Column2Details_Edited_Mode}>
-                  <span className={classes.addresshead}>
-                    {leadData?.street_address
-                      ? leadData.street_address.length > 20
-                        ? `${leadData.street_address.slice(0, 30)}...`
-                        : leadData.street_address
-                      : 'N/A'}
-                  </span>
-                  <span className={classes.emailStyle}>
-                    {leadData?.email_id}{' '}
-                    {/* <span className={classes.verified}> */}
-                    {/* <svg
+
+
+                <div className={classes.notEditable}>
+                  <div className={classes.Column1DetailsEdited_Mode}>
+                    <span className={classes.main_name}>
+                      {' '}
+                      {leadData?.first_name} {leadData?.last_name}{' '}
+                    </span>
+                    <span className={classes.mobileNumber}>
+                      {leadData?.phone_number}
+                    </span>
+                  </div>
+                  <div className={classes.Column2Details_Edited_Mode}>
+                    <span className={classes.addresshead}>
+                      {leadData?.street_address
+                        ? leadData.street_address.length > 20
+                          ? `${leadData.street_address.slice(0, 30)}...`
+                          : leadData.street_address
+                        : 'N/A'}
+                    </span>
+                    <span className={classes.emailStyle}>
+                      {leadData?.email_id}{' '}
+                      {/* <span className={classes.verified}> */}
+                      {/* <svg
                         className={classes.verifiedMarked}
                         width="13"
                         height="13"
@@ -194,64 +196,65 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                           </clipPath>
                         </defs>
                       </svg>{' '} */}
-                    {/* Verified
+                      {/* Verified
                     </span> */}
-                  </span>
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className={classes.inputFields}>
-                <Input
-                  type="text"
-                  value={formData.mobile_number}
-                  placeholder="+91 8127577509"
-                  onChange={handleInputChange}
-                  name="mobile_number"
-                  maxLength={100}
-                />
-                <Input
-                  type="text"
-                  value={formData.email_id}
-                  placeholder="johndoe1234@gmail.com"
-                  onChange={handleInputChange}
-                  name="email_id"
-                  maxLength={100}
+                <div className={classes.inputFields}>
+                  <Input
+                    type="text"
+                    value={formData.mobile_number}
+                    placeholder="+91 8127577509"
+                    onChange={handleInputChange}
+                    name="mobile_number"
+                    maxLength={100}
+                  />
+                  <Input
+                    type="text"
+                    value={formData.email_id}
+                    placeholder="johndoe1234@gmail.com"
+                    onChange={handleInputChange}
+                    name="email_id"
+                    maxLength={100}
                   // backgroundColor="#9cc3fb"
-                />
-                <Input
-                  type="text"
-                  value={formData.address}
-                  placeholder="12778 Domingo Ct, Parker, COLARDO, 2312"
-                  onChange={handleInputChange}
-                  name="address"
-                  maxLength={100}
+                  />
+                  <Input
+                    type="text"
+                    value={formData.address}
+                    placeholder="12778 Domingo Ct, Parker, COLARDO, 2312"
+                    onChange={handleInputChange}
+                    name="address"
+                    maxLength={100}
                   // backgroundColor="#9cc3fb"
-                />
-              </div>
+                  />
+                </div>
 
-              <div
-                className={classes.survey_button}
-                style={{ paddingBottom: '38px' }}
-              >
-                <button
-                  className={classes.self}
-                  style={{
-                    color: '#fff',
-                    border: 'none',
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    pointerEvents: load ? 'none' : 'auto',
-                    opacity: load ? 0.6 : 1,
-                    cursor: load ? 'not-allowed' : 'pointer',
-                  }}
-                  onClick={handleConfrm}
+                <div
+                  className={classes.survey_button}
+                  style={{ paddingBottom: '38px' }}
                 >
-                  {load ? 'Updating....' : 'CONFIRM'}
-                </button>
+                  <button
+                    className={classes.self}
+                    style={{
+                      color: '#fff',
+                      border: 'none',
+                      fontWeight: '500',
+                      fontSize: '14px',
+                      pointerEvents: load ? 'none' : 'auto',
+                      opacity: load ? 0.6 : 1,
+                      cursor: load ? 'not-allowed' : 'pointer',
+                    }}
+                    onClick={handleConfrm}
+                  >
+                    {load ? 'Updating....' : 'CONFIRM'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+       
       )}
     </>
   );

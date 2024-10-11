@@ -56,17 +56,15 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.verticalDots}
-        style={{
-          backgroundColor: isHovered || isClicked ? '#EFF5FF' : '',
-          borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
-        }}
       >
-        <BsThreeDotsVertical
+        <BsThreeDotsVertical 
           style={{
+            color: isHovered? 'white':'#3E3E3E',
             height: '25px',
             width: '20px',
-            color: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
+            
           }}
+          className={classes.threeDots}
         />
       </div>
 
@@ -74,7 +72,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
           <li
             onClick={() => handleSelect('All')}
-            className={`${classes.dropdownItem} ${selectedType === 'All' ? classes.selected : ''}`}
+            className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
           >
             All
           </li>

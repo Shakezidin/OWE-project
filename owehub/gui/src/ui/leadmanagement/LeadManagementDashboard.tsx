@@ -22,7 +22,6 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import ThreeDotsImage from '../Library/stylesFolder/ThreeDots.svg';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -47,8 +46,10 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
-// import { Select } from 'react-day-picker';
-// import styles from './styles/lmhistory.module.css';
+import LeadTable from './components/LeadDashboardTable/leadTable';
+import { MdDownloading } from 'react-icons/md';
+import { LuImport } from 'react-icons/lu';
+import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -59,6 +60,29 @@ interface StatusData {
   name: string;
   value: number;
   color: string;
+}
+interface Design {
+  id: string;
+  external_provider_id: string;
+  name: string;
+  created_at: string;
+  system_size_stc: number;
+  system_size_ptc: number;
+  system_size_ac: number;
+  milestone: string | null;
+}
+
+interface Proposal {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  proposal_template_id: string;
+  proposal_link: string;
+}
+
+interface WebProposal {
+  url: string;
+  url_expired: boolean;
 }
 
 function getUserTimezone() {
@@ -419,7 +443,7 @@ const CustomTooltip = ({
         style={{
           backgroundColor: 'white',
           padding: '5px 10px',
-          // border: '1px solid #f0f0f0',
+          zIndex: '99',
           borderRadius: '4px',
           // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
@@ -457,7 +481,9 @@ const LeadManagementDashboard = () => {
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
-  const [proposal, setProposal] = useState(null);
+  // const [ChevronClick, setChevronClick] = useState(true);
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -509,9 +535,15 @@ const LeadManagementDashboard = () => {
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
+  const isMobileChevron = useMatchMedia('(max-width: 767px)');
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const isMobileFixed = useMatchMedia(
+    '(min-width: 320px) and (max-width: 480px)'
+  );
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
+  const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
+  const [isToggledX, setIsToggledX] = useState(true);
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -764,7 +796,7 @@ const LeadManagementDashboard = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates, refresh]);
+  }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -781,6 +813,7 @@ const LeadManagementDashboard = () => {
   );
 
   const getAuroraData = async () => {
+    setIsProjectLoading(true); // Start project-specific loader
     try {
       const response = await axios.get('http://localhost:5000/api/projects');
       // Handle the response as needed
@@ -788,6 +821,8 @@ const LeadManagementDashboard = () => {
       setProjects(response.data.projects);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setIsProjectLoading(false); // Stop project-specific loader
     }
   };
 
@@ -889,12 +924,18 @@ const LeadManagementDashboard = () => {
 
   // Function to fetch project details
   const fetchProjectDetails = async (projectId: string) => {
+    const monthlyEnergy = [
+      100, 200, 150, 100, 250, 300, 100, 400, 100, 350, 450, 100,
+    ]; // Example data
+    const monthlyBill = [50, 75, 60, 50, 80, 90, 90, 100, 110, 120, 50, 60]; // Example data
     try {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}`
       );
       setSelectedProject(response.data); // Set the selected project details
       fetchDesigns(projectId); // Fetch designs for the selected project
+      fetchConsumptionProfile(projectId); // Fetch Consumption Profile for the selected project
+      updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
     } catch (error) {
       console.error('Error fetching project details:', error);
     }
@@ -903,8 +944,29 @@ const LeadManagementDashboard = () => {
   // Function to fetch designs for a project
   const fetchDesigns = async (projectId: string) => {
     try {
-      const response = await axios.get(`/api/designs?projectId=${projectId}`);
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${projectId}`
+      );
       setDesigns(response.data.designs); // Set the designs for the selected project
+
+      // Find the most recently created design
+      if (response.data.designs && response.data.designs.length > 0) {
+        const sortedDesigns = response.data.designs.sort(
+          (a: Design, b: Design) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        const latestDesign = sortedDesigns[0];
+
+        // Call fetchProposal with the latest design's ID
+        // fetchProposal(latestDesign.id); //Open Proposal in edit mode for Sales Rep.
+        // fetchWebProposal(latestDesign.id); // Open Proposal URL.
+        generateWebProposalUrl(latestDesign.id); //Generate new URL every time.
+        fetchDesignSummary(latestDesign.id);
+        fetchDesignPricing(latestDesign.id);
+        fetchFinanceListing(latestDesign.id);
+      } else {
+        console.log('No designs found for this project');
+      }
     } catch (error) {
       console.error('Error fetching designs:', error);
     }
@@ -913,11 +975,197 @@ const LeadManagementDashboard = () => {
   // Function to fetch proposal for a design
   const fetchProposal = async (designId: string) => {
     try {
-      const response = await axios.get(`/api/proposals?designId=${designId}`);
-      setProposal(response.data); // Set the proposal details
+      const response = await axios.get<{ proposal: Proposal }>(
+        `http://localhost:5000/api/proposals/${designId}`
+      );
+      setProposal(response.data.proposal);
+
+      // Automatically open the proposal link in a new tab
+      openProposalLink(response.data.proposal.proposal_link);
     } catch (error) {
       console.error('Error fetching proposal:', error);
     }
+  };
+
+  // Function to fetch Web Proposal for a design
+  const fetchWebProposal = async (designId: string) => {
+    try {
+      const response = await axios.get<{ web_proposal: WebProposal }>(
+        `http://localhost:5000/api/web-proposals/${designId}`
+      );
+
+      // Set the web proposal in state if you want to store it
+      setWebProposal(response.data.web_proposal);
+
+      // Automatically open the web proposal link in a new tab
+      openProposalLink(response.data.web_proposal.url);
+    } catch (error) {
+      console.error('Error fetching web proposal:', error);
+    }
+  };
+
+  const generateWebProposalUrl = async (designId: string) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/web-proposals/${designId}/generate`
+      );
+      const proposalUrl = response.data.web_proposal.url;
+
+      if (!response.data.web_proposal.url_expired) {
+        console.log('Generated Web Proposal URL:', proposalUrl);
+        openProposalLink(proposalUrl); // Open the proposal URL in a new tab
+      } else {
+        console.error('The web proposal URL has expired.');
+      }
+    } catch (error) {
+      console.error('Error generating web proposal URL:', error);
+    }
+  };
+
+  const fetchDesignSummary = async (designId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/summary`
+      );
+      console.log('Retrieved Design Summary:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design summary:', error);
+      throw error;
+    }
+  };
+
+  const fetchDesignPricing = async (designId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/pricing`
+      );
+      console.log('Retrieved Design Pricing:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design pricing:', error);
+      throw error;
+    }
+  };
+
+  const fetchFinanceListing = async (designId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/financings`
+      );
+      const financings = response.data.financings;
+
+      console.log('Retrieved Financings:', financings);
+
+      if (financings && financings.length > 0) {
+        // Assuming you want to use the first financing ID
+        const financingId = financings[0].id;
+
+        // Call the next API using the financing ID
+        fetchFinancingDetails(designId, financingId);
+      } else {
+        console.error('No financings found');
+      }
+    } catch (error) {
+      console.error('Error fetching financings:', error);
+    }
+  };
+
+  const fetchFinancingDetails = async (
+    designId: string,
+    financingId: string
+  ) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/financings/${financingId}`
+      );
+      console.log('Financing details fetched successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching financing details:', error);
+      throw error;
+    }
+  };
+
+  const fetchConsumptionProfile = async (projectId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/projects/${projectId}/consumption_profile`
+      );
+      console.log('Retrieved Consumption Profile:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching consumption profile:', error);
+      throw error;
+    }
+  };
+
+  const updateConsumptionProfile = async (
+    projectId: string,
+    monthlyEnergy: (number | null)[],
+    monthlyBill: (number | null)[]
+  ) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/projects/${projectId}/consumption_profile`,
+        {
+          consumption_profile: {
+            monthly_energy: monthlyEnergy,
+            // monthly_bill: monthlyBill,
+          },
+        }
+      );
+      console.log('Consumption Profile Updated:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating consumption profile:', error);
+      throw error;
+    }
+  };
+
+  // Function to open the proposal link in a new tab
+  const openProposalLink = (link: string) => {
+    window.open(link, '_blank', 'noopener,noreferrer');
+  };
+
+  const downloadFile = async () => {
+    const fileUrl =
+      'https://v2-sandbox.aurorasolar.com/e-proposal/zWR9Gc7vzU2jzne8jNrPCrYC3hmUNKW1FynAhFaDnks';
+    try {
+      // Fetch the file
+      const response = await fetch(fileUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch the file');
+      }
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a link element, set its href to the Blob, and click it to trigger download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'proposal.pdf'; // Change filename if needed
+      link.click();
+      // Cleanup the object URL
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
+
+  const OpenWindowClick = () => {
+    setIsToggledX((prev) => !prev);
+    console.log('rabindra');
+    console.log(isToggledX);
+  };
+
+  const [exporting, setIsExporting] = useState(false);
+ 
+  const exportCsv = async () => {
+    setIsExporting(true);
   };
 
   //************************************************************************************************ */
@@ -927,7 +1175,7 @@ const LeadManagementDashboard = () => {
         <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
           <div className="bread-link">
             <div className="" style={{ cursor: 'pointer' }}>
-              <h3>Lead Management</h3>
+              {/* <h3>Lead Management</h3> */}
             </div>
             <div className="">
               <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
@@ -953,20 +1201,170 @@ const LeadManagementDashboard = () => {
         activeIndex={ref}
         setActiveIndex={setRef}
       />
-
+      {/* //WORKING DIRECTORY */}
       <div className={styles.chartGrid}>
-        <div className={styles.card}>
-          <div className={styles.cardHeaderFirst}>
-            Overview
-            <div>Total leads: {totalValue ? totalValue : '0'}</div>
+        <div className={styles.horizontal}>
+          {isToggledX && <div className={`${styles.customLeft} ${styles.custom1}`}>Overview</div>}
+          <div className={`${styles.customLeft} ${styles.custom2}`}>Total leads: {totalValue ? totalValue : '0'}</div>
+          {isToggledX && <div className={`${styles.customLeft} ${styles.custom3}`}>Total Won Lost</div>}
+          <div className={styles.date_calendar}>
+            <div className={styles.lead__datepicker_wrapper}>
+              {isCalendarOpen && (
+                <div
+                  ref={calendarRef}
+                  className={styles.lead__datepicker_content}
+                >
+                  <DateRange
+                    editableDateInputs={true}
+                    onChange={handleRangeChange}
+                    moveRangeOnFirstSelection={false}
+                    ranges={selectedRanges}
+                  />
+                  <div className={styles.lead__datepicker_btns}>
+                    <button className="reset-calender" onClick={onReset}>
+                      Reset
+                    </button>
+                    <button className="apply-calender" onClick={onApply}>
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            {selectedDates.startDate && selectedDates.endDate && (
+              <div className={styles.hist_date}>
+                {isToggledX && <span className={styles.date_display}>
+                  {selectedDates.startDate.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                  }) +
+                    ' ' +
+                    selectedDates.startDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                    }) +
+                    ' ' +
+                    selectedDates.startDate.getFullYear()}
+                  {' - '}
+                  {selectedDates.endDate.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                  }) +
+                    ' ' +
+                    selectedDates.endDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                    }) +
+                    ' ' +
+                    selectedDates.endDate.getFullYear()}
+                </span>}
+              </div>
+            )}
+
+
+            {isToggledX && <Select
+              value={selectedPeriod}
+              onChange={handlePeriodChange}
+              options={periodFilterOptions}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  marginTop: 'px',
+                  borderRadius: '8px',
+                  outline: 'none',
+                  color: '#3E3E3E',
+                  width: '140px',
+                  height: '36px',
+                  fontSize: '12px',
+                  border: '1px solid #d0d5dd',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  alignContent: 'center',
+                  backgroundColor: '#fffff',
+                  boxShadow: 'none',
+                  '&:focus-within': {
+                    borderColor: '#377CF6',
+                    boxShadow: '0 0 0 1px #377CF6',
+                    caretColor: '#3E3E3E',
+                  },
+                  '&:hover': {
+                    borderColor: '#377CF6',
+                    boxShadow: '0 0 0 1px #377CF6',
+                  },
+                }),
+                placeholder: (baseStyles) => ({
+                  ...baseStyles,
+                  color: '#3E3E3E',
+                }),
+                indicatorSeparator: () => ({
+                  display: 'none',
+                }),
+                dropdownIndicator: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: '#3E3E3E',
+                  '&:hover': {
+                    color: '#3E3E3E',
+                  },
+                }),
+                option: (baseStyles, state) => ({
+                  ...baseStyles,
+                  fontSize: '13px',
+                  fontWeight: '400',
+                  color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                  backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                  '&:hover': {
+                    backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                  },
+                  cursor: 'pointer',
+                }),
+                singleValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: '#3E3E3E',
+                }),
+                menu: (baseStyles) => ({
+                  ...baseStyles,
+                  width: '140px',
+                  marginTop: '0px',
+                  zIndex: "100"
+                }),
+              }}
+            />}
+            {isToggledX && <div
+              ref={toggleRef}
+              className={styles.calender}
+              onClick={toggleCalendar}
+            >
+              <img src={ICONS.includes_icon} alt="" />
+            </div>}
+            <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
+              <img
+                src={
+                  isToggledX === true
+                    ? ICONS.ChecronUpX
+                    : ICONS.DownArrowDashboard
+                }
+              />
+
+              {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+            </div>
           </div>
-          <div className={styles.cardContent}>
+          {/* <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
+            <img
+              src={
+                isToggledX === true
+                  ? ICONS.ChecronUpX
+                  : ICONS.DownArrowDashboard
+              }
+            />
+
+            HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED
+          </div> */}
+        </div>
+        {/* //HORIZONTAL ENDED */}
+        {isToggledX && <div className={styles.vertical1}>
+          <div>
             {loading ? (
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'left',
                 }}
               >
                 <MicroLoader />
@@ -1009,198 +1407,69 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )}
           </div>
-        </div>
-
-        <div className={`${styles.card} ${styles.lineCard}`}>
-          {/* shams start */}
-          <div className={styles.cardHeaderSecond}>
-            <span>Total Won Lost</span>
-            <div className={styles.date_calendar}>
-              <div className={styles.lead__datepicker_wrapper}>
-                {isCalendarOpen && (
-                  <div
-                    ref={calendarRef}
-                    className={styles.lead__datepicker_content}
-                  >
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={handleRangeChange}
-                      moveRangeOnFirstSelection={false}
-                      ranges={selectedRanges}
-                    />
-                    <div className={styles.lead__datepicker_btns}>
-                      <button className="reset-calender" onClick={onReset}>
-                        Reset
-                      </button>
-                      <button className="apply-calender" onClick={onApply}>
-                        Apply
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {selectedDates.startDate && selectedDates.endDate && (
-                <div className={styles.hist_date}>
-                  <span className={styles.date_display}>
-                    {selectedDates.startDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                    }) +
-                      ' ' +
-                      selectedDates.startDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                      }) +
-                      ' ' +
-                      selectedDates.startDate.getFullYear()}
-                    {' - '}
-                    {selectedDates.endDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                    }) +
-                      ' ' +
-                      selectedDates.endDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                      }) +
-                      ' ' +
-                      selectedDates.endDate.getFullYear()}
-                  </span>
-                </div>
-              )}
-
-              {/* RABINDR718.....DATE_PICKER STARTED */}
-              <Select
-                value={selectedPeriod}
-                onChange={handlePeriodChange}
-                options={periodFilterOptions}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    marginTop: 'px',
-                    borderRadius: '8px',
-                    outline: 'none',
-                    color: '#3E3E3E',
-                    width: '140px',
-                    height: '36px',
-                    fontSize: '12px',
-                    border: '1px solid #d0d5dd',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    alignContent: 'center',
-                    backgroundColor: '#fffff',
-                    boxShadow: 'none',
-                    '&:focus-within': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                      caretColor: '#3E3E3E',
-                    },
-                    '&:hover': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                    },
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                    '&:hover': {
-                      color: '#3E3E3E',
-                    },
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                    },
-                    cursor: 'pointer',
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '140px',
-                    marginTop: '0px',
-                  }),
-                }}
-              />
-              <div
-                ref={toggleRef}
-                className={styles.calender}
-                onClick={toggleCalendar}
-              >
-                <img src={ICONS.includes_icon} alt="" />
-              </div>
+        </div>}
+        {/* VERTICAL 1 ENDED */}
+        {isToggledX && <div className={styles.vertical2}>
+          {loading ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MicroLoader />
             </div>
-          </div>
-          {/* RABINDR718.....DATE_PICKER ENDED */}
-          <div
-            className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
-          >
-            {loading ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+          ) : lineData.length > 0 ? (
+            <>
+              <ResponsiveContainer
+                className={styles.chart_main_grid}
+                width="100%"
+                height={300}
               >
-                <MicroLoader />
-              </div>
-            ) : lineData.length > 0 ? (
-              <>
-                <ResponsiveContainer
-                  className={styles.chart_main_grid}
-                  width="100%"
-                  height={300}
-                >
-                  <LineChart data={lineData}>
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend
-                      className={styles.lineChart_legend}
-                      formatter={(value) =>
-                        value === 'won' ? 'Total won' : 'Total Lost'
-                      }
-                      wrapperStyle={{
-                        fontSize: '12px',
-                        fontWeight: 550,
-                        marginBottom: -15,
-                      }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="won"
-                      stroke="#57B93A"
-                      strokeWidth={2}
-                      name="won"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="lost"
-                      stroke="#CD4040"
-                      strokeWidth={2}
-                      name="lost"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </>
-            ) : (
-              <DataNotFound />
-            )}
-          </div>
+                <LineChart data={lineData}>
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend
+                    className={styles.lineChart_legend}
+                    formatter={(value) =>
+                      value === 'won' ? 'Total won' : 'Total Lost'
+                    }
+                    wrapperStyle={{
+                      fontSize: '12px',
+                      fontWeight: 550,
+                      marginBottom: -15,
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="won"
+                    stroke="#57B93A"
+                    strokeWidth={2}
+                    name="won"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="lost"
+                    stroke="#CD4040"
+                    strokeWidth={2}
+                    name="lost"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </>
+          ) : (
+            <DataNotFound />
+          )}
         </div>
-      </div>
 
+        }
+
+
+
+        {/* HERE NOT ENTER BELOW CODES */}
+      </div>
       <div className={styles.card}>
         {archive == true && (
           <ArchivedPages
@@ -1264,10 +1533,31 @@ const LeadManagementDashboard = () => {
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
                 <HistoryRedirect setArchive={setArchive} />
-
+                 <LeadTableFilter setArchive={() => {}} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                  </div>
+
+                  <div
+                    className={styles.export_btn}
+                    onClick={exportCsv}
+                    data-tooltip-id="export"
+                    style={{
+                      pointerEvents: exporting ? 'none' : 'auto',
+                      opacity: exporting ? 0.6 : 1,
+                      cursor: exporting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {exporting ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={20}
+                        color="white"
+                      />
+                    ) : (
+                      <LuImport size={20} color="white" />
+                    )}
                   </div>
                 </div>
               </>
@@ -1299,249 +1589,32 @@ const LeadManagementDashboard = () => {
           </div>
         )}
         <div className={styles.cardContent}>
-          {archive == false && (
-            <table className={styles.table}>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={leadsData.length}>
-                      <div
-                        style={{ display: 'flex', justifyContent: 'center' }}
-                      >
-                        <MicroLoader />
-                      </div>
-                    </td>
-                  </tr>
-                ) : currentFilter == 'Projects' && projects.length > 0 ? (
-                  projects.map((project: any, index: number) => (
-                    <React.Fragment key={index}>
-                      {/* <tr className={styles.history_lists}>
-                          <td className={styles.project_list}>
-                         
-                           <div style={{fontWeight:"bold"}}>
-                              Project Name
-                            </div>
-
-                            <div>
-                               Property Address
-                            </div>
-                        
-                            <div>
-                              Created At
-                            </div>
-                            <div>
-                              Project ID
-                            </div>
-                          </td>
-                    </tr> */}
-                      {/* <tr key={project.id} className={styles.history_lists}>
-                          <td className={styles.project_list}>
-                         
-                           <div style={{fontWeight:"bold"}}>
-                              {project.name}
-                            </div>
-
-                            <div>
-                              {project.property_address}
-                            </div>
-                        
-                            <div>
-                              {new Date(project.created_at).toLocaleString()}
-                            </div>
-                            <div>
-                              {project.id}
-                            </div>
-                          </td>
-                        </tr> */}
-                      <tr
-                        key={project.id}
-                        className={styles.history_lists}
-                        onClick={() => fetchProjectDetails(project.id)}
-                      >
-                        <td className={styles.project_list}>
-                          <div style={{ fontWeight: 'bold' }}>
-                            {project.name}
-                          </div>
-
-                          <div>{project.property_address}</div>
-
-                          <div>
-                            {new Date(project.created_at).toLocaleString()}
-                          </div>
-                          <div>{project.id}</div>
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  ))
-                ) : leadsData.length > 0 ? (
-                  leadsData.map((lead: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr className={styles.history_lists}>
-                        <td
-                          className={`${
-                            lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
-                              ? styles.history_list_inner_declined
-                              : styles.history_list_inner
-                          }`}
-                          onClick={(e) => {
-                            setLeadId(lead['leads_id']);
-                            if (
-                              !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest(
-                                `.${styles.chevron_down}`
-                              )
-                            ) {
-                              if (
-                                currentFilter !== 'Declined' &&
-                                currentFilter !== 'Action Needed'
-                              ) {
-                                setReschedule(false);
-                                setAction(false);
-                                handleOpenModal();
-                              }
-                            }
-                          }}
-                        >
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={selectedLeads.includes(lead['leads_id'])}
-                              onChange={() =>
-                                handleLeadSelection(lead['leads_id'])
-                              }
-                            />
-                          </label>
-                          <div
-                            className={styles.user_name}
-                            onClick={() =>
-                              currentFilter == 'Pending' &&
-                              handleDetailModal(lead)
-                            }
-                          >
-                            <h2>
-                              {lead.first_name} {lead.last_name}
-                            </h2>
-                            <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter === 'Action Needed'
-                                ? lead.action_needed_message
-                                : currentFilter}
-                            </p>
-                          </div>
-                          <div className={styles.phone_number}>
-                            {lead.phone_number}
-                          </div>
-                          <div className={styles.email}>
-                            <span>{lead.email_id}</span>
-                          </div>
-                          <div className={styles.address}>
-                            {lead?.street_address
-                              ? lead.street_address.length >= 20
-                                ? `${lead.street_address.slice(0, 45)}...`
-                                : lead.street_address
-                              : 'N/A'}
-                          </div>
-
-                          {currentFilter === 'Declined' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  handleOpenModal();
-                                  setReschedule(true);
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                Reschedule
-                              </button>
-                              {isTablet ? (
-                                <button
-                                  onClick={() => handleArchive(lead)}
-                                  className={styles.archiveButton}
-                                >
-                                  <img src={ICONS.declinedArchive} />
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => handleOpenArcModal()}
-                                  className={styles.archiveButton}
-                                >
-                                  Archive
-                                </button>
-                              )}
-                            </div>
-                          )}
-
-                          {currentFilter === 'Action Needed' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  if (
-                                    lead.action_needed_message ===
-                                    'Update Status'
-                                  ) {
-                                    handleOpenModal();
-                                    setAction(true);
-                                  }
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                {lead.action_needed_message === 'Update Status'
-                                  ? 'Update Status'
-                                  : 'Create Proposal'}
-                              </button>
-                            </div>
-                          )}
-
-                          <div
-                            className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead['leads_id'])}
-                          >
-                            <img
-                              src={
-                                toggledId.includes(lead['leads_id'])
-                                  ? ICONS.chevronUp
-                                  : ICONS.chevronDown
-                              }
-                              alt={
-                                toggledId.includes(lead['leads_id'])
-                                  ? 'chevronUp-icon'
-                                  : 'chevronDown-icon'
-                              }
-                            />
-                          </div>
-                        </td>
-                      </tr>
-
-                      {toggledId.includes(lead['leads_id']) && isMobile && (
-                        <tr>
-                          <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
-                            <div className={''}>
-                              <span>{lead.email_id}</span>
-                            </div>
-                            <div className={''}>
-                              {lead?.street_address
-                                ? lead.street_address.length > 20
-                                  ? `${lead.street_address.slice(0, 20)}...`
-                                  : lead.street_address
-                                : 'N/A'}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <tr style={{ border: 0 }}>
-                    <td colSpan={10}>
-                      <DataNotFound />
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          {currentFilter === 'Projects' ? (
+            isProjectLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <MicroLoader />
+              </div>
+            ) : projects.length > 0 ? (
+              projects.map((project: any, index: number) => (
+                <div
+                  key={project.id}
+                  className={styles.history_lists}
+                  onClick={() => fetchProjectDetails(project.id)}
+                >
+                  <div className={styles.project_list}>
+                    <div style={{ fontWeight: 'bold' }}>{project.name}</div>
+                    <div>{project.property_address}</div>
+                    <div>{new Date(project.created_at).toLocaleString()}</div>
+                    <div>{project.id}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <DataNotFound />
+            )
+          ) : (
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} />
           )}
-
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>

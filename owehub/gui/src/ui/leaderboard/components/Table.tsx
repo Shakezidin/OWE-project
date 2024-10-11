@@ -632,8 +632,7 @@ const Table = ({
   ]);
 
 
-  console.log(leaderTable?.length, "fkjgh")
-  console.log(totalCount, "totalcount")
+   
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {
@@ -799,14 +798,14 @@ const Table = ({
       item.unique_id,
       item.home_owner,
       item.customer_email,
-      item.customer_phone_number,
+      item.phone_number,
       item.address,
       item.state,
       item.contract_total,
-      item.system_size,
-      item.contract_date,
-      item.ntp_date,
-      item.pv_install_completed_date,
+      item.contracted_system_size_parent,
+      item.sale_date,
+      item.ntp_complete_date,
+      item.pv_completion_date,      
       item.pto_date,
       item.canceled_date,
       item.primary_sales_rep,

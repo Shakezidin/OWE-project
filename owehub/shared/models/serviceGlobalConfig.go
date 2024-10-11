@@ -6,6 +6,8 @@
 
 package models
 
+import msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+
 type SrvHttpConf struct {
 	HttpsSupport      string
 	Addr              string
@@ -32,14 +34,16 @@ type SrvConf struct {
 }
 
 type SvcConfig struct {
-	InstanceID            map[string]string
-	SelfInstanceId        string
-	SelfAddr              string
-	HTTPTimerCallBackPath string
-	HTTPCfg               HTTPConfig
-	LogCfg                LoggingCfg
-	DbConfList            DBConfigList
-	SvcSrvCfg             SrvConf
-	PodioCfg              PodioConfigList
-	PodioAppCfg           PodioAppConfig
+	InstanceID             map[string]string
+	SelfInstanceId         string
+	SelfAddr               string
+	HTTPTimerCallBackPath  string
+	HTTPCfg                HTTPConfig
+	LogCfg                 LoggingCfg
+	DbConfList             DBConfigList
+	SvcSrvCfg              SrvConf
+	PodioCfg               PodioConfigList
+	PodioAppCfg            PodioAppConfig
+	GraphApiCfg            GraphApiConfInfo
+	ScheduleGraphApiClient *msgraphsdk.GraphServiceClient
 }

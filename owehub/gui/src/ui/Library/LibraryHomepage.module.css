@@ -1,11 +1,12 @@
 .lib_Grid_Header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr ;
   gap: 16px;
   padding: 20px 24px;
   font-size: large;
   background-color: #eff5ff;
 }
+
 
 .libraryHeader {
   padding-top: 10px;
@@ -20,7 +21,7 @@
 
 .libGridItem {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
   padding: 25px;
   background-color: #ffffff;
@@ -38,6 +39,7 @@
   height: 36.68px;
   width: 32px;
   border-radius: 2.8px;
+  flex-shrink: 0;
 }
 
 .libSecHeader {
@@ -67,6 +69,7 @@
   justify-content: center;
   cursor: pointer;
 }
+
 .recycle_p {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
@@ -96,9 +99,39 @@
   font-family: poppins;
   font-weight: 500;
   font-size: 16px;
-  color: #8c8c8c;
+  color: #3E3E3E;
   background-color: #fff;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+}
+.buttons:hover {
+  color: #eff5ff;
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+  transform: scale(1.05);
+
+}
+
+.Folderbuttons {
+  border-radius: 18px;
+  border: 1px solid #989898;
+  padding: 2px 32px;
+  font-family: poppins;
+  font-weight: 500;
+  font-size: 16px;
+  color:#3E3E3E;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+}
+
+.Folderbuttons:hover {
+  color: #eff5ff;
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+  transform: scale(1.05);
 }
 
 .filter_button {
@@ -118,11 +151,7 @@
   cursor: pointer;
 }
 
-.buttons:hover {
-  color: #377cf6;
-  background-color: #eff5ff;
-  border: 1px solid #377cf6;
-}
+
 
 .recycleBin {
   position: relative;
@@ -139,6 +168,7 @@
   border: 1px solid #377cf6;
   background-color: #eff5ff;
 }
+
 .recycleBin img:hover {
   fill: #377cf6;
 }
@@ -172,7 +202,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid #cbcbcb;
+  border: 1px solid #8C8C8C;
   border-radius: 8px;
   padding: 5px 10px;
   cursor: pointer;
@@ -188,6 +218,8 @@
   width: 100%;
   overflow: hidden;
   text-overflow: initial;
+  color: black;
+ 
 }
 
 .customer_wrapper_list {
@@ -202,15 +234,19 @@
   border: none;
   outline: none;
 }
+
 .searchWrapper input:hover {
   border: none;
 }
+
 .searchWrapper input:active {
   border: none;
 }
+
 .searchWrapper input:focus-visible {
   border: none;
 }
+
 .searchWrapper input:focus-within {
   border: none;
 }
@@ -303,7 +339,7 @@
 .recycleBinContent {
   position: absolute;
   top: 165px;
-  right: 35px;
+  right: 45px;
   font-size: 12px;
   color: #377cf6;
   font-weight: 600;
@@ -359,6 +395,12 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.undoButton:hover {
+  transform: scale(1.09);
+
 }
 
 .selectedCount {
@@ -374,9 +416,23 @@
   padding: 8px 18px;
   border-radius: 8px;
   border: none;
-  color: #fff;
+  color: #FFFFFF;
   background-color: #ff0000;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.DeleteButton:disabled{
+  background-color: #959595;
+}
+
+.DeleteButton:not([disabled]):hover {
+  color: #FFFFFF;
+  background-color: #ff0000;
+  transform: scale(1.05);
+
+
+
 }
 
 .noParagraph {
@@ -418,4 +474,37 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.view_btn {
+  border: 1px solid #8C8C8C;
+  display: flex;
+  width: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: #fff;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 500ms;
+}
+
+.view_btn:not(.active_tile):hover {
+  background-color: #377cf6;
+  color: #fff;
+  transition: all 500ms;
+  border: 1px solid #fff;
+  transform: scale(1.1);
+}
+
+.view_btn.active_tile {
+  color: #fff;
+  transition: all 500ms;
+  background-color: #377cf6;
+  border: 1px solid #fff;
+}
+
+.view_btn.active_tile:hover{
+  transform: scale(1.1);
 }

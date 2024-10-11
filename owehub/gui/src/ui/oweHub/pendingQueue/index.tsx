@@ -185,10 +185,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                          setActive('qc');
-                          setPage(1);
-                          setSearch('');
-                        }
+                        setActive('qc');
+                        setPage(1);
+                        setSearch('');
+                      }
                       : undefined
                   }
                 >
@@ -285,7 +285,7 @@ const PendingQueue = () => {
           </div>
         </div>
 
-        <div className="performance-milestone-table">
+        <div className="performance-milestone-table pendingActionTable">
           <table>
             <thead>
               <tr>
@@ -383,7 +383,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                      'Pending (Action Required)'
+                                        'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'
@@ -422,27 +422,27 @@ const PendingQueue = () => {
               )}
             </tbody>
           </table>
-          <div className="page-heading-container">
-            {dataPending?.length > 0 ? (
-              <>
-                <p className="page-heading">
-                  Showing {startIndex} -{' '}
-                  {endIndex > totalcount ? totalcount : endIndex} of{' '}
-                  {totalcount} item
-                </p>
+        </div>
+        <div className="page-heading-container">
+          {dataPending?.length > 0 ? (
+            <>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalcount ? totalcount : endIndex} of{' '}
+                {totalcount} item
+              </p>
 
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPages} // You need to calculate total pages
-                  paginate={(num) => setPage(num)}
-                  currentPageData={dataPending}
-                  goToNextPage={() => setPage(page + 1)}
-                  goToPrevPage={() => setPage(page - 1)}
-                  perPage={itemsPerPage}
-                />
-              </>
-            ) : null}
-          </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={(num) => setPage(num)}
+                currentPageData={dataPending}
+                goToNextPage={() => setPage(page + 1)}
+                goToPrevPage={() => setPage(page - 1)}
+                perPage={itemsPerPage}
+              />
+            </>
+          ) : null}
         </div>
       </div>
     </>

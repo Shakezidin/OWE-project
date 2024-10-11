@@ -14,8 +14,10 @@ import Pagination from '../../../components/pagination/Pagination';
 import { DealerPaymentsColumn } from '../../../../resources/static_data/configureHeaderData/DealerPaymentsColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { toast } from 'react-toastify';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { ROUTES } from '../../../../routes/routes';
@@ -35,15 +37,18 @@ const DealerPayments: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  const { loading, totalCount } = useAppSelector((state) => state.dealer);
+ 
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [loading, setLoading] = useState(false)
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+  const [totalCount, setTotalCount] = useState<number>(0)
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [data,setData] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
@@ -58,17 +63,19 @@ const DealerPayments: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
-  const getnewformData = async () => {
-    const tableData = {
-      tableNames: ['sub_dealer', 'dealer', 'states'],
-    };
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setDealer((prev) => ({ ...prev, ...res.data }));
-  };
+  // const getnewformData = async () => {
+  //   const tableData = {
+  //     tableNames: ['sub_dealer', 'dealer', 'states'],
+  //   };
+  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
+  //   setDealer((prev) => ({ ...prev, ...res.data }));
+  // };
 
-  useEffect(() => {
-    getnewformData();
-  }, []);
+
+
+  // useEffect(() => {
+  //   getnewformData();
+  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -85,7 +92,36 @@ const DealerPayments: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  useEffect(() => {
+   
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await configPostCaller('get_dealerpayment', {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters
+        });
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          setLoading(false);
+          return;
+        }
+        setData(data?.data?.DealerPaymentsData)
+        setTotalCount(data.dbRecCount)
+        setLoading(false);
+         
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  
+}, [
+  currentPage, viewArchived, filters
+]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -95,9 +131,11 @@ const DealerPayments: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen();
   };
-  const currentPageData = dealerList?.slice();
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
@@ -109,6 +147,9 @@ const DealerPayments: React.FC = () => {
       setSortDirection('asc');
     }
   };
+
+
+
 
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
@@ -228,6 +269,8 @@ const DealerPayments: React.FC = () => {
     );
   }
   const notAllowed = selectedRows.size > 1;
+
+  console.log(currentPageData, "dfjbhkg")
   return (
     <div className="comm">
       <Breadcrumb
@@ -301,11 +344,7 @@ const DealerPayments: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                 
               </tr>
             </thead>
             <tbody>
@@ -322,7 +361,7 @@ const DealerPayments: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -332,42 +371,25 @@ const DealerPayments: React.FC = () => {
                               setSelectAllChecked
                             )
                           }
-                        />
-                        {el.sub_dealer || 'N/A'}
+                        /> */}
+                        {el.unique_id || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.dealer || 'N/A'}</td>
-                    <td>{el.pay_rate || 'N/A'}</td>
-                    <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
-                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
-
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.sales_partner || 'N/A'}</td>
+                    <td>{el.type_of_payment || 'N/A'}</td>
+                    <td>{dateFormat(el.payment_date) || 'N/A'}</td>
+                    <td>{el.payment_amount || 'N/A'}</td>
+                    <td>{el.payment_method || 'N/A'}</td>
                     <td>
-                      <div className="action-icon">
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() =>
-                            !notAllowed && handleArchiveClick(el.record_id)
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          {/* <span className="tooltiptext">Archive</span> */}
-                        </div>
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => !notAllowed && handleEditDealer(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                          {/* <span className="tooltiptext">Edit</span> */}
-                        </div>
-                      </div>
+                      {el.transaction
+                        ? el.transaction.replace(/<\/?[^>]+(>|$)/g, '')
+                        : 'N/A'}
                     </td>
+                    <td>{el.notes || 'N/A'}</td>
+       
+
+                    
                   </tr>
                 ))
               ) : (
@@ -381,7 +403,7 @@ const DealerPayments: React.FC = () => {
           </table>
         </div>
 
-        {dealerList?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}

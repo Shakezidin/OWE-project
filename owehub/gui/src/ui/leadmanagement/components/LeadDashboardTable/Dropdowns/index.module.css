@@ -1,0 +1,202 @@
+.dropdown_container {
+  position: relative;
+  display: inline-block;
+}
+
+/* .verticalDots {
+  display: flex;
+  cursor: pointer;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+} */
+
+.verticalDots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #377cf6;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.verticalDots:hover {
+  transition: all 0.3s ease;
+  transform: scale(1.1);
+}
+
+.verticalDots2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 8px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  border-radius: 50%; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: #377cf6;
+  background-color: transparent;
+  border: 1px solid #377cf6;
+  transition: all 0.3s ease;
+}
+
+.verticalDots2:hover {
+  background-color: #d6e5ff;
+  transform: scale(1.1);
+}
+
+.filtericonLead{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 8px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  border-radius: 50%; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+  font-weight: 500;
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+
+.filtericonLead:hover {
+  background-color: #013ea6;
+  transform: scale(1.1);
+}
+
+.dropdownMenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  width: 195px;
+  border-radius: 5px;
+}
+
+.dropdownItemAll {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.dropdownItem {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.dropdownItem:hover {
+  background-color: #d6e5ff;
+  /* border-radius: 4px; */
+}
+
+.selected {
+  background-color: #377cf6;
+  color: #ffffff;
+  /* border-radius: 4px; */
+}
+.selectedFilter {
+  font-size: 12px;
+  color: #000 !important;
+  cursor: pointer !important;
+}
+
+.selectedFilter.active {
+  color: #fff !important;
+  background-color: #377cf6 !important;
+}
+/* //////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+.filtericonHistory {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  border: 1.2px solid #377cf6;
+  cursor: pointer;
+  /* transition: all 0.3s ease; */
+}
+.filtericonHistory:hover {
+  background-color: #ddebff;
+  transform: scale(1.05);
+}
+.ICONSTYLETHREEDOT {
+  width: auto;
+  height: auto;
+  margin-left: 17px;
+  align-items: center;
+  justify-content: center;
+}
+/* HERE FOR RESPONSIVESNESS */
+
+@media screen and (max-width: 1200px) {
+  .filtericonHistory {
+    margin-top: -2px !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .filtericonHistory {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    margin-top: 1px !important;
+    margin-left: 23px;
+    border-radius: 50%;
+    border: 1.2px solid #377cf6;
+    cursor: pointer;
+
+    /* .buttonGroup INSIDE THIS GROUP WIDTH IS ALSO REMOVE */
+  }
+
+  .ICONSTYLETHREEDOT {
+    width: auto;
+    height: auto;
+    margin-left: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (min-width: 460px) and (max-width: 768px) {
+  .filtericonHistory {
+    display: flex;
+    align-items: center;
+    height: 31px;
+    width: 33px;
+    margin-top: 1px !important;
+    margin-left: 99px !important;
+    border-radius: 50%;
+    border: 1.2px solid #377cf6 !important;
+    cursor: pointer;
+  }
+  .ICONSTYLETHREEDOT {
+    width: auto;
+    height: auto;
+    margin-left: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+}

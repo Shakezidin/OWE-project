@@ -53,9 +53,11 @@ export const ROUTES = {
   CONFIG_DEALERPAYMENTS: '/config/dealer-payments',
   CONFIG_FINANCE_SCHEDULE: '/config/finance-schedule',
   CONFIG_SALES_PARTNER_PAY: '/config/sales-partner-commision',
+  CONFIG_FINANCE_TYPES: '/config/finance-types',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
+  SS_ONBOARDING: '/ss-onboarding',
 
 
   // other routes
@@ -90,4 +92,6 @@ export const ROUTES = {
   LEAD_MANAGEMENT_SUCCESS_MODAl: '/lead-mgmt-success-modal',
   MAP_ADDRESS: '/map-address',
   SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
+  FOLDER_DETAIL:"/library/*",
+  LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
 };

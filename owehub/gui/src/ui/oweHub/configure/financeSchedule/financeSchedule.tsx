@@ -10,12 +10,14 @@ import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
-import { DealerPaymentsColumn } from '../../../../resources/static_data/configureHeaderData/DealerPaymentsColumn';
+import { FinanceScheduleColumn } from '../../../../resources/static_data/configureHeaderData/financeScheduleColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { ROUTES } from '../../../../routes/routes';
@@ -35,40 +37,43 @@ const  FinanceSchedule: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  const { loading, totalCount } = useAppSelector((state) => state.dealer);
+ 
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [totalCount, setTotalCount] = useState<number>(0)
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
+  const [loading, setLoading] = useState(false)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [data,setData] = useState<any>([]);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
-  useEffect(() => {
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-      archived: viewArchived ? true : undefined,
-      filters,
-    };
-    dispatch(fetchDealer(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  // useEffect(() => {
+  //   const pageNumber = {
+  //     page_number: currentPage,
+  //     page_size: itemsPerPage,
+  //     archived: viewArchived ? true : undefined,
+  //     filters,
+  //   };
+  //   dispatch(fetchDealer(pageNumber));
+  // }, [dispatch, currentPage, viewArchived, filters]);
 
-  const getnewformData = async () => {
-    const tableData = {
-      tableNames: ['sub_dealer', 'dealer', 'states'],
-    };
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setDealer((prev) => ({ ...prev, ...res.data }));
-  };
+  // const getnewformData = async () => {
+  //   const tableData = {
+  //     tableNames: ['sub_dealer', 'dealer', 'states'],
+  //   };
+  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
+  //   setDealer((prev) => ({ ...prev, ...res.data }));
+  // };
 
-  useEffect(() => {
-    getnewformData();
-  }, []);
+  // useEffect(() => {
+  //   getnewformData();
+  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -85,8 +90,9 @@ const  FinanceSchedule: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+ 
 
+  
   const filter = () => {
     setFilterOpen(true);
   };
@@ -95,9 +101,42 @@ const  FinanceSchedule: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen();
   };
-  const currentPageData = dealerList?.slice();
+
+  useEffect(() => {
+   
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await configPostCaller('get_finaceschedule', {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters
+        });
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          setLoading(false);
+          return;
+        }
+        setData(data?.data?.FinanceScheduleData)
+        setTotalCount(data?.dbRecCount)
+        setLoading(false);
+         
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  
+}, [
+  currentPage, viewArchived, filters
+]);
+
+ 
+const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
@@ -109,6 +148,8 @@ const  FinanceSchedule: React.FC = () => {
       setSortDirection('asc');
     }
   };
+
+
 
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
@@ -228,6 +269,8 @@ const  FinanceSchedule: React.FC = () => {
     );
   }
   const notAllowed = selectedRows.size > 1;
+
+ 
   return (
     <div className="comm">
       <Breadcrumb
@@ -259,7 +302,7 @@ const  FinanceSchedule: React.FC = () => {
           resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
-          columns={DealerPaymentsColumn}
+          columns={FinanceScheduleColumn}
           fetchFunction={fetchFunction}
           page_number={currentPage}
           page_size={itemsPerPage}
@@ -282,7 +325,7 @@ const  FinanceSchedule: React.FC = () => {
           <table>
             <thead>
               <tr>
-                {DealerPaymentsColumn.map((item, key) => (
+                {FinanceScheduleColumn.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
@@ -301,17 +344,13 @@ const  FinanceSchedule: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={DealerPaymentsColumn.length}>
+                  <td colSpan={FinanceScheduleColumn.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -322,7 +361,7 @@ const  FinanceSchedule: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -332,42 +371,21 @@ const  FinanceSchedule: React.FC = () => {
                               setSelectAllChecked
                             )
                           }
-                        />
-                        {el.sub_dealer || 'N/A'}
+                        /> */}
+                        {el.finance_company || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.dealer || 'N/A'}</td>
-                    <td>{el.pay_rate || 'N/A'}</td>
-                    <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
-                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
+                    <td>{el.finance_type_ref || 'N/A'}</td>
+                    <td>{el[" state_3"] || 'N/A'}</td>
+                   <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                   <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+                   <td>{el[" finance_fee"] || 'N/A'}</td>
+                   <td>{el[" finance_type"] || 'N/A'}</td>
+                   <td>{el[" finance_type_uid"] || 'N/A'}</td>
+                   <td>{el[" owe_finance_fee"] || 'N/A'}</td>
+                   <td>{el.commissions_rate}</td>
 
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() =>
-                            !notAllowed && handleArchiveClick(el.record_id)
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          {/* <span className="tooltiptext">Archive</span> */}
-                        </div>
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => !notAllowed && handleEditDealer(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                          {/* <span className="tooltiptext">Edit</span> */}
-                        </div>
-                      </div>
-                    </td>
+                   
                   </tr>
                 ))
               ) : (
@@ -381,7 +399,7 @@ const  FinanceSchedule: React.FC = () => {
           </table>
         </div>
 
-        {dealerList?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}

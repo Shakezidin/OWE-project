@@ -56,3 +56,11 @@ BEGIN
     EXCEPTION WHEN unique_violation THEN RAISE EXCEPTION 'EMAIL_OR_PHONE_NO._EXISTS';
 END;
 $$ LANGUAGE plpgsql;
+
+
+---- ADD AURORA COLUMNS
+ALTER TABLE leads_info ADD COLUMN aurora_project_id VARCHAR(40);
+ALTER TABLE leads_info ADD COLUMN aurora_design_id VARCHAR(40);
+ALTER TABLE leads_info ADD COLUMN aurora_proposal_id VARCHAR(40);
+ALTER TABLE leads_info ADD COLUMN aurora_proposal_status VARCHAR(40);
+ALTER TABLE leads_info ADD COLUMN is_appointment_required BOOLEAN DEFAULT TRUE;

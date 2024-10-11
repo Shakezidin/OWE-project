@@ -1,6 +1,7 @@
 import React, { SetStateAction, useEffect, useRef, useState } from 'react';
 import { PiSortAscendingLight } from 'react-icons/pi';
 import './index.css';
+import { CiFilter } from 'react-icons/ci';
 interface propTypes {
   onChange?: (val: number) => void;
   default?: 'asc' | 'desc' | 'all';
@@ -37,7 +38,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
         ref={dropdownRef}
         className={`flex items-center justify-center  sort_btn`}
       >
-        <PiSortAscendingLight size={22} />
+        <CiFilter size={22} />
       </button>
 
       {isDropdownOpen && (

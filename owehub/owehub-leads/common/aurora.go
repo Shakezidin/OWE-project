@@ -16,9 +16,10 @@ import (
 )
 
 type AuroraConfig struct {
-	TenantId    string `json:"tenantId"`
-	BearerToken string `json:"bearerToken"`
-	ApiBaseUrl  string `json:"apiBaseUrl"`
+	TenantId               string `json:"tenantId"`
+	BearerToken            string `json:"bearerToken"`
+	ApiBaseUrl             string `json:"apiBaseUrl"`
+	AppointmentSenderEmail string `json:"appointmentSenderEmail"`
 }
 
 var AuroraCfg AuroraConfig
@@ -378,4 +379,89 @@ func (api *AuroraCreateProposalApi) Call() (*AuroraCreateProposalApiResponse, er
 
 	log.FuncDebugTrace(0, "Successfully created aurora proposal with response %+v", respBody.Proposal)
 	return respBody, nil
+}
+
+/******************************************************************************
+	RETRIEVE PROJECT API
+******************************************************************************/
+
+type AuroraRetrieveProjectApi struct {
+	ProjectId string `json:"project_id"`
+}
+
+type AuroraRetrieveProjectApiResponse struct {
+	Project map[string]interface{} `json:"project"`
+}
+
+/******************************************************************************
+ * FUNCTION:        AuroraRetrieveProjectApi.Call
+ *
+ * DESCRIPTION:     This function in used to call aurora api
+ * INPUT:			AuroraRetrieveProjectApi
+ * RETURNS:         []byte, error
+ ******************************************************************************/
+func (api *AuroraRetrieveProjectApi) Call() (*AuroraRetrieveProjectApiResponse, error) {
+	var (
+		err       error
+		client    *http.Client
+		req       *http.Request
+		resp      *http.Response
+		respBytes []byte
+		respBody  AuroraRetrieveProjectApiResponse
+	)
+
+	log.EnterFn(0, "AuroraRetrieveProjectApi.Call")
+	defer log.ExitFn(0, "AuroraRetrieveProjectApi.Call", err)
+
+	// validate required fields
+	if api.ProjectId == "" {
+		err = fmt.Errorf("cannot retrieve project without ProjectId")
+		return nil, err
+	}
+
+	endPt := fmt.Sprintf("%s/tenants/%s/projects/%s", AuroraCfg.ApiBaseUrl, AuroraCfg.TenantId, api.ProjectId)
+
+	req, err = http.NewRequest("GET", endPt, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create request err %v", err)
+		return nil, fmt.Errorf("server side error")
+	}
+
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", AuroraCfg.BearerToken))
+	req.Header.Set("Content-Type", "application/json")
+
+	log.FuncDebugTrace(0, "Retrieving aurora project with data %+v", api)
+	client = &http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err = client.Do(req)
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retrieve aurora project err %v", err)
+		return nil, fmt.Errorf("server side error")
+	}
+
+	defer resp.Body.Close()
+
+	respBytes, err = io.ReadAll(resp.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read response body from aurora retrieve project err %v", err)
+		return nil, fmt.Errorf("server side error")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		respString := string(respBytes)
+		err = fmt.Errorf("call to aurora retrieve project failed with status code %d, response: %+v", resp.StatusCode, respString)
+		log.FuncErrorTrace(0, "%v", err)
+		return nil, fmt.Errorf("server side error: %s", respString)
+	}
+
+	err = json.Unmarshal(respBytes, &respBody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal response body from aurora retrieve project err %v", err)
+		return nil, fmt.Errorf("server side error")
+	}
+
+	log.FuncDebugTrace(0, "Successfully retrieved aurora project with response %+v", respBody.Project)
+	return &respBody, nil
 }

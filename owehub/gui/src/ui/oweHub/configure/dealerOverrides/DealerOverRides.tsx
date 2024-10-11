@@ -24,7 +24,10 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { checkLastPage } from '../../../../utiles';
+import { toast } from 'react-toastify';
+
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -35,14 +38,17 @@ const DealerOverRides: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  const { loading, totalCount } = useAppSelector((state) => state.dealer);
+ 
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false)
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
+  const [data,setData] = useState<any>([]);
+  const [totalCount, setTotalCount] = useState<number>(0)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
@@ -58,17 +64,17 @@ const DealerOverRides: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
-  const getnewformData = async () => {
-    const tableData = {
-      tableNames: ['sub_dealer', 'dealer', 'states'],
-    };
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setDealer((prev) => ({ ...prev, ...res.data }));
-  };
+  // const getnewformData = async () => {
+  //   const tableData = {
+  //     tableNames: ['sub_dealer', 'dealer', 'states'],
+  //   };
+  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
+  //   setDealer((prev) => ({ ...prev, ...res.data }));
+  // };
 
-  useEffect(() => {
-    getnewformData();
-  }, []);
+  // useEffect(() => {
+  //   getnewformData();
+  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -85,7 +91,7 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
 
   const filter = () => {
     setFilterOpen(true);
@@ -95,9 +101,41 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen();
   };
-  const currentPageData = dealerList?.slice();
+
+  useEffect(() => {
+   
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await configPostCaller('get_dealeroverride', {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters
+        });
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          setLoading(false);
+          return;
+        }
+        setData(data?.data?.DealerOverrideData)
+        setTotalCount(data.dbRecCount)
+        setLoading(false);
+         
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  
+}, [
+  currentPage, viewArchived, filters
+]);
+
+const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
@@ -228,6 +266,7 @@ const DealerOverRides: React.FC = () => {
     );
   }
   const notAllowed = selectedRows.size > 1;
+  console.log(data, "data")
   return (
     <div className="comm">
       <Breadcrumb
@@ -301,11 +340,7 @@ const DealerOverRides: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+               
               </tr>
             </thead>
             <tbody>
@@ -322,7 +357,7 @@ const DealerOverRides: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -332,7 +367,7 @@ const DealerOverRides: React.FC = () => {
                               setSelectAllChecked
                             )
                           }
-                        />
+                        /> */}
                         {el.sub_dealer || 'N/A'}
                       </div>
                     </td>
@@ -342,32 +377,7 @@ const DealerOverRides: React.FC = () => {
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>
 
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() =>
-                            !notAllowed && handleArchiveClick(el.record_id)
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          {/* <span className="tooltiptext">Archive</span> */}
-                        </div>
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => !notAllowed && handleEditDealer(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                          {/* <span className="tooltiptext">Edit</span> */}
-                        </div>
-                      </div>
-                    </td>
+                   
                   </tr>
                 ))
               ) : (

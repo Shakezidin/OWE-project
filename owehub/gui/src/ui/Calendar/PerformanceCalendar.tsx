@@ -60,8 +60,9 @@ const PerformanceCalendar: React.FC = () => {
   };
 
   const ExportCsv = async () => {
+    if(data.calender_data_list){
     setIsExporting(true);
-
+    
     try {
       const headers = [
         'UniqueId',
@@ -108,10 +109,13 @@ const PerformanceCalendar: React.FC = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      toast.error('An error occurred during the CSV export.');
+    console.log(error);
     } finally {
       setIsExporting(false);
     }
+  } else {
+  toast.error('Data Not Available')
+  }
   };
 
   useEffect(() => {
