@@ -63,8 +63,8 @@ function FolderView({
           onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
-            <p className={styles.createdBy}>Created by</p>
-            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p>
+            {/* <p className={styles.createdBy}>Created by</p>
+            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
           <div className={styles.folderIcon_wrapper}>
             <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
@@ -72,10 +72,10 @@ function FolderView({
             <div className={styles.checkboxWrapper}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
-                className={`${styles.folderInput} ${checkedFolders.includes(parseInt(folder.id)) || hoveredIndex === parseInt(folder.id)
-                  ? styles.visible
+                className={`${styles.folderInput} ${checkedFolders.includes(index) || hoveredIndex === index
+                  ? ` ${styles.selected} ${styles.visible}`
                   : styles.hidden
-                  }`}
+                  } `}
                 type="checkbox"
                 onChange={(e) => {
                   e.stopPropagation()
