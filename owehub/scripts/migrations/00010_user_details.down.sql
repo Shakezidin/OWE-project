@@ -1,6 +1,6 @@
-ALTER TABLE user_details
-    DROP CONSTRAINT IF EXISTS user_details_dealerowner_fkey,
-    DROP CONSTRAINT IF EXISTS user_details_partner_id_fkey;
+-- ALTER TABLE user_details
+--     DROP CONSTRAINT IF EXISTS user_details_dealerowner_fkey,
+--     DROP CONSTRAINT IF EXISTS user_details_partner_id_fkey;
 
 -- Drop the columns that were added
 ALTER TABLE user_details
