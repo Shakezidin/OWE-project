@@ -11,6 +11,9 @@ app.use(express.json());
 const tenantId = 'cf6dc6cc-0784-49aa-9246-c7a09b68a09c';
 const bearerToken = 'sk_sand_5a12a3d6bb1964b970e20858';
 
+// const tenantId = '7f4bc152-fd84-47dd-baba-8da817c97668';
+// const bearerToken = 'sk_prod_74a24062b4fead4740b87cb1';
+
 // Middleware to check Bearer Token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];

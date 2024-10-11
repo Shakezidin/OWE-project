@@ -11,7 +11,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
   sortOption: 'none' | 'name' | 'date' | 'size';
-  checkedFolders: number[];
+  checkedFolders: string[];
   folderData: FileOrFolder[];
 }
 
@@ -21,7 +21,7 @@ function FolderView({
   checkedFolders,
   folderData,
 }: FolderViewProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const [myFolderData, setMyFolderData] = useState(folderData);
@@ -58,13 +58,13 @@ function FolderView({
           style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
-          onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
+          onMouseEnter={() => setHoveredIndex(folder.id)}
           onMouseLeave={() => setHoveredIndex(null)}
           onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
-            <p className={styles.createdBy}>Created by</p>
-            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p>
+            {/* <p className={styles.createdBy}>Created by</p>
+            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
           <div className={styles.folderIcon_wrapper}>
             <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
@@ -72,16 +72,16 @@ function FolderView({
             <div className={styles.checkboxWrapper}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
-                className={`${styles.folderInput} ${checkedFolders.includes(parseInt(folder.id)) || hoveredIndex === parseInt(folder.id)
-                  ? styles.visible
+                className={`${styles.folderInput} ${checkedFolders.includes(folder.id) || hoveredIndex === folder.id
+                  ? ` ${styles.selected} ${styles.visible}`
                   : styles.hidden
-                  }`}
+                  } `}
                 type="checkbox"
                 onChange={(e) => {
                   e.stopPropagation()
                   onCheckboxChange(e.target.checked, index, folder.id)
                 }}
-                checked={checkedFolders.includes(index)}
+                checked={checkedFolders.includes(folder.id)}
               />}
             </div>
           </div>

@@ -33,7 +33,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     return (
         <div className='transparent-model' >
 
-            <div style={{ minHeight: 400, maxWidth: width,width:"100%",borderRadius:12 }} className="bg-white p2 relative">
+            <div style={{ minHeight: 400, maxWidth: width,width:"100%",borderRadius:12,maxHeight:600 }} className="bg-white p2 relative">
 
                 <div className='flex mb2 items-center justify-between' >
                     <h4 > {videoName} </h4>
@@ -50,6 +50,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                     url={url}
                     width={"100%"}
                     height={"100%"}
+        
                     controls={true}
                 />
             </div>

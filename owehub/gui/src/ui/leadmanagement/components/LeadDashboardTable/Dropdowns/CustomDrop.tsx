@@ -90,16 +90,10 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
             Create New Proposal
           </li>
           <li
-            onClick={() => handleSelect('Images')}
+            onClick={() => handleSelect('app_sched')}
             className={`${classes.dropdownItem} ${selectedType === 'Images' ? classes.selected : ''}`}
           >
             Schedule Appointment
-          </li>
-          <li
-            onClick={() => handleSelect('Videos')}
-            className={`${classes.dropdownItem} ${selectedType === 'Videos' ? classes.selected : ''}`}
-          >
-            Videos
           </li>
         </ul>
       )}

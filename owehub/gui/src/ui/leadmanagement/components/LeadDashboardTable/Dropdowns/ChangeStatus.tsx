@@ -68,20 +68,20 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
       {isVisible && (
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
           <li
-            onClick={() => handleSelect('All')}
-            className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Deal Won')}
+            className={`${classes.dropdownItemAll} ${selectedType === 'Deal Won' ? classes.selected : ''}`}
           >
             Deal Won
           </li>
           <li
-            onClick={() => handleSelect('Excel')}
-            className={`${classes.dropdownItem} ${selectedType === 'Excel' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Deal Loss')}
+            className={`${classes.dropdownItem} ${selectedType === 'Deal Loss' ? classes.selected : ''}`}
           >
             Deal Loss
           </li>
           <li
-            onClick={() => handleSelect('PDF Format')}
-            className={`${classes.dropdownItem} ${selectedType === 'PDF Format' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Appointment Not Required')}
+            className={`${classes.dropdownItem} ${selectedType === 'Appointment Not Required' ? classes.selected : ''}`}
           >
             Appointment Not Required
           </li>
