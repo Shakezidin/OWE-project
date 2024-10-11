@@ -4,6 +4,7 @@ import styles from './videosview.module.css';
 import dummyVideoThumbnail from '../../assetss/dummyVideoThumbnail.svg'
 import playBtn from '../../assetss/playBtn.svg'
 import { PiLineVerticalThin } from "react-icons/pi";
+import dummyThumbnail from '../../assetss/dummyThumbnail.svg'
 // Define the interface for the video data
 interface VideoData {
   url: string;
@@ -56,7 +57,7 @@ function VideosView({ videoData, onClick}: VideosViewProps) {
 </div>
 
             <img
-              src={dummyVideoThumbnail}
+              src={dummyThumbnail}
               alt="Video Thumbnail"
               className={styles.videosview_images}
             />
