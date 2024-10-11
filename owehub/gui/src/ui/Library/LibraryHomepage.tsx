@@ -152,6 +152,7 @@ const LibraryHomepage = () => {
 
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isPending, setIsPending] = useState(false)
   const [videoName, setVideoName] = useState("")
   const fetchDataFromGraphAPI = async () => {
     setLoading(true);
@@ -207,6 +208,7 @@ const LibraryHomepage = () => {
 
   const DeleteHandler = async (itemId: string) => {
     const token = Cookies.get("myToken");
+    setIsPending(true)
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -215,9 +217,11 @@ const LibraryHomepage = () => {
     const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${itemId}`;
     try {
       const response = await axios.delete(url, config);
+      setIsPending(false)
     }
     catch (err) {
       console.log("Error", err);
+      setIsPending(false)
     }
   };
   //Find File
@@ -341,6 +345,8 @@ const LibraryHomepage = () => {
   //Function for Deleting files
   const deleteMyFiles = async () => {
     const token = Cookies.get("myToken");
+    setIsPending(true)
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -351,12 +357,15 @@ const LibraryHomepage = () => {
 
       const response = await axios.delete(url, config);
       toast.success("Deleted Successfully");
+      setIsPending(false)
       fetchDataFromGraphAPI();
     }
     catch (err) {
 
 
       console.log("Error     ", err);
+      setIsPending(false)
+
     }
   }
   // console.log(folderData,"This is folder data");
@@ -552,6 +561,21 @@ const LibraryHomepage = () => {
     setCurrentFolderContent([]);
     fetchDataFromGraphAPI();
   };
+
+  const handleDeleteFiles = async () => {
+    setIsPending(true)
+    Promise.all(Array.from(selectedCheckbox).map((id) => DeleteHandler(id as string)))
+      .then((res) => {
+        toast.error(`Deleted ${res.length} ${res.length > 1 ? "files" : "file"}`)
+        reset()
+        fetchDataFromGraphAPI()
+        setIsPending(false)
+      })
+      .catch((err) => {
+        setIsPending(false)
+        toast.error((err as Error).message)
+      })
+  }
   const handleDelete = async () => {
     // const newLibData = libData.filter((_, index) => !checkedFolders.includes(index));
     // setLibData(newLibData);
@@ -559,27 +583,28 @@ const LibraryHomepage = () => {
     //   !allIds.some((i) => i === idata.id)
     // );
     const count = allIds.length;
-    await Promise.all(allIds.map((id) => DeleteHandler(id)));
-    setAllIds([]);
-    setCheckedItems(0);
-    setCheckedFolders([]);
+    Promise.all(allIds.map((id) => DeleteHandler(id)))
+      .then((res) => {
+        reset()
+        setAllIds([]);
+        setCheckedItems(0);
+        setCheckedFolders([]);
+        toast.success(`Deleted ${res.length} ${res.length > 1 ? "folders" : "folder"}`)
+        fetchDataFromGraphAPI();
+      })
+      .catch((err) => {
+        toast.error((err as Error).message)
+      })
 
-
-    {
-      count === 1 ?
-        toast.error(`Deleted 1 Folder`) :
-        toast.error(`Deleted ${count} Folders`)
-    }
-
-
-    fetchDataFromGraphAPI();
   };
 
   const handleUndo = () => {
     setCheckedItems(0);
     setCheckedFolders([]);
   };
-
+  const reset = () => {
+    setSelectedCheckbox(new Set())
+  }
   const renderHeaderContent = () => {
     if (currentFolder) {
       return (
@@ -596,7 +621,7 @@ const LibraryHomepage = () => {
       );
     }
 
-    if (checkedItems > 0) {
+    if (checkedItems > 0 || selectedCheckbox.size > 0) {
       return (
         <>
           <div className={styles.delete_left}>
@@ -607,11 +632,11 @@ const LibraryHomepage = () => {
               }} />
             </div>
             <span className={styles.selectedCount}>
-              {checkedItems} folder{checkedItems > 1 ? 's' : ''} selected
+              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "files" : "folders"}{checkedItems > 1 ? 's' : ''} selected
             </span>
           </div>
           <div className={styles.delete_right}>
-            <button className={styles.DeleteButton} onClick={handleDelete}>
+            <button disabled={isPending} className={styles.DeleteButton} onClick={() => OpenModal()}>
               Delete
             </button>
           </div>
@@ -742,7 +767,7 @@ const LibraryHomepage = () => {
             <div className={`${styles.grid_item} ${styles.table_name}`}>
               Name
             </div>
-           
+
             <div className={styles.grid_item}>Uploaded Date</div>
             <div className={styles.grid_item}>Actions</div>
           </div>
@@ -765,7 +790,7 @@ const LibraryHomepage = () => {
                   </p>
                 </div>
               </div>
-            
+
               <div className={styles.grid_item}>
                 {format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}
               </div>
@@ -832,7 +857,15 @@ const LibraryHomepage = () => {
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
-              {/* <CheckBox checked={selectedCheckbox.size===sortedData.length} onChange={} /> */}
+              <div className='mr1'>
+                <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading} onChange={() => {
+                  if (selectedCheckbox.size === sortedData.length) {
+                    setSelectedCheckbox(new Set())
+                  } else {
+                    setSelectedCheckbox(new Set(sortedData.map((item) => item.id)))
+                  }
+                }} />
+              </div>
               <span>
                 Name
               </span>
@@ -855,37 +888,50 @@ const LibraryHomepage = () => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return <div className={styles.libGridItem} key={data.id}>
-                  <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
-                    if (isValidVideo) {
-                      setIsVideoModalOpen(true)
-                      setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
-                      setVideoName(data.name!)
-                      return
-                    }
-                    if (isValidImage) {
-                      setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
-                      setIsFileViewerOpen(true)
-                      return
-                    } else {
-                      window.open(data.webUrl, "_blank")
-                    }
-                  }}>
-                    <img
-                      className={styles.cardImg}
-                      src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
-                      alt={`null`}
-                      loading='lazy'
-                    />
-                    <div>
-                      <p className={styles.name}>{data.name.substring(0, 50)}</p>
-                      <p className={styles.size}>
-                        {data.size < 1024
-                          ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
-                          : data.size < 1048576
-                            ? `${Math.round(data.size / 1024)} KB`
-                            : `${Math.round(data.size / 1048576)} MB`}
-                      </p>
+                  <div className="flex items-center">
+                    <div className="mr2">
+                      <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
+                        if (selectedCheckbox.has(data.id)) {
+                          setSelectedCheckbox(new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id)))
+                        } else {
+                          const prev = Array.from(selectedCheckbox)
+                          prev.push(data.id)
+                          setSelectedCheckbox(new Set(prev))
+                        }
+                      }} />
+                    </div>
+                    <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                      if (isValidVideo) {
+                        setIsVideoModalOpen(true)
+                        setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
+                        setVideoName(data.name!)
+                        return
+                      }
+                      if (isValidImage) {
+                        setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
+                        setIsFileViewerOpen(true)
+                        return
+                      } else {
+                        window.open(data.webUrl, "_blank")
+                      }
+                    }}>
+                      <img
+                        className={styles.cardImg}
+                        src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
+                        alt={`null`}
+                        loading='lazy'
+                      />
+                      <div>
+                        <p className={styles.name}>{data.name.substring(0, 50)}</p>
+                        <p className={styles.size}>
+                          {data.size < 1024
+                            ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
+                            : data.size < 1048576
+                              ? `${Math.round(data.size / 1024)} KB`
+                              : `${Math.round(data.size / 1048576)} MB`}
+                        </p>
 
+                      </div>
                     </div>
                   </div>
                   <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
@@ -932,29 +978,29 @@ const LibraryHomepage = () => {
                   </div>
                 </div>
               })
-              : <FilesTileViewList 
+              : <FilesTileViewList
 
-              onFilePreview={(url,type,name) => {
-                const isValidVideo = isVideo(type)
-                const isValidImage = isImage(type)
-                if (isValidVideo) {
-                  setIsVideoModalOpen(true)
-                  setVideoUrl(url)
-                  setVideoName(name)
-                  return
-                }
-                if (isValidImage) {
-                  setFileInfo({ name: name, fileType: type!, url: url })
-                  setIsFileViewerOpen(true)
-                  return
-                } else {
-                  window.open(url, "_blank")
-                }
-              }}
-              onDelete={(id: string) => {
-                OpenModal()
-                setSelecetedDelete(id)
-              }}
+                onFilePreview={(url, type, name) => {
+                  const isValidVideo = isVideo(type)
+                  const isValidImage = isImage(type)
+                  if (isValidVideo) {
+                    setIsVideoModalOpen(true)
+                    setVideoUrl(url)
+                    setVideoName(name)
+                    return
+                  }
+                  if (isValidImage) {
+                    setFileInfo({ name: name, fileType: type!, url: url })
+                    setIsFileViewerOpen(true)
+                    return
+                  } else {
+                    window.open(url, "_blank")
+                  }
+                }}
+                onDelete={(id: string) => {
+                  OpenModal()
+                  setSelecetedDelete(id)
+                }}
                 files={sortedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
@@ -963,7 +1009,7 @@ const LibraryHomepage = () => {
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,
                   file: item.file,
-                  mimeType:item.file?.mimeType
+                  mimeType: item.file?.mimeType
                 }))} />
           )
 
@@ -1000,7 +1046,7 @@ const LibraryHomepage = () => {
       {
         isFileViewerOpen && <FileViewer onClose={() => setIsFileViewerOpen(false)} fileUrl={fileInfo.url} fileType={fileInfo.fileType} name={fileInfo.name} />
       }
-      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => deleteMyFiles()} />)}
+      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => activeSection === "folders" ? handleDelete() : handleDeleteFiles()} />)}
 
     </div>
   );

@@ -419,7 +419,11 @@
   transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.DeleteButton:hover {
+.DeleteButton:disabled{
+  background-color: #959595;
+}
+
+.DeleteButton:not([disabled]):hover {
   color: #FFFFFF;
   background-color: #ff0000;
   transform: scale(1.05);
