@@ -1197,7 +1197,7 @@ const LeadManagementDashboard = () => {
         <div className={styles.horizontal}>
         {isToggledX &&<div className={`${styles.customLeft} ${styles.custom1}`}>Overview</div>}
           <div className={`${styles.customLeft} ${styles.custom2}`}>Total leads: {totalValue ? totalValue : '0'}</div>
-         {isToggledX && <div className={`${styles.customLeft} ${styles.custom3}`}>Total Won Lost</div>}
+          {isToggledX && <div className={`${styles.customLeft} ${styles.custom3}`}>Total Won Lost</div>}
           <div className={styles.date_calendar}>
             <div className={styles.lead__datepicker_wrapper}>
               {isCalendarOpen && (
@@ -1224,7 +1224,7 @@ const LeadManagementDashboard = () => {
             </div>
             {selectedDates.startDate && selectedDates.endDate && (
               <div className={styles.hist_date}>
-               {isToggledX && <span className={styles.date_display}>
+                {isToggledX && <span className={styles.date_display}>
                   {selectedDates.startDate.toLocaleDateString('en-US', {
                     day: 'numeric',
                   }) +
@@ -1248,7 +1248,7 @@ const LeadManagementDashboard = () => {
               </div>
             )}
 
-           
+
            { isToggledX &&<Select
               value={selectedPeriod}
               onChange={handlePeriodChange}
@@ -1324,16 +1324,16 @@ const LeadManagementDashboard = () => {
               <img src={ICONS.includes_icon} alt="" />
             </div>}
             <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-            <img
-              src={
-                isToggledX === true
-                  ? ICONS.ChecronUpX
-                  : ICONS.DownArrowDashboard
-              }
-            />
+              <img
+                src={
+                  isToggledX === true
+                    ? ICONS.ChecronUpX
+                    : ICONS.DownArrowDashboard
+                }
+              />
 
-            {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
-          </div>
+              {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+            </div>
           </div>
           {/* <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
             <img
@@ -1397,7 +1397,7 @@ const LeadManagementDashboard = () => {
             ) : (
               <DataNotFound />
             )}
-         </div>
+          </div>
         </div>}
         {/* VERTICAL 1 ENDED */}
         {isToggledX && <div className={styles.vertical2}>
@@ -1559,7 +1559,32 @@ const LeadManagementDashboard = () => {
           </div>
         )}
         <div className={styles.cardContent}>
-          <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads}/>          
+          {currentFilter === 'Projects' ? (
+            isProjectLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <MicroLoader />
+              </div>
+            ) : projects.length > 0 ? (
+              projects.map((project: any, index: number) => (
+                <div
+                  key={project.id}
+                  className={styles.history_lists}
+                  onClick={() => fetchProjectDetails(project.id)}
+                >
+                  <div className={styles.project_list}>
+                    <div style={{ fontWeight: 'bold' }}>{project.name}</div>
+                    <div>{project.property_address}</div>
+                    <div>{new Date(project.created_at).toLocaleString()}</div>
+                    <div>{project.id}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <DataNotFound />
+            )
+          ) : (
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} />
+          )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
