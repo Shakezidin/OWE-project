@@ -3,14 +3,6 @@
   display: inline-block;
 }
 
-/* .verticalDots {
-  display: flex;
-  cursor: pointer;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-} */
-
 .verticalDots {
   display: flex;
   align-items: center;
