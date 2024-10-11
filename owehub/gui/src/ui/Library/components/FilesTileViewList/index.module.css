@@ -1,0 +1,12 @@
+.list_grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    column-gap: 42px;
+    row-gap: 62px;
+    padding-inline: 25px;
+    border-top: 1px solid #EFF5FF;
+    background-color: #fff;
+    padding-block: 47px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}

@@ -11,7 +11,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
   sortOption: 'none' | 'name' | 'date' | 'size';
-  checkedFolders: number[];
+  checkedFolders: string[];
   folderData: FileOrFolder[];
 }
 
@@ -21,7 +21,7 @@ function FolderView({
   checkedFolders,
   folderData,
 }: FolderViewProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const [myFolderData, setMyFolderData] = useState(folderData);
@@ -58,7 +58,7 @@ function FolderView({
           style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
-          onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
+          onMouseEnter={() => setHoveredIndex(folder.id)}
           onMouseLeave={() => setHoveredIndex(null)}
           onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
@@ -72,7 +72,7 @@ function FolderView({
             <div className={styles.checkboxWrapper}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
-                className={`${styles.folderInput} ${checkedFolders.includes(index) || hoveredIndex === index
+                className={`${styles.folderInput} ${checkedFolders.includes(folder.id) || hoveredIndex === folder.id
                   ? ` ${styles.selected} ${styles.visible}`
                   : styles.hidden
                   } `}
@@ -81,7 +81,7 @@ function FolderView({
                   e.stopPropagation()
                   onCheckboxChange(e.target.checked, index, folder.id)
                 }}
-                checked={checkedFolders.includes(index)}
+                checked={checkedFolders.includes(folder.id)}
               />}
             </div>
           </div>

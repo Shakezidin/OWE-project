@@ -191,7 +191,6 @@ const FolderDetail = () => {
                 <div className={styles.libSectionWrapper}>
                     <div className={styles.lib_Grid_Header}>
                         <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
-                        <div className={styles.grid_item}>Uploaded by</div>
                         <div className={styles.grid_item}>Uploaded Date</div>
                         <div className={styles.grid_item}>Actions</div>
                     </div>
@@ -249,7 +248,7 @@ const FolderDetail = () => {
                                                 </div>
 
                                         }
-                                        <div className={styles.grid_item}>{file.lastModifiedBy?.user?.displayName || 'Unknown'}</div>
+                                       
                                         <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                         <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                                             <RxDownload className={styles.icons} style={{ height: '18px', width: '18px', color: file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085', cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)} />
