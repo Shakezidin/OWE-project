@@ -912,8 +912,12 @@ const LibraryHomepage = () => {
                 <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
+                    setAllIds([])
                   } else {
-                    setSelectedCheckbox(new Set(sortedData.map((item) => item.id)))
+                    const newSet = new Set(sortedData.map((item) => item.id))
+                    setSelectedCheckbox(newSet)
+                    setAllIds(Array.from(newSet))
+                    setCheckedItems(newSet.size)
                   }
                 }} />
               </div>
@@ -945,11 +949,14 @@ const LibraryHomepage = () => {
                       <div className="mr2">
                         <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
                           if (selectedCheckbox.has(data.id)) {
-                            setSelectedCheckbox(new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id)))
+                            const newArr = new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id))
+                            setSelectedCheckbox(newArr)
+                            setAllIds(Array.from(newArr))
                           } else {
                             const prev = Array.from(selectedCheckbox)
                             prev.push(data.id)
                             setSelectedCheckbox(new Set(prev))
+                            setAllIds(prev)
                           }
                         }} />
                       </div>
