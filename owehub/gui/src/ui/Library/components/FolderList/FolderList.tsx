@@ -51,7 +51,10 @@ const FolderList = (props: IFolder) => {
                         }}  > {props.childCount} ${(props?.childCount || 0) > 1 ? "files" : "file"} </span>
                     </div>
                 </div>
-                <div onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
+                <div onClick={() => { 
+     props.onCheck?.('');
+    navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } }); 
+}}>
                     <p className={sharedStyles.name}>  {props.name}</p>
                     <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
@@ -61,7 +64,9 @@ const FolderList = (props: IFolder) => {
 
                 </div>
             </div>
-            <div className={sharedStyles.grid_item}>  {props.createdDate && format(new Date(props.createdDate), 'dd MMM, yy')} </div>
+            <div className={sharedStyles.grid_item} style={{ fontSize: "14px" }}>
+    {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
+</div>
             <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
 
 
