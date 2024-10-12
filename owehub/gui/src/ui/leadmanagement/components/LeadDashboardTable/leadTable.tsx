@@ -141,7 +141,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
       <div className={styles.dashTabTop}>
 
         <div className={styles.TableContainer1}>
-          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', minHeight:"400px" }}>
             <table>
               <thead>
                 <tr>
