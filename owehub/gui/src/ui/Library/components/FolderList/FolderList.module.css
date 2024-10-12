@@ -1,0 +1,12 @@
+.Deleteicons{
+    cursor: pointer;
+    height: 18px;
+    width: 18px;
+    color: #667085;
+    transition: all 0.3s ease;
+}
+
+.Deleteicons:hover{
+    color: #377CF6;
+    transform: scale(1.09);
+}
