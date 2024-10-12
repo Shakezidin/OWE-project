@@ -425,7 +425,7 @@ const FolderDetail = () => {
                                                     key={file.id}
                                                     onMouseEnter={() => setHoveredIndex(file.id)}
                                                     onMouseLeave={() => setHoveredIndex(null)}
-                                                    onDoubleClick={() => navigate(`/library/${file.name}`, { state: { from: location.pathname } })}
+                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}` )}
                                                 >
                                                     <div className={folderWrapperStyles.createdByWrapper}>
 
