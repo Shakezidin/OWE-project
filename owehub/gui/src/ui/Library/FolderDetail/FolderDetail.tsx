@@ -37,6 +37,8 @@ const FolderDetail = () => {
         url: ""
     })
     const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
+    const [isPending, setIsPending] = useState(false)
+    const [multiDeletePopup, setMultiDeletePopup] = useState(false)
     const location = useLocation();
     const [searchParams] = useSearchParams()
 
@@ -144,18 +146,20 @@ const FolderDetail = () => {
         document.body.removeChild(anchor);
     }
 
-    const handleDelete = async () => {
+    const handleDelete = async (id = slectedDeleteId, type: "single" | "multi" = "single") => {
         const token = Cookies.get("myToken");
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${slectedDeleteId}`;
+        const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${id}`;
         try {
             const response = await axios.delete(url, config);
             await getFolderChilds()
-            toast.success("Item deleted successfully")
+            if (type === "single") {
+                toast.success("Item deleted successfully")
+            }
             setSelectedDeleteId("")
         }
         catch (err) {
@@ -166,6 +170,20 @@ const FolderDetail = () => {
     const parent = path["*"]?.split("/")
     const refetch = async () => {
         await getFolderChilds()
+    }
+
+    const handleMultiDelete = async () => {
+        setIsPending(true)
+        Promise.all(Array.from(selected).map(id => handleDelete(id, "multi")))
+            .then((res) => {
+                setIsPending(false)
+                setSelected(new Set())
+                getFolderChilds()
+                toast.success(` ${res.length} items deleted successfully`)
+            })
+            .catch(err => {
+                toast.error((err as Error).message)
+            })
     }
     return (
         <div className={styles.libraryContainer}>
@@ -191,7 +209,7 @@ const FolderDetail = () => {
                             </span>
                         </div>
                         <div className={styles.delete_right}>
-                            <button className={styles.DeleteButton} >
+                            <button disabled={isPending} onClick={() => setMultiDeletePopup(true)} className={styles.DeleteButton} >
                                 Delete
                             </button>
                         </div>
@@ -346,12 +364,17 @@ const FolderDetail = () => {
             {
                 isDeleteModalVisible && <DeleteFileModal onDelete={handleDelete} setIsVisible={setIsDeleteModalVisible} />
             }
+
+            {
+                multiDeletePopup && <DeleteFileModal onDelete={handleMultiDelete} setIsVisible={setMultiDeletePopup} />
+            }
             {
                 isVideoModalOpen && <VideoPlayer url={videoUrl} onClose={() => setIsVideoModalOpen(false)} />
             }
             {
                 isFileViewerOpen && <FileViewer onClose={() => setIsFileViewerOpen(false)} fileUrl={fileInfo.url} fileType={fileInfo.fileType} name={fileInfo.name} />
             }
+
         </div>
     )
 }
