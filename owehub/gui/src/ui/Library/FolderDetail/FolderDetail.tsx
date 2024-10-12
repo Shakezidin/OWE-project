@@ -52,6 +52,7 @@ const FolderDetail = () => {
     const location = useLocation();
     const [searchParams] = useSearchParams()
     const [videoName, setVideoName] = useState("")
+    const [isHovered,setIsHovered]=useState<number | null>(null);
     console.log(location.state, "location")
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
@@ -329,7 +330,7 @@ const FolderDetail = () => {
                             :
                             files.length ?
                                 viewMode === "list" ?
-                                    files.map((file) => {
+                                    files.map((file,index) => {
                                         const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
                                         const isValidVideo = isVideo(file.file?.mimeType!)
                                         return <div key={file.id} className={styles.libGridItem} >
@@ -401,11 +402,15 @@ const FolderDetail = () => {
 
                                             <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                             <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085', cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)} />
+                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px',  color: isHovered===index && !file.folder? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name) } 
+                                                 onMouseOver={()=>{setIsHovered(index)}} onMouseLeave={()=>{setIsHovered(null)}}    
+                                                />
                                                 {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete}  onClick={() => {
                                                     setIsDeleteModalVisible(true)
                                                     setSelectedDeleteId(file.id)
-                                                }} />}
+                                                }}
+                                                
+                                                />}
                                             </div>
                                         </div>
                                     })

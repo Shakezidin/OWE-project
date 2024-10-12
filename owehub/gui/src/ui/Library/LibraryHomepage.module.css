@@ -488,6 +488,20 @@
   background-color: #ff0000;
   cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  height:31.5px;
+}
+.DeleteButtonForFile{
+  font-family: 'poppins' sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  color: #FFFFFF;
+  background-color: #ff0000;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  height:33.6px;
 }
 
 .DeleteButton:disabled{

@@ -537,6 +537,7 @@ const LibraryHomepage = () => {
     }
   });
 
+
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
   };
@@ -663,11 +664,12 @@ const LibraryHomepage = () => {
               }} />
             </div>
             <span className={styles.selectedCount}>
-              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's' : ''} selected
+              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ''}
+               selected
             </span>
           </div>
           <div className={styles.delete_right}>
-            <button disabled={isPending} className={styles.DeleteButton} onClick={() => OpenModal()}>
+            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile :styles.DeleteButton} onClick={() => OpenModal()}>
               Delete
             </button>
           </div>
@@ -913,12 +915,16 @@ const LibraryHomepage = () => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
                     setAllIds([])
+                    setCheckedItems(0)
+
+            
                   } else {
                     const newSet = new Set(sortedData.map((item) => item.id))
                     setSelectedCheckbox(newSet)
                     setAllIds(Array.from(newSet))
                     setCheckedItems(newSet.size)
                   }
+                  
                 }} />
               </div>
               <span className={styles.libname_heading}>
@@ -982,7 +988,7 @@ const LibraryHomepage = () => {
                           loading='lazy'
                         />
                         <div>
-                          <p className={styles.name}>{data.name.substring(0, 50)} testt</p>
+                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >=26 ? '...': ''}</p>
                           <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`

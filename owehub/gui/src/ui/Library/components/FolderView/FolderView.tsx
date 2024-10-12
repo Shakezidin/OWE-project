@@ -80,14 +80,16 @@ function FolderView({
                 onChange={(e) => {
                   e.stopPropagation()
                   onCheckboxChange(e.target.checked, index, folder.id)
+
                 }}
                 checked={checkedFolders.includes(folder.id)}
+
               />}
             </div>
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            <div className={styles.folder_name}>{folder.name.substring(0, 10)}</div>
+            <div className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
             <div className={styles.folderInfo_wrapper}>
               <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
