@@ -38,9 +38,11 @@ const FolderListView = ({ folders, onDelete,handleCheckboxChange,selected,setSel
                             <CheckBox checked={selected.size === folders?.length && folders?.length > 0} onChange={() => {
                                 if (selected.size === folders?.length) {
                                     setSelected(new Set())
+                                    handleCheckboxChange(new Set())
                                 } else {
                                     const newChecked = new Set(folders?.map((item) => item.id))
                                     setSelected(newChecked)
+                                    handleCheckboxChange(newChecked)
                                 }
                             }} />
                         </div>
