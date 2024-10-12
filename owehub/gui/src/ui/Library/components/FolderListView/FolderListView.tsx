@@ -46,7 +46,11 @@ const FolderListView = ({ folders, onDelete,handleCheckboxChange,selected,setSel
                                 }
                             }} />
                         </div>
-                        <span>
+                        <span
+                          style={{
+                            marginLeft:"10px"
+                        }}                        
+                        >
                             Name
                         </span>
                     </div>

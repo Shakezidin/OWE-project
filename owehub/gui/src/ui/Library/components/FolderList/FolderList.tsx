@@ -32,24 +32,29 @@ const FolderList = (props: IFolder) => {
                     </div>
                     <div className="relative" onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
                         <img
+                             className={`${styles.img_folder_view}`}
                             src={ICONS.folderImage}
                             width={35}
                             height={35}
                             alt={`null`}
                             loading='lazy'
+                            
                         />
                         <span style={{
                             position: 'absolute',
                             fontSize: '7px',
                             whiteSpace: 'nowrap',
                             top: '40%',
-                            left: '50%',
+                            left: '60%',
                             transform: 'translateX(-50%)',
                             color: '#BB8617',
                         }}  > {props.childCount} ${(props?.childCount || 0) > 1 ? "files" : "file"} </span>
                     </div>
                 </div>
-                <div onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
+                <div onClick={() => { 
+     props.onCheck?.('');
+    navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } }); 
+}}>
                     <p className={sharedStyles.name}>  {props.name}</p>
                     <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
@@ -59,7 +64,9 @@ const FolderList = (props: IFolder) => {
 
                 </div>
             </div>
-            <div className={sharedStyles.grid_item}>  {props.createdDate && format(new Date(props.createdDate), 'dd MMM, yy')} </div>
+            <div className={sharedStyles.grid_item} style={{ fontSize: "14px" }}>
+    {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
+</div>
             <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
 
 
