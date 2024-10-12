@@ -115,7 +115,7 @@ for(let i=0;i<inputValue.length;i++)
                   placeholder="Add your folder Name"
                   value={folderName}
                   onChange={handleInputChange}
-                  maxLength={50}
+                  maxLength={25}
                 ></input>
               </div>
               {error && <div className='mx-auto' style={{ maxWidth: 548 }}>

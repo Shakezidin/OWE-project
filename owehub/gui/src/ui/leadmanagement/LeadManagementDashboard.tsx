@@ -831,10 +831,10 @@ const LeadManagementDashboard = () => {
       let statusId;
       switch (currentFilter) {
         case 'Action Needed':
-          statusId = 4;
+          statusId = "ACTION_NEEDED";
           break;
         case 'Pending':
-          statusId = 0;
+          statusId = "NEW";
           break;
         case 'Sent':
           statusId = 1;
@@ -843,13 +843,13 @@ const LeadManagementDashboard = () => {
           statusId = 2;
           break;
         case 'Declined':
-          statusId = 3;
+          statusId = "DECLINED";
           break;
         case 'Projects':
           statusId = 5;
           break;
         default:
-          statusId = 0;
+          statusId = "NEW";
       }
 
       const data = {
@@ -859,7 +859,7 @@ const LeadManagementDashboard = () => {
         end_date: selectedDates.endDate
           ? format(selectedDates.endDate, 'dd-MM-yyyy')
           : '',
-        status_id: statusId,
+        "status": statusId,
         is_archived: archive,
         page_size: 10,
         page_number: archive ? 1 : page,
@@ -1358,7 +1358,7 @@ const LeadManagementDashboard = () => {
         </div>
         {/* //HORIZONTAL ENDED */}
         {isToggledX && <div className={styles.vertical1}>
-          <div>
+          <div style={{width:"100%"}}>
             {loading ? (
               <div
                 style={{
