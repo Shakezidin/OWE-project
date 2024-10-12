@@ -3,23 +3,30 @@ import classes from "../styles/profile.module.css"
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
-    const navigate=useNavigate()
-    const [modalClickedOpenhandler, setmodalClickedOpenhandler]= useState(true)
-    const CloseModalhandler=()=>{
-        setmodalClickedOpenhandler(false)
+interface EditModalProps {
+    isOpen1: boolean;
+    onClose1: () => void;
+}
 
+const Profile: React.FC<EditModalProps> = ({
+    isOpen1,
+    onClose1,
+
+}) => {
+    const navigate = useNavigate()
+    const CloseModalhandler = () => {
+        onClose1();
     }
-    const RedirectMainDashboard=()=>{
+    const RedirectMainDashboard = () => {
         navigate('/leadmng-dashboard')
-
     }
+
     return <div>
-            {modalClickedOpenhandler && <div className="transparent-model">
+        {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list}>
                 <div className={classes.btnContainer}>
                     <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
-                    <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler}/></span></div>
+                    <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
                 <div className={classes.DetailsMcontainer}>
                     <div className={classes.Column1Details}>
 

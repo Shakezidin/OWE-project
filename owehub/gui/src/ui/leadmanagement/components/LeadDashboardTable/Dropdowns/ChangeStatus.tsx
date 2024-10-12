@@ -1,19 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classes from './index.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FaAngleRight } from 'react-icons/fa';
-import { FaAngleDown } from 'react-icons/fa6';
 
 interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
-  cb?: () => void
+  cb?: () => void;
+  disabledOptions?: string[];
 }
 
 const ChangeStatus: React.FC<DropDownLibraryProps> = ({
   selectedType,
   onSelectType,
-  cb
+  cb,
+  disabledOptions = [],
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -24,13 +24,15 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
     setIsClicked(!isClicked);
-    cb?.()
+    cb?.();
   };
 
   const handleSelect = (type: string) => {
-    onSelectType(type);
-    setIsVisible(false);
-    setIsClicked(false);
+    if (!disabledOptions.includes(type)) {
+      onSelectType(type);
+      setIsVisible(false);
+      setIsClicked(false);
+    }
   };
 
   useEffect(() => {
@@ -69,19 +71,29 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
           <li
             onClick={() => handleSelect('Deal Won')}
-            className={`${classes.dropdownItemAll} ${selectedType === 'Deal Won' ? classes.selected : ''}`}
+            className={`${classes.dropdownItemAll} ${
+              selectedType === 'Deal Won' ? classes.selected : ''
+            } ${disabledOptions.includes('Deal Won') ? classes.disabled : ''}`}
           >
             Deal Won
           </li>
           <li
             onClick={() => handleSelect('Deal Loss')}
-            className={`${classes.dropdownItem} ${selectedType === 'Deal Loss' ? classes.selected : ''}`}
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Deal Loss' ? classes.selected : ''
+            } ${disabledOptions.includes('Deal Loss') ? classes.disabled : ''}`}
           >
             Deal Loss
           </li>
           <li
             onClick={() => handleSelect('Appointment Not Required')}
-            className={`${classes.dropdownItem} ${selectedType === 'Appointment Not Required' ? classes.selected : ''}`}
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Appointment Not Required' ? classes.selected : ''
+            } ${
+              disabledOptions.includes('Appointment Not Required')
+                ? classes.disabled
+                : ''
+            }`}
           >
             Appointment Not Required
           </li>

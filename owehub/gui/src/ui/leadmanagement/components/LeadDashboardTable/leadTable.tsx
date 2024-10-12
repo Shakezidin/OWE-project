@@ -16,6 +16,8 @@ import ConfirmaModel from '../../Modals/ConfirmModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import HistoryRedirect from '../../../Library/HistoryRedirect';
+import Profile from '../../Modals/ProfileInfo';
+import Select from "react-select";
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -23,7 +25,16 @@ interface LeadSelectionProps {
 }
 
 const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
-
+  const options = [
+    {
+      value: 1,
+      label: 'Leanne Graham'
+    },
+    {
+      value: 2,
+      label: 'Ervin Howell'
+    }
+  ];
 
   const [selectedType, setSelectedType] = useState('');
   const [selected, setSelected] = useState(-1)
@@ -99,6 +110,17 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
     }
   };
 
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const handleOpenProfileModal = () => {
+    setIsProfileOpen(true);
+  };
+
+  const handleCloseProfileModal = () => {
+    setIsProfileOpen(false);
+  };
+
+
   return (
     <>
       <ConfirmaModel
@@ -109,6 +131,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
         setRefresh={setRefresh}
         reschedule={reschedule}
         action={action}
+      />
+
+      <Profile
+        isOpen1={isProfileOpen}
+        onClose1={handleCloseProfileModal}
       />
 
       <div className={styles.dashTabTop}>
@@ -171,16 +198,50 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
                           : 'N/A'}</div>
                       </td>
                       <td>
-                        <div style={{ backgroundColor: '#21BC27' }} className={styles.appointment_status}>
-                          Appointment Accepted
-                        </div>
-                        <div style={{ marginLeft: '24px' }} className={styles.info}>15 Sep 2024</div>
+                        {lead.appointment_status_label ? (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: lead.appointment_status_label === 'Not Required'
+                                  ? '#B459FC'
+                                  : lead.appointment_status_label === 'Appointment Accepted'
+                                    ? '#21BC27'
+                                    : lead.appointment_status_label === 'Appointment Sent'
+                                      ? '#EC9311'
+                                      : lead.appointment_status_label === 'Appointment Declined'
+                                        ? '#D91515'
+                                        : 'inherit',
+                              }}
+                              className={styles.appointment_status}
+                            >
+                              {lead.appointment_status_label}
+                            </div>
+                            <div style={{ marginLeft: '24px' }} className={styles.info}>
+                              {lead.appointment_status_date ? lead.appointment_status_date : ""}
+                            </div>
+                          </>
+                        ) : (
+                          <div>____</div>
+                        )}
                       </td>
                       <td>
-                        <div style={{ backgroundColor: '#21BC27' }} className={styles.appointment_status}>
-                          Deal Won
-                        </div>
-                        <div style={{ marginLeft: '14px' }} className={styles.info}>15 Sep 2024</div>
+                        {lead.won_lost_label ? (
+                          <>
+                            <div
+                              style={{ backgroundColor: '#21BC27' }}
+                              className={styles.appointment_status}
+                            >
+                              Deal {lead.won_lost_label}
+                            </div>
+                            {lead.won_lost_date && (
+                              <div style={{ marginLeft: '14px' }} className={styles.info}>
+                                {lead.won_lost_date}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div>______</div>
+                        )}
                       </td>
                       <td>
                         {/* <div style={{ backgroundColor: '#21BC27' }} className={styles.appointment_status}>
@@ -192,9 +253,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
                         </div>
                         <div style={{ marginLeft: '14px' }} className={styles.info}>2/6</div>
                       </td>
-                      <td>Loan</td>
-                      <td>Bajaj Finance</td>
-                      <td>XYZ</td>
+                      <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
+                      <td>{lead.finance_type ? lead.finance_type : "_____"}</td>
+                      <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
                       <td className={styles.FixedColumn} style={{ zIndex: selected === index ? 101 : 0 }}>
                         <div onClick={() => (setLeadId(lead.leads_id))}>
                           <DropDownLeadTable
@@ -224,9 +285,15 @@ const LeadTable = ({ selectedLeads, setSelectedLeads }: LeadSelectionProps) => {
                             cb={() => {
                               setSelected(index)
                             }}
+                            disabledOptions={
+                              lead.appointment_status_label === 'Not Required'
+                                ? ['Appointment Not Required']
+                                : []
+                            }
                           />
+
                         </div>
-                        <div className={styles.infoIcon}>
+                        <div className={styles.infoIcon} onClick={handleOpenProfileModal}>
                           <IoInformationOutline />
                         </div>
                       </td>
