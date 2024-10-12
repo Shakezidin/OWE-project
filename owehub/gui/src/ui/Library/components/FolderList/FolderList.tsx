@@ -32,18 +32,20 @@ const FolderList = (props: IFolder) => {
                     </div>
                     <div className="relative" onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
                         <img
+                             className={`${styles.img_folder_view}`}
                             src={ICONS.folderImage}
                             width={35}
                             height={35}
                             alt={`null`}
                             loading='lazy'
+                            
                         />
                         <span style={{
                             position: 'absolute',
                             fontSize: '7px',
                             whiteSpace: 'nowrap',
                             top: '40%',
-                            left: '50%',
+                            left: '60%',
                             transform: 'translateX(-50%)',
                             color: '#BB8617',
                         }}  > {props.childCount} ${(props?.childCount || 0) > 1 ? "files" : "file"} </span>
