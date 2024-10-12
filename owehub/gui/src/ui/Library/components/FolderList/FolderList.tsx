@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import sharedStyles from "../../LibraryHomepage.module.css"
 import { ICONS } from '../../../../resources/icons/Icons';
 import { RiDeleteBinLine } from 'react-icons/ri';
@@ -7,6 +7,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import CheckBox from '../../../components/chekbox/CheckBox';
+import styles from './FolderList.module.css';
 interface IFolder {
     name?: string;
     size?: number,
@@ -19,6 +20,7 @@ interface IFolder {
 }
 const FolderList = (props: IFolder) => {
     const { role_name } = useAppSelector(state => state.auth)
+    const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate()
 
     return (
@@ -64,12 +66,9 @@ const FolderList = (props: IFolder) => {
                 <div>
                     {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
                         onClick={() => props?.onDelete?.(props.id!)}
-                        className={sharedStyles.icons}
-                        style={{
-                            height: '18px',
-                            width: '18px',
-                            color: '#667085',
-                        }} />}
+                        className={`${styles.Deleteicons}`}
+                        
+                        />}
                 </div>
 
 

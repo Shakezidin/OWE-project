@@ -747,7 +747,7 @@ const LibraryHomepage = () => {
               onChange={HandleSearch}
               placeholder="Search by file name or person"
               className={styles.searchInput}
-              maxLength={50}
+              maxLength={25}
             />
           </div>
           {role_name === TYPE_OF_USER.ADMIN && <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />}
@@ -995,7 +995,7 @@ const LibraryHomepage = () => {
                       </div>
                     </div>
                     <div className={styles.grid_item_dates}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                    <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-end`}>
+                    <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
 
                       <div>
                         <RxDownload
