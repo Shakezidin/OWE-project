@@ -44,7 +44,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -1000,10 +1000,10 @@ const LeadManagementDashboard = () => {
   };
 
   const [exporting, setIsExporting] = useState(false);
-
+ 
   const exportCsv = async () => {
     setIsExporting(true);
-    const headers = [
+  const headers = [
       'Leads ID',
       'Status ID',
       'First Name',
@@ -1102,16 +1102,40 @@ const LeadManagementDashboard = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error(error);
+console.error(error);
       toast.error('An error occurred while exporting the data.');
-    } finally {
+} finally {
       setIsExporting(false);
     }
   };
+  
+  const handleCreateProposal = async (leadId: number) => {
+    console.log("leadId",leadId)
+    console.log("selectedLeads",selectedLeads)
+    try {
+      // const leadData = selectedLeads.find((lead) => lead == leadId);
+      // if (!leadData) {
+      //   toast.error('Lead data not available.');
+      //   return;
+      // }
 
+      await dispatch(createProposal(
+        {
+          "leads_id": leadId,
+          "customer_salutation": "Mr./Mrs.",
+          "status": "In Progress",
+          "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
+          "tags": ["third_party_1"]
+        }
+        
+        ));
+      // toast.success('Proposal created successfully!');
+    } catch (error) {
+      toast.error('Failed to create proposal.');
+    }
+  };
 
   //************************************************************************************************ */
-
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
@@ -1153,18 +1177,18 @@ const LeadManagementDashboard = () => {
 
 
         <div className={styles.horizontal}>
-
+          
           {/*     
             className={`${styles.customLeft} ${styles.custom1}`}
-           className={`${styles.customLeft} ${styles.custom2}`} */}
+className={`${styles.customLeft} ${styles.custom2}`} */}
 
 
 
           <div className={styles.FirstColHead}>
             {isToggledX && (
               <div className={styles.customLeft}>
-                Overview
-              </div>
+Overview
+</div>
             )}
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads: {totalValue ? totalValue : '0'}
@@ -1177,142 +1201,142 @@ const LeadManagementDashboard = () => {
               >Total Won Lost</div>}
             </div>
             <div className={`${styles.customRight} ${styles.customFont}`}>
-              <div className={styles.date_calendar}>
-                <div className={styles.lead__datepicker_wrapper}>
-                  {isCalendarOpen && (
-                    <div
-                      ref={calendarRef}
-                      className={styles.lead__datepicker_content}
-                    >
-                      <DateRange
-                        editableDateInputs={true}
-                        onChange={handleRangeChange}
-                        moveRangeOnFirstSelection={false}
-                        ranges={selectedRanges}
-                      />
-                      <div className={styles.lead__datepicker_btns}>
-                        <button className="reset-calender" onClick={onReset}>
-                          Reset
-                        </button>
-                        <button className="apply-calender" onClick={onApply}>
-                          Apply
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {selectedDates.startDate && selectedDates.endDate && (
-                  <div className={styles.hist_date}>
-                    {isToggledX && <span className={styles.date_display}>
-                      {selectedDates.startDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
-                        ' ' +
-                        selectedDates.startDate.toLocaleDateString('en-US', {
-                          month: 'short',
-                        }) +
-                        ' ' +
-                        selectedDates.startDate.getFullYear()}
-                      {' - '}
-                      {selectedDates.endDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
-                        ' ' +
-                        selectedDates.endDate.toLocaleDateString('en-US', {
-                          month: 'short',
-                        }) +
-                        ' ' +
-                        selectedDates.endDate.getFullYear()}
-                    </span>}
-                  </div>
-                )}
-
-
-                {isToggledX && <Select
-                  value={selectedPeriod}
-                  onChange={handlePeriodChange}
-                  options={periodFilterOptions}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: 'px',
-                      borderRadius: '8px',
-                      outline: 'none',
-                      color: '#3E3E3E',
-                      width: '140px',
-                      height: '36px',
-                      fontSize: '12px',
-                      border: '1px solid #d0d5dd',
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      alignContent: 'center',
-                      backgroundColor: '#fffff',
-                      boxShadow: 'none',
-                      '&:focus-within': {
-                        borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
-                        caretColor: '#3E3E3E',
-                      },
-                      '&:hover': {
-                        borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
-                      },
-                    }),
-                    placeholder: (baseStyles) => ({
-                      ...baseStyles,
-                      color: '#3E3E3E',
-                    }),
-                    indicatorSeparator: () => ({
-                      display: 'none',
-                    }),
-                    dropdownIndicator: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: '#3E3E3E',
-                      '&:hover': {
-                        color: '#3E3E3E',
-                      },
-                    }),
-                    option: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontSize: '13px',
-                      fontWeight: '400',
-                      color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                      backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                      '&:hover': {
-                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                      },
-                      cursor: 'pointer',
-                    }),
-                    singleValue: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: '#3E3E3E',
-                    }),
-                    menu: (baseStyles) => ({
-                      ...baseStyles,
-                      width: '140px',
-                      marginTop: '0px',
-                      zIndex: "100"
-                    }),
-                  }}
-                />}
-                {isToggledX && <div
-                  ref={toggleRef}
-                  className={styles.calender}
-                  onClick={toggleCalendar}
+          <div className={styles.date_calendar}>
+            <div className={styles.lead__datepicker_wrapper}>
+              {isCalendarOpen && (
+                <div
+                  ref={calendarRef}
+                  className={styles.lead__datepicker_content}
                 >
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>}
-                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-                  <img
-                    src={
-                      isToggledX === true
-                        ? ICONS.ChecronUpX
-                        : ICONS.DownArrowDashboard
-                    }
+                  <DateRange
+                    editableDateInputs={true}
+                    onChange={handleRangeChange}
+                    moveRangeOnFirstSelection={false}
+                    ranges={selectedRanges}
                   />
-
-                  {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+                  <div className={styles.lead__datepicker_btns}>
+                    <button className="reset-calender" onClick={onReset}>
+                      Reset
+                    </button>
+                    <button className="apply-calender" onClick={onApply}>
+                      Apply
+                    </button>
+                  </div>
                 </div>
+              )}
+            </div>
+            {selectedDates.startDate && selectedDates.endDate && (
+              <div className={styles.hist_date}>
+                {isToggledX && <span className={styles.date_display}>
+                  {selectedDates.startDate.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                  }) +
+                    ' ' +
+                    selectedDates.startDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                    }) +
+                    ' ' +
+                    selectedDates.startDate.getFullYear()}
+                  {' - '}
+                  {selectedDates.endDate.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                  }) +
+                    ' ' +
+                    selectedDates.endDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                    }) +
+                    ' ' +
+                    selectedDates.endDate.getFullYear()}
+                </span>}
+              </div>
+            )}
+
+
+            {isToggledX && <Select
+              value={selectedPeriod}
+              onChange={handlePeriodChange}
+              options={periodFilterOptions}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  marginTop: 'px',
+                  borderRadius: '8px',
+                  outline: 'none',
+                  color: '#3E3E3E',
+                  width: '140px',
+                  height: '36px',
+                  fontSize: '12px',
+                  border: '1px solid #d0d5dd',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  alignContent: 'center',
+                  backgroundColor: '#fffff',
+                  boxShadow: 'none',
+                  '&:focus-within': {
+                    borderColor: '#377CF6',
+                    boxShadow: '0 0 0 1px #377CF6',
+                    caretColor: '#3E3E3E',
+                  },
+                  '&:hover': {
+                    borderColor: '#377CF6',
+                    boxShadow: '0 0 0 1px #377CF6',
+                  },
+                }),
+                placeholder: (baseStyles) => ({
+                  ...baseStyles,
+                  color: '#3E3E3E',
+                }),
+                indicatorSeparator: () => ({
+                  display: 'none',
+                }),
+                dropdownIndicator: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: '#3E3E3E',
+                  '&:hover': {
+                    color: '#3E3E3E',
+                  },
+                }),
+                option: (baseStyles, state) => ({
+                  ...baseStyles,
+                  fontSize: '13px',
+                  fontWeight: '400',
+                  color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                  backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                  '&:hover': {
+                    backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                  },
+                  cursor: 'pointer',
+                }),
+                singleValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: '#3E3E3E',
+                }),
+                menu: (baseStyles) => ({
+                  ...baseStyles,
+                  width: '140px',
+                  marginTop: '0px',
+                  zIndex: "100"
+                }),
+              }}
+            />}
+            {isToggledX && <div
+              ref={toggleRef}
+              className={styles.calender}
+              onClick={toggleCalendar}
+            >
+              <img src={ICONS.includes_icon} alt="" />
+            </div>}
+            <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
+              <img
+                src={
+                  isToggledX === true
+                    ? ICONS.ChecronUpX
+                    : ICONS.DownArrowDashboard
+                }
+              />
+
+              {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+            </div>
               </div></div>
           </div>
 
@@ -1521,7 +1545,7 @@ const LeadManagementDashboard = () => {
                 <HistoryRedirect
                 // setArchive={setArchive} 
                 />
-                <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
+                 <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
@@ -1601,7 +1625,7 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )
           ) : (
-            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} />
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} />
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>

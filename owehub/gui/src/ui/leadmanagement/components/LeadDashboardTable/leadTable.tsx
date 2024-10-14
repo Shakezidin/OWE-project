@@ -25,9 +25,10 @@ interface LeadSelectionProps {
   setSelectedLeads: React.Dispatch<React.SetStateAction<number[]>>;
   refresh: number;
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
+  onCreateProposal: (leadId: number) => void;
 }
 
-const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: LeadSelectionProps) => {
+const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal }: LeadSelectionProps) => {
  
 
   const [selectedType, setSelectedType] = useState('');
@@ -233,11 +234,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                                     ? '#21BC27'
                                     : lead.appointment_status_label === 'No Response'
                                       ? '#777777'
-                                      : lead.appointment_status_label === 'Appointment Sent'
-                                        ? '#EC9311'
-                                        : lead.appointment_status_label === 'Appointment Declined'
-                                          ? '#D91515'
-                                          : 'inherit',
+                                    : lead.appointment_status_label === 'Appointment Sent'
+                                      ? '#EC9311'
+                                      : lead.appointment_status_label === 'Appointment Declined'
+                                        ? '#D91515'
+                                        : 'inherit',
                               }}
                               className={styles.appointment_status}
                             >
@@ -297,15 +298,15 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                               </p>
                             </div>
                           ) : lead.appointment_status_label === "Not Required" ? (
-                            <button className={styles.create_proposal}>Create Proposal</button>
+                            <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                           ) : (
-                            <DropDownLeadTable
-                              selectedType={selectedType}
-                              onSelectType={(type: string) => {
-                                setSelectedType(type);
-                                setActiveSection(activeSection);
-                              }}
-                              cb={() => {
+                          <DropDownLeadTable
+                            selectedType={selectedType}
+                            onSelectType={(type: string) => {
+                              setSelectedType(type);
+                              setActiveSection(activeSection);
+                            }}
+                            cb={() => {
                                 setSelected(index);
                               }}
                               options={
@@ -341,7 +342,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                                   : ['Appointment Not Required']
                                 : lead.won_lost_label !== ''
                                   ? ['Deal Won']
-                                  : []
+                                : []
                             }
                           />
 
