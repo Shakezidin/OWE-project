@@ -99,7 +99,7 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
         {...attributes.popper} className={classes.dropdownMenu}>
           <li
             onClick={() => handleSelect('Deal Won')}
-            className={`${classes.dropdownItemAll} ${
+            className={`${classes.dropdownItem} ${
               selectedType === 'Deal Won' ? classes.selected : ''
             } ${disabledOptions.includes('Deal Won') ? classes.disabled : ''}`}
           >

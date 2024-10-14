@@ -10,12 +10,14 @@ interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
   cb?: () => void
+  options: { label: string; value: string }[];
 }
 
 const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
   selectedType,
   onSelectType,
-  cb
+  cb,
+  options
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -64,9 +66,9 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
         setIsVisible(false);
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
-  
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -75,7 +77,7 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
   return (
     <div className={classes.dropdown_container}>
       <div
-      ref={setReferenceElement}
+        ref={setReferenceElement}
         onMouseEnter={() => setIsHovered(true)}
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
@@ -96,30 +98,17 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
           {...attributes.popper}
           className={classes.dropdownMenu}
         >
-          <li
-            onClick={() => handleSelect('All')}
-            className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
-          >
-          View Proposal
-          </li>
-          <li
-            onClick={() => handleSelect('Excel')}
-            className={`${classes.dropdownItem} ${selectedType === 'Excel' ? classes.selected : ''}`}
-          >
-            Download Proposal
-          </li>
-          <li
-            onClick={() => handleSelect('PDF Format')}
-            className={`${classes.dropdownItem} ${selectedType === 'PDF Format' ? classes.selected : ''}`}
-          >
-            Create New Proposal
-          </li>
-          <li
-            onClick={() => handleSelect('app_sched')}
-            className={`${classes.dropdownItem} ${selectedType === 'Images' ? classes.selected : ''}`}
-          >
-            Schedule Appointment
-          </li>
+          {options.map((option) => (
+            <li
+              key={option.value}
+              onClick={() => handleSelect(option.value)}
+              className={`${classes.dropdownItem} ${
+                selectedType === option.value ? classes.selected : ''
+              }`}
+            >
+              {option.label}
+            </li>
+          ))}
         </ul>
       )}
     </div>
