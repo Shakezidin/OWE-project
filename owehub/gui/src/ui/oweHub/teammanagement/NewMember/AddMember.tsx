@@ -146,20 +146,20 @@ const AddMember: React.FC<createUserProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const validationErrors: { [key: string]: string } = {};
+    // const validationErrors: { [key: string]: string } = {};
 
-    if (!selectedDropdown) {
-      validationErrors.user = 'User is required.';
-    }
+    // if (!selectedDropdown) {
+    //   validationErrors.user = 'User is required.';
+    // }
 
-    if (!selectedRole) {
-      validationErrors.role = 'Role is required.';
-    }
+    // if (!selectedRole) {
+    //   validationErrors.role = 'Role is required.';
+    // }
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    // if (Object.keys(validationErrors).length > 0) {
+    //   setErrors(validationErrors);
+    //   return;
+    // }
     setLoadingSubmit(true); // Start loading
     try {
       const data = {

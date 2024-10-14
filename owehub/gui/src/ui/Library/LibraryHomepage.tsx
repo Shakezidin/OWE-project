@@ -71,7 +71,7 @@ const LibraryHomepage = () => {
     fileType: "",
     url: ""
   })
-  const [selectedCheckbox, setSelectedCheckbox] = useState(new Set())
+  const [selectedCheckbox, setSelectedCheckbox] = useState<Set<string>>(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
   const query = searchParams.get("from")
@@ -309,11 +309,10 @@ const LibraryHomepage = () => {
   }
 
   const HandleSearch = (e: any) => {
-    let inputValue :string = e.target.value;
+    let inputValue: string = e.target.value;
     const validCharacters = /^[a-zA-Z0-9. _-]*$/;
-    if(inputValue.length===1 && inputValue===' ')
-    {
-      inputValue='';
+    if (inputValue.length === 1 && inputValue === ' ') {
+      inputValue = '';
     }
     if (inputValue.length > 0 && (inputValue.charAt(0) === ' ' || !validCharacters.test(inputValue.charAt(0)))) {
       return; // Exit early if the first character is a space or invalid
@@ -330,7 +329,7 @@ const LibraryHomepage = () => {
     //   if(!validCharacters.test(inputValue.slice(i)))
     //     return;
     // }
-    
+
 
     // Set the search value
     setSearchValue(inputValue);
@@ -538,6 +537,7 @@ const LibraryHomepage = () => {
     }
   });
 
+
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
   };
@@ -593,6 +593,7 @@ const LibraryHomepage = () => {
       .then((res) => {
         toast.success(`Deleted ${res.length} ${res.length > 1 ? "files" : "file"}`)
         reset()
+        setCheckedItems(0)
         fetchDataFromGraphAPI()
         setIsPending(false)
       })
@@ -613,6 +614,7 @@ const LibraryHomepage = () => {
         reset()
         setAllIds([]);
         setCheckedItems(0);
+        console.log("working block")
         setCheckedFolders([]);
         toast.success(`Deleted ${res.length} ${res.length > 1 ? "folders" : "folder"}`)
         fetchDataFromGraphAPI();
@@ -622,7 +624,7 @@ const LibraryHomepage = () => {
       })
 
   };
-
+  console.log("checkeditems", checkedItems, selectedCheckbox)
   const handleUndo = () => {
     setCheckedItems(0);
     setCheckedFolders([]);
@@ -650,9 +652,11 @@ const LibraryHomepage = () => {
       return (
         <>
           <div className={styles.delete_left}>
-            <div className={styles.undoButton} onClick={()=>{
+            <div className={styles.undoButton} onClick={() => {
               setSelectedCheckbox(new Set())
               setCheckedItems(0)
+              setCheckedFolders([])
+
             }}>
               <FaXmark style={{
                 height: '20px',
@@ -660,11 +664,12 @@ const LibraryHomepage = () => {
               }} />
             </div>
             <span className={styles.selectedCount}>
-              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "files" : "folders"}{checkedItems > 1 ? 's' : ''} selected
+            {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ' '}
+               selected
             </span>
           </div>
           <div className={styles.delete_right}>
-            <button disabled={isPending} className={styles.DeleteButton} onClick={() => OpenModal()}>
+            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile :styles.DeleteButton} onClick={() => OpenModal()}>
               Delete
             </button>
           </div>
@@ -744,7 +749,7 @@ const LibraryHomepage = () => {
               onChange={HandleSearch}
               placeholder="Search by file name or person"
               className={styles.searchInput}
-              maxLength={50}
+              maxLength={25}
             />
           </div>
           {role_name === TYPE_OF_USER.ADMIN && <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />}
@@ -797,7 +802,7 @@ const LibraryHomepage = () => {
             </div>
 
             <div className={styles.grid_item}>Uploaded Date</div>
-            <div className={styles.grid_item}>Actions</div>
+            <div style={{textAlign:"end"}} className={` ${styles.grid_item}`}>Actions</div>
           </div>
 
           {currentFolderContent.map((item) => {
@@ -865,10 +870,19 @@ const LibraryHomepage = () => {
             childCount: item.childCount,
             createdDate: item.createdDateTime,
             id: item.id
-          }))} onDelete={(id) => {
-            OpenModal()
-            setAllIds(prev => [...prev, id])
-          }} />
+          }))}
+
+            selected={selectedCheckbox}
+            setSelected={setSelectedCheckbox}
+            onDelete={(id) => {
+              OpenModal()
+              setAllIds(prev => [...prev, id])
+            }}
+            handleCheckboxChange={(ids) => {
+              setAllIds(Array.from(ids))
+              setCheckedItems(ids.size)
+            }}
+          />
           : <FolderView
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
@@ -900,17 +914,26 @@ const LibraryHomepage = () => {
                 <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
+                    setAllIds([])
+                    setCheckedItems(0)
+
+            
                   } else {
-                    setSelectedCheckbox(new Set(sortedData.map((item) => item.id)))
+                    const newSet = new Set(sortedData.map((item) => item.id))
+                    setSelectedCheckbox(newSet)
+                    setAllIds(Array.from(newSet))
+                    setCheckedItems(newSet.size)
                   }
+                  
                 }} />
               </div>
-              <span>
+              <span className={styles.libname_heading}>
                 Name
               </span>
             </div>
           </div>
           <div className={styles.grid_item}>Uploaded Date</div>
+
           <div className={styles.grid_item}>Actions</div>
         </div>}
 
@@ -926,101 +949,85 @@ const LibraryHomepage = () => {
               sortedData.map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
-                return <div className={styles.libGridItem} key={data.id}>
-                  <div className="flex items-center">
-                    <div className="mr2">
-                      <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
-                        if (selectedCheckbox.has(data.id)) {
-                          setSelectedCheckbox(new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id)))
-                        } else {
-                          const prev = Array.from(selectedCheckbox)
-                          prev.push(data.id)
-                          setSelectedCheckbox(new Set(prev))
+                return (
+                  <div className={styles.libGridItem} key={data.id}>
+                    <div className="flex items-center">
+                      <div className="mr2">
+                        <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
+                          if (selectedCheckbox.has(data.id)) {
+                            const newArr = new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id))
+                            setSelectedCheckbox(newArr)
+                            setAllIds(Array.from(newArr))
+                          } else {
+                            const prev = Array.from(selectedCheckbox)
+                            prev.push(data.id)
+                            setSelectedCheckbox(new Set(prev))
+                            setAllIds(prev)
+                          }
+                        }} />
+                      </div>
+                      <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                        if (isValidVideo) {
+                          setIsVideoModalOpen(true)
+                          setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
+                          setVideoName(data.name!)
+                          return
                         }
-                      }} />
-                    </div>
-                    <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
-                      if (isValidVideo) {
-                        setIsVideoModalOpen(true)
-                        setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
-                        setVideoName(data.name!)
-                        return
-                      }
-                      if (isValidImage) {
-                        setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
-                        setIsFileViewerOpen(true)
-                        return
-                      } else {
-                        window.open(data.webUrl, "_blank")
-                      }
-                    }}>
-                      <img
-                        className={styles.cardImg}
-                        src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
-                        alt={`null`}
-                        loading='lazy'
-                      />
-                      <div>
-                        <p className={styles.name}>{data.name.substring(0, 50)}</p>
-                        <p className={styles.size}>
-                          {data.size < 1024
-                            ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
-                            : data.size < 1048576
-                              ? `${Math.round(data.size / 1024)} KB`
-                              : `${Math.round(data.size / 1048576)} MB`}
-                        </p>
+                        if (isValidImage) {
+                          setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
+                          setIsFileViewerOpen(true)
+                          return
+                        } else {
+                          window.open(data.webUrl, "_blank")
+                        }
+                      }}>
+                        <img
+                          className={styles.cardImg}
+                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
+                          alt={`null`}
+                          loading='lazy'
+                        />
+                        <div>
+                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >=26 ? '...': ''}</p>
+                          <p className={styles.size}>
+                            {data.size < 1024
+                              ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
+                              : data.size < 1048576
+                                ? `${Math.round(data.size / 1024)} KB`
+                                : `${Math.round(data.size / 1048576)} MB`}
+                          </p>
 
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                  <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                    {isRecycleBinView ? (
+                    <div className={styles.grid_item_dates}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                    <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
+
+                      <div>
+                        <RxDownload
+                          className={styles.icons_download}
+                          onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
+
+                        />
+                      </div>
                       <div>
                         {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                          className={styles.icons}
-                          style={{
-                            height: '16px',
-                            width: '16px',
-                            color: '#667085',
-                          }}
-                          onClick={() => handleClickdeleted(data.id)} />}
-                        {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(data.id)} />)}
+                          className={styles.icons_delete}
+                          onClick={() => {
+                            OpenModal()
+                            const prev = Array.from(selectedCheckbox)
+                            prev.push(data.id)
+                            setSelectedCheckbox(new Set(prev))
+                          }} />}
                       </div>
-                    ) : (
-                      <>
-                        <div>
-                          <RxDownload
-                            className={styles.icons}
-                            onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              color: '#667085',
-                            }}
-                          />
-                        </div>
-                        <div>
-                          {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                            className={styles.icons}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              color: '#667085',
-                            }} onClick={() => {
-                              OpenModal()
-                              const prev = Array.from(selectedCheckbox)
-                              prev.push(data.id)
-                              setSelectedCheckbox(new Set(prev))
-                            }} />}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+
+
+                    </div>
+                  </div>)
               })
               : <FilesTileViewList
-
+                selected={selectedCheckbox}
+                setSelected={setSelectedCheckbox}
                 onFilePreview={(url, type, name) => {
                   const isValidVideo = isVideo(type)
                   const isValidImage = isImage(type)

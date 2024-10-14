@@ -67,7 +67,7 @@ function FolderView({
             <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
           <div className={styles.folderIcon_wrapper}>
-            <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
+             <div className={styles.charDiv}>{folder.name.charAt(0)}</div> 
             <img src={ICONS.folderImage} alt="" />
             <div className={styles.checkboxWrapper}>
               <p className={styles.quantity}>{folder.childCount}</p>
@@ -80,14 +80,16 @@ function FolderView({
                 onChange={(e) => {
                   e.stopPropagation()
                   onCheckboxChange(e.target.checked, index, folder.id)
+
                 }}
                 checked={checkedFolders.includes(folder.id)}
+
               />}
             </div>
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            <div className={styles.folder_name}>{folder.name.substring(0, 10)}</div>
+            <div className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
             <div className={styles.folderInfo_wrapper}>
               <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
