@@ -2,7 +2,7 @@ export const ROUTES = {
   LOGIN: '/login',
   RESETPASSWORD: '/resetPassword',
   OTP: '/otp',
-  COMMISSION_DASHBOARD: '/dashboard',
+  COMMISSION_DASHBOARD: '/dealer-pay',
   REPPAY_DASHBOARD: '/reppay/dashboard',
   AR_DASHBOARD: '/ar/dashboard',
   TEAM_MANAGEMENT_DASHBOARD: '/teammanagement/dashboard',
