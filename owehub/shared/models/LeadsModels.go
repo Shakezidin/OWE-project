@@ -9,12 +9,13 @@ package models
 import "time"
 
 type GetLeadsRequest struct {
-	LeadStatus string `json:"status"`
-	IsArchived bool   `json:"is_archived"`
-	PageNumber int    `json:"page_number"`
-	PageSize   int    `json:"page_size"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
+	LeadStatus     string `json:"status"`
+	ProgressFilter string `json:"progress_filter"`
+	IsArchived     bool   `json:"is_archived"`
+	PageNumber     int    `json:"page_number"`
+	PageSize       int    `json:"page_size"`
+	StartDate      string `json:"start_date"`
+	EndDate        string `json:"end_date"`
 }
 
 type GetLeadsData struct {

@@ -90,13 +90,31 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
-		whereClause = `
-			WHERE (
-				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-				OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
-				OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
-			)
-		`
+		if dataReq.ProgressFilter == "DEAL_WON" {
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NULL)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
+			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
+			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
+			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) != 'completed')"
+		}
+		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) != 'completed')"
+		}
+		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
+			whereClause = `
+				WHERE (
+					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
+					OR (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) != 'completed')
+					OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) != 'completed')
+				)
+			`
+		}
 	}
 
 	if dataReq.LeadStatus == "DECLINED" {
