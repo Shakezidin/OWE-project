@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import {
   getLeadById,
   getLeads,
+  createProposal
 } from '../../apiActions/leadManagement/LeadManagementAction';
 
 interface IState {
@@ -56,8 +57,25 @@ const leadManagementSlice = createSlice({
         state.isLoading = false;
         state.leadsData = action.payload.data || {};
         state.totalcount = action.payload.dbRecCount || 0;
+        toast.success(action.payload.message)
       })
       .addCase(getLeadById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+//----------------Create Proposal---------------------------
+      .addCase(createProposal.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createProposal.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.leadsData = action.payload.data || {};
+        state.totalcount = action.payload.dbRecCount || 0;
+        // state.loading = false;
+        // state.projectId = action.payload;
+      })
+      .addCase(createProposal.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);

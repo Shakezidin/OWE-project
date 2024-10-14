@@ -34,3 +34,18 @@ export const getLeadById = createAsyncThunk(
     }
   }
 );
+
+export const createProposal = createAsyncThunk(
+  'proposal/aurora_create_proposal',
+  async (params: any, { rejectWithValue, dispatch }) => {
+    try {
+      const data = await postCaller('aurora_create_proposal', params, true);
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
