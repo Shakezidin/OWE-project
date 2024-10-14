@@ -882,7 +882,7 @@ const LeadManagementDashboard = () => {
     refresh,
     ref,
   ]);
-
+console.log(leadsData)
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -1163,12 +1163,13 @@ const LeadManagementDashboard = () => {
   };
 
   const [exporting, setIsExporting] = useState(false);
- 
+
   const exportCsv = async () => {
     setIsExporting(true);
   };
 
-  //************************************************************************************************ */
+    //************************************************************************************************ */
+
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
@@ -1202,148 +1203,179 @@ const LeadManagementDashboard = () => {
         setActiveIndex={setRef}
       />
       {/* //WORKING DIRECTORY */}
+
+     {/* ************************************************************************************************  */}
+     {/* Header LayOut for graphs and Buttons by Rabindra */}
+
       <div className={styles.chartGrid}>
+
+
         <div className={styles.horizontal}>
-          {isToggledX && <div className={`${styles.customLeft} ${styles.custom1}`}>Overview</div>}
-          <div className={`${styles.customLeft} ${styles.custom2}`}>Total leads: {totalValue ? totalValue : '0'}</div>
-          {isToggledX && <div className={`${styles.customLeft} ${styles.custom3}`}>Total Won Lost</div>}
-          <div className={styles.date_calendar}>
-            <div className={styles.lead__datepicker_wrapper}>
-              {isCalendarOpen && (
-                <div
-                  ref={calendarRef}
-                  className={styles.lead__datepicker_content}
-                >
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleRangeChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={selectedRanges}
-                  />
-                  <div className={styles.lead__datepicker_btns}>
-                    <button className="reset-calender" onClick={onReset}>
-                      Reset
-                    </button>
-                    <button className="apply-calender" onClick={onApply}>
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-            {selectedDates.startDate && selectedDates.endDate && (
-              <div className={styles.hist_date}>
-                {isToggledX && <span className={styles.date_display}>
-                  {selectedDates.startDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                  }) +
-                    ' ' +
-                    selectedDates.startDate.toLocaleDateString('en-US', {
-                      month: 'short',
-                    }) +
-                    ' ' +
-                    selectedDates.startDate.getFullYear()}
-                  {' - '}
-                  {selectedDates.endDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                  }) +
-                    ' ' +
-                    selectedDates.endDate.toLocaleDateString('en-US', {
-                      month: 'short',
-                    }) +
-                    ' ' +
-                    selectedDates.endDate.getFullYear()}
-                </span>}
+
+          {/*     
+            className={`${styles.customLeft} ${styles.custom1}`}
+           className={`${styles.customLeft} ${styles.custom2}`} */}
+
+
+
+          <div className={styles.FirstColHead}>
+            {isToggledX && (
+              <div className={styles.customLeft}>
+                Overview
               </div>
             )}
-
-
-            {isToggledX && <Select
-              value={selectedPeriod}
-              onChange={handlePeriodChange}
-              options={periodFilterOptions}
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  marginTop: 'px',
-                  borderRadius: '8px',
-                  outline: 'none',
-                  color: '#3E3E3E',
-                  width: '140px',
-                  height: '36px',
-                  fontSize: '12px',
-                  border: '1px solid #d0d5dd',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  alignContent: 'center',
-                  backgroundColor: '#fffff',
-                  boxShadow: 'none',
-                  '&:focus-within': {
-                    borderColor: '#377CF6',
-                    boxShadow: '0 0 0 1px #377CF6',
-                    caretColor: '#3E3E3E',
-                  },
-                  '&:hover': {
-                    borderColor: '#377CF6',
-                    boxShadow: '0 0 0 1px #377CF6',
-                  },
-                }),
-                placeholder: (baseStyles) => ({
-                  ...baseStyles,
-                  color: '#3E3E3E',
-                }),
-                indicatorSeparator: () => ({
-                  display: 'none',
-                }),
-                dropdownIndicator: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: '#3E3E3E',
-                  '&:hover': {
-                    color: '#3E3E3E',
-                  },
-                }),
-                option: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: '13px',
-                  fontWeight: '400',
-                  color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                  backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                  '&:hover': {
-                    backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                  },
-                  cursor: 'pointer',
-                }),
-                singleValue: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: '#3E3E3E',
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  width: '140px',
-                  marginTop: '0px',
-                  zIndex: "100"
-                }),
-              }}
-            />}
-            {isToggledX && <div
-              ref={toggleRef}
-              className={styles.calender}
-              onClick={toggleCalendar}
-            >
-              <img src={ICONS.includes_icon} alt="" />
-            </div>}
-            <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-              <img
-                src={
-                  isToggledX === true
-                    ? ICONS.ChecronUpX
-                    : ICONS.DownArrowDashboard
-                }
-              />
-
-              {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              Total leads: {totalValue ? totalValue : '0'}
             </div>
           </div>
+          <div className={styles.SecondColHead}>
+            <div>
+              {isToggledX && <div className={styles.customLeft}
+              // className={`${styles.customLeft} ${styles.custom3}`}
+              >Total Won Lost</div>}
+            </div>
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              <div className={styles.date_calendar}>
+                <div className={styles.lead__datepicker_wrapper}>
+                  {isCalendarOpen && (
+                    <div
+                      ref={calendarRef}
+                      className={styles.lead__datepicker_content}
+                    >
+                      <DateRange
+                        editableDateInputs={true}
+                        onChange={handleRangeChange}
+                        moveRangeOnFirstSelection={false}
+                        ranges={selectedRanges}
+                      />
+                      <div className={styles.lead__datepicker_btns}>
+                        <button className="reset-calender" onClick={onReset}>
+                          Reset
+                        </button>
+                        <button className="apply-calender" onClick={onApply}>
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {selectedDates.startDate && selectedDates.endDate && (
+                  <div className={styles.hist_date}>
+                    {isToggledX && <span className={styles.date_display}>
+                      {selectedDates.startDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.startDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.startDate.getFullYear()}
+                      {' - '}
+                      {selectedDates.endDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.endDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.endDate.getFullYear()}
+                    </span>}
+                  </div>
+                )}
+
+
+                {isToggledX && <Select
+                  value={selectedPeriod}
+                  onChange={handlePeriodChange}
+                  options={periodFilterOptions}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      marginTop: 'px',
+                      borderRadius: '8px',
+                      outline: 'none',
+                      color: '#3E3E3E',
+                      width: '140px',
+                      height: '36px',
+                      fontSize: '12px',
+                      border: '1px solid #d0d5dd',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      alignContent: 'center',
+                      backgroundColor: '#fffff',
+                      boxShadow: 'none',
+                      '&:focus-within': {
+                        borderColor: '#377CF6',
+                        boxShadow: '0 0 0 1px #377CF6',
+                        caretColor: '#3E3E3E',
+                      },
+                      '&:hover': {
+                        borderColor: '#377CF6',
+                        boxShadow: '0 0 0 1px #377CF6',
+                      },
+                    }),
+                    placeholder: (baseStyles) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                    }),
+                    indicatorSeparator: () => ({
+                      display: 'none',
+                    }),
+                    dropdownIndicator: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                      '&:hover': {
+                        color: '#3E3E3E',
+                      },
+                    }),
+                    option: (baseStyles, state) => ({
+                      ...baseStyles,
+                      fontSize: '13px',
+                      fontWeight: '400',
+                      color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                      backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                      '&:hover': {
+                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                      },
+                      cursor: 'pointer',
+                    }),
+                    singleValue: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                    }),
+                    menu: (baseStyles) => ({
+                      ...baseStyles,
+                      width: '140px',
+                      marginTop: '0px',
+                      zIndex: "100"
+                    }),
+                  }}
+                />}
+                {isToggledX && <div
+                  ref={toggleRef}
+                  className={styles.calender}
+                  onClick={toggleCalendar}
+                >
+                  <img src={ICONS.includes_icon} alt="" />
+                </div>}
+                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
+                  <img
+                    src={
+                      isToggledX === true
+                        ? ICONS.ChecronUpX
+                        : ICONS.DownArrowDashboard
+                    }
+                  />
+
+                  {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+                </div>
+              </div></div>
+          </div>
+
+
+
           {/* <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
             <img
               src={
@@ -1358,7 +1390,7 @@ const LeadManagementDashboard = () => {
         </div>
         {/* //HORIZONTAL ENDED */}
         {isToggledX && <div className={styles.vertical1}>
-          <div style={{width:"100%"}}>
+          <div style={{ width: "100%" }}>
             {loading ? (
               <div
                 style={{
@@ -1473,9 +1505,9 @@ const LeadManagementDashboard = () => {
       <div className={styles.card}>
         {archive == true && (
           <ArchivedPages
-            setArchive={setArchive}
-            activeIndex={ref}
-            setActiveIndex={setRef}
+          // setArchive={setArchive}
+          // activeIndex={ref}
+          // setActiveIndex={setRef}
           />
         )}
         {archive == false && (
@@ -1529,11 +1561,25 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button>
                 </div>
+                <div className={styles.searchBar}>
+                  <div className={styles.searchIcon}>
+                    {/* You can use an SVG or a FontAwesome icon here */}
+                    <img src={ICONS.SearchICON001} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search by customer name"
+                    className={styles.searchInput}
+                  />
+                </div>
+
 
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-                <HistoryRedirect setArchive={setArchive} />
-                 <LeadTableFilter setArchive={() => {}} />
+                <HistoryRedirect
+                // setArchive={setArchive} 
+                />
+                <LeadTableFilter setArchive={() => { }} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
@@ -1613,7 +1659,7 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )
           ) : (
-            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} />
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh}/>
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>

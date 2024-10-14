@@ -29,8 +29,8 @@ interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
   leadId?: number;
-  refresh?: number;
-  setRefresh?: (value: number) => void;
+  refresh: number;
+  setRefresh: (value: number | ((prevValue: number) => number)) => void;
   reschedule?: boolean;
   action?: boolean;
 }
@@ -52,7 +52,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   leadId,
   reschedule,
   action,
+  setRefresh,
+  refresh
 }) => {
+  console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
@@ -104,9 +107,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
+        setRefresh((val) => val+1)
         setVisibleDiv(1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
+        
       }
       setLoad(false);
     } catch (error) {
@@ -114,7 +119,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.error('Error submitting form:', error);
     }
   };
-
+  
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
 
@@ -159,7 +164,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId, isOpen1, isModalOpen]);
+  }, [isAuthenticated, leadId, isOpen1, refresh]);
 
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
@@ -214,6 +219,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         toast.success('Status Updated Successfully');
         HandleModal();
         setReason('');
+        setRefresh((val) => val+1)
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -526,6 +532,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               isOpen={isModalOpen}
               onClose={handleCloseModal}
               leadData={leadData}
+              refresh={refresh}
+              setRefresh={setRefresh}
             />
             {visibleDiv === 0 && (
               <AppointmentScheduler

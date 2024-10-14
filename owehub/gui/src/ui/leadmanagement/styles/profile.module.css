@@ -19,8 +19,19 @@
     flex-basis: auto;
     padding: 18px;
     font-size: 14px;
-    border-right: 2px solid #eef5ff ;
+    position: relative;
   }
+  
+  .Column1Details::after {
+    content: '';
+    position: absolute;
+    top: 19px; 
+    right: 0;
+    width: 2px;
+    height: 78%; 
+    background-color: #CCCCCC;
+  }
+  
   .Column1Details tr{
    
     width:100% !important;

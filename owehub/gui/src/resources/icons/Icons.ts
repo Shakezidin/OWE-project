@@ -159,6 +159,7 @@ import DownArrowDashboard from "../assets/AboverArrow.svg"
 import ChecronUpX from "../assets/UpArrowDashboard.svg"
 import videoPlayerIcon from '../assets/video_player_icon.png';
 import VersionLogo from '../assets/version_logo.svg'
+import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -196,6 +197,7 @@ export const ICONS = {
   viewActive: viewActive,
   DownArrowDashboard:DownArrowDashboard,
   dashHead: dashHead,
+  SearchICON001:SearchICONbyRabindra,
   dashActive: dashActive,
   cross: crossIcon,
   dash: dashIcon,

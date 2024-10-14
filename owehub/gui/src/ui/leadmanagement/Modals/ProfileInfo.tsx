@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 interface EditModalProps {
     isOpen1: boolean;
     onClose1: () => void;
+    leadId:number
 }
 
 const Profile: React.FC<EditModalProps> = ({
     isOpen1,
     onClose1,
-
+    leadId
 }) => {
     const navigate = useNavigate()
     const CloseModalhandler = () => {
