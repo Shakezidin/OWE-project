@@ -45,6 +45,8 @@ const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
       {modenIsOpenX && (
         <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParent">
           <ul>
+
+
             <li
               className={`${classes.selectedFilter} ${selectedValue === 'All' ? classes.active : ''}`}
               onClick={() => handleItemClick('All')}
@@ -52,46 +54,37 @@ const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
               All{' '}
             </li>
 
+
             <li
               className={`${classes.selectedFilter} ${selectedValue === 'Deal Won' ? classes.active : ''}`}
               onClick={() => handleItemClick('Deal Won')}
             >
-              {' '}
+             
               Deal Won
             </li>
+
+
             <li
               className={`${classes.selectedFilter} ${selectedValue === 'Appointment Accepted' ? classes.active : ''}`}
               onClick={() => handleItemClick('Appointment Accepted')}
             >
               Appointment Accepted{' '}
             </li>
-            <li
-              style={{
-                fontSize: '12px',
-                color: selectedValue === 'Appointment Sent' ? '#fff !important' : '#000 !important',
-                backgroundColor: selectedValue === 'Appointment Sent' ? '#377cf6' : 'transparent',
-              }}
+            <li className={`${classes.selectedFilter} ${selectedValue === 'Appointment Sent' ? classes.active : ''}`}
+              
               onClick={() => handleItemClick('Appointment Sent')}
             >
               {' '}
               Appointment Sent
             </li>
-            <li
-              style={{
-                fontSize: '12px',
-                color: selectedValue === 'Proposal In Progress' ? '#fff !important' : '#000 !important',
-                backgroundColor: selectedValue === 'Proposal In Progress' ? '#377cf6' : 'transparent',
-              }}
+            <li className={`${classes.selectedFilter} ${selectedValue === 'Proposal In Progress' ? classes.active : ''}`}
+              
               onClick={() => handleItemClick('Proposal In Progress')}
             >
               Proposal In Progress{' '}
             </li>
-            <li
-              style={{
-                fontSize: '12px',
-                color: selectedValue === 'Appointment Not Required' ? '#fff !important' : '#000 !important',
-                backgroundColor: selectedValue === 'Appointment Not Required' ? '#377cf6' : 'transparent',
-              }}
+            <li className={`${classes.selectedFilter} ${selectedValue === 'Appointment Not Required' ? classes.active : ''}`}
+             
               onClick={() => handleItemClick('Appointment Not Required')}
             >
               {' '}
@@ -100,7 +93,6 @@ const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
           </ul>
         </div>
       )}
-      {/* )} */}
     </div>
   );
 };

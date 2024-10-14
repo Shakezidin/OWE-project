@@ -6,7 +6,9 @@ interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
 
-const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
+// { setArchive }: HistoryRedirectProps
+
+const HistoryRedirect = () => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
   const clickableDivRef = useRef<HTMLDivElement>(null);
@@ -16,7 +18,8 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   };
 
   const ArchivesTable = () => {
-    setArchive(true);
+    // setArchive(true);
+    navigate('/lead-dashboard-archieves');
   };
 
   /* HERE FOR RESPONSIVESNESS */
