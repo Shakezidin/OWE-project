@@ -94,7 +94,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	_, ok := data[0]["aurora_proposal_id"]
+	_, ok := data[0]["aurora_proposal_id"].(string)
 	if ok {
 		err = fmt.Errorf("aurora_proposal_id already exists for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)

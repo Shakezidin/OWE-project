@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -83,6 +84,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	userEmail := req.Context().Value("emailid").(string)
 
+	whereEleList = append(whereEleList, userEmail)
 	// build whereclause based on requested status
 
 	if dataReq.LeadStatus == "NEW" {
@@ -138,8 +140,26 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if dataReq.Search != "" {
+		placeholder := fmt.Sprintf("$%d", len(whereEleList)+1)
+		whereClause = fmt.Sprintf("%s AND (li.first_name ILIKE %s OR li.last_name ILIKE %s)", whereClause, placeholder, placeholder)
+		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
+
+		// if search query convertible to int, search by id as well
+		searchId, searchIdErr := strconv.Atoi(dataReq.Search)
+		if searchIdErr == nil {
+			whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+		}
+	}
+
 	// filter in all conditions: is_archived, start_time, end_time
-	whereClause = fmt.Sprintf("%s AND li.is_archived = $2 AND li.updated_at BETWEEN $3 AND $4", whereClause)
+	whereClause = fmt.Sprintf(
+		"%s AND li.is_archived = $%d AND li.updated_at BETWEEN $%d AND $%d",
+		whereClause,
+		len(whereEleList)+1,
+		len(whereEleList)+2,
+		len(whereEleList)+3,
+	)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
 		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
@@ -172,7 +192,6 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		`, whereClause, paginationClause)
 
 	whereEleList = append(whereEleList,
-		userEmail,
 		dataReq.IsArchived,
 		time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
 		time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
@@ -355,7 +374,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Count total records from db
 	query = fmt.Sprintf(`SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li %s`, whereClause)
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList[0:4])
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead count from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to fetch lead count", http.StatusInternalServerError, nil)

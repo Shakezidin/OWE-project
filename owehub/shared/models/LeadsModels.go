@@ -10,6 +10,7 @@ import "time"
 
 type GetLeadsRequest struct {
 	LeadStatus     string `json:"status"`
+	Search         string `json:"search"`
 	ProgressFilter string `json:"progress_filter"`
 	IsArchived     bool   `json:"is_archived"`
 	PageNumber     int    `json:"page_number"`
