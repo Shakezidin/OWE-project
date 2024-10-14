@@ -173,30 +173,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
-  const handleCloseWon = async () => {
-    setLoad(true);
-    try {
-      const response = await postCaller(
-        'update_lead_status',
-        {
-          leads_id: leadId,
-          status_id: 5,
-        },
-        true
-      );
-
-      if (response.status === 200) {
-        toast.success('Status Updated Successfully');
-        setVisibleDiv(5);
-      } else if (response.status >= 201) {
-        toast.warn(response.message);
-      }
-      setLoad(false);
-    } catch (error) {
-      setLoad(false);
-      console.error('Error submitting form:', error);
-    }
-  };
+ 
 
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
@@ -600,7 +577,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {/* FROM HERE  WE DO NOT NEED EDIT BUTTON */}
             {visibleDiv === 1 && (
               <>
                 <div className={classes.success_not}>
@@ -687,65 +663,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
+            
             {visibleDiv === 67 && (
-              <>
-                <div className={classes.success_not}>
-                  <div>
-                    <img height="110.23px" width="156px" src={QuestionMarks} />{' '}
-                  </div>
-                </div>
-
-                <div className={classes.closedButtonQuestionmark}>
-                  <button
-                    className={classes.self}
-                    onClick={handleCloseWon}
-                    style={{
-                      backgroundColor: '#3AC759',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      pointerEvents: load || loading ? 'none' : 'auto',
-                      opacity: load || loading ? 0.6 : 1,
-                      cursor: load || loading ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    CLOSED WON
-                  </button>
-                  <button
-                    onClick={() => setVisibleDiv(3)}
-                    id="otherButtonId"
-                    style={{
-                      backgroundColor: '#CD4040',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      pointerEvents: load || loading ? 'none' : 'auto',
-                      opacity: load || loading ? 0.6 : 1,
-                      cursor: load || loading ? 'not-allowed' : 'pointer',
-                    }}
-                    className={classes.other}
-                  >
-                    CLOSED LOST
-                  </button>
-                  <button
-                    id="otherButtonId"
-                    style={{
-                      backgroundColor: '#D3D3D3',
-                      color: '#888888',
-                      border: 'none',
-                      pointerEvents: load || loading ? 'none' : 'auto',
-                      opacity: load || loading ? 0.6 : 1,
-                      cursor: load || loading ? 'not-allowed' : 'pointer',
-                    }}
-                    className={classes.other}
-                    onClick={() => setVisibleDiv(0)}
-                  >
-                    Reschedule Appointment
-                  </button>
-                  <span className={classes.getAppointment}></span>
-                  <span className={classes.notAvailableCtmr}></span>
-                </div>
-              </>
-            )}
-            {visibleDiv === 3 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited2}>
                   <div className={classes.success_not_Edited4Model}>
@@ -797,86 +716,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 5 && (
-              <>
-                <div className={classes.customer_wrapper_list_Edited}>
-                  <div className={classes.success_not_Edited4Model}>
-                    <div>
-                      <img
-                        className={classes.HandShakeLogo}
-                        height="154px"
-                        width="154px"
-                        src={DoneLogo}
-                      />{' '}
-                    </div>
-                  </div>
-                  <div className={classes.congratulationLetter}>
-                    <span className={classes.congratulations}>
-                      Congratulations!
-                    </span>
-                  </div>
-                  <br />
-                  <div className={classes.ctmracquiredDiv}>
-                    <span className={classes.ctmracquired}>
-                      Customer acquired
-                    </span>
-                  </div>
-                  <div className={classes.suceesButtonAfterProposal}>
-                    <button
-                      className={classes.self}
-                      style={{
-                        backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
-                        color: '#FFFFFF',
-                        border: 'none',
-                      }}
-                      onClick={handleCreateProposal}
-                      disabled={loadingProposal}
-                    >
-                      {loadingProposal ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            color: '#3AC759',
-                            border: '1px solid #3AC759',
-                            borderRadius: 10,
-                          }}
-                        >
-                          Creating Proposal...
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              transform: 'scale(0.5)',
-                            }}
-                          >
-                            <MicroLoader />
-                          </div>
-                        </div>
-                      ) : (
-                        'Create Proposal'
-                      )}
-                    </button>
-                    {/* <button
-                        className={classes.self}
-                        style={{
-                          backgroundColor: '#3AC759',
-                          color: '#FFFFFF',
-                          border: 'none',
-                        }}
-                        onClick={() => setShowCreateProposal(true)} // Show the create proposal component
-                      >
-                        CREATE PROPOSAL
-                      </button> */}
-                    <span className={classes.n}>
-                      {' '}
-                      <img src={FileAttach} /> Attach proposal
-                    </span>
-                  </div>
-                </div>
-              </>
-            )}{' '}
             {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (

@@ -17,6 +17,7 @@ export interface IFiles {
     file?:                           File;
     image?:                          Image;
     photo?:                          Photo;
+    childCount?:number
 }
 
 export interface EdBy {

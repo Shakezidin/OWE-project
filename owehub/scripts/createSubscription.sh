@@ -8,7 +8,7 @@ FIRST_OCTET=$(echo $IP_ADDRESS | cut -d'.' -f1)
 FOURTH_OCTET=$(echo $IP_ADDRESS | cut -d'.' -f4)
 
 # Create the subscription name
-SUBSCRIPTION_NAME="sub_${FIRST_OCTET}_${FOURTH_OCTET}_dealer_data"
+SUBSCRIPTION_NAME="sub_${FIRST_OCTET}_${FOURTH_OCTET}_dealer_datas"
 
 # Write the SQL command to a file
 cat << EOF > ./migrations/00014_create_subscription.up.sql

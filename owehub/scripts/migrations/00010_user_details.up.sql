@@ -17,13 +17,13 @@ ADD COLUMN dealer_owner_id BIGINT;
 
 
 -- Add new foreign key constraints to refer to sales_partner_dbhub_schema.item_id
-ALTER TABLE user_details
-    ADD CONSTRAINT user_details_dealerowner_fkey
-        FOREIGN KEY (dealer_owner_id)
-        REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL,
-    ADD CONSTRAINT user_details_partner_id_fkey
-        FOREIGN KEY (partner_id)
-        REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
+-- ALTER TABLE user_details
+--     ADD CONSTRAINT user_details_dealerowner_fkey
+--         FOREIGN KEY (dealer_owner_id)
+--         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL,
+--     ADD CONSTRAINT user_details_partner_id_fkey
+--         FOREIGN KEY (partner_id)
+--         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
 
 
 CREATE OR REPLACE FUNCTION create_new_user(

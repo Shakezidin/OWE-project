@@ -361,7 +361,7 @@ const DealerPayments: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -371,7 +371,7 @@ const DealerPayments: React.FC = () => {
                               setSelectAllChecked
                             )
                           }
-                        />
+                        /> */}
                         {el.unique_id || 'N/A'}
                       </div>
                     </td>

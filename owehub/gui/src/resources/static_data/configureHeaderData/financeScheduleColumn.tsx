@@ -6,7 +6,7 @@ export const FinanceScheduleColumn: Column[] = [
     name: 'finance_company',
     displayName: 'Finance Company',
     type: 'string',
-    isCheckbox: true,
+    isCheckbox: false,
   },
   {
     name: 'finance_type_ref',

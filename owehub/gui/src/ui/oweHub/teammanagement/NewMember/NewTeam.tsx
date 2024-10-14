@@ -176,7 +176,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     let userCode;
     if (
       roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
-      roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
+      roleAdmin === TYPE_OF_USER.REGIONAL_MANGER 
     ) {
       userCode = managers.find((item) => item.email === email);
     }
@@ -197,16 +197,19 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     if (selectedOptions2.length === 0) {
       validationErrors.managers = 'Please select at least one manager';
     }
-
+  if (roleAdmin === TYPE_OF_USER.ADMIN ||  roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) {
     if (selectedOption3.length === 0) {
       validationErrors.dealer = 'Please select at least one dealer';
     }
-
+  }
+    console.log(validationErrors, "hfhjg")
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false); // Set submitting state back to false
       return;
     }
+
+   
 
     const data = {
       team_name: formData.first_name,
@@ -234,12 +237,24 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   };
 
   useEffect(() => {
+
+    // Guard clause to return early if roleAdmin is undefined
+   
     const roleAdmin = authData?.role;
+    console.log(roleAdmin, "userole")
+    console.log(userRole !== TYPE_OF_USER.ADMIN  
+     , "condition" )
+       // Ensure roleAdmin is defined before proceeding
+  if (!authData || typeof roleAdmin === 'undefined') {
+    return; // Exit if authData or roleAdmin are not available
+  }
     if (
-      roleAdmin !== TYPE_OF_USER.ADMIN ||
-      roleAdmin !== TYPE_OF_USER.FINANCE_ADMIN
+      roleAdmin !== TYPE_OF_USER.ADMIN 
+      
     ) {
+    
       (async () => {
+        console.log('test run 1')
         const data: { [key: string]: any } = await getUsersByDealer('');
         if (data?.data?.sale_rep_list) {
           const managers =
@@ -263,7 +278,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         }
       })();
     }
-  }, [userRole]);
+  }, [authData]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -323,6 +338,9 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     (option) => option === selectedOption3
   );
 
+
+
+  console.log(managers, "managers", authData, "authData")
   return (
     <div className="transparent-model">
       {loading && <Loading />}

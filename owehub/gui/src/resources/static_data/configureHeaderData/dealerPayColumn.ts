@@ -86,8 +86,6 @@ export default [
     isCheckbox: false,
   },
   { name: 'rl', displayName: 'RL', type: 'number', isCheckbox: false },
-  { name: 'ntp_complete_date', displayName: 'NTP_Complete_date', type: 'date', isCheckbox: false },
-  { name: 'pv_complete_date', displayName: 'PV_Complete_date', type: 'date', isCheckbox: false },
   {
     name: 'type',
     displayName: 'Type',

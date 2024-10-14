@@ -172,7 +172,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
         }
       >
         {pendingState === "uploading" ? <span style={{ fontSize: 10 }} >
-          uploading...
+          Uploading...
         </span> : " + New"}
       </button>
       {isVisible && (
