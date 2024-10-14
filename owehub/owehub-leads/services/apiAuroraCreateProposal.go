@@ -69,7 +69,8 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 			li.last_name,
 			li.email_id,
 			li.phone_number,
-			li.street_address
+			li.street_address,
+			li.aurora_proposal_id
 		FROM
 			get_leads_info_hierarchy($1) li
 		WHERE
@@ -90,6 +91,14 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		err = fmt.Errorf("leads info not found")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil)
+		return
+	}
+
+	_, ok := data[0]["aurora_proposal_id"]
+	if ok {
+		err = fmt.Errorf("aurora_proposal_id already exists for lead id %d", dataReq.LeadsId)
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Aurora proposal already exists", http.StatusBadRequest, nil)
 		return
 	}
 

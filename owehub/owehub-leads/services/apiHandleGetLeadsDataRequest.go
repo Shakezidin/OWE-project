@@ -28,16 +28,16 @@ import (
 
 func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		startTime    time.Time
-		endTime      time.Time
-		dataReq      models.GetLeadsRequest
-		data         []map[string]interface{}
-		query        string
-		offset       int
-		whereEleList []interface{}
-		whereClause  string
-		recordCount  int64
+		err              error
+		startTime        time.Time
+		endTime          time.Time
+		dataReq          models.GetLeadsRequest
+		data             []map[string]interface{}
+		query            string
+		whereEleList     []interface{}
+		whereClause      string
+		paginationClause string
+		recordCount      int64
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -86,26 +86,50 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// build whereclause based on requested status
 
 	if dataReq.LeadStatus == "NEW" {
-		whereClause = "WHERE li.status_id = 0 AND li.is_appointment_required = TRUE"
+		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE)"
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
-		whereClause = `
-			WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)
-			OR (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
-			OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
-			OR (li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
-		`
+		if dataReq.ProgressFilter == "DEAL_WON" {
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NULL)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
+			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
+			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
+			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+		}
+		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+		}
+		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
+			whereClause = `
+				WHERE (
+					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR (li.status_id = 5 AND LOWER(li.aurora_proposal_status) != 'completed')
+					OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')
+				)
+			`
+		}
 	}
 
 	if dataReq.LeadStatus == "DECLINED" {
-		whereClause = "WHERE li.status_id = 3"
+		whereClause = "WHERE (li.status_id = 3 AND li.is_appointment_required = TRUE)"
 	}
 
 	if dataReq.LeadStatus == "ACTION_NEEDED" {
 		whereClause = `
-			WHERE li.status_id = 4
-			OR (li.status_id IN (1, 2, 5) AND li.appointment_date < CURRENT_TIMESTAMP AND li.proposal_created_date IS NULL)
+			WHERE (
+				li.status_id = 4
+				OR (
+					li.status_id IN (1, 2) 
+					AND li.appointment_date < CURRENT_TIMESTAMP 
+					AND li.is_appointment_required = TRUE
+				)
+			)
 		`
 	}
 
@@ -114,17 +138,13 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
-		offset = (dataReq.PageNumber - 1) * dataReq.PageSize
-	}
+	// filter in all conditions: is_archived, start_time, end_time
+	whereClause = fmt.Sprintf("%s AND li.is_archived = $2 AND li.updated_at BETWEEN $3 AND $4", whereClause)
 
-	whereClause = fmt.Sprintf(`
-			%s 
-			AND li.is_archived = $2
-			AND li.updated_at BETWEEN $3 AND $4
-		`,
-		whereClause,
-	)
+	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
+		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
+		paginationClause = fmt.Sprintf("LIMIT %d OFFSET %d", dataReq.PageSize, offset)
+	}
 
 	query = fmt.Sprintf(`
 			SELECT
@@ -139,6 +159,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.qc_audit,
 				li.appointment_scheduled_date,
 				li.appointment_accepted_date,
+				li.appointment_declined_date,
 				li.lead_won_date,
 				li.is_archived,
 				li.is_appointment_required,
@@ -147,16 +168,14 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FROM get_leads_info_hierarchy($1) li
 			%s
 			ORDER BY li.updated_at DESC
-			LIMIT $5 OFFSET $6;
-		`, whereClause)
+			%s;
+		`, whereClause, paginationClause)
 
 	whereEleList = append(whereEleList,
 		userEmail,
 		dataReq.IsArchived,
 		time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
 		time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
-		dataReq.PageSize,
-		offset,
 	)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -171,6 +190,18 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	LeadsDataList := []models.GetLeadsData{}
 
 	for _, item := range data {
+		// appointment label & appointment date
+		var (
+			aptStatusLabel   string
+			aptStatusDate    *time.Time
+			wonLostLabel     string
+			wonLostDate      *time.Time
+			scheduledDatePtr *time.Time
+			acceptedDatePtr  *time.Time
+			leadWonDatePtr   *time.Time
+			declinedDatePtr  *time.Time
+		)
+
 		leadsId, ok := item["leads_id"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get leads id from leads info Item: %+v\n", item)
@@ -207,24 +238,6 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			streetAddr = ""
 		}
 
-		aptScheduledDate, ok := item["appointment_scheduled_date"].(*time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
-			aptScheduledDate = nil
-		}
-
-		aptAcceptedDate, ok := item["appointment_accepted_date"].(*time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get appointment_accepted_date from leads info Item: %+v\n", item)
-			aptAcceptedDate = nil
-		}
-
-		leadWonDate, ok := item["lead_won_date"].(*time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get lead_won_date from leads info Item: %+v\n", item)
-			leadWonDate = nil
-		}
-
 		statusId, ok := item["status_id"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get won status from leads info Item: %+v\n", item)
@@ -254,42 +267,68 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			qcAudit = ""
 		}
 
-		// variable for action needed message
-		actionNeededMsg := ""
-		if dataReq.LeadStatus == "ACTION_NEEDED" {
-			if aptAcceptedDate == nil {
-				actionNeededMsg = "No Response"
-			} else {
-				actionNeededMsg = "Appointment Accepted"
-			}
+		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
+			scheduledDatePtr = nil
+		} else {
+			scheduledDatePtr = &scheduledDate
 		}
 
-		// appointment label & appointment date
-		var (
-			aptStatusLabel string
-			aptStatusDate  *time.Time
-		)
+		acceptedDate, ok := item["appointment_accepted_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_accepted_date from leads info Item: %+v\n", item)
+			acceptedDatePtr = nil
+		} else {
+			acceptedDatePtr = &acceptedDate
+		}
+
+		leadWonDate, ok := item["lead_won_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get lead_won_date from leads info Item: %+v\n", item)
+			leadWonDatePtr = nil
+		} else {
+			leadWonDatePtr = &leadWonDate
+		}
+
+		declinedDate, ok := item["appointment_declined_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_declined_date from leads info Item: %+v\n", item)
+			declinedDatePtr = nil
+		} else {
+			declinedDatePtr = &declinedDate
+		}
+
 		if !isAptRequired {
 			aptStatusLabel = "Not Required"
 		}
-		if aptScheduledDate != nil {
+		if scheduledDatePtr != nil {
 			aptStatusLabel = "Appointment Sent"
-			aptStatusDate = aptScheduledDate
+			aptStatusDate = scheduledDatePtr
 		}
 
-		if aptAcceptedDate != nil {
+		if acceptedDatePtr != nil {
 			aptStatusLabel = "Appointment Accepted"
-			aptStatusDate = aptAcceptedDate
+			aptStatusDate = acceptedDatePtr
 		}
 
-		// deal won/loss status
-		var (
-			wonLostLabel string
-			wonLostDate  *time.Time
-		)
 		if statusId == 5 {
-			wonLostLabel = "Won"
-			wonLostDate = leadWonDate
+			wonLostLabel = "Deal Won"
+			wonLostDate = leadWonDatePtr
+		}
+
+		if dataReq.LeadStatus == "ACTION_NEEDED" {
+			aptStatusDate = nil
+			if acceptedDatePtr == nil {
+				aptStatusLabel = "No Response"
+			} else {
+				aptStatusLabel = "Appointment Accepted"
+			}
+		}
+
+		if statusId == 3 {
+			aptStatusLabel = "Appointment Declined"
+			aptStatusDate = declinedDatePtr
 		}
 
 		LeadsData := models.GetLeadsData{
@@ -300,7 +339,6 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			EmailID:                email,
 			PhoneNumber:            phoneNo,
 			StreetAddress:          streetAddr,
-			ActionNeededMessage:    actionNeededMsg,
 			AppointmentStatusLabel: aptStatusLabel,
 			AppointmentStatusDate:  aptStatusDate,
 			WonLostLabel:           wonLostLabel,
