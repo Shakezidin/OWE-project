@@ -28,16 +28,16 @@ import (
 
 func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		startTime    time.Time
-		endTime      time.Time
-		dataReq      models.GetLeadsRequest
-		data         []map[string]interface{}
-		query        string
-		offset       int
-		whereEleList []interface{}
-		whereClause  string
-		recordCount  int64
+		err              error
+		startTime        time.Time
+		endTime          time.Time
+		dataReq          models.GetLeadsRequest
+		data             []map[string]interface{}
+		query            string
+		whereEleList     []interface{}
+		whereClause      string
+		paginationClause string
+		recordCount      int64
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -138,17 +138,13 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
-		offset = (dataReq.PageNumber - 1) * dataReq.PageSize
-	}
+	// filter in all conditions: is_archived, start_time, end_time
+	whereClause = fmt.Sprintf("%s AND li.is_archived = $2 AND li.updated_at BETWEEN $3 AND $4", whereClause)
 
-	whereClause = fmt.Sprintf(`
-			%s 
-			AND li.is_archived = $2
-			AND li.updated_at BETWEEN $3 AND $4
-		`,
-		whereClause,
-	)
+	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
+		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
+		paginationClause = fmt.Sprintf("LIMIT %d OFFSET %d", dataReq.PageSize, offset)
+	}
 
 	query = fmt.Sprintf(`
 			SELECT
@@ -172,16 +168,14 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FROM get_leads_info_hierarchy($1) li
 			%s
 			ORDER BY li.updated_at DESC
-			LIMIT $5 OFFSET $6;
-		`, whereClause)
+			%s;
+		`, whereClause, paginationClause)
 
 	whereEleList = append(whereEleList,
 		userEmail,
 		dataReq.IsArchived,
 		time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
 		time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
-		dataReq.PageSize,
-		offset,
 	)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
