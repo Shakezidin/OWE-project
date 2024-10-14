@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   PieChart,
   Pie,
@@ -51,6 +51,7 @@ import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
+import { debounce } from '../../utiles/debounce';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -662,6 +663,16 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('');
+
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 800),
+    []
+  );
+
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
@@ -698,6 +709,7 @@ const LeadManagementDashboard = () => {
         "status": statusId,
         is_archived: archive,
         progress_filter: selectedValue ? selectedValue : "ALL",
+        search:searchTerm,
         page_size: 10,
         page_number: archive ? 1 : page,
       };
@@ -709,6 +721,7 @@ const LeadManagementDashboard = () => {
       }
     }
   }, [
+    searchTerm,
     selectedDates,
     isModalOpen,
     archive,
@@ -1536,6 +1549,16 @@ Overview
                     type="text"
                     placeholder="Search by customer name"
                     className={styles.searchInput}
+                    onChange={(e) => {
+                      if (e.target.value.length <= 50) {
+                        e.target.value = e.target.value.replace(
+                          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                          ''
+                        );
+                        handleSearchChange(e);
+                        setSearch(e.target.value);
+                      }
+                    }}
                   />
                 </div>
 
