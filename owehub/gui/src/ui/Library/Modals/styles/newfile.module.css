@@ -7,19 +7,23 @@
   width: 74px;
   height: 30px;
   border-radius: 8px;
-  color: #fff;
-  background-color: #377cf6;
+  border: 1px solid #AFAFAF;
+  color: #3E3E3E;
+ background-color: #fff;
   font-size: 14px;
   font-weight: 500;
   line-height: 21px;
   font-family: 'Poppins';
   cursor: pointer;
-  border: none;
+  
   transition: all 0.3s ease;
 }
 
 .newfile_botton:hover {
+  color: #fff;
+  background-color: #377cf6;
   transform: scale(1.05);
+  border: none;
 }
 .newfilelibrary_uploadbutton_container {
   list-style: none;

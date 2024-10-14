@@ -119,6 +119,11 @@
     display: flex;
     font-size: 19px;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+.infoIcon:hover{
+    background-color: #ddebff;
+    transform: scale(1.06);
 }
 .prop_send{
     display: flex;

@@ -158,6 +158,7 @@ import DeleteICONBOX from '../assets/DeleteICONBOX.svg';
 import DownArrowDashboard from "../assets/AboverArrow.svg"
 import ChecronUpX from "../assets/UpArrowDashboard.svg"
 import videoPlayerIcon from '../assets/video_player_icon.png';
+import VersionLogo from '../assets/version_logo.svg'
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -334,4 +335,5 @@ export const ICONS = {
   folderImage,
   viedoImageOne,
   viedoplay,
+  VersionLogo: VersionLogo
 };

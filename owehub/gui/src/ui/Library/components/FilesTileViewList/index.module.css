@@ -1,8 +1,9 @@
 .list_grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 150px)); /* Use auto-fit for better behavior */
-    column-gap: 42px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 160px)); /* Use auto-fit for better behavior */
+    column-gap: 32px;
     row-gap: 62px;
+    align-items: start;
     /* justify-content: center; */
     padding-inline: 25px;
     border-top: 1px solid #EFF5FF;

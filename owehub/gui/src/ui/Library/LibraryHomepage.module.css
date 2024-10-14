@@ -1,10 +1,19 @@
 .lib_Grid_Header {
+
   display: grid;
   grid-template-columns: 1fr 1fr 1fr ;
-  gap: 16px;
+
+  /* gap: 136px; */
   padding: 20px 24px;
   font-size: large;
   background-color: #eff5ff;
+  /* border: 1px solid black; */
+}
+.grid_item_uploaded{
+  /* border: 1px solid black; */
+  display: flex;
+  gap: 280px;
+  /* justify-content: space-between; */
 }
 
 
@@ -21,8 +30,7 @@
 
 .libGridItem {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr 1fr 1fr; 
   padding: 25px;
   background-color: #ffffff;
   align-items: center;
@@ -51,6 +59,7 @@
   padding: 24px;
   border-top-left-radius: 16px !important;
   border-top-right-radius: 16px !important;
+  height: 63.5px;
 }
 
 .recycle_div {
@@ -99,10 +108,17 @@
   font-family: poppins;
   font-weight: 500;
   font-size: 16px;
-  color: #8c8c8c;
+  color: #3E3E3E;
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
+
+}
+.buttons:hover {
+  color: #eff5ff;
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+  transform: scale(1.05);
 
 }
 
@@ -113,7 +129,7 @@
   font-family: poppins;
   font-weight: 500;
   font-size: 16px;
-  color: #8c8c8c;
+  color:#3E3E3E;
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -144,13 +160,7 @@
   cursor: pointer;
 }
 
-.buttons:hover {
-  color: #377cf6;
-  background-color: #eff5ff;
-  border: 1px solid #377cf6;
-  transform: scale(1.05);
 
-}
 
 .recycleBin {
   position: relative;
@@ -201,7 +211,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid #000;
+  border: 1px solid #8C8C8C;
   border-radius: 8px;
   padding: 5px 10px;
   cursor: pointer;
@@ -217,6 +227,8 @@
   width: 100%;
   overflow: hidden;
   text-overflow: initial;
+  color: black;
+ 
 }
 
 .customer_wrapper_list {
@@ -269,7 +281,9 @@
   display: flex;
   flex-direction: row;
   gap: 16px;
+ 
 }
+
 
 .file_icon {
   display: flex;
@@ -279,12 +293,15 @@
   text-align: center;
   justify-content: center;
   align-items: center;
+  
 }
 
 .table_name {
-  text-align: start;
+   text-align: start;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: flex-start; 
+ 
+  
 }
 
 .sorting p {
@@ -295,14 +312,37 @@
   font-size: 16px;
   font: poppins;
   font-weight: 500;
+  /* border: 1px solid black; */
 }
 
-.libGridItem .grid_item {
+.libGridItem .grid_item_dates{
   font-size: 14px;
   font: poppins;
   font-weight: 400;
+  text-align: center;
+   /* border: 1px solid black;  */
+}
+.libGridItem .grid_item_delete{
+  font-size: 14px;
+  font: poppins;
+  font-weight: 400;
+  position: relative;
+  right: 8px;
+  
+
 }
 
+
+.libname_heading{
+  position: relative;
+  left: 10px;
+}
+.grid_item_dates_upload{
+  
+  /* border: 1px solid black;  */
+  display: flex;
+  gap: 280px;
+}
 .libGridItem {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -353,9 +393,41 @@
 }
 
 .icons {
-  cursor: pointer;
+  cursor: pointer; 
+  
+  
 }
+.icons_download{
+  cursor: pointer; 
+  height: 18px;
+  width: 18px;
+  color: #667085;
+  transition: all 0.3s ease;
 
+}
+.icons_download:hover{
+  color: #377CF6;
+    transform: scale(1.09);
+}
+.icons_delete{
+  cursor: pointer; 
+  height: 18px;
+  width: 18px;
+  color: #667085;
+  transition: all 0.3s ease;
+
+}
+.icons_delete:hover{
+    color: #377CF6;
+    transform: scale(1.09);
+}
+.icons_downloadfolders{
+  cursor: pointer; 
+  height: 18px;
+  width: 18px;
+  color: #667085;
+  transition: all 0.3s ease;
+}
 .searchWrapper:hover {
   border: 1px solid #377cf6;
 }
@@ -416,7 +488,21 @@
   color: #FFFFFF;
   background-color: #ff0000;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  height:31.5px;
+}
+.DeleteButtonForFile{
+  font-family: 'poppins' sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  color: #FFFFFF;
+  background-color: #ff0000;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  height:33.6px;
 }
 
 .DeleteButton:disabled{

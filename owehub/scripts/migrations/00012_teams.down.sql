@@ -1,5 +1,5 @@
-ALTER TABLE teams
-    DROP CONSTRAINT IF EXISTS teams_dealer_fkey;
+-- ALTER TABLE teams
+--     DROP CONSTRAINT IF EXISTS teams_dealer_fkey;
 
 -- Drop the columns that were added
 ALTER TABLE teams

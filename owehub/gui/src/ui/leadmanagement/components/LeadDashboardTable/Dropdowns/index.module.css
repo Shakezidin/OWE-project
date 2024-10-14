@@ -141,6 +141,10 @@
   align-items: center;
   justify-content: center;
 }
+.disabled{
+  color: grey !important;
+  cursor: not-allowed !important;
+}
 /* HERE FOR RESPONSIVESNESS */
 
 @media screen and (max-width: 1200px) {
