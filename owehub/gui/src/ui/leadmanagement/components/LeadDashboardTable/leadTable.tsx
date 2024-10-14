@@ -105,8 +105,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleOpenProfileModal = () => {
+  const handleOpenProfileModal = (leadsId:number) => {
     setIsProfileOpen(true);
+    setLeadId(leadsId);
   };
 
   const handleCloseProfileModal = () => {
@@ -177,7 +178,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                       </div>
                     </th>
                   ))}
-                  <th onClick={handleMoreClick} style={{ fontWeight: '500', color: 'black', backgroundColor: "#d5e4ff", display: 'flex', alignItems: 'center', justifyContent: 'flex-start', cursor: "pointer" }} className={styles.FixedColumn}>+ More<FaAngleRight style={{ marginLeft: '-16px' }} /></th>
+                  <th onClick={handleMoreClick} style={{ fontWeight: '500', color: 'black', backgroundColor: "#d5e4ff", display: 'flex', alignItems: 'center', justifyContent: 'flex-start', cursor: "pointer" }} className={styles.FixedColumn}> More<FaAngleRight style={{ marginLeft: '-16px' }} /></th>
                 </tr>
               </thead>
               <tbody>
@@ -345,7 +346,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                           />
 
                         </div>
-                        <div className={styles.infoIcon} onClick={handleOpenProfileModal}>
+                        <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)}>
                           <IoInformationOutline />
                         </div>
                       </td>

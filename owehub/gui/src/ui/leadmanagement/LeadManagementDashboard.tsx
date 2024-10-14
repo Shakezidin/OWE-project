@@ -22,6 +22,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
+import Papa from 'papaparse';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -80,6 +81,8 @@ interface Proposal {
   proposal_link: string;
 }
 
+
+
 interface WebProposal {
   url: string;
   url_expired: boolean;
@@ -133,152 +136,7 @@ type Lead = {
   status: string;
 };
 
-const leads = [
-  {
-    id: '1',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '2',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '3',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '4',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '5',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '6',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '7',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '8',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '9',
-    name: 'Rabindra Kumar Sharma',
-    phone: '+00 876472822',
-    email: 'rabindr718@gmail.com',
-    address: 'Patel Nagar, Dehradun, UK',
-    status: 'Accepted',
-  },
-  {
-    id: '10',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Declined',
-  },
-  {
-    id: '11',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '12',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Accepted',
-  },
-  {
-    id: '13',
-    name: 'XYZ Name',
-    phone: '+00 876472822',
-    email: 'xyz8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '14',
-    name: 'Virendra Sehwag',
-    phone: '+00 876472822',
-    email: 'sehwag8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '15',
-    name: 'Bhuvneshwar Kumar',
-    phone: '+00 876472822',
-    email: 'bhuvi8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'No Response',
-  },
-  {
-    id: '16',
-    name: 'Jasprit Bumrah',
-    phone: '+00 876472822',
-    email: 'jasprit8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Update Status',
-  },
-  {
-    id: '17',
-    name: 'Risabh Pant',
-    phone: '+00 876472822',
-    email: 'rp8772@gmail.com',
-    address: 'haridwar, Delhi',
-    status: 'No Response',
-  },
-  {
-    id: '18',
-    name: 'Virat Kohli',
-    phone: '+00 876472822',
-    email: 'king8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Deal Won',
-  },
-];
+
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -397,29 +255,7 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Pending':
-      return '#FF832A';
-    case 'Sent':
-      return '#81A6E7';
-    case 'Accepted':
-      return '#52B650';
-    case 'Declined':
-      return '#CD4040';
-    case 'Action Needed':
-      return '#63ACA3';
-    default:
-      return '#000000';
-  }
-};
 
-// const ActionNeeded={
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-// }
 const statusMap = {
   'Pending leads': 'Pending',
   'Appointment accepted': 'Accepted',
@@ -473,7 +309,6 @@ const CustomTooltip = ({
 const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
-  const [filteredLeads, setFilteredLeads] = useState(leads);
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -484,6 +319,7 @@ const LeadManagementDashboard = () => {
   // const [ChevronClick, setChevronClick] = useState(true);
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
+  const [selectedValue, setSelectedValue] = useState('');
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -611,7 +447,7 @@ const LeadManagementDashboard = () => {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
-      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+
     }
   }, [activeIndex]);
 
@@ -621,7 +457,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
-    setFilteredLeads(leads.filter((lead) => lead.status === filter));
+
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -837,10 +673,10 @@ const LeadManagementDashboard = () => {
           statusId = "NEW";
           break;
         case 'Sent':
-          statusId = 1;
+          statusId = "PROGRESS";
           break;
         case 'Accepted':
-          statusId = 2;
+          statusId = "PROGRESS";
           break;
         case 'Declined':
           statusId = "DECLINED";
@@ -861,6 +697,7 @@ const LeadManagementDashboard = () => {
           : '',
         "status": statusId,
         is_archived: archive,
+        progress_filter: selectedValue ? selectedValue : "ALL",
         page_size: 10,
         page_number: archive ? 1 : page,
       };
@@ -879,10 +716,10 @@ const LeadManagementDashboard = () => {
     itemsPerPage,
     page,
     currentFilter,
+    selectedValue,
     refresh,
     ref,
   ]);
-console.log(leadsData)
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -1166,9 +1003,114 @@ console.log(leadsData)
 
   const exportCsv = async () => {
     setIsExporting(true);
+    const headers = [
+      'Leads ID',
+      'Status ID',
+      'First Name',
+      'Last Name',
+      'Phone Number',
+      'Email ID',
+      'Street Address',
+      'Zipcode',
+      'Deal Date',
+      'Deal Status',
+      'Appointment Scheduled',
+      'Appointment Accepted',
+      'Appointment Date',
+      'Deal Won',
+      'Proposal Sent',
+    ];
+
+    let statusId;
+    switch (currentFilter) {
+      case 'Action Needed':
+        statusId = "ACTION_NEEDED";
+        break;
+      case 'Pending':
+        statusId = "NEW";
+        break;
+      case 'Sent':
+        statusId = 1;
+        break;
+      case 'Accepted':
+        statusId = 2;
+        break;
+      case 'Declined':
+        statusId = "DECLINED";
+        break;
+      case 'Projects':
+        statusId = 5;
+        break;
+      default:
+        statusId = "NEW";
+    }
+
+    const data = {
+      start_date: selectedDates.startDate
+        ? format(selectedDates.startDate, 'dd-MM-yyyy')
+        : '',
+      end_date: selectedDates.endDate
+        ? format(selectedDates.endDate, 'dd-MM-yyyy')
+        : '',
+      "status": statusId,
+      is_archived: archive,
+      progress_filter: selectedValue ? selectedValue : "ALL",
+      page_size: 0,
+      page_number: 0,
+    };
+
+    try {
+      const response = await postCaller(
+        'get_leads',
+        data,
+        true
+      );
+
+      if (response.status > 201) {
+        toast.error(response.data.message);
+        setIsExporting(false);
+        return;
+      }
+
+      console.log(response.data, "exposrt console")
+
+      const csvData = response.data?.map?.((item: any) => [
+        item.leads_id,
+        item.status_id,
+        item.first_name,
+        item.last_name,
+        item.phone_number,
+        item.email_id,
+        item.street_address,
+        item.appointment_status_label,
+        item.appointment_status_date,
+        item.won_lost_label,
+        item.won_lost_date,
+        item.finance_company,
+        item.finance_type,
+        item.qc_audit,
+      ]);
+
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'leads.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while exporting the data.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
-    //************************************************************************************************ */
+
+  //************************************************************************************************ */
 
   return (
     <div className={styles.dashboard}>
@@ -1204,8 +1146,8 @@ console.log(leadsData)
       />
       {/* //WORKING DIRECTORY */}
 
-     {/* ************************************************************************************************  */}
-     {/* Header LayOut for graphs and Buttons by Rabindra */}
+      {/* ************************************************************************************************  */}
+      {/* Header LayOut for graphs and Buttons by Rabindra */}
 
       <div className={styles.chartGrid}>
 
@@ -1579,7 +1521,7 @@ console.log(leadsData)
                 <HistoryRedirect
                 // setArchive={setArchive} 
                 />
-                <LeadTableFilter setArchive={() => { }} />
+                <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
@@ -1659,7 +1601,7 @@ console.log(leadsData)
               <DataNotFound />
             )
           ) : (
-            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh}/>
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} />
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
