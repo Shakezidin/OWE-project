@@ -178,7 +178,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                       </div>
                     </th>
                   ))}
-                  <th onClick={handleMoreClick} style={{ fontWeight: '500', color: 'black', backgroundColor: "#d5e4ff", display: 'flex', alignItems: 'center', justifyContent: 'flex-start', cursor: "pointer" }} className={styles.FixedColumn}>+ More<FaAngleRight style={{ marginLeft: '-16px' }} /></th>
+                  <th onClick={handleMoreClick} style={{ fontWeight: '500', color: 'black', backgroundColor: "#d5e4ff", display: 'flex', alignItems: 'center', justifyContent: 'flex-start', cursor: "pointer" }} className={styles.FixedColumn}> More<FaAngleRight style={{ marginLeft: '-16px' }} /></th>
                 </tr>
               </thead>
               <tbody>
