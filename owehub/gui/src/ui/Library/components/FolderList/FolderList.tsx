@@ -64,7 +64,7 @@ const FolderList = (props: IFolder) => {
 
                 </div>
             </div>
-            <div className={sharedStyles.grid_item} style={{ fontSize: "14px" }}>
+            <div className={` ${sharedStyles.sm_hide} ${sharedStyles.grid_item}`} style={{ fontSize: "14px" }}>
     {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
 </div>
             <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>

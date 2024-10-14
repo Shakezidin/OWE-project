@@ -56,7 +56,7 @@ const FolderListView = ({ folders, onDelete,handleCheckboxChange,selected,setSel
                     </div>
                 </div>
 
-                <div className={sharedStyles.grid_item}>Uploaded Date</div>
+                <div className={`${sharedStyles.sm_hide} ${sharedStyles.grid_item}`}>Uploaded Date</div>
                 <div className={sharedStyles.grid_item}>Actions</div>
             </div>
             {

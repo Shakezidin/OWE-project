@@ -357,6 +357,8 @@
 .name {
   font-family: inter;
   font-weight: 500;
+  word-break: break-all;
+  width: 100%;
   font-size: 14px;
   color: #101828;
 }
@@ -605,6 +607,7 @@
   .sm_hide{
     display: none;
   }
+  
   .lib_Grid_Header,.libGridItem{
     grid-template-columns: 80% auto;
   }
@@ -635,6 +638,12 @@
   }
   .libSecHeader{
     padding: 15px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter_button{
+    display: none;
   }
 }
 
