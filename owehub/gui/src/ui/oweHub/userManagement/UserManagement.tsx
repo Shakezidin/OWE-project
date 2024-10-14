@@ -207,7 +207,7 @@ const UserManagement: React.FC = () => {
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
-  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm, activeSalesRep]);
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
