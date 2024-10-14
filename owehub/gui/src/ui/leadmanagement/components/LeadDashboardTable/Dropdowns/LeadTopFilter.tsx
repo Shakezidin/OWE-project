@@ -7,7 +7,12 @@ interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
 
-const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
+interface SelectedValueState {
+  selectedValue: string;
+  setSelectedValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', setSelectedValue }) => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const clickableDivRef = useRef<HTMLDivElement>(null);
   const HistoryButtonCalled = () => {
@@ -30,7 +35,7 @@ const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
     };
   }, []);
 
-  const [selectedValue, setSelectedValue] = useState('');
+  
 
   const handleItemClick = (value: string) => {
     setSelectedValue(value);
@@ -48,16 +53,16 @@ const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
 
 
             <li
-              className={`${classes.selectedFilter} ${selectedValue === 'All' ? classes.active : ''}`}
-              onClick={() => handleItemClick('All')}
+              className={`${classes.selectedFilter} ${selectedValue === 'ALL' ? classes.active : ''}`}
+              onClick={() => handleItemClick('ALL')}
             >
               All{' '}
             </li>
 
 
             <li
-              className={`${classes.selectedFilter} ${selectedValue === 'Deal Won' ? classes.active : ''}`}
-              onClick={() => handleItemClick('Deal Won')}
+              className={`${classes.selectedFilter} ${selectedValue === 'DEAL_WON' ? classes.active : ''}`}
+              onClick={() => handleItemClick('DEAL_WON')}
             >
              
               Deal Won
@@ -65,27 +70,27 @@ const LeadTableFilter = ({ setArchive }: HistoryRedirectProps) => {
 
 
             <li
-              className={`${classes.selectedFilter} ${selectedValue === 'Appointment Accepted' ? classes.active : ''}`}
-              onClick={() => handleItemClick('Appointment Accepted')}
+              className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_ACCEPTED' ? classes.active : ''}`}
+              onClick={() => handleItemClick('APPOINTMENT_ACCEPTED')}
             >
               Appointment Accepted{' '}
             </li>
-            <li className={`${classes.selectedFilter} ${selectedValue === 'Appointment Sent' ? classes.active : ''}`}
+            <li className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_SENT' ? classes.active : ''}`}
               
-              onClick={() => handleItemClick('Appointment Sent')}
+              onClick={() => handleItemClick('APPOINTMENT_SENT')}
             >
               {' '}
               Appointment Sent
             </li>
-            <li className={`${classes.selectedFilter} ${selectedValue === 'Proposal In Progress' ? classes.active : ''}`}
+            <li className={`${classes.selectedFilter} ${selectedValue === 'PROPOSAL_IN_PROGRESS' ? classes.active : ''}`}
               
-              onClick={() => handleItemClick('Proposal In Progress')}
+              onClick={() => handleItemClick('PROPOSAL_IN_PROGRESS')}
             >
               Proposal In Progress{' '}
             </li>
-            <li className={`${classes.selectedFilter} ${selectedValue === 'Appointment Not Required' ? classes.active : ''}`}
+            <li className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_NOT_REQUIRED' ? classes.active : ''}`}
              
-              onClick={() => handleItemClick('Appointment Not Required')}
+              onClick={() => handleItemClick('APPOINTMENT_NOT_REQUIRED')}
             >
               {' '}
               Appointment Not Required

@@ -21,7 +21,7 @@ const Profile: React.FC<EditModalProps> = ({
     const RedirectMainDashboard = () => {
         navigate('/leadmng-dashboard')
     }
-
+   console.log(leadId, "ghfghfghf")
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list}>
