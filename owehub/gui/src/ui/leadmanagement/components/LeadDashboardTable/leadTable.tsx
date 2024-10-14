@@ -105,8 +105,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleOpenProfileModal = () => {
+  const handleOpenProfileModal = (leadsId:number) => {
     setIsProfileOpen(true);
+    setLeadId(leadsId);
   };
 
   const handleCloseProfileModal = () => {
@@ -345,7 +346,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh }: Lea
                           />
 
                         </div>
-                        <div className={styles.infoIcon} onClick={handleOpenProfileModal}>
+                        <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)}>
                           <IoInformationOutline />
                         </div>
                       </td>
