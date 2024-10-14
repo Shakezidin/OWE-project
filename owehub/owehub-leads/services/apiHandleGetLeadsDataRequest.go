@@ -109,8 +109,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			whereClause = `
 				WHERE (
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-					OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
-					OR (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) != 'completed')
+					OR (li.status_id = 5 AND LOWER(li.aurora_proposal_status) != 'completed')
 					OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) != 'completed')
 				)
 			`
