@@ -43,6 +43,7 @@ import FilesTileViewList from './components/FilesTileViewList/FilesTileViewList'
 import Input from '../components/text_input/Input';
 import CheckBox from '../components/chekbox/CheckBox';
 import FolderListView from './components/FolderListView/FolderListView';
+import useMatchMedia from '../../hooks/useMatchMedia';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -71,6 +72,7 @@ const LibraryHomepage = () => {
     fileType: "",
     url: ""
   })
+  const isMobile = useMatchMedia("(max-width: 450px)")
   const [selectedCheckbox, setSelectedCheckbox] = useState<Set<string>>(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
@@ -664,12 +666,12 @@ const LibraryHomepage = () => {
               }} />
             </div>
             <span className={styles.selectedCount}>
-            {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ' '}
-               selected
+              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ' '}
+              selected
             </span>
           </div>
           <div className={styles.delete_right}>
-            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile :styles.DeleteButton} onClick={() => OpenModal()}>
+            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile : styles.DeleteButton} onClick={() => OpenModal()}>
               Delete
             </button>
           </div>
@@ -707,6 +709,7 @@ const LibraryHomepage = () => {
           {activeSection !== 'folders' && (
             <div
               ref={dropdownRef}
+
               onClick={handleDivClick}
               style={toggleClick ? { borderColor: '#377cf6' } : {}}
             >
@@ -730,17 +733,19 @@ const LibraryHomepage = () => {
           ) : null}
         </div>
 
-        <div className={styles.libSecHeader_right}>
-          <button onClick={() => setFilesView("list")} className={` ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+        <div className={`  ${styles.libSecHeader_right}`}>
+          <button onClick={() => setFilesView("list")} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
-          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+          <button onClick={() => setFilesView("tiles")} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
+          <div className={`${styles.sm_hide}`}>
 
-          <SortByLibrary onSort={handleSort} />
+            <SortByLibrary onSort={handleSort} />
+          </div>
 
-          <div className={styles.searchWrapper}>
+          <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
             <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
             {/* SEARCHINGGGG */}
             <input
@@ -801,8 +806,8 @@ const LibraryHomepage = () => {
               Name
             </div>
 
-            <div className={styles.grid_item}>Uploaded Date</div>
-            <div style={{textAlign:"end"}} className={` ${styles.grid_item}`}>Actions</div>
+            <div className={`${styles.grid_item} ${styles.sm_hide}`}>Uploaded Date</div>
+            <div style={{ textAlign: "end" }} className={` ${styles.grid_item}`}>Actions</div>
           </div>
 
           {currentFolderContent.map((item) => {
@@ -917,14 +922,14 @@ const LibraryHomepage = () => {
                     setAllIds([])
                     setCheckedItems(0)
 
-            
+
                   } else {
                     const newSet = new Set(sortedData.map((item) => item.id))
                     setSelectedCheckbox(newSet)
                     setAllIds(Array.from(newSet))
                     setCheckedItems(newSet.size)
                   }
-                  
+
                 }} />
               </div>
               <span className={styles.libname_heading}>
@@ -932,7 +937,7 @@ const LibraryHomepage = () => {
               </span>
             </div>
           </div>
-          <div className={styles.grid_item}>Uploaded Date</div>
+          <div className={` ${styles.sm_hide} ${styles.grid_item}`}>Uploaded Date</div>
 
           <div className={styles.grid_item}>Actions</div>
         </div>}
@@ -988,7 +993,7 @@ const LibraryHomepage = () => {
                           loading='lazy'
                         />
                         <div>
-                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >=26 ? '...': ''}</p>
+                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
                           <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -1000,7 +1005,7 @@ const LibraryHomepage = () => {
                         </div>
                       </div>
                     </div>
-                    <div className={styles.grid_item_dates}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                    <div className={` ${styles.sm_hide} ${styles.grid_item_dates}`}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                     <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
 
                       <div>
@@ -1076,8 +1081,30 @@ const LibraryHomepage = () => {
 
   return (
     <div className={styles.libraryContainer}>
-      <div className={styles.libraryHeader}>
+      <div className={`${styles.libraryHeader} flex items-center justify-between`}>
         <h3>Library</h3>
+        <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
+          <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
+            <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
+            <input
+              type="text"
+              value={searchValue}
+              onChange={HandleSearch}
+              placeholder="Search by file name or person"
+              className={styles.searchInput}
+              maxLength={25}
+            />
+          </div>
+          <div className={styles.sort_container} >
+            <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
+          </div>
+          <button onClick={() => setFilesView("list")} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+            <TiThMenu />
+          </button>
+          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+            <BsGrid />
+          </button>
+        </div>
       </div>
 
       {isRecycleBinView ? (

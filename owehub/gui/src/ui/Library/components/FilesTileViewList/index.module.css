@@ -12,3 +12,16 @@
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
+
+@media (max-width: 450px) {
+    .list_grid{
+        column-gap: normal;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 380px) {
+    .list_grid{
+        grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
+    }
+}
