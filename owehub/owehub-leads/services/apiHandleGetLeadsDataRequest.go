@@ -100,10 +100,10 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
-			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) != 'completed')"
+			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
-			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) != 'completed')"
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause = `
