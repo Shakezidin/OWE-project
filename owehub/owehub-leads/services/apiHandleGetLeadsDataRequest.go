@@ -66,27 +66,16 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// validating start date
-	startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
-		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
-		return
-	}
-
-	// validating end date
-	endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
-		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
-		return
-	}
-
 	userEmail := req.Context().Value("emailid").(string)
 
 	whereEleList = append(whereEleList, userEmail)
-	// build whereclause based on requested status
 
+	// no condition specified, default to all
+	if dataReq.LeadStatus == "" {
+		whereClause = "WHERE li.leads_id IS NOT NULL"
+	}
+
+	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
 		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE)"
 	}
@@ -141,9 +130,13 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.Search != "" {
-		placeholder := fmt.Sprintf("$%d", len(whereEleList)+1)
-		whereClause = fmt.Sprintf("%s AND (li.first_name ILIKE %s OR li.last_name ILIKE %s)", whereClause, placeholder, placeholder)
 		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
+		whereClause = fmt.Sprintf(
+			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
+			whereClause,
+			len(whereEleList),
+			len(whereEleList),
+		)
 
 		// if search query convertible to int, search by id as well
 		searchId, searchIdErr := strconv.Atoi(dataReq.Search)
@@ -152,14 +145,33 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+		// validating start date
+		startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
+			appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+			return
+		}
+
+		// validating end date
+		endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
+			appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+			return
+		}
+
+		whereClause = fmt.Sprintf("%s AND li.updated_at BETWEEN $%d AND $%d", whereClause, len(whereEleList)+1, len(whereEleList)+2)
+		whereEleList = append(whereEleList,
+			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
+			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
+		)
+	}
+
 	// filter in all conditions: is_archived, start_time, end_time
-	whereClause = fmt.Sprintf(
-		"%s AND li.is_archived = $%d AND li.updated_at BETWEEN $%d AND $%d",
-		whereClause,
-		len(whereEleList)+1,
-		len(whereEleList)+2,
-		len(whereEleList)+3,
-	)
+	whereEleList = append(whereEleList, dataReq.IsArchived)
+	whereClause = fmt.Sprintf("%s AND li.is_archived = $%d", whereClause, len(whereEleList))
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
 		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
@@ -190,12 +202,6 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ORDER BY li.updated_at DESC
 			%s;
 		`, whereClause, paginationClause)
-
-	whereEleList = append(whereEleList,
-		dataReq.IsArchived,
-		time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
-		time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
-	)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
