@@ -54,7 +54,7 @@ export const ROUTES = {
   CONFIG_FINANCE_SCHEDULE: '/config/finance-schedule',
   CONFIG_SALES_PARTNER_PAY: '/config/sales-partner-commision',
   CONFIG_FINANCE_TYPES: '/config/finance-types',
-  TEAM_MANAGEMENT_TABLE: '/team-management/:id',
+  TEAM_MANAGEMENT_TABLE: '/teammanagement/dashboard/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
   SS_ONBOARDING: '/ss-onboarding',
