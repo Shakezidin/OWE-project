@@ -265,7 +265,7 @@ table tbody tr:hover {
 .history_list_inner {
   display: grid !important;
   grid-template-columns:
-    auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr)
+    auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr) auto 
     0.4fr auto !important;
   align-items: center !important;
   padding: 16px !important;
@@ -1064,3 +1064,17 @@ input[type='checkbox']:checked {
 }
 
 } */
+.infoIcon {
+  padding: 5px 5px;
+  border-radius: 50%;
+  border: 1px solid #377CF6;
+  color: #377CF6;
+  display: flex;
+  font-size: 19px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.infoIcon:hover{
+  background-color: #ddebff;
+  transform: scale(1.06);
+}

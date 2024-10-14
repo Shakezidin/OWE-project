@@ -17,12 +17,16 @@ import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
+import { IoInformationOutline } from 'react-icons/io5';
+import LeadManamentSucessModel from './Modals/LeaderManamentSucessModel';
 
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
   activeIndex: number;
   setActiveIndex: (value: number | ((prev: number) => number)) => void;
 }
+
+
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -39,22 +43,34 @@ type Lead = {
   status: string;
 };
 
-const ArchivedPages = ({
-  activeIndex,
-  setActiveIndex,
-  setArchive,
-}: HistoryRedirectProps) => {
-  const [selectedMonth, setSelectedMonth] = useState('Aug');
+
+
+  const ArchivedPages = ()=>{
+    // const [isAuthenticated, setAuthenticated] = useState(false);
+    // const [loading, setIsLoading] = useState(false);
+
+    const leads = [
+      {
+        id: '1',
+        name: 'Adam Samson',
+        phone: '+00 876472822',
+        email: 'adamsamson8772@gmail.com',
+        address: '12778 Domingo Ct, 1233Parker, CO',
+        status: 'Pending',
+      },
+ 
+    ];
+
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
 
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   const isMobile = width <= 767;
 
-  // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(null);
@@ -77,6 +93,13 @@ const ArchivedPages = ({
       setIsCalendarOpen(false);
     }
   };
+  const handleOpenProfileModal = () => {
+    setIsProfileOpen(true);
+  };
+  const handleCloseProfileModal = () => {
+    setIsProfileOpen(false);
+  };
+
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -88,9 +111,9 @@ const ArchivedPages = ({
     };
   }, []);
 
-  const onClickCrossIconBotton = () => {
-    setArchive(false);
-  };
+  // const onClickCrossIconBotton = () => {
+  //   setArchive(false);
+  // };
 
   const handleChevronClick = (itemId: number) => {
     console.log(itemId);
@@ -123,116 +146,119 @@ const ArchivedPages = ({
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
+console.log(leadsData)
 
-  const [pending, setPending] = useState(false);
-  const [pending1, setPending1] = useState(false);
-  const [pending2, setPending2] = useState(false);
-  const [pending3, setPending3] = useState(false);
 
-  const deleteLeads = async () => {
-    setPending(true);
-    try {
-      const response = await postCaller(
-        'delete_lead',
-        {
-          ids: selectedLeads,
-        },
-        true
-      );
+  // const deleteLeads = async () => {
+  //   setPending(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'delete_lead',
+  //       {
+  //         ids: selectedLeads,
+  //       },
+  //       true
+  //     );
 
-      if (response.status === 200) {
-        setSelectedLeads([]);
-        setActiveIndex((prev) => prev + 1);
-        toast.success('Leads deleted successfully');
-      } else {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error deleting leads:', error);
-    }
-    setPending(false);
-  };
+  //     if (response.status === 200) {
+  //       setSelectedLeads([]);
+  //       // setActiveIndex((prev) => prev + 1);
+  //       toast.success('Leads deleted successfully');
+  //     } else {
+  //       toast.warn(response.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting leads:', error);
+  //   }
+  //   setPending(false);
+  // };
 
   const unArchiveLeads = async () => {
-    setPending1(true);
-    try {
-      const response = await postCaller(
-        'toggle_archive',
-        {
-          ids: selectedLeads,
-          is_archived: false,
-        },
-        true
-      );
+    // setPending1(true);
+    // try {
+    //   const response = await postCaller(
+    //     'toggle_archive',
+    //     {
+    //       ids: selectedLeads,
+    //       is_archived: false,
+    //     },
+    //     true
+    //   );
 
-      if (response.status === 200) {
-        setSelectedLeads([]);
-        setActiveIndex((prev) => prev + 1);
-        toast.success('Leads Unarcived successfully');
-      } else {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error deleting leads:', error);
-    }
-    setPending1(false);
+    //   if (response.status === 200) {
+    //     setSelectedLeads([]);
+    //     // setActiveIndex((prev) => prev + 1);
+    //     toast.success('Leads Unarcived successfully');
+    //   } else {
+    //     toast.warn(response.message);
+    //   }
+    // } catch (error) {
+    //   console.error('Error deleting leads:', error);
+    // }
+    // setPending1(false);
   };
 
   const deleteLead = async (leadId: number) => {
-    setPending2(true);
-    try {
-      const response = await postCaller(
-        'delete_lead',
-        {
-          ids: [leadId],
-        },
-        true
-      );
+    // setPending2(true);
+    // try {
+    //   const response = await postCaller(
+    //     'delete_lead',
+    //     {
+    //       ids: [leadId],
+    //     },
+    //     true
+    //   );
 
-      if (response.status === 200) {
-        setActiveIndex((prev) => prev + 1);
-        setSelectedLeads((prevSelectedLeads) =>
-          prevSelectedLeads.filter((id) => id !== leadId)
-        );
-        toast.success('Lead deleted successfully');
-      } else {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error deleting lead:', error);
-    }
-    setPending2(false);
+    //   if (response.status === 200) {
+    //     // setActiveIndex((prev) => prev + 1);
+    //     setSelectedLeads((prevSelectedLeads) =>
+    //       prevSelectedLeads.filter((id) => id !== leadId)
+    //     );
+    //     toast.success('Lead deleted successfully');
+    //   } else {
+    //     toast.warn(response.message);
+    //   }
+    // } catch (error) {
+    //   console.error('Error deleting lead:', error);
+    // }
+    // setPending2(false);
   };
 
   const handleUnArchiveSelected = async (leadId: number) => {
-    setPending3(true);
-    try {
-      const response = await postCaller(
-        'toggle_archive',
-        {
-          ids: [leadId],
-          is_archived: false,
-        },
-        true
-      );
-      if (response.status === 200) {
-        setActiveIndex((prev) => prev + 1);
-        toast.success('Leads UnArchieved successfully');
-        setSelectedLeads([]);
-      } else {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error deleting leads:', error);
-    }
-    setPending3(false);
+    // setPending3(true);
+    // try {
+    //   const response = await postCaller(
+    //     'toggle_archive',
+    //     {
+    //       ids: [leadId],
+    //       is_archived: false,
+    //     },
+    //     true
+    //   );
+    //   if (response.status === 200) {
+    //     // setActiveIndex((prev) => prev + 1);
+    //     toast.success('Leads UnArchieved successfully');
+    //     setSelectedLeads([]);
+    //   } else {
+    //     toast.warn(response.message);
+    //   }
+    // } catch (error) {
+    //   console.error('Error deleting leads:', error);
+    // }
+    // setPending3(false);
+  };
+  const [isArcOpen, setIsArcOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const leadId = 123;
+  const handleArcClose = () => {
+    setIsArcOpen(false);
   };
 
   return (
     <div>
-      {showConfirmModal && (
+      {/* {showConfirmModal && (
         <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
-      )}
+      )} */}
 
       {/* {showArchiveModal && <ArchiveModal />} */}
 
@@ -242,7 +268,7 @@ const ArchivedPages = ({
             <div className={styles.selectionInfo}>
               <span
                 className={styles.closeIcon}
-                onClick={() => setSelectedLeads([])}
+                // onClick={() => setSelectedLeads([])}
               >
                 {selectedLeads.length === 0 ? (
                   ''
@@ -273,26 +299,26 @@ const ArchivedPages = ({
                       <button
                         className={styles.archieveButtonA}
                         onClick={unArchiveLeads}
-                        style={{
-                          pointerEvents: pending1 ? 'none' : 'auto',
-                          opacity: pending1 ? 0.6 : 1,
-                          cursor: pending1 ? 'not-allowed' : 'pointer',
-                        }}
+                        // style={{
+                        //   pointerEvents: pending1 ? 'none' : 'auto',
+                        //   opacity: pending1 ? 0.6 : 1,
+                        //   cursor: pending1 ? 'not-allowed' : 'pointer',
+                        // }}
                       >
-                        {pending1 ? 'Unarchiving...' : 'Unarchive'}
+                        {/* {pending1 ? 'Unarchiving...' : 'Unarchive'} */}
                       </button>
                     </div>{' '}
                     <div>
                       <button
                         className={styles.archieveButtonX}
-                        onClick={deleteLeads}
-                        style={{
-                          pointerEvents: pending ? 'none' : 'auto',
-                          opacity: pending ? 0.6 : 1,
-                          cursor: pending ? 'not-allowed' : 'pointer',
-                        }}
+                        // onClick={deleteLeads}
+                        // style={{
+                        //   pointerEvents: pending ? 'none' : 'auto',
+                        //   opacity: pending ? 0.6 : 1,
+                        //   cursor: pending ? 'not-allowed' : 'pointer',
+                        // }}
                       >
-                        {pending ? 'Removing...' : 'Remove'}
+                        {/* {pending ? 'Removing...' : 'Remove'} */}
                       </button>
                     </div>
                   </div>
@@ -319,14 +345,14 @@ const ArchivedPages = ({
                   <img
                     className={styles.CrossICONBTNHover}
                     src={CrossICONBtn}
-                    onClick={onClickCrossIconBotton}
+                    // onClick={onClickCrossIconBotton}
                     style={{ visibility: 'visible' }}
                   />
                 ) : (
                   <img
                     className={styles.CrossICONBTNHover}
                     src={CrossICONBtn}
-                    onClick={onClickCrossIconBotton}
+                    // onClick={onClickCrossIconBotton}
                     style={{ display: 'none' }}
                   />
                 )}
@@ -340,21 +366,21 @@ const ArchivedPages = ({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={leadsData.length}>
+                  <td colSpan={leads.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
                 </tr>
-              ) : leadsData.length > 0 ? (
-                leadsData.map((lead: any, index: number) => (
+              ) : leads.length > 0 ? (
+                leads.map((lead: any, index: number) => (
                   <React.Fragment key={index}>
                     <tr className={styles.history_lists}>
                       <td
                         className={`${
                           lead.status === 'Declined' ||
                           lead.status === 'Action Needed'
-                            ? styles.history_list_inner_declined
+                            ? styles.history_list_inner
                             : selectedLeads.length > 0 && isMobile
                               ? styles.history_list_inner_Mobile_View
                               : selectedLeads.length > 0 && isTablet
@@ -409,14 +435,14 @@ const ArchivedPages = ({
                                 handleUnArchiveSelected(lead.leads_id);
                               }}
                               disabled={selectedLeads.length > 1}
-                              style={{
-                                pointerEvents: pending3 ? 'none' : 'auto',
-                                opacity: pending3 ? 0.6 : 1,
-                                cursor: pending3 ? 'not-allowed' : 'pointer',
-                              }}
+                              // style={{
+                              //   pointerEvents: pending3 ? 'none' : 'auto',
+                              //   opacity: pending3 ? 0.6 : 1,
+                              //   cursor: pending3 ? 'not-allowed' : 'pointer',
+                              // }}
                             >
-                              {pending3 ? 'Unarchiving...' : 'Unarchive'}
-                            </button>
+                              {/* {pending3 ? 'Unarchiving...' : 'Unarchive'} */}
+                              Unarchive</button>
                           </div>
                         )}
                         {selectedLeads.length > 0 ? (
@@ -426,14 +452,15 @@ const ArchivedPages = ({
                             {isMobile || isTablet ? (
                               <div
                                 className={styles.BOXDelete}
-                                onClick={() => {
-                                  deleteLead(lead.leads_id);
-                                }}
-                                style={{
-                                  pointerEvents: pending2 ? 'none' : 'auto',
-                                  opacity: pending2 ? 0.6 : 1,
-                                  cursor: pending2 ? 'not-allowed' : 'pointer',
-                                }}
+                                onClick={handleArcClose }
+                                // onClick={() => {
+                                //   deleteLead(lead.leads_id);
+                                // }}
+                                // style={{
+                                //   pointerEvents: pending2 ? 'none' : 'auto',
+                                //   opacity: pending2 ? 0.6 : 1,
+                                //   cursor: pending2 ? 'not-allowed' : 'pointer',
+                                // }}
                               >
                                 <img src={ICONS.DeleteICONBOX} />
                               </div>
@@ -443,17 +470,26 @@ const ArchivedPages = ({
                                 onClick={() => {
                                   deleteLead(lead.leads_id);
                                 }}
-                                style={{
-                                  pointerEvents: pending2 ? 'none' : 'auto',
-                                  opacity: pending2 ? 0.6 : 1,
-                                  cursor: pending2 ? 'not-allowed' : 'pointer',
-                                }}
+                                // style={{
+                                //   pointerEvents: pending2 ? 'none' : 'auto',
+                                //   opacity: pending2 ? 0.6 : 1,
+                                //   cursor: pending2 ? 'not-allowed' : 'pointer',
+                                // }}
                               >
                                 {' '}
-                                {pending2 ? 'Removing...' : 'Remove'}
-                              </button>
+                                {/* {pending2 ? 'Removing...' : 'Remove'} */}
+                                Remove </button>
                             )}
+ <LeadManamentSucessModel
+        isArcOpen={isArcOpen}
+        onArcClose={handleArcClose}
+        leadId={leadId}
+        activeIndex={activeIndex}
+        setActiveIndex={setActiveIndex}
+      />
+
                           </div>
+                          
                         )}
                         {isMobile || isTablet ? (
                           <div
@@ -476,7 +512,12 @@ const ArchivedPages = ({
                         ) : (
                           ''
                         )}
+                         {/* isProfileOpen */}
+                      <div className={styles.infoIcon} onClick={handleOpenProfileModal}>
+                          <IoInformationOutline />
+                        </div>
                       </td>
+                     
                     </tr>
                     {toggledId.includes(lead['leads_id']) && (
                       <tr>
@@ -513,6 +554,7 @@ const ArchivedPages = ({
                             {/* {lead.street_address} */}
                           </div>
                         </td>
+                        
                       </tr>
                     )}
                   </React.Fragment>
@@ -520,7 +562,7 @@ const ArchivedPages = ({
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <DataNotFound />
+                    {/* <DataNotFound /> */}
                   </td>
                 </tr>
               )}
@@ -533,3 +575,197 @@ const ArchivedPages = ({
 };
 
 export default ArchivedPages;
+{/* */}
+
+
+//   {activeIndex,
+//   setActiveIndex,
+//   setArchive,
+  
+// }:HistoryRedirectProps) => {
+  // const [selectedMonth, setSelectedMonth] = useState('Aug');
+  // const [currentFilter, setCurrentFilter] = useState('Pending');
+  // const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
+  // const [showConfirmModal, setShowConfirmModal] = useState(false);
+  // const [showArchiveModal, setShowArchiveModal] = useState(false);
+
+  // const width = useWindowWidth();
+  // const isTablet = width <= 1024;
+  // const isMobile = width <= 767;
+
+  // const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
+  // const [selectedPeriod, setSelectedPeriod] =
+  //   useState<DateRangeWithLabel | null>(null);
+  // const [selectedRanges, setSelectedRanges] = useState([
+  //   { startDate: new Date(), endDate: new Date(), key: 'selection' },
+  // ]);
+
+  // const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  // const calendarRef = useRef<HTMLDivElement>(null);
+  // const toggleRef = useRef<HTMLDivElement>(null);
+  // const [toggledId, setToggledId] = useState<number[]>([]);
+
+  // const handleClickOutside = (event: Event) => {
+  //   if (
+  //     calendarRef.current &&
+  //     !calendarRef.current.contains(event.target as Node) &&
+  //     toggleRef.current &&
+  //     !toggleRef.current.contains(event.target as Node)
+  //   ) {
+  //     setIsCalendarOpen(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   document.addEventListener('touchstart', handleClickOutside);
+
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //     document.removeEventListener('touchstart', handleClickOutside);
+  //   };
+  // }, []);
+
+  // const onClickCrossIconBotton = () => {
+  //   setArchive(false);
+  // };
+
+  // const handleChevronClick = (itemId: number) => {
+  //   console.log(itemId);
+  //   setToggledId((prevToggledId) =>
+  //     prevToggledId.includes(itemId) ? [] : [itemId]
+  //   );
+  // };
+
+  // const handleLeadSelection = (leadId: number) => {
+  //   setSelectedLeads((prev) =>
+  //     prev.includes(leadId)
+  //       ? prev.filter((id) => id !== leadId)
+  //       : [...prev, leadId]
+  //   );
+  // };
+
+  // const handleDetailModal = (lead: Lead) => {
+  //   setShowConfirmModal(true); // Show detail modal
+  // };
+
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const handleOpenModal = () => {
+  //   setIsModalOpen(true);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  // };
+
+  // const { isLoading, leadsData, totalcount } = useAppSelector(
+  //   (state) => state.leadManagmentSlice
+  // );
+
+  //   const [pending, setPending] = useState(true);
+  // const [pending1, setPending1] = useState(true);
+  // const [pending2, setPending2] = useState(true);
+  // const [pending3, setPending3] = useState(true);
+  // const [pending, setPending] = useState(false);
+  // const [pending1, setPending1] = useState(false);
+  // const [pending2, setPending2] = useState(false);
+  // const [pending3, setPending3] = useState(false);
+
+  // const deleteLeads = async () => {
+  //   setPending(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'delete_lead',
+  //       {
+  //         ids: selectedLeads,
+  //       },
+  //       true
+  //     );
+
+  //     if (response.status === 200) {
+  //       setSelectedLeads([]);
+  //       // setActiveIndex((prev) => prev + 1);
+  //       toast.success('Leads deleted successfully');
+  //     } else {
+  //       toast.warn(response.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting leads:', error);
+  //   }
+  //   setPending(false);
+  // };
+
+  // const unArchiveLeads = async () => {
+  //   setPending1(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'toggle_archive',
+  //       {
+  //         ids: selectedLeads,
+  //         is_archived: false,
+  //       },
+  //       true
+  //     );
+
+  //     if (response.status === 200) {
+  //       setSelectedLeads([]);
+  //       // setActiveIndex((prev) => prev + 1);
+  //       toast.success('Leads Unarcived successfully');
+  //     } else {
+  //       toast.warn(response.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting leads:', error);
+  //   }
+  //   setPending1(false);
+  // };
+
+  // const deleteLead = async (leadId: number) => {
+  //   setPending2(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'delete_lead',
+  //       {
+  //         ids: [leadId],
+  //       },
+  //       true
+  //     );
+
+  //     if (response.status === 200) {
+  //       // setActiveIndex((prev) => prev + 1);
+  //       setSelectedLeads((prevSelectedLeads) =>
+  //         prevSelectedLeads.filter((id) => id !== leadId)
+  //       );
+  //       toast.success('Lead deleted successfully');
+  //     } else {
+  //       toast.warn(response.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting lead:', error);
+  //   }
+  //   setPending2(false);
+  // };
+
+  // const handleUnArchiveSelected = async (leadId: number) => {
+  //   setPending3(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'toggle_archive',
+  //       {
+  //         ids: [leadId],
+  //         is_archived: false,
+  //       },
+  //       true
+  //     );
+  //     if (response.status === 200) {
+  //       // setActiveIndex((prev) => prev + 1);
+  //       toast.success('Leads UnArchieved successfully');
+  //       setSelectedLeads([]);
+  //     } else {
+  //       toast.warn(response.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting leads:', error);
+  //   }
+  //   setPending3(false);
+  // };
