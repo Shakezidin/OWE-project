@@ -1659,7 +1659,7 @@ console.log(leadsData)
               <DataNotFound />
             )
           ) : (
-            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} />
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh}/>
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
