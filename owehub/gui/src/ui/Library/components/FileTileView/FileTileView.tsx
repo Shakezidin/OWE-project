@@ -140,9 +140,9 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
         <img style={{ cursor: "pointer" }} onClick={() => {
           onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
         }} src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
-        <div className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
+        {role_name === TYPE_OF_USER.ADMIN && <div className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
           <CheckBox checked={selected.has(file?.id!)} onChange={() => { onCheck(file?.id!) }} />
-        </div>
+        </div>}
       </div>
 
       <div>
