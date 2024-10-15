@@ -27,9 +27,9 @@ const FolderList = (props: IFolder) => {
         <div className={sharedStyles.libGridItem} >
             <div style={{ cursor: "pointer" }} className={`${sharedStyles.file_icon} ${sharedStyles.image_div}`}>
                 <div className="flex items-center">
-                    <div className="mr1" style={{marginTop:-7}}>
+                    { role_name === TYPE_OF_USER.ADMIN && <div className="mr1" style={{marginTop:-7}}>
                         <CheckBox checked={!!props.checkedValues?.has(props.id!)} onChange={() => { props.onCheck?.(props.id!) }} />
-                    </div>
+                    </div>}
                     <div className="relative" onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
                         <img
                              className={`${styles.img_folder_view}`}
