@@ -23,21 +23,22 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value.trimEnd(); // Remove trailing spaces
-
+    const inputValue = event.target.value // Remove trailing spaces
+ 
     // Define valid character regex
-    const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
-
+    const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+    // const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
+ 
     // Check if the input is valid
     if (!validCharacters.test(inputValue)) {
       return; // Exit early if the input is invalid
     }
-
+ 
     // Check for more than 1 continuous space
     if (/\s{2,}/.test(inputValue)) {
       return; // Exit early if there are 2 or more continuous spaces
     }
-
+ 
     setFolderName(inputValue);
   };
 
