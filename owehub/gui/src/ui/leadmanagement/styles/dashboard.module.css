@@ -186,7 +186,7 @@
 .buttonGroup {
   display: flex;
   padding: 5px;
-  gap: 5px;
+  gap: 1px;
   width: 71%;
   /* overflow: scroll; */
   flex-wrap: wrap;
@@ -212,6 +212,12 @@
 
 .button:hover {
   background-color: #ddebff;
+}
+
+.displayStatus{
+  width: 56px;
+  line-height: 16px;
+  text-align: left;
 }
 
 .status {
@@ -574,7 +580,7 @@ input[type='checkbox']:checked {
   }
   .buttonGroup {
     display: flex;
-    gap: 16px;
+    gap: 6px;
     width: 100%;
     flex-wrap: wrap;
     display: flex;
