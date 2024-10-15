@@ -7,7 +7,7 @@
 package services
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/auroraclient"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -33,9 +33,9 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		reqBody            []byte
 		dataReq            models.AuroraCreateProposalRequest
 		data               []map[string]interface{}
-		createProjectResp  *leadsService.AuroraCreateProjectApiResponse
-		createDesignResp   *leadsService.AuroraCreateDesignApiResponse
-		createProposalResp *leadsService.AuroraCreateProposalApiResponse
+		createProjectResp  *auroraclient.CreateProjectApiResponse
+		createDesignResp   *auroraclient.CreateDesignApiResponse
+		createProposalResp *auroraclient.CreateProposalApiResponse
 		updateQuery        string
 		updateEleList      []interface{}
 	)
@@ -147,7 +147,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		projectName = fmt.Sprintf("Project for %s %s - %d", firstName, lastName, time.Now().UnixMilli())
 	}
 
-	createProjApi := leadsService.AuroraCreateProjectApi{
+	createProjApi := auroraclient.CreateProjectApi{
 		ExternalProviderId:    fmt.Sprintf("%d", dataReq.LeadsId),
 		Name:                  projectName,
 		CustomerSalutation:    dataReq.CustomerSalutation,
@@ -159,7 +159,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		Status:                dataReq.Status,
 		PreferredSolarModules: dataReq.PreferredSolarModules,
 		Tags:                  dataReq.Tags,
-		Location: leadsService.AuroraCreateProjectApiLocation{
+		Location: auroraclient.CreateProjectApiLocation{
 			PropertyAddress: streetAddress,
 		},
 	}
@@ -180,7 +180,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// create design
-	createDesignApi := leadsService.AuroraCreateDesignApi{
+	createDesignApi := auroraclient.CreateDesignApi{
 		ExternalProviderId: createProjApi.ExternalProviderId,
 		Name:               createProjApi.Name,
 		ProjectId:          projectId,
@@ -201,7 +201,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// create proposal
-	createProposalApi := leadsService.AuroraCreateProposalApi{
+	createProposalApi := auroraclient.CreateProposalApi{
 		DesignId: designId,
 	}
 	createProposalResp, err = createProposalApi.Call()
