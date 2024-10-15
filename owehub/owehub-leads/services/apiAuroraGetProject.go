@@ -7,7 +7,7 @@
 package services
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/auroraclient"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -30,7 +30,7 @@ func HandleAuroraGetProjectRequest(resp http.ResponseWriter, req *http.Request) 
 		err           error
 		reqBody       []byte
 		dataReq       models.AuroraGetProjectRequest
-		auroraApiResp *leadsService.AuroraRetrieveProjectApiResponse
+		auroraApiResp *auroraclient.RetreiveProjectApiResponse
 		query         string
 		whereEleList  []interface{}
 		data          []map[string]interface{}
@@ -83,12 +83,12 @@ func HandleAuroraGetProjectRequest(resp http.ResponseWriter, req *http.Request) 
 	if !ok {
 		err = fmt.Errorf("project_id not found in create project response")
 		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve project id from leads info record", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Project not found", http.StatusBadRequest, nil)
 		return
 	}
 
 	// retrieve aurora project
-	retrieveAuroraProjectApi := leadsService.AuroraRetrieveProjectApi{
+	retrieveAuroraProjectApi := auroraclient.RetreiveProjectApi{
 		ProjectId: projectId,
 	}
 

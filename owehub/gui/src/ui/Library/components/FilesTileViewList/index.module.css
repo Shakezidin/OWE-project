@@ -4,11 +4,30 @@
     column-gap: 32px;
     row-gap: 62px;
     align-items: start;
-    /* justify-content: center; */
     padding-inline: 25px;
     border-top: 1px solid #EFF5FF;
     background-color: #fff;
     padding-block: 47px;
     border-bottom-left-radius: 12px;
+
     border-bottom-right-radius: 12px;
+}
+
+
+
+
+@media (max-width: 968px) {
+    .list_grid{
+
+        column-gap: 16px;
+        padding: 36px;
+        grid-template-columns: repeat(auto-fit, minmax(120px,.5fr)); 
+
+    }
+}
+
+@media (max-width: 380px) {
+    .list_grid{
+        grid-template-columns: 100%;
+    }
 }

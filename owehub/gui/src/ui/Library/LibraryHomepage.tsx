@@ -43,6 +43,7 @@ import FilesTileViewList from './components/FilesTileViewList/FilesTileViewList'
 import Input from '../components/text_input/Input';
 import CheckBox from '../components/chekbox/CheckBox';
 import FolderListView from './components/FolderListView/FolderListView';
+import useMatchMedia from '../../hooks/useMatchMedia';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -71,6 +72,7 @@ const LibraryHomepage = () => {
     fileType: "",
     url: ""
   })
+  const isMobile = useMatchMedia("(max-width: 450px)")
   const [selectedCheckbox, setSelectedCheckbox] = useState<Set<string>>(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
@@ -664,12 +666,12 @@ const LibraryHomepage = () => {
               }} />
             </div>
             <span className={styles.selectedCount}>
-            {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ' '}
-               selected
+              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ' '}
+              selected
             </span>
           </div>
           <div className={styles.delete_right}>
-            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile :styles.DeleteButton} onClick={() => OpenModal()}>
+            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile : styles.DeleteButton} onClick={() => OpenModal()}>
               Delete
             </button>
           </div>
@@ -707,6 +709,7 @@ const LibraryHomepage = () => {
           {activeSection !== 'folders' && (
             <div
               ref={dropdownRef}
+
               onClick={handleDivClick}
               style={toggleClick ? { borderColor: '#377cf6' } : {}}
             >
@@ -730,24 +733,26 @@ const LibraryHomepage = () => {
           ) : null}
         </div>
 
-        <div className={styles.libSecHeader_right}>
-          <button onClick={() => setFilesView("list")} className={` ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+        <div className={`  ${styles.libSecHeader_right}`}>
+          <button onClick={() => setFilesView("list")} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
-          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+          <button onClick={() => setFilesView("tiles")} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
+          <div className={`${styles.sm_hide}`}>
 
-          <SortByLibrary onSort={handleSort} />
+            <SortByLibrary onSort={handleSort} />
+          </div>
 
-          <div className={styles.searchWrapper}>
+          <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
             <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
             {/* SEARCHINGGGG */}
             <input
               type="text"
               value={searchValue}
               onChange={HandleSearch}
-              placeholder="Search by file name or person"
+              placeholder="Search by file name "
               className={styles.searchInput}
               maxLength={25}
             />
@@ -774,97 +779,13 @@ const LibraryHomepage = () => {
   };
 
   const renderContent = () => {
-    if (currentFolder) {
-      if (loading) {
-        return (
-          <div className={styles.filesLoader}>
-            <MicroLoader />
-          </div>
-        );
-      }
+   
 
-
-
-
-      if (currentFolderContent.length === 0) {
-        return <div className={` bg-white py2 ${styles.filesLoader}`}>
-          <DataNotFound />
-        </div>
-      }
-
-      return (
-
-
-        <div className={styles.libSectionWrapper}>
-          <div className={styles.lib_Grid_Header}>
-            <div className={`${styles.grid_item} ${styles.table_name}`}>
-              Name
-            </div>
-
-            <div className={styles.grid_item}>Uploaded Date</div>
-            <div style={{textAlign:"end"}} className={` ${styles.grid_item}`}>Actions</div>
-          </div>
-
-          {currentFolderContent.map((item) => {
-            return <div className={styles.libGridItem} key={item.id}>
-              <div className={`${styles.file_icon} ${styles.image_div}`} >
-                <img
-                  className={styles.cardImg}
-                  src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
-                  alt={item.name}
-                />
-                <div>
-                  <p className={styles.name}>{item.name}</p>
-                  <p className={styles.size}>
-                    {item.size < 1024
-                      ? item.size
-                      : Math.round(item.size / 1024)}{' '}
-                    {item.size < 1024 ? 'KB' : 'MB'}
-                  </p>
-                </div>
-              </div>
-
-              <div className={styles.grid_item}>
-                {format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}
-              </div>
-              <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                <RxDownload
-                  className={styles.icons}
-                  onClick={() => downloadFile(item["@microsoft.graph.downloadUrl"], item.name)}
-                  style={{ height: '18px', width: '18px', color: '#667085' }}
-                />
-                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                  className={styles.icons}
-                  style={{ height: '18px', width: '18px', color: '#667085' }}
-                  onClick={() => handleClickdeleted(item.id)}
-                />}
-              </div>
-            </div>
-          })}
-        </div>
-
-
-      );
-    }
-
-
-
-    if (isRecycleBinView) {
-      return (
-        <div className={styles.recycleBinContent}>
-          {recycleBinItems.length === 0 ? (
-            <p></p>
-          ) : (
-            recycleBinItems.map((item, index) => <div key={index}></div>)
-          )}
-        </div>
-      );
-    }
 
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={folderData.map((item) => ({
+          <FolderListView folders={sortedData.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -910,29 +831,29 @@ const LibraryHomepage = () => {
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
-              <div className='mr1'>
+              { role_name===TYPE_OF_USER.ADMIN && <div className='mr1'>
                 <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
                     setAllIds([])
                     setCheckedItems(0)
 
-            
+
                   } else {
                     const newSet = new Set(sortedData.map((item) => item.id))
                     setSelectedCheckbox(newSet)
                     setAllIds(Array.from(newSet))
                     setCheckedItems(newSet.size)
                   }
-                  
+
                 }} />
-              </div>
+              </div>}
               <span className={styles.libname_heading}>
                 Name
               </span>
             </div>
           </div>
-          <div className={styles.grid_item}>Uploaded Date</div>
+          <div className={` ${styles.sm_hide} ${styles.grid_item}`}>Uploaded Date</div>
 
           <div className={styles.grid_item}>Actions</div>
         </div>}
@@ -952,7 +873,7 @@ const LibraryHomepage = () => {
                 return (
                   <div className={styles.libGridItem} key={data.id}>
                     <div className="flex items-center">
-                      <div className="mr2">
+                     {role_name===TYPE_OF_USER.ADMIN && <div className="mr2">
                         <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
                           if (selectedCheckbox.has(data.id)) {
                             const newArr = new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id))
@@ -965,7 +886,7 @@ const LibraryHomepage = () => {
                             setAllIds(prev)
                           }
                         }} />
-                      </div>
+                      </div>}
                       <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                         if (isValidVideo) {
                           setIsVideoModalOpen(true)
@@ -988,7 +909,7 @@ const LibraryHomepage = () => {
                           loading='lazy'
                         />
                         <div>
-                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >=26 ? '...': ''}</p>
+                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
                           <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -1000,7 +921,7 @@ const LibraryHomepage = () => {
                         </div>
                       </div>
                     </div>
-                    <div className={styles.grid_item_dates}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                    <div className={` ${styles.sm_hide} ${styles.grid_item_dates}`}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                     <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
 
                       <div>
@@ -1076,8 +997,30 @@ const LibraryHomepage = () => {
 
   return (
     <div className={styles.libraryContainer}>
-      <div className={styles.libraryHeader}>
+      <div className={`${styles.libraryHeader} flex items-center justify-between`}>
         <h3>Library</h3>
+        <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
+          <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
+            <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
+            <input
+              type="text"
+              value={searchValue}
+              onChange={HandleSearch}
+              placeholder="Search by file name "
+              className={styles.searchInput}
+              maxLength={25}
+            />
+          </div>
+          <div className={styles.sort_container} >
+            <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
+          </div>
+          <button onClick={() => setFilesView("list")} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+            <TiThMenu />
+          </button>
+          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+            <BsGrid />
+          </button>
+        </div>
       </div>
 
       {isRecycleBinView ? (

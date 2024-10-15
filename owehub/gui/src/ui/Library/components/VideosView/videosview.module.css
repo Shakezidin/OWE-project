@@ -4,6 +4,8 @@
   gap: 28px;
   padding-inline: 24px;
   background-color: #ffffff;
+  border-top: 1px solid #eff5ff;
+  padding-top: 36px;
 }
 
 .folderDiv {

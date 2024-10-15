@@ -105,11 +105,11 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	// CASE 1: set lead status to 1 (SENT) --> Send Appointment
 	if dataReq.StatusId == 1 {
 		// previous lead status should be 0 (PENDING) or 1 (SENT) or 2 (ACCEPTED) or 3 (DECLINED) or 4 (ACTION NEEDED)
-		if leadStatus != 0 && leadStatus != 1 && leadStatus != 2 && leadStatus != 3 && leadStatus != 4 {
-			log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 1 (SENT) from %d", leadStatus)
-			appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
-			return
-		}
+		// if leadStatus != 0 && leadStatus != 1 && leadStatus != 2 && leadStatus != 3 && leadStatus != 4 {
+		// 	log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 1 (SENT) from %d", leadStatus)
+		// 	appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
+		// 	return
+		// }
 
 		isRescheduling := leadStatus != 0
 
@@ -171,24 +171,26 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	// CASE 2: set lead status to 5 (WON) --> Update lead status
 	if dataReq.StatusId == 5 {
 		// previous lead status should be 2 (ACCEPTED) or 4 (ACTION NEEDED)
-		if leadStatus != 2 && leadStatus != 4 {
-			log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 5 (WON) from %d", leadStatus)
-			appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
-			return
-		}
+		// if leadStatus != 2 && leadStatus != 4 {
+		// 	log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 5 (WON) from %d", leadStatus)
+		// 	appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
+		// 	return
+		// }
 
-		appointmentDate, ok := data[0]["appointment_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to assert appointment_date to time.Time type Item: %+v", data[0])
-			appserver.FormAndSendHttpResp(resp, "Failed to get the appointment_date from database", http.StatusInternalServerError, nil)
-			return
-		}
+		// appointmentDate, ok := data[0]["appointment_date"].(time.Time)
+		// if !ok {
+		// 	log.FuncErrorTrace(0, "Failed to assert appointment_date to time.Time type Item: %+v", data[0])
+		// 	appserver.FormAndSendHttpResp(resp, "Failed to get the appointment_date from database", http.StatusInternalServerError, nil)
+		// 	return
+		// }
 
-		if appointmentDate.After(time.Now()) {
-			log.FuncErrorTrace(0, "Appointment date should be in the past for lead to be won")
-			appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
-			return
-		}
+		// if appointmentDate.After(time.Now()) {
+		// 	log.FuncErrorTrace(0, "Appointment date should be in the past for lead to be won")
+		// 	appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
+		// 	return
+		// }
+
+		//CHECKING FOR APPOINT DATE IN PAST 
 		query = `UPDATE leads_info 
 					SET status_id = 5,
 					updated_at = CURRENT_TIMESTAMP,
@@ -221,18 +223,18 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			return
 		}
 
-		appointmentDate, ok := data[0]["appointment_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to assert appointment_date to time.Time type Item: %+v", data[0])
-			appserver.FormAndSendHttpResp(resp, "Failed to get the appointment_date from database", http.StatusInternalServerError, nil)
-			return
-		}
+		// appointmentDate, ok := data[0]["appointment_date"].(time.Time)
+		// if !ok {
+		// 	log.FuncErrorTrace(0, "Failed to assert appointment_date to time.Time type Item: %+v", data[0])
+		// 	appserver.FormAndSendHttpResp(resp, "Failed to get the appointment_date from database", http.StatusInternalServerError, nil)
+		// 	return
+		// }
 
-		if appointmentDate.After(time.Now()) {
-			log.FuncErrorTrace(0, "Appointment date should be in the past for lead to be lost")
-			appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
-			return
-		}
+		// if appointmentDate.After(time.Now()) {
+		// 	log.FuncErrorTrace(0, "Appointment date should be in the past for lead to be lost")
+		// 	appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
+		// 	return
+		// }
 		query = `UPDATE leads_info 
 					SET status_id = 6,
 					updated_at = CURRENT_TIMESTAMP,

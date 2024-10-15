@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -28,16 +29,16 @@ import (
 
 func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		startTime    time.Time
-		endTime      time.Time
-		dataReq      models.GetLeadsRequest
-		data         []map[string]interface{}
-		query        string
-		offset       int
-		whereEleList []interface{}
-		whereClause  string
-		recordCount  int64
+		err              error
+		startTime        time.Time
+		endTime          time.Time
+		dataReq          models.GetLeadsRequest
+		data             []map[string]interface{}
+		query            string
+		whereEleList     []interface{}
+		whereClause      string
+		paginationClause string
+		recordCount      int64
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -65,38 +66,45 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// validating start date
-	startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
-		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
-		return
-	}
-
-	// validating end date
-	endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
-		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
-		return
-	}
-
 	userEmail := req.Context().Value("emailid").(string)
 
-	// build whereclause based on requested status
+	whereEleList = append(whereEleList, userEmail)
 
+	// no condition specified, default to all
+	if dataReq.LeadStatus == "" {
+		whereClause = "WHERE li.leads_id IS NOT NULL"
+	}
+
+	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
 		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE)"
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
-		whereClause = `
-			WHERE (
-				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-				OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
-				OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
-			)
-		`
+		if dataReq.ProgressFilter == "DEAL_WON" {
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NULL)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
+			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
+			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
+		}
+		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
+			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+		}
+		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
+			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+		}
+		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
+			whereClause = `
+				WHERE (
+					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR (li.status_id = 5 AND LOWER(li.aurora_proposal_status) != 'completed')
+					OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')
+				)
+			`
+		}
 	}
 
 	if dataReq.LeadStatus == "DECLINED" {
@@ -121,17 +129,54 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
-		offset = (dataReq.PageNumber - 1) * dataReq.PageSize
+	if dataReq.Search != "" {
+		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
+		whereClause = fmt.Sprintf(
+			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
+			whereClause,
+			len(whereEleList),
+			len(whereEleList),
+		)
+
+		// if search query convertible to int, search by id as well
+		searchId, searchIdErr := strconv.Atoi(dataReq.Search)
+		if searchIdErr == nil {
+			whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+		}
 	}
 
-	whereClause = fmt.Sprintf(`
-			%s 
-			AND li.is_archived = $2
-			AND li.updated_at BETWEEN $3 AND $4
-		`,
-		whereClause,
-	)
+	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+		// validating start date
+		startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
+			appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+			return
+		}
+
+		// validating end date
+		endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
+			appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+			return
+		}
+
+		whereClause = fmt.Sprintf("%s AND li.updated_at BETWEEN $%d AND $%d", whereClause, len(whereEleList)+1, len(whereEleList)+2)
+		whereEleList = append(whereEleList,
+			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
+			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
+		)
+	}
+
+	// filter in all conditions: is_archived, start_time, end_time
+	whereEleList = append(whereEleList, dataReq.IsArchived)
+	whereClause = fmt.Sprintf("%s AND li.is_archived = $%d", whereClause, len(whereEleList))
+
+	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
+		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
+		paginationClause = fmt.Sprintf("LIMIT %d OFFSET %d", dataReq.PageSize, offset)
+	}
 
 	query = fmt.Sprintf(`
 			SELECT
@@ -149,23 +194,15 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.appointment_declined_date,
 				li.lead_won_date,
 				li.is_archived,
+				li.aurora_proposal_id,
 				li.is_appointment_required,
 				li.status_id
 				
 			FROM get_leads_info_hierarchy($1) li
 			%s
 			ORDER BY li.updated_at DESC
-			LIMIT $5 OFFSET $6;
-		`, whereClause)
-
-	whereEleList = append(whereEleList,
-		userEmail,
-		dataReq.IsArchived,
-		time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
-		time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
-		dataReq.PageSize,
-		offset,
-	)
+			%s;
+		`, whereClause, paginationClause)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
@@ -256,6 +293,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			qcAudit = ""
 		}
 
+		proposalId, ok := item["aurora_proposal_id"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_id from leads info Item %+v", item)
+			proposalId = ""
+		}
+
 		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
@@ -335,6 +378,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FinanceType:            finType,
 			FinanceCompany:         finCompany,
 			QCAudit:                qcAudit,
+			ProposalID:             proposalId,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)
@@ -344,7 +388,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Count total records from db
 	query = fmt.Sprintf(`SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li %s`, whereClause)
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList[0:4])
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead count from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to fetch lead count", http.StatusInternalServerError, nil)

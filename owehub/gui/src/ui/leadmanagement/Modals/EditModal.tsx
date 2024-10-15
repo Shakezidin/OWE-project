@@ -16,9 +16,11 @@ interface EditModalProps {
   isOpen: boolean;
   onClose: () => void;
   leadData: any;
+  refresh: number;
+  setRefresh: (value: number | ((prevValue: number) => number)) => void;
 }
 
-const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
+const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClose, leadData }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [emailError, setEmailError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
@@ -117,6 +119,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
         );
         if (response.status === 200) {
           toast.success('Lead Updated Succesfully');
+          setRefresh((prev) => prev+1);
           onClose();
         } else if (response.status >= 201) {
           toast.warn(response.message);

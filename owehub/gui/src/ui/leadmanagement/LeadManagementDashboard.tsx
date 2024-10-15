@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   PieChart,
   Pie,
@@ -22,6 +22,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
+import Papa from 'papaparse';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -43,13 +44,14 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
+import { debounce } from '../../utiles/debounce';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -79,6 +81,8 @@ interface Proposal {
   proposal_template_id: string;
   proposal_link: string;
 }
+
+
 
 interface WebProposal {
   url: string;
@@ -133,152 +137,7 @@ type Lead = {
   status: string;
 };
 
-const leads = [
-  {
-    id: '1',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '2',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '3',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '4',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '5',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '6',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '7',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '8',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '9',
-    name: 'Rabindra Kumar Sharma',
-    phone: '+00 876472822',
-    email: 'rabindr718@gmail.com',
-    address: 'Patel Nagar, Dehradun, UK',
-    status: 'Accepted',
-  },
-  {
-    id: '10',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Declined',
-  },
-  {
-    id: '11',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '12',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Accepted',
-  },
-  {
-    id: '13',
-    name: 'XYZ Name',
-    phone: '+00 876472822',
-    email: 'xyz8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '14',
-    name: 'Virendra Sehwag',
-    phone: '+00 876472822',
-    email: 'sehwag8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '15',
-    name: 'Bhuvneshwar Kumar',
-    phone: '+00 876472822',
-    email: 'bhuvi8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'No Response',
-  },
-  {
-    id: '16',
-    name: 'Jasprit Bumrah',
-    phone: '+00 876472822',
-    email: 'jasprit8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Update Status',
-  },
-  {
-    id: '17',
-    name: 'Risabh Pant',
-    phone: '+00 876472822',
-    email: 'rp8772@gmail.com',
-    address: 'haridwar, Delhi',
-    status: 'No Response',
-  },
-  {
-    id: '18',
-    name: 'Virat Kohli',
-    phone: '+00 876472822',
-    email: 'king8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Deal Won',
-  },
-];
+
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -397,29 +256,7 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Pending':
-      return '#FF832A';
-    case 'Sent':
-      return '#81A6E7';
-    case 'Accepted':
-      return '#52B650';
-    case 'Declined':
-      return '#CD4040';
-    case 'Action Needed':
-      return '#63ACA3';
-    default:
-      return '#000000';
-  }
-};
 
-// const ActionNeeded={
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-// }
 const statusMap = {
   'Pending leads': 'Pending',
   'Appointment accepted': 'Accepted',
@@ -473,7 +310,6 @@ const CustomTooltip = ({
 const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
-  const [filteredLeads, setFilteredLeads] = useState(leads);
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -484,6 +320,7 @@ const LeadManagementDashboard = () => {
   // const [ChevronClick, setChevronClick] = useState(true);
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
+  const [selectedValue, setSelectedValue] = useState('');
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -611,7 +448,7 @@ const LeadManagementDashboard = () => {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
-      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+
     }
   }, [activeIndex]);
 
@@ -621,7 +458,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
-    setFilteredLeads(leads.filter((lead) => lead.status === filter));
+
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -826,6 +663,16 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('');
+
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 800),
+    []
+  );
+
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
@@ -837,10 +684,10 @@ const LeadManagementDashboard = () => {
           statusId = "NEW";
           break;
         case 'Sent':
-          statusId = 1;
+          statusId = "PROGRESS";
           break;
         case 'Accepted':
-          statusId = 2;
+          statusId = "PROGRESS";
           break;
         case 'Declined':
           statusId = "DECLINED";
@@ -861,6 +708,8 @@ const LeadManagementDashboard = () => {
           : '',
         "status": statusId,
         is_archived: archive,
+        progress_filter: selectedValue ? selectedValue : "ALL",
+        search:searchTerm,
         page_size: 10,
         page_number: archive ? 1 : page,
       };
@@ -872,6 +721,7 @@ const LeadManagementDashboard = () => {
       }
     }
   }, [
+    searchTerm,
     selectedDates,
     isModalOpen,
     archive,
@@ -879,10 +729,10 @@ const LeadManagementDashboard = () => {
     itemsPerPage,
     page,
     currentFilter,
+    selectedValue,
     refresh,
     ref,
   ]);
-
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -1166,6 +1016,136 @@ const LeadManagementDashboard = () => {
  
   const exportCsv = async () => {
     setIsExporting(true);
+  const headers = [
+      'Leads ID',
+      'Status ID',
+      'First Name',
+      'Last Name',
+      'Phone Number',
+      'Email ID',
+      'Street Address',
+      'Zipcode',
+      'Deal Date',
+      'Deal Status',
+      'Appointment Scheduled',
+      'Appointment Accepted',
+      'Appointment Date',
+      'Deal Won',
+      'Proposal Sent',
+    ];
+
+    let statusId;
+    switch (currentFilter) {
+      case 'Action Needed':
+        statusId = "ACTION_NEEDED";
+        break;
+      case 'Pending':
+        statusId = "NEW";
+        break;
+      case 'Sent':
+        statusId = 1;
+        break;
+      case 'Accepted':
+        statusId = 2;
+        break;
+      case 'Declined':
+        statusId = "DECLINED";
+        break;
+      case 'Projects':
+        statusId = 5;
+        break;
+      default:
+        statusId = "NEW";
+    }
+
+    const data = {
+      start_date: selectedDates.startDate
+        ? format(selectedDates.startDate, 'dd-MM-yyyy')
+        : '',
+      end_date: selectedDates.endDate
+        ? format(selectedDates.endDate, 'dd-MM-yyyy')
+        : '',
+      "status": statusId,
+      is_archived: archive,
+      progress_filter: selectedValue ? selectedValue : "ALL",
+      page_size: 0,
+      page_number: 0,
+    };
+
+    try {
+      const response = await postCaller(
+        'get_leads',
+        data,
+        true
+      );
+
+      if (response.status > 201) {
+        toast.error(response.data.message);
+        setIsExporting(false);
+        return;
+      }
+
+      console.log(response.data, "exposrt console")
+
+      const csvData = response.data?.map?.((item: any) => [
+        item.leads_id,
+        item.status_id,
+        item.first_name,
+        item.last_name,
+        item.phone_number,
+        item.email_id,
+        item.street_address,
+        item.appointment_status_label,
+        item.appointment_status_date,
+        item.won_lost_label,
+        item.won_lost_date,
+        item.finance_company,
+        item.finance_type,
+        item.qc_audit,
+      ]);
+
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'leads.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+console.error(error);
+      toast.error('An error occurred while exporting the data.');
+} finally {
+      setIsExporting(false);
+    }
+  };
+  
+  const handleCreateProposal = async (leadId: number) => {
+    console.log("leadId",leadId)
+    console.log("selectedLeads",selectedLeads)
+    try {
+      // const leadData = selectedLeads.find((lead) => lead == leadId);
+      // if (!leadData) {
+      //   toast.error('Lead data not available.');
+      //   return;
+      // }
+
+      await dispatch(createProposal(
+        {
+          "leads_id": leadId,
+          "customer_salutation": "Mr./Mrs.",
+          "status": "In Progress",
+          "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
+          "tags": ["third_party_1"]
+        }
+        
+        ));
+      // toast.success('Proposal created successfully!');
+    } catch (error) {
+      toast.error('Failed to create proposal.');
+    }
   };
 
   //************************************************************************************************ */
@@ -1202,11 +1182,38 @@ const LeadManagementDashboard = () => {
         setActiveIndex={setRef}
       />
       {/* //WORKING DIRECTORY */}
+
+      {/* ************************************************************************************************  */}
+      {/* Header LayOut for graphs and Buttons by Rabindra */}
+
       <div className={styles.chartGrid}>
+
+
         <div className={styles.horizontal}>
-          {isToggledX && <div className={`${styles.customLeft} ${styles.custom1}`}>Overview</div>}
-          <div className={`${styles.customLeft} ${styles.custom2}`}>Total leads: {totalValue ? totalValue : '0'}</div>
-          {isToggledX && <div className={`${styles.customLeft} ${styles.custom3}`}>Total Won Lost</div>}
+          
+          {/*     
+            className={`${styles.customLeft} ${styles.custom1}`}
+className={`${styles.customLeft} ${styles.custom2}`} */}
+
+
+
+          <div className={styles.FirstColHead}>
+            {isToggledX && (
+              <div className={styles.customLeft}>
+Overview
+</div>
+            )}
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              Total leads: {totalValue ? totalValue : '0'}
+            </div>
+          </div>
+          <div className={styles.SecondColHead}>
+            <div>
+              {isToggledX && <div className={styles.customLeft}
+              // className={`${styles.customLeft} ${styles.custom3}`}
+              >Total Won Lost</div>}
+            </div>
+            <div className={`${styles.customRight} ${styles.customFont}`}>
           <div className={styles.date_calendar}>
             <div className={styles.lead__datepicker_wrapper}>
               {isCalendarOpen && (
@@ -1343,7 +1350,11 @@ const LeadManagementDashboard = () => {
 
               {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
             </div>
+              </div></div>
           </div>
+
+
+
           {/* <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
             <img
               src={
@@ -1358,7 +1369,7 @@ const LeadManagementDashboard = () => {
         </div>
         {/* //HORIZONTAL ENDED */}
         {isToggledX && <div className={styles.vertical1}>
-          <div style={{width:"100%"}}>
+          <div style={{ width: "100%" }}>
             {loading ? (
               <div
                 style={{
@@ -1473,9 +1484,9 @@ const LeadManagementDashboard = () => {
       <div className={styles.card}>
         {archive == true && (
           <ArchivedPages
-            setArchive={setArchive}
-            activeIndex={ref}
-            setActiveIndex={setRef}
+          // setArchive={setArchive}
+          // activeIndex={ref}
+          // setActiveIndex={setRef}
           />
         )}
         {archive == false && (
@@ -1529,11 +1540,35 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button>
                 </div>
+                <div className={styles.searchBar}>
+                  <div className={styles.searchIcon}>
+                    {/* You can use an SVG or a FontAwesome icon here */}
+                    <img src={ICONS.SearchICON001} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search by customer name"
+                    className={styles.searchInput}
+                    onChange={(e) => {
+                      if (e.target.value.length <= 50) {
+                        e.target.value = e.target.value.replace(
+                          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                          ''
+                        );
+                        handleSearchChange(e);
+                        setSearch(e.target.value);
+                      }
+                    }}
+                  />
+                </div>
+
 
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-                <HistoryRedirect setArchive={setArchive} />
-                 <LeadTableFilter setArchive={() => {}} />
+                <HistoryRedirect
+                // setArchive={setArchive} 
+                />
+                 <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
@@ -1613,7 +1648,7 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )
           ) : (
-            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} />
+            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} />
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>

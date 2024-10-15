@@ -12,17 +12,21 @@ import { ICONS } from '../../resources/icons/Icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
+import { IoInformationOutline } from 'react-icons/io5';
+import LeadManamentSucessModel from './Modals/LeaderManamentSucessModel';
+import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import useAuth from '../../hooks/useAuth';
+import Profile from './Modals/ProfileInfo';
 
-interface HistoryRedirectProps {
-  setArchive: (value: boolean) => void;
-  activeIndex: number;
-  setActiveIndex: (value: number | ((prev: number) => number)) => void;
-}
+
+
+
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -39,22 +43,35 @@ type Lead = {
   status: string;
 };
 
-const ArchivedPages = ({
-  activeIndex,
-  setActiveIndex,
-  setArchive,
-}: HistoryRedirectProps) => {
-  const [selectedMonth, setSelectedMonth] = useState('Aug');
+
+
+const ArchivedPages = () => {
+  // const [isAuthenticated, setAuthenticated] = useState(false);
+  // const [loading, setIsLoading] = useState(false);
+
+  const leads = [
+    {
+      id: '1',
+      name: 'Adam Samson',
+      phone: '+00 876472822',
+      email: 'adamsamson8772@gmail.com',
+      address: '12778 Domingo Ct, 1233Parker, CO',
+      status: 'Pending',
+    },
+
+  ];
+
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [leadId, setLeadId] = useState(0);
+  console.log(leadId, "ka malik")
 
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   const isMobile = width <= 767;
 
-  // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(null);
@@ -77,6 +94,15 @@ const ArchivedPages = ({
       setIsCalendarOpen(false);
     }
   };
+  const handleOpenProfileModal = (leadId: number) => {
+    setIsProfileOpen(true);
+    setLeadId(leadId);
+  };
+  const handleCloseProfileModal = () => {
+    setIsProfileOpen(false);
+    
+  };
+
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -89,7 +115,7 @@ const ArchivedPages = ({
   }, []);
 
   const onClickCrossIconBotton = () => {
-    setArchive(false);
+    // setArchive(false);
   };
 
   const handleChevronClick = (itemId: number) => {
@@ -123,36 +149,12 @@ const ArchivedPages = ({
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
+  console.log(leadsData)
 
-  const [pending, setPending] = useState(false);
-  const [pending1, setPending1] = useState(false);
-  const [pending2, setPending2] = useState(false);
-  const [pending3, setPending3] = useState(false);
 
-  const deleteLeads = async () => {
-    setPending(true);
-    try {
-      const response = await postCaller(
-        'delete_lead',
-        {
-          ids: selectedLeads,
-        },
-        true
-      );
 
-      if (response.status === 200) {
-        setSelectedLeads([]);
-        setActiveIndex((prev) => prev + 1);
-        toast.success('Leads deleted successfully');
-      } else {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error deleting leads:', error);
-    }
-    setPending(false);
-  };
 
+  const [pending1, setPending1] = useState(false)
   const unArchiveLeads = async () => {
     setPending1(true);
     try {
@@ -179,30 +181,32 @@ const ArchivedPages = ({
   };
 
   const deleteLead = async (leadId: number) => {
-    setPending2(true);
-    try {
-      const response = await postCaller(
-        'delete_lead',
-        {
-          ids: [leadId],
-        },
-        true
-      );
+    // setPending2(true);
+    // try {
+    //   const response = await postCaller(
+    //     'delete_lead',
+    //     {
+    //       ids: [leadId],
+    //     },
+    //     true
+    //   );
 
-      if (response.status === 200) {
-        setActiveIndex((prev) => prev + 1);
-        setSelectedLeads((prevSelectedLeads) =>
-          prevSelectedLeads.filter((id) => id !== leadId)
-        );
-        toast.success('Lead deleted successfully');
-      } else {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error deleting lead:', error);
-    }
-    setPending2(false);
+    //   if (response.status === 200) {
+    //     // setActiveIndex((prev) => prev + 1);
+    //     setSelectedLeads((prevSelectedLeads) =>
+    //       prevSelectedLeads.filter((id) => id !== leadId)
+    //     );
+    //     toast.success('Lead deleted successfully');
+    //   } else {
+    //     toast.warn(response.message);
+    //   }
+    // } catch (error) {
+    //   console.error('Error deleting lead:', error);
+    // }
+    // setPending2(false);
   };
+
+  const [pending3, setPending3] = useState(false);
 
   const handleUnArchiveSelected = async (leadId: number) => {
     setPending3(true);
@@ -227,14 +231,72 @@ const ArchivedPages = ({
     }
     setPending3(false);
   };
+  const [isArcOpen, setIsArcOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
+  const totalPage = Math.ceil(totalCount / 10);
+
+  const handleArcClose = () => {
+    setIsArcOpen(false);
+  };
+
+  const paginate = (pageNumber: number) => {
+    setPage(pageNumber);
+  };
+
+  const goToNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const goToPrevPage = () => {
+    setPage(page - 1);
+  };
+
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  const dispatch = useAppDispatch()
+
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const data = {
+        "progress_filter": "ALL",
+        "is_archived": true,
+        page_size: 10,
+        page_number: page,
+      };
+
+      dispatch(getLeads(data));
+    }
+  }, [isAuthenticated, dispatch,page, activeIndex]);
+
+  const navigate = useNavigate();
+
+  const handleHome = () => {
+    navigate('/leadmng-dashboard')
+  }
+  const resetSelection = () => {
+    setSelectedLeads([])
+  }
 
   return (
+    <>
+     <Profile
+        isOpen1={isProfileOpen}
+        onClose1={handleCloseProfileModal}
+        leadId={leadId}
+      />
     <div>
-      {showConfirmModal && (
-        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
-      )}
-
-      {/* {showArchiveModal && <ArchiveModal />} */}
 
       <div className={styles.card}>
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
@@ -251,6 +313,7 @@ const ArchivedPages = ({
                     src={CrossICONBtn}
                     alt=""
                     className={styles.CrossICONBTNHover1}
+                    onClick={resetSelection}
                   />
                 )}
               </span>
@@ -282,7 +345,7 @@ const ArchivedPages = ({
                         {pending1 ? 'Unarchiving...' : 'Unarchive'}
                       </button>
                     </div>{' '}
-                    <div>
+                    {/* <div>
                       <button
                         className={styles.archieveButtonX}
                         onClick={deleteLeads}
@@ -292,9 +355,9 @@ const ArchivedPages = ({
                           cursor: pending ? 'not-allowed' : 'pointer',
                         }}
                       >
-                        {pending ? 'Removing...' : 'Remove'}
+                        {false ? 'Removing...' : 'Remove'}
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <div
@@ -306,9 +369,6 @@ const ArchivedPages = ({
                         Archive
                       </button>
                     </div>{' '}
-                    <div>
-                      <button className={styles.archieveButtonX}>Remove</button>
-                    </div>
                   </div>
                 )}
               </div>
@@ -319,14 +379,14 @@ const ArchivedPages = ({
                   <img
                     className={styles.CrossICONBTNHover}
                     src={CrossICONBtn}
-                    onClick={onClickCrossIconBotton}
+                    onClick={handleHome}
                     style={{ visibility: 'visible' }}
                   />
                 ) : (
                   <img
                     className={styles.CrossICONBTNHover}
                     src={CrossICONBtn}
-                    onClick={onClickCrossIconBotton}
+                    // onClick={onClickCrossIconBotton}
                     style={{ display: 'none' }}
                   />
                 )}
@@ -340,7 +400,7 @@ const ArchivedPages = ({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={leadsData.length}>
+                  <td colSpan={leads.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -351,17 +411,16 @@ const ArchivedPages = ({
                   <React.Fragment key={index}>
                     <tr className={styles.history_lists}>
                       <td
-                        className={`${
-                          lead.status === 'Declined' ||
-                          lead.status === 'Action Needed'
-                            ? styles.history_list_inner_declined
+                        className={`${lead.status === 'Declined' ||
+                            lead.status === 'Action Needed'
+                            ? styles.history_list_inner
                             : selectedLeads.length > 0 && isMobile
                               ? styles.history_list_inner_Mobile_View
                               : selectedLeads.length > 0 && isTablet
                                 ? styles.history_list_inner_Tablet_View
                                 : styles.history_list_inner
-                        }`}
-                        // onClick={handleOpenModal}
+                          }`}
+                      // onClick={handleOpenModal}
                       >
                         <label>
                           <input
@@ -415,44 +474,8 @@ const ArchivedPages = ({
                                 cursor: pending3 ? 'not-allowed' : 'pointer',
                               }}
                             >
-                              {pending3 ? 'Unarchiving...' : 'Unarchive'}
-                            </button>
-                          </div>
-                        )}
-                        {selectedLeads.length > 0 ? (
-                          ' '
-                        ) : (
-                          <div>
-                            {isMobile || isTablet ? (
-                              <div
-                                className={styles.BOXDelete}
-                                onClick={() => {
-                                  deleteLead(lead.leads_id);
-                                }}
-                                style={{
-                                  pointerEvents: pending2 ? 'none' : 'auto',
-                                  opacity: pending2 ? 0.6 : 1,
-                                  cursor: pending2 ? 'not-allowed' : 'pointer',
-                                }}
-                              >
-                                <img src={ICONS.DeleteICONBOX} />
-                              </div>
-                            ) : (
-                              <button
-                                className={styles.removeButton}
-                                onClick={() => {
-                                  deleteLead(lead.leads_id);
-                                }}
-                                style={{
-                                  pointerEvents: pending2 ? 'none' : 'auto',
-                                  opacity: pending2 ? 0.6 : 1,
-                                  cursor: pending2 ? 'not-allowed' : 'pointer',
-                                }}
-                              >
-                                {' '}
-                                {pending2 ? 'Removing...' : 'Remove'}
-                              </button>
-                            )}
+                              {/* {pending3 ? 'Unarchiving...' : 'Unarchive'} */}
+                              Unarchive</button>
                           </div>
                         )}
                         {isMobile || isTablet ? (
@@ -476,7 +499,12 @@ const ArchivedPages = ({
                         ) : (
                           ''
                         )}
+                        {/* isProfileOpen */}
+                        <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)}>
+                          <IoInformationOutline />
+                        </div>
                       </td>
+
                     </tr>
                     {toggledId.includes(lead['leads_id']) && (
                       <tr>
@@ -513,6 +541,7 @@ const ArchivedPages = ({
                             {/* {lead.street_address} */}
                           </div>
                         </td>
+
                       </tr>
                     )}
                   </React.Fragment>
@@ -526,9 +555,32 @@ const ArchivedPages = ({
               )}
             </tbody>
           </table>
+
+          {leadsData.length > 0 && (
+            <div className={styles.leadpagination}>
+              <div className={styles.leftitem}>
+                <p className={styles.pageHeading}>
+                  {startIndex} - {endIndex} of {totalcount} item
+                </p>
+              </div>
+
+              <div className={styles.rightitem}>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPage}
+                  paginate={paginate}
+                  currentPageData={[]}
+                  goToNextPage={goToNextPage}
+                  goToPrevPage={goToPrevPage}
+                  perPage={itemsPerPage}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
+    </>
   );
 };
 

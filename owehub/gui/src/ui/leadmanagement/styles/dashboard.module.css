@@ -36,33 +36,14 @@
 
 .horizontal {
   display: flex;
+  gap: 20px;
   justify-content: space-between;
   width: 100%;
-
-}.horizontal > div.custom-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 20px;
 }
-.custom1 {
-  /* Custom styles for the first div */
-  margin-right: 20px; 
+.customFont, .customLeft{
   font-weight: 600;
-  padding-left: 20px;
-}
 
-.custom2 {
-  margin-right: 0px;
-  font-weight: 600;
-  margin-left: 20px;
 }
-.custom3 {
-  margin-right: 0px;
-  font-weight: 600;
-}
-
-
  .vertical2 {
   display: flex;
   justify-content: center;
@@ -304,6 +285,60 @@ table tbody tr:hover {
   height: 22px;
   width: 22px;
 }
+.FirstColHead {
+  display: flex;
+ 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 35%;
+  
+}
+
+/* .customLeft {
+  flex: 1;
+  text-align: left; 
+} */
+
+/* .customRight {
+  flex: 1; 
+  text-align: right; 
+} */
+.SecondColHead{
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 55%;
+}
+.searchBar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px; 
+  padding: 5px;
+  height: 33px;
+  width: 369px !important;
+  margin-right: 20px;   
+}
+
+.searchIcon {
+  margin-left: 5px; 
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  color: #000000;
+  height: 12px !important; 
+  width: 12px !important;
+}
+
+.searchInput {
+  border: none; 
+  outline: none;
+  width: 100%; 
+  padding: 2.5px; 
+  border-radius: 5px;
+}
+
+
 .filterCallToAction {
   display: flex;
   transform: scale(0.75);
