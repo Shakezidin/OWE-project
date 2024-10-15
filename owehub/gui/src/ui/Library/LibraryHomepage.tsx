@@ -539,6 +539,21 @@ const LibraryHomepage = () => {
     }
   });
 
+  const sortedFolder = [...folderData].sort((a, b) => {
+    switch (sortOption) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'date':
+        const dateA = new Date(a.lastModifiedDateTime);
+        const dateB = new Date(b.lastModifiedDateTime);
+        return dateB.getTime() - dateA.getTime(); // sort descending
+      case 'size':
+        return b.size - a.size; // assuming size is already in bytes
+      default:
+        return 0; // no sorting applied
+    }
+  });
+
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
@@ -785,7 +800,7 @@ const LibraryHomepage = () => {
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={sortedData.map((item) => ({
+          <FolderListView folders={sortedFolder.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -808,7 +823,7 @@ const LibraryHomepage = () => {
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={folderData}
+            folderData={sortedFolder}
           />
       );
     }
