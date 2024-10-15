@@ -6,8 +6,8 @@ BEGIN
     UPDATE sales_partner_dbhub_schema
     SET 
         sales_partner_name = p_dealer_name
-    WHERE item_id = p_id
-    RETURNING item_id INTO v_dealer_id;
+    WHERE partner_id = p_id
+    RETURNING partner_id INTO v_dealer_id;
 
      IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in sales_partner_dbhub_schema table', p_id;

@@ -92,7 +92,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				FROM teams t
 				JOIN team_members tm ON tm.team_id = t.team_id
 				WHERE t.partner_id IN (
-					SELECT item_id FROM sales_partner_dbhub_schema WHERE sales_partner_name = ANY($1)
+					SELECT partner_id FROM sales_partner_dbhub_schema WHERE sales_partner_name = ANY($1)
 				)
 				GROUP BY t.team_id
 				ORDER BY t.team_id;
