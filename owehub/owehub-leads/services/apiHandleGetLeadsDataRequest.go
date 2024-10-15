@@ -194,6 +194,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.appointment_declined_date,
 				li.lead_won_date,
 				li.is_archived,
+				li.proposal_id,
 				li.is_appointment_required,
 				li.status_id
 				
@@ -292,6 +293,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			qcAudit = ""
 		}
 
+		proposalId, ok := item["proposal_id"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get proposal_id from leads info Item %+v", item)
+			proposalId = ""
+		}
+
 		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
@@ -371,6 +378,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FinanceType:            finType,
 			FinanceCompany:         finCompany,
 			QCAudit:                qcAudit,
+			ProposalID:             proposalId,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)
