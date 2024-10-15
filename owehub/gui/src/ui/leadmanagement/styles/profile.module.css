@@ -1,15 +1,13 @@
 .DetailsMcontainer {
-    display: flex;
-    justify-content: space-between;
-    width: auto;
-    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr !important;
   }
   .customer_wrapper_list {
     flex-basis: calc(100%);
     border-radius: 8px;
     background-color: #fff;
-    max-width: 793px;
-    height: 517px;
+    max-width: 1012px;
+    height: 583px;
   }
 
   .Column1Details {
@@ -21,6 +19,19 @@
     font-size: 14px;
     position: relative;
   }
+  tr {
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.RowDiv{
+
+}
+.RowDiv:hover{
+  background-color: #ddebff ;
+
+
+}
+
   
   .Column1Details::after {
     content: '';
@@ -28,7 +39,7 @@
     top: 19px; 
     right: 0;
     width: 2px;
-    height: 78%; 
+    height: 92.5%; 
     background-color: #CCCCCC;
   }
   
@@ -36,7 +47,6 @@
    
     width:100% !important;
   }
-
 
 
   .Column2Details {
@@ -51,20 +61,31 @@
 
   /* TABLE STYLING */
 
-.leftAlign {
+  .leftAlign {
     text-align: left; 
     height: 32px !important; 
-    padding: 0; 
+    padding: 0 0px 0 18px; /* Adjust the values as needed: top, right, bottom, left */
     line-height: 9px;
+    font-weight: 500;
+    font-size: 14px;
 }
 
 .rightAlign {
     text-align: right;
     height: 25px !important; 
-    padding: 0; 
+    padding: 0 18px 0px 0px;
+    color: #377CF6;
     line-height: 9px;
+    font-weight: 500;
+    font-size: 14px;
 }
 
+
+.specialfont{
+  font-weight: 400;
+  color: #3E3E3E !important;
+
+}
 
 
 

@@ -114,10 +114,14 @@ const Profile: React.FC<EditModalProps> = ({
 
                             <table>
                                 <tbody>
-                                    <tr>
+                                    
+                                    <tr  
+                                    className={classes.RowDiv}
+                                    >
                                         <td className={classes.leftAlign}>Leads Id</td>
                                         <td className={classes.rightAlign}>OWE{leadData?.leads_id}</td>
                                     </tr>
+                                   
                                     <tr>
                                         <td className={classes.leftAlign}>First Name</td>
                                         <td className={classes.rightAlign}>{leadData?.first_name}</td>
@@ -154,7 +158,8 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Proposal type</td>
-                                        <td className={classes.rightAlign}>{leadData?.proposal_type}</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                        >85001</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Finance Type</td>
@@ -163,6 +168,22 @@ const Profile: React.FC<EditModalProps> = ({
                                     <tr>
                                         <td className={classes.leftAlign}>Finance Company</td>
                                         <td className={classes.rightAlign}>{leadData?.finance_company}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={classes.leftAlign}>Sale Submission triggered</td>
+                                        <td className={classes.rightAlign}>{leadData?.finance_company}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={classes.leftAlign}>QC Audit</td>
+                                        <td className={classes.rightAlign}>{leadData?.finance_company}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={classes.leftAlign}>Proposal Signed</td>
+                                        <td className={classes.rightAlign}>.......</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={classes.leftAlign}>Appointment Disposition</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>.......</td>
                                     </tr>
 
 
@@ -177,42 +198,61 @@ const Profile: React.FC<EditModalProps> = ({
 
                                 <tbody>
                                     <tr>
-                                        <td className={classes.leftAlign}>Sale Submission triggered</td>
-                                        <td className={classes.rightAlign}>{leadData?.sale_submission_triggered ? 'Yes' : 'No'}</td>
+                                        <td className={classes.leftAlign}>Appointment Disposition Note</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>.......</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>QC Audit</td>
-                                        <td className={classes.rightAlign}>{leadData?.qc_audit}</td>
+                                        <td className={classes.leftAlign}>Notes</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>.......</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Proposal Signed</td>
-                                        <td className={classes.rightAlign}>{leadData?.proposal_signed ? 'Yes' : 'No'}</td>
+                                        <td className={classes.leftAlign}>Created At</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>.......</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Disposition</td>
-                                        <td className={classes.rightAlign}>{leadData?.appointment_disposition}</td>
+                                        <td className={classes.leftAlign}>Updated At</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>.......</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Accepted Date</td>
+                                        <td className={classes.leftAlign}>Appointment Scheduled Date</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                        >10/10/2024</td>
+                                    </tr>
+                                  
+                                    <tr>
+                                        <td className={classes.leftAlign}>Appointment Declined Date</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>.......</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={classes.leftAlign}>Appointment Accepted date</td>
                                         <td className={classes.rightAlign}>{leadData?.appointment_accepted_date || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Appointment Date</td>
-                                        <td className={classes.rightAlign}>{leadData?.appointment_date || 'N/A'}</td>
+                                        <td className={classes.rightAlign}>{leadData?.appointment_accepted_date || 'N/A'}</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Declined Date</td>
+                                        <td className={classes.leftAlign}>Lead Won Date</td>
                                         <td className={classes.rightAlign}>{leadData?.appointment_declined_date || 'N/A'}</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Disposition Note</td>
+                                        <td className={classes.leftAlign}>Lead Won Date</td>
+                                        <td className={classes.rightAlign}>{leadData?.appointment_declined_date || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={classes.leftAlign}>Proposal Created Date</td>
                                         <td className={classes.rightAlign}>{leadData?.appointment_disposition_note || 'N/A'}</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Scheduled Date</td>
-                                        <td className={classes.rightAlign}>{leadData?.appointment_scheduled_date || 'N/A'}</td>
+                                        <td className={classes.leftAlign}>Status Id</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                        >OWE2134</td>
                                     </tr>
-
+                                    <tr>
+                                        <td className={classes.leftAlign}>Created By</td>
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                        >Rabindr718</td>
+                                    </tr>
 
                                 </tbody>
                             </table>
