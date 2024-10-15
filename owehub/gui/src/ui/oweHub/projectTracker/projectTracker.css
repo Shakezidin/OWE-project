@@ -268,7 +268,7 @@
   display: flex;
   align-items: center;
   padding: 30px;
-  padding-bottom: 40px;
+  padding-bottom: 50px;
   background-color: var(--white-color);
   position: relative;
 }
@@ -1276,7 +1276,7 @@
   }
 
   .hover-text {
-    left: 20% !important;
+    left: -42px !important;
   }
 }
 
@@ -1802,7 +1802,7 @@
   opacity: 0;
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 0;
   transform: translateX(-50%);
   background-color: #eba900;
   color: #fff;

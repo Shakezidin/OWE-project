@@ -6,7 +6,7 @@ export const PartnerPayScheduleColumn: Column[] = [
     name: 'sales_partner',
     displayName: 'Sales Partner',
     type: 'string',
-    isCheckbox: true,
+    isCheckbox: false,
   },
   {
     name: 'finance_partner',

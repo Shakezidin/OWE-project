@@ -35,7 +35,7 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	appointmentEndTime = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
 	if isReschedule {
 		model = models.OutlookEventRequest{
-			OwnerMail: leadsService.AuroraCfg.AppointmentSenderEmail,
+			OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
 			Subject:   "Team Meeting",
 			Body:      "Let's discuss about the proposal, we have rescheduled your meeting",
 			StartTime: appointmentTimeStr,
@@ -54,7 +54,7 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 		}
 	} else {
 		model = models.OutlookEventRequest{
-			OwnerMail: leadsService.AuroraCfg.AppointmentSenderEmail,
+			OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
 			Subject:   "Team Meeting",
 			Body:      "Let's discuss about the proposal",
 			StartTime: appointmentTimeStr,

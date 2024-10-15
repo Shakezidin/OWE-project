@@ -15,7 +15,7 @@ ALTER TABLE user_details
 ADD COLUMN dealer_owner_id BIGINT;
 
 
--- -- Add new foreign key constraints to refer to sales_partner_dbhub_schema.item_id
+-- Add new foreign key constraints to refer to sales_partner_dbhub_schema.item_id
 -- ALTER TABLE user_details
 --     ADD CONSTRAINT user_details_dealerowner_fkey
 --         FOREIGN KEY (dealer_owner_id)

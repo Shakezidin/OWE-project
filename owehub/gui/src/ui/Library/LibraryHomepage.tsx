@@ -43,6 +43,7 @@ import FilesTileViewList from './components/FilesTileViewList/FilesTileViewList'
 import Input from '../components/text_input/Input';
 import CheckBox from '../components/chekbox/CheckBox';
 import FolderListView from './components/FolderListView/FolderListView';
+import useMatchMedia from '../../hooks/useMatchMedia';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -71,7 +72,8 @@ const LibraryHomepage = () => {
     fileType: "",
     url: ""
   })
-  const [selectedCheckbox, setSelectedCheckbox] = useState(new Set())
+  const isMobile = useMatchMedia("(max-width: 450px)")
+  const [selectedCheckbox, setSelectedCheckbox] = useState<Set<string>>(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
   const query = searchParams.get("from")
@@ -309,14 +311,27 @@ const LibraryHomepage = () => {
   }
 
   const HandleSearch = (e: any) => {
-    const inputValue = e.target.value;
-    const validCharacters = /^[a-zA-Z0-9._-]*$/;
-
-    // Check if the last character is valid
-    if (!validCharacters.test(inputValue.slice(-1))) {
-      // Ignore the last character if it's invalid
-      return; // Exit early without updating searchValue
+    let inputValue: string = e.target.value;
+    const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+    if (inputValue.length === 1 && inputValue === ' ') {
+      inputValue = '';
     }
+    if (inputValue.length > 0 && (inputValue.charAt(0) === ' ' || !validCharacters.test(inputValue.charAt(0)))) {
+      return; // Exit early if the first character is a space or invalid
+    }
+    // Check if the last character is valid
+
+
+    // if (!validCharacters.test(inputValue.slice(-1))) {
+    //   // Ignore the last character if it's invalid
+    //   return; // Exit early without updating searchValue
+    // }
+    // for(let i=0;i<inputValue.length;i++)
+    // {
+    //   if(!validCharacters.test(inputValue.slice(i)))
+    //     return;
+    // }
+
 
     // Set the search value
     setSearchValue(inputValue);
@@ -479,7 +494,17 @@ const LibraryHomepage = () => {
 
   const filteredData = fileData.filter((data) => {
     const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg')) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
+    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg' ||
+      data.file?.mimeType === 'image/jpeg' ||
+      data.file?.mimeType === 'image/gif' ||
+      data.file?.mimeType === 'image/webp' ||
+      data.file?.mimeType === 'image/bmp' ||
+      data.file?.mimeType === 'image/tiff' ||
+      data.file?.mimeType === 'image/svg+xml' ||
+      data.file?.mimeType === 'image/heif' ||
+      data.file?.mimeType === 'image/heic'
+
+    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
     return matchesSearch && matchesType;
   });
 
@@ -513,6 +538,22 @@ const LibraryHomepage = () => {
         return 0; // no sorting applied
     }
   });
+
+  const sortedFolder = [...folderData].sort((a, b) => {
+    switch (sortOption) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'date':
+        const dateA = new Date(a.lastModifiedDateTime);
+        const dateB = new Date(b.lastModifiedDateTime);
+        return dateB.getTime() - dateA.getTime(); // sort descending
+      case 'size':
+        return b.size - a.size; // assuming size is already in bytes
+      default:
+        return 0; // no sorting applied
+    }
+  });
+
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
@@ -569,6 +610,7 @@ const LibraryHomepage = () => {
       .then((res) => {
         toast.success(`Deleted ${res.length} ${res.length > 1 ? "files" : "file"}`)
         reset()
+        setCheckedItems(0)
         fetchDataFromGraphAPI()
         setIsPending(false)
       })
@@ -589,6 +631,7 @@ const LibraryHomepage = () => {
         reset()
         setAllIds([]);
         setCheckedItems(0);
+        console.log("working block")
         setCheckedFolders([]);
         toast.success(`Deleted ${res.length} ${res.length > 1 ? "folders" : "folder"}`)
         fetchDataFromGraphAPI();
@@ -598,7 +641,7 @@ const LibraryHomepage = () => {
       })
 
   };
-
+  console.log("checkeditems", checkedItems, selectedCheckbox)
   const handleUndo = () => {
     setCheckedItems(0);
     setCheckedFolders([]);
@@ -626,9 +669,11 @@ const LibraryHomepage = () => {
       return (
         <>
           <div className={styles.delete_left}>
-            <div className={styles.undoButton} onClick={()=>{
+            <div className={styles.undoButton} onClick={() => {
               setSelectedCheckbox(new Set())
               setCheckedItems(0)
+              setCheckedFolders([])
+
             }}>
               <FaXmark style={{
                 height: '20px',
@@ -636,11 +681,12 @@ const LibraryHomepage = () => {
               }} />
             </div>
             <span className={styles.selectedCount}>
-              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "files" : "folders"}{checkedItems > 1 ? 's' : ''} selected
+              {activeSection === "files" ? selectedCheckbox.size : checkedItems} {activeSection === "files" ? "file" : "folder"}{(checkedItems > 1 || selectedCheckbox.size > 1) ? 's ' : ' '}
+              selected
             </span>
           </div>
           <div className={styles.delete_right}>
-            <button disabled={isPending} className={styles.DeleteButton} onClick={() => OpenModal()}>
+            <button disabled={isPending} className={activeSection === 'files' ? styles.DeleteButtonForFile : styles.DeleteButton} onClick={() => OpenModal()}>
               Delete
             </button>
           </div>
@@ -678,6 +724,7 @@ const LibraryHomepage = () => {
           {activeSection !== 'folders' && (
             <div
               ref={dropdownRef}
+
               onClick={handleDivClick}
               style={toggleClick ? { borderColor: '#377cf6' } : {}}
             >
@@ -701,26 +748,28 @@ const LibraryHomepage = () => {
           ) : null}
         </div>
 
-        <div className={styles.libSecHeader_right}>
-          <button onClick={() => setFilesView("list")} className={` ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+        <div className={`  ${styles.libSecHeader_right}`}>
+          <button onClick={() => setFilesView("list")} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
-          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+          <button onClick={() => setFilesView("tiles")} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
+          <div className={`${styles.sm_hide}`}>
 
-          <SortByLibrary onSort={handleSort} />
+            <SortByLibrary onSort={handleSort} />
+          </div>
 
-          <div className={styles.searchWrapper}>
+          <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
             <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
             {/* SEARCHINGGGG */}
             <input
               type="text"
               value={searchValue}
               onChange={HandleSearch}
-              placeholder="Search by file name or person"
+              placeholder="Search by file name "
               className={styles.searchInput}
-              maxLength={50}
+              maxLength={25}
             />
           </div>
           {role_name === TYPE_OF_USER.ADMIN && <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI} setLoading={setLoading} />}
@@ -745,111 +794,36 @@ const LibraryHomepage = () => {
   };
 
   const renderContent = () => {
-    if (currentFolder) {
-      if (loading) {
-        return (
-          <div className={styles.filesLoader}>
-            <MicroLoader />
-          </div>
-        );
-      }
+   
 
-
-
-
-      if (currentFolderContent.length === 0) {
-        return <div className={` bg-white py2 ${styles.filesLoader}`}>
-          <DataNotFound />
-        </div>
-      }
-
-      return (
-
-
-        <div className={styles.libSectionWrapper}>
-          <div className={styles.lib_Grid_Header}>
-            <div className={`${styles.grid_item} ${styles.table_name}`}>
-              Name
-            </div>
-
-            <div className={styles.grid_item}>Uploaded Date</div>
-            <div className={styles.grid_item}>Actions</div>
-          </div>
-
-          {currentFolderContent.map((item) => {
-            return <div className={styles.libGridItem} key={item.id}>
-              <div className={`${styles.file_icon} ${styles.image_div}`} >
-                <img
-                  className={styles.cardImg}
-                  src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
-                  alt={item.name}
-                />
-                <div>
-                  <p className={styles.name}>{item.name}</p>
-                  <p className={styles.size}>
-                    {item.size < 1024
-                      ? item.size
-                      : Math.round(item.size / 1024)}{' '}
-                    {item.size < 1024 ? 'KB' : 'MB'}
-                  </p>
-                </div>
-              </div>
-
-              <div className={styles.grid_item}>
-                {format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}
-              </div>
-              <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                <RxDownload
-                  className={styles.icons}
-                  onClick={() => downloadFile(item["@microsoft.graph.downloadUrl"], item.name)}
-                  style={{ height: '18px', width: '18px', color: '#667085' }}
-                />
-                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                  className={styles.icons}
-                  style={{ height: '18px', width: '18px', color: '#667085' }}
-                  onClick={() => handleClickdeleted(item.id)}
-                />}
-              </div>
-            </div>
-          })}
-        </div>
-
-
-      );
-    }
-
-
-
-    if (isRecycleBinView) {
-      return (
-        <div className={styles.recycleBinContent}>
-          {recycleBinItems.length === 0 ? (
-            <p></p>
-          ) : (
-            recycleBinItems.map((item, index) => <div key={index}></div>)
-          )}
-        </div>
-      );
-    }
 
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={folderData.map((item) => ({
+          <FolderListView folders={sortedFolder.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
             createdDate: item.createdDateTime,
             id: item.id
-          }))} onDelete={(id) => {
-            OpenModal()
-            setAllIds(prev => [...prev, id])
-          }} />
+          }))}
+
+            selected={selectedCheckbox}
+            setSelected={setSelectedCheckbox}
+            onDelete={(id) => {
+              OpenModal()
+              setAllIds(prev => [...prev, id])
+            }}
+            handleCheckboxChange={(ids) => {
+              setAllIds(Array.from(ids))
+              setCheckedItems(ids.size)
+            }}
+          />
           : <FolderView
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={folderData}
+            folderData={sortedFolder}
           />
       );
     }
@@ -872,21 +846,30 @@ const LibraryHomepage = () => {
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
-              <div className='mr1'>
+              { role_name===TYPE_OF_USER.ADMIN && <div className='mr1'>
                 <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
+                    setAllIds([])
+                    setCheckedItems(0)
+
+
                   } else {
-                    setSelectedCheckbox(new Set(sortedData.map((item) => item.id)))
+                    const newSet = new Set(sortedData.map((item) => item.id))
+                    setSelectedCheckbox(newSet)
+                    setAllIds(Array.from(newSet))
+                    setCheckedItems(newSet.size)
                   }
+
                 }} />
-              </div>
-              <span>
+              </div>}
+              <span className={styles.libname_heading}>
                 Name
               </span>
             </div>
           </div>
-          <div className={styles.grid_item}>Uploaded Date</div>
+          <div className={` ${styles.sm_hide} ${styles.grid_item}`}>Uploaded Date</div>
+
           <div className={styles.grid_item}>Actions</div>
         </div>}
 
@@ -902,101 +885,85 @@ const LibraryHomepage = () => {
               sortedData.map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
-                return <div className={styles.libGridItem} key={data.id}>
-                  <div className="flex items-center">
-                    <div className="mr2">
-                      <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
-                        if (selectedCheckbox.has(data.id)) {
-                          setSelectedCheckbox(new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id)))
-                        } else {
-                          const prev = Array.from(selectedCheckbox)
-                          prev.push(data.id)
-                          setSelectedCheckbox(new Set(prev))
+                return (
+                  <div className={styles.libGridItem} key={data.id}>
+                    <div className="flex items-center">
+                     {role_name===TYPE_OF_USER.ADMIN && <div className="mr2">
+                        <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
+                          if (selectedCheckbox.has(data.id)) {
+                            const newArr = new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id))
+                            setSelectedCheckbox(newArr)
+                            setAllIds(Array.from(newArr))
+                          } else {
+                            const prev = Array.from(selectedCheckbox)
+                            prev.push(data.id)
+                            setSelectedCheckbox(new Set(prev))
+                            setAllIds(prev)
+                          }
+                        }} />
+                      </div>}
+                      <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                        if (isValidVideo) {
+                          setIsVideoModalOpen(true)
+                          setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
+                          setVideoName(data.name!)
+                          return
                         }
-                      }} />
-                    </div>
-                    <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
-                      if (isValidVideo) {
-                        setIsVideoModalOpen(true)
-                        setVideoUrl(data["@microsoft.graph.downloadUrl"]!)
-                        setVideoName(data.name!)
-                        return
-                      }
-                      if (isValidImage) {
-                        setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
-                        setIsFileViewerOpen(true)
-                        return
-                      } else {
-                        window.open(data.webUrl, "_blank")
-                      }
-                    }}>
-                      <img
-                        className={styles.cardImg}
-                        src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
-                        alt={`null`}
-                        loading='lazy'
-                      />
-                      <div>
-                        <p className={styles.name}>{data.name.substring(0, 50)}</p>
-                        <p className={styles.size}>
-                          {data.size < 1024
-                            ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
-                            : data.size < 1048576
-                              ? `${Math.round(data.size / 1024)} KB`
-                              : `${Math.round(data.size / 1048576)} MB`}
-                        </p>
+                        if (isValidImage) {
+                          setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
+                          setIsFileViewerOpen(true)
+                          return
+                        } else {
+                          window.open(data.webUrl, "_blank")
+                        }
+                      }}>
+                        <img
+                          className={styles.cardImg}
+                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? data['@microsoft.graph.downloadUrl'] : defauult}
+                          alt={`null`}
+                          loading='lazy'
+                        />
+                        <div>
+                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
+                          <p className={styles.size}>
+                            {data.size < 1024
+                              ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
+                              : data.size < 1048576
+                                ? `${Math.round(data.size / 1024)} KB`
+                                : `${Math.round(data.size / 1048576)} MB`}
+                          </p>
 
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                  <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                    {isRecycleBinView ? (
+                    <div className={` ${styles.sm_hide} ${styles.grid_item_dates}`}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                    <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
+
+                      <div>
+                        <RxDownload
+                          className={styles.icons_download}
+                          onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
+
+                        />
+                      </div>
                       <div>
                         {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                          className={styles.icons}
-                          style={{
-                            height: '16px',
-                            width: '16px',
-                            color: '#667085',
-                          }}
-                          onClick={() => handleClickdeleted(data.id)} />}
-                        {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(data.id)} />)}
+                          className={styles.icons_delete}
+                          onClick={() => {
+                            OpenModal()
+                            const prev = Array.from(selectedCheckbox)
+                            prev.push(data.id)
+                            setSelectedCheckbox(new Set(prev))
+                          }} />}
                       </div>
-                    ) : (
-                      <>
-                        <div>
-                          <RxDownload
-                            className={styles.icons}
-                            onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              color: '#667085',
-                            }}
-                          />
-                        </div>
-                        <div>
-                          {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                            className={styles.icons}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              color: '#667085',
-                            }} onClick={() => {
-                              OpenModal()
-                              const prev = Array.from(selectedCheckbox)
-                              prev.push(data.id)
-                              setSelectedCheckbox(new Set(prev))
-                            }} />}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+
+
+                    </div>
+                  </div>)
               })
               : <FilesTileViewList
-
+                selected={selectedCheckbox}
+                setSelected={setSelectedCheckbox}
                 onFilePreview={(url, type, name) => {
                   const isValidVideo = isVideo(type)
                   const isValidImage = isImage(type)
@@ -1045,8 +1012,30 @@ const LibraryHomepage = () => {
 
   return (
     <div className={styles.libraryContainer}>
-      <div className={styles.libraryHeader}>
+      <div className={`${styles.libraryHeader} flex items-center justify-between`}>
         <h3>Library</h3>
+        <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
+          <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
+            <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
+            <input
+              type="text"
+              value={searchValue}
+              onChange={HandleSearch}
+              placeholder="Search by file name "
+              className={styles.searchInput}
+              maxLength={25}
+            />
+          </div>
+          <div className={styles.sort_container} >
+            <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
+          </div>
+          <button onClick={() => setFilesView("list")} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+            <TiThMenu />
+          </button>
+          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+            <BsGrid />
+          </button>
+        </div>
       </div>
 
       {isRecycleBinView ? (

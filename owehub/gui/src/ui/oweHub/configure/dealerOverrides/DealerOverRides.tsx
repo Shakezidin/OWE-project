@@ -357,7 +357,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -367,7 +367,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                               setSelectAllChecked
                             )
                           }
-                        />
+                        /> */}
                         {el.sub_dealer || 'N/A'}
                       </div>
                     </td>

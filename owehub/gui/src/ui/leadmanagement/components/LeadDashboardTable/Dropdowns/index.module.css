@@ -3,14 +3,6 @@
   display: inline-block;
 }
 
-/* .verticalDots {
-  display: flex;
-  cursor: pointer;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-} */
-
 .verticalDots {
   display: flex;
   align-items: center;
@@ -148,6 +140,10 @@
   margin-left: 17px;
   align-items: center;
   justify-content: center;
+}
+.disabled{
+  color: grey !important;
+  cursor: not-allowed !important;
 }
 /* HERE FOR RESPONSIVESNESS */
 

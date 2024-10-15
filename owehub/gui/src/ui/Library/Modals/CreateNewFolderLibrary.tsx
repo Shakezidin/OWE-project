@@ -23,12 +23,22 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
-    if (!validCharacters.test(inputValue.slice(-1))) {
-      return;
+    const inputValue = event.target.value.trimEnd(); // Remove trailing spaces
+
+    // Define valid character regex
+    const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
+
+    // Check if the input is valid
+    if (!validCharacters.test(inputValue)) {
+      return; // Exit early if the input is invalid
     }
-    setFolderName(event.target.value);
+
+    // Check for more than 1 continuous space
+    if (/\s{2,}/.test(inputValue)) {
+      return; // Exit early if there are 2 or more continuous spaces
+    }
+
+    setFolderName(inputValue);
   };
 
 
@@ -43,7 +53,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
         ? `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${uploadPath}:/children`
         : `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children`;
       const response = await axios.post(url, {
-        "name": folderName,
+        "name": folderName.trim(),
         "folder": {},
         "@microsoft.graph.conflictBehavior": "fail"
       }, {
@@ -96,6 +106,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                   placeholder="Add your folder Name"
                   value={folderName}
                   onChange={handleInputChange}
+                  maxLength={25}
                 ></input>
               </div>
               {error && <div className='mx-auto' style={{ maxWidth: 548 }}>

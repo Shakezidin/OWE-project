@@ -727,6 +727,8 @@ const Table = ({
       setExportShow(false);
     }
   };
+   
+  
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -764,6 +766,11 @@ const Table = ({
 
   const exportCsv = async () => {
     // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
 
     setIsExporting(true);
     const headers = [
@@ -801,7 +808,7 @@ const Table = ({
       item.phone_number,
       item.address,
       item.state,
-      item.contract_total,
+      removeHtmlTags(item.contract_total), 
       item.contracted_system_size_parent,
       item.sale_date,
       item.ntp_complete_date,

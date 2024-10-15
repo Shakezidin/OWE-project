@@ -6,7 +6,7 @@ export const FinanceTypesColumn: Column[] = [
     name: 'product_code',
     displayName: 'Product Code',
     type: 'string',
-    isCheckbox: true,
+    isCheckbox: false,
   },
   {
     name: 'relationship',

@@ -3,23 +3,45 @@ import classes from './index.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaAngleRight } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
+import { usePopper } from 'react-popper';
+
 
 interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
   cb?: () => void
+  options: { label: string; value: string }[];
 }
 
 const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
   selectedType,
   onSelectType,
-  cb
+  cb,
+  options
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const dropdownRef = useRef<HTMLUListElement | null>(null);
-  const buttonRef = useRef<HTMLDivElement | null>(null);
+
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLUListElement | null>(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: 'bottom',
+    modifiers: [
+      {
+        name: 'flip',
+        options: {
+          fallbackPlacements: ['top', 'bottom'],
+        },
+      },
+      {
+        name: 'preventOverflow',
+        options: {
+          boundary: 'clippingParents',
+        },
+      },
+    ],
+  });
 
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
@@ -35,28 +57,27 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
       if (
-        dropdownRef.current &&
-        buttonRef.current &&
-        !dropdownRef.current.contains(target) &&
-        !buttonRef.current.contains(target)
+        popperElement &&
+        referenceElement &&
+        !popperElement.contains(event.target as Node) &&
+        !referenceElement.contains(event.target as Node)
       ) {
         setIsVisible(false);
-        setIsClicked(false);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [popperElement, referenceElement]);
 
   return (
     <div className={classes.dropdown_container}>
       <div
-        ref={buttonRef}
+        ref={setReferenceElement}
         onMouseEnter={() => setIsHovered(true)}
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
@@ -68,33 +89,26 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
 
       {isVisible && (
         <ul
-          ref={dropdownRef}
+          ref={setPopperElement}
+          style={{
+            ...styles.popper,
+            marginRight: '-10px',
+            marginTop: '10px',
+          }}
+          {...attributes.popper}
           className={classes.dropdownMenu}
         >
-          <li
-            onClick={() => handleSelect('All')}
-            className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
-          >
-          View Proposal
-          </li>
-          <li
-            onClick={() => handleSelect('Excel')}
-            className={`${classes.dropdownItem} ${selectedType === 'Excel' ? classes.selected : ''}`}
-          >
-            Download Proposal
-          </li>
-          <li
-            onClick={() => handleSelect('PDF Format')}
-            className={`${classes.dropdownItem} ${selectedType === 'PDF Format' ? classes.selected : ''}`}
-          >
-            Create New Proposal
-          </li>
-          <li
-            onClick={() => handleSelect('app_sched')}
-            className={`${classes.dropdownItem} ${selectedType === 'Images' ? classes.selected : ''}`}
-          >
-            Schedule Appointment
-          </li>
+          {options.map((option) => (
+            <li
+              key={option.value}
+              onClick={() => handleSelect(option.value)}
+              className={`${classes.dropdownItem} ${
+                selectedType === option.value ? classes.selected : ''
+              }`}
+            >
+              {option.label}
+            </li>
+          ))}
         </ul>
       )}
     </div>
