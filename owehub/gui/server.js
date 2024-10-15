@@ -1,6 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const puppeteer = require('puppeteer');
+
 
 const app = express();
 const port = 5000;
@@ -219,7 +221,7 @@ app.get('/api/designs/:projectId', async (req, res) => {
   }
 });
 
-// Retrieve Proposal Details
+// Add/ Edit Type -Retrieve Proposal Details
 app.get('/api/proposals/:designId', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/proposals/default`;
@@ -244,7 +246,7 @@ app.get('/api/proposals/:designId', async (req, res) => {
   }
 });
 
-// Retrieve Web Proposal Details
+// View Retrieve Web Proposal Details
 app.get('/api/web-proposals/:designId', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/web_proposal`;
@@ -466,8 +468,35 @@ app.put('/api/projects/:projectId/consumption_profile', async (req, res) => {
   }
 });
 
+app.post('/api/generate-pdf', async (req, res) => {
+  const { url } = req.body;
 
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+
+    // Wait for an additional 10 seconds after 'networkidle0'
+    await page.waitForTimeout(20000);
+
+    const pdf = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '1cm', right: '1cm', bottom: '1cm', left: '1cm' }
+    });
+
+    await browser.close();
+
+    res.contentType('application/pdf');
+    res.send(pdf);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).json({ error: 'Failed to generate PDF', details: error.message });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
