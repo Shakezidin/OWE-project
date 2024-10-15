@@ -75,69 +75,71 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 
 	whereEleList := []interface{}{authenticatedEmail, startDate, endDate}
 
-	// 1 = mail , 
-	// 2=  s.date , 
-	// 3 = e.date
-
 	query := `
-			SELECT 
-		'NEW' AS status_name, 
-		COUNT(*) AS count
-	FROM 
-		get_leads_info_hierarchy($1) li
-	WHERE 
-		li.status_id = 0 
-		AND li.is_appointment_required = TRUE
+    SELECT 
+        'NEW' AS status_name, 
+        COUNT(*) AS count
+    FROM 
+        get_leads_info_hierarchy($1) li
+    WHERE 
+        li.status_id = 0 
+        AND li.is_appointment_required = TRUE
 
-		AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+        AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 
-	UNION ALL
 
-	SELECT 
-		'PROGRESS' AS status_name, 
-		COUNT(*) AS count
-	FROM 
-		get_leads_info_hierarchy($1) li
-	WHERE 
-		(
-			(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-			OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
-			OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
-		)
-	
-		AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+    UNION ALL
 
-	UNION ALL
 
-	SELECT 
-		'DECLINED' AS status_name, 
-		COUNT(*) AS count
-	FROM 
-		get_leads_info_hierarchy($1) li
-	WHERE 
-		li.status_id = 3 
-		AND li.is_appointment_required = TRUE
-		
-		AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+    SELECT 
+        'PROGRESS' AS status_name, 
+        COUNT(*) AS count
+    FROM 
+        get_leads_info_hierarchy($1) li
+    WHERE 
+        (
+            (li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
+            OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
+            OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
+        )
+    
+        AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 
-	UNION ALL
 
-	SELECT 
-		'ACTION_NEEDED' AS status_name, 
-		COUNT(*) AS count
-	FROM 
-		get_leads_info_hierarchy($1) li
-	WHERE 
-		(
-			li.status_id = 4
-			OR (
-				li.status_id IN (1, 2)
-				AND li.appointment_date < CURRENT_TIMESTAMP 
-				AND li.is_appointment_required = TRUE
-			)
-		)
-		AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range;
-		`
+    UNION ALL
+
+
+    SELECT 
+        'DECLINED' AS status_name, 
+        COUNT(*) AS count
+    FROM 
+        get_leads_info_hierarchy($1) li
+    WHERE 
+        li.status_id = 3 
+        AND li.is_appointment_required = TRUE
+        
+        AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+
+
+    UNION ALL
+
+
+    SELECT 
+        'ACTION_NEEDED' AS status_name, 
+        COUNT(*) AS count
+    FROM 
+        get_leads_info_hierarchy($1) li
+    WHERE 
+        (
+            li.status_id = 4
+            OR (
+                li.status_id IN (1, 2)
+                AND li.appointment_date < CURRENT_TIMESTAMP 
+                AND li.is_appointment_required = TRUE
+            )
+        )
+        AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range;
+        `
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
@@ -159,31 +161,17 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 			continue
 		}
 
-		// data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
-		// if err != nil || len(data) <= 0 {
-		// 	log.FuncErrorTrace(0, "Failed to get action needed leads count with err: %v", err)
-		// } else {
-		// 	actionNeededCount, ok := data[0]["count"].(int64)
-		// 	if ok {
-		// 		count += actionNeededCount
-		// 	}
-		// }
-
 		apiResponse.Leads = append(apiResponse.Leads, models.GetLeadsCountByStatus{
 			Count:      count,
 			StatusName: statusName,
 		})
 	}
 
-	// // Count total records from db
-
+	// Count total records from db
 	query2 := `SELECT COUNT(*) AS total_count FROM get_leads_info_hierarchy($1) li`
-
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query2, []interface{}{authenticatedEmail})
-	// Updated query to count total records from db
-	//[]interface{}{authenticatedEmail}
 
-	//  error  handle
+	//  error  handling
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get total lead count from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to fetch lead count", http.StatusInternalServerError, nil)
@@ -202,9 +190,3 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 	appserver.FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, apiResponse.Leads, recordCount)
 
 }
-
-// /*
-// 	[db recount]
-// 	[query]
-// 	[append  in [array``]
-// */
