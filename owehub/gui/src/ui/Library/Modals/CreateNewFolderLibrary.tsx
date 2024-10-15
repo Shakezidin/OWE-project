@@ -23,31 +23,22 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value.trimEnd(); // Remove trailing spaces
 
-// Define valid character regex based on the length of inputValue
-const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
+    // Define valid character regex
+    const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
 
-// Check if the first character is valid and not a space
-if (inputValue.length > 0 && (inputValue.charAt(0) === ' ' || !validCharacters.test(inputValue.charAt(0)))) {
-  return; // Exit early if the first character is a space or invalid
-}
+    // Check if the input is valid
+    if (!validCharacters.test(inputValue)) {
+      return; // Exit early if the input is invalid
+    }
 
-// Check for more than 5 continuous spaces
-if (inputValue.split(' ').some(space => space.length === 0 && space.length > 5)) {
-  return; // Exit early if there are more than 5 continuous spaces
-}
+    // Check for more than 1 continuous space
+    if (/\s{2,}/.test(inputValue)) {
+      return; // Exit early if there are 2 or more continuous spaces
+    }
 
-// Check if the last character is valid
-if (!validCharacters.test(inputValue.slice(-1))) {
-  return; // Exit early without updating searchValue
-}
-for(let i=0;i<inputValue.length;i++)
-  {
-    if(!validCharacters.test(inputValue.slice(i)))
-      return;
-  }
-    setFolderName(event.target.value);
+    setFolderName(inputValue);
   };
 
 
@@ -62,7 +53,7 @@ for(let i=0;i<inputValue.length;i++)
         ? `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${uploadPath}:/children`
         : `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children`;
       const response = await axios.post(url, {
-        "name": folderName,
+        "name": folderName.trim(),
         "folder": {},
         "@microsoft.graph.conflictBehavior": "fail"
       }, {
