@@ -44,7 +44,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads, getProjectByLeadId } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -1082,32 +1082,70 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  // const handleCreateProposal = async (leadId: number) => {
+  //   console.log("leadId", leadId)
+  //   console.log("selectedLeads", selectedLeads)
+  //   try {
+  //     const createProposalResult = await dispatch(createProposal(
+  //       {
+  //         "leads_id": leadId,
+  //         "customer_salutation": "Mr./Mrs.",
+  //         "status": "In Progress",
+  //         "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
+  //         "tags": ["third_party_1"]
+  //       }
+  //     ));
+  
+  //     // Check if the createProposal action was successful
+  //     if (createProposal.fulfilled.match(createProposalResult)) {
+  //       // If proposal creation was successful, call getProjectByLeadId
+  //       const getProjectResult = await dispatch(getProjectByLeadId(leadId));
+  
+  //       // Check if getProjectByLeadId was successful
+  //       if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
+  //         toast.success('Proposal created and project data fetched!');
+  //       } else {
+  //         toast.warning('Proposal created, but failed to fetch project data.');
+  //       }
+  //     } else {
+  //       toast.error('Failed to create proposal.');
+  //     }
+  //   } catch (error) {
+  //     toast.error('An error occurred while processing your request.');
+  //     console.error('Error in handleCreateProposal:', error);
+  //   }
+  // };
+
   const handleCreateProposal = async (leadId: number) => {
-    console.log("leadId", leadId)
-    console.log("selectedLeads", selectedLeads)
+    console.log("leadId", leadId);
+    console.log("selectedLeads", selectedLeads);
     try {
-      // const leadData = selectedLeads.find((lead) => lead == leadId);
-      // if (!leadData) {
-      //   toast.error('Lead data not available.');
-      //   return;
-      // }
-
-      await dispatch(createProposal(
-        {
-          "leads_id": leadId,
-          "customer_salutation": "Mr./Mrs.",
-          "status": "In Progress",
-          "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
-          "tags": ["third_party_1"]
+      const createProposalResult = await dispatch(createProposal({
+        "leads_id": leadId,
+        "customer_salutation": "Mr./Mrs.",
+        "status": "In Progress",
+        "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
+        "tags": ["third_party_1"]
+      }));
+  
+      if (createProposal.fulfilled.match(createProposalResult)) {
+        toast.success('Proposal created successfully!');
+        
+        const getProjectResult = await dispatch(getProjectByLeadId(leadId));
+  
+        if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
+          toast.success('Project data fetched successfully!');
+        } else {
+          toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
         }
-
-      ));
-      // toast.success('Proposal created successfully!');
+      } else {
+        toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+      }
     } catch (error) {
-      toast.error('Failed to create proposal.');
+      toast.error('An unexpected error occurred');
+      console.error('Error in handleCreateProposal:', error);
     }
   };
-
  
 
   //*************************************************************************************************/
