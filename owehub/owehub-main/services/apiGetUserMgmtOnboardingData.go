@@ -107,7 +107,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		}
 
 		// Add condition to filter by partner_id for dealer owners
-		conditionOne = fmt.Sprintf(" WHERE u.partner_id = %v", dealerID)
+		conditionOne = fmt.Sprintf(" WHERE u.partner_id = '%s'", dealerID)
 	}
 	query = fmt.Sprintf(query, conditionOne)
 
