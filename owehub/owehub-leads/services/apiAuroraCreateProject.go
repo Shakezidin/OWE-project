@@ -21,12 +21,12 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateProjectRequest
+ * FUNCTION:		HandleAuroraCreateProjectRequest
  * DESCRIPTION:     handler for creating project in aurora
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleCreateProjectRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleAuroraCreateProjectRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err               error
 		reqBody           []byte
@@ -36,8 +36,8 @@ func HandleCreateProjectRequest(resp http.ResponseWriter, req *http.Request) {
 		createProjectResp *auroraclient.CreateProjectApiResponse
 	)
 
-	log.EnterFn(0, "HandleCreateProjectRequest")
-	defer func() { log.ExitFn(0, "HandleCreateProjectRequest", err) }()
+	log.EnterFn(0, "HandleAuroraCreateProjectRequest")
+	defer func() { log.ExitFn(0, "HandleAuroraCreateProjectRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in CreateProjectRequest")

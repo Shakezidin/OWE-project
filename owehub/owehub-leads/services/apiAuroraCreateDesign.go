@@ -20,12 +20,12 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateDesignRequest
+ * FUNCTION:		HandleAuroraCreateDesignRequest
  * DESCRIPTION:     handler for creating design in aurora
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleCreateDesignRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleAuroraCreateDesignRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		reqBody          []byte
@@ -35,8 +35,8 @@ func HandleCreateDesignRequest(resp http.ResponseWriter, req *http.Request) {
 		createDesignResp *auroraclient.CreateDesignApiResponse
 	)
 
-	log.EnterFn(0, "HandleCreateDesignRequest")
-	defer func() { log.ExitFn(0, "HandleCreateDesignRequest", err) }()
+	log.EnterFn(0, "HandleAuroraCreateDesignRequest")
+	defer func() { log.ExitFn(0, "HandleAuroraCreateDesignRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in CreateDesignRequest")
