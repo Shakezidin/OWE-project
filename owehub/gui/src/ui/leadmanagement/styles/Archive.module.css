@@ -264,9 +264,9 @@ table tbody tr:hover {
 
 .history_list_inner {
   display: grid !important;
-  grid-template-columns:
-    auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr) auto 
-    0.4fr auto !important;
+  grid-template-columns:auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr) auto auto !important;
+
+
   align-items: center !important;
   padding: 16px !important;
   gap: 16px !important;
