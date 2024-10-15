@@ -752,7 +752,7 @@ const LibraryHomepage = () => {
               type="text"
               value={searchValue}
               onChange={HandleSearch}
-              placeholder="Search by file name or person"
+              placeholder="Search by file name "
               className={styles.searchInput}
               maxLength={25}
             />
@@ -1090,7 +1090,7 @@ const LibraryHomepage = () => {
               type="text"
               value={searchValue}
               onChange={HandleSearch}
-              placeholder="Search by file name or person"
+              placeholder="Search by file name "
               className={styles.searchInput}
               maxLength={25}
             />
