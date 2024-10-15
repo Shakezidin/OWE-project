@@ -1,5 +1,5 @@
 ALTER TABLE teams
-ADD COLUMN partner_id BIGINT;
+ADD COLUMN partner_id VARCHAR(255);
 
 ALTER TABLE teams
 ALTER COLUMN dealer_id DROP NOT NULL;
@@ -11,7 +11,7 @@ ALTER COLUMN dealer_id DROP NOT NULL;
 
 CREATE OR REPLACE FUNCTION create_new_team(
     p_team_name character varying,
-    p_dealer_id BIGINT,
+    p_dealer_id VARCHAR(255),
     p_team_description character varying,
     p_sale_rep_codes TEXT[],
     p_manager_codes TEXT[],
