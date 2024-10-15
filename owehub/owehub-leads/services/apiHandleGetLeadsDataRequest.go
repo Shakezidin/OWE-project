@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -138,10 +139,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			len(whereEleList),
 		)
 
-		// if search query convertible to int, search by id as well
-		searchId, searchIdErr := strconv.Atoi(dataReq.Search)
-		if searchIdErr == nil {
-			whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+		// if search starts with owe, search by id as well
+		if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
+			searchId, searchIdErr := strconv.Atoi(dataReq.Search[3:])
+			if searchIdErr == nil {
+				whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+			}
 		}
 	}
 
