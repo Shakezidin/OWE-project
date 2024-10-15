@@ -52,7 +52,7 @@ const FolderDetail = () => {
     const location = useLocation();
     const [searchParams] = useSearchParams()
     const [videoName, setVideoName] = useState("")
-    const [isHovered,setIsHovered]=useState<number | null>(null);
+    const [isHovered, setIsHovered] = useState<number | null>(null);
     console.log(location.state, "location")
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
@@ -305,7 +305,7 @@ const FolderDetail = () => {
                     {viewMode === "list" && <div className={styles.lib_Grid_Header}>
                         <div className={`${styles.grid_item} ${styles.table_name}`}>
                             <div className="flex items-center">
-                                <div className="mr1">
+                                {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
                                     <CheckBox checked={selected.size === files.length && !!files.length} onChange={() => {
                                         if (selected.size === files.length) {
                                             setSelected(new Set())
@@ -314,7 +314,7 @@ const FolderDetail = () => {
                                             setSelected(newChecked)
                                         }
                                     }} />
-                                </div>
+                                </div>}
                                 <span>
 
                                     Name
@@ -330,19 +330,21 @@ const FolderDetail = () => {
                             :
                             files.length ?
                                 viewMode === "list" ?
-                                    files.map((file,index) => {
+                                    files.map((file, index) => {
                                         const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
                                         const isValidVideo = isVideo(file.file?.mimeType!)
                                         return <div key={file.id} className={styles.libGridItem} >
                                             {
                                                 file.folder ?
                                                     <div className='flex items-center'>
-                                                        <div className="mr1">
-                                                            <CheckBox
-                                                                checked={selected.has(file.id)}
-                                                                onChange={() => handleCheckboxChange(file.id)}
-                                                            />
-                                                        </div>
+                                                        {role_name === TYPE_OF_USER.ADMIN &&
+                                                            <div className="mr1">
+                                                                <CheckBox
+                                                                    checked={selected.has(file.id)}
+                                                                    onChange={() => handleCheckboxChange(file.id)}
+                                                                />
+                                                            </div>
+                                                        }
                                                         <Link to={`/library/${path["*"]}/${file.name}`} className={`${styles.file_icon} ${styles.image_div}`}>
                                                             <img
                                                                 src={ICONS.folderImage}
@@ -350,20 +352,20 @@ const FolderDetail = () => {
                                                             <div>
                                                                 <p className={styles.name}>{file.name}</p>
                                                                 <p className={styles.size}> {(file.size > 1024 * 1024)
-                                                                    ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                                                                    : `${Math.round(file.size / 1024)} KB`}</p>
+                                                                    ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
+                                                                    : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
                                                             </div>
                                                         </Link>
                                                     </div>
 
                                                     :
                                                     <div className="flex items-center">
-                                                        <div className="mr1">
+                                                        {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
                                                             <CheckBox
                                                                 checked={selected.has(file.id)}
                                                                 onChange={() => handleCheckboxChange(file.id)}
                                                             />
-                                                        </div>
+                                                        </div>}
                                                         <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                                                             if (isValidVideo) {
                                                                 setIsVideoModalOpen(true)
@@ -402,14 +404,14 @@ const FolderDetail = () => {
 
                                             <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                             <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px',  color: isHovered===index && !file.folder? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name) } 
-                                                 onMouseOver={()=>{setIsHovered(index)}} onMouseLeave={()=>{setIsHovered(null)}}    
+                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#000' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#000'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
+                                                    onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
                                                 />
-                                                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete}  onClick={() => {
+                                                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
                                                     setIsDeleteModalVisible(true)
                                                     setSelectedDeleteId(file.id)
                                                 }}
-                                                
+
                                                 />}
                                             </div>
                                         </div>
@@ -432,7 +434,7 @@ const FolderDetail = () => {
                                                     key={file.id}
                                                     onMouseEnter={() => setHoveredIndex(file.id)}
                                                     onMouseLeave={() => setHoveredIndex(null)}
-                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}` )}
+                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}`)}
                                                 >
                                                     <div className={folderWrapperStyles.createdByWrapper}>
 
@@ -442,24 +444,24 @@ const FolderDetail = () => {
                                                         <img src={ICONS.folderImage} alt="" />
                                                         <div className={folderWrapperStyles.checkboxWrapper}>
                                                             <p className={folderWrapperStyles.quantity}>{file.childCount}</p>
-                                                            {role_name === TYPE_OF_USER.ADMIN && 
-                                                            <div className={` ${selected.has(file?.id!) ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
+                                                            {role_name === TYPE_OF_USER.ADMIN &&
+                                                                <div className={` ${selected.has(file?.id!) ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
 
-                                                                <CheckBox
-                                                                    
-                                                              
-                                                                    onChange={() => {
-                                                        
-                                                                        handleCheckboxChange(file.id)
-                                                                    }}
-                                                                    checked={selected.has(file.id)}
-                                                                />
-                                                            </div>
+                                                                    <CheckBox
+
+
+                                                                        onChange={() => {
+
+                                                                            handleCheckboxChange(file.id)
+                                                                        }}
+                                                                        checked={selected.has(file.id)}
+                                                                    />
+                                                                </div>
                                                             }
                                                         </div>
                                                     </div>
 
-                                                    <div className={"mt2"} style={{width:"100%"}}>
+                                                    <div className={"mt2"} style={{ width: "100%" }}>
                                                         <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024

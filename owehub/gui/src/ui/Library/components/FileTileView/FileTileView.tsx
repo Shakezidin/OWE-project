@@ -150,10 +150,10 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
           <h4 className={styles.card_title} > {file?.name} </h4>
           <div className="flex items-center">
             {role_name === TYPE_OF_USER.ADMIN && <span onClick={() => onDelete(file?.id!)} className={styles.card_btn}>
-              <GoTrash size={14} />
+              <GoTrash  color='#000' size={14} />
             </span>}
             <span className={styles.card_btn}>
-              <LuDownload size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
+              <LuDownload  color='#000' size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
             </span>
           </div>
         </div>

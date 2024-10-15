@@ -72,6 +72,7 @@ const FolderList = (props: IFolder) => {
 
                 <div>
                     {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
+                    color='#000'
                         onClick={() => props?.onDelete?.(props.id!)}
                         className={`${styles.Deleteicons}`}
                         

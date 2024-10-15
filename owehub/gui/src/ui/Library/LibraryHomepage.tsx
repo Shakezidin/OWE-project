@@ -539,6 +539,21 @@ const LibraryHomepage = () => {
     }
   });
 
+  const sortedFolder = [...folderData].sort((a, b) => {
+    switch (sortOption) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'date':
+        const dateA = new Date(a.lastModifiedDateTime);
+        const dateB = new Date(b.lastModifiedDateTime);
+        return dateB.getTime() - dateA.getTime(); // sort descending
+      case 'size':
+        return b.size - a.size; // assuming size is already in bytes
+      default:
+        return 0; // no sorting applied
+    }
+  });
+
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
@@ -779,97 +794,13 @@ const LibraryHomepage = () => {
   };
 
   const renderContent = () => {
-    if (currentFolder) {
-      if (loading) {
-        return (
-          <div className={styles.filesLoader}>
-            <MicroLoader />
-          </div>
-        );
-      }
+   
 
-
-
-
-      if (currentFolderContent.length === 0) {
-        return <div className={` bg-white py2 ${styles.filesLoader}`}>
-          <DataNotFound />
-        </div>
-      }
-
-      return (
-
-
-        <div className={styles.libSectionWrapper}>
-          <div className={styles.lib_Grid_Header}>
-            <div className={`${styles.grid_item} ${styles.table_name}`}>
-              Name
-            </div>
-
-            <div className={`${styles.grid_item} ${styles.sm_hide}`}>Uploaded Date</div>
-            <div style={{ textAlign: "end" }} className={` ${styles.grid_item}`}>Actions</div>
-          </div>
-
-          {currentFolderContent.map((item) => {
-            return <div className={styles.libGridItem} key={item.id}>
-              <div className={`${styles.file_icon} ${styles.image_div}`} >
-                <img
-                  className={styles.cardImg}
-                  src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
-                  alt={item.name}
-                />
-                <div>
-                  <p className={styles.name}>{item.name}</p>
-                  <p className={styles.size}>
-                    {item.size < 1024
-                      ? item.size
-                      : Math.round(item.size / 1024)}{' '}
-                    {item.size < 1024 ? 'KB' : 'MB'}
-                  </p>
-                </div>
-              </div>
-
-              <div className={styles.grid_item}>
-                {format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}
-              </div>
-              <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                <RxDownload
-                  className={styles.icons}
-                  onClick={() => downloadFile(item["@microsoft.graph.downloadUrl"], item.name)}
-                  style={{ height: '18px', width: '18px', color: '#667085' }}
-                />
-                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                  className={styles.icons}
-                  style={{ height: '18px', width: '18px', color: '#667085' }}
-                  onClick={() => handleClickdeleted(item.id)}
-                />}
-              </div>
-            </div>
-          })}
-        </div>
-
-
-      );
-    }
-
-
-
-    if (isRecycleBinView) {
-      return (
-        <div className={styles.recycleBinContent}>
-          {recycleBinItems.length === 0 ? (
-            <p></p>
-          ) : (
-            recycleBinItems.map((item, index) => <div key={index}></div>)
-          )}
-        </div>
-      );
-    }
 
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={folderData.map((item) => ({
+          <FolderListView folders={sortedFolder.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -892,7 +823,7 @@ const LibraryHomepage = () => {
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={folderData}
+            folderData={sortedFolder}
           />
       );
     }
@@ -915,7 +846,7 @@ const LibraryHomepage = () => {
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
-              <div className='mr1'>
+              { role_name===TYPE_OF_USER.ADMIN && <div className='mr1'>
                 <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
@@ -931,7 +862,7 @@ const LibraryHomepage = () => {
                   }
 
                 }} />
-              </div>
+              </div>}
               <span className={styles.libname_heading}>
                 Name
               </span>
@@ -957,7 +888,7 @@ const LibraryHomepage = () => {
                 return (
                   <div className={styles.libGridItem} key={data.id}>
                     <div className="flex items-center">
-                      <div className="mr2">
+                     {role_name===TYPE_OF_USER.ADMIN && <div className="mr2">
                         <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
                           if (selectedCheckbox.has(data.id)) {
                             const newArr = new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id))
@@ -970,7 +901,7 @@ const LibraryHomepage = () => {
                             setAllIds(prev)
                           }
                         }} />
-                      </div>
+                      </div>}
                       <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                         if (isValidVideo) {
                           setIsVideoModalOpen(true)

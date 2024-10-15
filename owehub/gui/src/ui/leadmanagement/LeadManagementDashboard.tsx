@@ -257,13 +257,7 @@ const renderActiveShape = (props: any) => {
 };
 
 
-const statusMap = {
-  'Pending leads': 'Pending',
-  'Appointment accepted': 'Accepted',
-  'Appointment sent': 'Sent',
-  'Appointment declined': 'Declined',
-  'Action Needed': 'Action Needed',
-};
+
 
 const CustomTooltip = ({
   active,
@@ -443,12 +437,18 @@ const LeadManagementDashboard = () => {
     navigate('/leadmgt-addnew');
   };
 
+  const statusMap = {
+    'NEW': 'New Leads',
+    'PROGRESS': 'In Progress',
+    'DECLINED': 'Declined',
+    'ACTION_NEEDED': 'Action Needed',
+  };
+
   useEffect(() => {
     if (pieData.length > 0) {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
-
     }
   }, [activeIndex]);
 
@@ -458,7 +458,6 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
-
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -466,33 +465,7 @@ const LeadManagementDashboard = () => {
     );
   };
 
-  const handleLeadSelection = (leadId: number) => {
-    setSelectedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
-    );
-  };
 
-  const handleReschedule = (lead: any) => {
-    setShowConfirmModal(true);
-  };
-
-  const handleArchive = (lead: Lead) => {
-    setLeadToArchive(lead); // Store the lead to be archived
-    setShowArchiveModal(true); // Show the modal
-  };
-
-  const handleDetailModal = (lead: Lead) => {
-    setShowConfirmModal(true); // Show detail modal
-  };
-
-  const handleChevronClick = (itemId: number) => {
-    console.log(itemId);
-    setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId) ? [] : [itemId]
-    );
-  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -502,16 +475,6 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
-  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
-  const handleOpenArcModal = () => {
-    console.log('click on arch');
-    setIsArcModalOpen(true);
-    console.log(isArcModalOpen);
-  };
-
-  const handleCloseArcModal = () => {
-    setIsArcModalOpen(false);
-  };
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -566,11 +529,10 @@ const LeadManagementDashboard = () => {
   }, [isAuthenticated, selectedDates]);
 
   const defaultData: DefaultData = {
-    PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
-    SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
-    ACCEPTED: { name: 'Appointment accepted', value: 0, color: '#52B650' },
-    DECLINED: { name: 'Appointment declined', value: 0, color: '#CD4040' },
-    'ACTION NEEDED': { name: 'Action Needed', value: 0, color: '#63ACA3' },
+    NEW: { name: 'NEW', value: 0, color: '#FF832A' },
+    PROGRESS: { name: 'PROGRESS', value: 0, color: '#81A6E7' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#52B650' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#CD4040' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -584,6 +546,8 @@ const LeadManagementDashboard = () => {
   const [totalValue, setTotalValue] = useState<number>(0);
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
+
+  console.log(pieData, "piedata showing")
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -604,22 +568,23 @@ const LeadManagementDashboard = () => {
           );
 
           if (response.status === 200) {
-            const apiData = response.data.leads;
+            const apiData = response.data;
             const formattedData = apiData.reduce(
               (acc: DefaultData, item: any) => {
-                acc[item.status_name] = {
-                  name: defaultData[item.status_name].name,
-                  value: item.count,
-                  color: defaultData[item.status_name].color,
-                };
+                const statusName = item.status_name;
+                if (statusName in defaultData) {
+                  acc[statusName] = {
+                    name: defaultData[statusName].name,
+                    value: item.count,
+                    color: defaultData[statusName].color,
+                  };
+                }
                 return acc;
               },
-              {} as DefaultData
+              { ...defaultData }
             );
-            const mergedData = Object.values({
-              ...defaultData,
-              ...formattedData,
-            }) as StatusData[];
+
+            const mergedData = Object.values(formattedData) as StatusData[];
             setPieData(mergedData);
           } else if (response.status > 201) {
             toast.error(response.data.message);
@@ -678,25 +643,22 @@ const LeadManagementDashboard = () => {
       let statusId;
       switch (currentFilter) {
         case 'Action Needed':
-          statusId = "ACTION_NEEDED";
+          statusId = 'ACTION_NEEDED';
           break;
-        case 'Pending':
-          statusId = "NEW";
+        case 'New Leads':
+          statusId = 'NEW';
           break;
-        case 'Sent':
-          statusId = "PROGRESS";
-          break;
-        case 'Accepted':
-          statusId = "PROGRESS";
+        case 'In Progress':
+          statusId = 'PROGRESS';
           break;
         case 'Declined':
-          statusId = "DECLINED";
+          statusId = 'DECLINED';
           break;
         case 'Projects':
           statusId = 5;
           break;
         default:
-          statusId = "NEW";
+          statusId = 'NEW';
       }
 
       const data = {
@@ -709,7 +671,7 @@ const LeadManagementDashboard = () => {
         "status": statusId,
         is_archived: archive,
         progress_filter: selectedValue ? selectedValue : "ALL",
-        search:searchTerm,
+        search: searchTerm,
         page_size: 10,
         page_number: archive ? 1 : page,
       };
@@ -1013,10 +975,10 @@ const LeadManagementDashboard = () => {
   };
 
   const [exporting, setIsExporting] = useState(false);
- 
+
   const exportCsv = async () => {
     setIsExporting(true);
-  const headers = [
+    const headers = [
       'Leads ID',
       'Status ID',
       'First Name',
@@ -1115,16 +1077,16 @@ const LeadManagementDashboard = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-console.error(error);
+      console.error(error);
       toast.error('An error occurred while exporting the data.');
-} finally {
+    } finally {
       setIsExporting(false);
     }
   };
-  
+
   const handleCreateProposal = async (leadId: number) => {
-    console.log("leadId",leadId)
-    console.log("selectedLeads",selectedLeads)
+    console.log("leadId", leadId)
+    console.log("selectedLeads", selectedLeads)
     try {
       // const leadData = selectedLeads.find((lead) => lead == leadId);
       // if (!leadData) {
@@ -1140,22 +1102,21 @@ console.error(error);
           "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
           "tags": ["third_party_1"]
         }
-        
-        ));
+
+      ));
       // toast.success('Proposal created successfully!');
     } catch (error) {
       toast.error('Failed to create proposal.');
     }
   };
 
-  //************************************************************************************************ */
+  //*************************************************************************************************/
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
         <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
           <div className="bread-link">
             <div className="" style={{ cursor: 'pointer' }}>
-              {/* <h3>Lead Management</h3> */}
             </div>
             <div className="">
               <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
@@ -1163,7 +1124,6 @@ console.error(error);
           </div>
         </div>
       </div>
-
       <ConfirmModel
         isOpen1={isModalOpen}
         onClose1={handleCloseModal}
@@ -1173,35 +1133,13 @@ console.error(error);
         reschedule={reschedule}
         action={action}
       />
-
-      <ArchiveModal
-        isArcOpen={isArcModalOpen}
-        onArcClose={handleCloseArcModal}
-        leadId={leadId}
-        activeIndex={ref}
-        setActiveIndex={setRef}
-      />
-      {/* //WORKING DIRECTORY */}
-
-      {/* ************************************************************************************************  */}
-      {/* Header LayOut for graphs and Buttons by Rabindra */}
-
       <div className={styles.chartGrid}>
-
-
         <div className={styles.horizontal}>
-          
-          {/*     
-            className={`${styles.customLeft} ${styles.custom1}`}
-className={`${styles.customLeft} ${styles.custom2}`} */}
-
-
-
           <div className={styles.FirstColHead}>
             {isToggledX && (
               <div className={styles.customLeft}>
-Overview
-</div>
+                Overview
+              </div>
             )}
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads: {totalValue ? totalValue : '0'}
@@ -1214,158 +1152,144 @@ Overview
               >Total Won Lost</div>}
             </div>
             <div className={`${styles.customRight} ${styles.customFont}`}>
-          <div className={styles.date_calendar}>
-            <div className={styles.lead__datepicker_wrapper}>
-              {isCalendarOpen && (
-                <div
-                  ref={calendarRef}
-                  className={styles.lead__datepicker_content}
-                >
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleRangeChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={selectedRanges}
-                  />
-                  <div className={styles.lead__datepicker_btns}>
-                    <button className="reset-calender" onClick={onReset}>
-                      Reset
-                    </button>
-                    <button className="apply-calender" onClick={onApply}>
-                      Apply
-                    </button>
-                  </div>
+              <div className={styles.date_calendar}>
+                <div className={styles.lead__datepicker_wrapper}>
+                  {isCalendarOpen && (
+                    <div
+                      ref={calendarRef}
+                      className={styles.lead__datepicker_content}
+                    >
+                      <DateRange
+                        editableDateInputs={true}
+                        onChange={handleRangeChange}
+                        moveRangeOnFirstSelection={false}
+                        ranges={selectedRanges}
+                      />
+                      <div className={styles.lead__datepicker_btns}>
+                        <button className="reset-calender" onClick={onReset}>
+                          Reset
+                        </button>
+                        <button className="apply-calender" onClick={onApply}>
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            {selectedDates.startDate && selectedDates.endDate && (
-              <div className={styles.hist_date}>
-                {isToggledX && <span className={styles.date_display}>
-                  {selectedDates.startDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                  }) +
-                    ' ' +
-                    selectedDates.startDate.toLocaleDateString('en-US', {
-                      month: 'short',
-                    }) +
-                    ' ' +
-                    selectedDates.startDate.getFullYear()}
-                  {' - '}
-                  {selectedDates.endDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                  }) +
-                    ' ' +
-                    selectedDates.endDate.toLocaleDateString('en-US', {
-                      month: 'short',
-                    }) +
-                    ' ' +
-                    selectedDates.endDate.getFullYear()}
-                </span>}
-              </div>
-            )}
+                {selectedDates.startDate && selectedDates.endDate && (
+                  <div className={styles.hist_date}>
+                    {isToggledX && <span className={styles.date_display}>
+                      {selectedDates.startDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.startDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.startDate.getFullYear()}
+                      {' - '}
+                      {selectedDates.endDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.endDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.endDate.getFullYear()}
+                    </span>}
+                  </div>
+                )}
 
 
-            {isToggledX && <Select
-              value={selectedPeriod}
-              onChange={handlePeriodChange}
-              options={periodFilterOptions}
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  marginTop: 'px',
-                  borderRadius: '8px',
-                  outline: 'none',
-                  color: '#3E3E3E',
-                  width: '140px',
-                  height: '36px',
-                  fontSize: '12px',
-                  border: '1px solid #d0d5dd',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  alignContent: 'center',
-                  backgroundColor: '#fffff',
-                  boxShadow: 'none',
-                  '&:focus-within': {
-                    borderColor: '#377CF6',
-                    boxShadow: '0 0 0 1px #377CF6',
-                    caretColor: '#3E3E3E',
-                  },
-                  '&:hover': {
-                    borderColor: '#377CF6',
-                    boxShadow: '0 0 0 1px #377CF6',
-                  },
-                }),
-                placeholder: (baseStyles) => ({
-                  ...baseStyles,
-                  color: '#3E3E3E',
-                }),
-                indicatorSeparator: () => ({
-                  display: 'none',
-                }),
-                dropdownIndicator: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: '#3E3E3E',
-                  '&:hover': {
-                    color: '#3E3E3E',
-                  },
-                }),
-                option: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: '13px',
-                  fontWeight: '400',
-                  color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                  backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                  '&:hover': {
-                    backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                  },
-                  cursor: 'pointer',
-                }),
-                singleValue: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: '#3E3E3E',
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  width: '140px',
-                  marginTop: '0px',
-                  zIndex: "100"
-                }),
-              }}
-            />}
-            {isToggledX && <div
-              ref={toggleRef}
-              className={styles.calender}
-              onClick={toggleCalendar}
-            >
-              <img src={ICONS.includes_icon} alt="" />
-            </div>}
-            <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-              <img
-                src={
-                  isToggledX === true
-                    ? ICONS.ChecronUpX
-                    : ICONS.DownArrowDashboard
-                }
-              />
+                {isToggledX && <Select
+                  value={selectedPeriod}
+                  onChange={handlePeriodChange}
+                  options={periodFilterOptions}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      marginTop: 'px',
+                      borderRadius: '8px',
+                      outline: 'none',
+                      color: '#3E3E3E',
+                      width: '140px',
+                      height: '36px',
+                      fontSize: '12px',
+                      border: '1px solid #d0d5dd',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      alignContent: 'center',
+                      backgroundColor: '#fffff',
+                      boxShadow: 'none',
+                      '&:focus-within': {
+                        borderColor: '#377CF6',
+                        boxShadow: '0 0 0 1px #377CF6',
+                        caretColor: '#3E3E3E',
+                      },
+                      '&:hover': {
+                        borderColor: '#377CF6',
+                        boxShadow: '0 0 0 1px #377CF6',
+                      },
+                    }),
+                    placeholder: (baseStyles) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                    }),
+                    indicatorSeparator: () => ({
+                      display: 'none',
+                    }),
+                    dropdownIndicator: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                      '&:hover': {
+                        color: '#3E3E3E',
+                      },
+                    }),
+                    option: (baseStyles, state) => ({
+                      ...baseStyles,
+                      fontSize: '13px',
+                      fontWeight: '400',
+                      color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                      backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                      '&:hover': {
+                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                      },
+                      cursor: 'pointer',
+                    }),
+                    singleValue: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                    }),
+                    menu: (baseStyles) => ({
+                      ...baseStyles,
+                      width: '140px',
+                      marginTop: '0px',
+                      zIndex: "100"
+                    }),
+                  }}
+                />}
+                {isToggledX && <div
+                  ref={toggleRef}
+                  className={styles.calender}
+                  onClick={toggleCalendar}
+                >
+                  <img src={ICONS.includes_icon} alt="" />
+                </div>}
+                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
+                  <img
+                    src={
+                      isToggledX === true
+                        ? ICONS.ChecronUpX
+                        : ICONS.DownArrowDashboard
+                    }
+                  />
 
-              {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
-            </div>
+                  {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+                </div>
               </div></div>
           </div>
-
-
-
-          {/* <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-            <img
-              src={
-                isToggledX === true
-                  ? ICONS.ChecronUpX
-                  : ICONS.DownArrowDashboard
-              }
-            />
-
-            HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED
-          </div> */}
         </div>
         {/* //HORIZONTAL ENDED */}
         {isToggledX && <div className={styles.vertical1}>
@@ -1375,7 +1299,7 @@ Overview
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'left',
+                  justifyContent: 'center',
                 }}
               >
                 <MicroLoader />
@@ -1482,13 +1406,6 @@ Overview
         {/* HERE NOT ENTER BELOW CODES */}
       </div>
       <div className={styles.card}>
-        {archive == true && (
-          <ArchivedPages
-          // setArchive={setArchive}
-          // activeIndex={ref}
-          // setActiveIndex={setRef}
-          />
-        )}
         {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
@@ -1497,19 +1414,16 @@ Overview
                   {pieData.map((data) => {
                     let displayStatus = '';
                     switch (data.name) {
-                      case 'Pending leads':
-                        displayStatus = 'Pending';
+                      case 'NEW':
+                        displayStatus = 'New Leads';
                         break;
-                      case 'Appointment sent':
-                        displayStatus = 'Sent';
+                      case 'PROGRESS':
+                        displayStatus = 'In Progress';
                         break;
-                      case 'Appointment accepted':
-                        displayStatus = 'Accepted';
-                        break;
-                      case 'Appointment declined':
+                      case 'DECLINED':
                         displayStatus = 'Declined';
                         break;
-                      case 'Action Needed':
+                      case 'ACTION_NEEDED':
                         displayStatus = 'Action Needed';
                         break;
                       default:
@@ -1520,7 +1434,7 @@ Overview
                       <button
                         key={data.name}
                         className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
-                         ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                           ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
                         onClick={() => handleFilterClick(displayStatus)}
                       >
                         <p
@@ -1560,6 +1474,7 @@ Overview
                       }
                     }}
                   />
+                 
                 </div>
 
 
@@ -1568,7 +1483,7 @@ Overview
                 <HistoryRedirect
                 // setArchive={setArchive} 
                 />
-                 <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
+                <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead}>
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
