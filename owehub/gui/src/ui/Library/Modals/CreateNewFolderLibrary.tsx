@@ -26,7 +26,8 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
     const inputValue = event.target.value.trimEnd(); // Remove trailing spaces
 
     // Define valid character regex
-    const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
+    const validCharacters = /^[a-zA-Z0-9. _-]*$/; 
+    // const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
 
     // Check if the input is valid
     if (!validCharacters.test(inputValue)) {

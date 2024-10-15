@@ -350,7 +350,7 @@ const FolderDetail = () => {
                                                                 src={ICONS.folderImage}
                                                             />
                                                             <div>
-                                                                <p className={styles.name}>{file.name}</p>
+                                                                <p className={styles.name}> {file.name?.substring(0,25)} {file.name?.length !==undefined && file.name?.length >= 25 ? '...' : ''}</p>
                                                                 <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                     ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
                                                                     : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
@@ -404,7 +404,7 @@ const FolderDetail = () => {
 
                                             <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                             <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#000' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#000'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
+                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#000' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
                                                     onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
                                                 />
                                                 {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {

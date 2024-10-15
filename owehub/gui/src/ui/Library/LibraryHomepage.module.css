@@ -403,7 +403,8 @@
   cursor: pointer; 
   height: 18px;
   width: 18px;
-  color: #667085;
+  /* color: #667085; */
+  color:#101828;
   transition: all 0.3s ease;
 
 }
@@ -555,7 +556,8 @@
 
 .filesLoader {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
+  height: 64.7vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -656,6 +658,9 @@
   }
   .libraryContainer{
     padding-inline: 3px;
+  }
+  .recycle_p{
+   
   }
   
 }

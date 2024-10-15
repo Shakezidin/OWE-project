@@ -55,7 +55,7 @@ const FolderList = (props: IFolder) => {
      props.onCheck?.('');
     navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } }); 
 }}>
-                    <p className={sharedStyles.name}>  {props.name}</p>
+                    <p className={sharedStyles.name}>  {props.name?.substring(0,25)} {props.name?.length !==undefined && props.name?.length >= 25 ? '...' : ''}</p>
                     <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
                             ? `${((props?.size || 0) / (1024 * 1024)).toFixed(2)} MB`
