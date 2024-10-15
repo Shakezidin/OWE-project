@@ -211,6 +211,7 @@
 .rep-manage-user {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
 .rep-drop_label {

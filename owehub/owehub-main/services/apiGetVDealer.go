@@ -64,9 +64,9 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_dealer
 	query = `
-	 SELECT sp.item_id as record_id, pd.partner_code as dealer_code, sp.sales_partner_name as dealer_name, pd.description, pd.partner_logo as dealer_logo, pd.bg_colour, pd.preferred_name
+	 SELECT sp.partner_id as record_id, pd.partner_code as dealer_code, sp.sales_partner_name as dealer_name, pd.description, pd.partner_logo as dealer_logo, pd.bg_colour, pd.preferred_name
 	 FROM sales_partner_dbhub_schema sp
-	 LEFT JOIN partner_details pd ON sp.item_id = pd.partner_id`
+	 LEFT JOIN partner_details pd ON sp.partner_id = pd.partner_id`
 
 	filter, whereEleList = PrepareVdealerFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -84,7 +84,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
+		RecordId, ok := item["record_id"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
@@ -205,7 +205,7 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 			// Build the filter condition using correct db column name
 			switch column {
 			case "id":
-				filtersBuilder.WriteString(fmt.Sprintf("sp.item_id %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("sp.partner_id %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_code":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pd.partner_code) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -231,7 +231,7 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 	}
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY sp.item_id, pd.partner_code, sp.sales_partner_name, pd.description, pd.partner_logo, pd.bg_colour, pd.preferred_name ")
+		filtersBuilder.WriteString(" GROUP BY sp.partner_id, pd.partner_code, sp.sales_partner_name, pd.description, pd.partner_logo, pd.bg_colour, pd.preferred_name ")
 	} else if nameSearch {
 	} else {
 		// Add pagination logic

@@ -74,13 +74,13 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) {
 
 	} else if role == string(types.RoleDealerOwner) || role == string(types.RoleSubDealerOwner) {
-		query = `SELECT sp.sales_partner_name as dealer_name, ud.name as owner_name, pd.partner_logo as dealer_logo, pd.bg_colour as bg_color, sp.item_id as dealer_id FROM user_details ud 
-				LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+		query = `SELECT sp.sales_partner_name as dealer_name, ud.name as owner_name, pd.partner_logo as dealer_logo, pd.bg_colour as bg_color, sp.partner_id as dealer_id FROM user_details ud 
+				LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 				LEFT JOIN partner_details pd ON ud.partner_id = pd.partner_id
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT sp.sales_partner_name as dealer_name, pd.partner_logo as dealer_logo, pd.bg_colour as bg_color, sp.item_id as dealer_id FROM user_details ud
-					LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+		query = `SELECT sp.sales_partner_name as dealer_name, pd.partner_logo as dealer_logo, pd.bg_colour as bg_color, sp.partner_id as dealer_id FROM user_details ud
+					LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 					LEFT JOIN partner_details pd ON ud.partner_id = pd.partner_id
 				  WHERE ud.email_id = $1`
 	}
@@ -101,15 +101,15 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	whereEleList = nil
 
-	performerData.DealerId, _ = data[0]["dealer_id"].(int64)
+	performerData.DealerId, _ = data[0]["dealer_id"].(string)
 	performerData.DealerName, _ = data[0]["dealer_name"].(string)
 	performerData.DealerLogo, _ = data[0]["dealer_logo"].(string)
 	performerData.BgColor, _ = data[0]["bg_color"].(string)
 
 	queryForDealerOwner := fmt.Sprintf(`
 	select * from user_details ud
-	LEFT join sales_partner_dbhub_schema sp on ud.partner_id = sp.item_id
-	where (role_id = 2 or role_id = 3) and ud.partner_id = %d
+	LEFT join sales_partner_dbhub_schema sp on ud.partner_id = sp.partner_id
+	where (role_id = 2 or role_id = 3) and ud.partner_id = '%s'
 	`, performerData.DealerId)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForDealerOwner, nil)

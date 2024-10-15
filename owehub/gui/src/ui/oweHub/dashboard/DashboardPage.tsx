@@ -23,7 +23,14 @@ import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
+
+interface Option {
+  value: string;
+  label: string;
+}
+
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -49,6 +56,9 @@ export const DashboardPage: React.FC = () => {
   });
   const [dealers, setDealers] = useState<string[]>([]);
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
+  const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
+  const [dealerOption, setDealerOption] = useState<Option[]>([]);
+
 
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[comissionValueData.length - 1].value
@@ -140,291 +150,61 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <>
-      <div className='dealer-bread' style={{ marginLeft: '6px', marginTop: '6px' }}>
-        <Breadcrumb
-          head=""
-          linkPara="Dealer Pay"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
-      </div>
       <div className="Dashboard-section-container">
         <div className="white-back">
           <div className="DashboardPage-container">
             <div className="rep-manage-user">
-              <div className="dash-head-input dealer-commission" style={{ minWidth: '185px' }}>
-                <div
-                  className="rep-drop_label"
-                  style={{ backgroundColor: '#57B3F1' }}
+              <DropdownCheckbox
+                label={selectedDealer.length === 1 ? 'partner' : 'partners'}
+                placeholder={'Search partners'}
+                selectedOptions={selectedDealer}
+                options={dealerOption}
+                onChange={(val) => {
+                  setSelectedDealer(val);
+                }}
+              />
+              <div
+                ref={datePickerRef}
+                style={{ position: "relative" }}
+              >
+                <label
+                  className="date-button flex items-center"
+                  onClick={handleToggleDatePicker}
+                  style={{ color: '#292929', border: "1px solid #CBCBCB", padding: "8px 16px", gap: "1rem" }}
                 >
-                  <img src={ICONS.lable_img} alt="" />
-                </div>
-                <div className="rep-up relative">
-                  <label
-                    className="inputLabel"
-                    style={{
-                      color: '#344054',
-                      position: 'absolute',
-                      left: '8px',
-                      top: '-6px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Commission Model
-                  </label>
-                  <Select
-                    options={comissionValueData}
-                    value={comissionValueData.find(
-                      (option) => option.value === selectedOption2
-                    )}
-                    onChange={handleSelectChange2}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        borderRadius: '.40rem',
-                        border: 'none',
-                        outline: 'none',
-                        width: 'fit-content',
-                        minHeight: 'unset',
-                        height: '8px',
-                        alignContent: 'center',
-                        backgroundColor: '#ffffff',
-                        cursor: 'pointer',
-                        marginRight: '33px',
-                        marginBottom: '2px',
-                        boxShadow: 'none',
-                        marginTop: '18px',
-                      }),
-                      indicatorSeparator: () => ({
-                        display: 'none',
-                      }),
-                      dropdownIndicator: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#292929',
-                        '&:hover': {
-                          color: '#292929',
-                        },
-                        marginLeft: '-18px',
-                      }),
-                      option: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '13px',
-                        color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected
-                          ? '#377CF6'
-                          : '#ffffff',
-                        '&:hover': {
-                          backgroundColor: state.isSelected
-                            ? '#377CF6'
-                            : '#DDEBFF',
-                        },
-                      }),
-                      singleValue: (baseStyles, state) => ({
-                        ...baseStyles,
-
-                        color: selectedOption2 ? '#292929' : '#8b8484',
-                        width: 'fit-content',
-                      }),
-                      menu: (baseStyles) => ({
-                        ...baseStyles,
-                        width: '131px',
-                        left: -31,
-                      }),
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="dash-head-input" style={{ minWidth: '145px' }}>
-                <div
-                  className="rep-drop_label"
-                  style={{ backgroundColor: '#57B3F1' }}
-                >
-                  <img src={ICONS.lable_img} alt="" />
-                </div>
-                <div className="rep-up relative">
-                  <label
-                    className="inputLabel"
-                    style={{
-                      color: '#344054',
-                      position: 'absolute',
-                      left: '8px',
-                      top: '-6px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Sales Partner
-                  </label>
-                  <Select
-                    options={[
-                      { label: 'All', value: 'ALL' },
-                      ...(dealers.length > 0 ? dealers.map((item) => ({
-                        label: item,
-                        value: item,
-                      })) : []),
-                    ]}
-                    value={dealer}
-                    onChange={(newValue) => {
-                      if (newValue) {
-                        setDealer(newValue);
-                        setCurrentPage(1);
-                      }
-                    }}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        borderRadius: '.40rem',
-                        border: 'none',
-                        outline: 'none',
-                        width: 'fit-content',
-                        minHeight: 'unset',
-                        height: '8px',
-                        alignContent: 'center',
-                        backgroundColor: '#ffffff',
-                        cursor: 'pointer',
-                        marginRight: '33px',
-                        marginBottom: '2px',
-                        boxShadow: 'none',
-                        marginTop: '18px',
-                      }),
-                      indicatorSeparator: () => ({
-                        display: 'none',
-                      }),
-                      dropdownIndicator: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#292929',
-                        '&:hover': {
-                          color: '#292929',
-                        },
-                        marginLeft: '-18px',
-                      }),
-                      option: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '13px',
-                        color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected
-                          ? '#377CF6'
-                          : '#ffffff',
-                        '&:hover': {
-                          backgroundColor: state.isSelected
-                            ? '#377CF6'
-                            : '#DDEBFF',
-                        },
-                      }),
-                      singleValue: (baseStyles, state) => ({
-                        ...baseStyles,
-
-                        color: selectedOption2 ? '#292929' : '#8b8484',
-                        width: 'fit-content',
-                      }),
-                      menu: (baseStyles) => ({
-                        ...baseStyles,
-                        width: '140px',
-                        left: -31,
-                        zIndex: 50,
-                      }),
-                      menuList: (base) => ({
-                        ...base,
-                        '&::-webkit-scrollbar': {
-                          scrollbarWidth: 'thin',
-                          display: 'block',
-                          scrollbarColor: 'rgb(173, 173, 173) #fff',
-                          width: 8,
-                          height: 50,
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                          background: 'rgb(173, 173, 173)',
-                          borderRadius: '30px',
-                        },
-                      }),
-                    }}
-                  />
-
-                  {/* <DropdownCheckbox
-                    options={dealers?.map?.((item) => ({ label: item, value: item })) || []}
-                    selectedOptions={dealer}
-                    onChange={(selectedOptions) => {
-                      setDealer(selectedOptions)
-                      setCurrentPage(1);
-                    }}
-                  /> */}
-                </div>
-              </div>
-
-              <div className="dash-head-input dealer-payroll">
-                <div
-                  className="rep-drop_label"
-                  style={{ backgroundColor: '#C470C7' }}
-                >
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>
-                <div className="rep-up relative">
-                  <label
-                    className="inputLabel"
-                    style={{
-                      color: '#344054',
-                      position: 'absolute',
-                      left: '12px',
-                      top: '-9px',
-                      whiteSpace: 'nowrap',
-                      zIndex: 99,
-                    }}
-                  >
-                    Payroll Date
-                  </label>
-
-                  <div
-                    style={{
-                      position: 'relative',
-                      top: '7px',
-                      backgroundColor: 'white',
-                      marginLeft: '6px',
-                    }}
-                    ref={datePickerRef}
-                  >
-                    <label
-                      className="date-button"
-                      onClick={handleToggleDatePicker}
-                      style={{ color: '#292929' }}
-                    >
-                      {appliedDate
-                        ? format(appliedDate, 'dd-MM-yyyy')
-                        : 'Select Date'}
-                    </label>
-                    {showDatePicker && (
-                      <div className="calender-container dealer-calendar">
-                        <Calendar
-                          date={selectionRange || new Date()}
-                          onChange={handleSelect}
-                        />
-                        <div className="calender-btn-wrapper">
-                          <button
-                            className="reset-calender"
-                            onClick={handleResetDates}
-                          >
-                            Reset
-                          </button>
-                          <button
-                            className="apply-calender"
-                            onClick={handleToggleDatePicker}
-                          >
-                            Apply
-                          </button>
-                        </div>
-                      </div>
-                    )}
+                  {appliedDate
+                    ? format(appliedDate, 'dd-MM-yyyy')
+                    : 'Payroll Date'}
+                  <MdOutlineKeyboardArrowDown style={{width: "1.2rem", height: "1.2rem"}} />
+                </label>
+                {showDatePicker && (
+                  <div className="calender-container dealer-calendar" style={{marginLeft: 0}}>
+                    <Calendar
+                      date={selectionRange || new Date()}
+                      onChange={handleSelect}
+                    />
+                    <div className="calender-btn-wrapper">
+                      <button
+                        className="reset-calender"
+                        onClick={handleResetDates}
+                      >
+                        Reset
+                      </button>
+                      <button
+                        className="apply-calender"
+                        onClick={handleToggleDatePicker}
+                      >
+                        Apply
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 
             <div className="dashboard-payroll">
               <div className="line-graph">
+                <input type='text' className='dealer-pay-search' placeholder='Search' />
                 <div
                   className={`filter-line ${active === 0 ? 'active-filter-line' : ''
                     }`}
