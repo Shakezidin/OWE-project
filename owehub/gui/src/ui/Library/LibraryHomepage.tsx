@@ -940,11 +940,11 @@ const LibraryHomepage = () => {
                     <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
 
                       <div>
-                        <RxDownload
-                          className={styles.icons_download}
-                          onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-
-                        />
+                      <RxDownload
+                  className={styles.icons}
+                  onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
+                  style={{ height: '18px', width: '18px', color: '#101828' }}
+                />
                       </div>
                       <div>
                         {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
@@ -990,7 +990,7 @@ const LibraryHomepage = () => {
                 files={sortedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
-                  name: item.name,
+                  name: item.name.substring(0,20),
                   webUrl: item.webUrl,
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,

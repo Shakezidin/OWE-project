@@ -2,7 +2,8 @@
     cursor: pointer;
     height: 18px;
     width: 18px;
-    color: #667085;
+    /* color: #667085; */
+    color:#101828;
     transition: all 0.3s ease;
 }
 
