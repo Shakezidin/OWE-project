@@ -785,7 +785,7 @@ const LibraryHomepage = () => {
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={folderData.map((item) => ({
+          <FolderListView folders={sortedData.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
