@@ -27,3 +27,7 @@ type AuroraCreateProposalRequest struct {
 type AuroraGetProjectRequest struct {
 	LeadsId int64 `json:"leads_id"`
 }
+
+type AuroraGetProposalRequest struct {
+	LeadsId int64 `json:"leads_id"`
+}
