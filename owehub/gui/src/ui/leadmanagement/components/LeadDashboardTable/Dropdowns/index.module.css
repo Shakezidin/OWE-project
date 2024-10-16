@@ -114,6 +114,8 @@
   cursor: pointer !important;
 }
 
+
+
 .selectedFilter.active {
   color: #fff !important;
   background-color: #377cf6 !important;
