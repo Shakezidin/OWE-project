@@ -143,7 +143,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
-		case string(types.RoleDealerOwner):
+		case string(types.RoleDealerOwner), string(types.RoleSubDealerOwner):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)

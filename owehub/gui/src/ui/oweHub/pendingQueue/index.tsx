@@ -48,8 +48,8 @@ const PendingQueue = () => {
       setLoading(true);
       try {
         const data = await postCaller('get_pendingqueuesdata', {
-          page_size: itemsPerPage,
-          page_number: page,
+          page_size: debouncedSearch ? 10 : itemsPerPage,
+          page_number: debouncedSearch ? 1 : page,
           selected_pending_stage: active,
           unique_ids: [debouncedSearch],
         });

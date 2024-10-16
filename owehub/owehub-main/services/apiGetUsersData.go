@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"strings"
 
 	"encoding/json"
@@ -349,9 +350,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 FROM
 			 consolidated_data_view
 		 WHERE
-			 contract_date BETWEEN current_date - interval '90 day' AND current_date;
+			 contract_date BETWEEN current_date - interval '90 day' AND current_date
 		 `
 
+		if role == string(types.RoleDealerOwner) {
+			activeRepQuery += fmt.Sprintf(" AND dealer = '%v'", dataReq.DealerName)
+		}
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
