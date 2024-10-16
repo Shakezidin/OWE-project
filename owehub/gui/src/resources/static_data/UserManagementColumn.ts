@@ -35,13 +35,13 @@ export const UserAppointmentTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
   {
-    name: 'team_name',
+    name: 'designation',
     displayName: 'Designation',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'reporting_to',
+    name: 'reporting_manager',
     displayName: 'Reporting To',
     type: 'string',
     isCheckbox: false,
@@ -53,7 +53,7 @@ export const UserAppointmentTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'phone_no',
+    name: 'mobile_number',
     displayName: 'Phone Number',
     type: 'string',
     isCheckbox: false,

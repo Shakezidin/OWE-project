@@ -97,6 +97,23 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     onChange(updatedSelection);
   };
 
+    // Handle closing dropdown on Escape key press
+    useEffect(() => {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          setIsOpen(false);
+        }
+      };
+  
+      if (isOpen) {
+        document.addEventListener('keydown', handleKeyDown);
+      } else {
+        document.removeEventListener('keydown', handleKeyDown);
+      }
+  
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen]);
+
   const handleSelectAll = () => {
     onChange(selectedOptions.length === options.length ? [] : options);
   };
