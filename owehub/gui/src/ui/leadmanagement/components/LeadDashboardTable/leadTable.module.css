@@ -16,9 +16,10 @@
     gap: 20px;
 }
 
+
 .TableContainer1 {
     position: relative;
-    height: 60vh;
+    height: 100vh;
     background: var(--white-color);
     width: 100%;
     z-index: 9;
@@ -151,4 +152,18 @@
 .create_proposal:hover{
     background-color: #043891;
     transform: scale(1.06);
+}
+
+.slidebutton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    padding-left: 10px;
+}
+.slidebutton:hover{
+    color: #377CF6;
+    text-decoration: underline;
 }

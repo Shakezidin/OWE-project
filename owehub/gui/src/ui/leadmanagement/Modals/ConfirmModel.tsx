@@ -33,6 +33,7 @@ interface EditModalProps {
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
   reschedule?: boolean;
   action?: boolean;
+  setReschedule: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface LeadData {
   first_name: string;
@@ -53,7 +54,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   reschedule,
   action,
   setRefresh,
-  refresh
+  refresh,
+  setReschedule
 }) => {
   console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
@@ -107,11 +109,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
+        setReschedule(false);
         setRefresh((val) => val+1)
         setVisibleDiv(1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
-        
       }
       setLoad(false);
     } catch (error) {

@@ -3,7 +3,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: 24px;
-
   background-color: #ffffff;
   padding: 0px 24px;
   border-bottom-left-radius: 16px !important;
@@ -34,6 +33,7 @@
   margin-top: 15px;
   padding: 8px 22px;
   border-radius: 8px;
+ 
 }
 
 .charDiv {
@@ -70,12 +70,14 @@
   position: relative;
   left: 14px;
   background-color: #afafaf;
+
 }
 .folderInput:not(.selected){
   display: none;
 }
- .folderDiv:hover .folderInput {
+.folderIcon_wrapper:hover .folderInput {
   display: block;
+  
 } 
 
  .visible {
@@ -88,6 +90,35 @@
 .folderContent_wrapper {
   margin-top: 5px;
   width: 108px;
+  position: relative; 
+  cursor: pointer;
+
+}
+.filesLoader{
+  display: flex;            
+  justify-content: center;  
+  align-items: center;      
+  margin-left: 40%;
+}
+ .folder_name_hide{
+  display: none;
+    position: absolute;
+    top: 95%; 
+    left: 50%;
+    transform: translateX(-50%); 
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 18px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0.7); 
+    padding: 5px;
+    border-radius: 4px; 
+    z-index: 10;
+    opacity: 1;
+ 
+}
+.folderContent_wrapper:hover .folder_name_hide{
+  display: block;
 }
 
 .folder_name {
@@ -97,6 +128,7 @@
   line-height: 18px;
   overflow: hidden;
 }
+
 .folderInfo_wrapper {
   display: flex;
   flex-direction: row;
@@ -155,6 +187,34 @@
   visibility: hidden;
 }
 
-.folderDiv:hover .createdByWrapper {
-  visibility: visible;
+
+@media (max-width: 450px) {
+  .folderIcon_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #f2f2f2;
+    width: 144px;
+    height: 130px;
+    margin-top: 15px;
+    padding: 8px 22px;
+    border-radius: 8px;
+  }
+  .folderIcon_wrapper img {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    left: 16px;
+  }
+  .folderInput {
+    height: 15px !important;
+    width: 15px !important;
+    border: 0.5px solid rgba(175, 175, 175, 0.5) !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    left: 2px;
+    background-color: #afafaf;
+  }
 }

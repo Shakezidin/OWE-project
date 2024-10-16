@@ -7,7 +7,7 @@
     border-radius: 8px;
     background-color: #fff;
     max-width: 1012px;
-    height: 583px;
+    height: 568px;
   }
 
   .Column1Details {
@@ -62,18 +62,20 @@
   /* TABLE STYLING */
 
   .leftAlign {
+    border: none !important;
     text-align: left; 
     height: 32px !important; 
-    padding: 0 0px 0 18px; /* Adjust the values as needed: top, right, bottom, left */
+    padding: 12px 0px 12px 18px; /* Adjust the values as needed: top, right, bottom, left */
     line-height: 9px;
     font-weight: 500;
     font-size: 14px;
 }
 
 .rightAlign {
+  border: none !important;
     text-align: right;
     height: 25px !important; 
-    padding: 0 18px 0px 0px;
+    padding: 12px 18px 12px 0px;
     color: #377CF6;
     line-height: 9px;
     font-weight: 500;
@@ -81,11 +83,11 @@
 }
 
 
-.specialfont{
+/* .specialfont{
   font-weight: 400;
   color: #3E3E3E !important;
 
-}
+} */
 
 
 

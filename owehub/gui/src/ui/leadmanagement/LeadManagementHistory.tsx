@@ -28,6 +28,7 @@ import { LuImport } from 'react-icons/lu';
 import { Tooltip } from 'react-tooltip';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoInformationOutline } from 'react-icons/io5';
+import Profile from './Modals/ProfileInfo';
 
 interface HistoryTableProp {
   first_name: string;
@@ -60,6 +61,7 @@ const LeradManagementHistory = () => {
   const [see, setSee] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [leadId, setLeadId] = useState(0);
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -182,11 +184,10 @@ const LeradManagementHistory = () => {
   };
 
   const handlesee = (itemId: number) => {
-    setExpandedItemIds((prevExpandedItemIds) =>
-      prevExpandedItemIds.includes(itemId)
-        ? prevExpandedItemIds.filter((id) => id !== itemId)
-        : [...prevExpandedItemIds, itemId]
-    );
+    console.log("RABINDRA ")
+    setLeadId(itemId);
+    setIsProfileOpen(true);
+    
   };
 
   const handleCross = () => {
@@ -243,6 +244,7 @@ const LeradManagementHistory = () => {
 
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [historyTable, setHistoryTable] = useState<HistoryTableProp[]>([]);
   const [refresh, setRefresh] = useState(1);
   const [remove, setRemove] = useState(false);
@@ -438,8 +440,18 @@ const LeradManagementHistory = () => {
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
-
+ 
+  const handleCloseProfileModal = () => {
+    setIsProfileOpen(false);
+   
+  };
   return (
+    <>
+    <Profile
+    isOpen1={isProfileOpen}
+    onClose1={handleCloseProfileModal}
+    leadId={leadId}
+  />
     <div className={`flex justify-between mt2 ${styles.h_screen}`}>
       <div className={styles.customer_wrapper_list}>
         <div className={styles.lm_history_header}>
@@ -741,8 +753,7 @@ const LeradManagementHistory = () => {
                       </p>
                     </div>
                   </div>
-
-                  {!isMobile && (
+             {!isMobile && (
                     <>
                       {!isTablet && (
                         <div className={styles.phone_number}>
@@ -764,7 +775,7 @@ const LeradManagementHistory = () => {
 
                   <div
                     className={styles.see_more}
-                    // onClick={() => handlesee(item.leads_id)}
+                    onClick={() => handlesee(item.leads_id)}
                   >
                     <IoInformationOutline />
                   </div>
@@ -776,43 +787,7 @@ const LeradManagementHistory = () => {
                         {item.phone_number}
                       </div>
                     )}
-                    <div style={{ padding: '0px 12px' }}>
-                      {/* <div
-                        style={{ backgroundColor: '#fff' }}
-                        className={styles.history_list_activity}
-                      >
-                        <div className={styles.history_list_head}>Activity</div>
-
-                        <div className={styles.history_list_activities}>
-                          {item.timeline.map((activity: any, index: number) => (
-                            <div
-                              key={index}
-                              className={styles.history_list_activity_det}
-                            >
-                              <div className={styles.circle_with_line}>
-                                <div className={styles.line1}></div>
-                                <div className={styles.circle}></div>
-                              </div>
-                              <div className={styles.activity_info}>
-                                <div className={styles.act_head}>
-                                  {activity.label}
-                                </div>
-                                <div className={styles.act_date}>
-                                  {new Date(activity.date).toLocaleDateString(
-                                    'en-US',
-                                    {
-                                      day: 'numeric',
-                                      month: 'short',
-                                      year: 'numeric',
-                                    }
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div> */}
-                    </div>
+                    
                   </>
                 )}
                 {isMobile && expandedItemIds.includes(item.leads_id) && (
@@ -831,42 +806,7 @@ const LeradManagementHistory = () => {
                             : item.street_address
                           : 'N/A'}
                       </div>
-                    </div>
-
-                    {/* <div style={{ padding: '0px 12px' }}>
-                      <div
-                        style={{ backgroundColor: '#fff' }}
-                        className={styles.history_list_activity_mob}
-                      >
-                        <div className={styles.history_list_head}>Activity</div>
-                        {item.timeline.map((activity: any, index: number) => (
-                          <div
-                            key={index}
-                            className={styles.history_list_activity_det}
-                          >
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.line_mob}></div>
-                              <div className={styles.circle_mob}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>
-                                {activity.label}
-                              </div>
-                              <div className={styles.act_date}>
-                                {new Date(activity.date).toLocaleDateString(
-                                  'en-US',
-                                  {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                  }
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div> */}
+                    </div>  
                   </>
                 )}
               </div>
@@ -896,6 +836,7 @@ const LeradManagementHistory = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

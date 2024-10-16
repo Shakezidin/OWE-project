@@ -41,6 +41,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		userDetails       []map[string]interface{}
 		tablePermissions  []models.TablePermission
 		rowsAffected      int64
+		userIds           []int64
 	)
 
 	log.EnterFn(0, "HandleDeleteUsersRequest")
@@ -73,12 +74,22 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", strings.Join(deleteUsersReq.UserCodes, ","))
 
-	userQuery = fmt.Sprintf(`SELECT name, email_id, user_code, role_id
+	userQuery = fmt.Sprintf(`SELECT user_id, name, email_id, user_code, role_id
 							 FROM user_details %s;`, whereClause)
 
 	userDetailsResult, err = db.ReteriveFromDB(db.OweHubDbIndex, userQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get user details from DB for podio err: %v", err)
+	}
+
+	if len(userDetailsResult) != 0 {
+		for _, data := range userDetailsResult {
+			userId, ok := data["user_id"].(int64)
+			if !ok {
+				userId = 0
+			}
+			userIds = append(userIds, userId)
+		}
 	}
 
 	//
@@ -185,7 +196,21 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	whereEleList = nil
+	whereEleList = append(whereEleList, pq.Array(userIds))
+
+	query = `DELETE FROM team_members WHERE user_id = ANY($1)`
+
+	// Execute the delete query
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to delete Users data from team_members err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to delete users Data from team_members", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Copy user codes to whereEleList
+	whereEleList = nil
 	whereEleList = append(whereEleList, pq.Array(deleteUsersReq.UserCodes))
 
 	// Construct the query to delete rows
