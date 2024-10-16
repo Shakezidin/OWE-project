@@ -189,6 +189,15 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
+
+	// aurora list modules
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_list_modules",
+		apiHandler.HandleAuroraListModulestRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 }
 
 /******************************************************************************
