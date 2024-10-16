@@ -123,7 +123,7 @@ export const UserDealerTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'dealer_owner',
+    name: 'dealer',
     displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,

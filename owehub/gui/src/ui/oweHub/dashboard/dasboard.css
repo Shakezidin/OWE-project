@@ -2,6 +2,7 @@
   width: 100%;
   /* height: 87vh; */
 }
+
 .DashboardPage-container {
   display: flex;
   justify-content: space-between;
@@ -9,6 +10,7 @@
   gap: 0;
   padding: 10px 4px;
 }
+
 .DashboardPage-wel h6 {
   font-size: 12px;
   font-weight: 400;
@@ -17,11 +19,13 @@
   text-align: left;
   color: #393851;
 }
+
 .rep-up .dropdown-toggle {
   white-space: nowrap;
   margin-left: 10px;
   margin-top: 10px;
 }
+
 .date-button {
   border-radius: 0.4rem;
   border: none;
@@ -35,6 +39,7 @@
   font-weight: 500;
   user-select: none;
 }
+
 .calender-container {
   position: absolute;
   z-index: 999;
@@ -43,6 +48,7 @@
   background-color: #fff;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
+
 .apply-calender {
   background: #3d91ff;
   color: white;
@@ -58,6 +64,7 @@
     transform 0.3s ease,
     background-color 0.3s ease;
 }
+
 .reset-calender {
   background: #3d91ff;
   color: white;
@@ -73,11 +80,13 @@
     transform 0.3s ease,
     background-color 0.3s ease;
 }
+
 .reset-calender:hover,
 .apply-calender:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
+
 .calender-btn-wrapper {
   display: flex;
   gap: 14px;
@@ -96,6 +105,21 @@
   justify-content: space-between;
   padding: 10px 4px;
 }
+
+.dealer-tot-amt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dealer-tot-amt h4 {
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow-x: hidden;
+  max-width: 100px;
+}
+
 .total-commisstion {
   display: flex;
   flex-direction: column;
@@ -103,34 +127,34 @@
   gap: 1rem;
   background-color: white;
   border: 1.5px solid #a5aab242;
-  box-shadow: 3px 7px 12px 0px rgba(184,184,184,0.2);
+  box-shadow: 3px 7px 12px 0px rgba(184, 184, 184, 0.2);
   border-radius: 12px;
   padding: 14px;
   width: 32%;
-  /* height: 115px; */
   margin-top: 5px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.total-commisstion:hover {
-  box-shadow: 0px 5px 10px 0px rgba(74, 74, 74, 0.2)  !important;
-  transform: scale(1.02) !important;
 }
 
-.total-section-desc{
+.total-section-desc {
   background-color: #F7F8F8;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   padding: 12px;
+  width: 100%;
 }
-.total-section-desc p{
-  font-size: 12px;
+
+.total-section-desc img {
+  width: 28%;
+}
+
+.total-section-desc p {
+  font-size: 11px;
   font-weight: 500;
 }
-.tsd-percent{
-  padding: 4px 8px;
+
+.tsd-percent {
+  padding: 3px 6px;
   border-radius: 4px;
 }
 
@@ -148,9 +172,10 @@
 .total-section p {
   font-size: 14px;
   font-weight: 500;
-  line-height: 28px;
+  line-height: 1rem;
   text-align: left;
 }
+
 .teamImg {
   width: 55px;
   height: 60px;
@@ -161,13 +186,15 @@
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.3);
 }
+
 .dashboard-payroll {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-.dealer-pay-search{
+
+.dealer-pay-search {
   height: 36px;
   width: 200px;
   border-radius: 0.5rem;
@@ -176,6 +203,7 @@
   padding: 10px;
   transition: all 0.1s ease;
 }
+
 .dealer-pay-search:hover {
   border-color: #377cf6;
   border-width: 2px;
@@ -187,6 +215,7 @@
   border-color: #377cf6;
   border-width: 2px;
 }
+
 .payroll-date {
   font-size: 13px;
   border-radius: 0.4rem;
@@ -195,6 +224,7 @@
   background: #ececec;
   padding: 4px 8px;
 }
+
 .Payroll-section {
   display: flex;
   height: 36px;
@@ -205,15 +235,18 @@
   border-radius: 8px;
   border: 1px solid #d0d5dd;
 }
+
 .dash-head-input {
   display: flex;
   height: 47px;
   background-color: #ffffff;
-  padding: 0 3px 0 3px; /*here change for reduce left space ***************/
+  padding: 0 3px 0 3px;
+  /*here change for reduce left space ***************/
   gap: 0px;
   align-items: center;
   border-radius: 8px;
 }
+
 .dash-select {
   background-color: #ececec;
   border: none;
@@ -226,6 +259,7 @@
   border-radius: 0.4rem;
   position: relative;
 }
+
 .dashboard-chart-view {
   background: #ffffff;
   border-radius: 0.4rem;
@@ -235,6 +269,7 @@
   cursor: pointer;
   text-wrap: nowrap;
 }
+
 .line-graph {
   display: flex;
   align-items: center;
@@ -243,11 +278,13 @@
   /* align-content: center;
   justify-content: center; */
 }
+
 .payroll-label {
   font-size: 13px;
   color: var(--btn-text-color);
   font-weight: 600;
 }
+
 .filter-line {
   width: 36px !important;
   height: 36px !important;
@@ -261,10 +298,12 @@
     transform 0.3s ease,
     background-color 0.3s ease;
 }
+
 .filter-line:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
+
 .filter-disable {
   width: 36px !important;
   height: 36px !important;
@@ -276,21 +315,26 @@
   align-items: center;
   justify-content: center;
 }
+
 .active-filter-line {
   background-color: #377cf6;
 }
+
 .active-filter-line img {
   fill: white;
 }
+
 .filter-line img {
   width: 20px;
   height: 20px;
 }
+
 .dashboard-filter {
   color: var(--white-color);
   height: 20px;
   width: 20px;
 }
+
 .help-container {
   position: absolute;
   width: 75%;
@@ -300,6 +344,7 @@
   left: 150px;
   opacity: 0px;
 }
+
 .section-help {
   position: fixed;
   border-radius: 24px;
@@ -308,6 +353,7 @@
   background-color: white;
   border: 1px solid var(--border-color);
 }
+
 .help-section-container {
   display: flex;
   justify-content: space-between;
@@ -316,9 +362,11 @@
   background-color: #0493ce;
   overflow-x: hidden;
 }
-.dealer-pay-table{
+
+.dealer-pay-table {
   margin: 1.2rem 0 0.7rem 0;
 }
+
 .help-section {
   display: flex;
   justify-content: space-between;
@@ -326,6 +374,7 @@
   padding: 0 1rem 1rem 1rem;
   /* margin-left: 1rem; */
 }
+
 .help-section h3 {
   font-size: 28px;
   font-weight: 600;
@@ -333,13 +382,21 @@
   text-align: left;
   color: white;
 }
+
 .create-input-container {
   /* text-align: left; */
   width: 100%;
 }
+
 .help-icon {
   padding: 0.5rem;
   cursor: pointer;
+}
+
+.rep-manage-user {
+  display: flex !important;
+  gap: 9px !important;
+  align-items: center;
 }
 
 .help-input-container {
@@ -349,12 +406,14 @@
   flex-direction: column;
   overflow-x: hidden;
 }
+
 .create-input-field-help {
   /* width: 280px; */
   /* margin-left: 2rem; */
   flex: 1;
   /* margin-top: 0.5rem; */
 }
+
 .bi-support-icon {
   height: 14px;
   width: 14px;
@@ -378,12 +437,14 @@
   text-align: left;
   color: white;
 }
+
 .project-section h4 {
   font-size: 16px;
   font-weight: 500;
   text-align: left;
   color: #000;
 }
+
 .project-section h5 {
   font-size: 12px;
   font-weight: 400;
@@ -392,14 +453,17 @@
   color: #000;
   padding-bottom: 1rem;
 }
+
 .close-popup-btn {
   filter: brightness(0.5);
   transition: all 500ms;
 }
+
 .close-popup-btn:hover {
   transform: scale(1.2);
   transition: all 500ms;
 }
+
 .breakdown-table {
   display: block;
   height: 100%;
@@ -407,6 +471,7 @@
   scroll-behavior: smooth;
   white-space: nowrap;
 }
+
 .children-container {
   background-color: var(--children-bg-color);
   padding: 0.5rem 1.2rem;
@@ -415,10 +480,12 @@
   height: calc(100vh - 80px);
   scroll-behavior: smooth;
 }
+
 .breakdown-table::-webkit-scrollbar {
   width: 10px;
   height: auto;
 }
+
 .breakdown-table::-webkit-scrollbar {
   display: initial;
 }
@@ -427,13 +494,16 @@
   background-color: rgb(173, 173, 173);
   border-radius: 30px;
 }
+
 .breakdown-table::-webkit-scrollbar-button {
   display: initial;
 }
+
 .breakdown-table::-webkit-scrollbar {
   -ms-overflow-style: initial;
   scrollbar-width: thin;
 }
+
 .breakdown-table::-webkit-scrollbar-corner {
   background-color: transparent;
 }
@@ -441,6 +511,7 @@
 .breakdown-table tbody {
   font-weight: 500;
 }
+
 .createUserCrossButtonBreak {
   display: flex;
   align-items: flex-end;
@@ -448,12 +519,14 @@
   padding: 10px 10px 0 0px;
   cursor: pointer;
 }
+
 .createUserCrossButtonBreak img {
   color: white;
   width: 32px;
   height: 32px;
   font-size: 32px;
 }
+
 .transparent-model-down {
   display: flex;
   position: fixed;
@@ -466,6 +539,7 @@
   align-items: center;
   z-index: 150;
 }
+
 .modal-down-break {
   background-color: #fefefe;
   border-radius: 16px;
@@ -484,6 +558,7 @@
   width: 100%;
   padding: 0.5rem 2rem 0.5rem 2rem;
 }
+
 .create-input-help textarea {
   border: 1px solid #d0d5dd;
   outline: none;
@@ -495,6 +570,7 @@
   margin-top: 0.5rem;
   background-color: white;
 }
+
 .inputLabeldash p {
   font-size: 13px;
   font-weight: 500;
@@ -508,9 +584,11 @@
   line-height: 18px;
   text-align: left;
 }
+
 .file-input-container-help {
   position: relative;
-  border: 1px solid #ced4da; /* Show border */
+  border: 1px solid #ced4da;
+  /* Show border */
   border-radius: 8px;
   padding: 4px;
   /* width: 290px; */
@@ -520,6 +598,7 @@
   border-color: #0493ce;
   background-color: #e8f8ff;
 }
+
 .inputLabel {
   color: #000000;
   font-size: 12px;
@@ -567,6 +646,7 @@
   padding: 24px 0 24px 0;
   gap: 1rem;
 }
+
 .createUserActionButtonDash :hover {
   background-color: #263747;
 }
@@ -639,13 +719,13 @@
     justify-content: space-between;
     align-items: center;
     border-radius: 16px;
-    padding: 1.2rem;
+    padding: 10px;
     width: 32.2%;
-    height: 132px;
     margin-top: 5px;
     margin-bottom: 5px;
     transition: box-shadow 0.3s ease;
   }
+
   .total-section h4 {
     font-size: 24px;
     font-weight: 500;
@@ -655,14 +735,11 @@
     margin-right: 7px;
     width: 130px;
   }
+
   .total-section p {
     font-size: 12px;
-    font-weight: 400;
-    line-height: 28px;
-    text-align: left;
-    color: #ffffff;
-    margin-right: 7px;
   }
+
   .teamImg {
     width: 54px;
     height: 54px;
@@ -673,6 +750,7 @@
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.3);
   }
+
   .calender-container {
     position: absolute;
     z-index: 999;
@@ -690,6 +768,7 @@
     height: 427px;
     overflow: hidden;
   }
+
   .help-modal {
     position: fixed;
     background-color: #fefefe;
@@ -698,6 +777,7 @@
     max-width: 750px;
     height: 412px;
   }
+
   .help-section-container {
     display: flex;
     justify-content: space-between;
@@ -708,6 +788,34 @@
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
   }
+
+  .dealer-pay-search {
+    width: 170px;
+  }
+
+  .total-section-desc {
+    position: relative;
+    padding-top: 1.4rem;
+  }
+
+  .total-section-desc img {
+    width: 70px !important;
+  }
+
+  .total-section-desc p {
+    font-size: 10px;
+  }
+
+  .tsd-percent {
+    padding: 2px 6px;
+    position: absolute;
+    top: 11px;
+    right: 65px;
+  }
+
+  .dealer-tot-amt h4{
+    font-size: 14px;
+  }
 }
 
 /*Responsive*/
@@ -716,56 +824,97 @@
     padding: 0.5rem 1rem;
   }
 }
+
 @media screen and (max-width: 768px) {
   .children-container {
     padding: unset;
     overflow-x: hidden;
   }
-  .white-back{
+
+  .white-back {
     margin: 10px;
     position: relative;
   }
-  .commission-section-dash{
+
+  .commission-section-dash {
     flex-direction: column;
-    gap: 8px;
-    padding: 10px;
+    gap: 5px;
+    padding: 0 2px;
   }
-  .total-commisstion{
+
+  .total-commisstion {
     width: 100%;
-    height: 120px;
   }
-  .total-section h4{
+
+  .total-section h4 {
     width: 210px;
   }
-  .rep-manage-user{
+
+  .rep-manage-user {
     flex-direction: column;
+    gap: 14px !important;
   }
-  .DashboardPage-container{
+
+  .DashboardPage-container {
     align-items: flex-start;
   }
-  .dealer-export-mob{
+
+  .dealer-export-mob {
     display: none;
   }
-  .dealer-exp-svg{
+
+  .dealer-exp-svg {
     width: 15px;
     margin-top: 2px;
     height: 15px;
   }
-  .dealer-bread{
+
+  .dealer-bread {
     margin-left: 14px !important;
   }
-  .dealer-payroll{
+
+  .dealer-payroll {
     position: absolute;
     right: 10px;
     top: 65px;
   }
-  .dealer-commission{
+
+  .dealer-commission {
     min-width: unset !important;
   }
-  .dealer-calendar{
-    right: 0;
-  }
-  .dealer-pay-table{
+
+  .dealer-pay-table {
     margin-top: 10px;
+  }
+
+  .dealer-pay-search {
+    position: absolute;
+    top: 72px;
+    right: 1.1rem;
+  }
+
+  .tsd-percent {
+    position: unset;
+    padding: 3px 6px;
+  }
+
+  .tsd-text {
+    margin-top: 0;
+  }
+
+  .total-section-desc {
+    padding-top: 12px;
+  }
+
+  .total-section-desc img {
+    width: 80px !important;
+  }
+
+  .total-section-desc p {
+    font-size: 11px;
+  }
+
+  .dealer-tot-amt h4{
+    max-width: 150px;
   }
 }
