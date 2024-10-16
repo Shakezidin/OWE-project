@@ -96,7 +96,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	role, _ := req.Context().Value("rolename").(string)
 
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT vd.sales_partner_name FROM user_details ud JOIN sales_partner_dbhub_schema vd ON ud.partner_id = vd.item_id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT vd.sales_partner_name FROM user_details ud JOIN sales_partner_dbhub_schema vd ON ud.partner_id = vd.partner_id WHERE ud.email_id = '%v'", userEmail)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealer name from DB err: %v", err)

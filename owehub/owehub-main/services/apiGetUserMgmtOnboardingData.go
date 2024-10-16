@@ -36,7 +36,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		activeRepQuery string
 		salesRep       []string
 		dealerName     string
-		dealerID       int64
+		dealerID       string
 	)
 
 	log.EnterFn(0, "HandleGetUserMgmtOnboardingDataRequest")
@@ -107,7 +107,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		}
 
 		// Add condition to filter by partner_id for dealer owners
-		conditionOne = fmt.Sprintf(" WHERE u.partner_id = %v", dealerID)
+		conditionOne = fmt.Sprintf(" WHERE u.partner_id = '%s'", dealerID)
 	}
 	query = fmt.Sprintf(query, conditionOne)
 
@@ -215,17 +215,17 @@ func ExtractKeys(m map[string]bool) []string {
 }
 
 // RetrieveDealerIDByEmail fetches the dealer ID using the user's email
-func RetrieveDealerIDByEmail(email string) (int64, string, error) {
-	var dealerID int64
+func RetrieveDealerIDByEmail(email string) (string, string, error) {
+	var dealerID string
 	var dealerName string
-	query := fmt.Sprintf("SELECT d.item_id as id, d.sales_partner_name as dealer_name FROM user_details u JOIN sales_partner_dbhub_schema d ON u.partner_id = d.item_id WHERE u.email_id = '%v';", email)
+	query := fmt.Sprintf("SELECT d.partner_id as id, d.sales_partner_name as dealer_name FROM user_details u JOIN sales_partner_dbhub_schema d ON u.partner_id = d.partner_id WHERE u.email_id = '%v';", email)
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil || len(data) <= 0 {
-		return 0, "", fmt.Errorf("failed to retrieve dealer ID: %v", err)
+		return "", "", fmt.Errorf("failed to retrieve dealer ID: %v", err)
 	}
 
-	dealerID = data[0]["id"].(int64)
+	dealerID = data[0]["id"].(string)
 	dealerName = data[0]["dealer_name"].(string)
 	return dealerID, dealerName, nil
 }

@@ -81,7 +81,9 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 			li.status_id = 0 
 			AND li.is_appointment_required = TRUE
 			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+
 		UNION ALL
+
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 		WHERE 
 			(
@@ -90,13 +92,17 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 				OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
 			)
 			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+
 		UNION ALL
+
 		SELECT 'DECLINED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 		WHERE 
 			li.status_id = 3 
 			AND li.is_appointment_required = TRUE
 			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+
 		UNION ALL
+
 		SELECT 'ACTION_NEEDED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 		WHERE 
 			(
@@ -107,8 +113,8 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 					AND li.is_appointment_required = TRUE
 				)
 			)
-			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range;
-		`
+			AND li.updated_at BETWEEN $2 AND $3;  -- Start and end date range
+    `
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 

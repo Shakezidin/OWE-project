@@ -70,7 +70,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail := req.Context().Value("emailid").(string)
 	role := req.Context().Value("rolename").(string)
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT sp.sales_partner_name as dealer_name FROM user_details ud JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT sp.sales_partner_name as dealer_name FROM user_details ud JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id WHERE ud.email_id = '%v'", userEmail)
 
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
@@ -130,9 +130,9 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			LEFT JOIN 
 				zipcodes zc ON ud.zipcode = zc.id
 			LEFT JOIN 
-				sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+				sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 			LEFT JOIN 
-				partner_details pd ON sp.item_id = pd.partner_id `
+				partner_details pd ON sp.partner_id = pd.partner_id `
 
 	if len(dataReq.SalesRepStatus) > 0 {
 		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false, true)

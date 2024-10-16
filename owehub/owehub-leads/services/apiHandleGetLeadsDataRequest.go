@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -138,10 +139,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			len(whereEleList),
 		)
 
-		// if search query convertible to int, search by id as well
-		searchId, searchIdErr := strconv.Atoi(dataReq.Search)
-		if searchIdErr == nil {
-			whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+		// if search starts with owe, search by id as well
+		if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
+			searchId, searchIdErr := strconv.Atoi(dataReq.Search[3:])
+			if searchIdErr == nil {
+				whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+			}
 		}
 	}
 
@@ -196,6 +199,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.is_archived,
 				li.aurora_proposal_id,
 				li.is_appointment_required,
+				li.aurora_proposal_status,
 				li.status_id
 				
 			FROM get_leads_info_hierarchy($1) li
@@ -299,6 +303,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			proposalId = ""
 		}
 
+		proposalStatus, ok := item["aurora_proposal_status"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_status from leads info Item %+v", item)
+			proposalStatus = ""
+		}
+
 		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
@@ -379,6 +389,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FinanceCompany:         finCompany,
 			QCAudit:                qcAudit,
 			ProposalID:             proposalId,
+			ProposalStatus:         proposalStatus,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)

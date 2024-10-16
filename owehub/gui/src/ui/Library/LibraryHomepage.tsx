@@ -539,6 +539,21 @@ const LibraryHomepage = () => {
     }
   });
 
+  const sortedFolder = [...folderData].sort((a, b) => {
+    switch (sortOption) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'date':
+        const dateA = new Date(a.lastModifiedDateTime);
+        const dateB = new Date(b.lastModifiedDateTime);
+        return dateB.getTime() - dateA.getTime(); // sort descending
+      case 'size':
+        return b.size - a.size; // assuming size is already in bytes
+      default:
+        return 0; // no sorting applied
+    }
+  });
+
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
@@ -785,7 +800,7 @@ const LibraryHomepage = () => {
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={sortedData.map((item) => ({
+          <FolderListView folders={sortedFolder.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -808,7 +823,7 @@ const LibraryHomepage = () => {
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={folderData}
+            folderData={sortedFolder}
           />
       );
     }
@@ -925,11 +940,11 @@ const LibraryHomepage = () => {
                     <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
 
                       <div>
-                        <RxDownload
-                          className={styles.icons_download}
-                          onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-
-                        />
+                      <RxDownload
+                  className={styles.icons}
+                  onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
+                  style={{ height: '18px', width: '18px', color: '#101828' }}
+                />
                       </div>
                       <div>
                         {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
@@ -975,7 +990,7 @@ const LibraryHomepage = () => {
                 files={sortedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
-                  name: item.name,
+                  name: item.name.substring(0,20),
                   webUrl: item.webUrl,
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,
