@@ -314,7 +314,7 @@ const LeadManagementDashboard = () => {
   // const [ChevronClick, setChevronClick] = useState(true);
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('ALL');
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -1333,7 +1333,7 @@ const LeadManagementDashboard = () => {
                         className={styles.legendColor}
                         style={{ backgroundColor: item.color }}
                       ></div>
-                      <span className={styles.legendText}>{item.name}</span>
+                      <span className={styles.legendText}>{item.name} LEADS</span>
                     </div>
                   ))}
                 </div>
