@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.update_v_dealer(p_id BIGINT, p_dealer_code character varying, p_dealer_name character varying, p_description character varying, p_dealer_logo character varying, p_bg_colour character varying, p_preferred_name character varying, OUT v_dealer_id character)
-RETURNS BIGINT
+RETURNS character
 LANGUAGE plpgsql
 AS $function$
 BEGIN
