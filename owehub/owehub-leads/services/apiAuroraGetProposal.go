@@ -57,7 +57,7 @@ func HandleAuroraGetProposalRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	query = "SELECT design_id FROM get_leads_info_hierarchy($1) li WHERE li.leads_id = $2"
+	query = "SELECT aurora_design_id FROM get_leads_info_hierarchy($1) li WHERE li.leads_id = $2"
 
 	authenticatedEmailId := req.Context().Value("emailid").(string)
 
@@ -76,9 +76,9 @@ func HandleAuroraGetProposalRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	designId, ok := data[0]["design_id"].(string)
+	designId, ok := data[0]["aurora_design_id"].(string)
 	if !ok {
-		err = fmt.Errorf("design_id not found in get proposal response")
+		err = fmt.Errorf("aurora_design_id not found in get proposal response")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to retrieve design id from get proposal response", http.StatusInternalServerError, nil)
 		return
