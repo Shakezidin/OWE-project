@@ -70,6 +70,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'Deal Won') {
       handleCloseWon();
       setSelectedType('');
+    } else if (selectedType === 'new_proposal') {
+      onCreateProposal(leadId)
+      setSelectedType('');
     }
   }, [selectedType])
 
@@ -309,8 +312,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       <td className={styles.FixedColumn} style={{ zIndex: selected === index ? 101 : 0 }}>
                         <div onClick={() => (setLeadId(lead.leads_id))}>
                           {lead.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
-                            <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                          ) : false ? (
+                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
+                          ) : lead.proposal_id  ? (
                             <div className={styles.progress_status}>
                               <span>Last Updated 2 Days Ago</span>
                               <p className={styles.prop_send}>
