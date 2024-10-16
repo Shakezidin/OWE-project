@@ -180,3 +180,26 @@
 .icons_download:hover{
   transform: scale(1.1);
 }
+.videosview_name_div{
+  position: relative;
+  cursor: pointer;
+}
+.videosview_name_hide{
+  display: none;
+  position: absolute;
+  top: 95%; 
+  left: 50%;
+  transform: translateX(-50%); 
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  color:white;
+  background-color: rgba(0, 0, 0, 0.7); 
+  padding: 5px;
+  border-radius: 4px; 
+  z-index: 10;
+  opacity: 1;
+}
+.videosview_name_div:hover .videosview_name_hide{
+  display: block;
+}
