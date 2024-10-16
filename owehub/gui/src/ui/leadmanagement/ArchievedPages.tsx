@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './styles/Archive.module.css';
 import './styles/mediaQuery.css';
 import CrossICONBtn from './Modals/Modalimages/CrossBTNICON.png';
-
+ 
 import { Navigate, useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
@@ -12,7 +12,7 @@ import { ICONS } from '../../resources/icons/Icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-
+ 
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
@@ -23,17 +23,17 @@ import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAc
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import useAuth from '../../hooks/useAuth';
 import Profile from './Modals/ProfileInfo';
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
-
+ 
 type Lead = {
   id: string;
   name: string;
@@ -42,13 +42,13 @@ type Lead = {
   address: string;
   status: string;
 };
-
-
-
+ 
+ 
+ 
 const ArchivedPages = () => {
   // const [isAuthenticated, setAuthenticated] = useState(false);
   // const [loading, setIsLoading] = useState(false);
-
+ 
   const leads = [
     {
       id: '1',
@@ -58,32 +58,32 @@ const ArchivedPages = () => {
       address: '12778 Domingo Ct, 1233Parker, CO',
       status: 'Pending',
     },
-
+ 
   ];
-
+ 
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [leadId, setLeadId] = useState(0);
   console.log(leadId, "ka malik")
-
+ 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   const isMobile = width <= 767;
-
+ 
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(null);
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
-
+ 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
   const [toggledId, setToggledId] = useState<number[]>([]);
-
+ 
   const handleClickOutside = (event: Event) => {
     if (
       calendarRef.current &&
@@ -100,31 +100,31 @@ const ArchivedPages = () => {
   };
   const handleCloseProfileModal = () => {
     setIsProfileOpen(false);
-    
+   
   };
-
-
+ 
+ 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('touchstart', handleClickOutside);
-
+ 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
-
+ 
   const onClickCrossIconBotton = () => {
     // setArchive(false);
   };
-
+ 
   const handleChevronClick = (itemId: number) => {
     console.log(itemId);
     setToggledId((prevToggledId) =>
       prevToggledId.includes(itemId) ? [] : [itemId]
     );
   };
-
+ 
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
       prev.includes(leadId)
@@ -132,28 +132,28 @@ const ArchivedPages = () => {
         : [...prev, leadId]
     );
   };
-
+ 
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-
+ 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
-
+ 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
+ 
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
   console.log(leadsData)
-
-
-
-
+ 
+ 
+ 
+ 
   const [pending1, setPending1] = useState(false)
   const unArchiveLeads = async () => {
     setPending1(true);
@@ -166,7 +166,7 @@ const ArchivedPages = () => {
         },
         true
       );
-
+ 
       if (response.status === 200) {
         setSelectedLeads([]);
         setActiveIndex((prev) => prev + 1);
@@ -179,7 +179,7 @@ const ArchivedPages = () => {
     }
     setPending1(false);
   };
-
+ 
   const deleteLead = async (leadId: number) => {
     // setPending2(true);
     // try {
@@ -190,7 +190,7 @@ const ArchivedPages = () => {
     //     },
     //     true
     //   );
-
+ 
     //   if (response.status === 200) {
     //     // setActiveIndex((prev) => prev + 1);
     //     setSelectedLeads((prevSelectedLeads) =>
@@ -205,9 +205,9 @@ const ArchivedPages = () => {
     // }
     // setPending2(false);
   };
-
+ 
   const [pending3, setPending3] = useState(false);
-
+ 
   const handleUnArchiveSelected = async (leadId: number) => {
     setPending3(true);
     try {
@@ -239,23 +239,23 @@ const ArchivedPages = () => {
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / 10);
-
+ 
   const handleArcClose = () => {
     setIsArcOpen(false);
   };
-
+ 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
   };
-
+ 
   const goToNextPage = () => {
     setPage(page + 1);
   };
-
+ 
   const goToPrevPage = () => {
     setPage(page - 1);
   };
-
+ 
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   useEffect(() => {
@@ -263,10 +263,10 @@ const ArchivedPages = () => {
       authData?.isPasswordChangeRequired?.toString();
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
-
+ 
   const dispatch = useAppDispatch()
-
-
+ 
+ 
   useEffect(() => {
     if (isAuthenticated) {
       const data = {
@@ -275,20 +275,20 @@ const ArchivedPages = () => {
         page_size: 10,
         page_number: page,
       };
-
+ 
       dispatch(getLeads(data));
     }
   }, [isAuthenticated, dispatch,page, activeIndex]);
-
+ 
   const navigate = useNavigate();
-
+ 
   const handleHome = () => {
     navigate('/leadmng-dashboard')
   }
   const resetSelection = () => {
     setSelectedLeads([])
   }
-
+ 
   return (
     <>
      <Profile
@@ -297,7 +297,7 @@ const ArchivedPages = () => {
         leadId={leadId}
       />
     <div>
-
+ 
       <div className={styles.card}>
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
           <div className={styles.selectionHeader}>
@@ -322,9 +322,9 @@ const ArchivedPages = () => {
                 Archived
               </span>
             </div>
-
+ 
             {/* HERE CONDITIONAL BUTTONS AFTER 2 ITEMS SELECTED */}
-
+ 
             <div className={styles.SecondChildContain}>
               <div className={styles.ConditionButtonArea}>
                 {selectedLeads.length > 0 ? (
@@ -372,7 +372,7 @@ const ArchivedPages = () => {
                   </div>
                 )}
               </div>
-
+ 
               {/* HERE NOT NEED TO EDITED */}
               <div>
                 {selectedLeads.length === 0 ? (
@@ -394,7 +394,7 @@ const ArchivedPages = () => {
             </div>
           </div>
         </div>
-
+ 
         <div className={styles.cardContent}>
           <table className={styles.table}>
             <tbody>
@@ -451,7 +451,7 @@ const ArchivedPages = () => {
                         </div>
                         <div className={styles.address}>
                           {/* {lead.street_address ? lead.street_address : 'N/A'} */}
-
+ 
                           {lead?.street_address
                             ? lead.street_address.length > 60
                               ? `${lead.street_address.slice(0, 60)}...`
@@ -504,7 +504,7 @@ const ArchivedPages = () => {
                           <IoInformationOutline />
                         </div>
                       </td>
-
+ 
                     </tr>
                     {toggledId.includes(lead['leads_id']) && (
                       <tr>
@@ -515,7 +515,7 @@ const ArchivedPages = () => {
                           </div>
                           <div className={''}>
                             {/* {lead.street_address ? lead.street_address : 'N/A'} */}
-
+ 
                             {lead?.street_address
                               ? lead.street_address.length > 60
                                 ? `${lead.street_address.slice(0, 60)}...`
@@ -541,7 +541,7 @@ const ArchivedPages = () => {
                             {/* {lead.street_address} */}
                           </div>
                         </td>
-
+ 
                       </tr>
                     )}
                   </React.Fragment>
@@ -555,7 +555,7 @@ const ArchivedPages = () => {
               )}
             </tbody>
           </table>
-
+ 
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
@@ -563,7 +563,7 @@ const ArchivedPages = () => {
                   {startIndex} - {endIndex} of {totalcount} item
                 </p>
               </div>
-
+ 
               <div className={styles.rightitem}>
                 <Pagination
                   currentPage={page}
@@ -583,5 +583,5 @@ const ArchivedPages = () => {
     </>
   );
 };
-
+ 
 export default ArchivedPages;

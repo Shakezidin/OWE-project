@@ -1,12 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './leadTable.module.css';
 import { LeadColumn } from '../../../../resources/static_data/leadData/leadTable';
-import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import SortingDropdown from './Dropdowns/CustomDrop';
-import { PiSortAscendingLight } from 'react-icons/pi';
-import { FaAngleRight } from 'react-icons/fa';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import ChangeStatus from './Dropdowns/ChangeStatus';
-import { IoIosInformation } from 'react-icons/io';
 import { IoChevronForward, IoInformationOutline } from 'react-icons/io5';
 import { useAppSelector } from '../../../../redux/hooks';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -15,9 +11,7 @@ import DropDownLeadTable from './Dropdowns/CustomDrop';
 import ConfirmaModel from '../../Modals/ConfirmModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import HistoryRedirect from '../../../Library/HistoryRedirect';
 import Profile from '../../Modals/ProfileInfo';
-import Select from "react-select";
 import { format } from 'date-fns';
 
 interface LeadSelectionProps {
@@ -29,7 +23,7 @@ interface LeadSelectionProps {
 }
 
 const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal }: LeadSelectionProps) => {
- 
+
 
   const [selectedType, setSelectedType] = useState('');
   const [selected, setSelected] = useState(-1)
@@ -106,7 +100,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleOpenProfileModal = (leadsId:number) => {
+  const handleOpenProfileModal = (leadsId: number) => {
     setIsProfileOpen(true);
     setLeadId(leadsId);
   };
@@ -115,34 +109,28 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     setIsProfileOpen(false);
   };
 
-  const [scrollDirection, setScrollDirection] = useState('right');
 
-  const scrollableColumnsRef = useRef<HTMLDivElement>(null);
 
-  const handleMoreClick = () => {
-
-    if (scrollableColumnsRef.current) {
-      const scrollAmount = 10; // Adjust the scroll amount as needed
-
-      if (scrollDirection === 'right') {
-        scrollableColumnsRef.current.scrollBy({
-          left: scrollAmount,
-          behavior: 'smooth',
-        });
-        setScrollDirection('left');
-      } else {
-        scrollableColumnsRef.current.scrollBy({
-          left: -scrollAmount,
-          behavior: 'smooth',
-        });
-        setScrollDirection('right');
-      }
-    }
-  };
 
   const handleReschedule = () => {
     setSelectedType("app_sched");
   }
+  const [side, setSide] = useState('left');
+
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const handleMoreClick = () => {
+    if (side == 'left') {
+      if (tableContainerRef.current) {
+        tableContainerRef.current.scrollLeft += 800;
+        setSide('right');
+      }
+    } else if (side == 'right') {
+      if (tableContainerRef.current) {
+        tableContainerRef.current.scrollLeft -= 800;
+        setSide('left');
+      }
+    }
+  };
 
 
   return (
@@ -166,9 +154,15 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
       <div className={styles.dashTabTop}>
 
         <div className={styles.TableContainer1}>
-          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px" }}>
+          <div
+            // style={{ overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px" }}
+            ref={tableContainerRef}
+            style={{ width: '100%', overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px", scrollBehavior: 'smooth' }}
+            className={styles.scrolly}
+          >
             <table>
-              <thead>
+              <thead
+              >
                 <tr>
                   {LeadColumn.map((item, key) => (
                     <th key={key}>
@@ -179,7 +173,33 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       </div>
                     </th>
                   ))}
-                  <th onClick={handleMoreClick} style={{ fontWeight: '500', color: 'black', backgroundColor: "#d5e4ff", display: 'flex', alignItems: 'center', justifyContent: 'flex-start', cursor: "pointer" }} className={styles.FixedColumn}> More<FaAngleRight style={{ marginLeft: '-16px' }} /></th>
+                  <th
+                    onClick={handleMoreClick}
+                    style={{
+                      fontWeight: '500',
+                      color: 'black',
+                      backgroundColor: '#d5e4ff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      cursor: 'pointer',
+                    }}
+                    className={styles.FixedColumn}
+                  >
+                    <div className={styles.slidebutton}>
+                      {side === 'left' ? (
+                        <>
+                          More
+                          <FaAngleRight />
+                        </>
+                      ) : side === 'right' ? (
+                        <>
+                          <FaAngleLeft />
+                          More
+                        </>
+                      ) : null}
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -234,11 +254,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                     ? '#21BC27'
                                     : lead.appointment_status_label === 'No Response'
                                       ? '#777777'
-                                    : lead.appointment_status_label === 'Appointment Sent'
-                                      ? '#EC9311'
-                                      : lead.appointment_status_label === 'Appointment Declined'
-                                        ? '#D91515'
-                                        : 'inherit',
+                                      : lead.appointment_status_label === 'Appointment Sent'
+                                        ? '#EC9311'
+                                        : lead.appointment_status_label === 'Appointment Declined'
+                                          ? '#D91515'
+                                          : 'inherit',
                               }}
                               className={styles.appointment_status}
                             >
@@ -259,11 +279,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               style={{ backgroundColor: '#21BC27' }}
                               className={styles.appointment_status}
                             >
-                              Deal {lead.won_lost_label}
+                              {lead.won_lost_label}
                             </div>
                             {lead.won_lost_date && (
                               <div style={{ marginLeft: '14px' }} className={styles.info}>
-                                {lead.won_lost_date}
+                                {lead.won_lost_date ? format(lead.won_lost_date, 'dd-MM-yyyy') : ""}
                               </div>
                             )}
                           </>
@@ -300,13 +320,13 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           ) : lead.appointment_status_label === "Not Required" ? (
                             <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                           ) : (
-                          <DropDownLeadTable
-                            selectedType={selectedType}
-                            onSelectType={(type: string) => {
-                              setSelectedType(type);
-                              setActiveSection(activeSection);
-                            }}
-                            cb={() => {
+                            <DropDownLeadTable
+                              selectedType={selectedType}
+                              onSelectType={(type: string) => {
+                                setSelectedType(type);
+                                setActiveSection(activeSection);
+                              }}
+                              cb={() => {
                                 setSelected(index);
                               }}
                               options={
@@ -316,9 +336,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                     { label: 'Create Proposal', value: 'new_proposal' },
                                   ]
                                   : [
-                                    { label: 'View Proposal', value: 'viewProposal' },
-                                    { label: 'Create New Proposal', value: 'new_proposal' },
-                                    { label: 'Download Proposal', value: 'download' },
+                                    // { label: 'View Proposal', value: 'viewProposal' },
+                                    { label: 'Create Proposal', value: 'new_proposal' },
+                                    // { label: 'Download Proposal', value: 'download' },
                                     { label: 'Schedule Appointment', value: 'app_sched' },
                                   ]
                               }
@@ -342,7 +362,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                   : ['Appointment Not Required']
                                 : lead.won_lost_label !== ''
                                   ? ['Deal Won']
-                                : []
+                                  : []
                             }
                           />
 

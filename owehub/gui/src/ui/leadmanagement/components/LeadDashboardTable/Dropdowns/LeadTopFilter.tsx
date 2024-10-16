@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import classes from './index.module.css';
 import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
 import { CiFilter } from 'react-icons/ci';
+import { FaFilter } from 'react-icons/fa';
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
@@ -42,10 +43,12 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
     setModalOpenClick(false);
   };
 
+  console.log(selectedValue, "what happens")
+
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
       <div className={classes.filtericonLead} onClick={HistoryButtonCalled}>
-        <CiFilter size={20} fontWeight={600} />
+        <FaFilter size={14} fontWeight={600} />
       </div>
       {modenIsOpenX && (
         <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParent">
