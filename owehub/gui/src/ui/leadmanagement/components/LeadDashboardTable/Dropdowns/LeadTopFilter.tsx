@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import classes from './index.module.css';
 import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
 import { CiFilter } from 'react-icons/ci';
+import { FaFilter } from 'react-icons/fa';
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
@@ -13,9 +14,6 @@ interface SelectedValueState {
 }
 
 const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', setSelectedValue }) => {
-  const [selectedData, setSelectedData] = useState('ALL');
-
-
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const clickableDivRef = useRef<HTMLDivElement>(null);
   const HistoryButtonCalled = () => {
@@ -38,84 +36,69 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
     };
   }, []);
 
+  
 
-
-  const handleItemClick = (value: string = 'ALL') => {
+  const handleItemClick = (value: string) => {
     setSelectedValue(value);
     setModalOpenClick(false);
   };
 
-
+  console.log(selectedValue, "what happens")
 
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
-      <div className={classes.filtericonLead} onClick={HistoryButtonCalled}
-      >
-        <CiFilter size={20} fontWeight={600} />
+      <div className={classes.filtericonLead} onClick={HistoryButtonCalled}>
+        <FaFilter size={14} fontWeight={600} />
       </div>
       {modenIsOpenX && (
         <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParent">
           <ul>
+
+
             <li
               className={`${classes.selectedFilter} ${selectedValue === 'ALL' ? classes.active : ''}`}
               onClick={() => handleItemClick('ALL')}
-              style={{
-                backgroundColor:
-                  selectedValue === 'DEAL_WON' ||
-                  selectedValue === 'APPOINTMENT_ACCEPTED' ||
-                  selectedValue === 'APPOINTMENT_SENT' ||
-                  selectedValue === 'PROPOSAL_IN_PROGRESS' ||
-                  selectedValue === 'APPOINTMENT_NOT_REQUIRED'
-                    ? 'transparent'
-                    : '#377cf6',
-                color: 'white',
-              }}
-              
             >
-              All
+              All{' '}
             </li>
+
+
             <li
-              className={`${classes.selectedFilter} 
-              ${selectedValue === 'DEAL_WON' ? classes.active : ''}`}
+              className={`${classes.selectedFilter} ${selectedValue === 'DEAL_WON' ? classes.active : ''}`}
               onClick={() => handleItemClick('DEAL_WON')}
             >
-
+             
               Deal Won
             </li>
 
 
             <li
-              className={`${classes.selectedFilter} 
-              
-              ${selectedValue === 'APPOINTMENT_ACCEPTED' ? classes.active : ''}`}
-
-
+              className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_ACCEPTED' ? classes.active : ''}`}
               onClick={() => handleItemClick('APPOINTMENT_ACCEPTED')}
             >
               Appointment Accepted{' '}
             </li>
             <li className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_SENT' ? classes.active : ''}`}
-
+              
               onClick={() => handleItemClick('APPOINTMENT_SENT')}
             >
               {' '}
               Appointment Sent
             </li>
             <li className={`${classes.selectedFilter} ${selectedValue === 'PROPOSAL_IN_PROGRESS' ? classes.active : ''}`}
-
+              
               onClick={() => handleItemClick('PROPOSAL_IN_PROGRESS')}
             >
               Proposal In Progress{' '}
             </li>
             <li className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_NOT_REQUIRED' ? classes.active : ''}`}
-
+             
               onClick={() => handleItemClick('APPOINTMENT_NOT_REQUIRED')}
             >
               {' '}
               Appointment Not Required
             </li>
           </ul>
-
         </div>
       )}
     </div>

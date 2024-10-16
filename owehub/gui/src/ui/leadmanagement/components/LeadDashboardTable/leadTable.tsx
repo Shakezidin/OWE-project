@@ -259,11 +259,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               style={{ backgroundColor: '#21BC27' }}
                               className={styles.appointment_status}
                             >
-                              Deal {lead.won_lost_label}
+                              {lead.won_lost_label}
                             </div>
                             {lead.won_lost_date && (
                               <div style={{ marginLeft: '14px' }} className={styles.info}>
-                                {lead.won_lost_date}
+                                {lead.won_lost_date ? format(lead.won_lost_date, 'dd-MM-yyyy') : ""}
                               </div>
                             )}
                           </>
