@@ -829,19 +829,7 @@ const LibraryHomepage = () => {
       );
     }
 
-    if (selectedType === 'Videos') {
-      return (
-        <div>
-          {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string, name) => {
-              setIsVideoModalOpen(true)
-              setVideoUrl(url)
-              setVideoName(name!)
-            }} />}
-        </div>
-      );
-    }
-
+  
     return (
       <div className={styles.libSectionWrapper}>
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
@@ -883,7 +871,7 @@ const LibraryHomepage = () => {
 
           sortedData.length > 0 ? (
             filesView === "list" ?
-              sortedData.map((data) => {
+              (selectedType === 'Videos'?sortedData.filter((item)=>isVideo(item.file?.mimeType!)):sortedData).map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return (
