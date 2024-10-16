@@ -89,6 +89,7 @@ const Banner: React.FC<BannerProps> = ({
       role !== TYPE_OF_USER.FINANCE_ADMIN &&
       role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
       role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+      
       isAuthenticated
     ) {
       (async () => {
@@ -111,7 +112,7 @@ const Banner: React.FC<BannerProps> = ({
         }
       })();
     }
-  }, [dealerId, role, refetch, isAuthenticated]);
+  }, [ role, refetch, isAuthenticated]);
 
   useEffect(() => {
     if (
