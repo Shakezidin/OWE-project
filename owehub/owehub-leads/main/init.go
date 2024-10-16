@@ -176,7 +176,7 @@ var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_get_proposal",
-		apiHandler.HandleAuroraCreateProposalRequest,
+		apiHandler.HandleAuroraGetProposalRequest,
 		true,
 		leadsRoleGroup,
 	},
