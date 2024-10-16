@@ -147,6 +147,20 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_project",
+		apiHandler.HandleAuroraCreateProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_design",
+		apiHandler.HandleAuroraCreateDesignRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_create_proposal",
 		apiHandler.HandleAuroraCreateProposalRequest,
 		true,
