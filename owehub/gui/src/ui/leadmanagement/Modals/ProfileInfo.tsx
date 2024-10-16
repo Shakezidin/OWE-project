@@ -99,7 +99,18 @@ const Profile: React.FC<EditModalProps> = ({
         }
     }, [isAuthenticated, leadId, isOpen1]);
 
-    console.log(leadData, "ghfghfghf")
+    useEffect(() => {
+        const handleEscapeKey = (event: any) => {
+          if (event.key === 'Escape') {
+            onClose1();
+          }
+        };
+        document.addEventListener('keydown', handleEscapeKey);
+        return () => {
+          document.removeEventListener('keydown', handleEscapeKey);
+        };
+      }, []);
+
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list}>
@@ -107,7 +118,7 @@ const Profile: React.FC<EditModalProps> = ({
                     <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
                     <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop:"200px" }}>
                         <MicroLoader />
                     </div>
                 ) : leadData ? (
