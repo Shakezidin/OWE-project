@@ -70,6 +70,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'Deal Won') {
       handleCloseWon();
       setSelectedType('');
+    } else if (selectedType === 'new_proposal') {
+      onCreateProposal(leadId)
+      setSelectedType('');
     }
   }, [selectedType])
 
