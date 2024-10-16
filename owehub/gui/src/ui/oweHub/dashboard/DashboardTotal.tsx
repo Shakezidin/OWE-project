@@ -88,25 +88,27 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
         <div className="commission-section-dash" ref={ref}>
           {data1.length > 0
             ? data1.map((el, i) => (
-              <div className="total-commisstion"  style={{
-                cursor: 'pointer',
-                // outline:
-                //   activeCard === el.key ? `2px solid ${el.color}` : 'none',
-                // outlineOffset: activeCard === el.key ? '2px' : '0px',
-                transform:
-                  activeCard === el.key ? 'scale(1.02)' : 'scale(1)',
-                // transition:
-                //   'transform 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease',
-                boxShadow:
-                  activeCard === el.key
-                    ? '2px 4px 4px 0px rgba(74, 74, 74, 0.25)'
-                    : 'none',
-              }}>
+              <div className="total-commisstion"  
+              // style={{
+              //   cursor: 'pointer',
+              //   outline:
+              //     activeCard === el.key ? `2px solid ${el.color}` : 'none',
+              //   outlineOffset: activeCard === el.key ? '2px' : '0px',
+              //   transform:
+              //     activeCard === el.key ? 'scale(1.02)' : 'scale(1)',
+              //   transition:
+              //     'transform 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease',
+              //   boxShadow:
+              //     activeCard === el.key
+              //       ? '2px 4px 4px 0px rgba(74, 74, 74, 0.25)'
+              //       : 'none',
+              // }}
+              >
                 <div
                   key={el.key}
                   onClick={() => handleClick(el.key)}
-                  className='flex items-center justify-between'
-                  style={{width: "100%"}}
+                  className="dealer-tot-amt"
+                  style={{width: "100%", gap: "10px"}}
                 >
                   <div
                     className="total-section"
@@ -125,7 +127,7 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                     }}
                   >
                     {/* {el.doller} */}
-                    {0}
+                    {"$462394623946923864923469782364237964"}
                   </h4>
                 </div>
                 <div className='total-section-desc'>
