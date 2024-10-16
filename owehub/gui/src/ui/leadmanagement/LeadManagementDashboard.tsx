@@ -44,7 +44,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads, getProjectByLeadId } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads, getProjectByLeadId,auroraCreateProject, auroraCreateDesign, auroraCreateProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -547,7 +547,7 @@ const LeadManagementDashboard = () => {
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
 
- 
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -746,8 +746,8 @@ const LeadManagementDashboard = () => {
       );
       setSelectedProject(response.data); // Set the selected project details
       fetchDesigns(projectId); // Fetch designs for the selected project
-      fetchConsumptionProfile(projectId); // Fetch Consumption Profile for the selected project
-      updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
+      // fetchConsumptionProfile(projectId); // Fetch Consumption Profile for the selected project
+      // updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
     } catch (error) {
       console.error('Error fetching project details:', error);
     }
@@ -771,11 +771,11 @@ const LeadManagementDashboard = () => {
 
         // Call fetchProposal with the latest design's ID
         // fetchProposal(latestDesign.id); //Open Proposal in edit mode for Sales Rep.
-        // fetchWebProposal(latestDesign.id); // Open Proposal URL.
-        generateWebProposalUrl(latestDesign.id); //Generate new URL every time.
-        fetchDesignSummary(latestDesign.id);
-        fetchDesignPricing(latestDesign.id);
-        fetchFinanceListing(latestDesign.id);
+        fetchWebProposal(latestDesign.id); // Open Proposal URL.
+        // generateWebProposalUrl(latestDesign.id); //Generate new URL every time.
+        // fetchDesignSummary(latestDesign.id);
+        // fetchDesignPricing(latestDesign.id);
+        // fetchFinanceListing(latestDesign.id);
       } else {
         console.log('No designs found for this project');
       }
@@ -810,9 +810,46 @@ const LeadManagementDashboard = () => {
       setWebProposal(response.data.web_proposal);
 
       // Automatically open the web proposal link in a new tab
-      openProposalLink(response.data.web_proposal.url);
+      const proposalLink = response.data.web_proposal.url;
+
+      openProposalLink(proposalLink);
+
+      // Call downloadFile function to download the proposal as a PDF
+      await downloadFile(proposalLink);
     } catch (error) {
       console.error('Error fetching web proposal:', error);
+    }
+  };
+
+  // Updated downloadFile function to download the content of a URL as a PDF
+  const downloadFile = async (fileUrl: string) => {
+    const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch the file');
+      }
+
+      // Convert the response to a Blob
+      const blob = await response.blob();
+
+      // Create a link element, set its href to the Blob, and trigger the download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'proposal.pdf'; // Adjust filename if needed
+      link.click();
+
+      // Cleanup the object URL
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
     }
   };
 
@@ -940,33 +977,6 @@ const LeadManagementDashboard = () => {
     window.open(link, '_blank', 'noopener,noreferrer');
   };
 
-  const downloadFile = async () => {
-    const fileUrl =
-      'https://v2-sandbox.aurorasolar.com/e-proposal/zWR9Gc7vzU2jzne8jNrPCrYC3hmUNKW1FynAhFaDnks';
-    try {
-      // Fetch the file
-      const response = await fetch(fileUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf',
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch the file');
-      }
-      // Convert the response to a Blob
-      const blob = await response.blob();
-      // Create a link element, set its href to the Blob, and click it to trigger download
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'proposal.pdf'; // Change filename if needed
-      link.click();
-      // Cleanup the object URL
-      window.URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.error('Error downloading the file:', error);
-    }
-  };
 
   const OpenWindowClick = () => {
     setIsToggledX((prev) => !prev);
@@ -1045,7 +1055,7 @@ const LeadManagementDashboard = () => {
         return;
       }
 
-    
+
 
       const csvData = response.data?.map?.((item: any) => [
         item.leads_id,
@@ -1082,71 +1092,59 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  // const handleCreateProposal = async (leadId: number) => {
-  //   console.log("leadId", leadId)
-  //   console.log("selectedLeads", selectedLeads)
-  //   try {
-  //     const createProposalResult = await dispatch(createProposal(
-  //       {
-  //         "leads_id": leadId,
-  //         "customer_salutation": "Mr./Mrs.",
-  //         "status": "In Progress",
-  //         "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
-  //         "tags": ["third_party_1"]
-  //       }
-  //     ));
-  
-  //     // Check if the createProposal action was successful
-  //     if (createProposal.fulfilled.match(createProposalResult)) {
-  //       // If proposal creation was successful, call getProjectByLeadId
-  //       const getProjectResult = await dispatch(getProjectByLeadId(leadId));
-  
-  //       // Check if getProjectByLeadId was successful
-  //       if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
-  //         toast.success('Proposal created and project data fetched!');
-  //       } else {
-  //         toast.warning('Proposal created, but failed to fetch project data.');
-  //       }
-  //     } else {
-  //       toast.error('Failed to create proposal.');
-  //     }
-  //   } catch (error) {
-  //     toast.error('An error occurred while processing your request.');
-  //     console.error('Error in handleCreateProposal:', error);
-  //   }
-  // };
 
   const handleCreateProposal = async (leadId: number) => {
     console.log("leadId", leadId);
     console.log("selectedLeads", selectedLeads);
     try {
-      const createProposalResult = await dispatch(createProposal({
+      // Step 1: Create Project
+      const createProjectResult = await dispatch(auroraCreateProject({
         "leads_id": leadId,
         "customer_salutation": "Mr./Mrs.",
         "status": "In Progress",
         "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
         "tags": ["third_party_1"]
       }));
-  
-      if (createProposal.fulfilled.match(createProposalResult)) {
-        toast.success('Proposal created successfully!');
-        
-        const getProjectResult = await dispatch(getProjectByLeadId(leadId));
-  
-        if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
-          toast.success('Project data fetched successfully!');
+
+      if (auroraCreateProject.fulfilled.match(createProjectResult)) {
+        toast.success('Project created successfully!');
+
+        // Step 2: Create Design
+        const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
+
+        if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
+          toast.success('Design created successfully!');
+
+          // Step 3: Create Proposal
+          const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
+
+          if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
+            toast.success('Proposal created successfully!');
+
+            // Step 4: Fetch Project Data
+            const getProjectResult = await dispatch(getProjectByLeadId(leadId));
+
+            if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
+              setRefresh((prev) => prev + 1);
+              toast.success('Project data fetched successfully!');
+            } else {
+              toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
+            }
+          } else {
+            toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+          }
         } else {
-          toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
+          toast.error(createDesignResult.payload as string || 'Failed to create design');
         }
       } else {
-        toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+        toast.error(createProjectResult.payload as string || 'Failed to create project');
       }
     } catch (error) {
       toast.error('An unexpected error occurred');
       console.error('Error in handleCreateProposal:', error);
     }
   };
- 
+
 
   //*************************************************************************************************/
   return (
@@ -1512,7 +1510,7 @@ const LeadManagementDashboard = () => {
                       }
                     }}
                   />
-                 
+
                 </div>
 
 
