@@ -103,16 +103,14 @@
   /* border-radius: 4px; */
 }
 
-.selected {
+/* .selected {
   background-color: #377cf6;
   color: #ffffff;
-  /* border-radius: 4px; */
 }
 .selected:hover {
   background-color: #377cf6;
   color: #ffffff;
-  /* border-radius: 4px; */
-}
+} */
 .selectedFilter {
   font-size: 12px;
   color: #000 !important;

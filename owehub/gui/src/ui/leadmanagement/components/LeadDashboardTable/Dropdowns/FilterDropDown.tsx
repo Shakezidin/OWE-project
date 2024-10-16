@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classes from './index.module.css';
 import { CiFilter } from 'react-icons/ci';
+import useEscapeKey from '../../../../../hooks/useEscape';
 
 interface DropDownLibraryProps {
     selectedType: string;
@@ -50,6 +51,12 @@ const FilterDropDown: React.FC<DropDownLibraryProps> = ({
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const handleClose = () => {
+        setIsVisible(false);
+      }
+    
+      useEscapeKey(handleClose)
 
     return (
         <div className={classes.dropdown_container}>
