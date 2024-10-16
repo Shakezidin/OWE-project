@@ -192,7 +192,7 @@ var apiRoutes = appserver.ApiRoutes{
 
 	// aurora list modules
 	{
-		strings.ToUpper("GET"),
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_list_modules",
 		apiHandler.HandleAuroraListModulestRequest,
 		false,
