@@ -131,7 +131,7 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                 <div className='total-section-desc'>
                   <img src={el.bar} alt="bars-image"/>
                   <p className='tsd-percent' style={{background: el.bgColor}}><span className='flex items-center' style={{color: el.color}}>{el.arrow}&nbsp;{el.percent}%</span></p>
-                  <p>From the last month</p>
+                  <p className='tsd-text'>From the last month</p>
                 </div>
               </div>
             ))
