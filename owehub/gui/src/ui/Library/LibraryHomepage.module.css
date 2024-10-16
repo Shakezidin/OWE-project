@@ -331,8 +331,30 @@
   
 
 }
+.name_div{
+  position: relative;
+  cursor: pointer;
+}
 
-
+.name_hide{
+  display: none;
+  position: absolute;
+  top: 65%; 
+  left: 52%;
+  transform: translateX(-50%); 
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  color:white;
+  background-color: rgba(0, 0, 0, 0.7); 
+  padding: 5px;
+  border-radius: 4px; 
+  z-index: 10;
+  opacity: 1;
+}
+.name_div:hover .name_hide{
+  display: block;
+}
 .libname_heading{
   position: relative;
   left: 10px;
@@ -403,7 +425,7 @@
   cursor: pointer; 
   height: 18px;
   width: 18px;
-  /* color: #667085; */
+ /* color: #667085;  */
   color:#101828;
   transition: all 0.3s ease;
 
