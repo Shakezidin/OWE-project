@@ -313,7 +313,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                         <div onClick={() => (setLeadId(lead.leads_id))}>
                           {lead.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                              <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                          ) : lead.appointment_status_label === "Not Required" && lead.proposal_id  ? (
+                          ) : lead.proposal_id  ? (
                             <div className={styles.progress_status}>
                               <span>Last Updated 2 Days Ago</span>
                               <p className={styles.prop_send}>
