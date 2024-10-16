@@ -545,7 +545,7 @@ func FetchPendingQueueProjectDealerForAmAe(dataReq models.PendingQueueReq, userR
 	var roleBase string
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
-		roleBase = "account_manager"
+		roleBase = "account_manager2"
 	} else {
 		roleBase = "account_executive"
 	}
