@@ -118,6 +118,7 @@
   text-wrap: nowrap;
   overflow-x: hidden;
   max-width: 100px;
+  font-weight: 500;
 }
 
 .total-commisstion {
@@ -192,6 +193,13 @@
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.dealer-calendar .rdrDateDisplayWrapper{
+  display: none;
+}
+.dealer-calendar .rdrMonthAndYearWrapper{
+  padding-top: 0;
 }
 
 .dealer-pay-search {

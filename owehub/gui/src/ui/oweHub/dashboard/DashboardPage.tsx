@@ -175,10 +175,17 @@ export const DashboardPage: React.FC = () => {
                   {appliedDate
                     ? format(appliedDate, 'dd-MM-yyyy')
                     : 'Payroll Date'}
-                  <MdOutlineKeyboardArrowDown style={{width: "1.2rem", height: "1.2rem"}} />
+                  <MdOutlineKeyboardArrowDown
+                    style={{
+                      width: "1.2rem",
+                      height: "1.2rem",
+                      transform: showDatePicker ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 550ms',
+                    }}
+                  />
                 </label>
                 {showDatePicker && (
-                  <div className="calender-container dealer-calendar" style={{marginLeft: 0}}>
+                  <div className="calender-container dealer-calendar" style={{ marginLeft: 0 }}>
                     <Calendar
                       date={selectionRange || new Date()}
                       onChange={handleSelect}
