@@ -824,6 +824,7 @@ const LibraryHomepage = () => {
             sortOption={sortOption}
             checkedFolders={checkedFolders}
             folderData={sortedFolder}
+            loading={loading}
           />
       );
     }
@@ -923,7 +924,8 @@ const LibraryHomepage = () => {
                           alt={`null`}
                           loading='lazy'
                         />
-                        <div>
+                        <div className={styles.name_div} >
+                        <p className={styles.name_hide}>{data.name.substring(0, 100)}</p>
                           <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
                           <p className={styles.size}>
                             {data.size < 1024
@@ -941,9 +943,9 @@ const LibraryHomepage = () => {
 
                       <div>
                       <RxDownload
-                  className={styles.icons}
+                  className={`${styles.icons_download} ${styles.icons}`}
                   onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-                  style={{ height: '18px', width: '18px', color: '#101828' }}
+                  
                 />
                       </div>
                       <div>
