@@ -190,7 +190,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		// 	return
 		// }
 
-		//CHECKING FOR APPOINT DATE IN PAST 
+		//CHECKING FOR APPOINT DATE IN PAST
 		query = `UPDATE leads_info 
 					SET status_id = 5,
 					updated_at = CURRENT_TIMESTAMP,
@@ -243,6 +243,20 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 					appointment_disposition_note = $2
 					WHERE leads_id = $3`
 		whereEleList = []interface{}{authenticatedUserId, dataReq.Reason, dataReq.LeadsId}
+		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update the lead details in db : %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to update the lead details in db", http.StatusInternalServerError, nil)
+			return
+		}
+		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
+		return
+	}
+
+	// CASE 4: status_id not provided (update is_appointment_required)
+	if dataReq.StatusId == 0 {
+		query = "UPDATE leads_info SET is_appointment_required = $1, updated_at = CURRENT_TIMESTAMP, last_updated_by = $2 WHERE leads_id = $3"
+		whereEleList = []interface{}{dataReq.IsAppointmentRequired, authenticatedUserId, dataReq.LeadsId}
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update the lead details in db : %v", err)
