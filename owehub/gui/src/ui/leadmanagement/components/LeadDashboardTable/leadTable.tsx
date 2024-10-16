@@ -146,6 +146,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
         setRefresh={setRefresh}
         reschedule={reschedule}
         action={action}
+        setReschedule={setReschedule}
       />
 
       <Profile

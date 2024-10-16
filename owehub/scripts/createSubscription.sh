@@ -14,7 +14,7 @@ SUBSCRIPTION_NAME="sub_${FIRST_OCTET}_${FOURTH_OCTET}_dealer_datas"
 cat << EOF > ./migrations/00014_create_subscription.up.sql
 CREATE SUBSCRIPTION ${SUBSCRIPTION_NAME}
 CONNECTION 'host=149.248.3.82 port=5432 dbname=owe_db user=OwePostgres password=OwePostgres'
-PUBLICATION sales_partner_pub
+PUBLICATION sp_pub
 WITH (create_slot = true);
 EOF
 
