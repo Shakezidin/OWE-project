@@ -303,7 +303,7 @@ const CustomTooltip = ({
 
 const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [currentFilter, setCurrentFilter] = useState('Pending');
+  const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -547,7 +547,7 @@ const LeadManagementDashboard = () => {
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
 
-  console.log(pieData, "piedata showing")
+ 
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -970,8 +970,6 @@ const LeadManagementDashboard = () => {
 
   const OpenWindowClick = () => {
     setIsToggledX((prev) => !prev);
-    console.log('rabindra');
-    console.log(isToggledX);
   };
 
   const [exporting, setIsExporting] = useState(false);
@@ -1047,7 +1045,7 @@ const LeadManagementDashboard = () => {
         return;
       }
 
-      console.log(response.data, "exposrt console")
+    
 
       const csvData = response.data?.map?.((item: any) => [
         item.leads_id,
@@ -1109,6 +1107,8 @@ const LeadManagementDashboard = () => {
       toast.error('Failed to create proposal.');
     }
   };
+
+ 
 
   //*************************************************************************************************/
   return (
@@ -1442,7 +1442,7 @@ const LeadManagementDashboard = () => {
                         >
                           {data.value}
                         </p>
-                        {displayStatus}
+                        <span className={styles.displayStatus}>{displayStatus}</span>
                       </button>
                     );
                   })}

@@ -441,8 +441,9 @@ input[type='checkbox']:checked {
 }
 
 .archieveButtonA {
-  color: #929292;
-  border: 1px solid #929292;
+  color: #ffffff;
+  background-color: #005eff;
+  border: none;
   padding: 0px 0px 0px 0px;
   border-radius: 26px;
   cursor: pointer;
@@ -455,6 +456,7 @@ input[type='checkbox']:checked {
 }
 .archieveButtonA:hover {
   transform: scale(1.05);
+  background-color: #013793;
 }
 
 .archieveButton:hover {

@@ -8,6 +8,7 @@ import React, {
 import { ICONS } from '../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDealerPayTileData } from '../../../redux/apiActions/dealerPayAction';
+import { IoArrowUp, IoArrowDown } from "react-icons/io5";
 
 export interface DashboardTotalProps {
   setPrefferedType: Dispatch<SetStateAction<string>>;
@@ -29,31 +30,34 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
       doller: '$' + tileData?.amount_prepaid?.toFixed(2),
       paid: 'Amount Prepaid',
       img: ICONS.rep1,
-      border: '1px solid #63BC51',
-      boxBorder: '0.5px solid #63BC51',
-      background: ICONS.tot1,
+      bar: ICONS.repBar1,
       key: 'amount_prepaid',
-      color: '#8E81E0',
+      color: "#0493CE",
+      bgColor: "#E3F3FC",
+      percent: "+12",
+      arrow: <IoArrowUp  />
     },
     {
       doller: '$' + tileData?.pipeline_remaining?.toFixed(2),
       paid: 'Pipeline Remaining',
       img: ICONS.rep2,
-      border: '1px solid #D768A8',
-      boxBorder: '0.5px solid #D768A8',
-      background: ICONS.tot2,
+      bar: ICONS.repBar2,
       key: 'pipeline_remaining',
-      color: '#63ACA3',
+      color: "#9DD428",
+      bgColor: "#EBF4DA",
+      percent: "-9",
+      arrow: <IoArrowDown />
     },
     {
       doller: '$' + tileData?.current_due?.toFixed(2),
       paid: 'Current Due',
       img: ICONS.rep3,
-      border: '1px solid #3993D0',
-      boxBorder: '0.5px solid #3993D0',
-      background: ICONS.tot3,
+      bar: ICONS.repBar3,
       key: 'current_due',
-      color: '#EE824D',
+      color: "#2DC278",
+      bgColor: "#E1F6EB",
+      percent: "+12",
+      arrow: <IoArrowUp  />
     },
   ];
 
@@ -84,48 +88,53 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
         <div className="commission-section-dash" ref={ref}>
           {data1.length > 0
             ? data1.map((el, i) => (
+              <div className="total-commisstion"  style={{
+                cursor: 'pointer',
+                // outline:
+                //   activeCard === el.key ? `2px solid ${el.color}` : 'none',
+                // outlineOffset: activeCard === el.key ? '2px' : '0px',
+                transform:
+                  activeCard === el.key ? 'scale(1.02)' : 'scale(1)',
+                // transition:
+                //   'transform 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease',
+                boxShadow:
+                  activeCard === el.key
+                    ? '2px 4px 4px 0px rgba(74, 74, 74, 0.25)'
+                    : 'none',
+              }}>
                 <div
                   key={el.key}
                   onClick={() => handleClick(el.key)}
-                  className="total-commisstion"
-                  style={{
-                    backgroundImage: `url(${el.background})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    cursor: 'pointer',
-                    outline:
-                      activeCard === el.key ? `4px solid ${el.color}` : 'none',
-                    outlineOffset: activeCard === el.key ? '4px' : '0px',
-                    transform:
-                      activeCard === el.key ? 'scale(1.02)' : 'scale(1)',
-                    transition:
-                      'transform 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease',
-                    boxShadow:
-                      activeCard === el.key
-                        ? '0px 4px 4px 0px rgba(74, 74, 74, 0.25)'
-                        : 'none',
-                  }}
+                  className='flex items-center justify-between'
+                  style={{width: "100%"}}
                 >
                   <div
                     className="total-section"
-                    style={{ marginBottom: '8px' }}
                   >
-                    <p>{el.paid}</p>
-                    <h4
-                      style={{
-                        wordBreak:
-                          el.doller.length > 5 ? 'break-all' : 'normal',
-                      }}
-                    >
-                      {/* {el.doller} */}
-                      {"N/A"}
-                    </h4>
+                    <div className='flex items-center' style={{ gap: "10px" }}>
+                      <div className="flex items-center">
+                        <img src={el.img} height={32} width={32} alt="" />
+                      </div>
+                      <p>{el.paid}</p>
+                    </div>
                   </div>
-                  <div className="teamImg">
-                    <img src={el.img} alt="" />
-                  </div>
+                  <h4
+                    style={{
+                      wordBreak:
+                        el.doller.length > 5 ? 'break-all' : 'normal',
+                    }}
+                  >
+                    {/* {el.doller} */}
+                    {0}
+                  </h4>
                 </div>
-              ))
+                <div className='total-section-desc'>
+                  <img src={el.bar} alt="bars-image"/>
+                  <p className='tsd-percent' style={{background: el.bgColor}}><span className='flex items-center' style={{color: el.color}}>{el.arrow}&nbsp;{el.percent}%</span></p>
+                  <p>From the last month</p>
+                </div>
+              </div>
+            ))
             : null}
         </div>
       </div>

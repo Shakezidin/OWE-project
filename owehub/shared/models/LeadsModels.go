@@ -35,6 +35,7 @@ type GetLeadsData struct {
 	FinanceType            string     `json:"finance_type"`
 	QCAudit                string     `json:"qc_audit"`
 	ProposalID             string     `json:"proposal_id"`
+	ProposalStatus         string     `json:"proposal_status"`
 }
 
 // This struct is for deleting Leads

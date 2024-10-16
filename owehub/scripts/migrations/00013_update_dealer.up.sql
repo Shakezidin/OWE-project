@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.update_v_dealer(p_id BIGINT, p_dealer_code character varying, p_dealer_name character varying, p_description character varying, p_dealer_logo character varying, p_bg_colour character varying, p_preferred_name character varying, OUT v_dealer_id BIGINT)
+CREATE OR REPLACE FUNCTION public.update_v_dealer(p_id BIGINT, p_dealer_code character varying, p_dealer_name character varying, p_description character varying, p_dealer_logo character varying, p_bg_colour character varying, p_preferred_name character varying, OUT v_dealer_id character)
 RETURNS BIGINT
 LANGUAGE plpgsql
 AS $function$
@@ -6,8 +6,8 @@ BEGIN
     UPDATE sales_partner_dbhub_schema
     SET 
         sales_partner_name = p_dealer_name
-    WHERE item_id = p_id
-    RETURNING item_id INTO v_dealer_id;
+    WHERE partner_id = p_id
+    RETURNING partner_id INTO v_dealer_id;
 
      IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in sales_partner_dbhub_schema table', p_id;

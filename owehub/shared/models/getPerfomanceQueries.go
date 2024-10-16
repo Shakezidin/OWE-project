@@ -241,7 +241,7 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
         d.sales_partner_name AS dealer_name
     FROM user_details ud
     JOIN user_roles ur ON ud.role_id = ur.role_id
-    LEFT JOIN sales_partner_dbhub_schema d ON ud.partner_id = d.item_id
+    LEFT JOIN sales_partner_dbhub_schema d ON ud.partner_id = d.partner_id
     WHERE ud.email_id = $1;
     `
 	return AdminDlrSaleRepRetrieveQuery
