@@ -55,7 +55,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   }, [options]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.toLowerCase().trim();
+    const searchTerm = e.target.value.toLowerCase().trimStart();
     const regex = /^[a-zA-Z0-9\s]*$/; // Alphanumeric and space only
     if (!regex.test(searchTerm)) {
       return; // Ignore input if it contains special characters

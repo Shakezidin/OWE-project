@@ -380,6 +380,7 @@ const LeadManagementDashboard = () => {
     setPage(pageNumber);
   };
 
+
   const goToNextPage = () => {
     setPage(page + 1);
   };
@@ -1132,6 +1133,7 @@ const LeadManagementDashboard = () => {
         setRefresh={setRefresh}
         reschedule={reschedule}
         action={action}
+        setReschedule={setReschedule}
       />
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
