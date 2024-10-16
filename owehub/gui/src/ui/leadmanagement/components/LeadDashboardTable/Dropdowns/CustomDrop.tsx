@@ -81,7 +81,7 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
         onMouseEnter={() => setIsHovered(true)}
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
-        className={classes.verticalDots}
+        className={classes.DropActionX}
 
       >
         Action <FaAngleDown />
