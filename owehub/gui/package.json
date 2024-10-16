@@ -5,6 +5,7 @@
   "dependencies": {
     "@emailjs/browser": "^4.3.3",
     "@fontsource/poppins": "^5.0.8",
+    "@popperjs/core": "^2.11.8",
     "@react-google-maps/api": "^2.19.3",
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/jest-dom": "^5.17.0",
@@ -48,6 +49,8 @@
     "react-multi-carousel": "^2.8.5",
     "react-paginate": "^8.2.0",
     "react-phone-input-2": "^2.15.1",
+    "react-player": "^2.16.0",
+    "react-popper": "^2.3.0",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.21.2",
     "react-scripts": "^5.0.1",

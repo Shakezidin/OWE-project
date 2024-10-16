@@ -10,14 +10,16 @@ import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
-import { DealerPaymentsColumn } from '../../../../resources/static_data/configureHeaderData/DealerPaymentsColumn';
+import {PartnerPayScheduleColumn}  from '../../../../resources/static_data/configureHeaderData/partnerPayScheduleColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -35,13 +37,17 @@ const  SalesPartnerSchedule: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  const { loading, totalCount } = useAppSelector((state) => state.dealer);
+  
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [totalCount, setTotalCount] = useState<number>(0)
+  
+  const [data,setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
-  const itemsPerPage = 10;
+  const [loading, setLoading] = useState(false)
+  const itemsPerPage = 25;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,7 +91,7 @@ const  SalesPartnerSchedule: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
 
   const filter = () => {
     setFilterOpen(true);
@@ -95,9 +101,40 @@ const  SalesPartnerSchedule: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen();
   };
-  const currentPageData = dealerList?.slice();
+
+  useEffect(() => {
+   
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await configPostCaller('get_partnerpayschedule', {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters
+        });
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          setLoading(false);
+          return;
+        }
+        setData(data?.data?.PartnerPayScheduleData)
+        setTotalCount(data?.dbRecCount)
+        setLoading(false);
+         
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  
+}, [
+  currentPage, viewArchived, filters
+]);
+const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
@@ -234,7 +271,7 @@ const  SalesPartnerSchedule: React.FC = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Sales Partner Pay Schedule"
+        linkparaSecond="partner-pay-schedule"
       />
       <div className="commissionContainer">
         <TableHeader
@@ -259,7 +296,7 @@ const  SalesPartnerSchedule: React.FC = () => {
           resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
-          columns={DealerPaymentsColumn}
+          columns={PartnerPayScheduleColumn}
           fetchFunction={fetchFunction}
           page_number={currentPage}
           page_size={itemsPerPage}
@@ -282,7 +319,7 @@ const  SalesPartnerSchedule: React.FC = () => {
           <table>
             <thead>
               <tr>
-                {DealerPaymentsColumn.map((item, key) => (
+                {PartnerPayScheduleColumn.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
@@ -301,17 +338,13 @@ const  SalesPartnerSchedule: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+               
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={DealerPaymentsColumn.length}>
+                  <td colSpan={PartnerPayScheduleColumn.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -322,7 +355,7 @@ const  SalesPartnerSchedule: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -332,42 +365,23 @@ const  SalesPartnerSchedule: React.FC = () => {
                               setSelectAllChecked
                             )
                           }
-                        />
-                        {el.sub_dealer || 'N/A'}
+                        /> */}
+                        {el.sales_partner || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.dealer || 'N/A'}</td>
-                    <td>{el.pay_rate || 'N/A'}</td>
+                    <td>{el.finance_partner || 'N/A'}</td>
+                    <td>{el.spps_ref || 'N/A'}</td>
                     <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
-                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
-
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() =>
-                            !notAllowed && handleArchiveClick(el.record_id)
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          {/* <span className="tooltiptext">Archive</span> */}
-                        </div>
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => !notAllowed && handleEditDealer(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                          {/* <span className="tooltiptext">Edit</span> */}
-                        </div>
-                      </div>
-                    </td>
+                    <td>{el.sug || 'N/A'}</td>
+                    <td>{el.rep_pay || 'N/A'}</td>
+                    <td>{el.redline || 'N/A'}</td>
+                    <td>{el.m1_sales_partner_draw_percentage|| 'N/A'}</td>
+                    <td>{el.m1_sales_partner_not_to_exceed || 'N/A'}</td>
+                    <td>{el.m1_sales_rep_draw_percentage || 'N/A'}</td>
+                    <td>{el.m1_sales_rep_not_to_exceed || 'N/A'}</td>
+                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                     
                   </tr>
                 ))
               ) : (
@@ -381,7 +395,7 @@ const  SalesPartnerSchedule: React.FC = () => {
           </table>
         </div>
 
-        {dealerList?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}

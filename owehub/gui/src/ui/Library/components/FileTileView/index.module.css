@@ -1,0 +1,60 @@
+.thumbnail_wrapper {
+    background-color: #F2F2F2;
+    position: relative;
+    width: 100%;
+  
+    height: 108px;
+    display: grid;
+    border-radius: 8px;
+    place-items: center;
+}
+
+.checkbox_wrapper{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.thumbnail_wrapper:hover .checkbox_wrapper{
+ opacity: 1;
+}
+.checkbox_wrapper:not(.selected){
+    opacity: 0;
+}
+
+.avatar_circle {
+    background-color: #AFAFAF;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    position: absolute;
+    display: grid;
+    place-items: center;
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+    color: #fff;
+    visibility: hidden;
+}
+.card_title{
+    font-size: 12px;
+    font-weight: 500;
+    overflow: hidden;       
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+    color: #263747;
+}
+.card_btn{
+    cursor: pointer;
+    margin-left: 7px;
+    transition: all 0.3s ease;
+}
+.card_btn:hover{
+    color: #377CF6;
+    transform: scale(1.09);
+}
+
+.card_content{
+    color: #263747;
+    font-size: 10px;
+}

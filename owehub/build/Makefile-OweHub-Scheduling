@@ -1,0 +1,61 @@
+# Exporting GO system Variable
+
+SERVICE_ROOT=${PWD}/../owehub-scheduling/
+
+GOFMT=gofmt -w
+GOBUILD=go build -gcflags "-N -l" -v
+
+# Exporting service specific variables
+#GOGETFILES=golang.org/x/oauth2 golang.org/x/net github.com/gorilla/mux github.com/antihax
+APP_NAME=owehub-scheduling.bin
+APP_DIR=main
+
+SERVICE_PATH=${PWD}/../owehub-scheduling/
+
+APPTARGET=$(SERVICE_PATH)/bin/$(APP_NAME)
+
+all: service 
+	@echo "GOPATH: $(GOPATH)"
+
+get: 
+	@echo "go get all missing 3rd party dependencies..."
+	go get $(GOGETFILES)
+	for i in $(COMM_SUBDIRS); \
+	do \
+		echo "go-get for module $$i" ;  \
+		(cd $$i ;  \
+		make get; \
+		) ;  \
+	done
+
+service: 
+	@echo "Generating service executable..."
+	$(GOFMT) $(SERVICE_PATH)/$(APP_DIR)/*.go
+	$(GOBUILD) -o $(APPTARGET) $(SERVICE_PATH)/$(APP_DIR)/*.go
+
+clean: ## Remove previous build
+	@echo "Clean previous build"
+	rm -fv $(APPTARGET)
+	echo "Clean in module" ; 
+	#cd $(SERVICE_PATH)/ || exit 1 ; \
+	#make clean; 
+	
+
+docker: ## Create Docker Image
+	@echo "Building owehub-scheduling Docker Image $SERVICE_ROOT"
+		cd $(SERVICE_ROOT)/../ || exit 1 ; \
+		docker build -f docker/Dockerfile-Owe-Scheduling-App -t owehub-scheduler:v2 .; 
+		
+dockerpush: ## Create Docker Image
+	@echo "Build and push owehub-scheduling Docker Image"
+	@echo "Registry Name $(DOCKER_REGISTRY)"
+		cd $(SERVICE_ROOT)/../ || exit 1 ; \
+		docker build -f docker/Dockerfile-Owe-Scheduling-App -t owehub-scheduler:v2 .; \
+        docker push owehub-scheduler:v2 ; 
+
+dockerpushclean: ## Create Docker Image
+	@echo "Clean owehub-scheduling docker Images From Registry.."
+	echo "Removing Image owehub-scheduler:v2" ; \
+	cd $(SERVICE_ROOT)/../ ; \
+	docker rmi owehub-scheduler:v2 ; 
+

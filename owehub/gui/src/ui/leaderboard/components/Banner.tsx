@@ -382,7 +382,7 @@ const Banner: React.FC<BannerProps> = ({
                 <input
                   type="text"
                   className="input"
-                  placeholder="Search Dealers"
+                  placeholder="Search Partners"
                   style={{ width: '100%' }}
                   value={search}
                   disabled={isLoading}

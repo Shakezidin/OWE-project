@@ -26,6 +26,8 @@ import MicroLoader from '../components/loader/MicroLoader';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import { Tooltip } from 'react-tooltip';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { IoInformationOutline } from 'react-icons/io5';
 
 interface HistoryTableProp {
   first_name: string;
@@ -752,8 +754,8 @@ const LeradManagementHistory = () => {
                       </div>
                       <div className={styles.address}>
                         {item?.street_address
-                          ? item.street_address.length > 20
-                            ? `${item.street_address.slice(0, 20)}...`
+                          ? item.street_address.length > 49
+                            ? `${item.street_address.slice(0, 49)}...`
                             : item.street_address
                           : 'N/A'}
                       </div>
@@ -762,22 +764,9 @@ const LeradManagementHistory = () => {
 
                   <div
                     className={styles.see_more}
-                    onClick={() => handlesee(item.leads_id)}
+                    // onClick={() => handlesee(item.leads_id)}
                   >
-                    <p>
-                      {expandedItemIds.includes(item.leads_id)
-                        ? 'See Less'
-                        : 'See More'}
-                    </p>
-                    <img
-                      src={ICONS.SeeMore}
-                      alt="img"
-                      style={{
-                        transform: expandedItemIds.includes(item.leads_id)
-                          ? 'rotate(180deg)'
-                          : 'none',
-                      }}
-                    />
+                    <IoInformationOutline />
                   </div>
                 </div>
                 {!isMobile && expandedItemIds.includes(item.leads_id) && (
@@ -788,7 +777,7 @@ const LeradManagementHistory = () => {
                       </div>
                     )}
                     <div style={{ padding: '0px 12px' }}>
-                      <div
+                      {/* <div
                         style={{ backgroundColor: '#fff' }}
                         className={styles.history_list_activity}
                       >
@@ -822,7 +811,7 @@ const LeradManagementHistory = () => {
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </>
                 )}
@@ -837,14 +826,14 @@ const LeradManagementHistory = () => {
                       </div>
                       <div className={styles.address}>
                         {item?.street_address
-                          ? item.street_address.length > 20
-                            ? `${item.street_address.slice(0, 20)}...`
+                          ? item.street_address.length > 40
+                            ? `${item.street_address.slice(0, 40)}...`
                             : item.street_address
                           : 'N/A'}
                       </div>
                     </div>
 
-                    <div style={{ padding: '0px 12px' }}>
+                    {/* <div style={{ padding: '0px 12px' }}>
                       <div
                         style={{ backgroundColor: '#fff' }}
                         className={styles.history_list_activity_mob}
@@ -877,7 +866,7 @@ const LeradManagementHistory = () => {
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </div>

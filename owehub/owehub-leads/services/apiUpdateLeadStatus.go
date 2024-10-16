@@ -82,7 +82,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	// fetch lead details, also thereby veryfing authenticated user has access to the lead
-	query = "SELECT status_id, email_id, appointment_date FROM get_leads_info_hierarchy($1) WHERE leads_id = $2"
+	query = "SELECT status_id, first_name, last_name, email_id, appointment_date FROM get_leads_info_hierarchy($1) WHERE leads_id = $2"
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail, dataReq.LeadsId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead details from database: %v", err)
@@ -127,7 +127,23 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			return
 		}
 
-		err = sentAppointmentEmail(leadEmail, &aptDate, isRescheduling)
+		firstName, ok := data[0]["first_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+			appserver.FormAndSendHttpResp(resp, "Failed to get first name from database", http.StatusInternalServerError, nil)
+			return
+		}
+		lastName, ok := data[0]["last_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+			appserver.FormAndSendHttpResp(resp, "Failed to get last name from database", http.StatusInternalServerError, nil)
+			return
+		}
+
+		name := firstName + " " + lastName
+
+		//Function call sentAppointmentEmail
+		err = sentAppointmentEmail(leadEmail, &aptDate, isRescheduling, name)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send the email to the lead %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to send the email to the lead", http.StatusInternalServerError, nil, 0)

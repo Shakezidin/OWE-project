@@ -16,6 +16,8 @@
   flex-direction: column;
   align-items: center;
   width: fit-content;
+  height: fit-content;
+  
 }
 
 .folderDiv:hover .charDiv {
@@ -28,6 +30,7 @@
   gap: 5px;
   background-color: #f2f2f2;
   width: 108px;
+  height: 108px;
   margin-top: 15px;
   padding: 8px 22px;
   border-radius: 8px;
@@ -43,10 +46,13 @@
   border-radius: 50%;
   font-family: 'Poppins', sans-serif;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 500; 
   color: #ffffff;
   position: relative;
-  right: 15px;
+  right: 16px;
+  width: 17px;
+  height: 17px;
+  visibility: hidden;
 }
 .folderIcon_wrapper img {
   width: 56px;
@@ -64,14 +70,19 @@
   position: relative;
   left: 14px;
   background-color: #afafaf;
-  visibility: hidden;
 }
-.folderDiv:hover .folderInput {
-  visibility: visible;
+.folderInput:not(.selected){
+  display: none;
 }
+ .folderDiv:hover .folderInput {
+  display: block;
+} 
 
-.visible {
+ .visible {
   visibility: visible !important;
+} 
+.hidden{
+  visibility: visible !important; 
 }
 
 .folderContent_wrapper {
@@ -84,6 +95,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 18px;
+  overflow: hidden;
 }
 .folderInfo_wrapper {
   display: flex;
