@@ -551,7 +551,7 @@ const LibraryHomepage = () => {
     if (section === "files") {
       navigate("/library")
     }
-    if(section==="folders"){
+    if (section === "folders") {
       setCurrentPage(1)
     }
     setSearchValue('');
@@ -1200,29 +1200,29 @@ const LibraryHomepage = () => {
       ) : (
         <div className={styles.libSecHeader}>{renderHeaderContent()}</div>
       )}
-<div className="bg-white">
+      <div className="bg-white">
 
-      {renderContent()}
-{
-  activeSection==="files" &&
-      <div className="page-heading-container " >
-        <p className="page-heading">
-          Showing {startIndex} - {endIndex > sortedData.length ? sortedData.length : endIndex}{' '}
-          of {sortedData.length} item
-        </p>
+        {renderContent()}
+        {
+          (activeSection === "files" ? !!sortedData.length : false) &&
+          <div className="page-heading-container " >
+            <p className="page-heading">
+              Showing {startIndex} - {endIndex > sortedData.length ? sortedData.length : endIndex}{' '}
+              of {sortedData.length} item
+            </p>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginate={(number) => setCurrentPage(number)}
-          currentPageData={paginatedData}
-          goToNextPage={() => setCurrentPage(prev => prev + 1)}
-          goToPrevPage={() => setCurrentPage(prev => prev - 1)}
-          perPage={itemsPerPage}
-        />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              paginate={(number) => setCurrentPage(number)}
+              currentPageData={paginatedData}
+              goToNextPage={() => setCurrentPage(prev => prev + 1)}
+              goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+              perPage={itemsPerPage}
+            />
+          </div>
+        }
       </div>
-}
-</div>
 
       {
         isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
