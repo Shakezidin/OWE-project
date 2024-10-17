@@ -128,10 +128,14 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "application/pdf":
         return pdf
 
-      case "application/vnd.ms-excel":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-      case "application/vnd.ms-excel.sheet.macroEnabled.12":
+        case "application/vnd.ms-excel":  // XLS
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":  // XLSX
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":  // XLTX
+        case "application/vnd.ms-excel.sheet.macroEnabled.12":  // XLSM
+        case "application/vnd.ms-excel.template.macroEnabled.12":  // XLTM
+        case "application/vnd.oasis.opendocument.spreadsheet":  // ODS
+        case "text/csv":  // CSV
+        case "text/tab-separated-values":
         return excel;
 
       case "video/mp4":
@@ -145,13 +149,40 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "folder":
         return folderImage
 
-      case "application/octet-stream":
+      
       case "audio/x-wav":
       case "audio/mpeg":
+        case "audio/wav":
+          case "audio/ogg":
+            case "audio/aac":
+              case "audio/flac":
+                case "audio/mp4":
+                  case "audio/amr":
+                    case "audio/aiff":
+                      case "audio/x-ms-wma":
+                        case "audio/webm":
         return audio;
 
-      case "text/plain":
-        return text
+        case "text/plain":
+              return text;
+
+        case "application/vnd.ms-powerpoint":
+      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+      case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+      case "application/vnd.openxmlformats-officedocument.presentationml.template":
+      case "application/vnd.ms-powerpoint.template.macroEnabled.12":
+      case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
+      case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
+      case "application/vnd.oasis.opendocument.presentation":
+      return powerpoint;
+   case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+          case "application/msword":
+            case  'application/vnd.ms-word.document.macroEnabled.12':
+              case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+                case 'application/vnd.ms-word.template.macroEnabled.12':
+                  case "application/rtf":
+                    case "application/vnd.oasis.opendocument.text":
+          return word;
       default:
         return defaultImage
 

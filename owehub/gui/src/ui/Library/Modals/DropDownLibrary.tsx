@@ -107,10 +107,28 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
             Text
           </li>
           <li
-            onClick={() => handleSelect('Document')}
-            className={`${classes.dropdownItem} ${selectedType === 'Videos' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Powerpoint')}
+            className={`${classes.dropdownItem} ${selectedType === 'Powerpoint' ? classes.selected : ''}`}
           >
-            Document
+            Powerpoint
+          </li>
+          <li
+            onClick={() => handleSelect('Word')}
+            className={`${classes.dropdownItem} ${selectedType === 'Word' ? classes.selected : ''}`}
+          >
+            Word
+          </li>
+          <li
+            onClick={() => handleSelect('Audio')}
+            className={`${classes.dropdownItem} ${selectedType === 'Audio' ? classes.selected : ''}`}
+          >
+            Audio
+          </li>
+          <li
+            onClick={() => handleSelect('Others')}
+            className={`${classes.dropdownItem} ${selectedType === 'Others' ? classes.selected : ''}`}
+          >
+            Others
           </li>
         </ul>
       )}
