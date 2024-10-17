@@ -55,7 +55,7 @@ const LibraryHomepage = () => {
   >('date');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isRecycleBinView, setIsRecycleBinView] = useState(false);
-  const [filesView, setFilesView] = useState<"list" | "tiles">("tiles")
+  const [filesView, setFilesView] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
   const [toggleClick, setToggleClick] = useState(false);
   const [checkedItems, setCheckedItems] = useState<number>(0);
   const [checkedFolders, setCheckedFolders] = useState<string[]>([]);
@@ -560,6 +560,9 @@ const LibraryHomepage = () => {
   };
   //check handler
   const [allIds, setAllIds] = useState<string[]>([]);
+  const saveFileTypeView = (type: string) => {
+    localStorage.setItem('fileTypeView', type)
+  }
 
   const downloadFile = (fileUrl: string, fileName: string) => {
     const anchor = document.createElement("a");
@@ -749,10 +752,16 @@ const LibraryHomepage = () => {
         </div>
 
         <div className={`  ${styles.libSecHeader_right}`}>
-          <button onClick={() => setFilesView("list")} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+          <button onClick={() => {
+            setFilesView("list")
+            saveFileTypeView("list")
+          }} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
-          <button onClick={() => setFilesView("tiles")} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+          <button onClick={() => {
+            setFilesView("tiles")
+            saveFileTypeView("tiles")
+          }} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
           <div className={`${styles.sm_hide}`}>
@@ -794,7 +803,7 @@ const LibraryHomepage = () => {
   };
 
   const renderContent = () => {
-   
+
 
 
     if (activeSection === 'folders') {
@@ -829,13 +838,13 @@ const LibraryHomepage = () => {
       );
     }
 
-  
+
     return (
       <div className={styles.libSectionWrapper}>
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
-              { role_name===TYPE_OF_USER.ADMIN && <div className='mr1'>
+              {role_name === TYPE_OF_USER.ADMIN && <div className='mr1'>
                 <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
                   if (selectedCheckbox.size === sortedData.length) {
                     setSelectedCheckbox(new Set())
@@ -871,13 +880,13 @@ const LibraryHomepage = () => {
 
           sortedData.length > 0 ? (
             filesView === "list" ?
-              (selectedType === 'Videos'?sortedData.filter((item)=>isVideo(item.file?.mimeType!)):sortedData).map((data) => {
+              (selectedType === 'Videos' ? sortedData.filter((item) => isVideo(item.file?.mimeType!)) : sortedData).map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return (
                   <div className={styles.libGridItem} key={data.id}>
                     <div className="flex items-center">
-                     {role_name===TYPE_OF_USER.ADMIN && <div className="mr2">
+                      {role_name === TYPE_OF_USER.ADMIN && <div className="mr2">
                         <CheckBox checked={selectedCheckbox.has(data.id)} onChange={() => {
                           if (selectedCheckbox.has(data.id)) {
                             const newArr = new Set(Array.from(selectedCheckbox).filter((item) => item !== data.id))
@@ -913,7 +922,7 @@ const LibraryHomepage = () => {
                           loading='lazy'
                         />
                         <div className={styles.name_div} >
-                        <p className={styles.name_hide}>{data.name.substring(0, 100)}</p>
+                          <p className={styles.name_hide}>{data.name.substring(0, 100)}</p>
                           <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
                           <p className={styles.size}>
                             {data.size < 1024
@@ -930,11 +939,11 @@ const LibraryHomepage = () => {
                     <div className={`${styles.grid_item_delete} ${styles.grid_icon} justify-center`}>
 
                       <div>
-                      <RxDownload
-                  className={`${styles.icons_download} ${styles.icons}`}
-                  onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-                  
-                />
+                        <RxDownload
+                          className={`${styles.icons_download} ${styles.icons}`}
+                          onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
+
+                        />
                       </div>
                       <div>
                         {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
@@ -980,7 +989,7 @@ const LibraryHomepage = () => {
                 files={sortedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
-                  name: item.name.substring(0,20),
+                  name: item.name.substring(0, 20),
                   webUrl: item.webUrl,
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,
@@ -1019,10 +1028,16 @@ const LibraryHomepage = () => {
           <div className={styles.sort_container} >
             <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
           </div>
-          <button onClick={() => setFilesView("list")} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+          <button onClick={() => {
+            setFilesView("list")
+            saveFileTypeView("list")
+          }} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
-          <button onClick={() => setFilesView("tiles")} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+          <button onClick={() => {
+            setFilesView("tiles")
+            saveFileTypeView("tiles")
+          }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
         </div>
