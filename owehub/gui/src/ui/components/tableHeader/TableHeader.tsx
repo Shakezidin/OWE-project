@@ -91,7 +91,7 @@ const TableHeader = (props: TableProps) => {
         </div> */}
         <div className="iconsSection2-confex">
           {onpressExport ? (
-            <button type="button" disabled onClick={onpressExport}>
+            <button type="button"  onClick={onpressExport}>
               <svg
                 width="19"
                 height="19"

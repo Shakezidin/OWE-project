@@ -20,6 +20,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
@@ -31,7 +32,9 @@ const DealerCredit: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen);
+  const handleExportOpen = () => {
+    exportCsv();
+  }
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const { data, dbCount, isLoading } = useAppSelector(
@@ -45,6 +48,7 @@ const DealerCredit: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
+  const [isExportingData, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [refresh, setRefresh] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -235,8 +239,64 @@ const DealerCredit: React.FC = () => {
     setSelectAllChecked(false);
   };
   const notAllowed = selectedRows.size > 1;
+console.log(exportOPen)
 
-  console.log(data, 'data');
+
+const exportCsv = async () => {
+  // Define the headers for the CSV
+// Function to remove HTML tags from strings
+const removeHtmlTags = (str:any) => {
+  if (!str) return '';
+  return str.replace(/<\/?[^>]+(>|$)/g, "");
+};
+setIsExporting(true);
+const exportData = await configPostCaller('get_dealercredit', {
+  page_number: 1,
+  page_size: dbCount,
+});
+if (exportData.status > 201) {
+  toast.error(exportData.message);
+  return;
+}
+
+  
+  const headers = [
+    'Unique ID',
+    'Customer',
+    'Credit Amt',
+    'Credit Date',
+    'Approved By',
+    'Notes',
+  ];
+
+ 
+   
+  const csvData = exportData?.data?.DealerCreditsData?.map?.((item: any) => [
+    item.unique_id,
+    item.customer,
+    item.credit_amount,
+    item.credit_date,
+    "",
+    removeHtmlTags(item.notes),
+    
+  ]);
+
+  const csvRows = [headers, ...csvData];
+
+  const csvString = Papa.unparse(csvRows);
+
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'dealercredit.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setIsExporting(false);
+ 
+};
+  
   return (
     <div className="comm">
       <Breadcrumb
