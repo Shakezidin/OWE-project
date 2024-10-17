@@ -58,16 +58,16 @@ function getFileIcon(mimeType: string | undefined): string {
 
 
     case 'image/jpeg':
-      case 'image/png':
-      case 'image/gif':
-      case 'image/webp':
-      case 'image/bmp':
-      case 'image/tiff':
-      case 'image/svg+xml':
-      case 'image/x-icon':
-      case 'image/heif':
-      case 'image/heic':
-        return image;
+    case 'image/png':
+    case 'image/gif':
+    case 'image/webp':
+    case 'image/bmp':
+    case 'image/tiff':
+    case 'image/svg+xml':
+    case 'image/x-icon':
+    case 'image/heif':
+    case 'image/heic':
+      return image;
 
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
     case "application/vnd.ms-excel.sheet.macroEnabled.12":
@@ -242,8 +242,7 @@ const LibraryHomepage = () => {
   const [isPending, setIsPending] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // You can adjust this value as needed
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = currentPage * itemsPerPage;
+
   const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -692,6 +691,9 @@ const LibraryHomepage = () => {
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
   };
+
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
   //check handler
   const [allIds, setAllIds] = useState<string[]>([]);
   const saveFileTypeView = (type: string) => {
@@ -1198,8 +1200,23 @@ const LibraryHomepage = () => {
 
       {renderContent()}
 
+      <div className="page-heading-container bg-white">
+        <p className="page-heading">
+          Showing {startIndex} - {endIndex > sortedData.length ? sortedData.length : endIndex}{' '}
+          of {sortedData.length} item
+        </p>
 
-      
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          paginate={(number) => setCurrentPage(number)}
+          currentPageData={paginatedData}
+          goToNextPage={() => setCurrentPage(prev => prev + 1)}
+          goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+          perPage={itemsPerPage}
+        />
+      </div>
+
 
       {
         isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
