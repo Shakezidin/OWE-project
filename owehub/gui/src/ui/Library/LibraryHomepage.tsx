@@ -506,7 +506,7 @@ const LibraryHomepage = () => {
       data.file?.mimeType === 'image/heif' ||
       data.file?.mimeType === 'image/heic'
 
-    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime')) || (selectedType === 'Text' && data.file?.mimeType === 'text/plain') ;
+    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime')) || (selectedType === 'Text' && data.file?.mimeType === 'text/plain');
     return matchesSearch && matchesType;
   });
 
@@ -646,7 +646,25 @@ const LibraryHomepage = () => {
       })
 
   };
-  console.log("checkeditems", checkedItems, selectedCheckbox)
+  const isAudio = (mimeType: string): boolean => {
+    switch (mimeType) {
+      case "audio/mpeg":
+      case "audio/mp3":
+      case "audio/wav":
+      case "audio/x-wav":
+      case "audio/ogg":
+      case "audio/aac":
+      case "audio/midi":
+      case "audio/x-midi":
+      case "audio/webm":
+      case "audio/flac":
+      case "audio/x-m4a":
+      case "audio/x-matroska":
+        return true;
+      default:
+        return false;
+    }
+  };
   const handleUndo = () => {
     setCheckedItems(0);
     setCheckedFolders([]);
@@ -909,7 +927,7 @@ const LibraryHomepage = () => {
                           setVideoName(data.name!)
                           return
                         }
-                        if (isValidImage) {
+                        if (isValidImage || isAudio(data.file?.mimeType!)) {
                           setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
                           setIsFileViewerOpen(true)
                           return
@@ -920,9 +938,9 @@ const LibraryHomepage = () => {
                         <img
                           className={styles.cardImg}
                           src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? image :
-                            data.file?.mimeType==="application/octet-stream"?audio:
-                            data.file?.mimeType==="audio/x-wav"?  audio:
-                            data.file?.mimeType==="audio/mpeg"?  audio: defauult}
+                            data.file?.mimeType === "application/octet-stream" ? audio :
+                              data.file?.mimeType === "audio/x-wav" ? audio :
+                                data.file?.mimeType === "audio/mpeg" ? audio : defauult}
                           alt={`null`}
                           loading='lazy'
                         />
@@ -971,13 +989,15 @@ const LibraryHomepage = () => {
                 onFilePreview={(url, type, name) => {
                   const isValidVideo = isVideo(type)
                   const isValidImage = isImage(type)
-                  if (isValidVideo) {
+             
+                  if (isValidVideo ) {
                     setIsVideoModalOpen(true)
                     setVideoUrl(url)
                     setVideoName(name)
                     return
                   }
-                  if (isValidImage) {
+
+                  if (isValidImage || isAudio(type) ) {
                     setFileInfo({ name: name, fileType: type!, url: url })
                     setIsFileViewerOpen(true)
                     return

@@ -56,7 +56,7 @@ function FolderView({
 
   return (
     <div className={styles.folderMain_wrapper}>
-    {loading ? (
+      {loading ? (
         <div className={styles.filesLoader}>
           <MicroLoader />
         </div>
@@ -65,7 +65,7 @@ function FolderView({
           style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
-        
+
           onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
@@ -76,9 +76,13 @@ function FolderView({
             onMouseEnter={() => setHoveredIndex(folder.id)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
-             <div className={styles.charDiv}>{folder.name.charAt(0)}</div> 
+            <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
             <img src={ICONS.folderImage} alt="" />
-            <div className={styles.checkboxWrapper}>
+            <div className={styles.checkboxWrapper} onClick={(e) => {
+              e.stopPropagation()
+            }} onDoubleClick={(e) => {
+              e.stopPropagation()
+            }}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
                 className={`${styles.folderInput} ${checkedFolders.includes(folder.id) || hoveredIndex === folder.id
@@ -109,7 +113,7 @@ function FolderView({
           </div>
         </div>
       )) : (<div style={{ width: '100%' }}>
-         <div className={`bg-white py2 ${styles.filesLoader}`}>
+        <div className={`bg-white py2 ${styles.filesLoader}`}>
           <DataNotFound />
         </div>
       </div>)}

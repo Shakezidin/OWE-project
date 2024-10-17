@@ -80,8 +80,29 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
         return false
     }
   }
+
+  const isAudio = (mimeType: string): boolean => {
+    switch (mimeType) {
+      case "audio/mpeg":
+      case "audio/mp3":
+      case "audio/wav":
+      case "audio/x-wav":
+      case "audio/ogg":
+      case "audio/aac":
+      case "audio/midi":
+      case "audio/x-midi":
+      case "audio/webm":
+      case "audio/flac":
+      case "audio/x-m4a":
+      case "audio/x-matroska":
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const getUrl = () => {
-    if (isImage(file?.mimeType!) || isVideo(file?.mimeType!)) {
+    if (isImage(file?.mimeType!) || isVideo(file?.mimeType!) || isAudio(file?.mimeType!)) {
       return file?.['@microsoft.graph.downloadUrl']
     }
     else {

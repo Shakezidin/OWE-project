@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../sidebar/Sidebar';
 import Header from './Header';
 import './layout.css';
@@ -34,6 +34,7 @@ const MainLayout = () => {
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
+  const {pathname} = useLocation()
 
   const getToken = async () => {
     try {
@@ -54,7 +55,7 @@ const MainLayout = () => {
     if (!token) {
       getToken()
     }
-  }, [])
+  }, [pathname])
 
   /** logout  */
   const logoutUser = (message?: string) => {
