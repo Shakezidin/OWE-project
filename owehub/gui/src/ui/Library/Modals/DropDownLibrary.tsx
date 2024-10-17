@@ -100,6 +100,18 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
           >
             Videos
           </li>
+          <li
+            onClick={() => handleSelect('Text')}
+            className={`${classes.dropdownItem} ${selectedType === 'Text' ? classes.selected : ''}`}
+          >
+            Text
+          </li>
+          <li
+            onClick={() => handleSelect('Document')}
+            className={`${classes.dropdownItem} ${selectedType === 'Videos' ? classes.selected : ''}`}
+          >
+            Document
+          </li>
         </ul>
       )}
     </div>

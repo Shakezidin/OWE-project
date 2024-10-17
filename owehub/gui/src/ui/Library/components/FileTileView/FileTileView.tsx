@@ -15,7 +15,7 @@ import folderImage from '../../../../resources/icons/folderimage.svg'
 import text from '../../assetss/textFile.svg'
 import defaultImage from '../../assetss/default.svg'
 import CheckBox from '../../../components/chekbox/CheckBox';
-
+import audio from '../../../../resources/icons/audioFile.svg'
 
 export interface IFiles {
   createdDateTime: string;
@@ -123,6 +123,11 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
 
       case "folder":
         return folderImage
+
+        case "application/octet-stream":
+          case "audio/x-wav":
+           case "audio/mpeg":
+            return audio;
 
       case "text/plain":
         return text
