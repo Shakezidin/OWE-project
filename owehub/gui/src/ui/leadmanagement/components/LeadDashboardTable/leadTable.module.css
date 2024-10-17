@@ -26,6 +26,7 @@
     overflow-y: auto;
     overflow-x: auto;
     scroll-behavior: smooth;
+    
 }
 
 .TableContainer1::-webkit-scrollbar {
@@ -159,11 +160,18 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
     gap: 5px;
     transition: all 0.3s ease;
     padding-left: 10px;
+    
 }
 .slidebutton:hover{
     color: #377CF6;
     text-decoration: underline;
 }
+/* .slidebutton::after{
+    padding-top: 15px;
+    padding-bottom: 15px;
+} */
