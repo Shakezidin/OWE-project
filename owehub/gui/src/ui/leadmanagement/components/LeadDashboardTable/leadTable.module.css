@@ -26,6 +26,7 @@
     overflow-y: auto;
     overflow-x: auto;
     scroll-behavior: smooth;
+    
 }
 
 .TableContainer1::-webkit-scrollbar {
@@ -159,11 +160,22 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
     gap: 5px;
     transition: all 0.3s ease;
     padding-left: 10px;
+    background-color: #CADCFA;
+    padding-top: -30px !important;
+    padding-bottom: -30px !important;
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
 }
 .slidebutton:hover{
     color: #377CF6;
     text-decoration: underline;
 }
+/* .slidebutton::after{
+    padding-top: 15px;
+    padding-bottom: 15px;
+} */
