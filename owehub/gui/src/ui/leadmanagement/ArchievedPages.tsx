@@ -238,7 +238,7 @@ const ArchivedPages = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
 
   const handleArcClose = () => {
     setIsArcOpen(false);
@@ -254,6 +254,10 @@ const ArchivedPages = () => {
 
   const goToPrevPage = () => {
     setPage(page - 1);
+  };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
   };
 
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -272,13 +276,13 @@ const ArchivedPages = () => {
       const data = {
         "progress_filter": "ALL",
         "is_archived": true,
-        page_size: 10,
+        page_size: itemsPerPage,
         page_number: page,
       };
 
       dispatch(getLeads(data));
     }
-  }, [isAuthenticated, dispatch, page, activeIndex]);
+  }, [isAuthenticated,itemsPerPage, dispatch, page, activeIndex]);
 
   const navigate = useNavigate();
 
@@ -575,6 +579,7 @@ const ArchivedPages = () => {
                   goToNextPage={goToNextPage}
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
                 />
               </div>
             </div>
