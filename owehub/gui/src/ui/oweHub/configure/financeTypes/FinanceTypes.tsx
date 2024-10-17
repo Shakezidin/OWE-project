@@ -27,6 +27,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
+import Papa from 'papaparse';
 
 const  FinanceTypes: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -47,6 +48,7 @@ const  FinanceTypes: React.FC = () => {
   const [data,setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [isExportingData, setIsExporting] = useState(false);
   const itemsPerPage = 25;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -75,6 +77,9 @@ const  FinanceTypes: React.FC = () => {
 //   useEffect(() => {
 //     getnewformData();
 //   }, []);
+const handleExportOpen = () => {
+  exportCsv();
+}
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -265,6 +270,96 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     );
   }
   const notAllowed = selectedRows.size > 1;
+
+
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_finacetypes', {
+    page_number: 1,
+    page_size: totalCount,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Product Code',
+      'Relationship',
+      'Type',
+      'Terms Years',
+      'Sub Record',
+      'Finance Company',
+      'Finance Type Name',
+      'Finance Company for Search',
+      'Finance type Slug Portion',
+      'Finance Fee',
+      'Finance Type uid',
+      'Finance trype uid_for_import',
+      "Installer",
+      'Payment Start Based',
+      'Payment Start Date Days',
+      'Ar Rate',
+      'Dealer Fee',
+      'F Type',
+      'Status',
+      'Active Start Date',
+      'Active End Date'
+
+    ];
+  
+   
+     
+    const csvData = exportData?.data?.FinanceTypesData?.map?.((item: any) => [
+      removeHtmlTags(item.product_code),
+      item.relationship,
+      item.type,
+      item.term_years,
+      item.sub_record,
+      item.finance_company,
+      item[' finance_type_name'],
+      item.finance_company_for_search,
+      item.finance_type_slug_portion_h,
+      item.finance_fee,
+      item.finance_type_uid,
+      item.finance_type_uid_for_import,
+      item.installer,
+      item.payment_start_date_based_on,
+      item.payment_start_date_days,
+      item.ar_rate,
+      item.dealer_fee,
+      item.f_type,
+      item[' status'],
+      dateFormat(item.active_date_start),
+      dateFormat(item.active_date_end)
+       
+    ]);
+
+    
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'financetypes.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
+ 
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -280,10 +375,11 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           viewArchive={viewArchived}
-          onpressExport={() => {}}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
+          onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc

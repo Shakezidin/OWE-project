@@ -127,7 +127,7 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                     }}
                   >
                     {/* {el.doller} */}
-                    {"$120,450"}
+                    {"$0.00"}
                   </h4>
                 </div>
                 <div className='total-section-desc'>

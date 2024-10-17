@@ -27,6 +27,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
+import Papa from 'papaparse';
 
 const  SalesPartnerSchedule: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -47,6 +48,7 @@ const  SalesPartnerSchedule: React.FC = () => {
   const [data,setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [isExportingData, setIsExporting] = useState(false);
   const itemsPerPage = 25;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -247,6 +249,9 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     }
   };
 
+  const handleExportOpen = () => {
+    exportCsv();
+  }
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
@@ -265,6 +270,74 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     );
   }
   const notAllowed = selectedRows.size > 1;
+
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_partnerpayschedule', {
+    page_number: 1,
+    page_size: totalCount,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Sales Partner',
+      'Finance Partner',
+      'Spps Ref',
+      'State',
+      'Sug',
+      'Rep Pay',
+      'Red Line',
+      'Sales Partner Draw %',
+      'Sales Partner Not_to_exceed',
+      'Sales Rep Draw%',
+      'Sales Rep Not_to_exceed',
+      'Active Start Date',
+      'Active End Date'
+    ];
+  
+   
+     
+    const csvData = exportData?.data?.PartnerPayScheduleData?.map?.((item: any) => [
+      item.sales_partner,
+      item.finance_partner,
+      item.spps_Ref,
+      item.state,
+      item.sug,
+      item.rep_pay,
+      item.redline,
+      item.m1_sales_partner_draw_percentage,
+      item.m1_sales_partner_not_to_exceed,
+      item.m1_sales_rep_draw_percentage,
+      item.m1_sales_rep_not_to_exceed,
+      dateFormat(item.active_date_start),
+      dateFormat(item.active_date_end),
+    ]);
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'salespartnerschedule.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -280,10 +353,11 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           viewArchive={viewArchived}
-          onpressExport={() => {}}
+          onpressExport={() => handleExportOpen()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc
