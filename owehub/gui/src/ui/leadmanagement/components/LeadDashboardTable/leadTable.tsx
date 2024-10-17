@@ -20,9 +20,10 @@ interface LeadSelectionProps {
   refresh: number;
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
   onCreateProposal: (leadId: number) => void;
+  fetchWebProposal: (leadId: number) => void;
 }
 
-const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal }: LeadSelectionProps) => {
+const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, fetchWebProposal }: LeadSelectionProps) => {
 
 
   const [selectedType, setSelectedType] = useState('');
@@ -362,8 +363,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           ) : lead.proposal_id ? (
                             <div className={styles.progress_status}>
                               <span>Last Updated 2 Days Ago</span>
-                              <p className={styles.prop_send}>
-                                View Proposal <IoChevronForward />
+                              <p className={styles.prop_send} onClick={() => fetchWebProposal(lead.leads_id)}>
+                              View Proposal <IoChevronForward />
                                 <IoChevronForward />
                               </p>
                             </div>
