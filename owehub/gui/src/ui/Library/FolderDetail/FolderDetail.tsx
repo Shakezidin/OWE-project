@@ -318,7 +318,7 @@ const FolderDetail = () => {
 
 
     return (
-        <div className={` bg-white ${styles.libraryContainer}`}>
+        <div className={` ${styles.libraryContainer}`}>
             <div className={styles.libraryHeader}>
                 <h3>Library</h3>
             </div>
@@ -501,7 +501,7 @@ const FolderDetail = () => {
                                         </div>
                                     })
                                     :
-                                    <div className={fileTileViewStyles.list_grid}>
+                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}>
                                         {files.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
@@ -565,23 +565,23 @@ const FolderDetail = () => {
                                     <DataNotFound />
                                 </div>
                     }
-  
-{!!files.length &&    <div className="page-heading-container " >
-        <p className="page-heading">
-          Showing {startIndex} - {endIndex > files.length ? files.length : endIndex}{' '}
-          of {files.length} item
-        </p>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginate={(number) => setCurrentPage(number)}
-          currentPageData={files}
-          goToNextPage={() => setCurrentPage(prev => prev + 1)}
-          goToPrevPage={() => setCurrentPage(prev => prev - 1)}
-          perPage={itemsPerPage}
-        />
-      </div>}
+                    {!!files.length && <div style={{ borderBottomRightRadius: 12, borderBottomLeftRadius: 12 }} className="page-heading-container bg-white" >
+                        <p className="page-heading">
+                            Showing {startIndex} - {endIndex > files.length ? files.length : endIndex}{' '}
+                            of {files.length} item
+                        </p>
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            paginate={(number) => setCurrentPage(number)}
+                            currentPageData={files}
+                            goToNextPage={() => setCurrentPage(prev => prev + 1)}
+                            goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+                            perPage={itemsPerPage}
+                        />
+                    </div>}
                 </div>
             }
 
