@@ -47,6 +47,7 @@ import useMatchMedia from '../../hooks/useMatchMedia';
 import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
 import powerpoint from '../../resources/icons/powerpoint.png'
+import Pagination from '../components/pagination/Pagination';
 function getFileIcon(mimeType: string | undefined): string {
   if (!mimeType) return defauult;
 
@@ -225,6 +226,21 @@ const LibraryHomepage = () => {
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isPending, setIsPending] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // You can adjust this value as needed
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
+  const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  };
+
+
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
   const [videoName, setVideoName] = useState("")
   const fetchDataFromGraphAPI = async () => {
     setLoading(true);
@@ -461,44 +477,7 @@ const LibraryHomepage = () => {
     setToggleClick(!toggleClick);
   };
 
-  const getContentThumbnail = (type: string) => {
-    switch (type) {
-      case "image/jpeg":
-      case "image/png":
-      case "image/jpg":
-      case "image/gif":
-      case "image/webp":
-      case "image/bmp":
-      case "image/tiff":
-      case "image/svg+xml":
-      case "image/x-icon":
-      case "image/heif":
-      case "image/heic":
-        return "image";
 
-      case "application/pdf":
-        return ICONS.pdf;
-
-      case "application/vnd.ms-excel":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-      case "application/vnd.ms-excel.sheet.macroEnabled.12":
-        return ICONS.excelIcon;
-
-      case "video/mp4":
-      case "video/mpeg":
-      case "video/ogg":
-      case "video/webm":
-      case "video/x-msvideo":
-      case "video/quicktime":
-        return ICONS.videoPlayerIcon;
-
-      case "folder":
-        return ICONS.folderImage;
-
-
-    }
-  };
 
   const handleRecycleBinClick = () => {
     setIsRecycleBinView(!isRecycleBinView);
@@ -670,13 +649,15 @@ const LibraryHomepage = () => {
       case 'date':
         const dateA = new Date(a.lastModifiedDateTime);
         const dateB = new Date(b.lastModifiedDateTime);
-        return dateB.getTime() - dateA.getTime(); // sort descending
+        return dateB.getTime() - dateA.getTime();
       case 'size':
-        return b.size - a.size; // assuming size is already in bytes
+        return b.size - a.size;
       default:
-        return 0; // no sorting applied
+        return 0;
     }
   });
+  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const sortedFolder = [...folderData].sort((a, b) => {
     switch (sortOption) {
@@ -892,6 +873,7 @@ const LibraryHomepage = () => {
                 selectedType={selectedType}
                 onSelectType={(type: string) => {
                   setSelectedType(type);
+                  setCurrentPage(1)
                   setActiveSection(activeSection);
                 }}
               />
@@ -899,13 +881,13 @@ const LibraryHomepage = () => {
           )}
 
           {selectedType !== 'All' &&
-            activeSection !== 'folders' &&
-            ['Excel', 'PDF Format', 'Images', 'Videos'].includes(selectedType) ? (
-            <button className={styles.filter_button}>
-              {selectedType}
-              <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
-            </button>
-          ) : null}
+            activeSection !== 'folders'
+            ? (
+              <button className={styles.filter_button}>
+                {selectedType}
+                <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
+              </button>
+            ) : null}
         </div>
 
         <div className={`  ${styles.libSecHeader_right}`}>
@@ -1002,20 +984,17 @@ const LibraryHomepage = () => {
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
               {role_name === TYPE_OF_USER.ADMIN && <div className='mr1'>
-                <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
-                  if (selectedCheckbox.size === sortedData.length) {
+                <CheckBox checked={selectedCheckbox.size === paginatedData.length && !loading && paginatedData.length > 0} onChange={() => {
+                  if (selectedCheckbox.size === paginatedData.length) {
                     setSelectedCheckbox(new Set())
                     setAllIds([])
                     setCheckedItems(0)
-
-
                   } else {
-                    const newSet = new Set(sortedData.map((item) => item.id))
+                    const newSet = new Set(paginatedData.map((item) => item.id))
                     setSelectedCheckbox(newSet)
                     setAllIds(Array.from(newSet))
                     setCheckedItems(newSet.size)
                   }
-
                 }} />
               </div>}
               <span className={styles.libname_heading}>
@@ -1035,9 +1014,9 @@ const LibraryHomepage = () => {
           <div className={styles.filesLoader}> <MicroLoader /></div> :
 
 
-          sortedData.length > 0 ? (
+          paginatedData.length > 0 ? (
             filesView === "list" ?
-              (selectedType === 'Videos' ? sortedData.filter((item) => isVideo(item.file?.mimeType!)) : sortedData).map((data) => {
+              (selectedType === 'Videos' ? getPaginatedData(sortedData.filter((item) => isVideo(item.file?.mimeType!)), currentPage, itemsPerPage) : paginatedData).map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return (
@@ -1123,14 +1102,12 @@ const LibraryHomepage = () => {
                 onFilePreview={(url, type, name) => {
                   const isValidVideo = isVideo(type)
                   const isValidImage = isImage(type)
-
                   if (isValidVideo) {
                     setIsVideoModalOpen(true)
                     setVideoUrl(url)
                     setVideoName(name)
                     return
                   }
-
                   if (isValidImage || isAudio(type)) {
                     setFileInfo({ name: name, fileType: type!, url: url })
                     setIsFileViewerOpen(true)
@@ -1145,7 +1122,7 @@ const LibraryHomepage = () => {
                   prev.push(id)
                   setSelectedCheckbox(new Set(prev))
                 }}
-                files={sortedData.map((item) => ({
+                files={paginatedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
                   name: item.name,
@@ -1156,9 +1133,6 @@ const LibraryHomepage = () => {
                   mimeType: item.file?.mimeType
                 }))} />
           )
-
-
-
             : (
               <div className={` bg-white py2 ${styles.filesLoader}`}>
                 <DataNotFound />
@@ -1209,6 +1183,10 @@ const LibraryHomepage = () => {
       )}
 
       {renderContent()}
+
+
+      
+
       {
         isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
           setIsVideoModalOpen(false)
