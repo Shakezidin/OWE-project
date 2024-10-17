@@ -551,6 +551,9 @@ const LibraryHomepage = () => {
     if (section === "files") {
       navigate("/library")
     }
+    if(section==="folders"){
+      setCurrentPage(1)
+    }
     setSearchValue('');
     setFolderData(originalFolderData);
     setFileData(originalFileData);
@@ -1197,10 +1200,12 @@ const LibraryHomepage = () => {
       ) : (
         <div className={styles.libSecHeader}>{renderHeaderContent()}</div>
       )}
+<div className="bg-white">
 
       {renderContent()}
-
-      <div className="page-heading-container bg-white">
+{
+  activeSection==="files" &&
+      <div className="page-heading-container " >
         <p className="page-heading">
           Showing {startIndex} - {endIndex > sortedData.length ? sortedData.length : endIndex}{' '}
           of {sortedData.length} item
@@ -1216,7 +1221,8 @@ const LibraryHomepage = () => {
           perPage={itemsPerPage}
         />
       </div>
-
+}
+</div>
 
       {
         isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
