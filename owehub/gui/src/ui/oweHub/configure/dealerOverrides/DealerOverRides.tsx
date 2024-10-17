@@ -27,6 +27,7 @@ import { dateFormat } from '../../../../utiles/formatDate';
 import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { checkLastPage } from '../../../../utiles';
 import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 
 
 const DealerOverRides: React.FC = () => {
@@ -49,6 +50,7 @@ const DealerOverRides: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [data,setData] = useState<any>([]);
   const [totalCount, setTotalCount] = useState<number>(0)
+  const [isExportingData, setIsExporting] = useState(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
@@ -64,6 +66,10 @@ const DealerOverRides: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
+
+  const handleExportOpen = () => {
+    exportCsv();
+  }
   // const getnewformData = async () => {
   //   const tableData = {
   //     tableNames: ['sub_dealer', 'dealer', 'states'],
@@ -266,7 +272,60 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     );
   }
   const notAllowed = selectedRows.size > 1;
-  console.log(data, "data")
+   
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_dealeroverride', {
+    page_number: 1,
+    page_size: totalCount,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Sub Dealer',
+      'Dealer',
+      'Pay Rate',
+      'State',
+      'Start Date',
+      'End Date',
+    ];
+  
+   
+     
+    const csvData = exportData?.data?.DealerOverrideData?.map?.((item: any) => [
+      item.sub_dealer,
+      item.dealer,
+      item.pay_rate,
+      item.state,
+      item.start_date,
+      item.end_date    
+    ]);
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'dealeroverride.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
   return (
     <div className="comm">
       <Breadcrumb
@@ -288,9 +347,9 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           viewArchive={viewArchived}
-          onpressExport={() => {}}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
+          onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddDealer()}
         />
 
