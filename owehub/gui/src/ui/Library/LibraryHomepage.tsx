@@ -25,12 +25,12 @@ import { format, set } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { FileOrFolder } from './types';
 import { useAppSelector } from '../../redux/hooks';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 import audioFile from './assetss/audioFile.svg'
 import myDocument from './assetss/myDocument.svg';
-import powerpoint from './assetss/powerpoint.svg';
+
 import textFile from './assetss/textFile.svg';
 import wordFile from './assetss/wordFile.svg';
 import zipFolder from './assetss/zipFolder.svg';
@@ -46,6 +46,88 @@ import FolderListView from './components/FolderListView/FolderListView';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
+import powerpoint from '../../resources/icons/powerpoint.png'
+import Pagination from '../components/pagination/Pagination';
+
+function getFileIcon(mimeType: string | undefined): string {
+  if (!mimeType) return defauult;
+
+  switch (mimeType) {
+    case 'application/pdf':
+      return ICONS.pdf;
+
+
+    case 'image/jpeg':
+      case 'image/png':
+      case 'image/gif':
+      case 'image/webp':
+      case 'image/bmp':
+      case 'image/tiff':
+      case 'image/svg+xml':
+      case 'image/x-icon':
+      case 'image/heif':
+      case 'image/heic':
+        return image;
+
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+    case "application/vnd.ms-excel.sheet.macroEnabled.12":
+    case "application/vnd.ms-excel":
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+    case "application/vnd.ms-excel.template.macroEnabled.12":
+    case "application/vnd.oasis.opendocument.spreadsheet":
+    case "text/csv":
+    case "text/tab-separated-values":
+      return ICONS.excelIcon;
+
+    case 'video/mp4':
+      return ICONS.videoPlayerIcon;
+    case 'video/mpeg':
+    case 'video/ogg':
+    case 'video/webm':
+    case 'video/x-msvideo':
+    case 'video/quicktime':
+      return ICONS.viedoImageOne;
+
+    case 'text/plain':
+      return textFile;
+
+    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    case "application/msword":
+    case 'application/vnd.ms-word.document.macroEnabled.12':
+    case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+    case 'application/vnd.ms-word.template.macroEnabled.12':
+    case "application/rtf":
+    case "application/vnd.oasis.opendocument.text":
+      return wordFile;
+
+    case "audio/x-wav":
+    case "audio/mpeg":
+    case "audio/wav":
+    case "audio/ogg":
+    case "audio/aac":
+    case "audio/flac":
+    case "audio/mp4":
+    case "audio/amr":
+    case "audio/aiff":
+    case "audio/x-ms-wma":
+    case "audio/webm":
+      return audio;
+
+    case "application/vnd.ms-powerpoint":
+    case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+    case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+    case "application/vnd.openxmlformats-officedocument.presentationml.template":
+    case "application/vnd.ms-powerpoint.template.macroEnabled.12":
+    case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
+    case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
+    case "application/vnd.oasis.opendocument.presentation":
+      return powerpoint;
+
+    default:
+      return defauult;
+  }
+}
+
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -154,10 +236,25 @@ const LibraryHomepage = () => {
   }
   const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
   const [fileData, setFileData] = useState<FileOrFolder[]>([]);
-
+  const navigate = useNavigate()
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isPending, setIsPending] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // You can adjust this value as needed
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
+  const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  };
+
+
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
   const [videoName, setVideoName] = useState("")
   const fetchDataFromGraphAPI = async () => {
     setLoading(true);
@@ -394,44 +491,7 @@ const LibraryHomepage = () => {
     setToggleClick(!toggleClick);
   };
 
-  const getContentThumbnail = (type: string) => {
-    switch (type) {
-      case "image/jpeg":
-      case "image/png":
-      case "image/jpg":
-      case "image/gif":
-      case "image/webp":
-      case "image/bmp":
-      case "image/tiff":
-      case "image/svg+xml":
-      case "image/x-icon":
-      case "image/heif":
-      case "image/heic":
-        return "image";
 
-      case "application/pdf":
-        return ICONS.pdf;
-
-      case "application/vnd.ms-excel":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-      case "application/vnd.ms-excel.sheet.macroEnabled.12":
-        return ICONS.excelIcon;
-
-      case "video/mp4":
-      case "video/mpeg":
-      case "video/ogg":
-      case "video/webm":
-      case "video/x-msvideo":
-      case "video/quicktime":
-        return ICONS.videoPlayerIcon;
-
-      case "folder":
-        return ICONS.folderImage;
-
-
-    }
-  };
 
   const handleRecycleBinClick = () => {
     setIsRecycleBinView(!isRecycleBinView);
@@ -489,24 +549,94 @@ const LibraryHomepage = () => {
   };
   const handleSectionClick = (section: 'files' | 'folders' | 'dropdown') => {
     setActiveSection(section);
+    if (section === "files") {
+      navigate("/library")
+    }
     setSearchValue('');
     setFolderData(originalFolderData);
     setFileData(originalFileData);
   };
 
   const filteredData = fileData.filter((data) => {
-    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg' ||
-      data.file?.mimeType === 'image/jpeg' ||
-      data.file?.mimeType === 'image/gif' ||
-      data.file?.mimeType === 'image/webp' ||
-      data.file?.mimeType === 'image/bmp' ||
-      data.file?.mimeType === 'image/tiff' ||
-      data.file?.mimeType === 'image/svg+xml' ||
-      data.file?.mimeType === 'image/heif' ||
-      data.file?.mimeType === 'image/heic'
+    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
 
-    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime')) || (selectedType === 'Text' && data.file?.mimeType === 'text/plain') ;
+    const excelMimes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+      'application/vnd.ms-excel.sheet.macroEnabled.12',                   // XLSM
+      'application/vnd.ms-excel',                                         // XLS
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.template', // XLTX
+      'application/vnd.ms-excel.template.macroEnabled.12',               // XLTM
+      'application/vnd.oasis.opendocument.spreadsheet',                  // ODS
+      'text/csv',                                                         // CSV
+      'text/tab-separated-values'                                         // TSV
+    ];
+
+    const pdfMimes = ['application/pdf'];
+    const imageMimes = [
+      'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+      'image/bmp', 'image/tiff', 'image/svg+xml',
+      'image/heif', 'image/heic'
+    ];
+    const videoMimes = [
+      'video/mp4', 'video/mpeg', 'video/ogg',
+      'video/webm', 'video/x-msvideo', 'video/quicktime'
+    ];
+    const textMimes = [
+      'text/plain',
+    ];
+    const powerpointMimes = [
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/vnd.ms-powerpoint.presentation.macroEnabled.12',
+      'application/vnd.openxmlformats-officedocument.presentationml.template',
+      'application/vnd.ms-powerpoint.template.macroEnabled.12',
+      'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+      'application/vnd.ms-powerpoint.slideshow.macroEnabled.12',
+      'application/vnd.oasis.opendocument.presentation'
+    ];
+    const wordMimes = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
+      'application/vnd.ms-word.document.macroEnabled.12',
+      'application/vnd.openxmlformats-officedocument.wordtemplate',
+      'application/vnd.ms-word.template.macroEnabled.12',
+      'application/rtf',
+      'application/vnd.oasis.opendocument.text'
+
+    ];
+    const audioMimes = [
+      "audio/mpeg",                          // MP3
+      "audio/wav",                           // WAV
+      "audio/aac",                           // AAC
+      "audio/ogg",                           // OGG
+      "audio/flac",                          // FLAC
+      "audio/mp4",                           // M4A
+      "audio/amr",                           // AMR
+      "audio/aiff",                          // AIFF
+      "audio/x-ms-wma",                     // WMA
+      "audio/webm",
+      "audio/x-wav",
+      // WebM
+    ];
+
+
+    const mimeType = data.file?.mimeType; // Get the MIME type safely
+
+    const matchesType = selectedType === 'All' ||
+      (selectedType === 'Excel' && mimeType && excelMimes.includes(mimeType)) ||
+      (selectedType === 'PDF Format' && mimeType && pdfMimes.includes(mimeType)) ||
+      (selectedType === 'Images' && mimeType && imageMimes.includes(mimeType)) ||
+      (selectedType === 'Videos' && mimeType && videoMimes.includes(mimeType)) ||
+      (selectedType === 'Text' && mimeType && textMimes.includes(mimeType)) ||
+      (selectedType === 'Powerpoint' && mimeType && powerpointMimes.includes(mimeType)) ||
+      (selectedType === 'Word' && mimeType && wordMimes.includes(mimeType)) ||
+      (selectedType === 'Audio' && mimeType && audioMimes.includes(mimeType)) ||
+      (selectedType === 'Others' &&
+        mimeType !== undefined && // Check if mimeType is defined
+        ![...excelMimes, ...pdfMimes, ...imageMimes, ...videoMimes, ...textMimes, ...powerpointMimes, ...wordMimes, ...audioMimes].includes(mimeType)
+      );
+
     return matchesSearch && matchesType;
   });
 
@@ -533,13 +663,15 @@ const LibraryHomepage = () => {
       case 'date':
         const dateA = new Date(a.lastModifiedDateTime);
         const dateB = new Date(b.lastModifiedDateTime);
-        return dateB.getTime() - dateA.getTime(); // sort descending
+        return dateB.getTime() - dateA.getTime();
       case 'size':
-        return b.size - a.size; // assuming size is already in bytes
+        return b.size - a.size;
       default:
-        return 0; // no sorting applied
+        return 0;
     }
   });
+  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const sortedFolder = [...folderData].sort((a, b) => {
     switch (sortOption) {
@@ -646,7 +778,25 @@ const LibraryHomepage = () => {
       })
 
   };
-  console.log("checkeditems", checkedItems, selectedCheckbox)
+  const isAudio = (mimeType: string): boolean => {
+    switch (mimeType) {
+      case "audio/mpeg":
+      case "audio/mp3":
+      case "audio/wav":
+      case "audio/x-wav":
+      case "audio/ogg":
+      case "audio/aac":
+      case "audio/midi":
+      case "audio/x-midi":
+      case "audio/webm":
+      case "audio/flac":
+      case "audio/x-m4a":
+      case "audio/x-matroska":
+        return true;
+      default:
+        return false;
+    }
+  };
   const handleUndo = () => {
     setCheckedItems(0);
     setCheckedFolders([]);
@@ -737,6 +887,7 @@ const LibraryHomepage = () => {
                 selectedType={selectedType}
                 onSelectType={(type: string) => {
                   setSelectedType(type);
+                  setCurrentPage(1)
                   setActiveSection(activeSection);
                 }}
               />
@@ -744,13 +895,13 @@ const LibraryHomepage = () => {
           )}
 
           {selectedType !== 'All' &&
-            activeSection !== 'folders' &&
-            ['Excel', 'PDF Format', 'Images', 'Videos'].includes(selectedType) ? (
-            <button className={styles.filter_button}>
-              {selectedType}
-              <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
-            </button>
-          ) : null}
+            activeSection !== 'folders'
+            ? (
+              <button className={styles.filter_button}>
+                {selectedType}
+                <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
+              </button>
+            ) : null}
         </div>
 
         <div className={`  ${styles.libSecHeader_right}`}>
@@ -847,20 +998,17 @@ const LibraryHomepage = () => {
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
               {role_name === TYPE_OF_USER.ADMIN && <div className='mr1'>
-                <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
-                  if (selectedCheckbox.size === sortedData.length) {
+                <CheckBox checked={selectedCheckbox.size === paginatedData.length && !loading && paginatedData.length > 0} onChange={() => {
+                  if (selectedCheckbox.size === paginatedData.length) {
                     setSelectedCheckbox(new Set())
                     setAllIds([])
                     setCheckedItems(0)
-
-
                   } else {
-                    const newSet = new Set(sortedData.map((item) => item.id))
+                    const newSet = new Set(paginatedData.map((item) => item.id))
                     setSelectedCheckbox(newSet)
                     setAllIds(Array.from(newSet))
                     setCheckedItems(newSet.size)
                   }
-
                 }} />
               </div>}
               <span className={styles.libname_heading}>
@@ -880,9 +1028,9 @@ const LibraryHomepage = () => {
           <div className={styles.filesLoader}> <MicroLoader /></div> :
 
 
-          sortedData.length > 0 ? (
+          paginatedData.length > 0 ? (
             filesView === "list" ?
-              (selectedType === 'Videos' ? sortedData.filter((item) => isVideo(item.file?.mimeType!)) : sortedData).map((data) => {
+              (selectedType === 'Videos' ? getPaginatedData(sortedData.filter((item) => isVideo(item.file?.mimeType!)), currentPage, itemsPerPage) : paginatedData).map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return (
@@ -909,7 +1057,7 @@ const LibraryHomepage = () => {
                           setVideoName(data.name!)
                           return
                         }
-                        if (isValidImage) {
+                        if (isValidImage || isAudio(data.file?.mimeType!)) {
                           setFileInfo({ name: data.name, fileType: data.file?.mimeType!, url: data["@microsoft.graph.downloadUrl"] })
                           setIsFileViewerOpen(true)
                           return
@@ -919,10 +1067,7 @@ const LibraryHomepage = () => {
                       }}>
                         <img
                           className={styles.cardImg}
-                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? image :
-                            data.file?.mimeType==="application/octet-stream"?audio:
-                            data.file?.mimeType==="audio/x-wav"?  audio:
-                            data.file?.mimeType==="audio/mpeg"?  audio: defauult}
+                          src={getFileIcon(data.file?.mimeType!)}
                           alt={`null`}
                           loading='lazy'
                         />
@@ -977,7 +1122,7 @@ const LibraryHomepage = () => {
                     setVideoName(name)
                     return
                   }
-                  if (isValidImage) {
+                  if (isValidImage || isAudio(type)) {
                     setFileInfo({ name: name, fileType: type!, url: url })
                     setIsFileViewerOpen(true)
                     return
@@ -991,10 +1136,10 @@ const LibraryHomepage = () => {
                   prev.push(id)
                   setSelectedCheckbox(new Set(prev))
                 }}
-                files={sortedData.map((item) => ({
+                files={paginatedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
-                  name: item.name.substring(0, 20),
+                  name: item.name,
                   webUrl: item.webUrl,
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,
@@ -1002,9 +1147,6 @@ const LibraryHomepage = () => {
                   mimeType: item.file?.mimeType
                 }))} />
           )
-
-
-
             : (
               <div className={` bg-white py2 ${styles.filesLoader}`}>
                 <DataNotFound />
@@ -1055,6 +1197,10 @@ const LibraryHomepage = () => {
       )}
 
       {renderContent()}
+
+
+      
+
       {
         isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
           setIsVideoModalOpen(false)
