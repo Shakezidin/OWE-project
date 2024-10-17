@@ -47,7 +47,7 @@ import useMatchMedia from '../../hooks/useMatchMedia';
 import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
 import powerpoint from '../../resources/icons/powerpoint.png'
-function getFileIcon(mimeType: string | undefined, isValidImage: boolean): string {
+function getFileIcon(mimeType: string | undefined): string {
   if (!mimeType) return defauult;
 
   switch (mimeType) {
@@ -109,7 +109,7 @@ function getFileIcon(mimeType: string | undefined, isValidImage: boolean): strin
       return powerpoint;
     
     default:
-      return isValidImage ? image : defauult;
+      return  defauult;
   }
 }
 
@@ -1071,7 +1071,7 @@ const LibraryHomepage = () => {
                       }}>
                         <img
                           className={styles.cardImg}
-                          src={getContentThumbnail(data.file?.mimeType!)}
+                          src={getFileIcon(data.file?.mimeType!)}
                           alt={`null`}
                           loading='lazy'
                         />
