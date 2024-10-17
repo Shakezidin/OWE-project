@@ -299,12 +299,6 @@ if (exportData.status > 201) {
   
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer Credit"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Credit"
@@ -322,6 +316,7 @@ if (exportData.status > 201) {
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
+          isExportingData={isExportingData}
         />
         {exportOPen && (
           <div className="export-modal">

@@ -32,6 +32,7 @@ import { TiThMenu } from 'react-icons/ti';
 import { BsGrid } from 'react-icons/bs';
 import FileTileView from '../components/FileTileView/FileTileView';
 import image from '../../../resources/icons/image.png'
+import Pagination from '../../components/pagination/Pagination';
 
 const FolderDetail = () => {
     const path = useParams()
@@ -58,7 +59,14 @@ const FolderDetail = () => {
     const [searchParams] = useSearchParams()
     const [videoName, setVideoName] = useState("")
     const [isHovered, setIsHovered] = useState<number | null>(null);
-    console.log(location.state, "location")
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10
+
+    const getPaginatedData = (page: number) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return files.slice(startIndex, endIndex);
+      };
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
         const query = searchParams.get("from")
@@ -94,91 +102,91 @@ const FolderDetail = () => {
             setIsLoading(false)
         }
     }
-
+    const totalPages = Math.ceil(files.length / itemsPerPage);
     useEffect(() => {
         if (path && microsoftGraphAccessToken) {
             getFolderChilds()
         }
     }, [path, microsoftGraphAccessToken])
 
-    
+
     function getContentThumbnail(mimeType: string | undefined): string {
         if (!mimeType) return defauult;
-      
+
         switch (mimeType) {
-          case 'application/pdf':
-            return ICONS.pdf;
+            case 'application/pdf':
+                return ICONS.pdf;
 
             case 'image/jpeg':
-                case 'image/png':
-                case 'image/gif':
-                case 'image/webp':
-                case 'image/bmp':
-                case 'image/tiff':
-                case 'image/svg+xml':
-                case 'image/x-icon':
-                case 'image/heif':
-                case 'image/heic':
-                  return image;
-      
-          case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-          case "application/vnd.ms-excel.sheet.macroEnabled.12":
-          case "application/vnd.ms-excel":
-          case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-          case "application/vnd.ms-excel.template.macroEnabled.12":
-          case "application/vnd.oasis.opendocument.spreadsheet":
-          case "text/csv":
-          case "text/tab-separated-values":
-            return ICONS.excelIcon;
-      
-          case 'video/mp4':
-            return ICONS.videoPlayerIcon;
-          case 'video/mpeg':
-          case 'video/ogg':
-          case 'video/webm':
-          case 'video/x-msvideo':
-          case 'video/quicktime':
-            return ICONS.viedoImageOne;
-      
-          case 'text/plain':
-            return textFile;
-      
-          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-          case "application/msword":
-          case 'application/vnd.ms-word.document.macroEnabled.12':
-          case 'application/vnd.openxmlformats-officedocument.wordtemplate':
-          case 'application/vnd.ms-word.template.macroEnabled.12':
-          case "application/rtf":
-          case "application/vnd.oasis.opendocument.text":
-            return wordFile;
-      
-          case "audio/x-wav":
-          case "audio/mpeg":
-          case "audio/wav":
-          case "audio/ogg":
-          case "audio/aac":
-          case "audio/flac":
-          case "audio/mp4":
-          case "audio/amr":
-          case "audio/aiff":
-          case "audio/x-ms-wma":
-          case "audio/webm":
-            return audio;
-      
-          case "application/vnd.ms-powerpoint":
-          case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-          case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
-          case "application/vnd.openxmlformats-officedocument.presentationml.template":
-          case "application/vnd.ms-powerpoint.template.macroEnabled.12":
-          case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
-          case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
-          case "application/vnd.oasis.opendocument.presentation":
-            return powerpoint;
-      
-          default:
-            return defauult;
+            case 'image/png':
+            case 'image/gif':
+            case 'image/webp':
+            case 'image/bmp':
+            case 'image/tiff':
+            case 'image/svg+xml':
+            case 'image/x-icon':
+            case 'image/heif':
+            case 'image/heic':
+                return image;
+
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            case "application/vnd.ms-excel.sheet.macroEnabled.12":
+            case "application/vnd.ms-excel":
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+            case "application/vnd.ms-excel.template.macroEnabled.12":
+            case "application/vnd.oasis.opendocument.spreadsheet":
+            case "text/csv":
+            case "text/tab-separated-values":
+                return ICONS.excelIcon;
+
+            case 'video/mp4':
+                return ICONS.videoPlayerIcon;
+            case 'video/mpeg':
+            case 'video/ogg':
+            case 'video/webm':
+            case 'video/x-msvideo':
+            case 'video/quicktime':
+                return ICONS.viedoImageOne;
+
+            case 'text/plain':
+                return textFile;
+
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            case "application/msword":
+            case 'application/vnd.ms-word.document.macroEnabled.12':
+            case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+            case 'application/vnd.ms-word.template.macroEnabled.12':
+            case "application/rtf":
+            case "application/vnd.oasis.opendocument.text":
+                return wordFile;
+
+            case "audio/x-wav":
+            case "audio/mpeg":
+            case "audio/wav":
+            case "audio/ogg":
+            case "audio/aac":
+            case "audio/flac":
+            case "audio/mp4":
+            case "audio/amr":
+            case "audio/aiff":
+            case "audio/x-ms-wma":
+            case "audio/webm":
+                return audio;
+
+            case "application/vnd.ms-powerpoint":
+            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+            case "application/vnd.openxmlformats-officedocument.presentationml.template":
+            case "application/vnd.ms-powerpoint.template.macroEnabled.12":
+            case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
+            case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
+            case "application/vnd.oasis.opendocument.presentation":
+                return powerpoint;
+
+            default:
+                return defauult;
         }
-      }
+    }
 
     const isVideo = (mimeType: string) => {
         if (
@@ -230,6 +238,8 @@ const FolderDetail = () => {
     const refetch = async () => {
         await getFolderChilds()
     }
+    const startIndex = (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = currentPage * itemsPerPage;
 
     const handleMultiDelete = async () => {
         setIsPending(true)
@@ -258,23 +268,23 @@ const FolderDetail = () => {
     };
     const isAudio = (mimeType: string): boolean => {
         switch (mimeType) {
-          case "audio/mpeg":
-          case "audio/mp3":
-          case "audio/wav":
-          case "audio/x-wav":
-          case "audio/ogg":
-          case "audio/aac":
-          case "audio/midi":
-          case "audio/x-midi":
-          case "audio/webm":
-          case "audio/flac":
-          case "audio/x-m4a":
-          case "audio/x-matroska":
-            return true;
-          default:
-            return false;
+            case "audio/mpeg":
+            case "audio/mp3":
+            case "audio/wav":
+            case "audio/x-wav":
+            case "audio/ogg":
+            case "audio/aac":
+            case "audio/midi":
+            case "audio/x-midi":
+            case "audio/webm":
+            case "audio/flac":
+            case "audio/x-m4a":
+            case "audio/x-matroska":
+                return true;
+            default:
+                return false;
         }
-      };
+    };
     const isImage = (mimeType: string) => {
         switch (mimeType) {
             case "image/jpeg":
@@ -311,10 +321,10 @@ const FolderDetail = () => {
         }
     }
 
-
+const paginatedData = getPaginatedData(currentPage);
 
     return (
-        <div className={styles.libraryContainer}>
+        <div className={` ${styles.libraryContainer}`}>
             <div className={styles.libraryHeader}>
                 <h3>Library</h3>
             </div>
@@ -377,12 +387,13 @@ const FolderDetail = () => {
                 <div className={styles.libSectionWrapper}>
 
 
+
                     {viewMode === "list" && <div className={styles.lib_Grid_Header}>
                         <div className={`${styles.grid_item} ${styles.table_name}`}>
                             <div className="flex items-center">
                                 {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
-                                    <CheckBox checked={selected.size === files.length && !!files.length} onChange={() => {
-                                        if (selected.size === files.length) {
+                                    <CheckBox checked={selected.size === paginatedData.length && !!paginatedData.length} onChange={() => {
+                                        if (selected.size === paginatedData.length) {
                                             setSelected(new Set())
                                         } else {
                                             const newChecked = new Set(files.map((item) => item.id))
@@ -403,9 +414,9 @@ const FolderDetail = () => {
                         isLoading ?
                             <div className={` bg-white py2 ${styles.filesLoader}`}> <MicroLoader /></div>
                             :
-                            files.length ?
+                            paginatedData.length ?
                                 viewMode === "list" ?
-                                    files.map((file, index) => {
+                                paginatedData.map((file, index) => {
                                         const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
                                         const isValidVideo = isVideo(file.file?.mimeType!)
                                         return <div key={file.id} className={styles.libGridItem} >
@@ -449,7 +460,7 @@ const FolderDetail = () => {
                                                                 setVideoName(file.name)
                                                                 return
                                                             }
-                                                            if (isImage(file?.file?.mimeType!)|| isAudio(file.file?.mimeType!)) {
+                                                            if (isImage(file?.file?.mimeType!) || isAudio(file.file?.mimeType!)) {
                                                                 setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
                                                                 setIsFileViewerOpen(true)
                                                                 return
@@ -460,7 +471,7 @@ const FolderDetail = () => {
                                                         }}>
 
                                                             <img
-                                                                src={ fileType}
+                                                                src={fileType}
                                                                 style={{
                                                                     width: isValidVideo ? 32 : undefined,
                                                                     height: isValidVideo ? 32 : undefined
@@ -496,8 +507,8 @@ const FolderDetail = () => {
                                         </div>
                                     })
                                     :
-                                    <div className={fileTileViewStyles.list_grid}>
-                                        {files.map((file) => {
+                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}>
+                                        {paginatedData.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
                                                 name: file.name,
@@ -563,7 +574,22 @@ const FolderDetail = () => {
                                 </div>
                     }
 
+                    {!!paginatedData.length && <div style={{ borderBottomRightRadius: 12, borderBottomLeftRadius: 12 }} className="page-heading-container bg-white" >
+                        <p className="page-heading">
+                            Showing {startIndex} - {endIndex > files.length ? files.length : endIndex}{' '}
+                            of {files.length} item
+                        </p>
 
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            paginate={(number) => setCurrentPage(number)}
+                            currentPageData={files}
+                            goToNextPage={() => setCurrentPage(prev => prev + 1)}
+                            goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+                            perPage={itemsPerPage}
+                        />
+                    </div>}
                 </div>
             }
 

@@ -46,7 +46,7 @@
   height: 285px !important;
   box-sizing: border-box;
   color: #0493ce;
-  box-shadow: 5px 5px 5px rgba(43, 42, 42, 0.3); /* Add this line */
+  box-shadow: 3px 3px 5px rgba(43, 42, 42, 0.3); /* Add this line */
 }
 
 .dropdown-item {
