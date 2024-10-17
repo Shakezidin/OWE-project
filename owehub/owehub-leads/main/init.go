@@ -168,8 +168,15 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/aurora_get_proposal",
+		"/owe-leads-service/v1/aurora_get_project",
 		apiHandler.HandleAuroraGetProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_get_proposal",
+		apiHandler.HandleAuroraGetProposalRequest,
 		true,
 		leadsRoleGroup,
 	},
@@ -179,6 +186,15 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("GET"),
 		"/owe-leads-service/v1/aurora_webhook",
 		apiHandler.HandleAuroraWebhookAction,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+
+	// aurora list modules
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_list_modules",
+		apiHandler.HandleAuroraListModulestRequest,
 		false,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},

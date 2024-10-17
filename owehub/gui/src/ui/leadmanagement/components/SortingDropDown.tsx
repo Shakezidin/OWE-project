@@ -1,6 +1,7 @@
 import React, { SetStateAction, useEffect, useRef, useState } from 'react';
 import { PiSortAscendingLight } from 'react-icons/pi';
 import './index.css';
+import classes from "./LeadDashboardTable/Dropdowns/index.module.css"
 import { CiFilter } from 'react-icons/ci';
 interface propTypes {
   onChange?: (val: number) => void;
@@ -8,7 +9,8 @@ interface propTypes {
 }
 const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all'>('all');
+  const [isSelectedValue, setSelectedValue]=useState()
+  const [isActiveX, setIsActiveX] = useState<'asc' | 'desc' | 'all'>('all');
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -42,35 +44,39 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
       </button>
 
       {isDropdownOpen && (
-        <div className="pr-dropdown">
+        
+        <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParent">
           <ul>
             <li
               onClick={() => {
-                setIsActive('all');
+                setIsActiveX('all');
                 setIsDropdownOpen(false);
                 onChange?.(-1);
               }}
-              className={isActive === 'all' ? 'active_sorting' : ''}
+              className={`${classes.selectedFilter} ${isActiveX === 'all' ?classes.active : ''}`}
+              
             >
               All
             </li>
             <li
               onClick={() => {
-                setIsActive('desc');
+                setIsActiveX('desc');
                 setIsDropdownOpen(false);
                 onChange?.(6);
               }}
-              className={isActive === 'desc' ? 'active_sorting' : ''}
+              className={`${classes.selectedFilter} ${isActiveX === 'desc' ?classes.active : ''}`}
+             
             >
               Deal Loss
             </li>
             <li
               onClick={() => {
-                setIsActive('asc');
+                setIsActiveX('asc');
                 setIsDropdownOpen(false);
                 onChange?.(5);
               }}
-              className={isActive === 'asc' ? 'active_sorting' : ''}
+              className={`${classes.selectedFilter} ${isActiveX === 'asc' ?classes.active : ''}`}
+            
             >
               Deal Won
             </li>

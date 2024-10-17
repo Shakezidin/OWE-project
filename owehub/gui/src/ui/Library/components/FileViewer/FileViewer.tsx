@@ -30,6 +30,7 @@ console.log("evenene")
         <div className='transparent-model' >
             <div className='bg-white p2 ml2 mr2' style={{maxWidth:800 ,borderRadius:12,width:"100%",minHeight:200}}>
                 <div className='flex mb2 items-center justify-between' >
+                    
                     <h4 style={{fontSize:14}} > {name} </h4>
                     <button
                         className='close-btn'

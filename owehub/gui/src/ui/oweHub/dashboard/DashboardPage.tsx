@@ -80,6 +80,7 @@ export const DashboardPage: React.FC = () => {
     setAppliedDate(selectionRange);
     setShowDatePicker(!showDatePicker);
   };
+  const [isFetched, setIsFetched] = useState(false);
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
@@ -112,20 +113,48 @@ export const DashboardPage: React.FC = () => {
     prefferedType,
   ]);
 
+  
+  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
+    newFormData?.dealer_name?.map((value: string) => ({
+      value,
+      label: value,
+    }));
+
+  const getNewFormData = async () => {
+    const tableData = {
+      tableNames: ['dealer_name'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    if (res.status > 200) {
+      return;
+    }
+    if (res.data?.dealer_name) {
+      setSelectedDealer(leaderDealer(res.data));
+      setDealerOption(leaderDealer(res.data));
+    }
+    setIsFetched(true);
+  };
+
+
   useEffect(() => {
-    (async () => {
-      const tableData = {
-        tableNames: ['dealer'],
-      };
-      const res = await postCaller(EndPoints.get_newFormData, tableData);
-      if (res.status > 201) {
-        return;
-      }
-      setDealers([...res.data.dealer]);
-      setDealer({ label: 'All', value: 'ALL' });
-      setIsOptionsFetched(true);
-    })();
+    
+      getNewFormData();
+     
   }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const tableData = {
+  //       tableNames: ['dealer'],
+  //     };
+  //     const res = await postCaller(EndPoints.get_newFormData, tableData);
+  //     if (res.status > 201) {
+  //       return;
+  //     }
+  //     setDealers([...res.data.dealer]);
+  //     setDealer({ label: 'All', value: 'ALL' });
+  //     setIsOptionsFetched(true);
+  //   })();
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -170,15 +199,22 @@ export const DashboardPage: React.FC = () => {
                 <label
                   className="date-button flex items-center"
                   onClick={handleToggleDatePicker}
-                  style={{ color: '#292929', border: "1px solid #CBCBCB", padding: "8px 16px", gap: "1rem" }}
+                  style={{ color: '#292929', border: "1px solid #CBCBCB", padding: "8px 17px", gap: "1rem" }}
                 >
                   {appliedDate
                     ? format(appliedDate, 'dd-MM-yyyy')
                     : 'Payroll Date'}
-                  <MdOutlineKeyboardArrowDown style={{width: "1.2rem", height: "1.2rem"}} />
+                  <MdOutlineKeyboardArrowDown
+                    style={{
+                      width: "1.2rem",
+                      height: "1.2rem",
+                      transform: showDatePicker ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 550ms',
+                    }}
+                  />
                 </label>
                 {showDatePicker && (
-                  <div className="calender-container dealer-calendar" style={{marginLeft: 0}}>
+                  <div className="calender-container dealer-calendar" style={{ marginLeft: 0 }}>
                     <Calendar
                       date={selectionRange || new Date()}
                       onChange={handleSelect}

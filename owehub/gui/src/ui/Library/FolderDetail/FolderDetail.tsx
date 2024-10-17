@@ -349,7 +349,8 @@ const FolderDetail = () => {
                                                             <img
                                                                 src={ICONS.folderImage}
                                                             />
-                                                            <div>
+                                                            <div className={styles.name_div}>
+                                                            <p className={styles.name_hide}>{file.name?.substring(0,125)}</p>
                                                                 <p className={styles.name}> {file.name?.substring(0,25)} {file.name?.length !==undefined && file.name?.length >= 25 ? '...' : ''}</p>
                                                                 <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                     ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
@@ -389,7 +390,9 @@ const FolderDetail = () => {
                                                                     height: isValidVideo ? 32 : undefined
                                                                 }}
                                                             />
-                                                            <div>
+                                                            <div className={styles.name_div}>
+                                                            <p className={styles.name_hide}>{file.name}</p>
+                                                                
                                                                 <p className={styles.name}>{file.name}</p>
                                                                 <p className={styles.size}>
                                                                     {(file.size > 1024 * 1024)
@@ -404,7 +407,7 @@ const FolderDetail = () => {
 
                                             <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                             <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#000' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
+                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
                                                     onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
                                                 />
                                                 {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
@@ -462,6 +465,7 @@ const FolderDetail = () => {
                                                     </div>
 
                                                     <div className={"mt2"} style={{ width: "100%" }}>
+                                                         
                                                         <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024

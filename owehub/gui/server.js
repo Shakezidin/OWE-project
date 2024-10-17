@@ -1,6 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const puppeteer = require('puppeteer');
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const fetch = require('node-fetch');
+const chromePdf = require('html-pdf-chrome');
 
 const app = express();
 const port = 5000;
@@ -35,8 +40,8 @@ function authenticateToken(req, res, next) {
 app.post('/api/create-project', async (req, res) => {
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/projects`;
 
-  console.log("tenantId",tenantId)
-  console.log("bearerToken",bearerToken)
+  console.log("tenantId", tenantId)
+  console.log("bearerToken", bearerToken)
 
   console.log('Creating project. Aurora endpoint:', auroraEndpoint);
   console.log('Request body:', JSON.stringify(req.body, null, 2));
@@ -67,7 +72,7 @@ app.post('/api/create-design', async (req, res) => {
   console.log('Request body:', JSON.stringify(req.body, null, 2));
 
   const { project_id, name, external_provider_id } = req.body.design;
-  
+
   try {
     console.log('Full request:', {
       url: auroraEndpoint,
@@ -153,10 +158,10 @@ app.get('/api/projects', async (req, res) => {
         }
       }
     );
-      res.json(response.data);
+    res.json(response.data);
   } catch (error) {
-      console.error('Error fetching projects:', error);
-      res.status(500).send('Error fetching projects');
+    console.error('Error fetching projects:', error);
+    res.status(500).send('Error fetching projects');
   }
 });
 
@@ -219,11 +224,11 @@ app.get('/api/designs/:projectId', async (req, res) => {
   }
 });
 
-// Retrieve Proposal Details
+// Add/ Edit Type -Retrieve Proposal Details
 app.get('/api/proposals/:designId', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/proposals/default`;
-  
+
   console.log('Retrieving proposal. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -244,11 +249,11 @@ app.get('/api/proposals/:designId', async (req, res) => {
   }
 });
 
-// Retrieve Web Proposal Details
+// View Retrieve Web Proposal Details
 app.get('/api/web-proposals/:designId', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/web_proposal`;
-  
+
   console.log('Retrieving web proposal. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -273,7 +278,7 @@ app.get('/api/web-proposals/:designId', async (req, res) => {
 app.post('/api/web-proposals/:designId/generate', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/web_proposal/generate_url`;
-  
+
   console.log('Generating web proposal URL. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -299,7 +304,7 @@ app.post('/api/web-proposals/:designId/generate', async (req, res) => {
 app.get('/api/designs/:designId/summary', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/summary`;
-  
+
   console.log('Retrieving design summary. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -324,7 +329,7 @@ app.get('/api/designs/:designId/summary', async (req, res) => {
 app.get('/api/designs/:designId/summary', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/summary`;
-  
+
   console.log('Retrieving design summary. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -349,7 +354,7 @@ app.get('/api/designs/:designId/summary', async (req, res) => {
 app.get('/api/designs/:designId/pricing', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/pricing`;
-  
+
   console.log('Retrieving design pricing. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -374,7 +379,7 @@ app.get('/api/designs/:designId/pricing', async (req, res) => {
 app.get('/api/designs/:designId/financings', async (req, res) => {
   const { designId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/financings`;
-  
+
   console.log('Retrieving financings pricing. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -399,7 +404,7 @@ app.get('/api/designs/:designId/financings', async (req, res) => {
 app.get('/api/designs/:designId/financings/:financingId', async (req, res) => {
   const { designId, financingId } = req.params;
   const auroraEndpoint = `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/designs/${designId}/financings/${financingId}`;
-  
+
   console.log('Retrieving specific financing. Aurora endpoint:', auroraEndpoint);
 
   try {
@@ -465,6 +470,78 @@ app.put('/api/projects/:projectId/consumption_profile', async (req, res) => {
     res.status(error.response?.status || 500).send(error.response?.data || error.message);
   }
 });
+
+app.post('/api/generate-pdf', async (req, res) => {
+  const { url } = req.body;
+
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+
+    // Wait for an additional 10 seconds after 'networkidle0'
+    await page.waitForTimeout(20000);
+
+    const pdf = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '1cm', right: '1cm', bottom: '1cm', left: '1cm' }
+    });
+
+    await browser.close();
+
+    res.contentType('application/pdf');
+    res.send(pdf);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).json({ error: 'Failed to generate PDF', details: error.message });
+  }
+});
+
+app.get('/download-pdf', async (req, res) => {
+  const fileUrl = req.query.fileUrl;
+
+  if (!fileUrl) {
+    return res.status(400).send('File URL is required');
+  }
+
+  const browser = await puppeteer.launch({ headless: true });
+
+  try {
+    const page = await browser.newPage();
+    const content = await page.content(); // Get the HTML content of the page
+    console.log(content); // Log the content to see if it’s loading correctly
+
+    // Navigate to the URL and wait for the page to load fully
+    await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+
+    // Wait for the main content to load
+    await page.waitForSelector('#app', { timeout: 30000 });
+
+    // Generate PDF
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+
+    // Check if pdfBuffer is empty
+    if (!pdfBuffer || pdfBuffer.length === 0) {
+      throw new Error('PDF buffer is empty');
+    }
+
+    // Set headers and send the PDF
+    res.setHeader('Content-Disposition', 'attachment; filename=proposal.pdf');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).send('Failed to generate PDF');
+  } finally {
+    await browser.close();
+  }
+});
+
+
 
 
 

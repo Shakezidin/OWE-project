@@ -35,17 +35,78 @@ export const getLeadById = createAsyncThunk(
   }
 );
 
+
 export const createProposal = createAsyncThunk(
   'proposal/aurora_create_proposal',
-  async (params: any, { rejectWithValue, dispatch }) => {
+  async (params: any, { rejectWithValue }) => {
     try {
       const data = await postCaller('aurora_create_proposal', params, true);
       if (data.status > 201) {
-        return rejectWithValue((data as Error).message);
+        return rejectWithValue(data.message || 'Failed to create proposal');
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      return rejectWithValue((error as Error).message || 'Failed to create proposal');
+    }
+  }
+);
+
+export const getProjectByLeadId = createAsyncThunk(
+  'project/aurora_get_project',
+  async (leadId: number, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_get_project', { leads_id: leadId }, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to fetch project data');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to fetch project data');
+    }
+  }
+);
+
+export const auroraCreateProject = createAsyncThunk(
+  'project/aurora_create_project',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_create_project', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to create project');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to create project');
+    }
+  }
+);
+
+export const auroraCreateDesign = createAsyncThunk(
+  'design/aurora_create_design',
+  async (params: { leads_id: number }, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_create_design', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to create design');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to create design');
+    }
+  }
+);
+
+export const auroraCreateProposal = createAsyncThunk(
+  'proposal/aurora_create_proposal',
+  async (params: { leads_id: number }, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_create_proposal', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to create proposal');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to create proposal');
     }
   }
 );
