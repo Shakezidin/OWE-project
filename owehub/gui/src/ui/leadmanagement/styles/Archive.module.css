@@ -57,6 +57,7 @@
 
 .cardContent {
   padding: 16px;
+  min-height: 70vh;
 }
 
 .totalLeads {
@@ -87,6 +88,7 @@
 .legendText {
   font-size: 10.71px;
 }
+
 .monthSelect {
   background-color: #377cf6;
   color: white;
@@ -264,7 +266,7 @@ table tbody tr:hover {
 
 .history_list_inner {
   display: grid !important;
-  grid-template-columns:auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr) auto auto !important;
+  grid-template-columns: auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr) auto auto !important;
 
 
   align-items: center !important;
@@ -331,6 +333,7 @@ input[type='checkbox']:checked {
   justify-content: space-between;
   align-items: center;
 }
+
 .cardHeaderSecond {
   padding: 10.8px 16px 16px 16px;
   font-weight: bold;
@@ -408,6 +411,7 @@ input[type='checkbox']:checked {
   background: #377cf630;
   border-radius: 5px;
 }
+
 .ConditionalButtons {
   display: flex;
   gap: 9px;
@@ -436,6 +440,7 @@ input[type='checkbox']:checked {
   color: white;
   transition: all 0.3s ease;
 }
+
 .archieveButtonX:hover {
   transform: scale(1.05);
 }
@@ -454,6 +459,7 @@ input[type='checkbox']:checked {
   text-align: center;
   transition: all 0.3s ease;
 }
+
 .archieveButtonA:hover {
   transform: scale(1.05);
   background-color: #013793;
@@ -517,6 +523,8 @@ input[type='checkbox']:checked {
   justify-content: space-between;
   align-items: center;
   height: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .chevron_down {
@@ -629,6 +637,7 @@ input[type='checkbox']:checked {
     align-items: center !important;
     border-radius: 5px;
   }
+
   .BOXDelete {
     display: flex;
     justify-content: center;
@@ -675,6 +684,7 @@ input[type='checkbox']:checked {
     color: white;
     transition: all 0.3s ease;
   }
+
   .archieveButtonX:hover {
     transform: scale(1.05);
   }
@@ -693,6 +703,7 @@ input[type='checkbox']:checked {
     transition: all 0.3s ease;
     /* all: unset; */
   }
+
   .archieveButtonA:hover {
     transform: scale(1.05);
   }
@@ -744,6 +755,7 @@ input[type='checkbox']:checked {
     color: transparent;
     background-color: #757575;
   }
+
   .CrossICONBTNHover {
     all: unset;
     margin-right: 9px !important;
@@ -759,9 +771,10 @@ input[type='checkbox']:checked {
     align-items: center;
   }
 }
+
 @media only screen and (min-width: 668px) and (max-width: 768px) {
-  .history_list_inner {
-  }
+  .history_list_inner {}
+
   .UnArchiveButton {
     padding: 0px 10px 0px 10px;
     border-radius: 26px;
@@ -778,6 +791,7 @@ input[type='checkbox']:checked {
     transform: scale(1.05);
   }
 }
+
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
   .history_list_inner_Tablet_View {
     display: grid;
@@ -795,6 +809,7 @@ input[type='checkbox']:checked {
     justify-self: center;
     align-self: center;
   }
+
   .UnArchiveButton {
     background-color: #377cf6;
     color: white;
@@ -859,6 +874,8 @@ input[type='checkbox']:checked {
     flex-direction: row !important;
     justify-content: space-between !important;
     gap: 50px !important;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .leftitem,
@@ -1076,7 +1093,8 @@ input[type='checkbox']:checked {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.infoIcon:hover{
+
+.infoIcon:hover {
   background-color: #ddebff;
   transform: scale(1.06);
 }

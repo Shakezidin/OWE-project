@@ -361,7 +361,7 @@ const LeadManagementDashboard = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
@@ -387,6 +387,10 @@ const LeadManagementDashboard = () => {
 
   const goToPrevPage = () => {
     setPage(page - 1);
+  };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
   };
 
   const toggleCalendar = () => {
@@ -673,7 +677,7 @@ const LeadManagementDashboard = () => {
         is_archived: archive,
         progress_filter: selectedValue ? selectedValue : "ALL",
         search: searchTerm,
-        page_size: 10,
+        page_size: itemsPerPage,
         page_number: archive ? 1 : page,
       };
 
@@ -1620,6 +1624,7 @@ const LeadManagementDashboard = () => {
                   goToNextPage={goToNextPage}
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
                 />
               </div>
             </div>

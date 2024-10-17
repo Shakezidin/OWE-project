@@ -38,7 +38,7 @@ const FolderDetail = () => {
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [videoUrl, setVideoUrl] = useState("")
-    const [viewMode, setViewMode] = useState<"list" | "tiles">("tiles")
+    const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
     const [fileInfo, setFileInfo] = useState({
         name: "",
@@ -67,6 +67,9 @@ const FolderDetail = () => {
 
     };
     const navigate = useNavigate()
+    const saveFileTypeView = (type: string) => {
+        localStorage.setItem('fileTypeView', type)
+    }
     const getFolderChilds = async () => {
         try {
             setIsLoading(true)
@@ -286,10 +289,16 @@ const FolderDetail = () => {
                         </div>
 
                         <div className={styles.libSecHeader_right}>
-                            <button onClick={() => setViewMode("list")} className={` ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+                            <button onClick={() => {
+                                setViewMode("list")
+                                saveFileTypeView("list")
+                            }} className={` ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
                                 <TiThMenu />
                             </button>
-                            <button onClick={() => setViewMode("tiles")} className={` ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+                            <button onClick={() => {
+                                setViewMode("tiles")
+                                saveFileTypeView("tiles")
+                            }} className={` ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
                                 <BsGrid />
                             </button>
                             {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
@@ -350,8 +359,8 @@ const FolderDetail = () => {
                                                                 src={ICONS.folderImage}
                                                             />
                                                             <div className={styles.name_div}>
-                                                            <p className={styles.name_hide}>{file.name?.substring(0,125)}</p>
-                                                                <p className={styles.name}> {file.name?.substring(0,25)} {file.name?.length !==undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
+                                                                <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
                                                                 <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                     ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
                                                                     : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
@@ -391,8 +400,8 @@ const FolderDetail = () => {
                                                                 }}
                                                             />
                                                             <div className={styles.name_div}>
-                                                            <p className={styles.name_hide}>{file.name}</p>
-                                                                
+                                                                <p className={styles.name_hide}>{file.name}</p>
+
                                                                 <p className={styles.name}>{file.name}</p>
                                                                 <p className={styles.size}>
                                                                     {(file.size > 1024 * 1024)
@@ -465,7 +474,7 @@ const FolderDetail = () => {
                                                     </div>
 
                                                     <div className={"mt2"} style={{ width: "100%" }}>
-                                                         
+
                                                         <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024

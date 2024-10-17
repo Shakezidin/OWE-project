@@ -232,10 +232,10 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 	//* logic to delte users from podio
 
-	err, _ = DeletePodioUsers(userDetailsResult)
-	if err != nil {
-		log.FuncInfoTrace(0, "error deleting users from podio; err: %v", err)
-	}
+	// err, _ = DeletePodioUsers(userDetailsResult)
+	// if err != nil {
+	// 	log.FuncInfoTrace(0, "error deleting users from podio; err: %v", err)
+	// }
 
 	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v ", rowsAffected, deleteUsersReq.UserCodes)
 	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) from OweHub app deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)

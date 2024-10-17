@@ -73,6 +73,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
       setSelectedType('');
+    } else if (selectedType === 'Appointment Not Required') {
+      handleAppNotReq();
+      setSelectedType('');
     }
   }, [selectedType])
 
@@ -85,6 +88,30 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
         {
           leads_id: leadId,
           status_id: 5,
+        },
+        true
+      );
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setRefresh((prev) => prev + 1);
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  const handleAppNotReq = async () => {
+    setLoad(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          is_appointment_required: false
         },
         true
       );
@@ -134,6 +161,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
       }
     }
   };
+
+  console.log(selectedType, "selectedType shows")
 
 
   return (
