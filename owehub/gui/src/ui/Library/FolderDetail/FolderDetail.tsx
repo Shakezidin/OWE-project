@@ -17,7 +17,7 @@ import type { IFiles } from './Types';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { ICONS } from '../../../resources/icons/Icons';
 import DeleteFileModal from '../Modals/DeleteFileModal';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import DataNotFound from '../../components/loader/DataNotFound';
 import NewFile from '../Modals/NewFile';
 import fileTileViewStyles from '../components/FilesTileViewList/index.module.css';
@@ -66,7 +66,7 @@ const FolderDetail = () => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return files.slice(startIndex, endIndex);
-      };
+    };
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
         const query = searchParams.get("from")
@@ -321,12 +321,12 @@ const FolderDetail = () => {
         }
     }
 
-const paginatedData = getPaginatedData(currentPage);
+    const paginatedData = getPaginatedData(currentPage);
 
     return (
         <div className={` ${styles.libraryContainer}`}>
             <div className={styles.libraryHeader}>
-        
+
             </div>
             {
                 selected.size ?
@@ -416,7 +416,7 @@ const paginatedData = getPaginatedData(currentPage);
                             :
                             paginatedData.length ?
                                 viewMode === "list" ?
-                                paginatedData.map((file, index) => {
+                                    paginatedData.map((file, index) => {
                                         const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
                                         const isValidVideo = isVideo(file.file?.mimeType!)
                                         return <div key={file.id} className={styles.libGridItem} >
@@ -507,7 +507,7 @@ const paginatedData = getPaginatedData(currentPage);
                                         </div>
                                     })
                                     :
-                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 ,        minHeight: '70vh',}}>
+                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0, minHeight: '70vh', }}>
                                         {paginatedData.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
@@ -517,7 +517,11 @@ const paginatedData = getPaginatedData(currentPage);
                                                 "@microsoft.graph.downloadUrl": file["@microsoft.graph.downloadUrl"],
                                                 mimeType: file.file?.mimeType,
                                                 createdDateTime: `${file.createdDateTime}`
-                                            }} onDelete={() => setMultiDeletePopup(true)} onFilePreview={onPreview} selected={selected} onCheck={(id) => handleCheckboxChange(id)} key={file.id} /> :
+                                            }} onDelete={() => {
+                                                setIsDeleteModalVisible(true)
+                                                setSelectedDeleteId(file.id)
+
+                                            }} onFilePreview={onPreview} selected={selected} onCheck={(id) => handleCheckboxChange(id)} key={file.id} /> :
                                                 <div
                                                     style={{ cursor: 'pointer' }}
                                                     className={"flex flex-column items-center justify-center"}
