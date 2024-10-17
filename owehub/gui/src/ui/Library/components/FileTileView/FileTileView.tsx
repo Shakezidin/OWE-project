@@ -124,10 +124,10 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "folder":
         return folderImage
 
-        case "application/octet-stream":
-          case "audio/x-wav":
-           case "audio/mpeg":
-            return audio;
+      case "application/octet-stream":
+      case "audio/x-wav":
+      case "audio/mpeg":
+        return audio;
 
       case "text/plain":
         return text
@@ -136,36 +136,40 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
 
     }
   };
- 
+
   return (
     <div className='bg-white'>
-      <div className={` relative ${styles.thumbnail_wrapper}`}>
+      <div style={{ cursor: "pointer" }} className={` relative ${styles.thumbnail_wrapper}`} onClick={() => {
+        onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
+      }}>
         <div className={styles.avatar_circle}>
           {file?.name?.[0]}
         </div>
-        <img style={{ cursor: "pointer" }} onClick={() => {
-          onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
-        }} src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
-        {role_name === TYPE_OF_USER.ADMIN && <div className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
+        <img src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
+        {role_name === TYPE_OF_USER.ADMIN && <div onClick={(e) => {
+          e.stopPropagation()
+        }} className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
           <CheckBox checked={selected.has(file?.id!)} onChange={() => { onCheck(file?.id!) }} />
         </div>}
       </div>
 
       <div className={styles.avatar_name_div}>
-     
+
         <div className="flex items-center justify-between mt2">
-          
+
           <div className={styles.avatar_name_conatiner}>
-          <h4 className={styles.card_title_hide}> {file?.name}</h4>
-          <h4  className={styles.card_title}> {file?.name} </h4>
-          </div>        
+            <h4 className={styles.card_title_hide}> {file?.name}</h4>
+            <h4  className={styles.card_title} onClick={() => {
+              onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
+            }}> {file?.name} </h4>
+          </div>
 
           <div className="flex items-center">
             {role_name === TYPE_OF_USER.ADMIN && <span onClick={() => onDelete(file?.id!)} className={styles.card_btn}>
-              <GoTrash   size={14} />
+              <GoTrash size={14} />
             </span>}
             <span className={styles.card_btn}>
-              <LuDownload   size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
+              <LuDownload size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
             </span>
           </div>
         </div>
