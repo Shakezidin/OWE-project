@@ -15,12 +15,12 @@ interface IFolder {
 interface IProp {
     folders?: IFolder[]
     onDelete?: (id: string) => void,
-    handleCheckboxChange:(set:Set<string>)=>void
-    selected:Set<string>
-    setSelected:React.Dispatch<React.SetStateAction<Set<string>>>
+    handleCheckboxChange: (set: Set<string>) => void
+    selected: Set<string>
+    setSelected: React.Dispatch<React.SetStateAction<Set<string>>>
 }
-const FolderListView = ({ folders, onDelete,handleCheckboxChange,selected,setSelected }: IProp) => {
-const {role_name} = useAppSelector(state => state.auth)
+const FolderListView = ({ folders, onDelete, handleCheckboxChange, selected, setSelected }: IProp) => {
+    const { role_name } = useAppSelector(state => state.auth)
     const onCheck = (id: string) => {
         const prev = new Set(Array.from(selected))
         if (selected.has(id)) {
@@ -33,10 +33,10 @@ const {role_name} = useAppSelector(state => state.auth)
     }
     return (
         <div className={sharedStyles.libSectionWrapper}>
-            <div className={sharedStyles.lib_Grid_Header}>
+            <div className={sharedStyles.lib_Grid_Header} style={{ gridTemplateColumns: role_name !== TYPE_OF_USER.ADMIN ? "80% 20%" : undefined }}>
                 <div className={`${sharedStyles.grid_item} ${sharedStyles.table_name}`}>
                     <div className="flex items-center">
-                      {role_name===TYPE_OF_USER.ADMIN && <div className='mr1'>
+                        {role_name === TYPE_OF_USER.ADMIN && <div className='mr1'>
                             <CheckBox checked={selected.size === folders?.length && folders?.length > 0} onChange={() => {
                                 if (selected.size === folders?.length) {
                                     setSelected(new Set())
@@ -49,9 +49,9 @@ const {role_name} = useAppSelector(state => state.auth)
                             }} />
                         </div>}
                         <span
-                          style={{
-                            marginLeft:"10px"
-                        }}                        
+                            style={{
+                                marginLeft: "10px"
+                            }}
                         >
                             Name
                         </span>
@@ -59,7 +59,7 @@ const {role_name} = useAppSelector(state => state.auth)
                 </div>
 
                 <div className={`${sharedStyles.sm_hide} ${sharedStyles.grid_item}`}>Uploaded Date</div>
-                <div className={sharedStyles.grid_item}>Actions</div>
+                {role_name === TYPE_OF_USER.ADMIN && <div className={sharedStyles.grid_item}>Actions</div>}
             </div>
             {
                 folders?.length ? folders?.map((folder) => {
