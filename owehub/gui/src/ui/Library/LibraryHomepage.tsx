@@ -48,12 +48,26 @@ import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
 import powerpoint from '../../resources/icons/powerpoint.png'
 import Pagination from '../components/pagination/Pagination';
+
 function getFileIcon(mimeType: string | undefined): string {
   if (!mimeType) return defauult;
 
   switch (mimeType) {
     case 'application/pdf':
       return ICONS.pdf;
+
+
+    case 'image/jpeg':
+      case 'image/png':
+      case 'image/gif':
+      case 'image/webp':
+      case 'image/bmp':
+      case 'image/tiff':
+      case 'image/svg+xml':
+      case 'image/x-icon':
+      case 'image/heif':
+      case 'image/heic':
+        return image;
 
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
     case "application/vnd.ms-excel.sheet.macroEnabled.12":

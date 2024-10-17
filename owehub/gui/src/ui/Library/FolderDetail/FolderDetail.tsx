@@ -31,7 +31,7 @@ import { FaXmark } from 'react-icons/fa6';
 import { TiThMenu } from 'react-icons/ti';
 import { BsGrid } from 'react-icons/bs';
 import FileTileView from '../components/FileTileView/FileTileView';
-
+import image from '../../../resources/icons/image.png'
 
 const FolderDetail = () => {
     const path = useParams()
@@ -108,6 +108,18 @@ const FolderDetail = () => {
         switch (mimeType) {
           case 'application/pdf':
             return ICONS.pdf;
+
+            case 'image/jpeg':
+                case 'image/png':
+                case 'image/gif':
+                case 'image/webp':
+                case 'image/bmp':
+                case 'image/tiff':
+                case 'image/svg+xml':
+                case 'image/x-icon':
+                case 'image/heif':
+                case 'image/heic':
+                  return image;
       
           case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
           case "application/vnd.ms-excel.sheet.macroEnabled.12":
@@ -446,7 +458,7 @@ const FolderDetail = () => {
                                                         }}>
 
                                                             <img
-                                                                src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
+                                                                src={ fileType}
                                                                 style={{
                                                                     width: isValidVideo ? 32 : undefined,
                                                                     height: isValidVideo ? 32 : undefined
