@@ -24,7 +24,9 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import useAuth from '../../hooks/useAuth';
 import Profile from './Modals/ProfileInfo';
 
-
+interface PendingState {
+  [key: number]: boolean;
+}
 
 
 
@@ -206,10 +208,10 @@ const ArchivedPages = () => {
     // setPending2(false);
   };
 
-  const [pending3, setPending3] = useState(false);
+  const [pending3, setPending3] = useState<PendingState>({});
 
   const handleUnArchiveSelected = async (leadId: number) => {
-    setPending3(true);
+    setPending3((prevState: PendingState) => ({ ...prevState, [leadId]: true }));
     try {
       const response = await postCaller(
         'toggle_archive',
@@ -221,15 +223,17 @@ const ArchivedPages = () => {
       );
       if (response.status === 200) {
         setActiveIndex((prev) => prev + 1);
-        toast.success('Leads UnArchieved successfully');
-        setSelectedLeads([]);
+        toast.success('Lead UnArchived successfully');
+        setSelectedLeads((prevSelectedLeads) =>
+          prevSelectedLeads.filter((id) => id !== leadId)
+        );
       } else {
         toast.warn(response.message);
       }
     } catch (error) {
-      console.error('Error deleting leads:', error);
+      console.error('Error unarchiving lead:', error);
     }
-    setPending3(false);
+    setPending3((prevState: PendingState) => ({ ...prevState, [leadId]: false }));
   };
   const [isArcOpen, setIsArcOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -238,7 +242,7 @@ const ArchivedPages = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
 
   const handleArcClose = () => {
     setIsArcOpen(false);
@@ -254,6 +258,10 @@ const ArchivedPages = () => {
 
   const goToPrevPage = () => {
     setPage(page - 1);
+  };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
   };
 
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -272,13 +280,13 @@ const ArchivedPages = () => {
       const data = {
         "progress_filter": "ALL",
         "is_archived": true,
-        page_size: 10,
+        page_size: itemsPerPage,
         page_number: page,
       };
 
       dispatch(getLeads(data));
     }
-  }, [isAuthenticated, dispatch, page, activeIndex]);
+  }, [isAuthenticated, itemsPerPage, dispatch, page, activeIndex]);
 
   const navigate = useNavigate();
 
@@ -469,13 +477,13 @@ const ArchivedPages = () => {
                                 }}
                                 disabled={selectedLeads.length > 1}
                                 style={{
-                                  pointerEvents: pending3 ? 'none' : 'auto',
-                                  opacity: pending3 ? 0.6 : 1,
-                                  cursor: pending3 ? 'not-allowed' : 'pointer',
+                                  pointerEvents: pending3[lead.leads_id] ? 'none' : 'auto',
+                                  opacity: pending3[lead.leads_id] ? 0.6 : 1,
+                                  cursor: pending3[lead.leads_id] ? 'not-allowed' : 'pointer',
                                 }}
                               >
-                                {/* {pending3 ? 'Unarchiving...' : 'Unarchive'} */}
-                                Unarchive</button>
+                                {pending3[lead.leads_id] ? 'Unarchiving...' : 'Unarchive'}
+                              </button>
                             </div>
                           )}
                           {isMobile || isTablet ? (
@@ -575,6 +583,7 @@ const ArchivedPages = () => {
                   goToNextPage={goToNextPage}
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
                 />
               </div>
             </div>

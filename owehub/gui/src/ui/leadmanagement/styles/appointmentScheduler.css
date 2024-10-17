@@ -121,6 +121,18 @@
 .sendAppointmentBtn button:hover {
   background-color: #2e69d0;
 }
+
+.sendAppointmentBtnDisabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.sendAppointmentBtnDisabled button {
+  background-color: #bfbfbf;
+  color: #80848B;
+  cursor: not-allowed;
+}
+
 .react-datepicker__day:hover {
   background-color: #e6f2ff;
   border-radius: 50%;
