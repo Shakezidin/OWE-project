@@ -110,10 +110,10 @@ function VideosView({ videoData, onClick, }: VideosViewProps) {
 
           <div className={styles.folderContent_wrapper}>
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', maxWidth:'280px'}}>
-            <div className={styles.videosview_name_div}>
-            <div className={styles.videosview_name_hide}>{Video.name.substring(0, 100)}</div>
+          
+
             <div className={styles.videosview_name}>{Video.name.substring(0, 15)} {parseInt(Video.name) >= 16 ? '...' : ''}</div>
-            </div>
+           
             <div className={styles.vidIcons}>
 
             <RiDeleteBinLine
