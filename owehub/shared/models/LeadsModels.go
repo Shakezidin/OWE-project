@@ -9,12 +9,14 @@ package models
 import "time"
 
 type GetLeadsRequest struct {
-	LeadStatus string `json:"status"`
-	IsArchived bool   `json:"is_archived"`
-	PageNumber int    `json:"page_number"`
-	PageSize   int    `json:"page_size"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
+	LeadStatus     string `json:"status"`
+	Search         string `json:"search"`
+	ProgressFilter string `json:"progress_filter"`
+	IsArchived     bool   `json:"is_archived"`
+	PageNumber     int    `json:"page_number"`
+	PageSize       int    `json:"page_size"`
+	StartDate      string `json:"start_date"`
+	EndDate        string `json:"end_date"`
 }
 
 type GetLeadsData struct {
@@ -25,7 +27,6 @@ type GetLeadsData struct {
 	EmailID                string     `json:"email_id"`
 	PhoneNumber            string     `json:"phone_number"`
 	StreetAddress          string     `json:"street_address"`
-	ActionNeededMessage    string     `json:"action_needed_message"`
 	AppointmentStatusLabel string     `json:"appointment_status_label"`
 	AppointmentStatusDate  *time.Time `json:"appointment_status_date"`
 	WonLostLabel           string     `json:"won_lost_label"`
@@ -33,6 +34,8 @@ type GetLeadsData struct {
 	FinanceCompany         string     `json:"finance_company"`
 	FinanceType            string     `json:"finance_type"`
 	QCAudit                string     `json:"qc_audit"`
+	ProposalID             string     `json:"proposal_id"`
+	ProposalStatus         string     `json:"proposal_status"`
 }
 
 // This struct is for deleting Leads

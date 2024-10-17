@@ -235,7 +235,7 @@ const MyMapComponent: React.FC = () => {
     }
   }, [createRePayData.state]);
 
-  console.log(createRePayData.state, 'all');
+  
 
   // Function to calculate the distance between two points in miles
   const calculateDistanceInMiles = (

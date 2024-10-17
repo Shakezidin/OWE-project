@@ -7,12 +7,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { useAppSelector } from '../../../../redux/hooks';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
   sortOption: 'none' | 'name' | 'date' | 'size';
   checkedFolders: string[];
   folderData: FileOrFolder[];
+  loading: boolean;
 }
 
 function FolderView({
@@ -20,6 +22,7 @@ function FolderView({
   sortOption,
   checkedFolders,
   folderData,
+  loading,
 }: FolderViewProps) {
   const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -53,23 +56,33 @@ function FolderView({
 
   return (
     <div className={styles.folderMain_wrapper}>
-      {myFolderData.length > 0 ? myFolderData.map((folder, index) => (
+      {loading ? (
+        <div className={styles.filesLoader}>
+          <MicroLoader />
+        </div>
+      ) : myFolderData.length > 0 ? myFolderData.map((folder, index) => (
         <div
           style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
-          onMouseEnter={() => setHoveredIndex(folder.id)}
-          onMouseLeave={() => setHoveredIndex(null)}
+
           onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
             {/* <p className={styles.createdBy}>Created by</p>
             <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
-          <div className={styles.folderIcon_wrapper}>
-             <div className={styles.charDiv}>{folder.name.charAt(0)}</div> 
+          <div className={styles.folderIcon_wrapper}
+            onMouseEnter={() => setHoveredIndex(folder.id)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
             <img src={ICONS.folderImage} alt="" />
-            <div className={styles.checkboxWrapper}>
+            <div className={styles.checkboxWrapper} onClick={(e) => {
+              e.stopPropagation()
+            }} onDoubleClick={(e) => {
+              e.stopPropagation()
+            }}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
                 className={`${styles.folderInput} ${checkedFolders.includes(folder.id) || hoveredIndex === folder.id
@@ -89,6 +102,7 @@ function FolderView({
           </div>
 
           <div className={styles.folderContent_wrapper}>
+            <div className={styles.folder_name_hide}>{folder.name.substring(0, 25)}</div>
             <div className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
             <div className={styles.folderInfo_wrapper}>
               <div className={styles.foldersize}> {folder.size > 1024 * 1024
@@ -98,11 +112,11 @@ function FolderView({
             </div>
           </div>
         </div>
-      )) : <div style={{ width: '100%' }}>
+      )) : (<div style={{ width: '100%' }}>
         <div className={`bg-white py2 ${styles.filesLoader}`}>
           <DataNotFound />
         </div>
-      </div>}
+      </div>)}
     </div>
   );
 }

@@ -218,7 +218,7 @@ func ExtractKeys(m map[string]bool) []string {
 func RetrieveDealerIDByEmail(email string) (int64, string, error) {
 	var dealerID int64
 	var dealerName string
-	query := fmt.Sprintf("SELECT d.item_id as id, d.sales_partner_name as dealer_name FROM user_details u JOIN sales_partner_dbhub_schema d ON u.partner_id = d.item_id WHERE u.email_id = '%v';", email)
+	query := fmt.Sprintf("SELECT d.partner_id as id, d.sales_partner_name as dealer_name FROM user_details u JOIN sales_partner_dbhub_schema d ON u.partner_id = d.partner_id WHERE u.email_id = '%v';", email)
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil || len(data) <= 0 {

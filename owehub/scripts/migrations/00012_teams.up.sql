@@ -67,4 +67,3 @@ BEGIN
         END LOOP;
 END;
 $$ LANGUAGE plpgsql;
-

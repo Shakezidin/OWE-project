@@ -23,31 +23,24 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-
-// Define valid character regex based on the length of inputValue
-const validCharacters = inputValue.length === 1 ? /^[a-zA-Z0-9]*$/ : /^[a-zA-Z0-9. _-]*$/;
-
-// Check if the first character is valid and not a space
-if (inputValue.length > 0 && (inputValue.charAt(0) === ' ' || !validCharacters.test(inputValue.charAt(0)))) {
-  return; // Exit early if the first character is a space or invalid
-}
-
-// Check for more than 5 continuous spaces
-if (inputValue.split(' ').some(space => space.length === 0 && space.length > 5)) {
-  return; // Exit early if there are more than 5 continuous spaces
-}
-
-// Check if the last character is valid
-if (!validCharacters.test(inputValue.slice(-1))) {
-  return; // Exit early without updating searchValue
-}
-for(let i=0;i<inputValue.length;i++)
-  {
-    if(!validCharacters.test(inputValue.slice(i)))
-      return;
-  }
-    setFolderName(event.target.value);
+    const inputValue = event.target.value // Remove trailing spaces
+    setError('');
+ 
+    
+    const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+   
+ 
+   
+    if (!validCharacters.test(inputValue)) {
+      return; 
+    }
+ 
+   
+    if (/\s{2,}/.test(inputValue)) {
+      return; 
+    }
+ 
+    setFolderName(inputValue);
   };
 
 
@@ -62,7 +55,7 @@ for(let i=0;i<inputValue.length;i++)
         ? `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${uploadPath}:/children`
         : `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children`;
       const response = await axios.post(url, {
-        "name": folderName,
+        "name": folderName.trim(),
         "folder": {},
         "@microsoft.graph.conflictBehavior": "fail"
       }, {
@@ -107,7 +100,7 @@ for(let i=0;i<inputValue.length;i++)
                 />
               </div>
               <div className={classes.success_hrline}></div>
-
+            <div  style={{ minHeight: 108 }} >
               <div className={classes.succicon}>
                 <input
                   type="text"
@@ -118,10 +111,13 @@ for(let i=0;i<inputValue.length;i++)
                   maxLength={25}
                 ></input>
               </div>
-              {error && <div className='mx-auto' style={{ maxWidth: 548 }}>
+              {error && <div className='mx-auto' style={{ maxWidth: 548, display: folderName.length >= 1? 'none' : 'block' }} >
 
-                <span className="error"> {error} </span>
+                <span 
+                 className={`${classes.error} error`}
+                > {error} </span>
               </div>}
+            </div>   
             </div>
             <div className={classes.survey_button}>
               <button disabled={isPending} id="otherButtonId" className={classes.other} onClick={createFolder}>

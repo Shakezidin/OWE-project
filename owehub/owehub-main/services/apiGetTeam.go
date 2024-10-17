@@ -101,7 +101,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 JOIN
 				 teams t ON tm.team_id = t.team_id
 		 JOIN
-				 sales_partner_dbhub_schema sp ON t.partner_id = sp.item_id
+				 sales_partner_dbhub_schema sp ON t.partner_id = sp.partner_id
 		 WHERE
 				 tm.team_id = $1
 	 `

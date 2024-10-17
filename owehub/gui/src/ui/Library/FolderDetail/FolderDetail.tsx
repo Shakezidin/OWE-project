@@ -6,6 +6,11 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { Link, useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import tileViewStyles from '../components/FileTileView/index.module.css';
+import defauult from '../assetss/default.svg';
+import audio from '../../../resources/icons/audioFile.svg'
+import powerpoint from '../../../resources/icons/audioFile.svg'
+import textFile from '../assetss/textFile.svg';
+import wordFile from '../assetss/wordFile.svg';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import type { IFiles } from './Types';
@@ -26,7 +31,7 @@ import { FaXmark } from 'react-icons/fa6';
 import { TiThMenu } from 'react-icons/ti';
 import { BsGrid } from 'react-icons/bs';
 import FileTileView from '../components/FileTileView/FileTileView';
-
+import image from '../../../resources/icons/image.png'
 
 const FolderDetail = () => {
     const path = useParams()
@@ -38,7 +43,7 @@ const FolderDetail = () => {
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [videoUrl, setVideoUrl] = useState("")
-    const [viewMode, setViewMode] = useState<"list" | "tiles">("tiles")
+    const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
     const [fileInfo, setFileInfo] = useState({
         name: "",
@@ -52,7 +57,7 @@ const FolderDetail = () => {
     const location = useLocation();
     const [searchParams] = useSearchParams()
     const [videoName, setVideoName] = useState("")
-    const [isHovered,setIsHovered]=useState<number | null>(null);
+    const [isHovered, setIsHovered] = useState<number | null>(null);
     console.log(location.state, "location")
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
@@ -67,6 +72,9 @@ const FolderDetail = () => {
 
     };
     const navigate = useNavigate()
+    const saveFileTypeView = (type: string) => {
+        localStorage.setItem('fileTypeView', type)
+    }
     const getFolderChilds = async () => {
         try {
             setIsLoading(true)
@@ -93,44 +101,84 @@ const FolderDetail = () => {
         }
     }, [path, microsoftGraphAccessToken])
 
-    const getContentThumbnail = (type: string) => {
-        switch (type) {
-            case "image/jpeg":
-            case "image/png":
-            case "image/jpg":
-            case "image/gif":
-            case "image/webp":
-            case "image/bmp":
-            case "image/tiff":
-            case "image/svg+xml":
-            case "image/x-icon":
-            case "image/heif":
-            case "image/heic":
-                return "image";
+    
+    function getContentThumbnail(mimeType: string | undefined): string {
+        if (!mimeType) return defauult;
+      
+        switch (mimeType) {
+          case 'application/pdf':
+            return ICONS.pdf;
 
-            case "application/pdf":
-                return ICONS.pdf;
-
-            case "application/vnd.ms-excel":
-            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-            case "application/vnd.ms-excel.sheet.macroEnabled.12":
-                return ICONS.excelIcon;
-
-            case "video/mp4":
-            case "video/mpeg":
-            case "video/ogg":
-            case "video/webm":
-            case "video/x-msvideo":
-            case "video/quicktime":
-                return ICONS.videoPlayerIcon;
-
-            case "folder":
-                return ICONS.folderImage;
-
-
+            case 'image/jpeg':
+                case 'image/png':
+                case 'image/gif':
+                case 'image/webp':
+                case 'image/bmp':
+                case 'image/tiff':
+                case 'image/svg+xml':
+                case 'image/x-icon':
+                case 'image/heif':
+                case 'image/heic':
+                  return image;
+      
+          case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+          case "application/vnd.ms-excel.sheet.macroEnabled.12":
+          case "application/vnd.ms-excel":
+          case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+          case "application/vnd.ms-excel.template.macroEnabled.12":
+          case "application/vnd.oasis.opendocument.spreadsheet":
+          case "text/csv":
+          case "text/tab-separated-values":
+            return ICONS.excelIcon;
+      
+          case 'video/mp4':
+            return ICONS.videoPlayerIcon;
+          case 'video/mpeg':
+          case 'video/ogg':
+          case 'video/webm':
+          case 'video/x-msvideo':
+          case 'video/quicktime':
+            return ICONS.viedoImageOne;
+      
+          case 'text/plain':
+            return textFile;
+      
+          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+          case "application/msword":
+          case 'application/vnd.ms-word.document.macroEnabled.12':
+          case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+          case 'application/vnd.ms-word.template.macroEnabled.12':
+          case "application/rtf":
+          case "application/vnd.oasis.opendocument.text":
+            return wordFile;
+      
+          case "audio/x-wav":
+          case "audio/mpeg":
+          case "audio/wav":
+          case "audio/ogg":
+          case "audio/aac":
+          case "audio/flac":
+          case "audio/mp4":
+          case "audio/amr":
+          case "audio/aiff":
+          case "audio/x-ms-wma":
+          case "audio/webm":
+            return audio;
+      
+          case "application/vnd.ms-powerpoint":
+          case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+          case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+          case "application/vnd.openxmlformats-officedocument.presentationml.template":
+          case "application/vnd.ms-powerpoint.template.macroEnabled.12":
+          case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
+          case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
+          case "application/vnd.oasis.opendocument.presentation":
+            return powerpoint;
+      
+          default:
+            return defauult;
         }
-    };
+      }
 
     const isVideo = (mimeType: string) => {
         if (
@@ -208,6 +256,25 @@ const FolderDetail = () => {
             return newSelected;
         });
     };
+    const isAudio = (mimeType: string): boolean => {
+        switch (mimeType) {
+          case "audio/mpeg":
+          case "audio/mp3":
+          case "audio/wav":
+          case "audio/x-wav":
+          case "audio/ogg":
+          case "audio/aac":
+          case "audio/midi":
+          case "audio/x-midi":
+          case "audio/webm":
+          case "audio/flac":
+          case "audio/x-m4a":
+          case "audio/x-matroska":
+            return true;
+          default:
+            return false;
+        }
+      };
     const isImage = (mimeType: string) => {
         switch (mimeType) {
             case "image/jpeg":
@@ -243,6 +310,8 @@ const FolderDetail = () => {
             window.open(url, "_blank")
         }
     }
+
+
 
     return (
         <div className={styles.libraryContainer}>
@@ -286,10 +355,16 @@ const FolderDetail = () => {
                         </div>
 
                         <div className={styles.libSecHeader_right}>
-                            <button onClick={() => setViewMode("list")} className={` ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+                            <button onClick={() => {
+                                setViewMode("list")
+                                saveFileTypeView("list")
+                            }} className={` ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
                                 <TiThMenu />
                             </button>
-                            <button onClick={() => setViewMode("tiles")} className={` ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+                            <button onClick={() => {
+                                setViewMode("tiles")
+                                saveFileTypeView("tiles")
+                            }} className={` ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
                                 <BsGrid />
                             </button>
                             {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
@@ -305,7 +380,7 @@ const FolderDetail = () => {
                     {viewMode === "list" && <div className={styles.lib_Grid_Header}>
                         <div className={`${styles.grid_item} ${styles.table_name}`}>
                             <div className="flex items-center">
-                                <div className="mr1">
+                                {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
                                     <CheckBox checked={selected.size === files.length && !!files.length} onChange={() => {
                                         if (selected.size === files.length) {
                                             setSelected(new Set())
@@ -314,14 +389,14 @@ const FolderDetail = () => {
                                             setSelected(newChecked)
                                         }
                                     }} />
-                                </div>
+                                </div>}
                                 <span>
 
                                     Name
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.grid_item}>Uploaded Date</div>
+                        <div className={`${styles.grid_item_upload_date} ${styles.grid_item}`}>Uploaded Date</div>
                         <div className={styles.grid_item}>Actions</div>
                     </div>}
                     {
@@ -330,47 +405,51 @@ const FolderDetail = () => {
                             :
                             files.length ?
                                 viewMode === "list" ?
-                                    files.map((file,index) => {
+                                    files.map((file, index) => {
                                         const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
                                         const isValidVideo = isVideo(file.file?.mimeType!)
                                         return <div key={file.id} className={styles.libGridItem} >
                                             {
                                                 file.folder ?
                                                     <div className='flex items-center'>
-                                                        <div className="mr1">
-                                                            <CheckBox
-                                                                checked={selected.has(file.id)}
-                                                                onChange={() => handleCheckboxChange(file.id)}
-                                                            />
-                                                        </div>
+                                                        {role_name === TYPE_OF_USER.ADMIN &&
+                                                            <div className="mr1">
+                                                                <CheckBox
+                                                                    checked={selected.has(file.id)}
+                                                                    onChange={() => handleCheckboxChange(file.id)}
+                                                                />
+                                                            </div>
+                                                        }
                                                         <Link to={`/library/${path["*"]}/${file.name}`} className={`${styles.file_icon} ${styles.image_div}`}>
                                                             <img
                                                                 src={ICONS.folderImage}
                                                             />
-                                                            <div>
-                                                                <p className={styles.name}>{file.name}</p>
+                                                            <div className={styles.name_div}>
+                                                                <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
+                                                                <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
                                                                 <p className={styles.size}> {(file.size > 1024 * 1024)
-                                                                    ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                                                                    : `${Math.round(file.size / 1024)} KB`}</p>
+                                                                    ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
+                                                                    : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
                                                             </div>
                                                         </Link>
                                                     </div>
 
                                                     :
                                                     <div className="flex items-center">
-                                                        <div className="mr1">
+                                                        {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
                                                             <CheckBox
                                                                 checked={selected.has(file.id)}
                                                                 onChange={() => handleCheckboxChange(file.id)}
                                                             />
-                                                        </div>
+                                                        </div>}
                                                         <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
                                                             if (isValidVideo) {
                                                                 setIsVideoModalOpen(true)
                                                                 setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                                setVideoName(file.name)
                                                                 return
                                                             }
-                                                            if (fileType === "image") {
+                                                            if (isImage(file?.file?.mimeType!)|| isAudio(file.file?.mimeType!)) {
                                                                 setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
                                                                 setIsFileViewerOpen(true)
                                                                 return
@@ -381,13 +460,15 @@ const FolderDetail = () => {
                                                         }}>
 
                                                             <img
-                                                                src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
+                                                                src={ fileType}
                                                                 style={{
                                                                     width: isValidVideo ? 32 : undefined,
                                                                     height: isValidVideo ? 32 : undefined
                                                                 }}
                                                             />
-                                                            <div>
+                                                            <div className={styles.name_div}>
+                                                                <p className={styles.name_hide}>{file.name}</p>
+
                                                                 <p className={styles.name}>{file.name}</p>
                                                                 <p className={styles.size}>
                                                                     {(file.size > 1024 * 1024)
@@ -400,16 +481,16 @@ const FolderDetail = () => {
 
                                             }
 
-                                            <div className={styles.grid_item}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                                            <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                             <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px',  color: isHovered===index && !file.folder? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#667085'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name) } 
-                                                 onMouseOver={()=>{setIsHovered(index)}} onMouseLeave={()=>{setIsHovered(null)}}    
+                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
+                                                    onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
                                                 />
-                                                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete}  onClick={() => {
+                                                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
                                                     setIsDeleteModalVisible(true)
                                                     setSelectedDeleteId(file.id)
                                                 }}
-                                                
+
                                                 />}
                                             </div>
                                         </div>
@@ -432,7 +513,7 @@ const FolderDetail = () => {
                                                     key={file.id}
                                                     onMouseEnter={() => setHoveredIndex(file.id)}
                                                     onMouseLeave={() => setHoveredIndex(null)}
-                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}` )}
+                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}`)}
                                                 >
                                                     <div className={folderWrapperStyles.createdByWrapper}>
 
@@ -442,24 +523,25 @@ const FolderDetail = () => {
                                                         <img src={ICONS.folderImage} alt="" />
                                                         <div className={folderWrapperStyles.checkboxWrapper}>
                                                             <p className={folderWrapperStyles.quantity}>{file.childCount}</p>
-                                                            {role_name === TYPE_OF_USER.ADMIN && 
-                                                            <div className={` ${selected.has(file?.id!) ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
+                                                            {role_name === TYPE_OF_USER.ADMIN &&
+                                                                <div className={` ${selected.has(file?.id!) ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
 
-                                                                <CheckBox
-                                                                    
-                                                              
-                                                                    onChange={() => {
-                                                        
-                                                                        handleCheckboxChange(file.id)
-                                                                    }}
-                                                                    checked={selected.has(file.id)}
-                                                                />
-                                                            </div>
+                                                                    <CheckBox
+
+
+                                                                        onChange={() => {
+
+                                                                            handleCheckboxChange(file.id)
+                                                                        }}
+                                                                        checked={selected.has(file.id)}
+                                                                    />
+                                                                </div>
                                                             }
                                                         </div>
                                                     </div>
 
-                                                    <div className={"mt2"} style={{width:"100%"}}>
+                                                    <div className={"mt2"} style={{ width: "100%" }}>
+
                                                         <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024

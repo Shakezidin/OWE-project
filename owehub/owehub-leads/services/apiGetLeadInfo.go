@@ -33,7 +33,6 @@ import (
 func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
-		whereClause  string
 		whereEleList []interface{}
 		dataReq      models.GetLeadInfoRequest
 		data         []map[string]interface{}
@@ -65,15 +64,39 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	// Construct the query to fetch lead data by lead_id
-	whereClause = "WHERE li.leads_id = $2" //
-	query := fmt.Sprintf(`
-			SELECT
-				li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id,
-				li.created_at, li.appointment_date, li.appointment_scheduled_date, li.appointment_accepted_date, li.appointment_declined_date
-			FROM
-				get_leads_info_hierarchy($1) li
-			%s
-			`, whereClause)
+	query := `
+				SELECT
+					li.leads_id,
+					li.first_name,
+					li.last_name,
+					li.email_id,
+					li.phone_number,
+					li.street_address,
+					li.city,
+					li.finance_type,
+					li.finance_company,
+					li.sale_submission_triggered,
+					li.qc_audit,
+					li.proposal_signed,
+					li.appointment_disposition,
+					li.appointment_disposition_note,
+					li.notes,
+					li.created_at,
+					li.updated_at,
+					li.appointment_scheduled_date,
+					li.appointment_accepted_date,
+					li.appointment_declined_date,
+					li.lead_won_date,
+					li.appointment_date,
+					li.lead_lost_date,
+					li.proposal_created_date,
+					li.status_id,
+					ud.name as created_by_name
+				FROM
+					get_leads_info_hierarchy($1) li
+				INNER JOIN user_details ud ON ud.user_id = li.created_by
+				WHERE li.leads_id = $2
+			`
 
 	whereEleList = append(whereEleList, authenticatedUserEmail, dataReq.LeadsID)
 
@@ -93,66 +116,113 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	// Access the first result (assuming one lead will be returned for the given ID)
 	leadData := data[0]
 
+	apiResponse := models.GetLeadInfoRes{}
+
 	streetAddress, ok := leadData["street_address"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert street_address to string type Item: %+v", leadData)
-		streetAddress = ""
+	if ok {
+		apiResponse.StreetAddress = streetAddress
 	}
 
-	// Type assertion with proper handling of types
-	leadResponse := models.GetLeadInfoRes{
-		LeadsID:       leadData["leads_id"].(int64),      // LeadsID is asserted as int64
-		FirstName:     leadData["first_name"].(string),   // FirstName as string
-		LastName:      leadData["last_name"].(string),    // LastName as string
-		EmailId:       leadData["email_id"].(string),     // EmailId as string
-		PhoneNumber:   leadData["phone_number"].(string), // PhoneNumber as string
-		StreetAddress: streetAddress,                     // StreetAddress as string
-		StatusID:      leadData["status_id"].(int64),     // StatusID as int64
+	city, ok := leadData["city"].(string)
+	if ok {
+		apiResponse.City = city
 	}
 
-	switch leadResponse.StatusID {
-	case 0: // PENDING
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-	case 1: // SENT
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-			leadResponse.AppointmentDate = &appointmentDate
-		}
-		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-		}
-	case 2: // ACCEPTED
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-			leadResponse.AppointmentDate = &appointmentDate
-		}
-		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-		}
-		if appointmentAcceptedDate, ok := leadData["appointment_accepted_date"].(time.Time); ok {
-			leadResponse.AppointmentAcceptedDate = &appointmentAcceptedDate
-		}
-	case 3: // DECLINED
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-			leadResponse.AppointmentDate = &appointmentDate
-		}
-		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-		}
-		if appointmentDeclinedDate, ok := leadData["appointment_declined_date"].(time.Time); ok {
-			leadResponse.AppointmentDeclinedDate = &appointmentDeclinedDate
-		}
+	financeType, ok := leadData["finance_type"].(string)
+	if ok {
+		apiResponse.FinanceType = financeType
 	}
+
+	financeCompany, ok := leadData["finance_company"].(string)
+	if ok {
+		apiResponse.FinanceCompany = financeCompany
+	}
+
+	saleSubmissionTriggered, ok := leadData["sale_submission_triggered"].(bool)
+	if ok {
+		apiResponse.SaleSubmissionTriggered = saleSubmissionTriggered
+	}
+
+	qcAudit, ok := leadData["qc_audit"].(string)
+	if ok {
+		apiResponse.QCAudit = qcAudit
+	}
+
+	proposalSigned, ok := leadData["proposal_signed"].(bool)
+	if ok {
+		apiResponse.ProposalSigned = proposalSigned
+	}
+
+	appointmentDisposition, ok := leadData["appointment_disposition"].(string)
+	if ok {
+		apiResponse.AppointmentDisposition = appointmentDisposition
+	}
+
+	appointmentDispositionNote, ok := leadData["appointment_disposition_note"].(string)
+	if ok {
+		apiResponse.AppointmentDispositionNote = appointmentDispositionNote
+	}
+
+	notes, ok := leadData["notes"].(string)
+	if ok {
+		apiResponse.Notes = notes
+	}
+
+	createdAt, ok := leadData["created_at"].(time.Time)
+	if ok {
+		apiResponse.CreatedAt = &createdAt
+	}
+
+	updatedAt, ok := leadData["updated_at"].(time.Time)
+	if ok {
+		apiResponse.UpdatedAt = &updatedAt
+	}
+
+	appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentScheduledDate = &appointmentScheduledDate
+	}
+
+	appointmentAcceptedDate, ok := leadData["appointment_accepted_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentAcceptedDate = &appointmentAcceptedDate
+	}
+	appointmentDeclinedDate, ok := leadData["appointment_declined_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentDeclinedDate = &appointmentDeclinedDate
+	}
+	leadWonDate, ok := leadData["lead_won_date"].(time.Time)
+	if ok {
+		apiResponse.LeadWonDate = &leadWonDate
+	}
+
+	appointmentDate, ok := leadData["appointment_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentDate = &appointmentDate
+	}
+
+	leadLostDate, ok := leadData["lead_lost_date"].(time.Time)
+	if ok {
+		apiResponse.LeadLostDate = &leadLostDate
+	}
+
+	proposalCreatedDate, ok := leadData["proposal_created_date"].(time.Time)
+	if ok {
+		apiResponse.ProposalCreatedDate = &proposalCreatedDate
+	}
+
+	statusId, ok := leadData["status_id"].(int64)
+	if ok {
+		apiResponse.StatusID = statusId
+	}
+
+	apiResponse.LeadsID = leadData["leads_id"].(int64) // LeadsID is asserted as int64
+	apiResponse.FirstName = leadData["first_name"].(string)
+	apiResponse.LastName = leadData["last_name"].(string)
+	apiResponse.EmailId = leadData["email_id"].(string)
+	apiResponse.PhoneNumber = leadData["phone_number"].(string)
+	apiResponse.CreatedByName = leadData["created_by_name"].(string)
 
 	// Send the response
-	appserver.FormAndSendHttpResp(resp, "Lead Info Data", http.StatusOK, leadResponse, 1)
+	appserver.FormAndSendHttpResp(resp, "Lead Info Data", http.StatusOK, apiResponse, 1)
 }

@@ -3,6 +3,10 @@ import { toast } from 'react-toastify';
 import {
   getLeadById,
   getLeads,
+  auroraCreateProject,
+  auroraCreateDesign,
+  auroraCreateProposal,
+  getProjectByLeadId
 } from '../../apiActions/leadManagement/LeadManagementAction';
 
 interface IState {
@@ -13,6 +17,9 @@ interface IState {
   leadDetail: any;
   isSuccess: boolean;
   totalcount: number;
+  proposalData: any;
+  projectData: any;
+  designData: any;
 }
 
 const initialState: IState = {
@@ -23,6 +30,9 @@ const initialState: IState = {
   leadDetail: {},
   isSuccess: false,
   totalcount: 0,
+  proposalData: {},
+  projectData: {},
+  designData: {},
 };
 
 const leadManagementSlice = createSlice({
@@ -56,8 +66,66 @@ const leadManagementSlice = createSlice({
         state.isLoading = false;
         state.leadsData = action.payload.data || {};
         state.totalcount = action.payload.dbRecCount || 0;
+        toast.success(action.payload.message)
       })
       .addCase(getLeadById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+      // New cases for auroraCreateProject
+      .addCase(auroraCreateProject.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(auroraCreateProject.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.projectData = action.payload.data || {};
+      })
+      .addCase(auroraCreateProject.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+      // New cases for auroraCreateDesign
+      .addCase(auroraCreateDesign.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(auroraCreateDesign.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.designData = action.payload.data || {};
+      })
+      .addCase(auroraCreateDesign.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+      // New cases for auroraCreateProposal
+      .addCase(auroraCreateProposal.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(auroraCreateProposal.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.proposalData = action.payload.data || {};
+      })
+      .addCase(auroraCreateProposal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+      // Existing cases for getProjectByLeadId
+      .addCase(getProjectByLeadId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getProjectByLeadId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.projectData = action.payload.data || {};
+        toast.success(action.payload.message);
+      })
+      .addCase(getProjectByLeadId.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);

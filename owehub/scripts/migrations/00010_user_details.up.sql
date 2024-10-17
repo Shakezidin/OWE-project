@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS partner_details (
     bg_colour VARCHAR(255),
     preferred_name VARCHAR(255),
     description VARCHAR(255),
-    partner_id BIGINT,
-    FOREIGN KEY (partner_id) REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE CASCADE
+    partner_id BIGINT
 );
 
 ALTER TABLE user_details
@@ -145,7 +144,7 @@ BEGIN
 
      -- Get the dealer owner's user_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT item_id INTO v_dealer_id
+        SELECT partner_id INTO v_dealer_id
         FROM sales_partner_dbhub_schema
         WHERE sales_partner_name = p_dealer_name;
 
@@ -265,7 +264,7 @@ BEGIN
 
  -- Get the dealer owner's user_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT item_id INTO v_dealer_id
+        SELECT partner_id INTO v_dealer_id
         FROM sales_partner_dbhub_schema 
         WHERE sales_partner_name = p_dealer_name;
 

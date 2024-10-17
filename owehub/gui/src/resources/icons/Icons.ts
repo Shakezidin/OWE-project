@@ -7,6 +7,7 @@
  */
 import crossIcon from '../../resources/assets/cross.svg';
 import scheduleDoor from '../../resources/assets/schedule_door.png';
+import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
 import dashIcon from '../../resources/assets/dashIcon.svg';
 import ConfigIcon from '../../resources/assets/config.svg';
 import userManIcon from '../../resources/assets/userManag.svg';
@@ -83,9 +84,12 @@ import arrowDown from '../../resources/assets/arrow-down.svg';
 import linearGraph from '../../resources/assets/linear-graph.svg';
 import curveGraph from '../../resources/assets/curvegraph.svg';
 import redcurveGraph from '../../resources/assets/perf.png';
-import rep1 from '../../resources/assets/rep1.png';
-import rep2 from '../../resources/assets/rep2.png';
-import rep3 from '../../resources/assets/rep3.png';
+import rep1 from '../../resources/assets/rep1.svg';
+import rep2 from '../../resources/assets/rep2.svg';
+import rep3 from '../../resources/assets/rep3.svg';
+import repBar1 from '../../resources/assets/repBar1.svg';
+import repBar2 from '../../resources/assets/repBar2.svg';
+import repBar3 from '../../resources/assets/repBar3.svg';
 import per2 from '../../resources/assets/per2.png';
 import per3 from '../../resources/assets/per3.png';
 import pmshadedgraph from '../../resources/assets/pmshadedgraph.png';
@@ -159,6 +163,7 @@ import DownArrowDashboard from "../assets/AboverArrow.svg"
 import ChecronUpX from "../assets/UpArrowDashboard.svg"
 import videoPlayerIcon from '../assets/video_player_icon.png';
 import VersionLogo from '../assets/version_logo.svg'
+import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -196,6 +201,7 @@ export const ICONS = {
   viewActive: viewActive,
   DownArrowDashboard:DownArrowDashboard,
   dashHead: dashHead,
+  SearchICON001:SearchICONbyRabindra,
   dashActive: dashActive,
   cross: crossIcon,
   dash: dashIcon,
@@ -220,6 +226,7 @@ export const ICONS = {
   commIconHead: commIconHead,
   dbIconManag: dbIconManag,
   projIcon: projIcon,
+  audioPlaceholder,
   teamManag: teamManag,
   upperIcon: upperIcon,
   logoutIconLeft: logoutIconLeft,
@@ -265,6 +272,9 @@ export const ICONS = {
   rep1: rep1,
   rep2: rep2,
   rep3: rep3,
+  repBar1: repBar1,
+  repBar2: repBar2,
+  repBar3: repBar3,
   dashboardSidebar: dashboardSidebar,
   dataSidebar: dataSidebar,
   activitySidebar: activitySidebar,

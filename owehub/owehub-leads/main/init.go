@@ -147,6 +147,20 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_project",
+		apiHandler.HandleAuroraCreateProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_design",
+		apiHandler.HandleAuroraCreateDesignRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_create_proposal",
 		apiHandler.HandleAuroraCreateProposalRequest,
 		true,
@@ -154,8 +168,15 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/aurora_get_proposal",
+		"/owe-leads-service/v1/aurora_get_project",
 		apiHandler.HandleAuroraGetProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_get_proposal",
+		apiHandler.HandleAuroraGetProposalRequest,
 		true,
 		leadsRoleGroup,
 	},
@@ -165,6 +186,15 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("GET"),
 		"/owe-leads-service/v1/aurora_webhook",
 		apiHandler.HandleAuroraWebhookAction,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+
+	// aurora list modules
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_list_modules",
+		apiHandler.HandleAuroraListModulestRequest,
 		false,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
@@ -562,7 +592,7 @@ func FetchAuroraCfg() (err error) {
 	log.EnterFn(0, "FetchAuroraCfg")
 	defer func() { log.ExitFn(0, "FetchAuroraCfg", err) }()
 
-	var auroraCfg leadsService.AuroraConfig
+	var auroraCfg leadsService.LeadAppConfig
 	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.AuroraConfJsonPath)
 	file, err := os.Open(gCfgFilePaths.AuroraConfJsonPath)
 	if err != nil {
@@ -575,8 +605,8 @@ func FetchAuroraCfg() (err error) {
 		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
 		panic(err)
 	}
-	leadsService.AuroraCfg = auroraCfg
-	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.AuroraCfg)
+	leadsService.LeadAppCfg = auroraCfg
+	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.LeadAppCfg)
 
 	return err
 }

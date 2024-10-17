@@ -76,7 +76,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
-			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 			where ud.email_id = '%v';
 		`, dataReq.Email)
 

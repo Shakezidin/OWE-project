@@ -12,7 +12,7 @@ interface AppointmentSchedulerProps {
 }
 
 const today = new Date();
-const CurrentDate =today.toISOString().split('T')[0];
+const CurrentDate = today.toISOString().split('T')[0];
 // 2024-10-09
 
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
@@ -115,7 +115,9 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
         {selectedTime && `, ${selectedTime}`}
       </div>
 
-      <div className="sendAppointmentBtn">
+      <div
+        className={`sendAppointmentBtn ${selectedTime ? '' : 'sendAppointmentBtnDisabled'}`}
+      >
         <button
           onClick={() => {
             if (selectedTime && selectedDate) {

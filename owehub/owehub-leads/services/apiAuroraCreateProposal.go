@@ -7,7 +7,7 @@
 package services
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/auroraclient"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 )
 
 /******************************************************************************
@@ -31,13 +30,10 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	var (
 		err                error
 		reqBody            []byte
-		dataReq            models.AuroraCreateProposalRequest
+		query              string
 		data               []map[string]interface{}
-		createProjectResp  *leadsService.AuroraCreateProjectApiResponse
-		createDesignResp   *leadsService.AuroraCreateDesignApiResponse
-		createProposalResp *leadsService.AuroraCreateProposalApiResponse
-		updateQuery        string
-		updateEleList      []interface{}
+		dataReq            models.AuroraCreateProposalRequest
+		createProposalResp *auroraclient.CreateProposalApiResponse
 	)
 	log.EnterFn(0, "HandleAuroraCreateProjectRequest")
 	defer func() { log.ExitFn(0, "HandleAuroraCreateProjectRequest", err) }()
@@ -63,29 +59,16 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	retrieveLeadQuery := `
-		SELECT
-			li.first_name,
-			li.last_name,
-			li.email_id,
-			li.phone_number,
-			li.street_address
-		FROM
-			get_leads_info_hierarchy($1) li
-		WHERE
-			li.leads_id = $2
-	`
+	// retreive design_id from leads_info table
+	query = "SELECT li.aurora_design_id FROM get_leads_info_hierarchy($1) li WHERE li.leads_id = $2"
 
 	authenticatedEmailId := req.Context().Value("emailid").(string)
-
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, retrieveLeadQuery, []interface{}{authenticatedEmailId, dataReq.LeadsId})
-
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmailId, dataReq.LeadsId})
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to retrieve leads info from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to retrieve design id from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve design id from DB", http.StatusInternalServerError, nil)
 		return
 	}
-
 	if len(data) <= 0 {
 		err = fmt.Errorf("leads info not found")
 		log.FuncErrorTrace(0, "%v", err)
@@ -93,106 +76,15 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	firstName, ok := data[0]["first_name"].(string)
+	designId, ok := data[0]["aurora_design_id"].(string)
 	if !ok {
-		err = fmt.Errorf("first_name not found for lead id %d", dataReq.LeadsId)
+		err = fmt.Errorf("aurora_design_id not found for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve aurora_design_id from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	lastName, ok := data[0]["last_name"].(string)
-	if !ok {
-		err = fmt.Errorf("last_name not found for lead id %d", dataReq.LeadsId)
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
-		return
-	}
-
-	emailId, ok := data[0]["email_id"].(string)
-	if !ok {
-		err = fmt.Errorf("email_id not found for lead id %d", dataReq.LeadsId)
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
-		return
-	}
-
-	phoneNumber, ok := data[0]["phone_number"].(string)
-	if !ok {
-		err = fmt.Errorf("phone_number not found for lead id %d", dataReq.LeadsId)
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
-		return
-	}
-
-	streetAddress, ok := data[0]["street_address"].(string)
-	if !ok {
-		err = fmt.Errorf("street_address not found for lead id %d", dataReq.LeadsId)
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
-		return
-	}
-
-	projectName := dataReq.ProjectName
-	if projectName == "" {
-		projectName = fmt.Sprintf("Project for %s %s - %d", firstName, lastName, time.Now().UnixMilli())
-	}
-
-	createProjApi := leadsService.AuroraCreateProjectApi{
-		ExternalProviderId:    fmt.Sprintf("%d", dataReq.LeadsId),
-		Name:                  projectName,
-		CustomerSalutation:    dataReq.CustomerSalutation,
-		CustomerFirstName:     firstName,
-		CustomerLastName:      lastName,
-		CustomerEmail:         emailId,
-		CustomerPhone:         phoneNumber,
-		MailingAddress:        streetAddress,
-		Status:                dataReq.Status,
-		PreferredSolarModules: dataReq.PreferredSolarModules,
-		Tags:                  dataReq.Tags,
-		Location: leadsService.AuroraCreateProjectApiLocation{
-			PropertyAddress: streetAddress,
-		},
-	}
-
-	// create project
-	createProjectResp, err = createProjApi.Call()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create aurora project err %v", err)
-		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
-		return
-	}
-	projectId, ok := createProjectResp.Project["id"].(string)
-	if !ok {
-		err = fmt.Errorf("project_id not found in create project response")
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve project id from create project response", http.StatusInternalServerError, nil)
-		return
-	}
-
-	// create design
-	createDesignApi := leadsService.AuroraCreateDesignApi{
-		ExternalProviderId: createProjApi.ExternalProviderId,
-		Name:               createProjApi.Name,
-		ProjectId:          projectId,
-	}
-	createDesignResp, err = createDesignApi.Call()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create aurora design err %v", err)
-		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
-		return
-	}
-
-	designId, ok := createDesignResp.Design["id"].(string)
-	if !ok {
-		err = fmt.Errorf("design_id not found in create design response")
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to retrieve design id from create design response", http.StatusInternalServerError, nil)
-		return
-	}
-
-	// create proposal
-	createProposalApi := leadsService.AuroraCreateProposalApi{
+	createProposalApi := auroraclient.CreateProposalApi{
 		DesignId: designId,
 	}
 	createProposalResp, err = createProposalApi.Call()
@@ -212,29 +104,52 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// update the lead info record
-	updateQuery = `
+
+	// retreive user_id from user_details table (for last_updated_by)
+	query = "SELECT user_id FROM user_details WHERE email_id = $1"
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmailId})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retrieve user_id from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to update record in DB", http.StatusInternalServerError, nil)
+		return
+	}
+
+	if len(data) <= 0 {
+		err = fmt.Errorf("user_id not found")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to update record in DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	authenticatedUserId, ok := data[0]["user_id"].(int64)
+	if !ok {
+		err = fmt.Errorf("user_id not found in user_details table")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to update record in DB", http.StatusInternalServerError, nil)
+		return
+	}
+
+	query = `
 		UPDATE
 			leads_info
 		SET
-			aurora_project_id = $1,
-			aurora_design_id = $2,
-			aurora_proposal_id = $3,
+			aurora_proposal_id = $1,
+			last_updated_by = $2,
 			updated_at = CURRENT_TIMESTAMP,
 			proposal_created_date = CURRENT_TIMESTAMP
 		WHERE
-			leads_id = $4
+			leads_id = $3
 	`
-	updateEleList = append(updateEleList,
-		projectId,
-		designId,
+	updateEleList := []interface{}{
 		proposalId,
+		authenticatedUserId,
 		dataReq.LeadsId,
-	)
+	}
 
-	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, updateQuery, updateEleList)
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, updateEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update leads info in DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to update leads info in DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update record in DB", http.StatusInternalServerError, nil)
 		return
 	}
 

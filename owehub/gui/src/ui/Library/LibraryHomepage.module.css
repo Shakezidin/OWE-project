@@ -219,7 +219,7 @@
 
 .searchWrapper input {
   border: none;
-  width: 214px;
+  flex-basis: 214px;
 }
 
 .searchWrapper input::placeholder {
@@ -331,8 +331,30 @@
   
 
 }
+.name_div{
+  position: relative;
+  cursor: pointer;
+}
 
-
+.name_hide{
+  display: none;
+  position: absolute;
+  top: 65%; 
+  left: 52%;
+  transform: translateX(-50%); 
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  color:white;
+  background-color: rgba(0, 0, 0, 0.7); 
+  padding: 5px;
+  border-radius: 4px; 
+  z-index: 10;
+  opacity: 1;
+}
+.name_div:hover .name_hide{
+  display: block;
+}
 .libname_heading{
   position: relative;
   left: 10px;
@@ -357,6 +379,8 @@
 .name {
   font-family: inter;
   font-weight: 500;
+  word-break: break-all;
+  width: 100%;
   font-size: 14px;
   color: #101828;
 }
@@ -401,7 +425,8 @@
   cursor: pointer; 
   height: 18px;
   width: 18px;
-  color: #667085;
+ /* color: #667085;  */
+  color:#101828;
   transition: all 0.3s ease;
 
 }
@@ -413,7 +438,7 @@
   cursor: pointer; 
   height: 18px;
   width: 18px;
-  color: #667085;
+
   transition: all 0.3s ease;
 
 }
@@ -553,7 +578,8 @@
 
 .filesLoader {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
+  height: 64.7vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -590,4 +616,94 @@
 
 .view_btn.active_tile:hover{
   transform: scale(1.1);
+}
+.desktop_hide{
+  display: none;
+}
+
+@media (max-width:968px) {
+  .desktop_hide{
+    display: flex;
+  }
+  .libraryContainer{
+    padding-inline: 9px;
+  }
+  .sm_hide{
+    display: none;
+  }
+  
+  .lib_Grid_Header,.libGridItem{
+    grid-template-columns: 80% auto;
+  }
+  .buttons{
+    padding: 2px 30px;
+  }
+  .list_grid{
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .sm_search {
+    max-width: 115px;
+    padding-right: 6px;
+  }
+  .sm_search input {
+    width: 100%;
+    flex: 1;
+  }
+ 
+  .sm_search input::placeholder{
+    font-size: 11px;
+  }
+  .sm_search svg{
+    flex-shrink: 0;
+  }
+  .libSecHeader_left{
+    gap: 8px;
+  }
+  .libSecHeader{
+    padding: 15px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter_button{
+    display: none;
+  }
+}
+
+@media (max-width: 450px) {
+  .sort_container{
+    max-width: 59px;
+  }
+  .sort_container button{
+    gap: 3px;
+  }
+  .libraryContainer{
+    padding-inline: 3px;
+  }
+  .grid_item_upload_date{
+    display: none;
+  }
+  .recycle_p {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 15px;
+    margin: 0;
+    /* resize: horizontal;  */
+ 
+ 
+  }
+  .name{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block; 
+    max-width: 150px;
+    
+   
+ 
+  }
+ 
 }

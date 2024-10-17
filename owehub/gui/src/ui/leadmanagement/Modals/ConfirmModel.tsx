@@ -29,10 +29,11 @@ interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
   leadId?: number;
-  refresh?: number;
-  setRefresh?: (value: number) => void;
+  refresh: number;
+  setRefresh: (value: number | ((prevValue: number) => number)) => void;
   reschedule?: boolean;
   action?: boolean;
+  setReschedule: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface LeadData {
   first_name: string;
@@ -52,7 +53,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   leadId,
   reschedule,
   action,
+  setRefresh,
+  refresh,
+  setReschedule
 }) => {
+  console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
@@ -96,7 +101,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
           status_id: 1,
           appointment_date: selectedDate
             ? format(selectedDate, 'dd-MM-yyyy')
-            : '',
+            : format(new Date(), 'dd-MM-yyyy'),
           appointment_time: selectedTime ? selectedTime : '',
         },
         true
@@ -104,6 +109,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
+        setReschedule(false);
+        setRefresh((val) => val+1)
         setVisibleDiv(1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
@@ -114,7 +121,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.error('Error submitting form:', error);
     }
   };
-
+  
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
 
@@ -159,7 +166,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId, isOpen1, isModalOpen]);
+  }, [isAuthenticated, leadId, isOpen1, refresh]);
 
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
@@ -214,6 +221,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         toast.success('Status Updated Successfully');
         HandleModal();
         setReason('');
+        setRefresh((val) => val+1)
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -526,6 +534,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               isOpen={isModalOpen}
               onClose={handleCloseModal}
               leadData={leadData}
+              refresh={refresh}
+              setRefresh={setRefresh}
             />
             {visibleDiv === 0 && (
               <AppointmentScheduler

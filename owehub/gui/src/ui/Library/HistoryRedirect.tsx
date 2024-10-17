@@ -2,11 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classes from './stylesFolder/HistoryRedirect.module.css';
 import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
+import useEscapeKey from '../../hooks/useEscape';
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
 
-const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
+// { setArchive }: HistoryRedirectProps
+
+const HistoryRedirect = () => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
   const clickableDivRef = useRef<HTMLDivElement>(null);
@@ -16,7 +19,8 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   };
 
   const ArchivesTable = () => {
-    setArchive(true);
+    // setArchive(true);
+    navigate('/lead-dashboard-archieves');
   };
 
   /* HERE FOR RESPONSIVESNESS */
@@ -51,6 +55,12 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
+
+  const handleClose = () => {
+    setModalOpenClick(false);
+  }
+
+  useEscapeKey(handleClose)
 
 
   // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***

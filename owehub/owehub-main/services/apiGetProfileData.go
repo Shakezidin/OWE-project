@@ -74,9 +74,9 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 			LEFT JOIN 
 				zipcodes zc ON ud.zipcode = zc.id
 			LEFT JOIN 
-				sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+				sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 			LEFT JOIN 
-				partner_details pd ON sp.item_id = pd.partner_id WHERE ud.email_id = $1`
+				partner_details pd ON sp.partner_id = pd.partner_id WHERE ud.email_id = $1`
 
 	emailId := req.Context().Value("emailid").(string)
 

@@ -1,9 +1,10 @@
 .customer_wrapper_list {
-  flex-basis: calc(100%);
+
   border-radius: 8px;
   background-color: #fff;
   max-width: 620px;
-  width: 620px;
+  width: 100%;
+  margin-inline: 24px;
   height: 289px;
   border: 1px solid #377cf6;
 }
@@ -126,6 +127,12 @@
   color: #20963a;
   margin-left: 5px;
 }
+/* .error {
+  color: #db4437;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 400;
+} */
 
 .Column2Details {
   flex-grow: 1;
@@ -141,17 +148,68 @@
   margin-bottom: 3.7%;
 }
 
-@media (min-width: 276px) and (max-width: 512px) and (min-height: 600px) and (max-height: 1146px) {
+@media (max-width: 450px) {
   .customer_wrapper_list {
-    flex-basis: 100%;
-    margin-top: 20px;
     border-radius: 8px;
-    background-color: #fff;
-    max-width: 346px;
-    height: 550px;
+  background-color: #fff;
+  /* max-width: 620px; */
+  width: 93%;
+  margin-inline: 24px;
+  height: 230px;
+  border: 1px solid #377cf6;
+  
   }
 
-  .DetailsMcontainer {
+  .success_header {
+    display: flex;
+    gap: 140px;
+ align-items: center;
+    margin-top: 20px;
+  }
+
+  .success_heading {
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    color: #101828;
+    margin-left: 10px;
+   
+  }
+
+  .success_hrline {
+    border: 1px solid #000000;
+    width: 347.7px;
+    /* width: 100%; */
+    opacity: 10%;
+    margin-top: 26px;
+  }
+ .succicon {
+    display: flex;
+   
+    width: 100%;
+ 
+    
+  } 
+ 
+
+  .succicon_input_box {
+    height: 36px;
+    width: 320px;
+    margin-top: 7%;
+    border-radius: 8px;
+    color: #989898;
+    border: 1px solid #989898;
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 12px;
+    outline: none;
+    color: #000000;
+    line-height: 18px;
+    padding: 10px 22px;
+  }
+
+  /* .DetailsMcontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -165,21 +223,36 @@
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     background-color: #eef5ff;
+  } */
+  .survey_button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+   
   }
-  .main_name {
+  
+  .other {
+    width: 136px;
+    height: 36px;
+    color: white;
+    transition: all 0.3s ease;
+    background-color: #377cf6;
+    border: 1px solid rgba(125, 125, 125, 1);
+    border-radius: 6px;
+    font-family: 'Poppins';
+    cursor: pointer;
+    font-size: 16px;
     font-weight: 600;
-    font-size: 18px;
-    margin-top: -13px;
-    margin-bottom: 3.7%;
-    margin-left: -139px;
+    line-height: 24px;
   }
-
-  .mobileNumber {
-    text-align: left;
-    margin-left: -139px;
+ .error{
+    margin-left: 15px;
   }
-  .addresshead {
-    margin-bottom: 3.7%;
-    margin-top: -15px;
-  }
+  /* .success_crossing{
+    height: 26px;
+  
+  } */
+ 
 }

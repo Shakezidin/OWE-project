@@ -39,7 +39,7 @@ func SyncHubUsersToPodioOnInit() error {
 	//* fetch all users from OWE-HUB
 	allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, sp.sales_partner_name as dealer_name, ur.role_name, ud.podio_user
 			FROM user_details ud
-			JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.item_id
+			JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
       JOIN user_roles ur ON ud.role_id = ur.role_id
       WHERE ud.podio_user = True
 	`
@@ -141,7 +141,7 @@ func SyncHubUsersToPodioOnInit() error {
 			continue
 		}
 
-		dealerId, ok := Dealerdata[0]["partner_id"].(string)
+		dealerId, ok := Dealerdata[0]["partner_id"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "No partner id found in podio for email: %v", emailId)
 			continue

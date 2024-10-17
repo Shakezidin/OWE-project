@@ -394,15 +394,18 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          {activeSalesRep && (
-            <img
-              style={{ cursor: 'pointer' }}
-              src={ICONS.cross}
-              onClick={handleCrossClick}
-            />
+          {activeSalesRep ? (
+            <>
+              <img
+                style={{ cursor: 'pointer' }}
+                src={ICONS.cross}
+                onClick={handleCrossClick}
+              />
+              <h3>{activeSalesRep} Sales Rep</h3>
+            </>
+          ) : (
+            <h3>{selectedOption?.label || ''}</h3>  
           )}
-
-          {activeSalesRep && <h3>{activeSalesRep} Sales Rep</h3>}
         </div>
 
         <div className="delete-icon-container items-center items-start mt2 ">
