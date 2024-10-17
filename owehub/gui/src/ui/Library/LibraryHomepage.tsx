@@ -994,7 +994,7 @@ const LibraryHomepage = () => {
                 files={sortedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
-                  name: item.name.substring(0, 20),
+                  name: item.name,
                   webUrl: item.webUrl,
                   "@microsoft.graph.downloadUrl": item["@microsoft.graph.downloadUrl"],
                   size: item.size,

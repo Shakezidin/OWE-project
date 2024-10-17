@@ -127,6 +127,12 @@
   color: #20963a;
   margin-left: 5px;
 }
+/* .error {
+  color: #db4437;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 400;
+} */
 
 .Column2Details {
   flex-grow: 1;
@@ -156,7 +162,8 @@
 
   .success_header {
     display: flex;
-    gap: 150px;
+    gap: 140px;
+ align-items: center;
     margin-top: 20px;
   }
 
@@ -222,7 +229,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 1px;
+   
   }
   
   .other {
@@ -239,5 +247,12 @@
     font-weight: 600;
     line-height: 24px;
   }
+ .error{
+    margin-left: 15px;
+  }
+  /* .success_crossing{
+    height: 26px;
   
+  } */
+ 
 }
