@@ -47,7 +47,7 @@ import useMatchMedia from '../../hooks/useMatchMedia';
 import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
 import powerpoint from '../../resources/icons/powerpoint.png'
-function getFileIcon(mimeType: string | undefined, isValidImage: boolean): string {
+function getFileIcon(mimeType: string | undefined): string {
   if (!mimeType) return defauult;
 
   switch (mimeType) {
@@ -109,7 +109,7 @@ function getFileIcon(mimeType: string | undefined, isValidImage: boolean): strin
       return powerpoint;
     
     default:
-      return isValidImage ? image : defauult;
+      return  defauult;
   }
 }
 
@@ -1083,6 +1083,7 @@ const LibraryHomepage = () => {
                           className={styles.cardImg}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                           src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? image :
                             data.file?.mimeType === "application/octet-stream" ? audio :
                               data.file?.mimeType === "audio/x-wav" ? audio :
@@ -1139,6 +1140,9 @@ const LibraryHomepage = () => {
 =======
                           src={getContentThumbnail(data.file?.mimeType!)}
 >>>>>>> 7a5eafbacff4d25124e73265e2083654a538da85
+=======
+                          src={getFileIcon(data.file?.mimeType!)}
+>>>>>>> 5aed4fe1c1362f3dfae0120d135c55137661896d
                           alt={`null`}
                           loading='lazy'
                         />
