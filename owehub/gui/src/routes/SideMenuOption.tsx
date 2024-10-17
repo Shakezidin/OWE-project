@@ -1,7 +1,7 @@
 import { ROUTES } from './routes';
-import { BiSupport } from 'react-icons/bi';
+import { BiDollar, BiSupport } from 'react-icons/bi';
 import { RiUserSettingsLine } from 'react-icons/ri';
-import { MdOutlinePayment, MdPendingActions } from 'react-icons/md';
+import { MdPendingActions } from 'react-icons/md';
 import { GrDocumentConfig } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
@@ -72,7 +72,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Dealer Pay',
         icon: (
-          <MdOutlinePayment
+          <BiDollar
             size={20}
             style={{ marginLeft: '5px' }}
             className="hover-icon"

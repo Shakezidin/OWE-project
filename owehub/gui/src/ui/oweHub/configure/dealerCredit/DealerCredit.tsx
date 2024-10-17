@@ -316,6 +316,7 @@ if (exportData.status > 201) {
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
+          isExportingData={isExportingData}
         />
         {exportOPen && (
           <div className="export-modal">

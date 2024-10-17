@@ -356,6 +356,7 @@ const DealerPayments: React.FC = () => {
           onpressExport={() => handleExportOpen()}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc

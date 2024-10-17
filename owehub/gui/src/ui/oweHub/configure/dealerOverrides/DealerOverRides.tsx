@@ -346,6 +346,7 @@ const DealerOverRides: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc

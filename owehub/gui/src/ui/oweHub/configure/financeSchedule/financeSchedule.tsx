@@ -361,6 +361,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc
