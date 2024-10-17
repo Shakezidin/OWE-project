@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS sales_partner_dbhub_schema (
     creation_date TIMESTAMP,
     days_to_first_sale TEXT,
     days_to_first_pv_install_complete TEXT,
-    partner_id TEXT,
+    partner_id BIGINT,
     partner_tier TEXT,
     partner_type TEXT,
     partner_status TEXT,
