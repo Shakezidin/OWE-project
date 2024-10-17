@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import classes from './index.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { usePopper } from 'react-popper';
+import useEscapeKey from '../../../../../hooks/useEscape';
 
 
 interface DropDownLibraryProps {
@@ -20,8 +21,12 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const dropdownRef = useRef<HTMLUListElement | null>(null);
-  const buttonRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  }
+
+  useEscapeKey(handleClose)
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLUListElement | null>(null);

@@ -4,6 +4,7 @@ import classes from './index.module.css';
 import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
 import { CiFilter } from 'react-icons/ci';
 import { FaFilter } from 'react-icons/fa';
+import useEscapeKey from '../../../../../hooks/useEscape';
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
@@ -43,7 +44,11 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
     setModalOpenClick(false);
   };
 
-  console.log(selectedValue, "what happens")
+  const handleClose = () => {
+    setModalOpenClick(false);
+  }
+
+  useEscapeKey(handleClose)
 
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
