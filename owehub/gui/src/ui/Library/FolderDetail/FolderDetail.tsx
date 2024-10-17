@@ -61,6 +61,12 @@ const FolderDetail = () => {
     const [isHovered, setIsHovered] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 10
+
+    const getPaginatedData = (page: number) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return files.slice(startIndex, endIndex);
+      };
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
         const query = searchParams.get("from")
@@ -315,7 +321,7 @@ const FolderDetail = () => {
         }
     }
 
-
+const paginatedData = getPaginatedData(currentPage);
 
     return (
         <div className={` ${styles.libraryContainer}`}>
@@ -386,8 +392,8 @@ const FolderDetail = () => {
                         <div className={`${styles.grid_item} ${styles.table_name}`}>
                             <div className="flex items-center">
                                 {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
-                                    <CheckBox checked={selected.size === files.length && !!files.length} onChange={() => {
-                                        if (selected.size === files.length) {
+                                    <CheckBox checked={selected.size === paginatedData.length && !!paginatedData.length} onChange={() => {
+                                        if (selected.size === paginatedData.length) {
                                             setSelected(new Set())
                                         } else {
                                             const newChecked = new Set(files.map((item) => item.id))
@@ -408,9 +414,9 @@ const FolderDetail = () => {
                         isLoading ?
                             <div className={` bg-white py2 ${styles.filesLoader}`}> <MicroLoader /></div>
                             :
-                            files.length ?
+                            paginatedData.length ?
                                 viewMode === "list" ?
-                                    files.map((file, index) => {
+                                paginatedData.map((file, index) => {
                                         const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
                                         const isValidVideo = isVideo(file.file?.mimeType!)
                                         return <div key={file.id} className={styles.libGridItem} >
@@ -502,7 +508,7 @@ const FolderDetail = () => {
                                     })
                                     :
                                     <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}>
-                                        {files.map((file) => {
+                                        {paginatedData.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
                                                 name: file.name,
@@ -566,7 +572,7 @@ const FolderDetail = () => {
                                 </div>
                     }
 
-                    {!!files.length && <div style={{ borderBottomRightRadius: 12, borderBottomLeftRadius: 12 }} className="page-heading-container bg-white" >
+                    {!!paginatedData.length && <div style={{ borderBottomRightRadius: 12, borderBottomLeftRadius: 12 }} className="page-heading-container bg-white" >
                         <p className="page-heading">
                             Showing {startIndex} - {endIndex > files.length ? files.length : endIndex}{' '}
                             of {files.length} item
