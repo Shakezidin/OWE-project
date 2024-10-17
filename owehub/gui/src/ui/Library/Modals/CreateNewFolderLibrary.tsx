@@ -24,19 +24,20 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value // Remove trailing spaces
+    setError('');
  
-    // Define valid character regex
+    
     const validCharacters = /^[a-zA-Z0-9. _-]*$/;
-    // const validCharacters = /^[a-zA-Z0-9][a-zA-Z0-9. _-]*$/;
+   
  
-    // Check if the input is valid
+   
     if (!validCharacters.test(inputValue)) {
-      return; // Exit early if the input is invalid
+      return; 
     }
  
-    // Check for more than 1 continuous space
+   
     if (/\s{2,}/.test(inputValue)) {
-      return; // Exit early if there are 2 or more continuous spaces
+      return; 
     }
  
     setFolderName(inputValue);
@@ -99,7 +100,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                 />
               </div>
               <div className={classes.success_hrline}></div>
-
+            <div  style={{ minHeight: 108 }} >
               <div className={classes.succicon}>
                 <input
                   type="text"
@@ -110,10 +111,13 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                   maxLength={25}
                 ></input>
               </div>
-              {error && <div className='mx-auto' style={{ maxWidth: 548 }}>
+              {error && <div className='mx-auto' style={{ maxWidth: 548, display: folderName.length >= 1? 'none' : 'block' }} >
 
-                <span className="error"> {error} </span>
+                <span 
+                 className={`${classes.error} error`}
+                > {error} </span>
               </div>}
+            </div>   
             </div>
             <div className={classes.survey_button}>
               <button disabled={isPending} id="otherButtonId" className={classes.other} onClick={createFolder}>

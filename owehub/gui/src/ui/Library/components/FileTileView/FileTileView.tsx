@@ -15,7 +15,7 @@ import folderImage from '../../../../resources/icons/folderimage.svg'
 import text from '../../assetss/textFile.svg'
 import defaultImage from '../../assetss/default.svg'
 import CheckBox from '../../../components/chekbox/CheckBox';
-
+import audio from '../../../../resources/icons/audioFile.svg'
 
 export interface IFiles {
   createdDateTime: string;
@@ -80,8 +80,29 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
         return false
     }
   }
+
+  const isAudio = (mimeType: string): boolean => {
+    switch (mimeType) {
+      case "audio/mpeg":
+      case "audio/mp3":
+      case "audio/wav":
+      case "audio/x-wav":
+      case "audio/ogg":
+      case "audio/aac":
+      case "audio/midi":
+      case "audio/x-midi":
+      case "audio/webm":
+      case "audio/flac":
+      case "audio/x-m4a":
+      case "audio/x-matroska":
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const getUrl = () => {
-    if (isImage(file?.mimeType!) || isVideo(file?.mimeType!)) {
+    if (isImage(file?.mimeType!) || isVideo(file?.mimeType!) || isAudio(file?.mimeType!)) {
       return file?.['@microsoft.graph.downloadUrl']
     }
     else {
@@ -107,10 +128,14 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "application/pdf":
         return pdf
 
-      case "application/vnd.ms-excel":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-      case "application/vnd.ms-excel.sheet.macroEnabled.12":
+        case "application/vnd.ms-excel":  // XLS
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":  // XLSX
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":  // XLTX
+        case "application/vnd.ms-excel.sheet.macroEnabled.12":  // XLSM
+        case "application/vnd.ms-excel.template.macroEnabled.12":  // XLTM
+        case "application/vnd.oasis.opendocument.spreadsheet":  // ODS
+        case "text/csv":  // CSV
+        case "text/tab-separated-values":
         return excel;
 
       case "video/mp4":
@@ -124,43 +149,79 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "folder":
         return folderImage
 
-      case "text/plain":
-        return text
+      
+      case "audio/x-wav":
+      case "audio/mpeg":
+        case "audio/wav":
+          case "audio/ogg":
+            case "audio/aac":
+              case "audio/flac":
+                case "audio/mp4":
+                  case "audio/amr":
+                    case "audio/aiff":
+                      case "audio/x-ms-wma":
+                        case "audio/webm":
+        return audio;
+
+        case "text/plain":
+              return text;
+
+        case "application/vnd.ms-powerpoint":
+      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+      case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+      case "application/vnd.openxmlformats-officedocument.presentationml.template":
+      case "application/vnd.ms-powerpoint.template.macroEnabled.12":
+      case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
+      case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
+      case "application/vnd.oasis.opendocument.presentation":
+      return powerpoint;
+   case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+          case "application/msword":
+            case  'application/vnd.ms-word.document.macroEnabled.12':
+              case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+                case 'application/vnd.ms-word.template.macroEnabled.12':
+                  case "application/rtf":
+                    case "application/vnd.oasis.opendocument.text":
+          return word;
       default:
         return defaultImage
 
     }
   };
- 
+
   return (
     <div className='bg-white'>
-      <div className={` relative ${styles.thumbnail_wrapper}`}>
+      <div style={{ cursor: "pointer" }} className={` relative ${styles.thumbnail_wrapper}`} onClick={() => {
+        onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
+      }}>
         <div className={styles.avatar_circle}>
           {file?.name?.[0]}
         </div>
-        <img style={{ cursor: "pointer" }} onClick={() => {
-          onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
-        }} src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
-        {role_name === TYPE_OF_USER.ADMIN && <div className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
+        <img src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
+        {role_name === TYPE_OF_USER.ADMIN && <div onClick={(e) => {
+          e.stopPropagation()
+        }} className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
           <CheckBox checked={selected.has(file?.id!)} onChange={() => { onCheck(file?.id!) }} />
         </div>}
       </div>
 
       <div className={styles.avatar_name_div}>
-     
+
         <div className="flex items-center justify-between mt2">
-          
+
           <div className={styles.avatar_name_conatiner}>
-          <h4 className={styles.card_title_hide}> {file?.name}</h4>
-          <h4  className={styles.card_title}> {file?.name} </h4>
-          </div>        
+            <h4 className={styles.card_title_hide}> {file?.name}</h4>
+            <h4  className={styles.card_title} onClick={() => {
+              onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
+            }}> {file?.name} </h4>
+          </div>
 
           <div className="flex items-center">
             {role_name === TYPE_OF_USER.ADMIN && <span onClick={() => onDelete(file?.id!)} className={styles.card_btn}>
-              <GoTrash   size={14} />
+              <GoTrash size={14} />
             </span>}
             <span className={styles.card_btn}>
-              <LuDownload   size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
+              <LuDownload size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
             </span>
           </div>
         </div>

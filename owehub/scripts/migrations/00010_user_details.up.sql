@@ -5,24 +5,24 @@ CREATE TABLE IF NOT EXISTS partner_details (
     bg_colour VARCHAR(255),
     preferred_name VARCHAR(255),
     description VARCHAR(255),
-    partner_id VARCHAR(255)
+    partner_id BIGINT
 );
 
 ALTER TABLE user_details
-ADD COLUMN partner_id VARCHAR(255);
+ADD COLUMN partner_id BIGINT;
 
 ALTER TABLE user_details
-ADD COLUMN dealer_owner_id VARCHAR(255);
+ADD COLUMN dealer_owner_id BIGINT;
 
 
--- Add new foreign key constraints to refer to sales_partner_dbhub_schema.partner_id
+-- Add new foreign key constraints to refer to sales_partner_dbhub_schema.item_id
 -- ALTER TABLE user_details
 --     ADD CONSTRAINT user_details_dealerowner_fkey
 --         FOREIGN KEY (dealer_owner_id)
---         REFERENCES sales_partner_dbhub_schema(partner_id) ON DELETE SET NULL,
+--         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL,
 --     ADD CONSTRAINT user_details_partner_id_fkey
 --         FOREIGN KEY (partner_id)
---         REFERENCES sales_partner_dbhub_schema(partner_id) ON DELETE SET NULL;
+--         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
 
 
 CREATE OR REPLACE FUNCTION create_new_user(
@@ -57,12 +57,12 @@ DECLARE
     v_role_id INT;
     v_user_details_id INT;
     v_reporting_manager_id INT;
-    v_dealer_owner_id VARCHAR(255);
+    v_dealer_owner_id BIGINT;
     v_state_id INT;
     v_zipcode_id INT;
     v_team_id INT;
     v_max_user_code INT;
-    v_dealer_id VARCHAR(255);
+    v_dealer_id BIGINT;
     v_new_user_code VARCHAR(255);
     v_reporting_manager VARCHAR(255);
 BEGIN
@@ -258,7 +258,7 @@ CREATE OR REPLACE FUNCTION update_user(
 RETURNS INT 
 AS $$
 DECLARE
-    v_dealer_id VARCHAR(255);
+    v_dealer_id BIGINT;
     v_reporting_manager VARCHAR(255);
 BEGIN
 
