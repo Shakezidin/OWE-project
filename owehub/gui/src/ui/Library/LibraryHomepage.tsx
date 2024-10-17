@@ -824,23 +824,12 @@ const LibraryHomepage = () => {
             sortOption={sortOption}
             checkedFolders={checkedFolders}
             folderData={sortedFolder}
+            loading={loading}
           />
       );
     }
 
-    if (selectedType === 'Videos') {
-      return (
-        <div>
-          {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'))} onClick={(url: string, name) => {
-              setIsVideoModalOpen(true)
-              setVideoUrl(url)
-              setVideoName(name!)
-            }} />}
-        </div>
-      );
-    }
-
+  
     return (
       <div className={styles.libSectionWrapper}>
         {filesView === "list" && <div className={styles.lib_Grid_Header}>
@@ -882,7 +871,7 @@ const LibraryHomepage = () => {
 
           sortedData.length > 0 ? (
             filesView === "list" ?
-              sortedData.map((data) => {
+              (selectedType === 'Videos'?sortedData.filter((item)=>isVideo(item.file?.mimeType!)):sortedData).map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return (
@@ -923,7 +912,8 @@ const LibraryHomepage = () => {
                           alt={`null`}
                           loading='lazy'
                         />
-                        <div>
+                        <div className={styles.name_div} >
+                        <p className={styles.name_hide}>{data.name.substring(0, 100)}</p>
                           <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
                           <p className={styles.size}>
                             {data.size < 1024
@@ -941,9 +931,9 @@ const LibraryHomepage = () => {
 
                       <div>
                       <RxDownload
-                  className={styles.icons}
+                  className={`${styles.icons_download} ${styles.icons}`}
                   onClick={() => downloadFile(data["@microsoft.graph.downloadUrl"], data.name)}
-                  style={{ height: '18px', width: '18px', color: '#101828' }}
+                  
                 />
                       </div>
                       <div>

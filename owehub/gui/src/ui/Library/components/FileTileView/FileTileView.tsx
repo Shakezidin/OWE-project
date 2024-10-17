@@ -131,6 +131,7 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
 
     }
   };
+ 
   return (
     <div className='bg-white'>
       <div className={` relative ${styles.thumbnail_wrapper}`}>
@@ -145,15 +146,21 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
         </div>}
       </div>
 
-      <div>
+      <div className={styles.avatar_name_div}>
+     
         <div className="flex items-center justify-between mt2">
-          <h4 className={styles.card_title} > {file?.name} </h4>
+          
+          <div className={styles.avatar_name_conatiner}>
+          <h4 className={styles.card_title_hide}> {file?.name}</h4>
+          <h4  className={styles.card_title}> {file?.name} </h4>
+          </div>        
+
           <div className="flex items-center">
             {role_name === TYPE_OF_USER.ADMIN && <span onClick={() => onDelete(file?.id!)} className={styles.card_btn}>
-              <GoTrash  color='#000' size={14} />
+              <GoTrash   size={14} />
             </span>}
             <span className={styles.card_btn}>
-              <LuDownload  color='#000' size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
+              <LuDownload   size={14} onClick={() => downloadFile(file?.["@microsoft.graph.downloadUrl"] !== undefined ? file?.["@microsoft.graph.downloadUrl"] : '', file?.name !== undefined ? file?.name : '')} />
             </span>
           </div>
         </div>

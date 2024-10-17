@@ -4,6 +4,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaAngleRight } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { usePopper } from 'react-popper';
+import useEscapeKey from '../../../../../hooks/useEscape';
 
 
 interface DropDownLibraryProps {
@@ -42,6 +43,12 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
       },
     ],
   });
+
+  const handleClose = () => {
+    setIsVisible(false);
+  }
+
+  useEscapeKey(handleClose)
 
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
