@@ -1164,7 +1164,6 @@ const LibraryHomepage = () => {
   return (
     <div className={styles.libraryContainer}>
       <div className={`${styles.libraryHeader} flex items-center justify-between`}>
-        <h3>Library</h3>
         <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
           <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
             <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
@@ -1200,7 +1199,12 @@ const LibraryHomepage = () => {
       ) : (
         <div className={styles.libSecHeader}>{renderHeaderContent()}</div>
       )}
-      <div className="bg-white">
+      <div className="bg-white" style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '78vh',
+        justifyContent: 'space-between'
+      }}>
 
         {renderContent()}
         {

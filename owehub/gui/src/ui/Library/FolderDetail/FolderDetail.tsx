@@ -326,7 +326,7 @@ const paginatedData = getPaginatedData(currentPage);
     return (
         <div className={` ${styles.libraryContainer}`}>
             <div className={styles.libraryHeader}>
-                <h3>Library</h3>
+        
             </div>
             {
                 selected.size ?
@@ -507,7 +507,7 @@ const paginatedData = getPaginatedData(currentPage);
                                         </div>
                                     })
                                     :
-                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}>
+                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 ,        minHeight: '70vh',}}>
                                         {paginatedData.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
