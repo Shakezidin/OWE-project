@@ -611,12 +611,6 @@ const LibraryHomepage = () => {
       'application/rtf',
       'application/vnd.oasis.opendocument.text'
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime')) || (selectedType === 'Text' && data.file?.mimeType === 'text/plain');
-=======
-=======
->>>>>>> 7a5eafbacff4d25124e73265e2083654a538da85
     ];
     const audioMimes = [
       "audio/mpeg",                          // MP3
@@ -649,15 +643,7 @@ const LibraryHomepage = () => {
         mimeType !== undefined && // Check if mimeType is defined
         ![...excelMimes, ...pdfMimes, ...imageMimes, ...videoMimes, ...textMimes, ...powerpointMimes, ...wordMimes, ...audioMimes].includes(mimeType)
       );
-<<<<<<< HEAD
-  
-<<<<<<< HEAD
->>>>>>> fd0fa5e85c334605201e1b65a24ee21ff1a95adc
-=======
->>>>>>> 7a5eafbacff4d25124e73265e2083654a538da85
-=======
 
->>>>>>> 5e3630ae96ffbef59c676cf458b5014a2251a678
     return matchesSearch && matchesType;
   });
 
@@ -1088,68 +1074,7 @@ const LibraryHomepage = () => {
                       }}>
                         <img
                           className={styles.cardImg}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? image :
-                            data.file?.mimeType === "application/octet-stream" ? audio :
-                              data.file?.mimeType === "audio/x-wav" ? audio :
-                                data.file?.mimeType === "audio/mpeg" ? audio : defauult}
-=======
-                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf :
-                            
-                            
-                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon
-                            : data.file?.mimeType === "application/vnd.ms-excel.sheet.macroEnabled.12" ? ICONS.excelIcon
-                            : data.file?.mimeType === "application/vnd.ms-excel" ? ICONS.excelIcon
-                            : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.template" ? ICONS.excelIcon
-                            : data.file?.mimeType === "application/vnd.ms-excel.template.macroEnabled.12" ? ICONS.excelIcon
-                            : data.file?.mimeType === "application/vnd.oasis.opendocument.spreadsheet" ? ICONS.excelIcon
-                            : data.file?.mimeType === "text/csv" ? ICONS.excelIcon
-                            : data.file?.mimeType === "text/tab-separated-values" ? ICONS.excelIcon :
-                            
-                            
-                            
-                            data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : 
-                            data.file?.mimeType === 'text/plain' ? textFile 
-                            :
-                             data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : data.file?.mimeType === "application/msword" ? wordFile :
-                            data.file?.mimeType === 'application/vnd.ms-word.document.macroEnabled.12' ? wordFile :
-                            data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.wordtemplate' ? wordFile :
-                            data.file?.mimeType === 'application/vnd.ms-word.template.macroEnabled.12' ? wordFile :
-                            data.file?.mimeType === "application/rtf" ? wordFile :
-                            data.file?.mimeType === "application/vnd.oasis.opendocument.text" ? wordFile : isValidImage ? image :
-                            
-                            data.file?.mimeType==="audio/x-wav"?  audio:
-                            data.file?.mimeType==="audio/mpeg"?  audio: 
-
-                            data.file?.mimeType==="audio/wav"?  audio: 
-
-                            data.file?.mimeType==="audio/ogg"?  audio: 
-                            data.file?.mimeType==="audio/aac"?  audio: 
-                            data.file?.mimeType==="audio/flac"?  audio: 
-                            data.file?.mimeType==="audio/mp4"?  audio: 
-                            data.file?.mimeType==="audio/amr"?  audio: 
-                            data.file?.mimeType==="audio/aiff"?  audio: 
-                            data.file?.mimeType==="audio/x-ms-wma"?  audio: 
-                            data.file?.mimeType==="audio/webm"?  audio: 
-                            data.file?.mimeType === "application/vnd.ms-powerpoint" ? powerpoint:
-
-                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ? powerpoint:
-                            data.file?.mimeType === "application/vnd.ms-powerpoint.presentation.macroEnabled.12" ? powerpoint:
-                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.presentationml.template" ? powerpoint:
-                            data.file?.mimeType === "application/vnd.ms-powerpoint.template.macroEnabled.12" ? powerpoint:
-                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" ? powerpoint:
-                            data.file?.mimeType === "application/vnd.ms-powerpoint.slideshow.macroEnabled.12" ? powerpoint:
-                            data.file?.mimeType === "application/vnd.oasis.opendocument.presentation" ? powerpoint:
-                            defauult}
->>>>>>> fd0fa5e85c334605201e1b65a24ee21ff1a95adc
-=======
-                          src={getContentThumbnail(data.file?.mimeType!)}
->>>>>>> 7a5eafbacff4d25124e73265e2083654a538da85
-=======
                           src={getFileIcon(data.file?.mimeType!)}
->>>>>>> 5aed4fe1c1362f3dfae0120d135c55137661896d
                           alt={`null`}
                           loading='lazy'
                         />

@@ -474,8 +474,10 @@ const FolderDetail = () => {
                                                     </div>
 
                                                     <div className={"mt2"} style={{ width: "100%" }}>
-
+                                                    <div className={styles.name_div}>
+                                                    <div className={styles.name_hide}>{file.name.substring(0, 50)}</div>
                                                         <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
+                                                     </div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
                                                                 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
