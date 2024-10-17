@@ -135,6 +135,21 @@ export const DashboardPage: React.FC = () => {
     setIsFetched(true);
   };
 
+  const handleEscapeKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && showDatePicker) {
+      setShowDatePicker(false);
+    }
+  };
+
+  // Add event listener for Escape key
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscapeKey);
+
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [showDatePicker]);
 
   useEffect(() => {
     
