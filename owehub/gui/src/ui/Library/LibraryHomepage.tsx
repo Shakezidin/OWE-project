@@ -25,7 +25,7 @@ import { format, set } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { FileOrFolder } from './types';
 import { useAppSelector } from '../../redux/hooks';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 import audioFile from './assetss/audioFile.svg'
@@ -53,7 +53,7 @@ function getFileIcon(mimeType: string | undefined): string {
   switch (mimeType) {
     case 'application/pdf':
       return ICONS.pdf;
-    
+
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
     case "application/vnd.ms-excel.sheet.macroEnabled.12":
     case "application/vnd.ms-excel":
@@ -63,7 +63,7 @@ function getFileIcon(mimeType: string | undefined): string {
     case "text/csv":
     case "text/tab-separated-values":
       return ICONS.excelIcon;
-    
+
     case 'video/mp4':
       return ICONS.videoPlayerIcon;
     case 'video/mpeg':
@@ -72,10 +72,10 @@ function getFileIcon(mimeType: string | undefined): string {
     case 'video/x-msvideo':
     case 'video/quicktime':
       return ICONS.viedoImageOne;
-    
+
     case 'text/plain':
       return textFile;
-    
+
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
     case "application/msword":
     case 'application/vnd.ms-word.document.macroEnabled.12':
@@ -84,7 +84,7 @@ function getFileIcon(mimeType: string | undefined): string {
     case "application/rtf":
     case "application/vnd.oasis.opendocument.text":
       return wordFile;
-    
+
     case "audio/x-wav":
     case "audio/mpeg":
     case "audio/wav":
@@ -97,7 +97,7 @@ function getFileIcon(mimeType: string | undefined): string {
     case "audio/x-ms-wma":
     case "audio/webm":
       return audio;
-    
+
     case "application/vnd.ms-powerpoint":
     case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
     case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
@@ -107,9 +107,9 @@ function getFileIcon(mimeType: string | undefined): string {
     case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
     case "application/vnd.oasis.opendocument.presentation":
       return powerpoint;
-    
+
     default:
-      return  defauult;
+      return defauult;
   }
 }
 
@@ -221,7 +221,7 @@ const LibraryHomepage = () => {
   }
   const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
   const [fileData, setFileData] = useState<FileOrFolder[]>([]);
-
+  const navigate = useNavigate()
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isPending, setIsPending] = useState(false)
@@ -556,38 +556,41 @@ const LibraryHomepage = () => {
   };
   const handleSectionClick = (section: 'files' | 'folders' | 'dropdown') => {
     setActiveSection(section);
+    if (section === "files") {
+      navigate("/library")
+    }
     setSearchValue('');
     setFolderData(originalFolderData);
     setFileData(originalFileData);
   };
 
   const filteredData = fileData.filter((data) => {
-    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || 
+    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) ||
       data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-  
-      const excelMimes = [
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
-        'application/vnd.ms-excel.sheet.macroEnabled.12',                   // XLSM
-        'application/vnd.ms-excel',                                         // XLS
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.template', // XLTX
-        'application/vnd.ms-excel.template.macroEnabled.12',               // XLTM
-        'application/vnd.oasis.opendocument.spreadsheet',                  // ODS
-        'text/csv',                                                         // CSV
-        'text/tab-separated-values'                                         // TSV
+
+    const excelMimes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+      'application/vnd.ms-excel.sheet.macroEnabled.12',                   // XLSM
+      'application/vnd.ms-excel',                                         // XLS
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.template', // XLTX
+      'application/vnd.ms-excel.template.macroEnabled.12',               // XLTM
+      'application/vnd.oasis.opendocument.spreadsheet',                  // ODS
+      'text/csv',                                                         // CSV
+      'text/tab-separated-values'                                         // TSV
     ];
-    
+
     const pdfMimes = ['application/pdf'];
     const imageMimes = [
-      'image/png', 'image/jpeg', 'image/gif', 'image/webp', 
-      'image/bmp', 'image/tiff', 'image/svg+xml', 
+      'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+      'image/bmp', 'image/tiff', 'image/svg+xml',
       'image/heif', 'image/heic'
     ];
     const videoMimes = [
-      'video/mp4', 'video/mpeg', 'video/ogg', 
+      'video/mp4', 'video/mpeg', 'video/ogg',
       'video/webm', 'video/x-msvideo', 'video/quicktime'
     ];
     const textMimes = [
-      'text/plain',                          
+      'text/plain',
     ];
     const powerpointMimes = [
       'application/vnd.ms-powerpoint',
@@ -600,7 +603,7 @@ const LibraryHomepage = () => {
       'application/vnd.oasis.opendocument.presentation'
     ];
     const wordMimes = [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/msword',
       'application/vnd.ms-word.document.macroEnabled.12',
       'application/vnd.openxmlformats-officedocument.wordtemplate',
@@ -627,30 +630,34 @@ const LibraryHomepage = () => {
       "audio/x-ms-wma",                     // WMA
       "audio/webm",
       "audio/x-wav",
-                                 // WebM
+      // WebM
     ];
-    
-  
+
+
     const mimeType = data.file?.mimeType; // Get the MIME type safely
-    
-    const matchesType = selectedType === 'All' || 
-      (selectedType === 'Excel' && mimeType && excelMimes.includes(mimeType)) || 
-      (selectedType === 'PDF Format' && mimeType && pdfMimes.includes(mimeType)) || 
-      (selectedType === 'Images' && mimeType && imageMimes.includes(mimeType)) || 
-      (selectedType === 'Videos' && mimeType && videoMimes.includes(mimeType)) || 
-      (selectedType === 'Text' && mimeType && textMimes.includes(mimeType)) || 
-      (selectedType === 'Powerpoint' && mimeType && powerpointMimes.includes(mimeType)) || 
-      (selectedType === 'Word' && mimeType && wordMimes.includes(mimeType)) || 
+
+    const matchesType = selectedType === 'All' ||
+      (selectedType === 'Excel' && mimeType && excelMimes.includes(mimeType)) ||
+      (selectedType === 'PDF Format' && mimeType && pdfMimes.includes(mimeType)) ||
+      (selectedType === 'Images' && mimeType && imageMimes.includes(mimeType)) ||
+      (selectedType === 'Videos' && mimeType && videoMimes.includes(mimeType)) ||
+      (selectedType === 'Text' && mimeType && textMimes.includes(mimeType)) ||
+      (selectedType === 'Powerpoint' && mimeType && powerpointMimes.includes(mimeType)) ||
+      (selectedType === 'Word' && mimeType && wordMimes.includes(mimeType)) ||
       (selectedType === 'Audio' && mimeType && audioMimes.includes(mimeType)) ||
-      (selectedType === 'Others' && 
+      (selectedType === 'Others' &&
         mimeType !== undefined && // Check if mimeType is defined
         ![...excelMimes, ...pdfMimes, ...imageMimes, ...videoMimes, ...textMimes, ...powerpointMimes, ...wordMimes, ...audioMimes].includes(mimeType)
       );
+<<<<<<< HEAD
   
 <<<<<<< HEAD
 >>>>>>> fd0fa5e85c334605201e1b65a24ee21ff1a95adc
 =======
 >>>>>>> 7a5eafbacff4d25124e73265e2083654a538da85
+=======
+
+>>>>>>> 5e3630ae96ffbef59c676cf458b5014a2251a678
     return matchesSearch && matchesType;
   });
 
@@ -1191,15 +1198,15 @@ const LibraryHomepage = () => {
                 onFilePreview={(url, type, name) => {
                   const isValidVideo = isVideo(type)
                   const isValidImage = isImage(type)
-             
-                  if (isValidVideo ) {
+
+                  if (isValidVideo) {
                     setIsVideoModalOpen(true)
                     setVideoUrl(url)
                     setVideoName(name)
                     return
                   }
 
-                  if (isValidImage || isAudio(type) ) {
+                  if (isValidImage || isAudio(type)) {
                     setFileInfo({ name: name, fileType: type!, url: url })
                     setIsFileViewerOpen(true)
                     return
