@@ -311,6 +311,8 @@ const FolderDetail = () => {
         }
     }
 
+
+
     return (
         <div className={styles.libraryContainer}>
             <div className={styles.libraryHeader}>
@@ -447,7 +449,7 @@ const FolderDetail = () => {
                                                                 setVideoName(file.name)
                                                                 return
                                                             }
-                                                            if (fileType === "image" || isAudio(file.file?.mimeType!)) {
+                                                            if (isImage(file?.file?.mimeType!)|| isAudio(file.file?.mimeType!)) {
                                                                 setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
                                                                 setIsFileViewerOpen(true)
                                                                 return
