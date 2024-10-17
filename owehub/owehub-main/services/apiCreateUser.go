@@ -282,12 +282,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	//* logic to create / update user to podio
-	if createUserReq.AddToPodio {
-		podioError = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
-		if podioError != nil {
-			log.FuncErrorTrace(0, "%v", podioError)
-		}
-	}
+	// if createUserReq.AddToPodio {
+	// 	podioError = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
+	// 	if podioError != nil {
+	// 		log.FuncErrorTrace(0, "%v", podioError)
+	// 	}
+	// }
 
 	// Send email to client
 	err = SendMailToClient(createUserReq.EmailId, createUserReq.Name)
