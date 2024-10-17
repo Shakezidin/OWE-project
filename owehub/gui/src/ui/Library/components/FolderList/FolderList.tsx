@@ -24,7 +24,7 @@ const FolderList = (props: IFolder) => {
     const navigate = useNavigate()
 
     return (
-        <div className={sharedStyles.libGridItem} >
+        <div className={sharedStyles.libGridItem} style={{ gridTemplateColumns: role_name !== TYPE_OF_USER.ADMIN ? "80% 20%" : undefined }}>
             <div style={{ cursor: "pointer" }} className={`${sharedStyles.file_icon} ${sharedStyles.image_div}`}>
                 <div className="flex items-center">
                     { role_name === TYPE_OF_USER.ADMIN && <div className="mr1" style={{marginTop:-7}}>
@@ -70,7 +70,7 @@ const FolderList = (props: IFolder) => {
             <div className={` ${sharedStyles.sm_hide} ${sharedStyles.grid_item}`} style={{ fontSize: "14px" }}>
     {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
 </div>
-            <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
+            { role_name===TYPE_OF_USER.ADMIN && <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
 
 
                 <div>
@@ -83,7 +83,7 @@ const FolderList = (props: IFolder) => {
                 </div>
 
 
-            </div>
+            </div>}
         </div>
     )
 }
