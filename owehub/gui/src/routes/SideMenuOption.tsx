@@ -98,7 +98,7 @@ const mob = {
     {
       path: ROUTES.LEAD_MANAGEMENT,
       sidebarProps: {
-        displayText: 'Lead Management',
+        displayText: 'Leads',
         icon: (
           <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
         ),
