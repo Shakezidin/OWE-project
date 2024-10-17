@@ -99,7 +99,7 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
                 />
               </div>
               <div className={classes.success_hrline}></div>
-
+            <div  style={{ minHeight: 108 }}>
               <div className={classes.succicon}>
                 <input
                   type="text"
@@ -112,8 +112,11 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder, upl
               </div>
               {error && <div className='mx-auto' style={{ maxWidth: 548 }}>
 
-                <span className="error"> {error} </span>
+                <span 
+                 className={`${classes.error} error`}
+                > {error} </span>
               </div>}
+            </div>   
             </div>
             <div className={classes.survey_button}>
               <button disabled={isPending} id="otherButtonId" className={classes.other} onClick={createFolder}>
