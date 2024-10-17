@@ -273,12 +273,6 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
  
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Finance Schedule"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Finance Schedule"

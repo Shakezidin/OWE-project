@@ -34,3 +34,9 @@
   cursor: pointer;
   color: rgb(0, 0, 0);
 }
+
+.commission-back{
+  display: flex;
+  align-content: center;
+  gap: 10px;
+}

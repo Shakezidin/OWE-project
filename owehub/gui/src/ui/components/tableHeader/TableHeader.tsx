@@ -2,10 +2,11 @@ import React from 'react';
 import { ICONS } from '../../../resources/icons/Icons';
 import '../../oweHub/configure/configure.css';
 import { useAppSelector } from '../../../redux/hooks';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { RiFilterLine } from 'react-icons/ri';
 import Switch from '../../components/Switch';
 import { RiDeleteBinLine } from 'react-icons/ri';
+import { BiArrowBack } from 'react-icons/bi';
 interface TableProps {
   title: string;
   onPressViewArchive: (() => void) | null;
@@ -35,9 +36,17 @@ const TableHeader = (props: TableProps) => {
   } = props;
   const { isActive } = useAppSelector((state) => state.filterSlice);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   return (
     <div className="commissionSection">
-      <h3>{title}</h3>
+      <div className='commission-back'>
+        <BiArrowBack style={{
+          height: '20px',
+          width: '20px',
+        }}
+        className='back-btn' onClick={() => navigate(-1)} />
+        <h3>{title}</h3>
+      </div>
 
       <div className="iconContainer">
         {onPressViewArchive ? (
@@ -91,7 +100,7 @@ const TableHeader = (props: TableProps) => {
         </div> */}
         <div className="iconsSection2-confex">
           {onpressExport ? (
-            <button type="button"  onClick={onpressExport}>
+            <button type="button" onClick={onpressExport}>
               <svg
                 width="19"
                 height="19"
@@ -112,12 +121,12 @@ const TableHeader = (props: TableProps) => {
               // background: `var(--primary-color)`,
               color: 'white',
               border: '1px solid var(--primary-color)',
-              opacity:'0.7',
-              cursor:'not-allowed'
-              
+              opacity: '0.7',
+              cursor: 'not-allowed'
+
             }}
-            // className="hover-btn"
-            // onClick={onpressAddNew}
+          // className="hover-btn"
+          // onClick={onpressAddNew}
           >
             <img
               src={ICONS.AddIcon}

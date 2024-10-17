@@ -231,12 +231,6 @@ const  SsOnboarding: React.FC = () => {
   const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Site Survey Onboarding"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Site Survey Onboarding"

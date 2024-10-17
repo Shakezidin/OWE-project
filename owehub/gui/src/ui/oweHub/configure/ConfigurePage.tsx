@@ -67,7 +67,7 @@ const ConfigurePage: React.FC = () => {
   return (
     <>
       <div className="configure-container">
-        <div className="configure-header">
+        {/* <div className="configure-header">
           <Breadcrumb
             head=""
             linkPara="Configure"
@@ -75,7 +75,7 @@ const ConfigurePage: React.FC = () => {
             linkparaSecond=""
             marginLeftMobile="12px"
           />
-        </div>
+        </div> */}
         <div className="configure-main">
           <div className="configure-main-section">
             {accordionSections.map(({ title, data, state }, index) => {
