@@ -28,6 +28,7 @@ import { configPostCaller } from '../../../../infrastructure/web_api/services/ap
 import { checkLastPage } from '../../../../utiles';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
+import { BiArrowBack } from 'react-icons/bi';
 
 
 const DealerOverRides: React.FC = () => {
@@ -39,7 +40,7 @@ const DealerOverRides: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
- 
+
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -48,7 +49,7 @@ const DealerOverRides: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
-  const [data,setData] = useState<any>([]);
+  const [data, setData] = useState<any>([]);
   const [totalCount, setTotalCount] = useState<number>(0)
   const [isExportingData, setIsExporting] = useState(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -109,7 +110,7 @@ const DealerOverRides: React.FC = () => {
   };
 
   useEffect(() => {
-   
+
     (async () => {
       setLoading(true);
       try {
@@ -127,18 +128,18 @@ const DealerOverRides: React.FC = () => {
         setData(data?.data?.DealerOverrideData)
         setTotalCount(data.dbRecCount)
         setLoading(false);
-         
+
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-  
-}, [
-  currentPage, viewArchived, filters
-]);
 
-const totalPages = Math.ceil(totalCount / itemsPerPage);
+  }, [
+    currentPage, viewArchived, filters
+  ]);
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -272,25 +273,25 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     );
   }
   const notAllowed = selectedRows.size > 1;
-   
+
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
-  setIsExporting(true);
-  const exportData = await configPostCaller('get_dealeroverride', {
-    page_number: 1,
-    page_size: totalCount,
-  });
-  if (exportData.status > 201) {
-    toast.error(exportData.message);
-    return;
-  }
-  
-    
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, "");
+    };
+    setIsExporting(true);
+    const exportData = await configPostCaller('get_dealeroverride', {
+      page_number: 1,
+      page_size: totalCount,
+    });
+    if (exportData.status > 201) {
+      toast.error(exportData.message);
+      return;
+    }
+
+
     const headers = [
       'Sub Dealer',
       'Dealer',
@@ -299,22 +300,22 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
       'Start Date',
       'End Date',
     ];
-  
-   
-     
+
+
+
     const csvData = exportData?.data?.DealerOverrideData?.map?.((item: any) => [
       item.sub_dealer,
       item.dealer,
       item.pay_rate,
       item.state,
       item.start_date,
-      item.end_date    
+      item.end_date
     ]);
-  
+
     const csvRows = [headers, ...csvData];
-  
+
     const csvString = Papa.unparse(csvRows);
-  
+
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -324,16 +325,10 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-   
+
   };
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer OverRides"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
@@ -345,7 +340,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           viewArchive={viewArchived}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
@@ -399,7 +394,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-               
+
               </tr>
             </thead>
             <tbody>
@@ -436,7 +431,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>
 
-                   
+
                   </tr>
                 ))
               ) : (

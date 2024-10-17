@@ -339,12 +339,6 @@ const DealerPayments: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer Payments"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Payments"

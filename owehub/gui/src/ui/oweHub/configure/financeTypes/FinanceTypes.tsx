@@ -267,12 +267,6 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="finance-types"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Finance Types"
