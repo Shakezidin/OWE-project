@@ -30,7 +30,7 @@ import { ROUTES } from '../../routes/routes';
 import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 import audioFile from './assetss/audioFile.svg'
 import myDocument from './assetss/myDocument.svg';
-import powerpoint from './assetss/powerpoint.svg';
+
 import textFile from './assetss/textFile.svg';
 import wordFile from './assetss/wordFile.svg';
 import zipFolder from './assetss/zipFolder.svg';
@@ -46,6 +46,7 @@ import FolderListView from './components/FolderListView/FolderListView';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
+import powerpoint from '../../resources/icons/powerpoint.png'
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<
@@ -495,18 +496,85 @@ const LibraryHomepage = () => {
   };
 
   const filteredData = fileData.filter((data) => {
-    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && (data.file?.mimeType === 'image/png' || data.file?.mimeType === 'image/jpeg' ||
-      data.file?.mimeType === 'image/jpeg' ||
-      data.file?.mimeType === 'image/gif' ||
-      data.file?.mimeType === 'image/webp' ||
-      data.file?.mimeType === 'image/bmp' ||
-      data.file?.mimeType === 'image/tiff' ||
-      data.file?.mimeType === 'image/svg+xml' ||
-      data.file?.mimeType === 'image/heif' ||
-      data.file?.mimeType === 'image/heic'
+    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || 
+      data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
+  
+      const excelMimes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+        'application/vnd.ms-excel.sheet.macroEnabled.12',                   // XLSM
+        'application/vnd.ms-excel',                                         // XLS
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.template', // XLTX
+        'application/vnd.ms-excel.template.macroEnabled.12',               // XLTM
+        'application/vnd.oasis.opendocument.spreadsheet',                  // ODS
+        'text/csv',                                                         // CSV
+        'text/tab-separated-values'                                         // TSV
+    ];
+    
+    const pdfMimes = ['application/pdf'];
+    const imageMimes = [
+      'image/png', 'image/jpeg', 'image/gif', 'image/webp', 
+      'image/bmp', 'image/tiff', 'image/svg+xml', 
+      'image/heif', 'image/heic'
+    ];
+    const videoMimes = [
+      'video/mp4', 'video/mpeg', 'video/ogg', 
+      'video/webm', 'video/x-msvideo', 'video/quicktime'
+    ];
+    const textMimes = [
+      'text/plain',                          
+    ];
+    const powerpointMimes = [
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/vnd.ms-powerpoint.presentation.macroEnabled.12',
+      'application/vnd.openxmlformats-officedocument.presentationml.template',
+      'application/vnd.ms-powerpoint.template.macroEnabled.12',
+      'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+      'application/vnd.ms-powerpoint.slideshow.macroEnabled.12',
+      'application/vnd.oasis.opendocument.presentation'
+    ];
+    const wordMimes = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+      'application/msword',
+      'application/vnd.ms-word.document.macroEnabled.12',
+      'application/vnd.openxmlformats-officedocument.wordtemplate',
+      'application/vnd.ms-word.template.macroEnabled.12',
+      'application/rtf',
+      'application/vnd.oasis.opendocument.text'
 
-    )) || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime')) || (selectedType === 'Text' && data.file?.mimeType === 'text/plain') ;
+    ];
+    const audioMimes = [
+      "audio/mpeg",                          // MP3
+      "audio/wav",                           // WAV
+      "audio/aac",                           // AAC
+      "audio/ogg",                           // OGG
+      "audio/flac",                          // FLAC
+      "audio/mp4",                           // M4A
+      "audio/amr",                           // AMR
+      "audio/aiff",                          // AIFF
+      "audio/x-ms-wma",                     // WMA
+      "audio/webm",
+      "audio/x-wav",
+                                 // WebM
+    ];
+    
+  
+    const mimeType = data.file?.mimeType; // Get the MIME type safely
+    
+    const matchesType = selectedType === 'All' || 
+      (selectedType === 'Excel' && mimeType && excelMimes.includes(mimeType)) || 
+      (selectedType === 'PDF Format' && mimeType && pdfMimes.includes(mimeType)) || 
+      (selectedType === 'Images' && mimeType && imageMimes.includes(mimeType)) || 
+      (selectedType === 'Videos' && mimeType && videoMimes.includes(mimeType)) || 
+      (selectedType === 'Text' && mimeType && textMimes.includes(mimeType)) || 
+      (selectedType === 'Powerpoint' && mimeType && powerpointMimes.includes(mimeType)) || 
+      (selectedType === 'Word' && mimeType && wordMimes.includes(mimeType)) || 
+      (selectedType === 'Audio' && mimeType && audioMimes.includes(mimeType)) ||
+      (selectedType === 'Others' && 
+        mimeType !== undefined && // Check if mimeType is defined
+        ![...excelMimes, ...pdfMimes, ...imageMimes, ...videoMimes, ...textMimes, ...powerpointMimes, ...wordMimes, ...audioMimes].includes(mimeType)
+      );
+  
     return matchesSearch && matchesType;
   });
 
@@ -919,10 +987,53 @@ const LibraryHomepage = () => {
                       }}>
                         <img
                           className={styles.cardImg}
-                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon : data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : data.file?.mimeType === 'text/plain' ? textFile : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : isValidImage ? image :
-                            data.file?.mimeType==="application/octet-stream"?audio:
+                          src={data.file?.mimeType === 'application/pdf' ? ICONS.pdf :
+                            
+                            
+                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? ICONS.excelIcon
+                            : data.file?.mimeType === "application/vnd.ms-excel.sheet.macroEnabled.12" ? ICONS.excelIcon
+                            : data.file?.mimeType === "application/vnd.ms-excel" ? ICONS.excelIcon
+                            : data.file?.mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.template" ? ICONS.excelIcon
+                            : data.file?.mimeType === "application/vnd.ms-excel.template.macroEnabled.12" ? ICONS.excelIcon
+                            : data.file?.mimeType === "application/vnd.oasis.opendocument.spreadsheet" ? ICONS.excelIcon
+                            : data.file?.mimeType === "text/csv" ? ICONS.excelIcon
+                            : data.file?.mimeType === "text/tab-separated-values" ? ICONS.excelIcon :
+                            
+                            
+                            
+                            data.file?.mimeType === 'video/mp4' ? ICONS.videoPlayerIcon : data.file?.mimeType === 'video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/ogg' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/webm' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType === 'video/quicktime' ? ICONS.viedoImageOne : 
+                            data.file?.mimeType === 'text/plain' ? textFile 
+                            :
+                             data.file?.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? wordFile : data.file?.mimeType === "application/msword" ? wordFile :
+                            data.file?.mimeType === 'application/vnd.ms-word.document.macroEnabled.12' ? wordFile :
+                            data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.wordtemplate' ? wordFile :
+                            data.file?.mimeType === 'application/vnd.ms-word.template.macroEnabled.12' ? wordFile :
+                            data.file?.mimeType === "application/rtf" ? wordFile :
+                            data.file?.mimeType === "application/vnd.oasis.opendocument.text" ? wordFile : isValidImage ? image :
+                            
                             data.file?.mimeType==="audio/x-wav"?  audio:
-                            data.file?.mimeType==="audio/mpeg"?  audio: defauult}
+                            data.file?.mimeType==="audio/mpeg"?  audio: 
+
+                            data.file?.mimeType==="audio/wav"?  audio: 
+
+                            data.file?.mimeType==="audio/ogg"?  audio: 
+                            data.file?.mimeType==="audio/aac"?  audio: 
+                            data.file?.mimeType==="audio/flac"?  audio: 
+                            data.file?.mimeType==="audio/mp4"?  audio: 
+                            data.file?.mimeType==="audio/amr"?  audio: 
+                            data.file?.mimeType==="audio/aiff"?  audio: 
+                            data.file?.mimeType==="audio/x-ms-wma"?  audio: 
+                            data.file?.mimeType==="audio/webm"?  audio: 
+                            data.file?.mimeType === "application/vnd.ms-powerpoint" ? powerpoint:
+
+                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ? powerpoint:
+                            data.file?.mimeType === "application/vnd.ms-powerpoint.presentation.macroEnabled.12" ? powerpoint:
+                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.presentationml.template" ? powerpoint:
+                            data.file?.mimeType === "application/vnd.ms-powerpoint.template.macroEnabled.12" ? powerpoint:
+                            data.file?.mimeType === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" ? powerpoint:
+                            data.file?.mimeType === "application/vnd.ms-powerpoint.slideshow.macroEnabled.12" ? powerpoint:
+                            data.file?.mimeType === "application/vnd.oasis.opendocument.presentation" ? powerpoint:
+                            defauult}
                           alt={`null`}
                           loading='lazy'
                         />
