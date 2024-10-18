@@ -195,7 +195,7 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_list_modules",
 		apiHandler.HandleAuroraListModulestRequest,
-		false,
+		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
 
@@ -204,7 +204,7 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_retrieve_modules",
 		apiHandler.HandleAuroraRetrieveModulestRequest,
-		false,
+		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
 
@@ -213,7 +213,7 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_retrieve_Web_Proposal",
 		apiHandler.HandleAuroraRetrieveWebProposalRequest,
-		false,
+		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
 }
