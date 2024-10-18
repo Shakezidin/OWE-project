@@ -18,7 +18,7 @@ const earnoutFilters: Filter[] = [
     value: '80',
     min: 0,
     max: 200,
-    step: 10,
+    step: 5,
     marks: {
       0: '0',
       20: '20',
@@ -53,34 +53,44 @@ const earnoutFilters: Filter[] = [
       15: '15',
     },
   },
-  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 5 , marks:{5: '5',
+  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 1 , marks:{5: '5',
     10: '10',
     15: '15',
     20: '20',
     25: '25',
      }},
-  { label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 12, marks:{24: '24',
+  { label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 1, marks:{24: '24',
     36: '36',
     48: '48',
+    60:'60'
      }  },
 ];
 
 const equityFilters: Filter[] = [
-  { label: 'CAGR', value: '15', min: 10, max: 30, step: 10 },
-  { label: 'Years until Next Acquisition / IPO', value: '5', min: 3, max: 7, step: 1 },
+  { label: 'CAGR', value: '15', min: 10, max: 30, step: 1, marks:{10: '10',
+    20: '20',
+    30: '30',
+    
+     } },
+  { label: 'Years until Next Acquisition / IPO', value: '5', min: 3, max: 7, step: 1, marks:{3: '3',
+    4: '4',
+    5: '5',
+    6:'6',
+    7:'7'
+     } },
 ];
 
 const Calculator: React.FC = () => {
   const [earnoutValues, setEarnoutValues] = useState<Record<string, number | ''>>({
-    'System Install (per month)': 80,
-    'Average system size': 11,
-    'Growth rate (per month)': 20,
-    'Months until Earnout': 30,
+    'System Install (per month)': 0,
+    'Average system size': 0,
+    'Growth rate (per month)': 0,
+    'Months until Earnout': 0,
   });
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
-    'CAGR': 15,
-    'Years until Next Acquisition / IPO': 5,
+    'CAGR': 0,
+    'Years until Next Acquisition / IPO': 0,
   });
 
   const handleRangeChange = (label: string, value: number, type: 'earnout' | 'equity') => {
@@ -206,7 +216,7 @@ const Calculator: React.FC = () => {
           <h2>Equity Growth</h2>
         </div>
         <div className="equity-body">
-          {equityFilters.map(({ label, min, max }) => (
+          {equityFilters.map(({ label, min, max, step, marks }) => (
             <div className="filter-wrap" key={label}>
               <div className="body-header">
                 <p>{label}</p>
@@ -227,7 +237,8 @@ const Calculator: React.FC = () => {
                 <Slider
                   min={min}
                   max={max}
-                  step={1}
+                  step={step}
+                  marks={marks}
                   value={equityValues[label] || 0} 
                   onChange={(val: number | number[]) => {
                     if (typeof val === 'number') {
