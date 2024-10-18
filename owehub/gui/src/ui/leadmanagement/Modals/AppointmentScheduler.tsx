@@ -49,18 +49,14 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     newTime.setMinutes(minutes);
     newTime.setSeconds(0);
     setTime(newTime);
- 
+
 
 
 
     console.log(`Selected time: ${selectedTime}`);
-    setSelectedTime(newTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }))
+    setSelectedTime(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+    onTimeChange(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
   };
-
-  // const handleTimeChange = (time: string) => {
-  //   setSelectedTime(time);
-  //   onTimeChange(time);
-  // };
 
   return (
     <div className="appointmentSchedulerContainer">
@@ -131,6 +127,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       ) : (
         <div className="timeSlotContainer">
 
+
           {/* {timeSlots.map((time) => (
             <button
               key={time}
@@ -146,7 +143,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       <div className="selectedDateDisplay">
         <span className={classes.TimeDisplay}>
           {newTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
-         </span> <span style={{paddingRight:'10px', paddingLeft:'0px', marginLeft:'0px'}}>-</span>       
+        </span> <span style={{ paddingRight: '10px', paddingLeft: '0px', marginLeft: '0px' }}>-</span>
         {selectedDate
           .toLocaleDateString('en-US', {
             day: 'numeric',
@@ -159,7 +156,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 
       <div
         className={`sendAppointmentBtn ${selectedTime ? '' : 'sendAppointmentBtnDisabled'}`}
-        // className='sendAppointmentBtn'
+      // className='sendAppointmentBtn'
       >
         <button
           onClick={() => {
