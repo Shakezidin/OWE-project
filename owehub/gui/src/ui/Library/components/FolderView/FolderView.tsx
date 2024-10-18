@@ -57,7 +57,7 @@ function FolderView({
   return (
     <div className={styles.folderMain_wrapper}>
       {loading ? (
-        <div className={styles.filesLoader}>
+        <div className={styles.filesLoader} style={{width: '100%'}}>
           <MicroLoader />
         </div>
       ) : myFolderData.length > 0 ? myFolderData.map((folder, index) => (

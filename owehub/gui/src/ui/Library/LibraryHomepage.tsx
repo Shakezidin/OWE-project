@@ -833,7 +833,7 @@ const LibraryHomepage = () => {
               setSelectedCheckbox(new Set())
               setCheckedItems(0)
               setCheckedFolders([])
-
+setAllIds([])
             }}>
               <FaXmark style={{
                 height: '20px',
@@ -913,12 +913,16 @@ const LibraryHomepage = () => {
           <button onClick={() => {
             setFilesView("list")
             saveFileTypeView("list")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
           <button onClick={() => {
             setFilesView("tiles")
             saveFileTypeView("tiles")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
@@ -1182,12 +1186,16 @@ const LibraryHomepage = () => {
           <button onClick={() => {
             setFilesView("list")
             saveFileTypeView("list")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
           <button onClick={() => {
             setFilesView("tiles")
             saveFileTypeView("tiles")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
@@ -1218,10 +1226,27 @@ const LibraryHomepage = () => {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              paginate={(number) => setCurrentPage(number)}
+              paginate={(number) => {
+                setCurrentPage(number)
+                setSelectedCheckbox(new Set())
+                setCheckedItems(0)
+              }}
               currentPageData={paginatedData}
-              goToNextPage={() => setCurrentPage(prev => prev + 1)}
-              goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+              goToNextPage={() => {
+                setCurrentPage(prev => prev + 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+
+              }}
+              goToPrevPage={() => {
+                setCurrentPage(prev => prev - 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+
+
+              }}
               perPage={itemsPerPage}
             />
           </div>

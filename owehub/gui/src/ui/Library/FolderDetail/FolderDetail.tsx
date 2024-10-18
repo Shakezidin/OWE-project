@@ -266,25 +266,7 @@ const FolderDetail = () => {
             return newSelected;
         });
     };
-    const isAudio = (mimeType: string): boolean => {
-        switch (mimeType) {
-            case "audio/mpeg":
-            case "audio/mp3":
-            case "audio/wav":
-            case "audio/x-wav":
-            case "audio/ogg":
-            case "audio/aac":
-            case "audio/midi":
-            case "audio/x-midi":
-            case "audio/webm":
-            case "audio/flac":
-            case "audio/x-m4a":
-            case "audio/x-matroska":
-                return true;
-            default:
-                return false;
-        }
-    };
+ 
     const isImage = (mimeType: string) => {
         switch (mimeType) {
             case "image/jpeg":
@@ -303,6 +285,26 @@ const FolderDetail = () => {
                 return false
         }
     }
+
+    const isAudio = (mimeType: string): boolean => {
+        switch (mimeType) {
+          case "audio/mpeg":
+          case "audio/mp3":
+          case "audio/wav":
+          case "audio/x-wav":
+          case "audio/ogg":
+          case "audio/aac":
+          case "audio/midi":
+          case "audio/x-midi":
+          case "audio/webm":
+          case "audio/flac":
+          case "audio/x-m4a":
+          case "audio/x-matroska":
+            return true;
+          default:
+            return false;
+        }
+      };
     const onPreview = (url: string, type: string, name: string) => {
         const isValidVideo = isVideo(type)
         const isValidImage = isImage(type)
@@ -312,7 +314,7 @@ const FolderDetail = () => {
             setVideoName(name)
             return
         }
-        if (isValidImage) {
+        if (isValidImage || isAudio(type)) {
             setFileInfo({ name: name, fileType: type!, url: url })
             setIsFileViewerOpen(true)
             return
@@ -416,96 +418,98 @@ const FolderDetail = () => {
                             :
                             paginatedData.length ?
                                 viewMode === "list" ?
-                                    paginatedData.map((file, index) => {
-                                        const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
-                                        const isValidVideo = isVideo(file.file?.mimeType!)
-                                        return <div key={file.id} className={styles.libGridItem} >
-                                            {
-                                                file.folder ?
-                                                    <div className='flex items-center'>
-                                                        {role_name === TYPE_OF_USER.ADMIN &&
-                                                            <div className="mr1">
+                                    <div className='bg-white' style={{ minHeight: '63vh' }}>
+                                        {paginatedData.map((file, index) => {
+                                            const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
+                                            const isValidVideo = isVideo(file.file?.mimeType!)
+                                            return <div key={file.id} className={styles.libGridItem} >
+                                                {
+                                                    file.folder ?
+                                                        <div className='flex items-center'>
+                                                            {role_name === TYPE_OF_USER.ADMIN &&
+                                                                <div className="mr1">
+                                                                    <CheckBox
+                                                                        checked={selected.has(file.id)}
+                                                                        onChange={() => handleCheckboxChange(file.id)}
+                                                                    />
+                                                                </div>
+                                                            }
+                                                            <Link to={`/library/${path["*"]}/${file.name}`} onClick={()=>setSelected(new Set())} className={`${styles.file_icon} ${styles.image_div}`}>
+                                                                <img
+                                                                    src={ICONS.folderImage}
+                                                                />
+                                                                <div className={styles.name_div}>
+                                                                    <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
+                                                                    <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                    <p className={styles.size}> {(file.size > 1024 * 1024)
+                                                                        ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
+                                                                        : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
+                                                                </div>
+                                                            </Link>
+                                                        </div>
+
+                                                        :
+                                                        <div className="flex items-center">
+                                                            {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
                                                                 <CheckBox
                                                                     checked={selected.has(file.id)}
                                                                     onChange={() => handleCheckboxChange(file.id)}
                                                                 />
-                                                            </div>
-                                                        }
-                                                        <Link to={`/library/${path["*"]}/${file.name}`} className={`${styles.file_icon} ${styles.image_div}`}>
-                                                            <img
-                                                                src={ICONS.folderImage}
-                                                            />
-                                                            <div className={styles.name_div}>
-                                                                <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
-                                                                <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
-                                                                <p className={styles.size}> {(file.size > 1024 * 1024)
-                                                                    ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
-                                                                    : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
-                                                            </div>
-                                                        </Link>
-                                                    </div>
+                                                            </div>}
+                                                            <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                                                                if (isValidVideo) {
+                                                                    setIsVideoModalOpen(true)
+                                                                    setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                                    setVideoName(file.name)
+                                                                    return
+                                                                }
+                                                                if (isImage(file?.file?.mimeType!) || isAudio(file.file?.mimeType!)) {
+                                                                    setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
+                                                                    setIsFileViewerOpen(true)
+                                                                    return
+                                                                } else {
+                                                                    window.open(file.webUrl, "_blank")
+                                                                }
 
-                                                    :
-                                                    <div className="flex items-center">
-                                                        {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
-                                                            <CheckBox
-                                                                checked={selected.has(file.id)}
-                                                                onChange={() => handleCheckboxChange(file.id)}
-                                                            />
-                                                        </div>}
-                                                        <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
-                                                            if (isValidVideo) {
-                                                                setIsVideoModalOpen(true)
-                                                                setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
-                                                                setVideoName(file.name)
-                                                                return
-                                                            }
-                                                            if (isImage(file?.file?.mimeType!) || isAudio(file.file?.mimeType!)) {
-                                                                setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
-                                                                setIsFileViewerOpen(true)
-                                                                return
-                                                            } else {
-                                                                window.open(file.webUrl, "_blank")
-                                                            }
+                                                            }}>
 
-                                                        }}>
+                                                                <img
+                                                                    src={fileType}
+                                                                    style={{
+                                                                        width: isValidVideo ? 32 : undefined,
+                                                                        height: isValidVideo ? 32 : undefined
+                                                                    }}
+                                                                />
+                                                                <div className={styles.name_div}>
+                                                                    <p className={styles.name_hide}>{file.name}</p>
 
-                                                            <img
-                                                                src={fileType}
-                                                                style={{
-                                                                    width: isValidVideo ? 32 : undefined,
-                                                                    height: isValidVideo ? 32 : undefined
-                                                                }}
-                                                            />
-                                                            <div className={styles.name_div}>
-                                                                <p className={styles.name_hide}>{file.name}</p>
-
-                                                                <p className={styles.name}>{file.name}</p>
-                                                                <p className={styles.size}>
-                                                                    {(file.size > 1024 * 1024)
-                                                                        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                                                                        : `${Math.round(file.size / 1024)} KB`}
-                                                                </p>
+                                                                    <p className={styles.name}>{file.name}</p>
+                                                                    <p className={styles.size}>
+                                                                        {(file.size > 1024 * 1024)
+                                                                            ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                                                                            : `${Math.round(file.size / 1024)} KB`}
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                            }
+                                                }
 
-                                            <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                                            <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
-                                                    onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
-                                                />
-                                                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
-                                                    setIsDeleteModalVisible(true)
-                                                    setSelectedDeleteId(file.id)
-                                                }}
+                                                <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                                                <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                                                    <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
+                                                        onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
+                                                    />
+                                                    {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
+                                                        setIsDeleteModalVisible(true)
+                                                        setSelectedDeleteId(file.id)
+                                                    }}
 
-                                                />}
+                                                    />}
+                                                </div>
                                             </div>
-                                        </div>
-                                    })
+                                        })}
+                                    </div>
                                     :
                                     <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0, minHeight: '70vh', }}>
                                         {paginatedData.map((file) => {
@@ -585,10 +589,17 @@ const FolderDetail = () => {
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
-                            paginate={(number) => setCurrentPage(number)}
+                            paginate={(number) => {
+                                setCurrentPage(number)
+setSelected(new Set())
+                            }}
                             currentPageData={files}
-                            goToNextPage={() => setCurrentPage(prev => prev + 1)}
-                            goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+                            goToNextPage={() => {setCurrentPage(prev => prev + 1)
+                                setSelected(new Set())
+                            }}
+                            goToPrevPage={() =>{ setCurrentPage(prev => prev - 1)
+                                setSelected(new Set())
+                            }}
                             perPage={itemsPerPage}
                         />
                     </div>}
