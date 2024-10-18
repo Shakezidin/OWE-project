@@ -212,7 +212,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                     style={{
                       fontWeight: '500',
                       color: 'black',
-                      backgroundColor: '#d5e4ff',
+                      background: 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'flex-start',
