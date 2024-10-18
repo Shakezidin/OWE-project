@@ -281,7 +281,7 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 		}
 	}
 
-	if podiodata.PartnerId != 0 {
+	if podiodata.PartnerId != "" {
 		itemPayload.Fields["dealer-id"] = []map[string]interface{}{
 			{
 				"value": podiodata.PartnerId,

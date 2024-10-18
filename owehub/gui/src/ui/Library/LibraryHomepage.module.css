@@ -602,6 +602,7 @@
 .view_btn {
   border: 1px solid #8C8C8C;
   display: flex;
+  flex-shrink: 0;
   width: 32px;
   cursor: pointer;
   font-size: 16px;
@@ -701,7 +702,8 @@
     
   }
   .searchWrapper{
-    width:230px;
+    flex-basis:230px;
+    flex-shrink: 2;
   } 
 }
 
@@ -730,7 +732,7 @@
  
   }
   .searchWrapper{
-    width:200px;
+    flex-basis:200px;
   } 
   .name{
     overflow: hidden;
@@ -808,7 +810,7 @@
     padding-left: 10px;
   }
   .searchWrapper{
-    width:170px;
+    flex-basis:170px;
   } 
   .size_date_container{
     display: flex;

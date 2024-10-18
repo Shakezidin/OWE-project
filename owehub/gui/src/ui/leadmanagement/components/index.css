@@ -14,7 +14,7 @@
   padding: 10px;
   z-index: 999;
   margin-top: -22px;
-  border-radius: 8px;
+  /* border-radius: 8px; */
 }
 
 .pr-dropdown ul {

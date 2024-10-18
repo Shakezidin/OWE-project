@@ -91,7 +91,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		return err
 	}
 
-	dealerId, ok := Dealerdata[0]["partner_id"].(int64)
+	dealerId, ok := Dealerdata[0]["partner_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "No partner id found in podio email: %v", reqData.EmailId)
 		err = fmt.Errorf("no partner id found in podio email: %v", reqData.EmailId)
