@@ -44,6 +44,8 @@
 .rc-slider-handle{
   border: solid 5px #00C8D0 !important;
   opacity: 1 !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
 /* This styles the container of the dropdown */
