@@ -57,12 +57,19 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	}
 	var dlrPay models.DealerPayReportResponse
 
+	// InitailData, err := oweconfig.LoadDlrPayInitialData()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to get dlrpay initial data with err: %v", err)
+	// 	appserver.FormAndSendHttpResp(resp, "Failed to get dlrpay initial data", http.StatusBadRequest, nil)
+	// 	return
+	// }
+
 	dlrPay.Home_Owner = "TestHomeOwner"
 	dlrPay.Current_Status = "TestStatus"
 	dlrPay.Unique_ID = "OUR12345"
 	dlrPay.Dealer_Code = "TestDealer"
-	dlrPay.Sys_Size = "TestSysSize"
-	dlrPay.Contract = "TestContract"
+	dlrPay.Sys_Size = 0.0
+	dlrPay.Contract = 0.0
 	dlrPay.Other_Adders = "TestOtherAdders"
 	dlrPay.Rep1 = "TestRep1"
 	dlrPay.Rep2 = "TestRep2"
@@ -70,7 +77,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	dlrPay.ST = "TestState"
 	dlrPay.Contract_Date = time.Now()
 	dlrPay.Loan_Fee = "TesLoanFee"
-	dlrPay.Net_EPC = "TestNetEPC"
+	dlrPay.Net_EPC = 0.0
 	dlrPay.Credit = "TestCredit"
 	dlrPay.Draw_Amt = 10.10
 	dlrPay.RL = "TestRL"
@@ -85,6 +92,6 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	RecordCount = len(dlsPayCommResp.DealerPayComm)
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealerpay commissions List fetched : %v list %+v", len(dlsPayCommResp.DealerPayComm), dlsPayCommResp.DealerPaymentsData)
+	log.FuncInfoTrace(0, "Number of dealerpay commissions List fetched : %v list %+v", len(dlsPayCommResp.DealerPayComm), dlsPayCommResp.DealerPayComm)
 	appserver.FormAndSendHttpResp(resp, "Dealerpay commissions Data", http.StatusOK, dlsPayCommResp.DealerPayComm, int64(RecordCount))
 }
