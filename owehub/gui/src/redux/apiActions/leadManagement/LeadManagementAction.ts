@@ -110,3 +110,18 @@ export const auroraCreateProposal = createAsyncThunk(
     }
   }
 );
+
+export const auroraWebProposal = createAsyncThunk(
+  'proposal/aurora_retrieve_Web_Proposal',
+  async (leadId: number, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_retrieve_Web_Proposal', { leads_id: leadId }, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to fetch Web Proposal');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to fetch Web Proposal');
+    }
+  }
+);
