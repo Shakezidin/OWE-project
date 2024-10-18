@@ -1524,13 +1524,13 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
                       </button>
                     );
                   })}
-                  <button
+                  {/* <button
                     onClick={handleNewButtonClick}
                     className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
                   >
                     <p className={styles.statusInactive}></p>
                     Aurora Projects
-                  </button>
+                  </button> */}
                 </div>
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
