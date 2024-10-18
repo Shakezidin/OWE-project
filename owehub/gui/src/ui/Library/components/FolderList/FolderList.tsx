@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import styles from './FolderList.module.css';
+import { Tooltip } from 'react-tooltip';
 interface IFolder {
     name?: string;
     size?: number,
@@ -56,9 +57,15 @@ const FolderList = (props: IFolder) => {
     navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } }); 
 }}>
                     <div className={styles.name_div}>
-                    <p className={styles.name_hide}>  {props.name?.substring(0,25)}</p>   
-                    <p className={sharedStyles.name}>  {props.name?.substring(0,25)} {props.name?.length !==undefined && props.name?.length >= 25 ? '...' : ''}</p>
+                    {/* <p className={styles.name_hide}>  {props.name?.substring(0,25)}</p>    */}
+                          
+
+                    <p 
+                     data-tooltip-id={`file-name-${props.id}`}
+                     data-tooltip-content={props.name} 
+                    className={sharedStyles.name}>  {props.name?.substring(0,25)} {props.name?.length !==undefined && props.name?.length >= 25 ? '...' : ''}</p>
                     </div>
+                    <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${props.id}`} place="top" />
                     <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
                             ? `${((props?.size || 0) / (1024 * 1024)).toFixed(2)} MB`

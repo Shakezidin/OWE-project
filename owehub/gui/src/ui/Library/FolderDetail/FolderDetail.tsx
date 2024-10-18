@@ -35,6 +35,7 @@ import image from '../../../resources/icons/image.png'
 import Pagination from '../../components/pagination/Pagination';
 import SortByLibrary from '../Modals/SortByLibrary';
 import { IoMdSearch } from 'react-icons/io';
+import { Tooltip } from 'react-tooltip';
 
 const FolderDetail = () => {
     const path = useParams()
@@ -502,8 +503,13 @@ const FolderDetail = () => {
                                                                     src={ICONS.folderImage}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                    <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
-                                                                    <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                   
+                                                                    <p 
+                                                                       data-tooltip-id={`file-name-${file.id}`}
+                                                                       data-tooltip-content={file.name}   
+                                                                    
+                                                                    className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                      <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
                                                                     <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                         ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
                                                                         : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
@@ -544,9 +550,13 @@ const FolderDetail = () => {
                                                                     }}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                    <p className={styles.name_hide}>{file.name}</p>
+                                                                  
 
-                                                                    <p className={styles.name}>{file.name}</p>
+                                                                    <p 
+                                                                     data-tooltip-id={`file-name-${file.id}`}
+                                                                     data-tooltip-content={file.name}   
+                                                                    className={styles.name}>{file.name}</p>
+                                                                     <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
                                                                     <p className={styles.size}>
                                                                         {(file.size > 1024 * 1024)
                                                                             ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
@@ -624,8 +634,12 @@ const FolderDetail = () => {
 
                                                     <div className={"mt2"} style={{ width: "100%" }}>
                                                     <div className={styles.name_div}>
-                                                    <div className={styles.name_hide}>{file.name.substring(0, 50)}</div>
-                                                        <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
+                                                    
+                                                        <div 
+                                                         data-tooltip-id={`file-name-${file.id}`}
+                                                         data-tooltip-content={file.name}
+                                                        className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
+                                                        <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
                                                      </div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
