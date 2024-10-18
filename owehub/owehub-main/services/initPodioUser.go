@@ -141,7 +141,7 @@ func SyncHubUsersToPodioOnInit() error {
 			continue
 		}
 
-		dealerId, ok := Dealerdata[0]["partner_id"].(int64)
+		dealerId, ok := Dealerdata[0]["partner_id"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "No partner id found in podio for email: %v", emailId)
 			continue
