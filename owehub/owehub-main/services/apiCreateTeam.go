@@ -34,7 +34,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		queryParameters []interface{}
 		query           string
 		data            []map[string]interface{}
-		dealerId        int
+		dealerId        string
 	)
 
 	log.EnterFn(0, "HandleCreateTeamRequest")
@@ -122,7 +122,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["partner_id"].(int64))
+		dealerId = data[0]["partner_id"].(string)
 
 	} else {
 		// Get dealer_id based on dealer_name
@@ -146,7 +146,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = int(data[0]["partner_id"].(int64))
+		dealerId = data[0]["partner_id"].(string)
 	}
 
 	queryParameters = append(queryParameters, TeamData.TeamName)

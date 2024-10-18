@@ -29,6 +29,7 @@ import { Tooltip } from 'react-tooltip';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoInformationOutline } from 'react-icons/io5';
 import Profile from './Modals/ProfileInfo';
+import useEscapeKey from '../../hooks/useEscape';
 
 interface HistoryTableProp {
   first_name: string;
@@ -437,6 +438,12 @@ const LeradManagementHistory = () => {
       setIsExporting(false);
     }
   };
+
+  const calClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(calClose);
+ 
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');

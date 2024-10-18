@@ -70,3 +70,34 @@
     justify-content: center;
   }
 }
+/* position: absolute;
+width: 160px;
+right: 0;
+top: 65px;
+background-color: #fff;
+border: 1px solid #2b63f1;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+padding: 10px;
+z-index: 999;
+margin-top: -22px;
+border-radius: 0px !important; */
+
+.prdropdownX ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.prdropdownX li {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 0;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.prdropdownX li:hover {
+
+  transform: scale(1.04);
+}
