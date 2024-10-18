@@ -25,7 +25,7 @@ import { format, set } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { FileOrFolder } from './types';
 import { useAppSelector } from '../../redux/hooks';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 import audioFile from './assetss/audioFile.svg'
@@ -47,13 +47,28 @@ import useMatchMedia from '../../hooks/useMatchMedia';
 import image from '../../resources/icons/image.png'
 import audio from '../../resources/icons/audioFile.svg'
 import powerpoint from '../../resources/icons/powerpoint.png'
+import Pagination from '../components/pagination/Pagination';
+
 function getFileIcon(mimeType: string | undefined): string {
   if (!mimeType) return defauult;
 
   switch (mimeType) {
     case 'application/pdf':
       return ICONS.pdf;
-    
+
+
+    case 'image/jpeg':
+    case 'image/png':
+    case 'image/gif':
+    case 'image/webp':
+    case 'image/bmp':
+    case 'image/tiff':
+    case 'image/svg+xml':
+    case 'image/x-icon':
+    case 'image/heif':
+    case 'image/heic':
+      return image;
+
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
     case "application/vnd.ms-excel.sheet.macroEnabled.12":
     case "application/vnd.ms-excel":
@@ -63,7 +78,7 @@ function getFileIcon(mimeType: string | undefined): string {
     case "text/csv":
     case "text/tab-separated-values":
       return ICONS.excelIcon;
-    
+
     case 'video/mp4':
       return ICONS.videoPlayerIcon;
     case 'video/mpeg':
@@ -72,10 +87,10 @@ function getFileIcon(mimeType: string | undefined): string {
     case 'video/x-msvideo':
     case 'video/quicktime':
       return ICONS.viedoImageOne;
-    
+
     case 'text/plain':
       return textFile;
-    
+
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
     case "application/msword":
     case 'application/vnd.ms-word.document.macroEnabled.12':
@@ -84,7 +99,7 @@ function getFileIcon(mimeType: string | undefined): string {
     case "application/rtf":
     case "application/vnd.oasis.opendocument.text":
       return wordFile;
-    
+
     case "audio/x-wav":
     case "audio/mpeg":
     case "audio/wav":
@@ -97,7 +112,7 @@ function getFileIcon(mimeType: string | undefined): string {
     case "audio/x-ms-wma":
     case "audio/webm":
       return audio;
-    
+
     case "application/vnd.ms-powerpoint":
     case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
     case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
@@ -107,9 +122,9 @@ function getFileIcon(mimeType: string | undefined): string {
     case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
     case "application/vnd.oasis.opendocument.presentation":
       return powerpoint;
-    
+
     default:
-      return  defauult;
+      return defauult;
   }
 }
 
@@ -219,12 +234,28 @@ const LibraryHomepage = () => {
     // File size in bytes
     // Include any other properties you expect
   }
+  const [currentFolderPage, setCurrentFolderPage] = useState(1);
   const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
   const [fileData, setFileData] = useState<FileOrFolder[]>([]);
-
+  const navigate = useNavigate()
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isPending, setIsPending] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // You can adjust this value as needed
+
+  const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    console.log(startIndex,endIndex,"rangeee");
+    return data.slice(startIndex, endIndex);
+  };
+
+
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
   const [videoName, setVideoName] = useState("")
   const fetchDataFromGraphAPI = async () => {
     setLoading(true);
@@ -461,44 +492,7 @@ const LibraryHomepage = () => {
     setToggleClick(!toggleClick);
   };
 
-  const getContentThumbnail = (type: string) => {
-    switch (type) {
-      case "image/jpeg":
-      case "image/png":
-      case "image/jpg":
-      case "image/gif":
-      case "image/webp":
-      case "image/bmp":
-      case "image/tiff":
-      case "image/svg+xml":
-      case "image/x-icon":
-      case "image/heif":
-      case "image/heic":
-        return "image";
 
-      case "application/pdf":
-        return ICONS.pdf;
-
-      case "application/vnd.ms-excel":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
-      case "application/vnd.ms-excel.sheet.macroEnabled.12":
-        return ICONS.excelIcon;
-
-      case "video/mp4":
-      case "video/mpeg":
-      case "video/ogg":
-      case "video/webm":
-      case "video/x-msvideo":
-      case "video/quicktime":
-        return ICONS.videoPlayerIcon;
-
-      case "folder":
-        return ICONS.folderImage;
-
-
-    }
-  };
 
   const handleRecycleBinClick = () => {
     setIsRecycleBinView(!isRecycleBinView);
@@ -556,38 +550,44 @@ const LibraryHomepage = () => {
   };
   const handleSectionClick = (section: 'files' | 'folders' | 'dropdown') => {
     setActiveSection(section);
+    if (section === "files") {
+      navigate("/library")
+    }
+    if (section === "folders") {
+      setCurrentPage(1)
+    }
     setSearchValue('');
     setFolderData(originalFolderData);
     setFileData(originalFileData);
   };
 
   const filteredData = fileData.filter((data) => {
-    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || 
+    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) ||
       data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-  
-      const excelMimes = [
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
-        'application/vnd.ms-excel.sheet.macroEnabled.12',                   // XLSM
-        'application/vnd.ms-excel',                                         // XLS
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.template', // XLTX
-        'application/vnd.ms-excel.template.macroEnabled.12',               // XLTM
-        'application/vnd.oasis.opendocument.spreadsheet',                  // ODS
-        'text/csv',                                                         // CSV
-        'text/tab-separated-values'                                         // TSV
+
+    const excelMimes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+      'application/vnd.ms-excel.sheet.macroEnabled.12',                   // XLSM
+      'application/vnd.ms-excel',                                         // XLS
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.template', // XLTX
+      'application/vnd.ms-excel.template.macroEnabled.12',               // XLTM
+      'application/vnd.oasis.opendocument.spreadsheet',                  // ODS
+      'text/csv',                                                         // CSV
+      'text/tab-separated-values'                                         // TSV
     ];
-    
+
     const pdfMimes = ['application/pdf'];
     const imageMimes = [
-      'image/png', 'image/jpeg', 'image/gif', 'image/webp', 
-      'image/bmp', 'image/tiff', 'image/svg+xml', 
+      'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+      'image/bmp', 'image/tiff', 'image/svg+xml',
       'image/heif', 'image/heic'
     ];
     const videoMimes = [
-      'video/mp4', 'video/mpeg', 'video/ogg', 
+      'video/mp4', 'video/mpeg', 'video/ogg',
       'video/webm', 'video/x-msvideo', 'video/quicktime'
     ];
     const textMimes = [
-      'text/plain',                          
+      'text/plain',
     ];
     const powerpointMimes = [
       'application/vnd.ms-powerpoint',
@@ -600,7 +600,7 @@ const LibraryHomepage = () => {
       'application/vnd.oasis.opendocument.presentation'
     ];
     const wordMimes = [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/msword',
       'application/vnd.ms-word.document.macroEnabled.12',
       'application/vnd.openxmlformats-officedocument.wordtemplate',
@@ -621,26 +621,26 @@ const LibraryHomepage = () => {
       "audio/x-ms-wma",                     // WMA
       "audio/webm",
       "audio/x-wav",
-                                 // WebM
+      // WebM
     ];
-    
-  
+
+
     const mimeType = data.file?.mimeType; // Get the MIME type safely
-    
-    const matchesType = selectedType === 'All' || 
-      (selectedType === 'Excel' && mimeType && excelMimes.includes(mimeType)) || 
-      (selectedType === 'PDF Format' && mimeType && pdfMimes.includes(mimeType)) || 
-      (selectedType === 'Images' && mimeType && imageMimes.includes(mimeType)) || 
-      (selectedType === 'Videos' && mimeType && videoMimes.includes(mimeType)) || 
-      (selectedType === 'Text' && mimeType && textMimes.includes(mimeType)) || 
-      (selectedType === 'Powerpoint' && mimeType && powerpointMimes.includes(mimeType)) || 
-      (selectedType === 'Word' && mimeType && wordMimes.includes(mimeType)) || 
+
+    const matchesType = selectedType === 'All' ||
+      (selectedType === 'Excel' && mimeType && excelMimes.includes(mimeType)) ||
+      (selectedType === 'PDF Format' && mimeType && pdfMimes.includes(mimeType)) ||
+      (selectedType === 'Images' && mimeType && imageMimes.includes(mimeType)) ||
+      (selectedType === 'Videos' && mimeType && videoMimes.includes(mimeType)) ||
+      (selectedType === 'Text' && mimeType && textMimes.includes(mimeType)) ||
+      (selectedType === 'Powerpoint' && mimeType && powerpointMimes.includes(mimeType)) ||
+      (selectedType === 'Word' && mimeType && wordMimes.includes(mimeType)) ||
       (selectedType === 'Audio' && mimeType && audioMimes.includes(mimeType)) ||
-      (selectedType === 'Others' && 
+      (selectedType === 'Others' &&
         mimeType !== undefined && // Check if mimeType is defined
         ![...excelMimes, ...pdfMimes, ...imageMimes, ...videoMimes, ...textMimes, ...powerpointMimes, ...wordMimes, ...audioMimes].includes(mimeType)
       );
-  
+
     return matchesSearch && matchesType;
   });
 
@@ -667,13 +667,15 @@ const LibraryHomepage = () => {
       case 'date':
         const dateA = new Date(a.lastModifiedDateTime);
         const dateB = new Date(b.lastModifiedDateTime);
-        return dateB.getTime() - dateA.getTime(); // sort descending
+        return dateB.getTime() - dateA.getTime();
       case 'size':
-        return b.size - a.size; // assuming size is already in bytes
+        return b.size - a.size;
       default:
-        return 0; // no sorting applied
+        return 0;
     }
   });
+
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const sortedFolder = [...folderData].sort((a, b) => {
     switch (sortOption) {
@@ -690,10 +692,19 @@ const LibraryHomepage = () => {
     }
   });
 
+  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
+  const paginatedFolderData = getPaginatedData(sortedFolder, currentFolderPage, itemsPerPage);
+  const totalFolderPages = Math.ceil(sortedFolder.length / itemsPerPage);
+  console.log(paginatedData,"sorting working",sortedData);
+  const folderStartIndex = (currentFolderPage - 1) * itemsPerPage + 1;
+  const folderEndIndex = currentFolderPage * itemsPerPage;
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
   };
+
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
   //check handler
   const [allIds, setAllIds] = useState<string[]>([]);
   const saveFileTypeView = (type: string) => {
@@ -830,7 +841,7 @@ const LibraryHomepage = () => {
               setSelectedCheckbox(new Set())
               setCheckedItems(0)
               setCheckedFolders([])
-
+setAllIds([])
             }}>
               <FaXmark style={{
                 height: '20px',
@@ -889,6 +900,7 @@ const LibraryHomepage = () => {
                 selectedType={selectedType}
                 onSelectType={(type: string) => {
                   setSelectedType(type);
+                  setCurrentPage(1)
                   setActiveSection(activeSection);
                 }}
               />
@@ -896,25 +908,29 @@ const LibraryHomepage = () => {
           )}
 
           {selectedType !== 'All' &&
-            activeSection !== 'folders' &&
-            ['Excel', 'PDF Format', 'Images', 'Videos'].includes(selectedType) ? (
-            <button className={styles.filter_button}>
-              {selectedType}
-              <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
-            </button>
-          ) : null}
+            activeSection !== 'folders'
+            ? (
+              <button className={styles.filter_button}>
+                {selectedType}
+                <FaXmark onClick={() => setSelectedType('All')} color="#4E4E4E" />
+              </button>
+            ) : null}
         </div>
 
         <div className={`  ${styles.libSecHeader_right}`}>
           <button onClick={() => {
             setFilesView("list")
             saveFileTypeView("list")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
           <button onClick={() => {
             setFilesView("tiles")
             saveFileTypeView("tiles")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
@@ -963,7 +979,7 @@ const LibraryHomepage = () => {
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={sortedFolder.map((item) => ({
+          <FolderListView folders={paginatedFolderData.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -986,7 +1002,7 @@ const LibraryHomepage = () => {
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={sortedFolder}
+            folderData={paginatedFolderData}
             loading={loading}
           />
       );
@@ -999,20 +1015,17 @@ const LibraryHomepage = () => {
           <div className={`${styles.grid_item} ${styles.table_name}`}>
             <div className="flex items-center">
               {role_name === TYPE_OF_USER.ADMIN && <div className='mr1'>
-                <CheckBox checked={selectedCheckbox.size === sortedData.length && !loading && sortedData.length > 0} onChange={() => {
-                  if (selectedCheckbox.size === sortedData.length) {
+                <CheckBox checked={selectedCheckbox.size === paginatedData.length && !loading && paginatedData.length > 0} onChange={() => {
+                  if (selectedCheckbox.size === paginatedData.length) {
                     setSelectedCheckbox(new Set())
                     setAllIds([])
                     setCheckedItems(0)
-
-
                   } else {
-                    const newSet = new Set(sortedData.map((item) => item.id))
+                    const newSet = new Set(paginatedData.map((item) => item.id))
                     setSelectedCheckbox(newSet)
                     setAllIds(Array.from(newSet))
                     setCheckedItems(newSet.size)
                   }
-
                 }} />
               </div>}
               <span className={styles.libname_heading}>
@@ -1032,9 +1045,9 @@ const LibraryHomepage = () => {
           <div className={styles.filesLoader}> <MicroLoader /></div> :
 
 
-          sortedData.length > 0 ? (
+          paginatedData.length > 0 ? (
             filesView === "list" ?
-              (selectedType === 'Videos' ? sortedData.filter((item) => isVideo(item.file?.mimeType!)) : sortedData).map((data) => {
+              (selectedType === 'Videos' ? getPaginatedData(sortedData.filter((item) => isVideo(item.file?.mimeType!)), currentPage, itemsPerPage) : paginatedData).map((data) => {
                 const isValidVideo = isVideo(data.file?.mimeType!)
                 const isValidImage = isImage(data.file?.mimeType!)
                 return (
@@ -1120,15 +1133,13 @@ const LibraryHomepage = () => {
                 onFilePreview={(url, type, name) => {
                   const isValidVideo = isVideo(type)
                   const isValidImage = isImage(type)
-             
-                  if (isValidVideo ) {
+                  if (isValidVideo) {
                     setIsVideoModalOpen(true)
                     setVideoUrl(url)
                     setVideoName(name)
                     return
                   }
-
-                  if (isValidImage || isAudio(type) ) {
+                  if (isValidImage || isAudio(type)) {
                     setFileInfo({ name: name, fileType: type!, url: url })
                     setIsFileViewerOpen(true)
                     return
@@ -1142,7 +1153,7 @@ const LibraryHomepage = () => {
                   prev.push(id)
                   setSelectedCheckbox(new Set(prev))
                 }}
-                files={sortedData.map((item) => ({
+                files={paginatedData.map((item) => ({
                   createdDateTime: item.createdDateTime,
                   id: item.id,
                   name: item.name,
@@ -1153,9 +1164,6 @@ const LibraryHomepage = () => {
                   mimeType: item.file?.mimeType
                 }))} />
           )
-
-
-
             : (
               <div className={` bg-white py2 ${styles.filesLoader}`}>
                 <DataNotFound />
@@ -1168,7 +1176,6 @@ const LibraryHomepage = () => {
   return (
     <div className={styles.libraryContainer}>
       <div className={`${styles.libraryHeader} flex items-center justify-between`}>
-        <h3>Library</h3>
         <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
           <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
             <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
@@ -1187,12 +1194,16 @@ const LibraryHomepage = () => {
           <button onClick={() => {
             setFilesView("list")
             saveFileTypeView("list")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
           <button onClick={() => {
             setFilesView("tiles")
             saveFileTypeView("tiles")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
@@ -1204,8 +1215,86 @@ const LibraryHomepage = () => {
       ) : (
         <div className={styles.libSecHeader}>{renderHeaderContent()}</div>
       )}
+      <div className="bg-white" style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '78vh',
+        justifyContent: 'space-between'
+      }}>
 
-      {renderContent()}
+        {renderContent()}
+        {
+          (activeSection === "files" ? !!sortedData.length : false) &&
+          <div className="page-heading-container " >
+            <p className="page-heading">
+              Showing {startIndex} - {endIndex > sortedData.length ? sortedData.length : endIndex}{' '}
+              of {sortedData.length} item
+            </p>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              paginate={(number) => {
+                setCurrentPage(number)
+                setSelectedCheckbox(new Set())
+                setCheckedItems(0)
+              }}
+              currentPageData={paginatedData}
+              goToNextPage={() => {
+                setCurrentPage(prev => prev + 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+
+              }}
+              goToPrevPage={() => {
+                setCurrentPage(prev => prev - 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+
+
+              }}
+              perPage={itemsPerPage}
+            />
+          </div>
+        }
+
+{
+          (activeSection === "folders" ? !!sortedFolder.length : false) &&
+          <div className="page-heading-container " >
+            <p className="page-heading">
+              Showing {folderStartIndex} - {folderEndIndex > sortedFolder.length ? sortedFolder.length : folderEndIndex}{' '}
+              of {sortedFolder.length} item
+            </p>
+
+            <Pagination
+              currentPage={currentFolderPage}
+              totalPages={totalFolderPages}
+              paginate={(number) => {
+                setCurrentFolderPage(number)
+                setSelectedCheckbox(new Set())
+                setCheckedItems(0)
+              }}
+              currentPageData={paginatedFolderData}
+              goToNextPage={() => {
+                setCurrentFolderPage(prev => prev + 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+              }}
+              goToPrevPage={() => {
+                setCurrentFolderPage(prev => prev - 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+              }}
+              perPage={itemsPerPage}
+            />
+          </div>
+        }
+      </div>
+
       {
         isVideoModalOpen && <VideoPlayer videoName={videoName} url={videoUrl} onClose={() => {
           setIsVideoModalOpen(false)

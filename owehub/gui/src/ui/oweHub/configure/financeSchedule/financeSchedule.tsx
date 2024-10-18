@@ -27,6 +27,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
+import Papa from 'papaparse';
 
 const  FinanceSchedule: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -43,6 +44,7 @@ const  FinanceSchedule: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState<number>(0)
+  const [isExportingData, setIsExporting] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
@@ -251,6 +253,10 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     }
   };
 
+  const handleExportOpen = () => {
+    exportCsv();
+  }
+
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
@@ -270,15 +276,74 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   }
   const notAllowed = selectedRows.size > 1;
 
+
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_finaceschedule', {
+    page_number: 1,
+    page_size: totalCount,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Finance Company',
+      'Finance Type Ref',
+      'State',
+      'Active Start Date',
+      'Active End Date',
+      'Finance Fee',
+      'Finance Type',
+      'Finance Type uid',
+      'Owe Finance Fee',
+      'Commissions Rate'
+    ];
+  
+   
+     
+    const csvData = exportData?.data?.FinanceScheduleData?.map?.((item: any) => [
+      item.finance_company,
+      item.finance_type_ref,
+      item[' state_3'],
+      dateFormat(item.active_date_start),
+      dateFormat(item.active_date_end),
+      item[' finance_fee'],
+      item[' finance_type'],
+      item[' finance_type_uid'],
+      item[' owe_finance_fee'],
+      item.commissions_rate
+       
+    ]);
+
+  
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'financeschedule.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
  
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Finance Schedule"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Finance Schedule"
@@ -292,10 +357,11 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           viewArchive={viewArchived}
-          onpressExport={() => {}}
+          onpressExport={() => handleExportOpen()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc

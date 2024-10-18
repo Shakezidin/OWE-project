@@ -78,7 +78,7 @@
   border: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  width: 195px;
+  width: 120px !important;
   border-radius: 5px;
 }
 
@@ -91,11 +91,14 @@
 }
 
 .dropdownItem {
-  padding: 10px 20px;
+  padding: 7px 10px;
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
-  line-height: 18px;
+  text-align: justify !important;
+  width: 120px;
+  word-wrap: break-word; /* Ensures long words break into new lines */
+  white-space: normal; /* Allows text to wrap to the next line */
 }
 
 .dropdownItem:hover {

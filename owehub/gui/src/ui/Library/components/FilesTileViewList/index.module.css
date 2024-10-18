@@ -1,6 +1,6 @@
-.list_grid{
+.list_grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 160px)); /* Use auto-fit for better behavior */
+    grid-template-columns: repeat(6, 1fr);
     column-gap: 32px;
     row-gap: 62px;
     align-items: start;
@@ -16,18 +16,37 @@
 
 
 
-@media (max-width: 968px) {
-    .list_grid{
-
-        column-gap: 16px;
-        padding: 36px;
-        grid-template-columns: repeat(auto-fit, minmax(120px,.5fr)); 
-
+/* Large devices (desktops, less than 1300px) */
+@media (max-width: 1300px) {
+    .list_grid {
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991px) {
+    .list_grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767px) {
+    .list_grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575px) {
+    .list_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Update existing media query for very small devices */
 @media (max-width: 380px) {
-    .list_grid{
+    .list_grid {
         grid-template-columns: 100%;
     }
 }

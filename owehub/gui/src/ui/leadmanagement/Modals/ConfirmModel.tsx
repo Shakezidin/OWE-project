@@ -101,7 +101,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
           status_id: 1,
           appointment_date: selectedDate
             ? format(selectedDate, 'dd-MM-yyyy')
-            : '',
+            : format(new Date(), 'dd-MM-yyyy'),
           appointment_time: selectedTime ? selectedTime : '',
         },
         true

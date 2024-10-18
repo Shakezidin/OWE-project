@@ -28,7 +28,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		err      error
 		query    string
 		data     []map[string]interface{}
-		dealerId string
+		dealerId int
 	)
 
 	log.EnterFn(0, "HandleGetSalesRepDataRequest")
@@ -88,7 +88,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = data[0]["partner_id"].(string)
+		dealerId = int(data[0]["partner_id"].(int64))
 
 	} else {
 		// Get dealer_id based on dealer_name
@@ -112,7 +112,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dealerId = data[0]["partner_id"].(string)
+		dealerId = int(data[0]["partner_id"].(int64))
 	}
 
 	if dataReq.TeamId > 0 {

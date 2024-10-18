@@ -101,7 +101,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	whereEleList = nil
 
-	performerData.DealerId, _ = data[0]["dealer_id"].(string)
+	performerData.DealerId, _ = data[0]["dealer_id"].(int64)
 	performerData.DealerName, _ = data[0]["dealer_name"].(string)
 	performerData.DealerLogo, _ = data[0]["dealer_logo"].(string)
 	performerData.BgColor, _ = data[0]["bg_color"].(string)
@@ -109,7 +109,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	queryForDealerOwner := fmt.Sprintf(`
 	select * from user_details ud
 	LEFT join sales_partner_dbhub_schema sp on ud.partner_id = sp.partner_id
-	where (role_id = 2 or role_id = 3) and ud.partner_id = '%s'
+	where (role_id = 2 or role_id = 3) and ud.partner_id = %v
 	`, performerData.DealerId)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForDealerOwner, nil)

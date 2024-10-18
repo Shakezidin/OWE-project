@@ -6,13 +6,18 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { Link, useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import tileViewStyles from '../components/FileTileView/index.module.css';
+import defauult from '../assetss/default.svg';
+import audio from '../../../resources/icons/audioFile.svg'
+import powerpoint from '../../../resources/icons/audioFile.svg'
+import textFile from '../assetss/textFile.svg';
+import wordFile from '../assetss/wordFile.svg';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import type { IFiles } from './Types';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { ICONS } from '../../../resources/icons/Icons';
 import DeleteFileModal from '../Modals/DeleteFileModal';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import DataNotFound from '../../components/loader/DataNotFound';
 import NewFile from '../Modals/NewFile';
 import fileTileViewStyles from '../components/FilesTileViewList/index.module.css';
@@ -26,10 +31,14 @@ import { FaXmark } from 'react-icons/fa6';
 import { TiThMenu } from 'react-icons/ti';
 import { BsGrid } from 'react-icons/bs';
 import FileTileView from '../components/FileTileView/FileTileView';
-
+import image from '../../../resources/icons/image.png'
+import Pagination from '../../components/pagination/Pagination';
+import SortByLibrary from '../Modals/SortByLibrary';
+import { IoMdSearch } from 'react-icons/io';
 
 const FolderDetail = () => {
     const path = useParams()
+    const [unFilteredFiles, setUnFilteredFiles] = useState<IFiles[]>([])
     const [files, setFiles] = useState<IFiles[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [slectedDeleteId, setSelectedDeleteId] = useState("")
@@ -37,14 +46,18 @@ const FolderDetail = () => {
     const { microsoftGraphAccessToken } = useAppSelector(state => state.auth)
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [selected, setSelected] = useState<Set<string>>(new Set())
+    const [sortOption, setSortOption] = useState<'name' | 'date' | 'size'
+    >('date');
     const [videoUrl, setVideoUrl] = useState("")
     const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
+
     const [fileInfo, setFileInfo] = useState({
         name: "",
         fileType: "",
         url: ""
     })
+    const [searchValue, setSearchValue] = useState('');
     const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
     const [isPending, setIsPending] = useState(false)
     const [multiDeletePopup, setMultiDeletePopup] = useState(false)
@@ -53,7 +66,37 @@ const FolderDetail = () => {
     const [searchParams] = useSearchParams()
     const [videoName, setVideoName] = useState("")
     const [isHovered, setIsHovered] = useState<number | null>(null);
-    console.log(location.state, "location")
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10
+
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let inputValue: string = e.target.value.trim();
+        const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+
+        if (!validCharacters.test(inputValue)) {
+            return; // Exit early if the input contains invalid characters
+        }
+
+        setSearchValue(inputValue);
+
+        if (inputValue === '') {
+            setFiles(unFilteredFiles);
+            return;
+        }
+
+        const filteredData = unFilteredFiles.filter((file) =>
+            file.name.toLowerCase().includes(inputValue.toLowerCase())
+        );
+        console.log(filteredData,"filtered data");
+        setFiles(filteredData);
+    };
+
+    const getPaginatedData = (page: number) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return sortedData.slice(startIndex, endIndex);
+    };
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
         const query = searchParams.get("from")
@@ -67,6 +110,9 @@ const FolderDetail = () => {
 
     };
     const navigate = useNavigate()
+    const handleSort = (option: 'name' | 'date' | 'size') => {
+        setSortOption(option);
+    };
     const saveFileTypeView = (type: string) => {
         localStorage.setItem('fileTypeView', type)
     }
@@ -81,6 +127,7 @@ const FolderDetail = () => {
                 }
             })
             setFiles((resp.data.value as IFiles[]) || [])
+            setUnFilteredFiles((resp.data.value as IFiles[]) || [])
         } catch (error) {
             console.error(error);
             toast.error((error as Error).message)
@@ -89,51 +136,106 @@ const FolderDetail = () => {
             setIsLoading(false)
         }
     }
-
+    const totalPages = Math.ceil(files.length / itemsPerPage);
     useEffect(() => {
         if (path && microsoftGraphAccessToken) {
             getFolderChilds()
         }
     }, [path, microsoftGraphAccessToken])
 
-    const getContentThumbnail = (type: string) => {
-        switch (type) {
-            case "image/jpeg":
-            case "image/png":
-            case "image/jpg":
-            case "image/gif":
-            case "image/webp":
-            case "image/bmp":
-            case "image/tiff":
-            case "image/svg+xml":
-            case "image/x-icon":
-            case "image/heif":
-            case "image/heic":
-                return "image";
+    const sortedData = [...files].sort((a, b) => {
+        switch (sortOption) {
+            case 'name':
+                return a.name.localeCompare(b.name);
+            case 'date':
+                const dateA = new Date(a.lastModifiedDateTime);
+                const dateB = new Date(b.lastModifiedDateTime);
+                return dateB.getTime() - dateA.getTime();
+            case 'size':
+                return b.size - a.size;
+            default:
+                return 0;
+        }
+    });
 
-            case "application/pdf":
+
+    function getContentThumbnail(mimeType: string | undefined): string {
+        if (!mimeType) return defauult;
+
+        switch (mimeType) {
+            case 'application/pdf':
                 return ICONS.pdf;
 
-            case "application/vnd.ms-excel":
+            case 'image/jpeg':
+            case 'image/png':
+            case 'image/gif':
+            case 'image/webp':
+            case 'image/bmp':
+            case 'image/tiff':
+            case 'image/svg+xml':
+            case 'image/x-icon':
+            case 'image/heif':
+            case 'image/heic':
+                return image;
+
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
             case "application/vnd.ms-excel.sheet.macroEnabled.12":
+            case "application/vnd.ms-excel":
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+            case "application/vnd.ms-excel.template.macroEnabled.12":
+            case "application/vnd.oasis.opendocument.spreadsheet":
+            case "text/csv":
+            case "text/tab-separated-values":
                 return ICONS.excelIcon;
 
-            case "video/mp4":
-            case "video/mpeg":
-            case "video/ogg":
-            case "video/webm":
-            case "video/x-msvideo":
-            case "video/quicktime":
+            case 'video/mp4':
                 return ICONS.videoPlayerIcon;
+            case 'video/mpeg':
+            case 'video/ogg':
+            case 'video/webm':
+            case 'video/x-msvideo':
+            case 'video/quicktime':
+                return ICONS.viedoImageOne;
 
-            case "folder":
-                return ICONS.folderImage;
+            case 'text/plain':
+                return textFile;
 
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            case "application/msword":
+            case 'application/vnd.ms-word.document.macroEnabled.12':
+            case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+            case 'application/vnd.ms-word.template.macroEnabled.12':
+            case "application/rtf":
+            case "application/vnd.oasis.opendocument.text":
+                return wordFile;
 
+            case "audio/x-wav":
+            case "audio/mpeg":
+            case "audio/wav":
+            case "audio/ogg":
+            case "audio/aac":
+            case "audio/flac":
+            case "audio/mp4":
+            case "audio/amr":
+            case "audio/aiff":
+            case "audio/x-ms-wma":
+            case "audio/webm":
+                return audio;
+
+            case "application/vnd.ms-powerpoint":
+            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+            case "application/vnd.openxmlformats-officedocument.presentationml.template":
+            case "application/vnd.ms-powerpoint.template.macroEnabled.12":
+            case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
+            case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
+            case "application/vnd.oasis.opendocument.presentation":
+                return powerpoint;
+
+            default:
+                return defauult;
         }
-    };
+    }
 
     const isVideo = (mimeType: string) => {
         if (
@@ -185,6 +287,8 @@ const FolderDetail = () => {
     const refetch = async () => {
         await getFolderChilds()
     }
+    const startIndex = (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = currentPage * itemsPerPage;
 
     const handleMultiDelete = async () => {
         setIsPending(true)
@@ -211,6 +315,7 @@ const FolderDetail = () => {
             return newSelected;
         });
     };
+
     const isImage = (mimeType: string) => {
         switch (mimeType) {
             case "image/jpeg":
@@ -229,6 +334,26 @@ const FolderDetail = () => {
                 return false
         }
     }
+
+    const isAudio = (mimeType: string): boolean => {
+        switch (mimeType) {
+            case "audio/mpeg":
+            case "audio/mp3":
+            case "audio/wav":
+            case "audio/x-wav":
+            case "audio/ogg":
+            case "audio/aac":
+            case "audio/midi":
+            case "audio/x-midi":
+            case "audio/webm":
+            case "audio/flac":
+            case "audio/x-m4a":
+            case "audio/x-matroska":
+                return true;
+            default:
+                return false;
+        }
+    };
     const onPreview = (url: string, type: string, name: string) => {
         const isValidVideo = isVideo(type)
         const isValidImage = isImage(type)
@@ -238,7 +363,7 @@ const FolderDetail = () => {
             setVideoName(name)
             return
         }
-        if (isValidImage) {
+        if (isValidImage || isAudio(type)) {
             setFileInfo({ name: name, fileType: type!, url: url })
             setIsFileViewerOpen(true)
             return
@@ -247,10 +372,12 @@ const FolderDetail = () => {
         }
     }
 
+    const paginatedData = getPaginatedData(currentPage);
+
     return (
-        <div className={styles.libraryContainer}>
+        <div className={` ${styles.libraryContainer}`}>
             <div className={styles.libraryHeader}>
-                <h3>Library</h3>
+
             </div>
             {
                 selected.size ?
@@ -289,6 +416,20 @@ const FolderDetail = () => {
                         </div>
 
                         <div className={styles.libSecHeader_right}>
+
+                            <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
+                                <IoMdSearch className={styles.search_icon} />
+                                {/* SEARCHINGGGG */}
+                                <input
+                                    type="text"
+                                    value={searchValue}
+                                    onChange={handleSearch}
+                                    placeholder="Search by file name "
+                                    className={styles.searchInput}
+                                    maxLength={25}
+                                />
+                            </div>
+                            <SortByLibrary onSort={handleSort} />
                             <button onClick={() => {
                                 setViewMode("list")
                                 saveFileTypeView("list")
@@ -311,12 +452,13 @@ const FolderDetail = () => {
                 <div className={styles.libSectionWrapper}>
 
 
+
                     {viewMode === "list" && <div className={styles.lib_Grid_Header}>
                         <div className={`${styles.grid_item} ${styles.table_name}`}>
                             <div className="flex items-center">
                                 {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
-                                    <CheckBox checked={selected.size === files.length && !!files.length} onChange={() => {
-                                        if (selected.size === files.length) {
+                                    <CheckBox checked={selected.size === paginatedData.length && !!paginatedData.length} onChange={() => {
+                                        if (selected.size === paginatedData.length) {
                                             setSelected(new Set())
                                         } else {
                                             const newChecked = new Set(files.map((item) => item.id))
@@ -337,100 +479,103 @@ const FolderDetail = () => {
                         isLoading ?
                             <div className={` bg-white py2 ${styles.filesLoader}`}> <MicroLoader /></div>
                             :
-                            files.length ?
+                            paginatedData.length ?
                                 viewMode === "list" ?
-                                    files.map((file, index) => {
-                                        const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
-                                        const isValidVideo = isVideo(file.file?.mimeType!)
-                                        return <div key={file.id} className={styles.libGridItem} >
-                                            {
-                                                file.folder ?
-                                                    <div className='flex items-center'>
-                                                        {role_name === TYPE_OF_USER.ADMIN &&
-                                                            <div className="mr1">
+                                    <div className='bg-white' style={{ minHeight: '63vh' }}>
+                                        {paginatedData.map((file, index) => {
+                                            const fileType = getContentThumbnail(file.folder ? "folder" : file.file?.mimeType!)
+                                            const isValidVideo = isVideo(file.file?.mimeType!)
+                                            return <div key={file.id} className={styles.libGridItem} >
+                                                {
+                                                    file.folder ?
+                                                        <div className='flex items-center'>
+                                                            {role_name === TYPE_OF_USER.ADMIN &&
+                                                                <div className="mr1">
+                                                                    <CheckBox
+                                                                        checked={selected.has(file.id)}
+                                                                        onChange={() => handleCheckboxChange(file.id)}
+                                                                    />
+                                                                </div>
+                                                            }
+                                                            <Link to={`/library/${path["*"]}/${file.name}`} onClick={() => setSelected(new Set())} className={`${styles.file_icon} ${styles.image_div}`}>
+                                                                <img
+                                                                    src={ICONS.folderImage}
+                                                                />
+                                                                <div className={styles.name_div}>
+                                                                    <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
+                                                                    <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                    <p className={styles.size}> {(file.size > 1024 * 1024)
+                                                                        ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
+                                                                        : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
+                                                                </div>
+                                                            </Link>
+                                                        </div>
+
+                                                        :
+                                                        <div className="flex items-center">
+                                                            {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
                                                                 <CheckBox
                                                                     checked={selected.has(file.id)}
                                                                     onChange={() => handleCheckboxChange(file.id)}
                                                                 />
-                                                            </div>
-                                                        }
-                                                        <Link to={`/library/${path["*"]}/${file.name}`} className={`${styles.file_icon} ${styles.image_div}`}>
-                                                            <img
-                                                                src={ICONS.folderImage}
-                                                            />
-                                                            <div className={styles.name_div}>
-                                                                <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
-                                                                <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
-                                                                <p className={styles.size}> {(file.size > 1024 * 1024)
-                                                                    ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
-                                                                    : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
-                                                            </div>
-                                                        </Link>
-                                                    </div>
+                                                            </div>}
+                                                            <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
+                                                                if (isValidVideo) {
+                                                                    setIsVideoModalOpen(true)
+                                                                    setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
+                                                                    setVideoName(file.name)
+                                                                    return
+                                                                }
+                                                                if (isImage(file?.file?.mimeType!) || isAudio(file.file?.mimeType!)) {
+                                                                    setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
+                                                                    setIsFileViewerOpen(true)
+                                                                    return
+                                                                } else {
+                                                                    window.open(file.webUrl, "_blank")
+                                                                }
 
-                                                    :
-                                                    <div className="flex items-center">
-                                                        {role_name === TYPE_OF_USER.ADMIN && <div className="mr1">
-                                                            <CheckBox
-                                                                checked={selected.has(file.id)}
-                                                                onChange={() => handleCheckboxChange(file.id)}
-                                                            />
-                                                        </div>}
-                                                        <div style={{ cursor: "pointer" }} className={`${styles.file_icon} ${styles.image_div}`} onClick={() => {
-                                                            if (isValidVideo) {
-                                                                setIsVideoModalOpen(true)
-                                                                setVideoUrl(file["@microsoft.graph.downloadUrl"]!)
-                                                                return
-                                                            }
-                                                            if (fileType === "image") {
-                                                                setFileInfo({ name: file.name, fileType: file.file?.mimeType!, url: file["@microsoft.graph.downloadUrl"]! })
-                                                                setIsFileViewerOpen(true)
-                                                                return
-                                                            } else {
-                                                                window.open(file.webUrl, "_blank")
-                                                            }
+                                                            }}>
 
-                                                        }}>
+                                                                <img
+                                                                    src={fileType}
+                                                                    style={{
+                                                                        width: isValidVideo ? 32 : undefined,
+                                                                        height: isValidVideo ? 32 : undefined
+                                                                    }}
+                                                                />
+                                                                <div className={styles.name_div}>
+                                                                    <p className={styles.name_hide}>{file.name}</p>
 
-                                                            <img
-                                                                src={fileType === "image" ? file["@microsoft.graph.downloadUrl"] : fileType}
-                                                                style={{
-                                                                    width: isValidVideo ? 32 : undefined,
-                                                                    height: isValidVideo ? 32 : undefined
-                                                                }}
-                                                            />
-                                                            <div className={styles.name_div}>
-                                                                <p className={styles.name_hide}>{file.name}</p>
-
-                                                                <p className={styles.name}>{file.name}</p>
-                                                                <p className={styles.size}>
-                                                                    {(file.size > 1024 * 1024)
-                                                                        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                                                                        : `${Math.round(file.size / 1024)} KB`}
-                                                                </p>
+                                                                    <p className={styles.name}>{file.name}</p>
+                                                                    <p className={styles.size}>
+                                                                        {(file.size > 1024 * 1024)
+                                                                            ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                                                                            : `${Math.round(file.size / 1024)} KB`}
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                            }
+                                                }
 
-                                            <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
-                                            <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-                                                <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
-                                                    onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
-                                                />
-                                                {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
-                                                    setIsDeleteModalVisible(true)
-                                                    setSelectedDeleteId(file.id)
-                                                }}
+                                                <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                                                <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                                                    <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
+                                                        onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
+                                                    />
+                                                    {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine className={styles.icons_delete} onClick={() => {
+                                                        setIsDeleteModalVisible(true)
+                                                        setSelectedDeleteId(file.id)
+                                                    }}
 
-                                                />}
+                                                    />}
+                                                </div>
                                             </div>
-                                        </div>
-                                    })
+                                        })}
+                                    </div>
                                     :
-                                    <div className={fileTileViewStyles.list_grid}>
-                                        {files.map((file) => {
+                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0, minHeight: '70vh', }}>
+                                        {paginatedData.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
                                                 name: file.name,
@@ -439,7 +584,11 @@ const FolderDetail = () => {
                                                 "@microsoft.graph.downloadUrl": file["@microsoft.graph.downloadUrl"],
                                                 mimeType: file.file?.mimeType,
                                                 createdDateTime: `${file.createdDateTime}`
-                                            }} onDelete={() => setMultiDeletePopup(true)} onFilePreview={onPreview} selected={selected} onCheck={(id) => handleCheckboxChange(id)} key={file.id} /> :
+                                            }} onDelete={() => {
+                                                setIsDeleteModalVisible(true)
+                                                setSelectedDeleteId(file.id)
+
+                                            }} onFilePreview={onPreview} selected={selected} onCheck={(id) => handleCheckboxChange(id)} key={file.id} /> :
                                                 <div
                                                     style={{ cursor: 'pointer' }}
                                                     className={"flex flex-column items-center justify-center"}
@@ -494,7 +643,31 @@ const FolderDetail = () => {
                                 </div>
                     }
 
+                    {!!paginatedData.length && <div style={{ borderBottomRightRadius: 12, borderBottomLeftRadius: 12 }} className="page-heading-container bg-white" >
+                        <p className="page-heading">
+                            Showing {startIndex} - {endIndex > files.length ? files.length : endIndex}{' '}
+                            of {files.length} item
+                        </p>
 
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            paginate={(number) => {
+                                setCurrentPage(number)
+                                setSelected(new Set())
+                            }}
+                            currentPageData={files}
+                            goToNextPage={() => {
+                                setCurrentPage(prev => prev + 1)
+                                setSelected(new Set())
+                            }}
+                            goToPrevPage={() => {
+                                setCurrentPage(prev => prev - 1)
+                                setSelected(new Set())
+                            }}
+                            perPage={itemsPerPage}
+                        />
+                    </div>}
                 </div>
             }
 

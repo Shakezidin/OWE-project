@@ -27,6 +27,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
+import Papa from 'papaparse';
 
 const DealerPayments: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -44,6 +45,7 @@ const DealerPayments: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+  const [isExportingData, setIsExporting] = useState(false);
   const [totalCount, setTotalCount] = useState<number>(0)
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
@@ -139,6 +141,11 @@ const DealerPayments: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
+
+  const handleExportOpen = () => {
+    exportCsv();
+  }
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -270,15 +277,68 @@ const DealerPayments: React.FC = () => {
   }
   const notAllowed = selectedRows.size > 1;
 
-  console.log(currentPageData, "dfjbhkg")
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_dealerpayment', {
+    page_number: 1,
+    page_size: totalCount,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Unique Id',
+      'Customer',
+      'Sales Partner',
+      'Type of Payment',
+      'Payment Date',
+      'Payment Amount',
+      'Payment Method',
+      'Transaction',
+      'Notes',
+    ];
+  
+   
+     
+    const csvData = exportData?.data?.DealerPaymentsData?.map?.((item: any) => [
+      item.unique_id,
+      item.customer,
+      item.sales_partner,
+      item.type_of_payment,
+      item.payment_date,
+      item.payment_amount,
+      item.payment_method,
+      item.transaction,
+      item.notes 
+    ]);
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'dealerpayments.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
+
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer Payments"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Payments"
@@ -292,10 +352,11 @@ const DealerPayments: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           viewArchive={viewArchived}
-          onpressExport={() => {}}
           checked={isAllRowsSelected}
+          onpressExport={() => handleExportOpen()}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
+          isExportingData={isExportingData}
         />
 
         <FilterHoc
