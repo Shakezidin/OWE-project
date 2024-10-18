@@ -31,6 +31,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
   const [isCreateFolder, setIsCreateFolder] = useState(false)
   const [pendingState, sePendingState] = useState<"uploading" | "creating" | "">("")
 
+  
   const handleClick = () => {
     setIsVisible(!isVisible);
     setIsVisibleuploadFile(false);
@@ -171,6 +172,21 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (pendingState === "uploading") {
+        event.preventDefault();
+        event.returnValue = "You have an upload in progress. Are you sure you want to leave?";
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [pendingState]);
 
   return (
     <div className={classes.newfile_container} ref={dropdownRef}>
