@@ -52,6 +52,7 @@ import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
+import useEscapeKey from '../../hooks/useEscape';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -400,6 +401,11 @@ const LeadManagementDashboard = () => {
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+
+  const handleCalenderClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(handleCalenderClose);
 
   //CALLING FOR RANGE PICK IN USING SELECT CODE
   const handlePeriodChange = (
