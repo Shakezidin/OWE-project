@@ -57,19 +57,12 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	}
 	var dlrPay models.DealerPayReportResponse
 
-	// InitailData, err := oweconfig.LoadDlrPayInitialData()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get dlrpay initial data with err: %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Failed to get dlrpay initial data", http.StatusBadRequest, nil)
-	// 	return
-	// }
-
 	dlrPay.Home_Owner = "TestHomeOwner"
 	dlrPay.Current_Status = "TestStatus"
 	dlrPay.Unique_ID = "OUR12345"
 	dlrPay.Dealer_Code = "TestDealer"
-	dlrPay.Sys_Size = 0.0
-	dlrPay.Contract = 0.0
+	dlrPay.Sys_Size = "TestSysSize"
+	dlrPay.Contract = "TestContract"
 	dlrPay.Other_Adders = "TestOtherAdders"
 	dlrPay.Rep1 = "TestRep1"
 	dlrPay.Rep2 = "TestRep2"
@@ -77,7 +70,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	dlrPay.ST = "TestState"
 	dlrPay.Contract_Date = time.Now()
 	dlrPay.Loan_Fee = "TesLoanFee"
-	dlrPay.Net_EPC = 0.0
+	dlrPay.Net_EPC = "TestNetEPC"
 	dlrPay.Credit = "TestCredit"
 	dlrPay.Draw_Amt = 10.10
 	dlrPay.RL = "TestRL"
