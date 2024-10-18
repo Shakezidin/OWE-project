@@ -55,7 +55,7 @@ const earnoutFilters: Filter[] = [
       15: '15',
     },
   },
-  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 1 , marks:{5: '5',
+  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 1 , marks:{0:'0', 5: '5',
     10: '10',
     15: '15',
     20: '20',
