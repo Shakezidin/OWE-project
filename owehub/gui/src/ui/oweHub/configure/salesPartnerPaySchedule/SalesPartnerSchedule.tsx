@@ -51,7 +51,7 @@ const  SalesPartnerSchedule: React.FC = () => {
   const [isExportingData, setIsExporting] = useState(false);
   const itemsPerPage = 25;
   const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
