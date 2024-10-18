@@ -9,6 +9,7 @@ import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { useAppSelector } from '../../../../redux/hooks';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
+import { Tooltip } from 'react-tooltip';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
@@ -103,8 +104,12 @@ function FolderView({
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            <div className={styles.folder_name_hide}>{folder.name.substring(0, 25)}</div>
-            <div className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
+            
+            <div 
+                   data-tooltip-id={`file-name-${folder.id}`}
+                   data-tooltip-content={folder.name}           
+            className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
+            <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${folder.id}`} place="top" />
             <div className={styles.folderInfo_wrapper}>
               <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
