@@ -10,6 +10,7 @@ import { BsGrid } from "react-icons/bs";
 import { RiDeleteBinLine } from 'react-icons/ri';
 import DropDownLibrary from './Modals/DropDownLibrary';
 import SortByLibrary from './Modals/SortByLibrary';
+import { Tooltip } from 'react-tooltip';
 import NewFile from './Modals/NewFile';
 import { BiArrowBack } from 'react-icons/bi';
 import FolderView from './components/FolderView/FolderView';
@@ -247,7 +248,7 @@ const LibraryHomepage = () => {
   const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    console.log(startIndex,endIndex,"rangeee");
+    console.log(startIndex, endIndex, "rangeee");
     return data.slice(startIndex, endIndex);
   };
 
@@ -695,7 +696,7 @@ const LibraryHomepage = () => {
   const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
   const paginatedFolderData = getPaginatedData(sortedFolder, currentFolderPage, itemsPerPage);
   const totalFolderPages = Math.ceil(sortedFolder.length / itemsPerPage);
-  console.log(paginatedData,"sorting working",sortedData);
+  console.log(paginatedData, "sorting working", sortedData);
   const folderStartIndex = (currentFolderPage - 1) * itemsPerPage + 1;
   const folderEndIndex = currentFolderPage * itemsPerPage;
 
@@ -841,7 +842,7 @@ const LibraryHomepage = () => {
               setSelectedCheckbox(new Set())
               setCheckedItems(0)
               setCheckedFolders([])
-setAllIds([])
+              setAllIds([])
             }}>
               <FaXmark style={{
                 height: '20px',
@@ -1089,8 +1090,10 @@ setAllIds([])
                           loading='lazy'
                         />
                         <div className={styles.name_div} >
-                          <p className={styles.name_hide}>{data.name.substring(0, 100)}</p>
-                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
+
+                          <p data-tooltip-id={`file-name-${data.id}`}
+                            data-tooltip-content={data.name} className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
+                          <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${data.id}`} place="top" />
                           <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -1260,7 +1263,7 @@ setAllIds([])
           </div>
         }
 
-{
+        {
           (activeSection === "folders" ? !!sortedFolder.length : false) &&
           <div className="page-heading-container " >
             <p className="page-heading">

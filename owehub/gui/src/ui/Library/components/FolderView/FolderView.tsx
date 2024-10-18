@@ -8,6 +8,7 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { useAppSelector } from '../../../../redux/hooks';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
@@ -26,7 +27,7 @@ function FolderView({
 }: FolderViewProps) {
   const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const isTablet = useMatchMedia("(max-width: 968px)")
   const [myFolderData, setMyFolderData] = useState(folderData);
   const { role_name } = useAppSelector(state => state.auth)
   useEffect(() => {
@@ -57,7 +58,7 @@ function FolderView({
   return (
     <div className={styles.folderMain_wrapper}>
       {loading ? (
-        <div className={styles.filesLoader} style={{width: '100%'}}>
+        <div className={styles.filesLoader} style={{ width: '100%' }}>
           <MicroLoader />
         </div>
       ) : myFolderData.length > 0 ? myFolderData.map((folder, index) => (
@@ -65,16 +66,16 @@ function FolderView({
           style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
-
-          onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
+          onClick={isTablet ? () => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } }) : undefined}
+          onDoubleClick={isTablet ? undefined : () => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
             {/* <p className={styles.createdBy}>Created by</p>
             <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
           <div className={styles.folderIcon_wrapper}
-            onMouseEnter={() => setHoveredIndex(folder.id)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={() => isTablet ? undefined : setHoveredIndex(folder.id)}
+            onMouseLeave={() => isTablet ? undefined : setHoveredIndex(null)}
           >
             <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
             <img src={ICONS.folderImage} alt="" />
@@ -85,8 +86,8 @@ function FolderView({
             }}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
-                className={`${styles.folderInput} ${checkedFolders.includes(folder.id) || hoveredIndex === folder.id
-                  ? ` ${styles.selected} ${styles.visible}`
+                className={`${styles.folderInput} ${(checkedFolders.includes(folder.id) || hoveredIndex === folder.id
+                  || isTablet) ? ` ${styles.selected} ${styles.visible}`
                   : styles.hidden
                   } `}
                 type="checkbox"

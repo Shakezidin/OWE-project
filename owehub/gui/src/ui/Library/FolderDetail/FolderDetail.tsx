@@ -33,9 +33,12 @@ import { BsGrid } from 'react-icons/bs';
 import FileTileView from '../components/FileTileView/FileTileView';
 import image from '../../../resources/icons/image.png'
 import Pagination from '../../components/pagination/Pagination';
+import SortByLibrary from '../Modals/SortByLibrary';
+import { IoMdSearch } from 'react-icons/io';
 
 const FolderDetail = () => {
     const path = useParams()
+    const [unFilteredFiles, setUnFilteredFiles] = useState<IFiles[]>([])
     const [files, setFiles] = useState<IFiles[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [slectedDeleteId, setSelectedDeleteId] = useState("")
@@ -43,14 +46,18 @@ const FolderDetail = () => {
     const { microsoftGraphAccessToken } = useAppSelector(state => state.auth)
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
     const [selected, setSelected] = useState<Set<string>>(new Set())
+    const [sortOption, setSortOption] = useState<'name' | 'date' | 'size'
+    >('date');
     const [videoUrl, setVideoUrl] = useState("")
     const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
+
     const [fileInfo, setFileInfo] = useState({
         name: "",
         fileType: "",
         url: ""
     })
+    const [searchValue, setSearchValue] = useState('');
     const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
     const [isPending, setIsPending] = useState(false)
     const [multiDeletePopup, setMultiDeletePopup] = useState(false)
@@ -62,10 +69,33 @@ const FolderDetail = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 10
 
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let inputValue: string = e.target.value.trim();
+        const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+
+        if (!validCharacters.test(inputValue)) {
+            return; // Exit early if the input contains invalid characters
+        }
+
+        setSearchValue(inputValue);
+
+        if (inputValue === '') {
+            setFiles(unFilteredFiles);
+            return;
+        }
+
+        const filteredData = unFilteredFiles.filter((file) =>
+            file.name.toLowerCase().includes(inputValue.toLowerCase())
+        );
+        console.log(filteredData,"filtered data");
+        setFiles(filteredData);
+    };
+
     const getPaginatedData = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        return files.slice(startIndex, endIndex);
+        return sortedData.slice(startIndex, endIndex);
     };
     const handleBackWithQuery = () => {
         const previousUrl = location.state?.from;
@@ -80,6 +110,9 @@ const FolderDetail = () => {
 
     };
     const navigate = useNavigate()
+    const handleSort = (option: 'name' | 'date' | 'size') => {
+        setSortOption(option);
+    };
     const saveFileTypeView = (type: string) => {
         localStorage.setItem('fileTypeView', type)
     }
@@ -94,6 +127,7 @@ const FolderDetail = () => {
                 }
             })
             setFiles((resp.data.value as IFiles[]) || [])
+            setUnFilteredFiles((resp.data.value as IFiles[]) || [])
         } catch (error) {
             console.error(error);
             toast.error((error as Error).message)
@@ -108,6 +142,21 @@ const FolderDetail = () => {
             getFolderChilds()
         }
     }, [path, microsoftGraphAccessToken])
+
+    const sortedData = [...files].sort((a, b) => {
+        switch (sortOption) {
+            case 'name':
+                return a.name.localeCompare(b.name);
+            case 'date':
+                const dateA = new Date(a.lastModifiedDateTime);
+                const dateB = new Date(b.lastModifiedDateTime);
+                return dateB.getTime() - dateA.getTime();
+            case 'size':
+                return b.size - a.size;
+            default:
+                return 0;
+        }
+    });
 
 
     function getContentThumbnail(mimeType: string | undefined): string {
@@ -266,7 +315,7 @@ const FolderDetail = () => {
             return newSelected;
         });
     };
- 
+
     const isImage = (mimeType: string) => {
         switch (mimeType) {
             case "image/jpeg":
@@ -288,23 +337,23 @@ const FolderDetail = () => {
 
     const isAudio = (mimeType: string): boolean => {
         switch (mimeType) {
-          case "audio/mpeg":
-          case "audio/mp3":
-          case "audio/wav":
-          case "audio/x-wav":
-          case "audio/ogg":
-          case "audio/aac":
-          case "audio/midi":
-          case "audio/x-midi":
-          case "audio/webm":
-          case "audio/flac":
-          case "audio/x-m4a":
-          case "audio/x-matroska":
-            return true;
-          default:
-            return false;
+            case "audio/mpeg":
+            case "audio/mp3":
+            case "audio/wav":
+            case "audio/x-wav":
+            case "audio/ogg":
+            case "audio/aac":
+            case "audio/midi":
+            case "audio/x-midi":
+            case "audio/webm":
+            case "audio/flac":
+            case "audio/x-m4a":
+            case "audio/x-matroska":
+                return true;
+            default:
+                return false;
         }
-      };
+    };
     const onPreview = (url: string, type: string, name: string) => {
         const isValidVideo = isVideo(type)
         const isValidImage = isImage(type)
@@ -367,6 +416,20 @@ const FolderDetail = () => {
                         </div>
 
                         <div className={styles.libSecHeader_right}>
+
+                            <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
+                                <IoMdSearch className={styles.search_icon} />
+                                {/* SEARCHINGGGG */}
+                                <input
+                                    type="text"
+                                    value={searchValue}
+                                    onChange={handleSearch}
+                                    placeholder="Search by file name "
+                                    className={styles.searchInput}
+                                    maxLength={25}
+                                />
+                            </div>
+                            <SortByLibrary onSort={handleSort} />
                             <button onClick={() => {
                                 setViewMode("list")
                                 saveFileTypeView("list")
@@ -434,7 +497,7 @@ const FolderDetail = () => {
                                                                     />
                                                                 </div>
                                                             }
-                                                            <Link to={`/library/${path["*"]}/${file.name}`} onClick={()=>setSelected(new Set())} className={`${styles.file_icon} ${styles.image_div}`}>
+                                                            <Link to={`/library/${path["*"]}/${file.name}`} onClick={() => setSelected(new Set())} className={`${styles.file_icon} ${styles.image_div}`}>
                                                                 <img
                                                                     src={ICONS.folderImage}
                                                                 />
@@ -593,13 +656,15 @@ const FolderDetail = () => {
                             totalPages={totalPages}
                             paginate={(number) => {
                                 setCurrentPage(number)
-setSelected(new Set())
-                            }}
-                            currentPageData={files}
-                            goToNextPage={() => {setCurrentPage(prev => prev + 1)
                                 setSelected(new Set())
                             }}
-                            goToPrevPage={() =>{ setCurrentPage(prev => prev - 1)
+                            currentPageData={files}
+                            goToNextPage={() => {
+                                setCurrentPage(prev => prev + 1)
+                                setSelected(new Set())
+                            }}
+                            goToPrevPage={() => {
+                                setCurrentPage(prev => prev - 1)
                                 setSelected(new Set())
                             }}
                             perPage={itemsPerPage}

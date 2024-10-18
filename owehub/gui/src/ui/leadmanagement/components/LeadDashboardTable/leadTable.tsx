@@ -358,14 +358,14 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
                       <td className={styles.FixedColumn} style={{ zIndex: selected === index ? 101 : 0 }}>
                         <div onClick={() => (setLeadId(lead.leads_id))}>
-                          {lead.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
+                          {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                          ) : lead.proposal_id ? (
+                          ) : lead?.proposal_id ? (
                             <div className={styles.progress_status}>
                               <span>Last Updated 2 Days Ago</span>
                               <p className={styles.prop_send} onClick={() => fetchWebProposal(lead.leads_id)}>
                               View Proposal <IoChevronForward />
-                                <IoChevronForward />
+                                <IoChevronForward style={{marginLeft: "-8px"}}/>
                               </p>
                             </div>
                           ) :
@@ -382,12 +382,12 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                   setSelected(index);
                                 }}
                                 options={
-                                  lead.appointment_status_label === "Appointment Sent"
+                                  lead?.appointment_status_label === "Appointment Sent"
                                     ? [
                                         { label: 'Reschedule Appointment', value: 'app_sched' },
                                         { label: 'Create Proposal', value: 'new_proposal' },
                                       ]
-                                    : lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                    : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
                                       ? [
                                           { label: 'View Proposal', value: 'viewProposal' },
                                           { label: 'Recreate Proposal', value: 'new_proposal' },
