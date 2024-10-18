@@ -66,21 +66,28 @@ const FolderList = (props: IFolder) => {
                             className={sharedStyles.name}>  {props.name?.substring(0, 25)} {props.name?.length !== undefined && props.name?.length >= 25 ? '...' : ''}</p>
                     </div>
                     <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${props.id}`} place="top" />
+                <div  className={sharedStyles.size_date_container}>
                     <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
                             ? `${((props?.size || 0) / (1024 * 1024)).toFixed(2)} MB`
                             : `${Math.round((props?.size || 0) / 1024)} KB`}
                     </p>
-
+                    <div className={` ${sharedStyles.sm_hide_upload_date} ${sharedStyles.grid_item}`} style={{ fontSize: "12px" }}>
+                                            {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
+                   
+                    </div>
+                </div>
                 </div>
             </div>
-            <div className={` ${sharedStyles.sm_hide} ${sharedStyles.grid_item}`} style={{ fontSize: "14px" }}>
+            <div className={` ${sharedStyles.sm_hide} ${sharedStyles.grid_item} ${styles.grid_date}`} style={{ fontSize: "14px" }}>
                 {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
             </div>
             <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
 
 
-                <div>
+                {/* <div  className={sharedStyles.size_date_delete}> */}
+                <div className={`${styles.grid_icon} ${sharedStyles.size_date_delete}`}>
+
                     <RiDeleteBinLine
                         style={{ color: role_name === TYPE_OF_USER.ADMIN ? undefined : "rgba(102, 112, 133, 0.5)", cursor: role_name === TYPE_OF_USER.ADMIN ? "pointer" : "not-allowed" }}
                         onClick={() => role_name === TYPE_OF_USER.ADMIN && props?.onDelete?.(props.id!)}

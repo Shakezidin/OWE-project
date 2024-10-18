@@ -342,6 +342,8 @@
   font-weight: 400;
   position: relative;
   right: 8px;
+  display: flex;
+  justify-content: flex-end;
   
 
 }
@@ -612,6 +614,9 @@
   border-radius: 6px;
   transition: all 500ms;
 }
+.sm_hide_upload_date{
+  display: none;
+}
 
 .view_btn:not(.active_tile):hover {
   background-color: #377cf6;
@@ -799,4 +804,18 @@
   .searchWrapper{
     width:170px;
   } 
+  .size_date_container{
+    display: flex;
+    gap: 10px;
+    
+  }
+  .sm_hide_upload_date{
+    display: block;
+    color: #101828;
+    font-weight: 400;
+  }
+  .size_date_delete{
+    margin-right: 26px;
+  }
+ 
 }
