@@ -605,7 +605,8 @@ const FolderDetail = () => {
                                                     key={file.id}
                                                     onMouseEnter={() => setHoveredIndex(file.id)}
                                                     onMouseLeave={() => setHoveredIndex(null)}
-                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}`)}
+                                                    onClick={()=>isTablet?navigate(`/library/${path["*"]}/${file.name}`):undefined}
+                                                    onDoubleClick={() => isTablet?  undefined:navigate(`/library/${path["*"]}/${file.name}`)}
                                                 >
                                                     <div className={folderWrapperStyles.createdByWrapper}>
 
