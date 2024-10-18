@@ -382,7 +382,7 @@ const FolderDetail = () => {
     return (
         <div className={`relative ${styles.libraryContainer}`}>
             <div className={` ${containerTyles.lg_hide} ${styles.libraryHeader}`}>
-                <div className={`  ${styles.libSecHeader_right}`} style={{width:"100%"}}>
+                <div className={`  ${styles.libSecHeader_right} ${containerTyles.mobile_gap}`} style={{width:"100%"}}>
                     <div className={` bg-white ${containerTyles.flex_auto} ${containerTyles.search_container} ${styles.searchWrapper}`}>
                         <IoMdSearch className={styles.search_icon} />
                         {/* SEARCHINGGGG */}
@@ -548,6 +548,8 @@ const FolderDetail = () => {
                                                                     <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                         ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
                                                                         : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
+
+                                                                        <div className={`${containerTyles.lg_text_hide}  ${styles.grid_item_dates} `}style={{ fontSize: "12px",display:"inline-block",marginLeft:"10px",color:"#000" }}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                                                 </div>
                                                             </Link>
                                                         </div>
@@ -595,13 +597,15 @@ const FolderDetail = () => {
                                                                             ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
                                                                             : `${Math.round(file.size / 1024)} KB`}
                                                                     </p>
+                          <div className={` ${containerTyles.lg_text_hide} ${styles.grid_item_dates} `}style={{ fontSize: "12px",display:"inline-block",marginLeft:10 }}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                 }
 
-                                                <div className={`${styles.grid_item} ${styles.grid_item_upload_date}  ${styles.sm_hide}  `}>{format(new Date(file.createdDateTime), 'dd-MM-yyyy')}</div>
+                                                <div className={`${styles.grid_item} ${styles.grid_item_upload_date}  ${styles.sm_hide}  `}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                                 <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                                                     <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
                                                         onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
@@ -626,7 +630,7 @@ const FolderDetail = () => {
                                                 size: file.size,
                                                 "@microsoft.graph.downloadUrl": file["@microsoft.graph.downloadUrl"],
                                                 mimeType: file.file?.mimeType,
-                                                createdDateTime: `${file.createdDateTime}`
+                                                createdDateTime: `${file.lastModifiedDateTime}`
                                             }} onDelete={() => {
                                                 setIsDeleteModalVisible(true)
                                                 setSelectedDeleteId(file.id)
@@ -679,7 +683,8 @@ const FolderDetail = () => {
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
                                                                 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
                                                                 : `${Math.round(file.size / 1024)} KB`} </div>
-                                                            <div className={`  ${folderWrapperStyles.folderdate}`}>{format(new Date(file.createdDateTime), 'dd-MM-yyyy')}</div>
+                                                                
+                                                            <div className={`  ${folderWrapperStyles.folderdate}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                                         </div>
                                                     </div>
                                                 </div>
