@@ -53,8 +53,16 @@ const earnoutFilters: Filter[] = [
       15: '15',
     },
   },
-  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 5 },
-  { label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 12 },
+  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 5 , marks:{5: '5',
+    10: '10',
+    15: '15',
+    20: '20',
+    25: '25',
+     }},
+  { label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 12, marks:{24: '24',
+    36: '36',
+    48: '48',
+     }  },
 ];
 
 const equityFilters: Filter[] = [
@@ -84,12 +92,20 @@ const Calculator: React.FC = () => {
   };
 
   const calculateEarnout = (): string => {
-    const result =
-      (earnoutValues['System Install (per month)'] || 0) *
-      (earnoutValues['Average system size'] || 0) *
-      (earnoutValues['Months until Earnout'] || 0);
+    // Ensure all values are numbers
+    const systemInstallPerMonth = Number(earnoutValues['System Install (per month)']);
+    const averageSystemSize = Number(earnoutValues['Average system size']);
+    const monthsUntilEarnout = Number(earnoutValues['Months until Earnout']);
+  
+    // Now the arithmetic operations will work without errors
+    const firstvalue = systemInstallPerMonth * averageSystemSize;
+    const secondvalue = firstvalue + (100 * monthsUntilEarnout);
+  
+    const result = secondvalue * 375;
+  
     return result.toFixed(2);
   };
+  
 
   const calculateEquityGrowth = (): string => {
     const rate = equityValues['CAGR'] || 0;
