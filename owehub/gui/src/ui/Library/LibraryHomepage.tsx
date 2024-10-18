@@ -234,6 +234,7 @@ const LibraryHomepage = () => {
     // File size in bytes
     // Include any other properties you expect
   }
+  const [currentFolderPage, setCurrentFolderPage] = useState(1);
   const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
   const [fileData, setFileData] = useState<FileOrFolder[]>([]);
   const navigate = useNavigate()
@@ -672,7 +673,7 @@ const LibraryHomepage = () => {
         return 0;
     }
   });
-  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
+
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const sortedFolder = [...folderData].sort((a, b) => {
@@ -689,7 +690,13 @@ const LibraryHomepage = () => {
         return 0; // no sorting applied
     }
   });
+  console.log(sortedFolder,"sorting working");
+  const paginatedData = getPaginatedData(sortedData, currentFolderPage, itemsPerPage);
+  const paginatedFolderData = getPaginatedData(sortedFolder, currentFolderPage, itemsPerPage);
+  const totalFolderPages = Math.ceil(sortedFolder.length / itemsPerPage);
 
+  const folderStartIndex = (currentFolderPage - 1) * itemsPerPage + 1;
+  const folderEndIndex = currentFolderPage * itemsPerPage;
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
@@ -971,7 +978,7 @@ setAllIds([])
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={sortedFolder.map((item) => ({
+          <FolderListView folders={paginatedFolderData.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -994,7 +1001,7 @@ setAllIds([])
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={sortedFolder}
+            folderData={paginatedFolderData}
             loading={loading}
           />
       );
@@ -1246,6 +1253,40 @@ setAllIds([])
                 setCheckedItems(0)
 
 
+              }}
+              perPage={itemsPerPage}
+            />
+          </div>
+        }
+
+{
+          (activeSection === "folders" ? !!sortedFolder.length : false) &&
+          <div className="page-heading-container " >
+            <p className="page-heading">
+              Showing {folderStartIndex} - {folderEndIndex > sortedFolder.length ? sortedFolder.length : folderEndIndex}{' '}
+              of {sortedFolder.length} item
+            </p>
+
+            <Pagination
+              currentPage={currentFolderPage}
+              totalPages={totalFolderPages}
+              paginate={(number) => {
+                setCurrentFolderPage(number)
+                setSelectedCheckbox(new Set())
+                setCheckedItems(0)
+              }}
+              currentPageData={paginatedFolderData}
+              goToNextPage={() => {
+                setCurrentFolderPage(prev => prev + 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+              }}
+              goToPrevPage={() => {
+                setCurrentFolderPage(prev => prev - 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
               }}
               perPage={itemsPerPage}
             />
