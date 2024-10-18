@@ -89,6 +89,7 @@ const Calculator: React.FC = () => {
   });
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
+
     'CAGR': 0,
     'Years until Next Acquisition / IPO': 0,
   });
@@ -107,14 +108,18 @@ const Calculator: React.FC = () => {
     const averageSystemSize = Number(earnoutValues['Average system size']);
     const monthsUntilEarnout = Number(earnoutValues['Months until Earnout']);
   
-    // Now the arithmetic operations will work without errors
-    const firstvalue = systemInstallPerMonth * averageSystemSize;
-    const secondvalue = firstvalue + (100 * monthsUntilEarnout);
+    // Calculate the first value
+    let firstvalue = systemInstallPerMonth * averageSystemSize;
   
-    const result = secondvalue * 375;
+    // Add 100 for each month
+    firstvalue += 100 * monthsUntilEarnout; // Adds 100 for each month until earnout
+  
+    
+    const result = firstvalue * 375;
   
     return result.toFixed(2);
   };
+  
   
 
   const calculateEquityGrowth = (): string => {
@@ -172,6 +177,8 @@ const Calculator: React.FC = () => {
                     onBlur={() => handleBlur(label, 'earnout')}
                     className="number-input"
                     maxLength={3}
+                    min={min}
+                    max={max}
                   />
                   {label === 'Growth rate (per month)' && <span>%</span>}
                   {label === 'Months until Earnout' && <span>months</span>}
@@ -228,6 +235,8 @@ const Calculator: React.FC = () => {
                     onBlur={() => handleBlur(label, 'equity')}
                     className="number-input"
                     maxLength={3} 
+                    min={min}
+                    max={max}
                   />
                   {label === 'CAGR' && <span>%</span>}
                   {label === 'Years until Next Acquisition / IPO' && <span>Yrs</span>}
