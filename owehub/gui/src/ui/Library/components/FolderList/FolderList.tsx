@@ -85,16 +85,14 @@ const FolderList = (props: IFolder) => {
             <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
 
 
-                {/* <div  className={sharedStyles.size_date_delete}> */}
-                <div className={`${styles.grid_icon} ${sharedStyles.size_date_delete}`}>
-
+               
                     <RiDeleteBinLine
                         style={{ color: role_name === TYPE_OF_USER.ADMIN ? undefined : "rgba(102, 112, 133, 0.5)", cursor: role_name === TYPE_OF_USER.ADMIN ? "pointer" : "not-allowed" }}
                         onClick={() => role_name === TYPE_OF_USER.ADMIN && props?.onDelete?.(props.id!)}
                         className={`${styles.Deleteicons}`}
 
                     />
-                </div>
+                
 
 
             </div>

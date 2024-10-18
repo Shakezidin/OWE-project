@@ -1,7 +1,7 @@
 .lib_Grid_Header {
 
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr ;
+  grid-template-columns: calc(50% - 30px) calc(50% - 30px) auto ;
 
   /* gap: 136px; */
   padding: 20px 24px;
@@ -37,7 +37,7 @@
 
 .libGridItem {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; 
+  grid-template-columns: calc(50% - 30px) calc(50% - 30px) auto ;
   padding: 25px;
   background-color: #ffffff;
   align-items: center;
@@ -288,7 +288,7 @@
   display: flex;
   flex-direction: row;
   gap: 16px;
-  justify-content: flex-end;
+  justify-content: center;
  
 }
 
@@ -298,9 +298,9 @@
 }
 
 .grid_item {
-  text-align: center;
-  justify-content: center;
-  align-items: center;
+  /* text-align: center;
+  justify-content: end;
+  align-items: center; */
   
 }
 
@@ -332,7 +332,6 @@
   font-size: 14px;
   font: poppins;
   font-weight: 400;
-  text-align: center;
   padding-right: 43px;
    /* border: 1px solid black;  */
 }
@@ -340,8 +339,6 @@
   font-size: 14px;
   font: poppins;
   font-weight: 400;
-  position: relative;
-  right: 8px;
   display: flex;
   justify-content: flex-end;
   
@@ -389,6 +386,7 @@
   font-family: inter;
   font-weight: 400;
   font-size: 12px;
+  display: inline-block;
   color: #101828;
 }
 
@@ -633,6 +631,7 @@
   border: 1px solid #fff;
 }
 
+
 .view_btn.active_tile:hover{
   transform: scale(1.1);
 }
@@ -641,6 +640,13 @@
 }
 
 @media (max-width:968px) {
+  .sm_hide_upload_date{
+    display: inline-block;
+    color: #101828;
+    margin-left: 10px;
+    font-weight: 400;
+    font-size: 12px;
+  }
   .desktop_hide{
     display: flex;
   }
@@ -652,7 +658,7 @@
   }
   
   .lib_Grid_Header,.libGridItem{
-    grid-template-columns: 80% auto;
+    grid-template-columns: calc(100% - 60px) auto;
   }
   .buttons{
     padding: 2px 30px;
@@ -813,7 +819,6 @@
     display: block;
     color: #101828;
     font-weight: 400;
-    font-size: 12px;
   }
   .size_date_delete{
     margin-right: 26px;
