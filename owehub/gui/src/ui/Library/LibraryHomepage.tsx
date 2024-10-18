@@ -1037,7 +1037,7 @@ const LibraryHomepage = () => {
           </div>
           <div className={` ${styles.sm_hide} ${styles.grid_item}`}>Uploaded Date</div>
 
-          <div className={styles.grid_item}>Actions</div>
+          <div className={`${styles.grid_item} ${styles.grid_item_action}`}>Actions</div>
         </div>}
 
         {loading ?
@@ -1095,6 +1095,7 @@ const LibraryHomepage = () => {
                           <p data-tooltip-id={`file-name-${data.id}`}
                             data-tooltip-content={data.name} className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
                           <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${data.id}`} place="top" />
+                         <div className={styles.size_date_container}> 
                           <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -1102,7 +1103,8 @@ const LibraryHomepage = () => {
                                 ? `${Math.round(data.size / 1024)} KB`
                                 : `${Math.round(data.size / 1048576)} MB`}
                           </p>
-
+                          <div className={` ${styles.sm_hide_upload_date} ${styles.grid_item_dates} `}style={{ fontSize: "12px" }}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1192,6 +1194,7 @@ const LibraryHomepage = () => {
               maxLength={25}
             />
           </div>
+          <div className={styles.parentDiv}>
           <div className={styles.sort_container} >
             <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
           </div>
@@ -1211,6 +1214,7 @@ const LibraryHomepage = () => {
           }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
+          </div>
         </div>
       </div>
 

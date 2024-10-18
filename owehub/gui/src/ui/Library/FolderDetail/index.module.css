@@ -1,0 +1,17 @@
+.lg_hide{
+    display: none !important;
+}
+.flex_auto{
+    flex: 1;
+    max-width: 220px;
+    margin-right: auto;
+}
+
+@media (max-width:768px) {
+    .lg_hide{
+        display: flex !important;
+    }
+    .mobile_hide {
+        display: none;
+    }
+}

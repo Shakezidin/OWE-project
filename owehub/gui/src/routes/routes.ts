@@ -94,4 +94,5 @@ export const ROUTES = {
   SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
   FOLDER_DETAIL:"/library/*",
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
+  CALCULATOR:'/calculator'
 };

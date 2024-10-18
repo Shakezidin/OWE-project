@@ -30,28 +30,28 @@ services:
         ipv4_address: 172.30.0.214
 
   ############### OWE HUB SCHEDULING #####################
-  service-owehub-scheduler:
-    restart: always
-    image: owehub-scheduler:v2
-    container_name: owehub-scheduler
-    networks:
-      owe_net:
-        ipv4_address: 172.30.0.218
-    ports:
-      - "31025:8080"
-    environment:
-      SELF_CFG_PATH: "json/"
-      ANLF_SVC_ADDR:
-      OAUTH2_SUPPORT: "NO"
-      OPEN_HTTP_STD_PORT: "NO"
-      HTTPS_SUPPORT: "NO"
-      HTTP_READ_HEADER_TIMEOUT: "10"
-    depends_on:
-      - service-postgres
-      - migrate
-    volumes:
-      - /var/log/owe/:/var/log/owe/
-    privileged: true
+  # service-owehub-scheduler:
+  #   restart: always
+  #   image: owehub-scheduler:v2
+  #   container_name: owehub-scheduler
+  #   networks:
+  #     owe_net:
+  #       ipv4_address: 172.30.0.218
+  #   ports:
+  #     - "31025:8080"
+  #   environment:
+  #     SELF_CFG_PATH: "json/"
+  #     ANLF_SVC_ADDR:
+  #     OAUTH2_SUPPORT: "NO"
+  #     OPEN_HTTP_STD_PORT: "NO"
+  #     HTTPS_SUPPORT: "NO"
+  #     HTTP_READ_HEADER_TIMEOUT: "10"
+  #   depends_on:
+  #     - service-postgres
+  #     - migrate
+  #   volumes:
+  #     - /var/log/owe/:/var/log/owe/
+  #   privileged: true
 
   ############## OWE HUB CALC #####################
   service-owehub-calc:

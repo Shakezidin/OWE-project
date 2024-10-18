@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../LibraryHomepage.module.css';
+import containerTyles from "./index.module.css";
 import { BiArrowBack } from 'react-icons/bi';
 import { RxDownload } from 'react-icons/rx';
 import { RiDeleteBinLine } from 'react-icons/ri';
@@ -54,6 +55,7 @@ const FolderDetail = () => {
     const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
     const isTablet = useMatchMedia("(max-width: 968px)")
+    const isMobile = useMatchMedia("(max-width: 420px)")
     const [fileInfo, setFileInfo] = useState({
         name: "",
         fileType: "",
@@ -73,10 +75,11 @@ const FolderDetail = () => {
 
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let inputValue: string = e.target.value.trim();
-        const validCharacters = /^[a-zA-Z0-9. _-]*$/;
+        let inputValue: string = e.target.value;
 
+        const validCharacters = /^[a-zA-Z0-9\s._ -]*$/;
         if (!validCharacters.test(inputValue)) {
+
             return; // Exit early if the input contains invalid characters
         }
 
@@ -90,9 +93,9 @@ const FolderDetail = () => {
         const filteredData = unFilteredFiles.filter((file) =>
             file.name.toLowerCase().includes(inputValue.toLowerCase())
         );
-        console.log(filteredData,"filtered data");
         setFiles(filteredData);
     };
+
 
     const getPaginatedData = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
@@ -377,9 +380,37 @@ const FolderDetail = () => {
     const paginatedData = getPaginatedData(currentPage);
 
     return (
-        <div className={` ${styles.libraryContainer}`}>
-            <div className={styles.libraryHeader}>
-
+        <div className={`relative ${styles.libraryContainer}`}>
+            <div className={` ${containerTyles.lg_hide} ${styles.libraryHeader}`}>
+                <div className={`  ${styles.libSecHeader_right}`} style={{width:"100%"}}>
+                    <div className={` bg-white ${containerTyles.flex_auto} ${containerTyles.search_container} ${styles.searchWrapper}`}>
+                        <IoMdSearch className={styles.search_icon} />
+                        {/* SEARCHINGGGG */}
+                        <input
+                            type="text"
+                            value={searchValue}
+                            onChange={handleSearch}
+                            placeholder="Search by file name "
+                            className={styles.searchInput}
+                            maxLength={25}
+                        />
+                    </div>
+                    
+                        <SortByLibrary isPalceholder={!isMobile||false} onSort={handleSort} />
+                    <button onClick={() => {
+                        setViewMode("list")
+                        saveFileTypeView("list")
+                    }} className={`  ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+                        <TiThMenu />
+                    </button>
+                    <button onClick={() => {
+                        setViewMode("tiles")
+                        saveFileTypeView("tiles")
+                    }} className={`  ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+                        <BsGrid />
+                    </button>
+                    
+                </div>
             </div>
             {
                 selected.size ?
@@ -417,9 +448,9 @@ const FolderDetail = () => {
 
                         </div>
 
-                        <div className={styles.libSecHeader_right}>
+                        <div className={`  ${styles.libSecHeader_right}`}>
 
-                            <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
+                            <div className={` ${containerTyles.mobile_hide} ${styles.searchWrapper}`}>
                                 <IoMdSearch className={styles.search_icon} />
                                 {/* SEARCHINGGGG */}
                                 <input
@@ -431,17 +462,20 @@ const FolderDetail = () => {
                                     maxLength={25}
                                 />
                             </div>
-                            <SortByLibrary onSort={handleSort} />
+                            <div className={`${containerTyles.mobile_hide}`}>
+
+                                <SortByLibrary onSort={handleSort} />
+                            </div>
                             <button onClick={() => {
                                 setViewMode("list")
                                 saveFileTypeView("list")
-                            }} className={` ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+                            }} className={` ${containerTyles.mobile_hide} ${viewMode === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
                                 <TiThMenu />
                             </button>
                             <button onClick={() => {
                                 setViewMode("tiles")
                                 saveFileTypeView("tiles")
-                            }} className={` ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+                            }} className={` ${containerTyles.mobile_hide} ${viewMode === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
                                 <BsGrid />
                             </button>
                             {role_name === TYPE_OF_USER.ADMIN && <NewFile handleSuccess={refetch} folderUploadPath={`${path["*"]}`} uploadPath={`/${path["*"]}/`} activeSection="dropdown" setLoading={setIsLoading} />}
@@ -474,7 +508,7 @@ const FolderDetail = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className={`${styles.grid_item_upload_date} ${styles.grid_item}`}>Uploaded Date</div>
+                        <div className={`${styles.grid_item_upload_date} ${styles.sm_hide} ${styles.grid_item}`}>Uploaded Date</div>
                         <div className={styles.grid_item}>Actions</div>
                     </div>}
                     {
@@ -504,13 +538,13 @@ const FolderDetail = () => {
                                                                     src={ICONS.folderImage}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                   
-                                                                    <p 
-                                                                       data-tooltip-id={`file-name-${file.id}`}
-                                                                       data-tooltip-content={file.name}   
-                                                                    
-                                                                    className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
-                                                                      <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
+
+                                                                    <p
+                                                                        data-tooltip-id={`file-name-${file.id}`}
+                                                                        data-tooltip-content={file.name}
+
+                                                                        className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                    <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${file.id}`} place="top" />
                                                                     <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                         ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
                                                                         : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
@@ -551,11 +585,11 @@ const FolderDetail = () => {
                                                                     }}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                    <p 
-                                                                     data-tooltip-id={`file-name-${file.id}`}
-                                                                     data-tooltip-content={file.name}   
-                                                                    className={styles.name}>{file.name}</p>
-                                                                     <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
+                                                                    <p
+                                                                        data-tooltip-id={`file-name-${file.id}`}
+                                                                        data-tooltip-content={file.name}
+                                                                        className={styles.name}>{file.name}</p>
+                                                                    <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${file.id}`} place="top" />
                                                                     <p className={styles.size}>
                                                                         {(file.size > 1024 * 1024)
                                                                             ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
@@ -567,7 +601,7 @@ const FolderDetail = () => {
 
                                                 }
 
-                                                <div className={`${styles.grid_item} ${styles.grid_item_upload_date}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                                                <div className={`${styles.grid_item} ${styles.grid_item_upload_date}  ${styles.sm_hide}  `}>{format(new Date(file.createdDateTime), 'dd-MM-yyyy')}</div>
                                                 <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                                                     <RxDownload className={styles.icons_download} style={{ height: '18px', width: '18px', color: isHovered === index && !file.folder ? '#377CF6' : (file.folder ? "rgba(102, 112, 133, 0.5)" : '#101828'), cursor: !file.folder ? "pointer" : "not-allowed" }} onClick={() => !file.folder && downloadFile(file[`@microsoft.graph.downloadUrl`]!, file.name)}
                                                         onMouseOver={() => { setIsHovered(index) }} onMouseLeave={() => { setIsHovered(null) }}
@@ -604,7 +638,8 @@ const FolderDetail = () => {
                                                     key={file.id}
                                                     onMouseEnter={() => setHoveredIndex(file.id)}
                                                     onMouseLeave={() => setHoveredIndex(null)}
-                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}`)}
+                                                    onClick={() => isTablet ? navigate(`/library/${path["*"]}/${file.name}`) : undefined}
+                                                    onDoubleClick={() => isTablet ? undefined : navigate(`/library/${path["*"]}/${file.name}`)}
                                                 >
                                                     <div className={folderWrapperStyles.createdByWrapper}>
 
@@ -632,19 +667,19 @@ const FolderDetail = () => {
                                                     </div>
 
                                                     <div className={"mt2"} style={{ width: "100%" }}>
-                                                    <div className={styles.name_div}>
-                                                    
-                                                        <div 
-                                                         data-tooltip-id={`file-name-${file.id}`}
-                                                         data-tooltip-content={file.name}
-                                                        className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
-                                                        <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
-                                                     </div>
+                                                        <div className={styles.name_div}>
+
+                                                            <div
+                                                                data-tooltip-id={`file-name-${file.id}`}
+                                                                data-tooltip-content={file.name}
+                                                                className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
+                                                            <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${file.id}`} place="top" />
+                                                        </div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
                                                                 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
                                                                 : `${Math.round(file.size / 1024)} KB`} </div>
-                                                            <div className={folderWrapperStyles.folderdate}>{format(new Date(file.createdDateTime), 'dd-MM-yyyy')}</div>
+                                                            <div className={`  ${folderWrapperStyles.folderdate}`}>{format(new Date(file.createdDateTime), 'dd-MM-yyyy')}</div>
                                                         </div>
                                                     </div>
                                                 </div>
