@@ -621,7 +621,8 @@ const FolderDetail = () => {
                                         })}
                                     </div>
                                     :
-                                    <div className={fileTileViewStyles.list_grid} style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0, minHeight: '70vh', }}>
+                                    <div  style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0, minHeight: '70vh',backgroundColor:"#fff" }}>
+                                        <div className={fileTileViewStyles.list_grid}>
                                         {paginatedData.map((file) => {
                                             return !file?.folder ? <FileTileView file={{
                                                 id: file.id,
@@ -689,7 +690,7 @@ const FolderDetail = () => {
                                                     </div>
                                                 </div>
                                         })}
-                                    </div>
+                                   </div> </div>
 
 
 
