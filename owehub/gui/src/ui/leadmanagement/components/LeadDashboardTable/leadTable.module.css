@@ -17,6 +17,9 @@
 }
 
 
+
+
+
 .TableContainer1 {
     position: relative;
     height: 97vh;
@@ -78,9 +81,10 @@
     font-size: 12px;
     font-weight: 400;
     color: #3E3E3E;
-
+    width: 220px;
+    word-wrap: break-word;
+    white-space: normal;
 }
-
 .TableContainer1 table tbody tr:hover {
     background-color: transparent !important;
 }
@@ -180,7 +184,7 @@
 } */
 
 .progress_status span {
-    width: 120px;
+    width: 119px;
     word-wrap: break-word;
     white-space: normal;
 }

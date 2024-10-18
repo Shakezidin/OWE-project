@@ -239,7 +239,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={leadsData.length}>
+                    <td colSpan={30}>
                       <div
                         style={{ display: 'flex', justifyContent: 'center' }}
                       >

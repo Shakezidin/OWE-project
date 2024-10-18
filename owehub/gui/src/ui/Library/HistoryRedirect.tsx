@@ -80,6 +80,7 @@ const HistoryRedirect = () => {
         <div
           id="dropdowninHistoryRedirect"
           className="pr-dropdown editedinParent"
+          // className={`${classes.prdropdownX} editedinParent`}
         >
           <ul>
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>

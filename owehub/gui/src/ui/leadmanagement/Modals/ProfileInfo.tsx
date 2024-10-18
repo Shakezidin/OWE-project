@@ -101,15 +101,15 @@ const Profile: React.FC<EditModalProps> = ({
 
     useEffect(() => {
         const handleEscapeKey = (event: any) => {
-          if (event.key === 'Escape') {
-            onClose1();
-          }
+            if (event.key === 'Escape') {
+                onClose1();
+            }
         };
         document.addEventListener('keydown', handleEscapeKey);
         return () => {
-          document.removeEventListener('keydown', handleEscapeKey);
+            document.removeEventListener('keydown', handleEscapeKey);
         };
-      }, []);
+    }, []);
 
     return <div>
         {isOpen1 && <div className="transparent-model">
@@ -118,7 +118,7 @@ const Profile: React.FC<EditModalProps> = ({
                     <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
                     <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', marginTop:"200px" }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: "200px" }}>
                         <MicroLoader />
                     </div>
                 ) : leadData ? (
@@ -172,7 +172,7 @@ const Profile: React.FC<EditModalProps> = ({
                                     <tr>
                                         <td className={classes.leftAlign}>Proposal type</td>
                                         <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >......</td>
+                                        >85001</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Finance Type</td>
@@ -275,7 +275,7 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Created By</td>
-                                        <td className={`${classes.rightAlign} `}
+                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
                                         >{leadData?.created_by || '.....'}</td>
                                     </tr>
 

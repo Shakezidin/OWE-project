@@ -101,7 +101,8 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
     };
   }, [isOpen, onClose]);
 
-  const handleConfrm = async (e: any) => {
+
+  const  handleConfrm = async (e: any) => {
     setLoad(true);
     e.preventDefault();
     setErrors(errors);
@@ -132,6 +133,20 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
     }
     setLoad(false);
   };
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleConfrm(e);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+  
 
   return (
     <>
@@ -239,6 +254,7 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
                   style={{ paddingBottom: '38px' }}
                 >
                   <button
+                  id='EnterKeys'
                     className={classes.self}
                     style={{
                       color: '#fff',
@@ -250,6 +266,7 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
                       cursor: load ? 'not-allowed' : 'pointer',
                     }}
                     onClick={handleConfrm}
+                    tabIndex={0}
                   >
                     {load ? 'Updating....' : 'CONFIRM'}
                   </button>
