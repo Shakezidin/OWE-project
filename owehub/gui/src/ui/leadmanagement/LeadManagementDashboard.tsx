@@ -1154,16 +1154,17 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
 
           if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
             toast.success('Proposal created successfully!');
+            setRefresh((prev) => prev + 1);
 
-            // Step 4: Fetch Project Data
-            const getProjectResult = await dispatch(getProjectByLeadId(leadId));
+            // // Step 4: Fetch Project Data
+            // const getProjectResult = await dispatch(getProjectByLeadId(leadId));
 
-            if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
-              setRefresh((prev) => prev + 1);
-              // toast.success('Project data fetched successfully!');
-            } else {
-              toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
-            }
+            // if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
+            //   setRefresh((prev) => prev + 1);
+            //   // toast.success('Project data fetched successfully!');
+            // } else {
+            //   toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
+            // }
           } else {
             toast.error(createProposalResult.payload as string || 'Failed to create proposal');
           }
