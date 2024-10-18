@@ -111,9 +111,9 @@ function FolderView({
             className={` one-line-text  ${styles.folder_name}`}>{folder.name}</div>
             <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${folder.id}`} place="top" />
             <div className={styles.folderInfo_wrapper}>
-              <div className={styles.foldersize}> {folder.size > 1024 * 1024
+              {/* <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
-                : `${Math.round(folder.size / 1024)} KB`} </div>
+                : `${Math.round(folder.size / 1024)} KB`} </div> */}
               <div className={styles.folderdate}>{format(new Date(folder.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
             </div>
           </div>
