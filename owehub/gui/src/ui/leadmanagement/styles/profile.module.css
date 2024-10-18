@@ -7,7 +7,7 @@
     border-radius: 8px;
     background-color: #fff;
     max-width: 1012px;
-    height: 568px;
+    min-height: 572px;
   }
 
   .Column1Details {
@@ -83,11 +83,11 @@
 }
 
 
-/* .specialfont{
+.specialfont{
   font-weight: 400;
   color: #3E3E3E !important;
 
-} */
+}
 
 
 

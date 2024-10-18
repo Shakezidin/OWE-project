@@ -80,10 +80,79 @@
 }
 
 .editedinParent li:hover {
+ 
+  font-size: 12px !important;
+  transform: none !important;
+  color: #000 !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  background-color: #ddebff;
+  border-radius: 8px !important;
+}
+
+
+
+
+
+.editedinParentHTRY li:hover {
   /* color: #000 !important; */
   font-size: 12px !important;
   transform: none !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  background-color: #ddebff;
 
+}
+
+.editedinParentHTRY li {
+  font-size: 12px !important;
+  /* color: #000 !important; */
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  height: 100% !important;
+}
+
+.editedinParentHTRY ul {
+  border-radius: 8px;
+}
+
+.editedinParentHTRY{
+  border-radius: 8px !important;
+  border: 1px solid #929292 !important;
+  width: 152px !important;
+  padding: 0 !important;
+  margin-right: 14px !important;
+}
+
+
+
+
+
+.editedinParentLT_FLTR {
+  border-radius: 8px !important;
+  border: 1px solid #929292 !important;
+  width: 152px !important;
+  padding: 0 !important;
+  margin-right: 14px !important;
+}
+
+.editedinParentLT_FLTR ul {
+  border-radius: 8px;
+}
+
+.editedinParentLT_FLTR li {
+  font-size: 12px !important;
+  /* color: #000 !important; */
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  height: 100% !important;
+}
+
+.editedinParentLT_FLTR li:hover {
+ 
+  font-size: 12px !important;
+  transform: none !important;
+  /* color: #000 !important; */
   font-weight: normal !important;
   padding: 9px 7px 9px 7px !important;
   background-color: #ddebff;

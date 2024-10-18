@@ -56,7 +56,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
         <FaFilter size={14} fontWeight={600} />
       </div>
       {modenIsOpenX && (
-        <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParent">
+        <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParentLT_FLTR">
           <ul>
 
 
