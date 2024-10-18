@@ -9,6 +9,7 @@ import { ImStatsBars2 } from 'react-icons/im';
 import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
 import { PiMapPin } from 'react-icons/pi';
+import { MdOutlinePermMedia } from "react-icons/md";
 
 const mob = {
   mob: [
@@ -109,7 +110,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Library',
         icon: (
-          <IoCloudUploadOutline
+          <MdOutlinePermMedia
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
