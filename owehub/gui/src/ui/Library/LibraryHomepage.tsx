@@ -247,6 +247,7 @@ const LibraryHomepage = () => {
   const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    console.log(startIndex,endIndex,"rangeee");
     return data.slice(startIndex, endIndex);
   };
 
@@ -690,11 +691,11 @@ const LibraryHomepage = () => {
         return 0; // no sorting applied
     }
   });
-  console.log(sortedFolder,"sorting working");
-  const paginatedData = getPaginatedData(sortedData, currentFolderPage, itemsPerPage);
+
+  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
   const paginatedFolderData = getPaginatedData(sortedFolder, currentFolderPage, itemsPerPage);
   const totalFolderPages = Math.ceil(sortedFolder.length / itemsPerPage);
-
+  console.log(paginatedData,"sorting working",sortedData);
   const folderStartIndex = (currentFolderPage - 1) * itemsPerPage + 1;
   const folderEndIndex = currentFolderPage * itemsPerPage;
 
