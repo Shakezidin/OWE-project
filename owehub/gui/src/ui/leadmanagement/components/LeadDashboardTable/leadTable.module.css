@@ -78,7 +78,9 @@
     font-size: 12px;
     font-weight: 400;
     color: #3E3E3E;
-
+    width: 220px;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .TableContainer1 table tbody tr:hover {
@@ -95,6 +97,7 @@
     font-weight: 500;
     color: #fff;
     display: flex;
+    width: 149px;
     align-items: center;
     text-align: center;
     justify-content: center;
