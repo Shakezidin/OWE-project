@@ -100,7 +100,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	mktFee := 0.0
 	payments := 0.0
 	amt_paid := 0.0 // how to calculate sum of dealer payments
-	balance := 0.0  //Total Net Commission - Sum of Dealer Paid by Project ID
+	balance := 0.0  //Total Net Commission - Sum of Dealer Paid by Project ID how I get these values?
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, payments)
 	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, drawPercent, drawMax)
