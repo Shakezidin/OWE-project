@@ -107,3 +107,28 @@
     font-size: 1.1rem;
     font-weight: 500;
 }
+
+.slider-container {
+    width: 80%;
+    margin: 20px auto;
+  }
+  
+  .filter-wrap {
+    margin-bottom: 20px;
+  }
+  
+  .value-display button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+  
+  .rc-slider-mark-text {
+    color: #ccc; /* Customize tick label color */
+  }
+  
+  .rc-slider-handle {
+    border-radius: 50%; /* Make the handle round */
+  }
+  
