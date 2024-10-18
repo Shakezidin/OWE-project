@@ -34,6 +34,20 @@
   display: none !important;
 }
 
+/* calculator css  */
+.rc-slider-track, .rc-slider-tracks{
+  background-color: #00C8D0 !important;
+}
+.rc-slider-dot{
+  display: none !important;
+}
+.rc-slider-handle{
+  border: solid 5px #00C8D0 !important;
+  opacity: 1 !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
 /* This styles the container of the dropdown */
 .pac-container {
   font-family: 'Poppins', sans-serif !important; /* Ensure Poppins is applied */

@@ -54,7 +54,7 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort,isPalceholder=true
 
       {isVisible && (
         <ul className={classes.dropdownMenu}>
-          {['name', 'date', 'size'].map((option) => (
+          {['name', 'date'].map((option) => (
             <li
               key={option}
               onClick={() =>

@@ -497,7 +497,7 @@ const FolderDetail = () => {
                                         if (selected.size === paginatedData.length) {
                                             setSelected(new Set())
                                         } else {
-                                            const newChecked = new Set(files.map((item) => item.id))
+                                            const newChecked = new Set(paginatedData.map((item) => item.id))
                                             setSelected(newChecked)
                                         }
                                     }} />
@@ -545,11 +545,11 @@ const FolderDetail = () => {
 
                                                                         className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
                                                                     <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${file.id}`} place="top" />
-                                                                    <p className={styles.size}> {(file.size > 1024 * 1024)
+                                                                    {/* <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                         ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
-                                                                        : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
+                                                                        : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p> */}
 
-                                                                        <div className={`${containerTyles.lg_text_hide}  ${styles.grid_item_dates} `}style={{ fontSize: "12px",display:"inline-block",marginLeft:"10px",color:"#000" }}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                                                                        <div className={`${containerTyles.lg_text_hide}  ${styles.grid_item_dates} `}style={{ fontSize: "12px",display:"inline-block",color:"#000" }}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                                                 </div>
                                                             </Link>
                                                         </div>
@@ -592,12 +592,12 @@ const FolderDetail = () => {
                                                                         data-tooltip-content={file.name}
                                                                         className={styles.name}>{file.name}</p>
                                                                     <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${file.id}`} place="top" />
-                                                                    <p className={styles.size}>
+                                                                    {/* <p className={styles.size}>
                                                                         {(file.size > 1024 * 1024)
                                                                             ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
                                                                             : `${Math.round(file.size / 1024)} KB`}
-                                                                    </p>
-                          <div className={` ${containerTyles.lg_text_hide} ${styles.grid_item_dates} `}style={{ fontSize: "12px",display:"inline-block",marginLeft:10 }}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                                                                    </p> */}
+                          <div className={` ${containerTyles.lg_text_hide} ${styles.grid_item_dates} `}style={{ fontSize: "12px",display:"inline-block", }}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
 
                                                                 </div>
                                                             </div>
@@ -681,9 +681,9 @@ const FolderDetail = () => {
                                                             <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${file.id}`} place="top" />
                                                         </div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
-                                                            <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
+                                                            {/* <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
                                                                 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                                                                : `${Math.round(file.size / 1024)} KB`} </div>
+                                                                : `${Math.round(file.size / 1024)} KB`} </div> */}
                                                                 
                                                             <div className={`  ${folderWrapperStyles.folderdate}`}>{format(new Date(file.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                                                         </div>

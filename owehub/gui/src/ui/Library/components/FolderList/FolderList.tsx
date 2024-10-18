@@ -67,11 +67,11 @@ const FolderList = (props: IFolder) => {
                     </div>
                     <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${props.id}`} place="top" />
                 <div  className={sharedStyles.size_date_container}>
-                    <p className={sharedStyles.size}>
+                    {/* <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
                             ? `${((props?.size || 0) / (1024 * 1024)).toFixed(2)} MB`
                             : `${Math.round((props?.size || 0) / 1024)} KB`}
-                    </p>
+                    </p> */}
                     <div className={` ${sharedStyles.sm_hide_upload_date} ${sharedStyles.grid_item}`} style={{ fontSize: "12px" }}>
                                             {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
                    
