@@ -177,6 +177,24 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
+
+	// aurora retrieve modules
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_modules",
+		apiHandler.HandleAuroraRetrieveModulestRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+
+	//Aurora Retrieve Web Proposal
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_Web_Proposal",
+		apiHandler.HandleAuroraRetrieveWebProposalRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 }
 
 /******************************************************************************
