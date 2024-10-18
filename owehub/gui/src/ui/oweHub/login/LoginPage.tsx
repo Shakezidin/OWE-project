@@ -264,15 +264,25 @@ export const LoginPage = () => {
             </div>
           </Link>
 
-          {isStaging === 'staging' && (
-            <Link to={ROUTES.SALE_RP_CUSTOMER_FORM}>
-              <div className="battery-calc">
-                <div className={`battery-calc-button `}>
-                  <p className="coming-soon">Scheduler Form</p>
-                </div>
-              </div>
-            </Link>
-          )}
+        {isStaging === 'staging' && (
+  <div className="battery-calc-container" style={{ display: 'flex', gap: '10px' , paddingBottom:'10px'}}>
+    <Link to={ROUTES.SALE_RP_CUSTOMER_FORM}>
+      <div className="battery-calc">
+        <div className={`scheduling`}>
+          <p className="coming-soon">Scheduler Form</p>
+        </div>
+      </div>
+    </Link>
+    <Link to={ROUTES.CALCULATOR}>
+      <div className="battery-calc">
+        <div className={`calculator`}>
+          <p>CAGR CALCULATOR</p>
+        </div>
+      </div>
+    </Link>
+  </div>
+)}
+
         </div>
         <div className="solar-sun">
           <img src={ICONS.SolarSun} alt="sun-image" />
