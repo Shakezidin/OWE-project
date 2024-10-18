@@ -125,10 +125,10 @@
   }
   
   .rc-slider-mark-text {
-    color: #ccc; /* Customize tick label color */
+    color: #858585; 
   }
   
   .rc-slider-handle {
-    border-radius: 50%; /* Make the handle round */
+    border-radius: 50%; 
   }
   
