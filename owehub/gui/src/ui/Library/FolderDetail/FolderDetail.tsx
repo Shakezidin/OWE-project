@@ -73,26 +73,27 @@ const FolderDetail = () => {
 
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let inputValue: string = e.target.value.trim();
-        const validCharacters = /^[a-zA-Z0-9. _-]*$/;
-
+        let inputValue: string = e.target.value;
+    
+        const validCharacters = /^[a-zA-Z0-9\s._ -]*$/;
         if (!validCharacters.test(inputValue)) {
+
             return; // Exit early if the input contains invalid characters
         }
 
         setSearchValue(inputValue);
-
+    
         if (inputValue === '') {
             setFiles(unFilteredFiles);
             return;
         }
-
+    
         const filteredData = unFilteredFiles.filter((file) =>
             file.name.toLowerCase().includes(inputValue.toLowerCase())
         );
-        console.log(filteredData,"filtered data");
         setFiles(filteredData);
     };
+    
 
     const getPaginatedData = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
