@@ -108,7 +108,7 @@ function FolderView({
             <div 
                    data-tooltip-id={`file-name-${folder.id}`}
                    data-tooltip-content={folder.name}           
-            className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
+            className={` one-line-text  ${styles.folder_name}`}>{folder.name}</div>
             <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${folder.id}`} place="top" />
             <div className={styles.folderInfo_wrapper}>
               <div className={styles.foldersize}> {folder.size > 1024 * 1024
