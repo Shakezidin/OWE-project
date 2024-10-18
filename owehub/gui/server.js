@@ -6,6 +6,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const fetch = require('node-fetch');
 const chromePdf = require('html-pdf-chrome');
+const path = require('path');
 
 const app = express();
 const port = 5000;
@@ -164,25 +165,6 @@ app.get('/api/projects', async (req, res) => {
     res.status(500).send('Error fetching projects');
   }
 });
-
-// // Retrieve Project Details
-// app.get('/api/projects/:projectId', async (req, res) => {
-//   try {
-//     const { projectId } = req.params;
-//     const response = await axios.get(
-//       `https://api-sandbox.aurorasolar.com/tenants/${tenantId}/projects/${projectId}`,
-//       {
-//         headers: {
-//           'Authorization': `Bearer ${bearerToken}`
-//         }
-//       }
-//     );
-//     res.json(response.data);
-//   } catch (error) {
-//     console.error('Error fetching project details:', error);
-//     res.status(500).send('Error fetching project details');
-//   }
-// });
 
 // Retrieve Project Details
 app.get('/api/projects/:projectId', async (req, res) => {
@@ -501,49 +483,72 @@ app.post('/api/generate-pdf', async (req, res) => {
   }
 });
 
-app.get('/download-pdf', async (req, res) => {
-  const fileUrl = req.query.fileUrl;
+// Function to delay execution
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
+// Route to generate PDF dynamically from fileUrl
+app.post('/download-pdf', async (req, res) => {
+  const { fileUrl, leadName, externalProviderId } = req.body;
 
   if (!fileUrl) {
     return res.status(400).send('File URL is required');
   }
 
-  const browser = await puppeteer.launch({ headless: true });
-
   try {
+    // Launch a headless browser
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
     const page = await browser.newPage();
-    const content = await page.content(); // Get the HTML content of the page
-    console.log(content); // Log the content to see if it’s loading correctly
 
-    // Navigate to the URL and wait for the page to load fully
-    await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+    // Navigate to the dynamic fileUrl and wait for it to load
+    await page.goto(fileUrl, {
+      waitUntil: 'networkidle2',
+    });
 
-    // Wait for the main content to load
-    await page.waitForSelector('#app', { timeout: 30000 });
+    console.log('Page loaded. Waiting for 1 minute before generating PDF...');
 
-    // Generate PDF
-    const pdfBuffer = await page.pdf({ format: 'A4' });
+    // Wait for 1 minute after page load to ensure everything is fully loaded
+    await delay(30000);
 
-    // Check if pdfBuffer is empty
-    if (!pdfBuffer || pdfBuffer.length === 0) {
-      throw new Error('PDF buffer is empty');
+    // Use leadName and externalProviderId in the file name
+    const sanitizedLeadName = leadName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const pdfPath = path.join(__dirname, 'downloads', `proposal-${externalProviderId}-${sanitizedLeadName}-${Date.now()}.pdf`);
+
+    // Convert the page to PDF
+    await page.pdf({
+      path: pdfPath,
+      format: 'A4',
+      printBackground: true,
+    });
+
+    console.log('PDF generated successfully at', pdfPath);
+
+    // Close the browser
+    await browser.close();
+
+    // Check if the PDF file was generated
+    if (fs.existsSync(pdfPath)) {
+      // Send the PDF back to the client for download
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="proposal-${externalProviderId}-${sanitizedLeadName}.pdf"`,
+      });
+
+      // Send the PDF file content back as the response
+      return res.sendFile(pdfPath);
+    } else {
+      throw new Error('PDF file not found');
     }
-
-    // Set headers and send the PDF
-    res.setHeader('Content-Disposition', 'attachment; filename=proposal.pdf');
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(pdfBuffer);
   } catch (error) {
     console.error('Error generating PDF:', error);
-    res.status(500).send('Failed to generate PDF');
-  } finally {
-    await browser.close();
+    return res.status(500).send('Failed to generate PDF');
   }
 });
-
-
-
-
 
 
 app.listen(port, () => {

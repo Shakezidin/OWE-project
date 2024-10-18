@@ -7,6 +7,7 @@
  */
 import crossIcon from '../../resources/assets/cross.svg';
 import scheduleDoor from '../../resources/assets/schedule_door.png';
+import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
 import dashIcon from '../../resources/assets/dashIcon.svg';
 import ConfigIcon from '../../resources/assets/config.svg';
 import userManIcon from '../../resources/assets/userManag.svg';
@@ -225,6 +226,7 @@ export const ICONS = {
   commIconHead: commIconHead,
   dbIconManag: dbIconManag,
   projIcon: projIcon,
+  audioPlaceholder,
   teamManag: teamManag,
   upperIcon: upperIcon,
   logoutIconLeft: logoutIconLeft,

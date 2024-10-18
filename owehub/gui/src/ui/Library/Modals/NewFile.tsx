@@ -31,6 +31,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
   const [isCreateFolder, setIsCreateFolder] = useState(false)
   const [pendingState, sePendingState] = useState<"uploading" | "creating" | "">("")
 
+  
   const handleClick = () => {
     setIsVisible(!isVisible);
     setIsVisibleuploadFile(false);
@@ -58,9 +59,17 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     const accessToken = Cookies.get("myToken");
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || "/"}`;
 
+    const MAX_TOTAL_SIZE = 60 * 1024 * 1024; // 60MB in bytes
+
     try {
-      sePendingState("uploading")
-      setIsVisible(false)
+      const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+      // if (totalSize > MAX_TOTAL_SIZE) {
+      //   throw new Error(`Total file size exceeds the 60MB limit. Current total: ${(totalSize / (1024 * 1024)).toFixed(2)}MB`);
+      // }
+
+      sePendingState("uploading");
+      setIsVisible(false);
+
       await Promise.all(files.map(async (file) => {
         const apiUrl = `${apiUrlBase}${file.name}:/createUploadSession`;
 
@@ -90,21 +99,24 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
           });
         }
 
-        await handleSuccess?.();
-        if (fileInputRef.current) {
-          fileInputRef.current.value = ""
-
-        }
-        setFiles([])
-        setIsVisible(false)
         toast.success(`File "${file.name}" uploaded successfully!`);
       }));
+
+      await handleSuccess?.();
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setFiles([]);
+      setIsVisible(false);
     } catch (error) {
       console.error('Error during file upload:', error);
-      toast.error('Error during file upload. Please try again.');
-    }
-    finally {
-      sePendingState("")
+      if (error instanceof Error) {
+        toast.error(`Upload failed: ${error.message}`);
+      } else {
+        toast.error('Error during file upload. Please try again.');
+      }
+    } finally {
+      sePendingState("");
     }
   };
 
@@ -160,6 +172,21 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (pendingState === "uploading") {
+        event.preventDefault();
+        event.returnValue = "You have an upload in progress. Are you sure you want to leave?";
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [pendingState]);
 
   return (
     <div className={classes.newfile_container} ref={dropdownRef}>

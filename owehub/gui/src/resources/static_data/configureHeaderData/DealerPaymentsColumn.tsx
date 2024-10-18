@@ -9,7 +9,7 @@ export const DealerPaymentsColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'customer_name',
+    name: 'customer',
     displayName: 'Customer',
     type: 'string',
     isCheckbox: false,

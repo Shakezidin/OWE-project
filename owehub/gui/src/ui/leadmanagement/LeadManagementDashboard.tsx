@@ -52,6 +52,7 @@ import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
+import useEscapeKey from '../../hooks/useEscape';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -361,7 +362,7 @@ const LeadManagementDashboard = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
@@ -375,6 +376,10 @@ const LeadManagementDashboard = () => {
   const [action, setAction] = useState(false);
   const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
   const [isToggledX, setIsToggledX] = useState(true);
+  const [designID, setDesignsID] = useState<string>(''); // Change to string
+  const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
+  const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
+  
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -388,10 +393,19 @@ const LeadManagementDashboard = () => {
   const goToPrevPage = () => {
     setPage(page - 1);
   };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
+  };
 
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+
+  const handleCalenderClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(handleCalenderClose);
 
   //CALLING FOR RANGE PICK IN USING SELECT CODE
   const handlePeriodChange = (
@@ -673,7 +687,7 @@ const LeadManagementDashboard = () => {
         is_archived: archive,
         progress_filter: selectedValue ? selectedValue : "ALL",
         search: searchTerm,
-        page_size: 10,
+        page_size: itemsPerPage,
         page_number: archive ? 1 : page,
       };
 
@@ -754,36 +768,38 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  // Function to fetch designs for a project
-  const fetchDesigns = async (projectId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/designs/${projectId}`
+// Function to fetch designs for a project
+const fetchDesigns = async (projectId: string) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/api/designs/${projectId}`
+    );
+    setDesigns(response.data.designs); // Set the designs for the selected project
+
+    // Find the most recently created design
+    if (response.data.designs && response.data.designs.length > 0) {
+      const sortedDesigns = response.data.designs.sort(
+        (a: Design, b: Design) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
-      setDesigns(response.data.designs); // Set the designs for the selected project
+      const latestDesign = sortedDesigns[0];
 
-      // Find the most recently created design
-      if (response.data.designs && response.data.designs.length > 0) {
-        const sortedDesigns = response.data.designs.sort(
-          (a: Design, b: Design) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        const latestDesign = sortedDesigns[0];
+      // Generate new URL every time and fetch the proposal
+      generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
+      // Pass external_provider_id and name to fetchWebProposal
+      fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
+      setDesignsID(latestDesign.id);
+      setLeadPdf(latestDesign.external_provider_id);
+      setLeadNamePdf(latestDesign.name);
 
-        // Call fetchProposal with the latest design's ID
-        // fetchProposal(latestDesign.id); //Open Proposal in edit mode for Sales Rep.
-        fetchWebProposal(latestDesign.id); // Open Proposal URL.
-        // generateWebProposalUrl(latestDesign.id); //Generate new URL every time.
-        // fetchDesignSummary(latestDesign.id);
-        // fetchDesignPricing(latestDesign.id);
-        // fetchFinanceListing(latestDesign.id);
-      } else {
-        console.log('No designs found for this project');
-      }
-    } catch (error) {
-      console.error('Error fetching designs:', error);
+    } else {
+      console.log('No designs found for this project');
     }
-  };
+  } catch (error) {
+    console.error('Error fetching designs:', error);
+  }
+};
+
 
   // Function to fetch proposal for a design
   const fetchProposal = async (designId: string) => {
@@ -800,29 +816,31 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  // Function to fetch Web Proposal for a design
-  const fetchWebProposal = async (designId: string) => {
-    try {
-      const response = await axios.get<{ web_proposal: WebProposal }>(
-        `http://localhost:5000/api/web-proposals/${designId}`
-      );
+// Function to fetch Web Proposal for a design 
+const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
+  try {
+    // Step 1: Fetch the web proposal from the API
+    const response = await axios.get<{ web_proposal: { url: string } }>(
+      `http://localhost:5000/api/web-proposals/${designId}`
+    );
 
-      // Set the web proposal in state if you want to store it
-      setWebProposal(response.data.web_proposal);
+    const proposalLink = response.data.web_proposal.url;
+    console.log('Proposal Link:', proposalLink);
 
-      // Automatically open the web proposal link in a new tab
-      const proposalLink = response.data.web_proposal.url;
+    // Step 2: Open the link in a new tab (optional)
+    window.open(proposalLink, '_blank');
 
-      openProposalLink(proposalLink);
+    // Step 3: Trigger server-side function to generate and download PDF
+    await axios.post('http://localhost:5000/download-pdf', {
+      fileUrl: proposalLink,
+      leadName: projectName, // Pass the project name
+      externalProviderId, // Pass the external provider ID if needed
+    });
+  } catch (error) {
+    console.error('Error fetching web proposal:', error);
+  }
+};
 
-      // Call downloadFile function to download the proposal as a PDF
-      await downloadFile(proposalLink);
-    } catch (error) {
-      console.error('Error fetching web proposal:', error);
-    }
-  };
-
-  // Updated downloadFile function to download the content of a URL as a PDF
   const downloadFile = async (fileUrl: string) => {
     const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
 
@@ -853,6 +871,27 @@ const LeadManagementDashboard = () => {
       console.error('Error downloading the file:', error);
     }
   };
+
+  // Function to handle click event and call API
+  const handleViewProposalClick = async (proposalId: number) => {
+    try {
+      // Replace this URL with the actual API endpoint
+      const response = await axios.get(`/api/proposals/${proposalId}`, {
+        responseType: 'blob' // If you expect to download a PDF
+      });
+      
+      // Create a link element to download the PDF
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'proposal.pdf'); // Specify the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Failed to download proposal:', error);
+    }
+  }
 
   const generateWebProposalUrl = async (designId: string) => {
     try {
@@ -1108,13 +1147,13 @@ const LeadManagementDashboard = () => {
       }));
 
       if (auroraCreateProject.fulfilled.match(createProjectResult)) {
-        toast.success('Project created successfully!');
+        // toast.success('Project created successfully!');
 
         // Step 2: Create Design
         const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
 
         if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
-          toast.success('Design created successfully!');
+          // toast.success('Design created successfully!');
 
           // Step 3: Create Proposal
           const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
@@ -1127,7 +1166,7 @@ const LeadManagementDashboard = () => {
 
             if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
               setRefresh((prev) => prev + 1);
-              toast.success('Project data fetched successfully!');
+              // toast.success('Project data fetched successfully!');
             } else {
               toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
             }
@@ -1601,7 +1640,15 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )
           ) : (
-            <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} />
+            // <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} fetchWebProposal={fetchWebProposal(designID)} />
+            <LeadTable 
+            selectedLeads={selectedLeads} 
+            setSelectedLeads={setSelectedLeads} 
+            refresh={refresh} 
+            setRefresh={setRefresh} 
+            onCreateProposal={handleCreateProposal} 
+            fetchWebProposal={() => fetchWebProposal(designID,leadIDPdf,leadNamePdf)} 
+          />
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
@@ -1620,6 +1667,7 @@ const LeadManagementDashboard = () => {
                   goToNextPage={goToNextPage}
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
                 />
               </div>
             </div>

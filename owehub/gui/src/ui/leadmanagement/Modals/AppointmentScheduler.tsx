@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/appointmentScheduler.css';
 import { timeSlots } from '../../../resources/static_data/Constant';
 import { toast } from 'react-toastify';
+import classes from "./AppoitnmentSchedular.module.css"
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
@@ -12,7 +14,7 @@ interface AppointmentSchedulerProps {
 }
 
 const today = new Date();
-const CurrentDate =today.toISOString().split('T')[0];
+const CurrentDate = today.toISOString().split('T')[0];
 // 2024-10-09
 
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
@@ -23,20 +25,42 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   const [selectedDate, setSelectedDate] = useState(new Date(CurrentDate));
   const [selectedTime, setSelectedTime] = useState('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
+  const [time, setTime] = useState(new Date());
+  const [isManualInput, setIsManualInput] = useState(false);
+  const manualInputTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     onDateChange(date);
   };
 
-  const handleTimeChange = (time: string) => {
-    setSelectedTime(time);
-    onTimeChange(time);
+  var newTime = new Date(time);
+
+  const handleDigitalTimeChange = (e: any) => {
+    setIsManualInput(true);
+
+    if (manualInputTimeoutRef.current) {
+      clearTimeout(manualInputTimeoutRef.current);
+    }
+
+    const [hours, minutes] = e.target.value.split(':').map(Number);
+
+    newTime.setHours(hours);
+    newTime.setMinutes(minutes);
+    newTime.setSeconds(0);
+    setTime(newTime);
+
+
+
+
+    console.log(`Selected time: ${selectedTime}`);
+    setSelectedTime(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+    onTimeChange(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
   };
 
   return (
     <div className="appointmentSchedulerContainer">
-      <div className="selectorButtons">
+      {/* <div className="selectorButtons">
         <button
           className={`selectorButton ${isDatePickerOpen ? 'active' : ''}`}
           onClick={() => setIsDatePickerOpen(true)}
@@ -49,7 +73,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
         >
           Time
         </button>
-      </div>
+      </div> */}
 
       {isDatePickerOpen ? (
         <div className="calendarContainer">
@@ -86,13 +110,25 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
                 >
                   {'>'}
                 </button>
+
               </div>
+
             )}
           />
+          <div className={classes.DigitalInput}>
+            <input
+              type="time"
+              id="time-input"
+              value={`${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`}
+              onChange={handleDigitalTimeChange}
+            />
+          </div>
         </div>
       ) : (
         <div className="timeSlotContainer">
-          {timeSlots.map((time) => (
+
+
+          {/* {timeSlots.map((time) => (
             <button
               key={time}
               className={`timeSlot ${selectedTime === time ? 'active' : ''}`}
@@ -100,11 +136,14 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             >
               {time}
             </button>
-          ))}
+          ))} */}
         </div>
       )}
 
       <div className="selectedDateDisplay">
+        <span className={classes.TimeDisplay}>
+          {newTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+        </span> <span style={{ paddingRight: '10px', paddingLeft: '0px', marginLeft: '0px' }}>-</span>
         {selectedDate
           .toLocaleDateString('en-US', {
             day: 'numeric',
@@ -112,10 +151,13 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             year: 'numeric',
           })
           .toUpperCase()}
-        {selectedTime && `, ${selectedTime}`}
+
       </div>
 
-      <div className="sendAppointmentBtn">
+      <div
+        className={`sendAppointmentBtn ${selectedTime ? '' : 'sendAppointmentBtnDisabled'}`}
+      // className='sendAppointmentBtn'
+      >
         <button
           onClick={() => {
             if (selectedTime && selectedDate) {

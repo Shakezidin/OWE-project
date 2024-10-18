@@ -1,7 +1,7 @@
 .lib_Grid_Header {
 
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr ;
+  grid-template-columns: calc(50% - 30px) calc(50% - 30px) auto ;
 
   /* gap: 136px; */
   padding: 20px 24px;
@@ -18,19 +18,26 @@
 
 
 .libraryHeader {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 4px;
+  padding-bottom: 6px;
   padding-left: 10px;
   font-size: 16px;
   font-weight: 600;
   line-height: 30px;
   text-align: left;
   color: #263747;
+  
+}
+.parentDiv{
+  display: flex;
+  justify-content: space-between;
+  align-items:center;
+  gap:8px
 }
 
 .libGridItem {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; 
+  grid-template-columns: calc(50% - 30px) calc(50% - 30px) auto ;
   padding: 25px;
   background-color: #ffffff;
   align-items: center;
@@ -281,6 +288,7 @@
   display: flex;
   flex-direction: row;
   gap: 16px;
+  justify-content: center;
  
 }
 
@@ -290,9 +298,9 @@
 }
 
 .grid_item {
-  text-align: center;
-  justify-content: center;
-  align-items: center;
+  /* text-align: center;
+  justify-content: end;
+  align-items: center; */
   
 }
 
@@ -315,19 +323,24 @@
   /* border: 1px solid black; */
 }
 
+
+
+.grid_item_action{
+  text-align: end;
+}
 .libGridItem .grid_item_dates{
   font-size: 14px;
   font: poppins;
   font-weight: 400;
-  text-align: center;
+  padding-right: 43px;
    /* border: 1px solid black;  */
 }
 .libGridItem .grid_item_delete{
   font-size: 14px;
   font: poppins;
   font-weight: 400;
-  position: relative;
-  right: 8px;
+  display: flex;
+  justify-content: flex-end;
   
 
 }
@@ -373,7 +386,8 @@
   font-family: inter;
   font-weight: 400;
   font-size: 12px;
-  color: #959595;
+  display: inline-block;
+  color: #101828;
 }
 
 .name {
@@ -588,6 +602,7 @@
 .view_btn {
   border: 1px solid #8C8C8C;
   display: flex;
+  flex-shrink: 0;
   width: 32px;
   cursor: pointer;
   font-size: 16px;
@@ -597,6 +612,9 @@
   justify-content: center;
   border-radius: 6px;
   transition: all 500ms;
+}
+.sm_hide_upload_date{
+  display: none;
 }
 
 .view_btn:not(.active_tile):hover {
@@ -614,6 +632,7 @@
   border: 1px solid #fff;
 }
 
+
 .view_btn.active_tile:hover{
   transform: scale(1.1);
 }
@@ -622,6 +641,13 @@
 }
 
 @media (max-width:968px) {
+  .sm_hide_upload_date{
+    display: inline-block;
+    color: #101828;
+    margin-left: 10px;
+    font-weight: 400;
+    font-size: 12px;
+  }
   .desktop_hide{
     display: flex;
   }
@@ -633,7 +659,7 @@
   }
   
   .lib_Grid_Header,.libGridItem{
-    grid-template-columns: 80% auto;
+    grid-template-columns: calc(100% - 60px) auto;
   }
   .buttons{
     padding: 2px 30px;
@@ -643,7 +669,7 @@
     gap: 16px;
   }
   .sm_search {
-    max-width: 115px;
+    max-width: 300px;
     padding-right: 6px;
   }
   .sm_search input {
@@ -669,6 +695,16 @@
   .filter_button{
     display: none;
   }
+  .desktop_hide{
+    width: 900px;
+    display: flex;
+    justify-content: space-between;
+    
+  }
+  .searchWrapper{
+    flex-basis:230px;
+    flex-shrink: 2;
+  } 
 }
 
 @media (max-width: 450px) {
@@ -695,9 +731,99 @@
  
  
   }
+  .searchWrapper{
+    flex-basis:200px;
+  } 
   .name{
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block; 
+    max-width: 150px;
+    
+   
  
   }
+  .libraryHeader{
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+    padding: 12px 0;
+  }
   
+  .libSecHeader_left{
+    gap:8px;
+  }
+  .desktop_hide{
+    width: 415px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+  }
+}
+@media (max-width: 378px) {
+  .sort_container{
+    max-width: 59px;
+  }
+  .sort_container button{
+    gap: 3px;
+  }
+  .libraryContainer{
+    padding-inline: 3px;
+  }
+  .grid_item_upload_date{
+    display: none;
+  }
+  .recycle_p {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 15px;
+    margin: 0;
+    /* resize: horizontal;  */
+ 
+ 
+  }
+  .name{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block; 
+    max-width: 150px;
+    
+   
+ 
+  }
+  .libraryHeader{
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+    padding: 12px 0;
+  }
+  
+  .libSecHeader_left{
+    gap:5px;
+  }
+  .desktop_hide{
+    width: 365px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+  }
+  .searchWrapper{
+    flex-basis:170px;
+  } 
+  .size_date_container{
+    display: flex;
+    gap: 10px;
+    
+  }
+  .sm_hide_upload_date{
+    display: block;
+    color: #101828;
+    font-weight: 400;
+  }
+  .size_date_delete{
+    margin-right: 26px;
+  }
+ 
 }
