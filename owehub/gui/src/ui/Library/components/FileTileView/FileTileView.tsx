@@ -16,6 +16,7 @@ import text from '../../assetss/textFile.svg'
 import defaultImage from '../../assetss/default.svg'
 import CheckBox from '../../../components/chekbox/CheckBox';
 import audio from '../../../../resources/icons/audioFile.svg'
+import { Tooltip } from 'react-tooltip';
 
 export interface IFiles {
   createdDateTime: string;
@@ -128,14 +129,14 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "application/pdf":
         return pdf
 
-        case "application/vnd.ms-excel":  // XLS
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":  // XLSX
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":  // XLTX
-        case "application/vnd.ms-excel.sheet.macroEnabled.12":  // XLSM
-        case "application/vnd.ms-excel.template.macroEnabled.12":  // XLTM
-        case "application/vnd.oasis.opendocument.spreadsheet":  // ODS
-        case "text/csv":  // CSV
-        case "text/tab-separated-values":
+      case "application/vnd.ms-excel":  // XLS
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":  // XLSX
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.template":  // XLTX
+      case "application/vnd.ms-excel.sheet.macroEnabled.12":  // XLSM
+      case "application/vnd.ms-excel.template.macroEnabled.12":  // XLTM
+      case "application/vnd.oasis.opendocument.spreadsheet":  // ODS
+      case "text/csv":  // CSV
+      case "text/tab-separated-values":
         return excel;
 
       case "video/mp4":
@@ -149,24 +150,24 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "folder":
         return folderImage
 
-      
+
       case "audio/x-wav":
       case "audio/mpeg":
-        case "audio/wav":
-          case "audio/ogg":
-            case "audio/aac":
-              case "audio/flac":
-                case "audio/mp4":
-                  case "audio/amr":
-                    case "audio/aiff":
-                      case "audio/x-ms-wma":
-                        case "audio/webm":
+      case "audio/wav":
+      case "audio/ogg":
+      case "audio/aac":
+      case "audio/flac":
+      case "audio/mp4":
+      case "audio/amr":
+      case "audio/aiff":
+      case "audio/x-ms-wma":
+      case "audio/webm":
         return audio;
 
-        case "text/plain":
-              return text;
+      case "text/plain":
+        return text;
 
-        case "application/vnd.ms-powerpoint":
+      case "application/vnd.ms-powerpoint":
       case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
       case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
       case "application/vnd.openxmlformats-officedocument.presentationml.template":
@@ -174,15 +175,15 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
       case "application/vnd.openxmlformats-officedocument.presentationml.slideshow":
       case "application/vnd.ms-powerpoint.slideshow.macroEnabled.12":
       case "application/vnd.oasis.opendocument.presentation":
-      return powerpoint;
-   case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-          case "application/msword":
-            case  'application/vnd.ms-word.document.macroEnabled.12':
-              case 'application/vnd.openxmlformats-officedocument.wordtemplate':
-                case 'application/vnd.ms-word.template.macroEnabled.12':
-                  case "application/rtf":
-                    case "application/vnd.oasis.opendocument.text":
-          return word;
+        return powerpoint;
+      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+      case "application/msword":
+      case 'application/vnd.ms-word.document.macroEnabled.12':
+      case 'application/vnd.openxmlformats-officedocument.wordtemplate':
+      case 'application/vnd.ms-word.template.macroEnabled.12':
+      case "application/rtf":
+      case "application/vnd.oasis.opendocument.text":
+        return word;
       default:
         return defaultImage
 
@@ -210,10 +211,12 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
         <div className="flex items-center justify-between mt2">
 
           <div className={styles.avatar_name_conatiner}>
-            <h4 className={styles.card_title_hide}> {file?.name}</h4>
-            <h4  className={styles.card_title} onClick={() => {
-              onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
-            }}> {file?.name} </h4>
+
+            <h4 data-tooltip-id={`file-name-${file?.id}`}
+              data-tooltip-content={file?.name} className={styles.card_title} onClick={() => {
+                onFilePreview(getUrl()!, file?.mimeType!, file?.name!)
+              }}> {file?.name} </h4>
+            <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300}} id={`file-name-${file?.id}`} place="top" />
           </div>
 
           <div className="flex items-center">
