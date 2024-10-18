@@ -158,6 +158,7 @@ const LibraryHomepage = () => {
     url: ""
   })
   const isMobile = useMatchMedia("(max-width: 450px)")
+  const isTablet  = useMatchMedia("(max-width: 968px)")
   const [selectedCheckbox, setSelectedCheckbox] = useState<Set<string>>(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)

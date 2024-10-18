@@ -25,21 +25,21 @@ const FolderList = (props: IFolder) => {
     const navigate = useNavigate()
 
     return (
-        <div className={sharedStyles.libGridItem} style={{ gridTemplateColumns: role_name !== TYPE_OF_USER.ADMIN ? "80% 20%" : undefined }}>
+        <div className={sharedStyles.libGridItem} >
             <div style={{ cursor: "pointer" }} className={`${sharedStyles.file_icon} ${sharedStyles.image_div}`}>
                 <div className="flex items-center">
-                    { role_name === TYPE_OF_USER.ADMIN && <div className="mr1" style={{marginTop:-7}}>
+                    {role_name === TYPE_OF_USER.ADMIN && <div className="mr1" style={{ marginTop: -7 }}>
                         <CheckBox checked={!!props.checkedValues?.has(props.id!)} onChange={() => { props.onCheck?.(props.id!) }} />
                     </div>}
                     <div className="relative" onClick={() => navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } })}>
                         <img
-                             className={`${styles.img_folder_view}`}
+                            className={`${styles.img_folder_view}`}
                             src={ICONS.folderImage}
                             width={35}
                             height={35}
                             alt={`null`}
                             loading='lazy'
-                            
+
                         />
                         <span style={{
                             position: 'absolute',
@@ -52,20 +52,20 @@ const FolderList = (props: IFolder) => {
                         }}  > {props.childCount} ${(props?.childCount || 0) > 1 ? "files" : "file"} </span>
                     </div>
                 </div>
-                <div onClick={() => { 
-     props.onCheck?.('');
-    navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } }); 
-}}>
+                <div onClick={() => {
+                    props.onCheck?.('');
+                    navigate(`/library/${props.name}?from=folders`, { state: { from: location.pathname } });
+                }}>
                     <div className={styles.name_div}>
-                    {/* <p className={styles.name_hide}>  {props.name?.substring(0,25)}</p>    */}
-                          
+                        {/* <p className={styles.name_hide}>  {props.name?.substring(0,25)}</p>    */}
 
-                    <p 
-                     data-tooltip-id={`file-name-${props.id}`}
-                     data-tooltip-content={props.name} 
-                    className={sharedStyles.name}>  {props.name?.substring(0,25)} {props.name?.length !==undefined && props.name?.length >= 25 ? '...' : ''}</p>
+
+                        <p
+                            data-tooltip-id={`file-name-${props.id}`}
+                            data-tooltip-content={props.name}
+                            className={sharedStyles.name}>  {props.name?.substring(0, 25)} {props.name?.length !== undefined && props.name?.length >= 25 ? '...' : ''}</p>
                     </div>
-                    <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${props.id}`} place="top" />
+                    <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${props.id}`} place="top" />
                     <p className={sharedStyles.size}>
                         {(props?.size || 0) > 1024 * 1024
                             ? `${((props?.size || 0) / (1024 * 1024)).toFixed(2)} MB`
@@ -75,22 +75,22 @@ const FolderList = (props: IFolder) => {
                 </div>
             </div>
             <div className={` ${sharedStyles.sm_hide} ${sharedStyles.grid_item}`} style={{ fontSize: "14px" }}>
-    {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
-</div>
-            { role_name===TYPE_OF_USER.ADMIN && <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
+                {props.createdDate && format(new Date(props.createdDate), 'dd-MM-yyyy')}
+            </div>
+            <div className={`${sharedStyles.grid_item} ${sharedStyles.grid_icon}`}>
 
 
                 <div>
-                    {role_name === TYPE_OF_USER.ADMIN && <RiDeleteBinLine
-                   
-                        onClick={() => props?.onDelete?.(props.id!)}
+                    <RiDeleteBinLine
+                        style={{ color: role_name === TYPE_OF_USER.ADMIN ? undefined : "rgba(102, 112, 133, 0.5)", cursor: role_name === TYPE_OF_USER.ADMIN ? "pointer" : "not-allowed" }}
+                        onClick={() => role_name === TYPE_OF_USER.ADMIN && props?.onDelete?.(props.id!)}
                         className={`${styles.Deleteicons}`}
-                        
-                        />}
+
+                    />
                 </div>
 
 
-            </div>}
+            </div>
         </div>
     )
 }

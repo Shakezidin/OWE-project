@@ -36,6 +36,7 @@ import Pagination from '../../components/pagination/Pagination';
 import SortByLibrary from '../Modals/SortByLibrary';
 import { IoMdSearch } from 'react-icons/io';
 import { Tooltip } from 'react-tooltip';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 const FolderDetail = () => {
     const path = useParams()
@@ -52,7 +53,7 @@ const FolderDetail = () => {
     const [videoUrl, setVideoUrl] = useState("")
     const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
-
+    const isTablet = useMatchMedia("(max-width: 968px)")
     const [fileInfo, setFileInfo] = useState({
         name: "",
         fileType: "",
@@ -550,8 +551,6 @@ const FolderDetail = () => {
                                                                     }}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                  
-
                                                                     <p 
                                                                      data-tooltip-id={`file-name-${file.id}`}
                                                                      data-tooltip-content={file.name}   
@@ -616,7 +615,7 @@ const FolderDetail = () => {
                                                         <div className={folderWrapperStyles.checkboxWrapper}>
                                                             <p className={folderWrapperStyles.quantity}>{file.childCount}</p>
                                                             {role_name === TYPE_OF_USER.ADMIN &&
-                                                                <div className={` ${selected.has(file?.id!) ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
+                                                                <div className={` ${selected.has(file?.id!) || isTablet ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
 
                                                                     <CheckBox
 
