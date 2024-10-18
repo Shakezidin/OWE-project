@@ -39,7 +39,7 @@ const DealerOverRides: React.FC = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
+ 
 
   const error = useAppSelector((state) => state.dealer.error);
 
@@ -184,7 +184,7 @@ const DealerOverRides: React.FC = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => dealerList[index].record_id
+        (index) => data[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -381,7 +381,7 @@ const DealerOverRides: React.FC = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={dealerList}
+                    data={data}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -446,7 +446,7 @@ const DealerOverRides: React.FC = () => {
           </table>
         </div>
 
-        {dealerList?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}
