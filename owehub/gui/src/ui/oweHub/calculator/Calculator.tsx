@@ -80,7 +80,7 @@ const Calculator: React.FC = () => {
           ))}
         </div>
         <div className="build-footer">
-          <p className="footer-heading">Earnout amount</p>
+          <p className="footer-heading">Earnout Amount</p>
           <button>${calculateEarnout()}</button>
         </div>
       </div>
