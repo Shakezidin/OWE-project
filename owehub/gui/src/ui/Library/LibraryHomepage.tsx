@@ -1037,7 +1037,7 @@ const LibraryHomepage = () => {
           </div>
           <div className={` ${styles.sm_hide} ${styles.grid_item}`}>Uploaded Date</div>
 
-          <div className={styles.grid_item}>Actions</div>
+          <div className={`${styles.grid_item} ${styles.grid_item_action}`}>Actions</div>
         </div>}
 
         {loading ?
@@ -1192,6 +1192,7 @@ const LibraryHomepage = () => {
               maxLength={25}
             />
           </div>
+          <div className={styles.parentDiv}>
           <div className={styles.sort_container} >
             <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
           </div>
@@ -1211,6 +1212,7 @@ const LibraryHomepage = () => {
           }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
+          </div>
         </div>
       </div>
 

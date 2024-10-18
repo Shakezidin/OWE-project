@@ -26,6 +26,13 @@
   line-height: 30px;
   text-align: left;
   color: #263747;
+  
+}
+.parentDiv{
+  display: flex;
+  justify-content: space-between;
+  align-items:center;
+  gap:8px
 }
 
 .libGridItem {
@@ -281,6 +288,7 @@
   display: flex;
   flex-direction: row;
   gap: 16px;
+  justify-content: flex-end;
  
 }
 
@@ -315,11 +323,17 @@
   /* border: 1px solid black; */
 }
 
+
+
+.grid_item_action{
+  text-align: end;
+}
 .libGridItem .grid_item_dates{
   font-size: 14px;
   font: poppins;
   font-weight: 400;
   text-align: center;
+  padding-right: 43px;
    /* border: 1px solid black;  */
 }
 .libGridItem .grid_item_delete{
@@ -373,7 +387,7 @@
   font-family: inter;
   font-weight: 400;
   font-size: 12px;
-  color: #959595;
+  color: #101828;
 }
 
 .name {
@@ -643,7 +657,7 @@
     gap: 16px;
   }
   .sm_search {
-    max-width: 115px;
+    max-width: 300px;
     padding-right: 6px;
   }
   .sm_search input {
@@ -669,9 +683,71 @@
   .filter_button{
     display: none;
   }
+  .desktop_hide{
+    width: 900px;
+    display: flex;
+    justify-content: space-between;
+    
+  }
+  .searchWrapper{
+    width:230px;
+  } 
 }
 
 @media (max-width: 450px) {
+  .sort_container{
+    max-width: 59px;
+  }
+  .sort_container button{
+    gap: 3px;
+  }
+  .libraryContainer{
+    padding-inline: 3px;
+  }
+  .grid_item_upload_date{
+    display: none;
+  }
+  .recycle_p {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 15px;
+    margin: 0;
+    /* resize: horizontal;  */
+ 
+ 
+  }
+  .searchWrapper{
+    width:200px;
+  } 
+  .name{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block; 
+    max-width: 150px;
+    
+   
+ 
+  }
+  .libraryHeader{
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+    padding: 12px 0;
+  }
+  
+  .libSecHeader_left{
+    gap:8px;
+  }
+  .desktop_hide{
+    width: 415px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+  }
+}
+@media (max-width: 378px) {
   .sort_container{
     max-width: 59px;
   }
@@ -705,5 +781,22 @@
    
  
   }
- 
+  .libraryHeader{
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+    padding: 12px 0;
+  }
+  
+  .libSecHeader_left{
+    gap:5px;
+  }
+  .desktop_hide{
+    width: 365px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+  }
+  .searchWrapper{
+    width:170px;
+  } 
 }
