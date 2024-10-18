@@ -6,6 +6,10 @@
   border: 1px solid var(--border-color);
 }
 
+.comm{
+  margin-top: 11px;
+}
+
 .commissionSection {
   display: flex;
   align-items: center;
@@ -181,6 +185,20 @@
   position: relative;
   background: var(--white-color);
 } */
+
+.commission-back{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.commission-back .back-btn{
+  transition: all 0.3s ease;
+}
+.commission-back .back-btn:hover{
+  transform: scale(1.09);
+  cursor: pointer;
+}
+
 .select-type-label {
   position: static !important;
   display: block;

@@ -105,3 +105,10 @@
   color: #ffffff;
   /* border-radius: 3px; */
 }
+
+@media (max-width:420px) {
+  .logo_sortby_botton{
+    width: auto;
+    padding-inline: 6px;
+  }
+}

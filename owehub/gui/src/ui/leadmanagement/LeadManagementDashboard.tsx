@@ -52,6 +52,7 @@ import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
+import useEscapeKey from '../../hooks/useEscape';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -400,6 +401,11 @@ const LeadManagementDashboard = () => {
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+
+  const handleCalenderClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(handleCalenderClose);
 
   //CALLING FOR RANGE PICK IN USING SELECT CODE
   const handlePeriodChange = (
@@ -1154,16 +1160,17 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
 
           if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
             toast.success('Proposal created successfully!');
+            setRefresh((prev) => prev + 1);
 
-            // Step 4: Fetch Project Data
-            const getProjectResult = await dispatch(getProjectByLeadId(leadId));
+            // // Step 4: Fetch Project Data
+            // const getProjectResult = await dispatch(getProjectByLeadId(leadId));
 
-            if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
-              setRefresh((prev) => prev + 1);
-              // toast.success('Project data fetched successfully!');
-            } else {
-              toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
-            }
+            // if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
+            //   setRefresh((prev) => prev + 1);
+            //   // toast.success('Project data fetched successfully!');
+            // } else {
+            //   toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
+            // }
           } else {
             toast.error(createProposalResult.payload as string || 'Failed to create proposal');
           }
@@ -1517,13 +1524,13 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
                       </button>
                     );
                   })}
-                  <button
+                  {/* <button
                     onClick={handleNewButtonClick}
                     className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
                   >
                     <p className={styles.statusInactive}></p>
                     Aurora Projects
-                  </button>
+                  </button> */}
                 </div>
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>

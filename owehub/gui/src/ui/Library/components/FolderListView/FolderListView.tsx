@@ -5,6 +5,7 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { useAppSelector } from '../../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import styles from  './FolderListView.module.css';
 interface IFolder {
     name: string;
     size: number,
@@ -33,7 +34,7 @@ const FolderListView = ({ folders, onDelete, handleCheckboxChange, selected, set
     }
     return (
         <div className={sharedStyles.libSectionWrapper}>
-            <div className={sharedStyles.lib_Grid_Header} style={{ gridTemplateColumns: role_name !== TYPE_OF_USER.ADMIN ? "80% 20%" : undefined }}>
+            <div className={sharedStyles.lib_Grid_Header} >
                 <div className={`${sharedStyles.grid_item} ${sharedStyles.table_name}`}>
                     <div className="flex items-center">
                         {role_name === TYPE_OF_USER.ADMIN && <div className='mr1'>
@@ -59,7 +60,7 @@ const FolderListView = ({ folders, onDelete, handleCheckboxChange, selected, set
                 </div>
 
                 <div className={`${sharedStyles.sm_hide} ${sharedStyles.grid_item}`}>Uploaded Date</div>
-                {role_name === TYPE_OF_USER.ADMIN && <div className={sharedStyles.grid_item}>Actions</div>}
+                <div className={`${sharedStyles.grid_item} ${styles.grid_item_action}`}>Actions</div>
             </div>
             {
                 folders?.length ? folders?.map((folder) => {

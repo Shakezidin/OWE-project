@@ -8,6 +8,8 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { useAppSelector } from '../../../../redux/hooks';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
+import { Tooltip } from 'react-tooltip';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
@@ -26,7 +28,7 @@ function FolderView({
 }: FolderViewProps) {
   const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const isTablet = useMatchMedia("(max-width: 968px)")
   const [myFolderData, setMyFolderData] = useState(folderData);
   const { role_name } = useAppSelector(state => state.auth)
   useEffect(() => {
@@ -57,7 +59,7 @@ function FolderView({
   return (
     <div className={styles.folderMain_wrapper}>
       {loading ? (
-        <div className={styles.filesLoader}>
+        <div className={styles.filesLoader} style={{ width: '100%' }}>
           <MicroLoader />
         </div>
       ) : myFolderData.length > 0 ? myFolderData.map((folder, index) => (
@@ -65,16 +67,16 @@ function FolderView({
           style={{ cursor: 'pointer' }}
           className={styles.folderDiv}
           key={folder.id}
-
-          onDoubleClick={() => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
+          onClick={isTablet ? () => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } }) : undefined}
+          onDoubleClick={isTablet ? undefined : () => navigate(`/library/${folder.name}?from=folders`, { state: { from: location.pathname } })}
         >
           <div className={styles.createdByWrapper}>
             {/* <p className={styles.createdBy}>Created by</p>
             <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p> */}
           </div>
           <div className={styles.folderIcon_wrapper}
-            onMouseEnter={() => setHoveredIndex(folder.id)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={() => isTablet ? undefined : setHoveredIndex(folder.id)}
+            onMouseLeave={() => isTablet ? undefined : setHoveredIndex(null)}
           >
             <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
             <img src={ICONS.folderImage} alt="" />
@@ -85,8 +87,8 @@ function FolderView({
             }}>
               <p className={styles.quantity}>{folder.childCount}</p>
               {role_name === TYPE_OF_USER.ADMIN && <input
-                className={`${styles.folderInput} ${checkedFolders.includes(folder.id) || hoveredIndex === folder.id
-                  ? ` ${styles.selected} ${styles.visible}`
+                className={`${styles.folderInput} ${(checkedFolders.includes(folder.id) || hoveredIndex === folder.id
+                  || isTablet) ? ` ${styles.selected} ${styles.visible}`
                   : styles.hidden
                   } `}
                 type="checkbox"
@@ -102,12 +104,16 @@ function FolderView({
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            <div className={styles.folder_name_hide}>{folder.name.substring(0, 25)}</div>
-            <div className={styles.folder_name}>{folder.name.substring(0, 25)}</div>
+            
+            <div 
+                   data-tooltip-id={`file-name-${folder.id}`}
+                   data-tooltip-content={folder.name}           
+            className={` one-line-text  ${styles.folder_name}`}>{folder.name}</div>
+            <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${folder.id}`} place="top" />
             <div className={styles.folderInfo_wrapper}>
-              <div className={styles.foldersize}> {folder.size > 1024 * 1024
+              {/* <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
-                : `${Math.round(folder.size / 1024)} KB`} </div>
+                : `${Math.round(folder.size / 1024)} KB`} </div> */}
               <div className={styles.folderdate}>{format(new Date(folder.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
             </div>
           </div>

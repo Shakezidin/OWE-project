@@ -3,6 +3,7 @@ import { PiSortAscendingLight } from 'react-icons/pi';
 import './index.css';
 import classes from "./LeadDashboardTable/Dropdowns/index.module.css"
 import { CiFilter } from 'react-icons/ci';
+import useEscapeKey from '../../../hooks/useEscape';
 interface propTypes {
   onChange?: (val: number) => void;
   default?: 'asc' | 'desc' | 'all';
@@ -33,6 +34,10 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+
+useEscapeKey(toggleDropdown);
+
   return (
     <div className="relative drop-ref-container">
       <button
@@ -45,7 +50,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
 
       {isDropdownOpen && (
         
-        <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParent">
+        <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParentHTRY">
           <ul>
             <li
               onClick={() => {

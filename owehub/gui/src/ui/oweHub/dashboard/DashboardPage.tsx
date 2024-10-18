@@ -135,6 +135,21 @@ export const DashboardPage: React.FC = () => {
     setIsFetched(true);
   };
 
+  const handleEscapeKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && showDatePicker) {
+      setShowDatePicker(false);
+    }
+  };
+
+  // Add event listener for Escape key
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscapeKey);
+
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [showDatePicker]);
 
   useEffect(() => {
     
@@ -199,7 +214,7 @@ export const DashboardPage: React.FC = () => {
                 <label
                   className="date-button flex items-center"
                   onClick={handleToggleDatePicker}
-                  style={{ color: '#292929', border: "1px solid #CBCBCB", padding: "8px 17px", gap: "1rem" }}
+                  style={{ color: '#292929', border: "1px solid #dfd8d8", padding: "8px 17px", gap: "1rem" }}
                 >
                   {appliedDate
                     ? format(appliedDate, 'dd-MM-yyyy')

@@ -28,7 +28,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
-  const [toggleOpen, setToggleOpen] = useState<boolean>(false);
+  const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -129,7 +129,9 @@ const MainLayout = () => {
   }, [dispatch, navigate, authData]);
 
   useEffect(() => {
-    setToggleOpen(isTablet);
+if(isTablet){
+  setToggleOpen(true);
+}
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
       localStorage.setItem('version', process.env.REACT_APP_VERSION!);
       window.location.reload();
