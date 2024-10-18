@@ -17,6 +17,7 @@ import defaultImage from '../../assetss/default.svg'
 import CheckBox from '../../../components/chekbox/CheckBox';
 import audio from '../../../../resources/icons/audioFile.svg'
 import { Tooltip } from 'react-tooltip';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 export interface IFiles {
   createdDateTime: string;
@@ -47,7 +48,7 @@ const downloadFile = (fileUrl: string, fileName: string) => {
 
 const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFileTileViewProps) => {
   const { role_name } = useAppSelector(state => state.auth)
-
+  const isTablet  = useMatchMedia("(max-width: 968px)")
   const isVideo = (mimeType: string) => {
     if (
       mimeType === "video/mp4" ||
@@ -201,7 +202,7 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
         <img src={getContentThumbnail(file?.mimeType!)} width={48} height={46} alt="" />
         {role_name === TYPE_OF_USER.ADMIN && <div onClick={(e) => {
           e.stopPropagation()
-        }} className={` ${selected.has(file?.id!) ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
+        }} className={` ${selected.has(file?.id!) || isTablet ? styles.selected : ""}  ${styles.checkbox_wrapper}`}>
           <CheckBox checked={selected.has(file?.id!)} onChange={() => { onCheck(file?.id!) }} />
         </div>}
       </div>

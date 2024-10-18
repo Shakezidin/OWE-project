@@ -35,6 +35,8 @@ import image from '../../../resources/icons/image.png'
 import Pagination from '../../components/pagination/Pagination';
 import SortByLibrary from '../Modals/SortByLibrary';
 import { IoMdSearch } from 'react-icons/io';
+import { Tooltip } from 'react-tooltip';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 const FolderDetail = () => {
     const path = useParams()
@@ -51,7 +53,7 @@ const FolderDetail = () => {
     const [videoUrl, setVideoUrl] = useState("")
     const [viewMode, setViewMode] = useState<"list" | "tiles">((localStorage.getItem("fileTypeView") as "list" | "tiles") || "tiles")
     const { role_name } = useAppSelector(state => state.auth)
-
+    const isTablet = useMatchMedia("(max-width: 968px)")
     const [fileInfo, setFileInfo] = useState({
         name: "",
         fileType: "",
@@ -71,26 +73,27 @@ const FolderDetail = () => {
 
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let inputValue: string = e.target.value.trim();
-        const validCharacters = /^[a-zA-Z0-9. _-]*$/;
-
+        let inputValue: string = e.target.value;
+    
+        const validCharacters = /^[a-zA-Z0-9\s._ -]*$/;
         if (!validCharacters.test(inputValue)) {
+
             return; // Exit early if the input contains invalid characters
         }
 
         setSearchValue(inputValue);
-
+    
         if (inputValue === '') {
             setFiles(unFilteredFiles);
             return;
         }
-
+    
         const filteredData = unFilteredFiles.filter((file) =>
             file.name.toLowerCase().includes(inputValue.toLowerCase())
         );
-        console.log(filteredData,"filtered data");
         setFiles(filteredData);
     };
+    
 
     const getPaginatedData = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
@@ -502,8 +505,13 @@ const FolderDetail = () => {
                                                                     src={ICONS.folderImage}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                    <p className={styles.name_hide}>{file.name?.substring(0, 125)}</p>
-                                                                    <p className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                   
+                                                                    <p 
+                                                                       data-tooltip-id={`file-name-${file.id}`}
+                                                                       data-tooltip-content={file.name}   
+                                                                    
+                                                                    className={styles.name}> {file.name?.substring(0, 25)} {file.name?.length !== undefined && file.name?.length >= 25 ? '...' : ''}</p>
+                                                                      <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
                                                                     <p className={styles.size}> {(file.size > 1024 * 1024)
                                                                         ? `${(file.size / (1024 * 1024)) > 0 ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB`
                                                                         : `${Math.round(file.size / 1024) > 0 ? Math.round(file.size / 1024) : 0} KB`}</p>
@@ -544,9 +552,11 @@ const FolderDetail = () => {
                                                                     }}
                                                                 />
                                                                 <div className={styles.name_div}>
-                                                                    <p className={styles.name_hide}>{file.name}</p>
-
-                                                                    <p className={styles.name}>{file.name}</p>
+                                                                    <p 
+                                                                     data-tooltip-id={`file-name-${file.id}`}
+                                                                     data-tooltip-content={file.name}   
+                                                                    className={styles.name}>{file.name}</p>
+                                                                     <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
                                                                     <p className={styles.size}>
                                                                         {(file.size > 1024 * 1024)
                                                                             ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
@@ -595,7 +605,8 @@ const FolderDetail = () => {
                                                     key={file.id}
                                                     onMouseEnter={() => setHoveredIndex(file.id)}
                                                     onMouseLeave={() => setHoveredIndex(null)}
-                                                    onDoubleClick={() => navigate(`/library/${path["*"]}/${file.name}`)}
+                                                    onClick={()=>isTablet?navigate(`/library/${path["*"]}/${file.name}`):undefined}
+                                                    onDoubleClick={() => isTablet?  undefined:navigate(`/library/${path["*"]}/${file.name}`)}
                                                 >
                                                     <div className={folderWrapperStyles.createdByWrapper}>
 
@@ -606,7 +617,7 @@ const FolderDetail = () => {
                                                         <div className={folderWrapperStyles.checkboxWrapper}>
                                                             <p className={folderWrapperStyles.quantity}>{file.childCount}</p>
                                                             {role_name === TYPE_OF_USER.ADMIN &&
-                                                                <div className={` ${selected.has(file?.id!) ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
+                                                                <div className={` ${selected.has(file?.id!) || isTablet ? tileViewStyles.selected : ""}  ${tileViewStyles.checkbox_wrapper}`}>
 
                                                                     <CheckBox
 
@@ -623,8 +634,14 @@ const FolderDetail = () => {
                                                     </div>
 
                                                     <div className={"mt2"} style={{ width: "100%" }}>
-
-                                                        <div className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
+                                                    <div className={styles.name_div}>
+                                                    
+                                                        <div 
+                                                         data-tooltip-id={`file-name-${file.id}`}
+                                                         data-tooltip-content={file.name}
+                                                        className={folderWrapperStyles.folder_name}>{file.name.substring(0, 10)}</div>
+                                                        <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${file.id}`} place="top" />
+                                                     </div>
                                                         <div className={folderWrapperStyles.folderInfo_wrapper} >
                                                             <div className={folderWrapperStyles.foldersize}> {file.size > 1024 * 1024
                                                                 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`

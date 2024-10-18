@@ -298,7 +298,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             >
                               {lead.appointment_status_label}
                             </div>
-                            <div style={{ marginLeft: '24px' }} className={styles.info}>
+                            <div style={{ marginLeft: '29px', marginTop:"4px" }} className={styles.info}>
                               {lead.appointment_status_date ? format(lead.appointment_status_date, 'dd-MM-yyyy') : ""}
                             </div>
                           </>

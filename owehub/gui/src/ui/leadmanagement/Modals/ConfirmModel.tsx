@@ -602,11 +602,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.ApptSentConfirm}>
                     Appointment sent successfully{' '}
                   </span>
-                  {/* <span className={classes.ApptSentDate}>
+                  <span className={classes.ApptSentDate}>
                     {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                     {selectedTime}
-                  </span> */}
-                  {leadData?.appointment_date ? (
+                  </span>
+                  {/* {leadData?.appointment_date ? (
                     <span className={classes.ApptSentDate}>
                       {format(new Date(leadData.appointment_date), 'dd MMM, yyyy.  hh:mm a')}
                     </span>
@@ -615,7 +615,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                       {selectedTime}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div className={classes.survey_button}>
                   {leadData?.appointment_scheduled_date ? (
