@@ -1,23 +1,23 @@
 #calculator-main {
     display: flex;
-    padding: 3rem;
+    padding: 2rem;
     justify-content: space-between;
 }
 
 #calculator-main .build-earnout,
 #calculator-main .equity-growth {
-    height: 88vh;
+    height: 92vh;
     box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.12);
     border-radius: 18px;
     position: relative;
 }
 
 .build-earnout {
-    width: 55vw;
+    width: 60%;
 }
 
 .equity-growth {
-    width: 35vw;
+    width: 38%;
 }
 
 .build-header,
@@ -55,6 +55,8 @@
     border: 1px solid #dcdcdc;
     padding: 0.5rem;
     width: 130px;
+    color: #5E5E5E;
+    font-weight: 500;
 }
 
 .build-body p {
@@ -123,10 +125,10 @@
   }
   
   .rc-slider-mark-text {
-    color: #ccc; /* Customize tick label color */
+    color: #858585; 
   }
   
   .rc-slider-handle {
-    border-radius: 50%; /* Make the handle round */
+    border-radius: 50%; 
   }
   

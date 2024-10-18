@@ -45,10 +45,8 @@ const equityFilters: Filter[] = [
   { label: 'Years until Next Acquisition / IPO', value: '5 Yrs', min: 3, max: 7 , step:1 },
 ];
 
- 
 
 const Calculator: React.FC = () => {
-  // State for Earnout Values
   const [earnoutValues, setEarnoutValues] = useState<Record<string, number>>({
     'System Install (per month)': 80,
     'Average system size': 11,
@@ -56,14 +54,12 @@ const Calculator: React.FC = () => {
     'Months until Earnout': 30,
   });
 
-  // State for Equity Values
   const [equityValues, setEquityValues] = useState<Record<string, number>>({
     'Initial Investment': 10000,
     'CAGR': 15,
     'Years until Next Acquisition / IPO': 5,
   });
 
-  // Handle Slider Changes
   const handleRangeChange = (label: string, value: number, type: 'earnout' | 'equity') => {
     if (type === 'earnout') {
       setEarnoutValues((prev) => ({ ...prev, [label]: value }));
@@ -72,7 +68,6 @@ const Calculator: React.FC = () => {
     }
   };
 
-  // Calculate Earnout Value
   const calculateEarnout = (): string => {
     const result =
       earnoutValues['System Install (per month)'] *
@@ -81,7 +76,6 @@ const Calculator: React.FC = () => {
     return result.toFixed(2);
   };
 
-  // Calculate Equity Growth
   const calculateEquityGrowth = (): string => {
     const { 'Initial Investment': investment, 'CAGR': rate, 'Years until Next Acquisition / IPO': years } = equityValues;
     const growth = investment * Math.pow(1 + rate / 100, years);
@@ -109,7 +103,7 @@ const Calculator: React.FC = () => {
                   marks={marks}
                   step={step}
                   value={earnoutValues[label]}
-                  onChange={(val) => handleRangeChange(label, val as number, 'earnout')}
+                  onChange={(val: any) => handleRangeChange(label, val as number, 'earnout')}
                   railStyle={{ backgroundColor: '#e4e4e4', height: 2 }}
                   trackStyle={{ backgroundColor: '#00c8ff', height: 4 }}
                   handleStyle={{
@@ -125,7 +119,7 @@ const Calculator: React.FC = () => {
           ))}
         </div>
         <div className="build-footer">
-          <p className="footer-heading">Earnout amount</p>
+          <p className="footer-heading">Earnout Amount</p>
           <button>${calculateEarnout()}</button>
         </div>
       </div>
@@ -149,7 +143,7 @@ const Calculator: React.FC = () => {
                   
                   step={1}
                   value={equityValues[label]}
-                  onChange={(val) => handleRangeChange(label, val as number, 'equity')}
+                  onChange={(val: any) => handleRangeChange(label, val as number, 'equity')}
                   railStyle={{ backgroundColor: '#e4e4e4', height: 2 }}
                   trackStyle={{ backgroundColor: '#00c8ff', height: 4 }}
                   handleStyle={{
