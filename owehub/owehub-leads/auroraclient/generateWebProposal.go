@@ -40,7 +40,7 @@ func (api *GenerateWebProposalApi) Call() (*GenerateWebProposalApiResponse, erro
 		return nil, errors.New("design id is empty")
 	}
 
-	endPt := fmt.Sprintf("/tenants/{tenant_id}/designs/%s/web_proposal", api.DesignId)
+	endPt := fmt.Sprintf("/tenants/{tenant_id}/designs/%s/web_proposal/generate_url", api.DesignId)
 
 	err = callApi(http.MethodPost, endPt, nil, &respBody)
 	if err != nil {
