@@ -10,6 +10,7 @@ import { BsGrid } from "react-icons/bs";
 import { RiDeleteBinLine } from 'react-icons/ri';
 import DropDownLibrary from './Modals/DropDownLibrary';
 import SortByLibrary from './Modals/SortByLibrary';
+import { Tooltip } from 'react-tooltip';
 import NewFile from './Modals/NewFile';
 import { BiArrowBack } from 'react-icons/bi';
 import FolderView from './components/FolderView/FolderView';
@@ -234,6 +235,7 @@ const LibraryHomepage = () => {
     // File size in bytes
     // Include any other properties you expect
   }
+  const [currentFolderPage, setCurrentFolderPage] = useState(1);
   const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
   const [fileData, setFileData] = useState<FileOrFolder[]>([]);
   const navigate = useNavigate()
@@ -246,6 +248,7 @@ const LibraryHomepage = () => {
   const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    console.log(startIndex, endIndex, "rangeee");
     return data.slice(startIndex, endIndex);
   };
 
@@ -672,7 +675,7 @@ const LibraryHomepage = () => {
         return 0;
     }
   });
-  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
+
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const sortedFolder = [...folderData].sort((a, b) => {
@@ -690,6 +693,12 @@ const LibraryHomepage = () => {
     }
   });
 
+  const paginatedData = getPaginatedData(sortedData, currentPage, itemsPerPage);
+  const paginatedFolderData = getPaginatedData(sortedFolder, currentFolderPage, itemsPerPage);
+  const totalFolderPages = Math.ceil(sortedFolder.length / itemsPerPage);
+  console.log(paginatedData, "sorting working", sortedData);
+  const folderStartIndex = (currentFolderPage - 1) * itemsPerPage + 1;
+  const folderEndIndex = currentFolderPage * itemsPerPage;
 
   const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
@@ -833,7 +842,7 @@ const LibraryHomepage = () => {
               setSelectedCheckbox(new Set())
               setCheckedItems(0)
               setCheckedFolders([])
-
+              setAllIds([])
             }}>
               <FaXmark style={{
                 height: '20px',
@@ -913,12 +922,16 @@ const LibraryHomepage = () => {
           <button onClick={() => {
             setFilesView("list")
             saveFileTypeView("list")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={` ${styles.sm_hide} ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
           <button onClick={() => {
             setFilesView("tiles")
             saveFileTypeView("tiles")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={`${styles.sm_hide} ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
@@ -967,7 +980,7 @@ const LibraryHomepage = () => {
     if (activeSection === 'folders') {
       return (
         filesView === "list" ?
-          <FolderListView folders={sortedFolder.map((item) => ({
+          <FolderListView folders={paginatedFolderData.map((item) => ({
             name: item.name,
             size: item.size,
             childCount: item.childCount,
@@ -990,7 +1003,7 @@ const LibraryHomepage = () => {
             onCheckboxChange={handleCheckboxChange}
             sortOption={sortOption}
             checkedFolders={checkedFolders}
-            folderData={sortedFolder}
+            folderData={paginatedFolderData}
             loading={loading}
           />
       );
@@ -1077,8 +1090,10 @@ const LibraryHomepage = () => {
                           loading='lazy'
                         />
                         <div className={styles.name_div} >
-                          <p className={styles.name_hide}>{data.name.substring(0, 100)}</p>
-                          <p className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
+
+                          <p data-tooltip-id={`file-name-${data.id}`}
+                            data-tooltip-content={data.name} className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
+                          <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${data.id}`} place="top" />
                           <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
@@ -1182,12 +1197,16 @@ const LibraryHomepage = () => {
           <button onClick={() => {
             setFilesView("list")
             saveFileTypeView("list")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
             <TiThMenu />
           </button>
           <button onClick={() => {
             setFilesView("tiles")
             saveFileTypeView("tiles")
+            setSelectedCheckbox(new Set())
+            setAllIds([])
           }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
             <BsGrid />
           </button>
@@ -1218,10 +1237,61 @@ const LibraryHomepage = () => {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              paginate={(number) => setCurrentPage(number)}
+              paginate={(number) => {
+                setCurrentPage(number)
+                setSelectedCheckbox(new Set())
+                setCheckedItems(0)
+              }}
               currentPageData={paginatedData}
-              goToNextPage={() => setCurrentPage(prev => prev + 1)}
-              goToPrevPage={() => setCurrentPage(prev => prev - 1)}
+              goToNextPage={() => {
+                setCurrentPage(prev => prev + 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+
+              }}
+              goToPrevPage={() => {
+                setCurrentPage(prev => prev - 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+
+
+              }}
+              perPage={itemsPerPage}
+            />
+          </div>
+        }
+
+        {
+          (activeSection === "folders" ? !!sortedFolder.length : false) &&
+          <div className="page-heading-container " >
+            <p className="page-heading">
+              Showing {folderStartIndex} - {folderEndIndex > sortedFolder.length ? sortedFolder.length : folderEndIndex}{' '}
+              of {sortedFolder.length} item
+            </p>
+
+            <Pagination
+              currentPage={currentFolderPage}
+              totalPages={totalFolderPages}
+              paginate={(number) => {
+                setCurrentFolderPage(number)
+                setSelectedCheckbox(new Set())
+                setCheckedItems(0)
+              }}
+              currentPageData={paginatedFolderData}
+              goToNextPage={() => {
+                setCurrentFolderPage(prev => prev + 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+              }}
+              goToPrevPage={() => {
+                setCurrentFolderPage(prev => prev - 1)
+                setSelectedCheckbox(new Set())
+                setAllIds([])
+                setCheckedItems(0)
+              }}
               perPage={itemsPerPage}
             />
           </div>
