@@ -44,3 +44,7 @@ type AuroraRetrieveModulestRequest struct {
 type AuroraRetrieveWebProposaltRequest struct {
 	LeadsId int64 `json:"leads_id"`
 }
+
+type AuroraGenerateWebProposalRequest struct {
+	LeadsId int64 `json:"leads_id"`
+}

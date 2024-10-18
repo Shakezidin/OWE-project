@@ -1,4 +1,6 @@
-CREATE OR REPLACE FUNCTION public.update_v_dealer(p_id VARCHAR, p_dealer_code VARCHAR varying, p_dealer_name VARCHAR varying, p_description VARCHAR varying, p_dealer_logo VARCHAR varying, p_bg_colour VARCHAR varying, p_preferred_name VARCHAR varying, OUT v_dealer_id VARCHAR)
+
+CREATE OR REPLACE FUNCTION public.update_v_dealer(p_id VARCHAR, p_dealer_code VARCHAR, p_dealer_name VARCHAR, p_description VARCHAR, p_dealer_logo VARCHAR, p_bg_colour VARCHAR, p_preferred_name VARCHAR, OUT v_dealer_id VARCHAR)
+
 RETURNS VARCHAR
 LANGUAGE plpgsql
 AS $function$
