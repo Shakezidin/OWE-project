@@ -14,7 +14,12 @@ interface Filter {
 
 const earnoutFilters: Filter[] = [
   {
-    label: 'System Install (per month)', value: '80', min: 0, max: 200, step: 10, marks: {
+    label: 'System Install (per month)',
+    value: '80',
+    min: 0,
+    max: 200,
+    step: 10,
+    marks: {
       0: '0',
       20: '20',
       40: '40',
@@ -26,10 +31,15 @@ const earnoutFilters: Filter[] = [
       160: '160',
       180: '180',
       200: '200',
-    }
+    },
   },
   {
-    label: 'Average system size', value: '11 kw', min: 5, max: 15, step: 1, marks: {
+    label: 'Average system size',
+    value: '11',
+    min: 5,
+    max: 15,
+    step: 1,
+    marks: {
       5: '5',
       6: '6',
       7: '7',
@@ -41,27 +51,26 @@ const earnoutFilters: Filter[] = [
       13: '13',
       14: '14',
       15: '15',
-    }
+    },
   },
-  { label: 'Growth rate (per month)', value: '20%', min: 0, max: 25, step: 5 },
-  { label: 'Months until Earnout', value: '30 months', min: 24, max: 60, step: 12 },
+  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 5 },
+  { label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 12 },
 ];
 
 const equityFilters: Filter[] = [
-  { label: 'CAGR', value: '15%', min: 10, max: 30, step: 10 },
-  { label: 'Years until Next Acquisition / IPO', value: '5 Yrs', min: 3, max: 7, step: 1 },
+  { label: 'CAGR', value: '15', min: 10, max: 30, step: 10 },
+  { label: 'Years until Next Acquisition / IPO', value: '5', min: 3, max: 7, step: 1 },
 ];
 
-
 const Calculator: React.FC = () => {
-  const [earnoutValues, setEarnoutValues] = useState<Record<string, number>>({
+  const [earnoutValues, setEarnoutValues] = useState<Record<string, number | ''>>({
     'System Install (per month)': 80,
     'Average system size': 11,
     'Growth rate (per month)': 20,
     'Months until Earnout': 30,
   });
 
-  const [equityValues, setEquityValues] = useState<Record<string, number>>({
+  const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
     'CAGR': 15,
     'Years until Next Acquisition / IPO': 5,
   });
@@ -76,16 +85,45 @@ const Calculator: React.FC = () => {
 
   const calculateEarnout = (): string => {
     const result =
-      earnoutValues['System Install (per month)'] *
-      earnoutValues['Average system size'] *
-      earnoutValues['Months until Earnout'];
+      (earnoutValues['System Install (per month)'] || 0) *
+      (earnoutValues['Average system size'] || 0) *
+      (earnoutValues['Months until Earnout'] || 0);
     return result.toFixed(2);
   };
 
   const calculateEquityGrowth = (): string => {
-    const {'CAGR': rate, 'Years until Next Acquisition / IPO': years } = equityValues;
+    const rate = equityValues['CAGR'] || 0;
+    const years = equityValues['Years until Next Acquisition / IPO'] || 0;
     const growth = rate * Math.pow(1 + rate / 100, years);
     return growth.toFixed(2);
+  };
+
+  const handleInputChange = (label: string, value: string, type: 'earnout' | 'equity') => {
+    if (value === '' || /^\d{0,3}$/.test(value)) {
+      const numericValue = value === '' ? '' : Number(value);
+      if (type === 'earnout') {
+        setEarnoutValues((prev) => ({ ...prev, [label]: numericValue }));
+      } else {
+        setEquityValues((prev) => ({ ...prev, [label]: numericValue }));
+      }
+    }
+  };
+
+  const handleBlur = (label: string, type: 'earnout' | 'equity') => {
+    if (type === 'earnout') {
+      if (earnoutValues[label] === '') {
+        setEarnoutValues((prev) => ({ ...prev, [label]: getDefaultValue(label, earnoutFilters) }));
+      }
+    } else {
+      if (equityValues[label] === '') {
+        setEquityValues((prev) => ({ ...prev, [label]: getDefaultValue(label, equityFilters) }));
+      }
+    }
+  };
+
+  const getDefaultValue = (label: string, filters: Filter[]): number => {
+    const filter = filters.find((f) => f.label === label);
+    return filter ? (typeof filter.value === 'string' ? parseFloat(filter.value) : filter.value) : 0;
   };
 
   return (
@@ -96,13 +134,23 @@ const Calculator: React.FC = () => {
           <h2>Build Earnout</h2>
         </div>
         <div className="build-body">
-          {earnoutFilters.map(({ label, value, min, max, step, marks }) => (
+          {earnoutFilters.map(({ label, min, max, step, marks }) => (
             <div className="filter-wrap" key={label}>
               <div className="body-header">
                 <p>{label}</p>
-                <button>
-                  {`${earnoutValues[label]} ${value.split(' ')[1] || ''}${label === "Growth rate (per month)" ? '%' : ''}`}
-                </button>
+                <div className="input-group">
+                  <input
+                    type="number"
+                    value={earnoutValues[label] !== '' ? earnoutValues[label] : ''}
+                    onChange={(e) => handleInputChange(label, e.target.value, 'earnout')}
+                    onBlur={() => handleBlur(label, 'earnout')}
+                    className="number-input"
+                    maxLength={3}
+                  />
+                  {label === 'Growth rate (per month)' && <span>%</span>}
+                  {label === 'Months until Earnout' && <span>months</span>}
+                  {label === 'Average system size' && <span>kw</span>}
+                </div>
               </div>
               <div className="filter">
                 <Slider
@@ -110,8 +158,12 @@ const Calculator: React.FC = () => {
                   max={max}
                   marks={marks}
                   step={step}
-                  value={earnoutValues[label]}
-                  onChange={(val: any) => handleRangeChange(label, val as number, 'earnout')}
+                  value={earnoutValues[label] || 0}
+                  onChange={(val: number | number[]) => {
+                    if (typeof val === 'number') {
+                      handleRangeChange(label, val, 'earnout');
+                    }
+                  }}
                   railStyle={{ backgroundColor: '#e4e4e4', height: 2 }}
                   trackStyle={{ backgroundColor: '#00c8ff', height: 4 }}
                   handleStyle={{
@@ -138,22 +190,34 @@ const Calculator: React.FC = () => {
           <h2>Equity Growth</h2>
         </div>
         <div className="equity-body">
-          {equityFilters.map(({ label, value, min, max }) => (
+          {equityFilters.map(({ label, min, max }) => (
             <div className="filter-wrap" key={label}>
               <div className="body-header">
                 <p>{label}</p>
-                <button>
-                  {`${equityValues[label]} ${value.split(' ')[1] || ''}${label === "CAGR" ? '%' : ''}`}
-                </button>
+                <div className="input-group">
+                  <input
+                    type="number"
+                    value={equityValues[label] !== '' ? equityValues[label] : ''}
+                    onChange={(e) => handleInputChange(label, e.target.value, 'equity')}
+                    onBlur={() => handleBlur(label, 'equity')}
+                    className="number-input"
+                    maxLength={3} 
+                  />
+                  {label === 'CAGR' && <span>%</span>}
+                  {label === 'Years until Next Acquisition / IPO' && <span>Yrs</span>}
+                </div>
               </div>
               <div className="filter">
                 <Slider
                   min={min}
                   max={max}
-
                   step={1}
-                  value={equityValues[label]}
-                  onChange={(val: any) => handleRangeChange(label, val as number, 'equity')}
+                  value={equityValues[label] || 0} 
+                  onChange={(val: number | number[]) => {
+                    if (typeof val === 'number') {
+                      handleRangeChange(label, val, 'equity');
+                    }
+                  }}
                   railStyle={{ backgroundColor: '#e4e4e4', height: 2 }}
                   trackStyle={{ backgroundColor: '#00c8ff', height: 4 }}
                   handleStyle={{
