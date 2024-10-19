@@ -18,7 +18,7 @@ interface Filter {
 const earnoutFilters: Filter[] = [
   {
     label: 'System Install (per month)',
-    value: '80',
+    value: '0',
     min: 0,
     max: 200,
     step: 5,
@@ -37,8 +37,8 @@ const earnoutFilters: Filter[] = [
     },
   },
   {
-    label: 'Average system size (Kw)',
-    value: '11',
+    label: 'Average system size (kw)',
+    value: '5',
     min: 5,
     max: 15,
     step: 1,
@@ -57,7 +57,7 @@ const earnoutFilters: Filter[] = [
     },
   },
   {
-    label: 'Growth rate (per month) %', value: '20', min: 0, max: 25, step: 1, marks: {
+    label: 'Growth rate (per month) %', value: '0', min: 0, max: 25, step: 0.5, marks: {
       0: '0', 5: '5',
       10: '10',
       15: '15',
@@ -66,7 +66,7 @@ const earnoutFilters: Filter[] = [
     }
   },
   {
-    label: 'Months until Earnout (Months)', value: '30', min: 24, max: 60, step: 1, marks: {
+    label: 'Months until Earnout (Months)', value: '24', min: 24, max: 60, step: 1, marks: {
       24: '24',
       30: '30',
       36: '36',
@@ -80,7 +80,7 @@ const earnoutFilters: Filter[] = [
 
 const equityFilters: Filter[] = [
   {
-    label: 'CAGR %', value: '15', min: 10, max: 30, step: 1, marks: {
+    label: 'CAGR %', value: '', min: 10, max: 30, step: 1, marks: {
       10: '10',
       15: '15',
       20: '20',
@@ -90,7 +90,7 @@ const equityFilters: Filter[] = [
     }
   },
   {
-    label: 'Years until Next Acquisition / IPO (Yrs)', value: '5', min: 3, max: 7, step: 1, marks: {
+    label: 'Years until Next Acquisition / IPO (Yrs)', value: '', min: 3, max: 7, step: 1, marks: {
       3: '3',
       4: '4',
       5: '5',
@@ -103,10 +103,10 @@ const equityFilters: Filter[] = [
 const Calculator: React.FC = () => {
   const [earnoutValues, setEarnoutValues] = useState<Record<string, number | ''>>({
     'System Install (per month)': 0,
-    'Average system size (Kw)': 0,
+    'Average system size (kw)': 5,
     'Growth rate (per month) %': 0,
-    'Months until Earnout (Months)': 0,
-    'Equity Per': 0,
+    'Months until Earnout (Months)': 24,
+    'Equity Per': 25,
   });
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
@@ -131,6 +131,8 @@ const Calculator: React.FC = () => {
     const monthsUntilEarnout = Number(earnoutValues['Months until Earnout (Months)']);
     const growthRatePerMonth = Number(earnoutValues['Growth rate (per month) %']);
     const equityper = Number(earnoutValues['Equity Per']);
+
+    console.log(systemInstallPerMonth, 'systemInstallPerMonth', averageSystemSize, 'averageSystemSize', growthRatePerMonth, 'growthRatePerMonth',  monthsUntilEarnout, 'monthsUntilEarnout', equityper , 'equityper ')
 
     // Initial first value (system installs per month * average system size)
     let firstvalue = systemInstallPerMonth * averageSystemSize;
@@ -189,7 +191,7 @@ const Calculator: React.FC = () => {
     const initialValue = Number(earnOutCalc);
   
     // Calculate the future value based on CAGR and years
-    const growth = initialValue * Math.pow(1 + rate / 100, years);
+    const growth = initialValue * Math.pow(1 + rate / 100, years-1);
     console.log(growth, 'growth')
     // Return the calculated growth, formatted to 2 decimal places
     return growth.toFixed(2);
@@ -254,7 +256,7 @@ const Calculator: React.FC = () => {
   const handleResetValues = () => {
     setEarnoutValues({
       'System Install (per month)': 0,
-      'Average system size (Kw)': 0,
+      'Average system size (kw)': 0,
       'Growth rate (per month) %': 0,
       'Months until Earnout (Months)': 0,
       'Equity Per': 0,
