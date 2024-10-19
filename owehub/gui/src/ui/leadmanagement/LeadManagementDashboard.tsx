@@ -44,7 +44,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads, getProjectByLeadId,auroraCreateProject, auroraCreateDesign, auroraCreateProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads, getProjectByLeadId,auroraCreateProject, auroraCreateDesign, auroraCreateProposal, auroraWebProposal, auroraGenerateWebProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -787,7 +787,7 @@ const fetchDesigns = async (projectId: string) => {
       // Generate new URL every time and fetch the proposal
       generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
       // Pass external_provider_id and name to fetchWebProposal
-      fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
+      // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
       setDesignsID(latestDesign.id);
       setLeadPdf(latestDesign.external_provider_id);
       setLeadNamePdf(latestDesign.name);
@@ -816,30 +816,30 @@ const fetchDesigns = async (projectId: string) => {
     }
   };
 
-// Function to fetch Web Proposal for a design 
-const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
-  try {
-    // Step 1: Fetch the web proposal from the API
-    const response = await axios.get<{ web_proposal: { url: string } }>(
-      `http://localhost:5000/api/web-proposals/${designId}`
-    );
+// // Function to fetch Web Proposal for a design 
+// const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
+//   try {
+//     // Step 1: Fetch the web proposal from the API
+//     const response = await axios.get<{ web_proposal: { url: string } }>(
+//       `http://localhost:5000/api/web-proposals/${designId}`
+//     );
 
-    const proposalLink = response.data.web_proposal.url;
-    console.log('Proposal Link:', proposalLink);
+//     const proposalLink = response.data.web_proposal.url;
+//     console.log('Proposal Link:', proposalLink);
 
-    // Step 2: Open the link in a new tab (optional)
-    window.open(proposalLink, '_blank');
+//     // Step 2: Open the link in a new tab (optional)
+//     window.open(proposalLink, '_blank');
 
-    // Step 3: Trigger server-side function to generate and download PDF
-    await axios.post('http://localhost:5000/download-pdf', {
-      fileUrl: proposalLink,
-      leadName: projectName, // Pass the project name
-      externalProviderId, // Pass the external provider ID if needed
-    });
-  } catch (error) {
-    console.error('Error fetching web proposal:', error);
-  }
-};
+//     // Step 3: Trigger server-side function to generate and download PDF
+//     await axios.post('http://localhost:5000/download-pdf', {
+//       fileUrl: proposalLink,
+//       leadName: projectName, // Pass the project name
+//       externalProviderId, // Pass the external provider ID if needed
+//     });
+//   } catch (error) {
+//     console.error('Error fetching web proposal:', error);
+//   }
+// };
 
   const downloadFile = async (fileUrl: string) => {
     const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
@@ -1157,20 +1157,18 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
 
           // Step 3: Create Proposal
           const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
-
           if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
-            toast.success('Proposal created successfully!');
-            setRefresh((prev) => prev + 1);
-
-            // // Step 4: Fetch Project Data
-            // const getProjectResult = await dispatch(getProjectByLeadId(leadId));
-
-            // if (getProjectByLeadId.fulfilled.match(getProjectResult)) {
-            //   setRefresh((prev) => prev + 1);
-            //   // toast.success('Project data fetched successfully!');
-            // } else {
-            //   toast.error(getProjectResult.payload as string || 'Failed to fetch project data');
-            // }
+            const proposalData = createProposalResult.payload.data;
+  
+            if (proposalData.proposal_link) {
+              toast.success('Proposal created successfully!');
+              setRefresh((prev) => prev + 1);
+              
+              // Open the proposal link in a new tab
+              window.open(proposalData.proposal_link, '_blank');
+            } else {
+              toast.error('Proposal link not available.');
+            }
           } else {
             toast.error(createProposalResult.payload as string || 'Failed to create proposal');
           }
@@ -1186,8 +1184,77 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
     }
   };
 
+  // const fetchWebProposal = async (leadId: number) => {
+  //   try {
+  //     const webProposalResult = await dispatch(auroraWebProposal(leadId));
+  
+  //     if (auroraWebProposal.fulfilled.match(webProposalResult)) {
+  //       const webProposalData = webProposalResult.payload.data;
+        
+  //       if (webProposalData.url) {
+  //         toast.success('Web proposal retrieved successfully!');
+  //         // Handle the web proposal URL here, e.g., open in a new tab
+  //         window.open(webProposalData.url, '_blank');
+  //       } else if (webProposalData.url_expired) {
+  //         toast.error('Web proposal URL has expired. Please regenerate.');
+  //       } else {
+  //         toast.error('No web proposal available.');
+  //       }
+  //     } else {
+  //       toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+  //     }
+  //   } catch (error) {
+  //     toast.error('An unexpected error occurred while retrieving web proposal');
+  //     console.error('Error in fetchWebProposal:', error);
+  //   }
+  // };
+  
+
 
   //*************************************************************************************************/
+ 
+  const fetchWebProposal = async (leadId: number) => {
+    try {
+      // Step 1: Generate Web Proposal
+      const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
+  
+      if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
+        const generatedProposalData = generateProposalResult.payload.data;
+  
+        if (generatedProposalData.url) {
+          toast.success('Web proposal generated successfully!');
+          
+          // Step 2: Retrieve Web Proposal
+          const webProposalResult = await dispatch(auroraWebProposal(leadId));
+  
+          if (auroraWebProposal.fulfilled.match(webProposalResult)) {
+            const webProposalData = webProposalResult.payload.data;
+  
+            if (webProposalData.url) {
+              toast.success('Web proposal retrieved successfully!');
+              // Open the URL in a new tab or handle it as needed
+              window.open(webProposalData.url, '_blank');
+            } else if (webProposalData.url_expired) {
+              toast.error('Web proposal URL has expired. Please regenerate.');
+            } else {
+              toast.error('No web proposal available.');
+            }
+          } else {
+            toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+          }
+        } else {
+          toast.error('Failed to generate web proposal.');
+        }
+      } else {
+        toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred while generating or retrieving web proposal');
+      console.error('Error in fetchWebProposal:', error);
+    }
+  };
+  
+ 
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
@@ -1648,7 +1715,8 @@ const fetchWebProposal = async (designId: string, externalProviderId: string, pr
             refresh={refresh} 
             setRefresh={setRefresh} 
             onCreateProposal={handleCreateProposal} 
-            fetchWebProposal={() => fetchWebProposal(designID,leadIDPdf,leadNamePdf)} 
+            fetchWebProposal={fetchWebProposal} 
+            // fetchWebProposal={() => fetchWebProposal(designID,leadIDPdf,leadNamePdf)} 
           />
           )}
           {leadsData.length > 0 && (

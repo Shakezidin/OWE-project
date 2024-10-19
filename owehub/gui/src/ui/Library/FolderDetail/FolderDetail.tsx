@@ -497,7 +497,7 @@ const FolderDetail = () => {
                                         if (selected.size === paginatedData.length) {
                                             setSelected(new Set())
                                         } else {
-                                            const newChecked = new Set(files.map((item) => item.id))
+                                            const newChecked = new Set(paginatedData.map((item) => item.id))
                                             setSelected(newChecked)
                                         }
                                     }} />
