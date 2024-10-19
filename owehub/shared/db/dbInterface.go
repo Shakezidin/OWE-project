@@ -75,8 +75,9 @@ const (
 	TableName_FinanceTypesCommisionsDbhub            string = "finance_types_commisions_dbhub"
 
 	/* Leads Tables and Procedures */
-	TableName_Leads_Info string = "leads_info"
-	CreateLeadFunction   string = "create_lead"
+	TableName_Leads_Info          string = "leads_info"
+	CreateLeadFunction            string = "create_lead"
+	UpdateLeadAddProposalFunction string = "update_lead_add_proposal"
 
 	/* Scheduling Tables and Procedures */
 	TableName_SchedulingProjects    string = "scheduling_projects"

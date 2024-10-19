@@ -445,6 +445,12 @@ const ArchivedPages = () => {
                               currentFilter == 'Pending' &&
                               handleDetailModal(lead)
                             }
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: isMobile ? '100px' : '200px',
+                              lineHeight: "16px"
+                            }}
                           >
                             <h2>
                               {lead.first_name} {lead.last_name}
@@ -457,7 +463,14 @@ const ArchivedPages = () => {
                           <div className={styles.email}>
                             <span>{lead.email_id}</span>
                           </div>
-                          <div className={styles.address}>
+                          <div
+                            style={{
+                             whiteSpace: 'pre-wrap',
+                             overflowWrap: 'break-word',
+                             maxWidth: isMobile ? '100px' : '200px',
+                             lineHeight: "16px"
+                           }}
+                           className={styles.address}>
                             {/* {lead.street_address ? lead.street_address : 'N/A'} */}
 
                             {lead?.street_address
@@ -514,14 +527,21 @@ const ArchivedPages = () => {
                         </td>
 
                       </tr>
-                      {toggledId.includes(lead['leads_id']) && (
+                      {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
                             <div className={''}>{lead.phone_number}</div>
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
-                            <div className={''}>
+                            <div className={''}
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: '210px',
+                              lineHeight: "16px"
+                            }}
+                            >
                               {/* {lead.street_address ? lead.street_address : 'N/A'} */}
 
                               {lead?.street_address
@@ -540,10 +560,17 @@ const ArchivedPages = () => {
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
-                            <div className={''}>
+                            <div className={''}
+                             style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: '20px',
+                              lineHeight: "16px"
+                            }}
+                            >
                               {lead?.street_address
-                                ? lead.street_address.length > 60
-                                  ? `${lead.street_address.slice(0, 60)}...`
+                                ? lead.street_address.length > 30
+                                  ? `${lead.street_address.slice(0, 30)}...`
                                   : lead.street_address
                                 : 'N/A'}
                               {/* {lead.street_address} */}
