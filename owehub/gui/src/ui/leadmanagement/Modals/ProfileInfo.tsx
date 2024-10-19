@@ -247,7 +247,10 @@ const Profile: React.FC<EditModalProps> = ({
                                     <tr>
                                         <td className={classes.leftAlign}>Notes</td>
                                         <td style={{
-                                            lineHeight: "16px"
+                                            lineHeight: "16px",
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '150px',
                                         }} className={`${classes.rightAlign} ${classes.specialfont}`} data-tooltip-id="notes">
                                             {leadData?.notes && leadData.notes.length > 60 ? (
                                                 <>
