@@ -119,7 +119,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 					AND li.is_appointment_required = TRUE
 				)
 			)
-			AND li.updated_at BETWEEN $2 AND $3;  -- Start and end date range
+			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 			AND li.is_archived = FALSE
     `
 
