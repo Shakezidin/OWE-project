@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import MicroLoader from "../../components/loader/MicroLoader";
 import DataNotFound from "../../components/loader/DataNotFound";
 import { format, parseISO } from "date-fns";
+import { Tooltip } from "react-tooltip";
 
 interface EditModalProps {
     isOpen1: boolean;
@@ -245,14 +246,31 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Notes</td>
-                                        <td
-                                        style={{
-                                            whiteSpace: 'pre-wrap',
-                                            overflowWrap: 'break-word',
-                                            maxWidth: '200px',
+                                        <td style={{
                                             lineHeight: "16px"
-                                        }}
-                                         className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.notes || '.......'}</td>
+                                        }} className={`${classes.rightAlign} ${classes.specialfont}`} data-tooltip-id="notes">
+                                            {leadData?.notes && leadData.notes.length > 60 ? (
+                                                <>
+                                                    {leadData.notes.slice(0, 60)}...
+                                                    <Tooltip
+                                                        style={{
+                                                            zIndex: 20,
+                                                            background: '#f7f7f7',
+                                                            color: '#000',
+                                                            fontSize: 12,
+                                                            paddingBlock: 4,
+                                                            maxWidth: '500px'
+                                                        }}
+                                                        offset={8}
+                                                        id="notes"
+                                                        place="bottom"
+                                                        content={leadData.notes}
+                                                    />
+                                                </>
+                                            ) : (
+                                                leadData?.notes || '.......'
+                                            )}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Created At</td>
@@ -312,13 +330,13 @@ const Profile: React.FC<EditModalProps> = ({
                                     <tr>
                                         <td className={classes.leftAlign}>Created By</td>
                                         <td
-                                        style={{
-                                            whiteSpace: 'pre-wrap',
-                                            overflowWrap: 'break-word',
-                                            maxWidth: '200px',
-                                            lineHeight: "16px"
-                                        }}
-                                         className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={`${classes.rightAlign} ${classes.specialfont}`}
                                         >{leadData?.created_by || '.....'}</td>
                                     </tr>
 
