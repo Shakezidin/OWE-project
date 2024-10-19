@@ -77,21 +77,21 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 
 	query := `
 		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE 
+		WHERE (
 			li.status_id = 0 
-			AND li.is_appointment_required = TRUE
-			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+			AND li.is_appointment_required = TRUE 
+			AND li.proposal_created_date IS NULL
+		) AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 
 		UNION ALL
 
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE 
-			(
+			WHERE (
 				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-				OR (li.status_id = 5 AND li.proposal_created_date IS NULL)
-				OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND li.proposal_created_date IS NULL)
-			)
-			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+				OR (li.status_id = 5)
+				OR (li.status_id != 6 AND li.is_appointment_required = FALSE)
+				OR (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)
+			) AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 
 		UNION ALL
 

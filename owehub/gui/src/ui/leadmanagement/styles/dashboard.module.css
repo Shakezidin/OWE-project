@@ -887,8 +887,9 @@ input[type='checkbox']:checked {
 
 
 .ButtonAbovearrov{
+  content: "\25BA";
   border: 1px solid #377cf6;
-  width: 32px;
+  width: 34px;
   height: 32px;
   margin-left: 5px !important;
   /* margin-top: 2px !important; */
