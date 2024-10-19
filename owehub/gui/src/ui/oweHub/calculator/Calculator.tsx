@@ -66,14 +66,13 @@ const earnoutFilters: Filter[] = [
     }
   },
   {
-    label: 'Months until Earnout (Months)', value: '24', min: 24, max: 60, step: 1, marks: {
+    label: 'Months until Earnout (Months)', value: '24', min: 0, max: 60, step: 1, marks: {
+      0:'0',
+      12: '12',
       24: '24',
-      30: '30',
       36: '36',
-      42: '42',
       48: '48',
-      54: '54',
-      60: '60'
+      60: '60',
     }
   },
 ];
@@ -105,7 +104,7 @@ const Calculator: React.FC = () => {
     'System Install (per month)': 0,
     'Average system size (kw)': 5,
     'Growth rate (per month) %': 0,
-    'Months until Earnout (Months)': 24,
+    'Months until Earnout (Months)': 0,
     'Equity Per': 25,
   });
 
@@ -198,11 +197,11 @@ const Calculator: React.FC = () => {
   };
 
   
-  const [selectedRole, setSelectedRole] = useState<'Partner' | 'Sales Rep' | null>(null); // New state to track role
+  const [selectedRole, setSelectedRole] = useState<'Partner' | 'Sales Rep' | null>(null); 
 
   const handleInputChange = (label: string, value: string, type: 'earnout' | 'equity') => {
     const numericValue = value === '' ? '' : Number(value);
-
+    console.log(label, value, type ,"details")
     const filters = type === 'earnout' ? earnoutFilters : equityFilters;
     const filter = filters.find((f) => f.label === label);
 
@@ -218,17 +217,17 @@ const Calculator: React.FC = () => {
   };
   const navigate = useNavigate();
 
-  const handleBlur = (label: string, type: 'earnout' | 'equity') => {
-    if (type === 'earnout') {
-      if (earnoutValues[label] === '') {
-        setEarnoutValues((prev) => ({ ...prev, [label]: getDefaultValue(label, earnoutFilters) }));
-      }
-    } else {
-      if (equityValues[label] === '') {
-        setEquityValues((prev) => ({ ...prev, [label]: getDefaultValue(label, equityFilters) }));
-      }
-    }
-  };
+  // const handleBlur = (label: string, type: 'earnout' | 'equity') => {
+  //   if (type === 'earnout') {
+  //     if (earnoutValues[label] === '') {
+  //       setEarnoutValues((prev) => ({ ...prev, [label]: getDefaultValue(label, earnoutFilters) }));
+  //     }
+  //   } else {
+  //     if (equityValues[label] === '') {
+  //       setEquityValues((prev) => ({ ...prev, [label]: getDefaultValue(label, equityFilters) }));
+  //     }
+  //   }
+  // };
 
   const getDefaultValue = (label: string, filters: Filter[]): number => {
     const filter = filters.find((f) => f.label === label);
@@ -240,10 +239,10 @@ const Calculator: React.FC = () => {
     setSelectedRole(role);
     setEarnoutValues({
       'System Install (per month)': 0,
-      'Average system size (kw)': 0,
+      'Average system size (kw)': 5,
       'Growth rate (per month) %': 0,
       'Months until Earnout (Months)': 0,
-      'Equity Per': 0,
+      'Equity Per': 25,
     });
     
     setActiveRole(role);
@@ -256,10 +255,10 @@ const Calculator: React.FC = () => {
   const handleResetValues = () => {
     setEarnoutValues({
       'System Install (per month)': 0,
-      'Average system size (kw)': 0,
+      'Average system size (kw)': 5,
       'Growth rate (per month) %': 0,
       'Months until Earnout (Months)': 0,
-      'Equity Per': 0,
+      'Equity Per': 25,
     });
     setEquityValues({
       'CAGR %':10,
@@ -294,7 +293,7 @@ const Calculator: React.FC = () => {
                       type="number"
                       value={earnoutValues[label] !== '' ? earnoutValues[label] : ''}
                       onChange={(e) => handleInputChange(label, e.target.value, 'earnout')}
-                      onBlur={() => handleBlur(label, 'earnout')}
+                      // onBlur={() => handleBlur(label, 'earnout')}
                       className="number-input"
                       maxLength={3}
                       min={min}
@@ -393,9 +392,9 @@ const Calculator: React.FC = () => {
                       type="number"
                       value={equityValues[label] !== '' ? equityValues[label] : ''}
                       onChange={(e) => handleInputChange(label, e.target.value, 'equity')}
-                      onBlur={() => handleBlur(label, 'equity')}
+                      
                       className="number-input"
-                      maxLength={3}
+                     
                       min={min}
                       max={max}
                     />
