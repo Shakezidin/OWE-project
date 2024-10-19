@@ -1,50 +1,38 @@
-/* Add the following new CSS for role buttons */
-.role-buttons {
+#calc-header {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    position: absolute; /* Position the buttons above the cards */
-    top: 10px; /* Adjust positioning as needed */
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .role-slider {
-    margin: 20px 0;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  .calendar-closeee{
-    font-size: 25px;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--white-color);
+    padding: 1.1rem 5rem;
+    background: linear-gradient(90deg, #159CBF 30%, #6EC135 70%);
+}
+
+#calc-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+#calc-header svg {
     cursor: pointer;
     transition: all 0.3s ease;
-    position: absolute;
-    left: 95%;
-  }
-  .role-buttons button {
-    padding: 10px 20px;
-    background-color: #638BC1;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+}
+
+#calc-header svg:hover {
     cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-   
+    transition: all 0.3s ease;
+    transform: scale(1.09);
+}
 
 #calculator-main {
     display: flex;
-    padding: 2rem;
+    padding: 1.5rem 3rem;
     justify-content: space-between;
     position: relative;
 }
 
 #calculator-main .build-earnout,
 #calculator-main .equity-growth {
-    height: 92vh;
+    height: 85vh;
     box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.12);
     border-radius: 18px;
     position: relative;
@@ -52,29 +40,58 @@
 
 .build-earnout {
     width: 60%;
-    margin-top: 27px;
 }
 
 
 .equity-growth {
     width: 38%;
-    margin-top: 27px;
 }
 
 .build-header,
 .equity-header {
-    color: var(--white-color);
-    background-color: #638BC1;
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.build-head-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.build-head-btn button {
+    background: #E0FBFF;
+    border: 1px solid #1EA0B2;
+    color: #1EA0B2;
+    border-radius: 100px;
+    width: 100px;
+    height: 32px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.build-head-btn button:hover {
+    transform: scale(1.09);
+    cursor: pointer;
+    color: var(--white-color);
+    background: #1EA0B2;
+}
+
+.build-head-btn button.active {
+    background: #1EA0B2;
+    color: var(--white-color);
 }
 
 .build-earnout h2,
 .equity-header h2 {
-    font-size: 1.1rem !important;
-    font-weight: 500 !important;
-    font-size: 1.3rem;
-    font-weight: 500;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #5E5E5E;
     text-align: center;
     padding: 10px;
 }
@@ -82,7 +99,64 @@
 .build-body,
 .equity-body {
     padding: 2rem;
+    height: 55vh;
+    overflow-y: scroll;
 }
+
+.build-body::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
+.build-body::-webkit-scrollbar {
+    display: initial;
+}
+
+.build-body::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+}
+
+.build-body::-webkit-scrollbar-button {
+    display: initial;
+}
+
+.build-body::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+}
+
+.build-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+.equity-body::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
+.equity-body::-webkit-scrollbar {
+    display: initial;
+}
+
+.equity-body::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+}
+
+.equity-body::-webkit-scrollbar-button {
+    display: initial;
+}
+
+.equity-body::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+}
+
+.equity-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
 
 .body-header {
     display: flex;
@@ -114,6 +188,7 @@
     font-weight: 500;
     outline: none;
     font-size: 14px;
+    text-align: center;
 }
 
 .build-body p,
@@ -138,7 +213,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
     padding-bottom: 2rem;
     position: absolute;
     left: 50%;
@@ -151,22 +226,43 @@
 .equity-body {
     flex: 1;
 }
- 
+
 .build-footer button,
 .equity-footer button {
     padding: 8px;
-    width: 260px;
+    width: 350px;
     border-radius: 30px;
     border: none;
     font-size: 1.1rem;
     font-weight: 600;
-    background-color: #638BC1;
+    background-color: #1EA0B2;
     color: var(--white-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-#calculator-main .footer-heading {
-    font-size: 1rem;
+.build-footer button span,
+.equity-footer button span {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+#calculator-main .footer-value {
+    font-size: 14px;
     font-weight: 500;
+    color: #5E5E5E;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+#calculator-main .footer-value:hover {
+    cursor: pointer;
+    transform: scale(1.09);
+    text-shadow: 1px 1px 6px #b9b8b8;
 }
 
 .slider-container {
@@ -185,10 +281,30 @@
     font-size: 14px;
 }
 
+.rc-slider-mark{
+    top: 26px;
+}
+.rc-slider-mark span{
+    width: 15px;
+    text-align: center;
+}
+
 .rc-slider-mark-text {
     color: #858585;
     font-size: 10px;
     font-weight: 500;
+}
+
+.rc-slider-mark-text::before {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 7px;
+    background-color: #858585;
+    position: absolute;
+    left: 25%;
+    bottom: 20px;
+    transform: rotate(90deg)
 }
 
 .rc-slider-handle {
@@ -201,5 +317,3 @@
     align-items: center;
     justify-content: center;
   } */
-  
-   
