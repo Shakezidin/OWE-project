@@ -200,6 +200,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.aurora_proposal_id,
 				li.is_appointment_required,
 				li.aurora_proposal_status,
+				li.aurora_proposal_link,
+				li.aurora_proposal_updated_at,
 				li.status_id
 				
 			FROM get_leads_info_hierarchy($1) li
@@ -222,14 +224,15 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range data {
 		// appointment label & appointment date
 		var (
-			aptStatusLabel   string
-			aptStatusDate    *time.Time
-			wonLostLabel     string
-			wonLostDate      *time.Time
-			scheduledDatePtr *time.Time
-			acceptedDatePtr  *time.Time
-			leadWonDatePtr   *time.Time
-			declinedDatePtr  *time.Time
+			aptStatusLabel       string
+			aptStatusDate        *time.Time
+			wonLostLabel         string
+			wonLostDate          *time.Time
+			scheduledDatePtr     *time.Time
+			acceptedDatePtr      *time.Time
+			leadWonDatePtr       *time.Time
+			declinedDatePtr      *time.Time
+			proposalUpdatedAtPtr *time.Time
 		)
 
 		leadsId, ok := item["leads_id"].(int64)
@@ -309,6 +312,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			proposalStatus = ""
 		}
 
+		proposalLink, ok := item["aurora_proposal_link"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_link from leads info Item %+v", item)
+			proposalLink = ""
+		}
+
 		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
@@ -339,6 +348,14 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			declinedDatePtr = nil
 		} else {
 			declinedDatePtr = &declinedDate
+		}
+
+		proposalUpdatedAt, ok := item["aurora_proposal_updated_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_updated_at from leads info Item: %+v\n", item)
+			proposalUpdatedAtPtr = nil
+		} else {
+			proposalUpdatedAtPtr = &proposalUpdatedAt
 		}
 
 		if !isAptRequired {
@@ -390,6 +407,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			QCAudit:                qcAudit,
 			ProposalID:             proposalId,
 			ProposalStatus:         proposalStatus,
+			ProposalLink:           proposalLink,
+			ProposalUpdatedAt:      proposalUpdatedAtPtr,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)

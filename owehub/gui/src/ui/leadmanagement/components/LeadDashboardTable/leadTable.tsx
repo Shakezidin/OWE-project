@@ -271,7 +271,15 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           />
                         </label>
                         <div style={{}}>
-                          <div className={styles.name}>{lead.first_name} {lead.last_name}</div>
+                          <div
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: '150px',
+                              lineHeight: "16px"
+                            }}
+                            className={styles.name}>{lead.first_name} {lead.last_name}</div>
+
                           <div className={styles.ids}>OWE{lead.leads_id}</div>
                         </div>
                       </td>
@@ -307,7 +315,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             >
                               {lead.appointment_status_label}
                             </div>
-                            <div style={{ marginLeft: '29px', marginTop:"4px" }} className={styles.info}>
+                            <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
                               {lead.appointment_status_date ? format(lead.appointment_status_date, 'dd-MM-yyyy') : ""}
                             </div>
                           </>
@@ -365,7 +373,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       <td>{lead.finance_type ? lead.finance_type : "_____"}</td>
                       <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
 
-                      <td className={styles.FixedColumn} style={{backgroundColor:"#fff", zIndex: selected === index ? 101 : 0 }}>
+                      <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
                         <div onClick={() => (setLeadId(lead.leads_id))}>
                           {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
@@ -403,9 +411,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                 options={
                                   lead?.appointment_status_label === "Appointment Sent"
                                     ? [
-                                        { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        { label: 'Create Proposal', value: 'new_proposal' },
-                                      ]
+                                      { label: 'Reschedule Appointment', value: 'app_sched' },
+                                      { label: 'Create Proposal', value: 'new_proposal' },
+                                    ]
                                     : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
                                       ? [
                                           { label: 'View Proposal', value: 'viewProposal' },
@@ -414,9 +422,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                           { label: 'Reschedule Appointment', value: 'app_sched' },
                                         ]
                                       : [
-                                          { label: 'Create Proposal', value: 'new_proposal' },
-                                          { label: 'Schedule Appointment', value: 'app_sched' },
-                                        ]
+                                        { label: 'Create Proposal', value: 'new_proposal' },
+                                        { label: 'Schedule Appointment', value: 'app_sched' },
+                                      ]
                                 }
                               />
                             )}
