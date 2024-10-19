@@ -59,8 +59,7 @@
 .folderIcon_wrapper img {
   width: 56px;
   height: 45px;
-  position: relative;
-  left: 3px;
+ margin-inline: auto;
 }
 
 .folderInput {
@@ -268,8 +267,7 @@
   .folderIcon_wrapper img {
     width: 63px;
     height: 60px;
-    position: relative;
-    left: 20px;
+    margin-inline: auto;
   }
   .folderInput {
     height: 15px !important;
