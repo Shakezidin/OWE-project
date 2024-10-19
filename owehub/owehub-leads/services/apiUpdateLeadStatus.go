@@ -211,11 +211,11 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	// CASE 3: set lead status to 6 (LOST) --> Update lead status with reason
 	if dataReq.StatusId == 6 {
 		// previous lead status should be 2 (ACCEPTED) or 4 (ACTION NEEDED)
-		if leadStatus != 2 && leadStatus != 4 {
-			log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 6 (LOST) from %d", leadStatus)
-			appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
-			return
-		}
+		// if leadStatus != 2 && leadStatus != 4 {
+		// 	log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 6 (LOST) from %d", leadStatus)
+		// 	appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
+		// 	return
+		// }
 
 		if dataReq.Reason == "" {
 			log.FuncErrorTrace(0, "Reason should be provided for lead to be lost")

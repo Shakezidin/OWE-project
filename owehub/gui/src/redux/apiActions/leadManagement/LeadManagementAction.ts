@@ -140,3 +140,18 @@ export const auroraWebProposal = createAsyncThunk(
     }
   }
 );
+
+export const auroraListModules = createAsyncThunk(
+  'modules/auroraListModules',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_list_modules', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to fetch modules');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to fetch modules');
+    }
+  }
+);
