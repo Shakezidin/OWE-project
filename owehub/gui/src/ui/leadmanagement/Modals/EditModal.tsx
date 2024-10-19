@@ -20,7 +20,7 @@ interface EditModalProps {
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
 }
 
-const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onClose, leadData }) => {
+const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClose, leadData }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [emailError, setEmailError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
@@ -102,7 +102,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
   }, [isOpen, onClose]);
 
 
-  const handleConfrm = async (e: any) => {
+  const  handleConfrm = async (e: any) => {
     setLoad(true);
     e.preventDefault();
     setErrors(errors);
@@ -120,7 +120,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         );
         if (response.status === 200) {
           toast.success('Lead Updated Succesfully');
-          setRefresh((prev) => prev + 1);
+          setRefresh((prev) => prev+1);
           onClose();
         } else if (response.status >= 201) {
           toast.warn(response.message);
@@ -146,7 +146,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     };
   }, []);
 
-
+  
 
   return (
     <>
@@ -154,38 +154,39 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         <div
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
-
-          <div className={classes.customer_wrapper_list_edit}>
-            <div className={classes.Edit_DetailsMcontainer}>
-              <div className={classes.edit_closeicon} onClick={onClose}>
-                <RiArrowDropDownLine
-                  style={{ height: '34px', width: '34px', fontWeight: '400' }}
-                />
-              </div>
-
-
-              <div className={classes.notEditable}>
-                <div className={classes.Column1DetailsEdited_Mode}>
-                  <span className={classes.main_name}>
-                    {' '}
-                    {leadData?.first_name} {leadData?.last_name}{' '}
-                  </span>
-                  <span className={classes.mobileNumber}>
-                    {leadData?.phone_number}
-                  </span>
+         
+            <div className={classes.customer_wrapper_list_edit}>
+              <div className={classes.Edit_DetailsMcontainer}>
+                <div className={classes.edit_closeicon} onClick={onClose}>
+                  <RiArrowDropDownLine
+                    style={{ height: '34px', width: '34px', fontWeight: '400' }}
+                  />
                 </div>
-                <div className={classes.Column2Details_Edited_Mode}>
-                  <span className={classes.addresshead}>
-                    {leadData?.street_address
-                      ? leadData.street_address.length > 20
-                        ? `${leadData.street_address.slice(0, 30)}...`
-                        : leadData.street_address
-                      : 'N/A'}
-                  </span>
-                  <span className={classes.emailStyle}>
-                    {leadData?.email_id}{' '}
-                    {/* <span className={classes.verified}> */}
-                    {/* <svg
+
+
+                <div className={classes.notEditable}>
+                  <div className={classes.Column1DetailsEdited_Mode}>
+                    <span className={classes.main_name}>
+                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 15
+                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 15)}...`
+                        : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
+                    </span>
+                    <span className={classes.mobileNumber}>
+                      {leadData?.phone_number}
+                    </span>
+                  </div>
+                  <div className={classes.Column2Details_Edited_Mode}>
+                    <span className={classes.addresshead}>
+                      {leadData?.street_address
+                        ? leadData.street_address.length > 20
+                          ? `${leadData.street_address.slice(0, 30)}...`
+                          : leadData.street_address
+                        : 'N/A'}
+                    </span>
+                    <span className={classes.emailStyle}>
+                      {leadData?.email_id}{' '}
+                      {/* <span className={classes.verified}> */}
+                      {/* <svg
                         className={classes.verifiedMarked}
                         width="13"
                         height="13"
@@ -214,37 +215,30 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                           </clipPath>
                         </defs>
                       </svg>{' '} */}
-                    {/* Verified
+                      {/* Verified
                     </span> */}
-                  </span>
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className={classes.inputFields}>
-                <Input
-                  type="text"
-                  value={formData.mobile_number}
-                  placeholder="+91 8127577509"
-                  onChange={handleInputChange}
-                  name="mobile_number"
-                  maxLength={16}
-                />
-                <div className={classes.srs_new_create}>
+                <div className={classes.inputFields}>
                   <Input
-                    type="email"
-                    value={formData.email_id}
-                    name={'email_id'}
-                    maxLength={40}
-                    placeholder="sharma1234@gmail.com"
+                    type="text"
+                    value={formData.mobile_number}
+                    placeholder="+91 8127577509"
                     onChange={handleInputChange}
+                    name="mobile_number"
+                    maxLength={16}
                   />
-                  {(emailError || errors.email_id) && (
-                    <div className="error-message">
-                      {emailError || errors.email_id}
-                    </div>
-                  )}
-                </div>
-                <div className={classes.srs_new_create}>
+                  <Input
+                    type="text"
+                    value={formData.email_id}
+                    placeholder="johndoe1234@gmail.com"
+                    onChange={handleInputChange}
+                    name="email_id"
+                    maxLength={40}
+                  // backgroundColor="#9cc3fb"
+                  />
                   <Input
                     type="text"
                     value={formData.address}
@@ -254,45 +248,34 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                     maxLength={80}
                   // backgroundColor="#9cc3fb"
                   />
-                  {errors.address && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.address}
-                    </span>
-                  )}
                 </div>
-              </div>
 
-              <div
-                className={classes.survey_button}
-                style={{ paddingBottom: '38px' }}
-              >
-                <button
-                  id='EnterKeys'
-                  className={classes.self}
-                  style={{
-                    color: '#fff',
-                    border: 'none',
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    pointerEvents: load ? 'none' : 'auto',
-                    opacity: load ? 0.6 : 1,
-                    cursor: load ? 'not-allowed' : 'pointer',
-                  }}
-                  onClick={handleConfrm}
-                  tabIndex={0}
+                <div
+                  className={classes.survey_button}
+                  style={{ paddingBottom: '38px' }}
                 >
-                  {load ? 'Updating....' : 'CONFIRM'}
-                </button>
+                  <button
+                  id='EnterKeys'
+                    className={classes.self}
+                    style={{
+                      color: '#fff',
+                      border: 'none',
+                      fontWeight: '500',
+                      fontSize: '14px',
+                      pointerEvents: load ? 'none' : 'auto',
+                      opacity: load ? 0.6 : 1,
+                      cursor: load ? 'not-allowed' : 'pointer',
+                    }}
+                    onClick={handleConfrm}
+                    tabIndex={0}
+                  >
+                    {load ? 'Updating....' : 'CONFIRM'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
+       
       )}
     </>
   );
