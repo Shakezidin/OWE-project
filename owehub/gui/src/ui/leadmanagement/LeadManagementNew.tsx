@@ -114,11 +114,7 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
-    if (formData.notes.trim() === '') {
-      errors.notes = 'Notes are required';
-    }
-
-    return errors;
+     return errors;
   };
 
   const handleSubmit = async (e: any) => {
@@ -194,7 +190,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter First Name"
                           onChange={handleInputChange}
                           name="first_name"
-                          maxLength={100}
+                          maxLength={30}
                           // backgroundColor="#F3F3F3"
                         />
                         {errors.first_name && (
@@ -217,7 +213,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter Last name"
                           onChange={handleInputChange}
                           name="last_name"
-                          maxLength={100}
+                          maxLength={30}
                         />
                         {errors.last_name && (
                           <span
@@ -268,6 +264,7 @@ const LeadManagementNew = () => {
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}
                           name={'email_id'}
+                          maxLength={35}
                           // disabled={formData.isEdit}
                         />
                         {(emailError || errors.email_id) && (
@@ -286,7 +283,7 @@ const LeadManagementNew = () => {
                           placeholder="Address"
                           onChange={handleInputChange}
                           name="address"
-                          maxLength={100}
+                          maxLength={50}
                         />
                         {errors.address && (
                           <span
@@ -325,7 +322,7 @@ const LeadManagementNew = () => {
                           name="notes"
                           id=""
                           rows={3}
-                          maxLength={500}
+                          maxLength={300}
                           value={formData.notes}
                           onChange={(e) => handleInputChange(e)}
                           placeholder="Write"
