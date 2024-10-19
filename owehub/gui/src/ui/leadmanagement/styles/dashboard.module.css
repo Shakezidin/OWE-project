@@ -903,7 +903,7 @@ input[type='checkbox']:checked {
 
 }
 .ButtonAbovearrov{
-  border: 1px solid #377cf6;
+  /* border: 1px solid #377cf6; */
   width: 32px !important;
   background-color: #ddebff ;
   border-radius: 7px;
