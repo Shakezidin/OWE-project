@@ -128,6 +128,7 @@ const Profile: React.FC<EditModalProps> = ({
                             <table>
                                 <tbody>
 
+
                                     <tr
                                         className={classes.RowDiv}
                                     >
@@ -137,19 +138,47 @@ const Profile: React.FC<EditModalProps> = ({
 
                                     <tr>
                                         <td className={classes.leftAlign}>First Name</td>
-                                        <td className={classes.rightAlign}>{leadData?.first_name}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.first_name}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Last Name</td>
-                                        <td className={classes.rightAlign}>{leadData?.last_name}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.last_name}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Email Id</td>
-                                        <td className={classes.rightAlign}>{leadData?.email_id}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.email_id}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Phone Number</td>
-                                        <td className={classes.rightAlign}>{leadData?.phone_number}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.phone_number}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Street Address</td>
@@ -216,7 +245,14 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Notes</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.notes || '.......'}</td>
+                                        <td
+                                        style={{
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '200px',
+                                            lineHeight: "16px"
+                                        }}
+                                         className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.notes || '.......'}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Created At</td>
@@ -275,7 +311,14 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Created By</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                        <td
+                                        style={{
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '200px',
+                                            lineHeight: "16px"
+                                        }}
+                                         className={`${classes.rightAlign} ${classes.specialfont}`}
                                         >{leadData?.created_by || '.....'}</td>
                                     </tr>
 

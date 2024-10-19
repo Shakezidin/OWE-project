@@ -187,10 +187,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-
     if (name === 'reason') {
-      if (value.trim() !== '') {
-        setReason(value);
+      const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
+      if (sanitizedValue.trim() !== '') {
+        setReason(sanitizedValue);
         setReasonError(''); // Clear any previous error message
       } else {
         setReason('');
