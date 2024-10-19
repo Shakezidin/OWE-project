@@ -267,12 +267,18 @@ const Calculator: React.FC = () => {
       'Months until Earnout (Months)': 0,
       'Equity Per': 25,
     });
+   
+  }
+
+  const handleResetValues1 = () => {
+    
     setEquityValues({
       'CAGR %':0,
       'Years until Next Acquisition / IPO (Yrs)':3
 
     })
   }
+
 
   return (
     <>
@@ -438,7 +444,7 @@ const Calculator: React.FC = () => {
           </div>
           <div className="equity-footer">
             <button><span>Equity Growth</span>${calculateEquityGrowth(calculateEarnout())}</button>
-            <p className="footer-value" onClick={handleResetValues}><IoMdRefresh size={16} />Reset Values</p>
+            <p className="footer-value" onClick={handleResetValues1}><IoMdRefresh size={16} />Reset Values</p>
           </div>
         </div>
       </div>
