@@ -741,7 +741,14 @@ const LeradManagementHistory = () => {
                         }}
                       />
                     </label>
-                    <div className={styles.user_name}>
+                    <div className={styles.user_name}
+                     style={{
+                      whiteSpace: 'pre-wrap',
+                      overflowWrap: 'break-word',
+                      width: '155px',
+                      lineHeight: "16px"
+                    }} 
+                    >
                       <h2>
                         {item.first_name} {item.last_name}
                       </h2>
@@ -823,10 +830,10 @@ const LeradManagementHistory = () => {
           )}
         </div>
 
-        {!!totalCount && (
+        {!!totalCount && !isLoading && (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex} of {totalCount} item
+              {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item
             </p>
 
             <Pagination

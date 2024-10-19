@@ -457,7 +457,14 @@ const ArchivedPages = () => {
                             </h2>
                             <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p>
                           </div>
-                          <div className={styles.phone_number}>
+                          <div className={styles.phone_number}
+                          style={{
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word',
+                            maxWidth: '200px',
+                            lineHeight: "16px"
+                          }}
+                          >
                             {lead.phone_number}
                           </div>
                           <div className={styles.email}>
@@ -530,7 +537,13 @@ const ArchivedPages = () => {
                       {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
+                            <div
+                             style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              width: '155px',
+                              lineHeight: "16px"}}
+                               className={''}>{lead.phone_number}</div>
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
@@ -556,7 +569,8 @@ const ArchivedPages = () => {
                       {toggledId === lead.id && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone}</div>
+                            <div
+                             className={''}>{lead.phone}</div>
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
@@ -564,7 +578,7 @@ const ArchivedPages = () => {
                              style={{
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
-                              maxWidth: '20px',
+                              maxWidth: '200px',
                               lineHeight: "16px"
                             }}
                             >
@@ -597,7 +611,9 @@ const ArchivedPages = () => {
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
+                  {startIndex} - 
+                  {endIndex > totalcount! ? totalcount : endIndex} of{' '}
+                 {totalcount} item
                 </p>
               </div>
 
