@@ -8,7 +8,8 @@ import {
   auroraCreateProposal,
   getProjectByLeadId,
   auroraWebProposal,
-  auroraGenerateWebProposal
+  auroraGenerateWebProposal,
+  auroraListModules
 } from '../../apiActions/leadManagement/LeadManagementAction';
 
 interface IState {
@@ -23,7 +24,8 @@ interface IState {
   projectData: any;
   designData: any;
   webProposalData: any;
-  genProposalUrl: any
+  genProposalUrl: any;
+  moduleData: any[];
 
 }
 
@@ -39,7 +41,8 @@ const initialState: IState = {
   projectData: {},
   designData: {},
   webProposalData: {},
-  genProposalUrl:{}
+  genProposalUrl:{},
+  moduleData:[]
 };
 
 const leadManagementSlice = createSlice({
@@ -152,6 +155,7 @@ const leadManagementSlice = createSlice({
         toast.error(action.payload as string);
       })
 
+      // New cases for getWebProposal
       .addCase(auroraGenerateWebProposal.pending, (state) => {
         state.isLoading = true;
       })
@@ -160,6 +164,20 @@ const leadManagementSlice = createSlice({
         state.genProposalUrl = action.payload.data || {};
       })
       .addCase(auroraGenerateWebProposal.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+       // New cases for auroraListModules
+       .addCase(auroraListModules.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(auroraListModules.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.moduleData = action.payload.data || [];
+      })
+      .addCase(auroraListModules.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
