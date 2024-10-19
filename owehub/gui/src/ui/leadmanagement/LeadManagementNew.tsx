@@ -11,7 +11,7 @@ import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 const LeadManagementNew = () => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -72,6 +72,12 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: CorrectValue,
       }));
+    }else if (name === 'notes') {
+      const sanitizedValue = value.replace(/\s+/g, ' ');
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: sanitizedValue,
+      }));
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -114,10 +120,6 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
-    if (formData.notes.trim() === '') {
-      errors.notes = 'Notes are required';
-    }
-
     return errors;
   };
 
@@ -194,8 +196,8 @@ const LeadManagementNew = () => {
                           placeholder="Enter First Name"
                           onChange={handleInputChange}
                           name="first_name"
-                          maxLength={100}
-                          // backgroundColor="#F3F3F3"
+                          maxLength={30}
+                        // backgroundColor="#F3F3F3"
                         />
                         {errors.first_name && (
                           <span
@@ -217,7 +219,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter Last name"
                           onChange={handleInputChange}
                           name="last_name"
-                          maxLength={100}
+                          maxLength={30}
                         />
                         {errors.last_name && (
                           <span
@@ -234,7 +236,7 @@ const LeadManagementNew = () => {
                     <div className={classes.salrep_input_container}>
                       <div
                         className={classes.srs_new_create}
-                        // style={{ marginTop: '-4px' }}
+                      // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -268,7 +270,8 @@ const LeadManagementNew = () => {
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}
                           name={'email_id'}
-                          // disabled={formData.isEdit}
+                          maxLength={40}
+                        // disabled={formData.isEdit}
                         />
                         {(emailError || errors.email_id) && (
                           <div className="error-message">
@@ -286,7 +289,7 @@ const LeadManagementNew = () => {
                           placeholder="Address"
                           onChange={handleInputChange}
                           name="address"
-                          maxLength={100}
+                          maxLength={80}
                         />
                         {errors.address && (
                           <span
@@ -325,18 +328,19 @@ const LeadManagementNew = () => {
                           name="notes"
                           id=""
                           rows={3}
-                          maxLength={500}
+                          maxLength={300}
                           value={formData.notes}
                           onChange={(e) => handleInputChange(e)}
                           placeholder="Write"
                         ></textarea>
                         <p
-                          className={`character-count ${
-                            formData.notes.trim().length >= 500
+                          className={`character-count ${formData.notes.trim().length >= 300
                               ? 'exceeded'
                               : ''
-                          }`}
-                        ></p>
+                            }`}
+                        >
+                          {formData.notes.trim().length}/300 characters
+                        </p>
                       </div>
                     </div>
                   </div>

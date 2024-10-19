@@ -64,8 +64,9 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_dealer
 	query = `
-	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description, vd.dealer_logo, vd.bg_colour, vd.preferred_name
-	 FROM v_dealer vd`
+	 SELECT sp.partner_id as record_id, pd.partner_code as dealer_code, sp.sales_partner_name as dealer_name, pd.description, pd.partner_logo as dealer_logo, pd.bg_colour, pd.preferred_name
+	 FROM sales_partner_dbhub_schema sp
+	 LEFT JOIN partner_details pd ON sp.partner_id = pd.partner_id`
 
 	filter, whereEleList = PrepareVdealerFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -83,7 +84,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
+		RecordId, ok := item["record_id"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
@@ -175,13 +176,11 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 	defer func() { log.ExitFn(0, "PrepareVdealerFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := false // Flag to track if WHERE clause has been added
 	var nameSearch bool
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
@@ -206,20 +205,20 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 			// Build the filter condition using correct db column name
 			switch column {
 			case "id":
-				filtersBuilder.WriteString(fmt.Sprintf("vd.id %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("sp.partner_id %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_code":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_code) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pd.partner_code) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sp.sales_partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "description":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.description) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pd.description) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
-				filtersBuilder.WriteString("LOWER(vd.")
+				filtersBuilder.WriteString("LOWER(sp.")
 				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
 				filtersBuilder.WriteString(operator)
@@ -231,25 +230,8 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 		}
 	}
 
-	// Handle the Archived field
-	if dataFilter.Archived {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
-		filtersBuilder.WriteString("vd.is_deleted = TRUE")
-	} else {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
-		filtersBuilder.WriteString("vd.is_deleted = FALSE")
-	}
-
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY vd.id, vd.dealer_code, vd.dealer_name, vd.description")
+		filtersBuilder.WriteString(" GROUP BY sp.partner_id, pd.partner_code, sp.sales_partner_name, pd.description, pd.partner_logo, pd.bg_colour, pd.preferred_name ")
 	} else if nameSearch {
 	} else {
 		// Add pagination logic

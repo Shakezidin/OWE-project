@@ -10,7 +10,7 @@ import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Routes } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdOutlineDone } from 'react-icons/md';
@@ -199,13 +199,15 @@ const TeamTable: React.FC = () => {
   return (
     <>
       <div className="comm">
-        <Breadcrumb
-          head=""
-          linkPara="Team Management"
-          route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
-          linkparaSecond="Team Details"
-          marginLeftMobile="10px"
-        />
+        <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+          <Breadcrumb
+            head=""
+            linkPara="Teams"
+            route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
+            linkparaSecond=""
+            marginLeftMobile="12px"
+          />
+        </div>
         {role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
         team?.logged_in_member_role === 'manager' ? (
@@ -230,7 +232,7 @@ const TeamTable: React.FC = () => {
             setRefetch={setRefetch}
           />
         )}
-        <div className="dashBoard-container">
+        <div className="dashBoard-container" style={{ marginTop: '10px' }}>
           <div className="team-table-top">
             <div className="team-members-top">
               <div className="team-members">
@@ -294,7 +296,10 @@ const TeamTable: React.FC = () => {
                   </span>
                 )}
                 <p>
-                  {team?.manager_count} Managers, {team?.MemberCount} Member
+                  {team?.manager_count}{' '}
+                  {team?.manager_count > 1 ? 'Managers' : 'Manager'},{' '}
+                  {team?.MemberCount}{' '}
+                  {team?.MemberCount > 1 ? 'Members' : 'Member'}
                 </p>
               </div>
             </div>

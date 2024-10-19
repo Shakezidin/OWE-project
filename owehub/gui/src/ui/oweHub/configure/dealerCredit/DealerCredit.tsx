@@ -19,9 +19,12 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 
 const DealerCredit: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -29,7 +32,9 @@ const DealerCredit: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen);
+  const handleExportOpen = () => {
+    exportCsv();
+  }
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const { data, dbCount, isLoading } = useAppSelector(
@@ -39,9 +44,11 @@ const DealerCredit: React.FC = () => {
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
+  const [isExportingData, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [refresh, setRefresh] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -122,6 +129,35 @@ const DealerCredit: React.FC = () => {
       }
     });
   }
+
+  //   useEffect(() => {
+
+  //     (async () => {
+  //       setLoading(true);
+  //       try {
+  //         const data = await configPostCaller('get_dealercredit', {
+  //           page_number: currentPage,
+  //           page_size: itemsPerPage,
+  //         });
+
+  //         if (data.status > 201) {
+  //           toast.error(data.message);
+  //           setLoading(false);
+  //           return;
+  //         }
+
+  //         console.log(data, "data");
+
+  //       } catch (error) {
+  //         console.error(error);
+  //       } finally {
+  //       }
+  //     })();
+
+  // }, [
+  //   currentPage, viewArchived, filters
+  // ]);
+
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
     setFilters(req.filters);
@@ -203,14 +239,66 @@ const DealerCredit: React.FC = () => {
     setSelectAllChecked(false);
   };
   const notAllowed = selectedRows.size > 1;
+console.log(exportOPen)
+
+
+const exportCsv = async () => {
+  // Define the headers for the CSV
+// Function to remove HTML tags from strings
+const removeHtmlTags = (str:any) => {
+  if (!str) return '';
+  return str.replace(/<\/?[^>]+(>|$)/g, "");
+};
+setIsExporting(true);
+const exportData = await configPostCaller('get_dealercredit', {
+  page_number: 1,
+  page_size: dbCount,
+});
+if (exportData.status > 201) {
+  toast.error(exportData.message);
+  return;
+}
+
+  
+  const headers = [
+    'Unique ID',
+    'Customer',
+    'Credit Amt',
+    'Credit Date',
+    'Approved By',
+    'Notes',
+  ];
+
+ 
+   
+  const csvData = exportData?.data?.DealerCreditsData?.map?.((item: any) => [
+    item.unique_id,
+    item.customer,
+    item.credit_amount,
+    item.credit_date,
+    "",
+    removeHtmlTags(item.notes),
+    
+  ]);
+
+  const csvRows = [headers, ...csvData];
+
+  const csvString = Papa.unparse(csvRows);
+
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'dealercredit.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setIsExporting(false);
+ 
+};
+  
   return (
     <div className="comm">
-      <Breadcrumb
-        head="Commission"
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer Credit"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Credit"
@@ -228,6 +316,7 @@ const DealerCredit: React.FC = () => {
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
+          isExportingData={isExportingData}
         />
         {exportOPen && (
           <div className="export-modal">
@@ -293,11 +382,11 @@ const DealerCredit: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
+                {/* <th>
                   <div className="action-header">
                     <p>Action</p>
                   </div>
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -314,7 +403,7 @@ const DealerCredit: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        <CheckBox
+                        {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -324,45 +413,35 @@ const DealerCredit: React.FC = () => {
                               setSelectAllChecked
                             )
                           }
-                        />
+                        /> */}
                         {el.unique_id}
                       </div>
                     </td>
 
-                    <td>{dateFormat(el.date) || 'N/A'}</td>
-                    <td>{el.exact_amount || 'N/A'}</td>
-                    <td>{el.per_kw_amount || 'N/A'}</td>
+                    
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.credit_amount || 'N/A'}</td>
+                    <td>{dateFormat(el.credit_date) || 'N/A'}</td>
                     <td>{el.approved_by || 'N/A'}</td>
-                    <td>{el.notes || 'N/A'}</td>
-                    <td>{el.total_amount || 'N/A'}</td>
-                    <td>{el.sys_size || 'N/A'}</td>
-
                     <td>
-                      <div className="action-icon">
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() =>
-                            !notAllowed && handleArchiveClick(el.record_id)
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          {/* <span className="tooltiptext">Archive</span> */}
-                        </div>
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => !notAllowed && handleEditDealer(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                          {/* <span className="tooltiptext">Edit</span> */}
-                        </div>
-                      </div>
+                      {el.notes
+                        ? el.notes.replace(/<\/?[^>]+(>|$)/g, '')
+                        : 'N/A'}
                     </td>
+                    {/* <td>
+                      {el.podio_link ? (
+                        <p
+                          onClick={() => window.open(el.podio_link, '_blank')}
+                          className="view-button pointer"
+                        >
+                          View
+                        </p>
+                      ) : (
+                        'N/A'
+                      )}
+                    </td> */}
+
+                     
                   </tr>
                 ))
               ) : (

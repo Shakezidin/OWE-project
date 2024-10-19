@@ -314,7 +314,7 @@ const TeamManagement: React.FC = () => {
                                     <h4>{item.team_strength} members</h4>
                                   </div>
                                   <Link
-                                    to={`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
+                                    to={`/teammanagement/dashboard/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
                                     onClick={(e) => e.stopPropagation()} // Prevent triggering outer Link when clicking inner Link
                                   >
                                     <div

@@ -14,6 +14,7 @@
 .history_list {
   margin-top: 10px;
   padding: 10px 16px 10px 16px;
+  min-height: 80vh;
 }
 
 .history_lists {
@@ -97,27 +98,26 @@
   font-weight: 400;
 }
 
+
 .see_more {
   display: flex;
-  flex-direction: row;
-  gap: 4px;
   align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 8px 8px;
+  border-radius: 6px;
   cursor: pointer;
-}
-
-.see_more p {
+  border-radius: 50%; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: #377cf6;
-  font-size: 12px;
-  font-weight: 400;
-  transition: all 500ms ease;
+  background-color: transparent;
+  border: 1px solid #377cf6;
+  transition: all 0.3s ease;
 }
 
-.see_more p:hover {
-  transform: scale(1.06);
-}
-
-.see_more p:hover img {
-  transform: scale(1.06);
+.see_more:hover {
+  background-color: #d6e5ff;
+  transform: scale(1.1);
 }
 
 .history_list_activity {

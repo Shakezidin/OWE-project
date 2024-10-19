@@ -135,7 +135,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.team_name ? el.team_name : 'NA'}</td>
+                  <td>{el.role_name ? el.role_name : 'NA'}</td>
                   <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
                   <td>{el.email_id ? el.email_id : 'NA'}</td>
                   <td>{el.mobile_number ? el.mobile_number : 'NA'}</td>

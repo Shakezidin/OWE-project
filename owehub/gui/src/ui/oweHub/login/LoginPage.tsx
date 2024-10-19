@@ -157,123 +157,121 @@ export const LoginPage = () => {
         </div>
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleLogin(e)}>
-            <div className="loginTextView">
-              <div className="loginLogowithText">
-                <LOGO_SMALL />
-                <span className={'loginHeader'}>OWE HUB</span>
-              </div>
-
-              <div className="login-input">
-                <Input
-                  type={'text'}
-                  name={'email_id'}
-                  value={credentials.email_id}
-                  placeholder={'Email'}
-                  autoComplete="email_id"
-                  onChange={(e) => {
-                    const { name, value } = e.target;
-                    if (name === 'email_id' && !/\s/.test(value)) {
-                      handleInputChange(name, value);
-                    }
-                  }}
-                />
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  value={credentials.password}
-                  name={'password'}
-                  placeholder={'Password'}
-                  autoComplete="password"
-                  onChange={(e) => {
-                    const { name, value } = e.target;
-                    if (name === 'password' && !/\s/.test(value)) {
-                      handleInputChange(name, value);
-                    }
-                  }}
-                  isTypePassword={true}
-                  onClickEyeIcon={() => {
-                    if (isMobile) {
-                      setShowPassword(!showPassword);
-                    }
-                  }}
-                  onMouseDown={() => {
-                    setShowPassword(true);
-                  }}
-                  onMouseUp={() => {
-                    setShowPassword(false);
-                  }}
-                  onMouseLeave={() => {
-                    setShowPassword(false);
-                  }}
-                  maxLength={50}
-                  isMobile={isMobile}
-                />
-              </div>
-
-              <div className="loginSwitchView">
-                <div className="loginSwitchInnerView">
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={credentials.isRememberMe}
-                      onChange={(event) => {
-                        handleInputChange(
-                          'isRememberMe',
-                          !credentials.isRememberMe
-                        );
-
-                        console.log(event.target.value);
-                      }}
-                    />
-
-                    <span className="slider round"></span>
-                  </label>
-                  <div className="loginRBM">Remember Me</div>
+            <div className="login_main">
+              <div style={{padding: "3rem", textAlign: "center"}}>
+                <div className="loginLogowithText">
+                  <LOGO_SMALL />
+                  <span className={'loginHeader'}>OWE HUB</span>
                 </div>
-                <Link to={ROUTES.RESETPASSWORD} className="reset-password">
-                  Recover Password
-                </Link>
+
+                <div className="login-input">
+                  <Input
+                    type={'text'}
+                    name={'email_id'}
+                    value={credentials.email_id}
+                    placeholder={'Email'}
+                    autoComplete="email_id"
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === 'email_id' && !/\s/.test(value)) {
+                        handleInputChange(name, value);
+                      }
+                    }}
+                  />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    value={credentials.password}
+                    name={'password'}
+                    placeholder={'Password'}
+                    autoComplete="password"
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === 'password' && !/\s/.test(value)) {
+                        handleInputChange(name, value);
+                      }
+                    }}
+                    isTypePassword={true}
+                    onClickEyeIcon={() => {
+                      if (isMobile) {
+                        setShowPassword(!showPassword);
+                      }
+                    }}
+                    onMouseDown={() => {
+                      setShowPassword(true);
+                    }}
+                    onMouseUp={() => {
+                      setShowPassword(false);
+                    }}
+                    onMouseLeave={() => {
+                      setShowPassword(false);
+                    }}
+                    maxLength={50}
+                    isMobile={isMobile}
+                  />
+                </div>
+
+                <div className="loginSwitchView">
+                  <div className="loginSwitchInnerView">
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={credentials.isRememberMe}
+                        onChange={(event) => {
+                          handleInputChange(
+                            'isRememberMe',
+                            !credentials.isRememberMe
+                          );
+
+                          console.log(event.target.value);
+                        }}
+                      />
+
+                      <span className="slider round"></span>
+                    </label>
+                    <div className="loginRBM">Remember Me</div>
+                  </div>
+                  <Link to={ROUTES.RESETPASSWORD} className="reset-password">
+                    Recover Password
+                  </Link>
+                </div>
+                <br />
+                <button
+                  className="login-button"
+                  title="Log In"
+                  type="submit"
+                  onClick={() => { }}
+                >
+                  Log In
+                </button>
               </div>
-              <br />
-              <button
-                className="login-button"
-                title="Log In"
-                type="submit"
-                onClick={() => {}}
-              >
-                Log In
-              </button>
+              <div className='login-footer'>
+                {isStaging === 'staging' && (
+                  <div className="battery-calc-container">
+                    <Link to={isStaging === 'staging' ? ROUTES.SR_IMAGE_UPLOAD : '#'}>
+                      <div className="login_footer_calc">
+                        <img src={ICONS.LogCalc1} alt="battery-calc" />
+                        <p>Battery Calc</p>
+                      </div>
+                    </Link>
+                    <Link to={ROUTES.CALCULATOR}>
+                      <div className="login_footer_calc">
+                        <img src={ICONS.LogCalc2} alt="battery-calc" />
+                        <p>CAGR Calculator</p>
+                      </div>
+                    </Link>
+                    <Link to={ROUTES.SALE_RP_CUSTOMER_FORM}>
+                      <div className="login_footer_calc">
+                        <img src={ICONS.LogCalc3} alt="battery-calc" />
+                        <p className="coming-soon">Schedule Form</p>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </form>
-
-          <Link to={isStaging === 'staging' ? ROUTES.SR_IMAGE_UPLOAD : '#'}>
-            <div className="battery-calc">
-              <div
-                className={`battery-calc-button ${isStaging === 'staging' ? '' : 'disabled-battery-calc'}`}
-              >
-                <Lottie
-                  animationData={PowerAnimation}
-                  style={{ width: 70, height: 70 }}
-                  loop={false}
-                />
-                <p className="coming-soon">
-                  {isStaging === 'staging'
-                    ? 'Battery Calculator'
-                    : 'Battery Calculator is Coming Soon!'}
-                </p>
-              </div>
-            </div>
-          </Link>
-
-          {isStaging === 'staging' && (
-            <Link to={ROUTES.SALE_RP_CUSTOMER_FORM}>
-              <div className="battery-calc">
-                <div className={`battery-calc-button `}>
-                  <p className="coming-soon">Scheduler Form</p>
-                </div>
-              </div>
-            </Link>
-          )}
         </div>
+
         <div className="solar-sun">
           <img src={ICONS.SolarSun} alt="sun-image" />
         </div>

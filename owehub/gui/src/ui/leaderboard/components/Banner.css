@@ -9,6 +9,14 @@
   z-index: 1;
 }
 
+.upload-notice {
+  color: #ff4d4d; /* A softer red */
+  font-size: 0.875rem; /* Makes it a bit larger than the default */
+  font-weight: 500; /* Adds some weight to the text */
+  margin-top: 5px; /* Adds space from elements above */
+  display: block; /* Ensures it stands out as a full line */
+}
+
 .bg-blue {
   background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
 }

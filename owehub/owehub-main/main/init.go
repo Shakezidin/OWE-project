@@ -596,16 +596,16 @@ func init() {
 	}
 
 	//* Read and Initialize Podio configuration from cfg */
-	err = FetchPodioCfg()
-	if err != nil {
-		log.ConfErrorTrace(0, "FetchPodioCfg failed %+v", err)
-		return
-	} else {
-		log.ConfDebugTrace(0, "Podio Configuration fatched Successfully from file.")
-	}
+	// err = FetchPodioCfg()
+	// if err != nil {
+	// 	log.ConfErrorTrace(0, "FetchPodioCfg failed %+v", err)
+	// 	return
+	// } else {
+	// 	log.ConfDebugTrace(0, "Podio Configuration fatched Successfully from file.")
+	// }
 
 	//* For initial setting up podio
-	go apiHandler.SyncHubUsersToPodioOnInit()
+	// go apiHandler.SyncHubUsersToPodioOnInit()
 	// if err != nil {
 	// 	log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
 	// }

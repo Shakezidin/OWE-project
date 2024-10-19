@@ -89,6 +89,7 @@ const Banner: React.FC<BannerProps> = ({
       role !== TYPE_OF_USER.FINANCE_ADMIN &&
       role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
       role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+      
       isAuthenticated
     ) {
       (async () => {
@@ -111,7 +112,7 @@ const Banner: React.FC<BannerProps> = ({
         }
       })();
     }
-  }, [dealerId, role, refetch, isAuthenticated]);
+  }, [ role, refetch, isAuthenticated]);
 
   useEffect(() => {
     if (
@@ -175,20 +176,28 @@ const Banner: React.FC<BannerProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setOpts(leaderDealer(newFormData));
         setSearch('');
       }
     };
+  
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+  
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyPress);
+  
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyPress);
     };
   }, [newFormData, search]);
+  
 
   console.log('details', details);
   return (
@@ -382,7 +391,7 @@ const Banner: React.FC<BannerProps> = ({
                 <input
                   type="text"
                   className="input"
-                  placeholder="Search Dealers"
+                  placeholder="Search Partners"
                   style={{ width: '100%' }}
                   value={search}
                   disabled={isLoading}

@@ -102,7 +102,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if !nonDealerRoles[roleName] {
-		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON vd.id = ud.dealer_id WHERE ud.email_id = '%v'", emailId)
+		query := fmt.Sprintf("SELECT sp.sales_partner_name as dealer_name FROM user_details ud JOIN sales_partner_dbhub_schema sp ON sp.partner_id = ud.partner_id WHERE ud.email_id = '%v'", emailId)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get v Dealer data from DB err: %v", err)

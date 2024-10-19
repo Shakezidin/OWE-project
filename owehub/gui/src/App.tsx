@@ -44,6 +44,9 @@ import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedu
 import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
 import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
 import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
+import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
+import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
+import LoanCalculator from './ui/oweHub/calculator/Calculator';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -65,7 +68,9 @@ function App() {
       { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
       { path: ROUTES.CONFIG_FINANCE_SCHEDULE, element: <FinanceSchedule /> },
       { path: ROUTES.CONFIG_SALES_PARTNER_PAY, element: <SalesPartnerSchedule /> },
-    ];
+      { path: ROUTES.SS_ONBOARDING, element: <SsOnboarding/> },
+      { path: ROUTES.CONFIG_FINANCE_TYPES, element: <FinanceTypes /> },
+        ];
   };
 
   /** Create route with role based */
@@ -146,6 +151,7 @@ function App() {
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIEVES} element={<ArchivedPages   />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
@@ -160,6 +166,7 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+        <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
       </Routes>
     </BrowserRouter>
   );

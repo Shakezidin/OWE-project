@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { configPostCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 interface Ipaginate {
   page_number: number;
@@ -31,9 +32,9 @@ export const getDealerCredit = createAsyncThunk(
   'fetch/dealercredit',
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
-      const data = await postCaller('get_dealercredit', param);
+      const data = await configPostCaller('get_dealercredit', param);
       const count = data.dbRecCount;
-      const list = data.data.dealer_credit_data_list || ([] as DCredit[]);
+      const list = data.data.DealerCreditsData;
       return { count, list };
     } catch (error) {
       return rejectWithValue((error as Error).message);

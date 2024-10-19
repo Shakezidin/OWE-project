@@ -9,10 +9,12 @@
   display: flex;
   justify-content: center;
 }
+
 .container {
   width: 100%;
   display: flex;
 }
+
 /* .overlay {
   position: absolute;
   top: 0;
@@ -27,15 +29,18 @@
   bottom: 45%;
   right: -35%;
 }
+
 .solar-sun img {
   width: 70%;
 }
+
 .login-input {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   margin: 2rem 0;
 }
+
 .login-button {
   background-color: #0094cd;
   border: none;
@@ -52,9 +57,11 @@
   text-transform: capitalize;
   transition: transform 0.3s ease;
 }
+
 .login-button:hover {
   transform: scale(1.07);
 }
+
 .battery-calc-button {
   background-color: #f9f8f7;
   border: none;
@@ -74,6 +81,47 @@
   justify-content: center;
   transition: transform 0.3s ease;
 }
+
+.scheduling {
+  background-color: #f9f8f7;
+  border: none;
+  border: 1px solid #8ecc00;
+  border-radius: 1rem;
+  color: #1a1a1a;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.962px;
+  cursor: pointer;
+  height: 60px;
+  width: 200px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.calculator {
+  background-color: #f9f8f7;
+  border: none;
+  border: 1px solid #8ecc00;
+  border-radius: 1rem;
+  color: #1a1a1a;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.962px;
+  cursor: pointer;
+  height: 60px;
+  width: 200px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
 /* .battery-calc-button:hover {
   transform: scale(1.07);
 } */
@@ -81,10 +129,36 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-.coming-soon {
-  margin-right: 20px;
-  line-height: 1rem;
+
+.login_main {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 1.5rem;
+  background: var(--white-color);
+  flex-shrink: 0;
+  width: 430px;
+  border: 1px solid #8ecc00;
 }
+
+.login-footer p {
+  font-size: 13px;
+  font-weight: 500;
+  text-wrap: nowrap;
+}
+
+.login_footer_calc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.login_footer_calc:hover {
+  transform: scale(1.08);
+}
+
 .loginBox {
   background-color: transparent;
   display: flex;
@@ -143,15 +217,15 @@
   transition: 0.4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #0094cd;
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px var(--primary-color);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   -webkit-transform: translateX(16px);
   -ms-transform: translateX(16px);
   transform: translateX(16px);
@@ -165,6 +239,7 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
 #loginNormalText {
   color: var(--white-color);
   font-size: 40px;
@@ -252,6 +327,7 @@ input:checked + .slider:before {
   justify-content: center;
   align-items: center;
 }
+
 .loginLogowithText svg {
   width: 40px;
   height: 40px;
@@ -264,6 +340,7 @@ input:checked + .slider:before {
   margin-bottom: 10px;
   margin-top: 10px;
 }
+
 .loginLogText {
   color: var(--black-color);
   text-align: center;
@@ -279,10 +356,12 @@ input:checked + .slider:before {
   border-bottom: 1px solid #d0d5dd;
   border-radius: unset !important;
 }
+
 .login-input .input-inner-view svg {
   height: 1rem;
   width: 1rem;
 }
+
 .login-input .input-inner-view .input {
   color: #1a1a1a;
   font-size: 1rem;
@@ -294,7 +373,21 @@ input:checked + .slider:before {
   flex: 1;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6rem;
+  margin-bottom: 2rem;
+}
+
+.battery-calc-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #EDFAFF;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  padding: 1.5rem;
+}
+
+.battery-calc-container a {
+  color: #4B4B4B;
 }
 
 .loginSwitchInnerView {
@@ -336,6 +429,7 @@ input:checked + .slider:before {
   color: var(--secondary-text-color);
   border-bottom: 1px dotted transparent;
 }
+
 .loginGoBackLink :first-child {
   font-size: 10px;
   margin-right: 8px;
@@ -380,28 +474,33 @@ p.loginResendOtp {
     flex-direction: column;
     justify-content: start;
     gap: 30px;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    height: 100vh;
   }
+
   .loginBox {
     flex: 0 0;
     align-items: center;
+    padding: 1rem;
   }
+
   .loginBox2 {
     padding: unset;
+    padding-bottom: 2rem;
   }
+
   .solar-sun {
-    position: relative;
-    bottom: 140%;
-    right: -50%;
+    display: none;
   }
+
   .solar-sun img {
     width: 100%;
   }
+
   .mainContainer {
     background-position: 25%;
-  }
-  .container {
-    overflow: hidden;
   }
 }
 
@@ -410,46 +509,65 @@ p.loginResendOtp {
   .loginTextView {
     width: 100%;
   }
+
   #loginNormalText {
     font-size: 30px;
   }
+
   .loginSwitchView {
     flex-direction: column;
     gap: 2rem;
     margin-bottom: 1rem;
   }
+
   .solar-sun {
     display: none;
   }
+
   .loginGoBackLink {
     margin-top: 2rem;
   }
+
   .loginBox {
     padding: 1rem 0;
     font-size: 14px;
   }
+
   .loginBox img {
     width: 250px;
     margin-left: -18px;
   }
+
   .loginTopText {
     margin-top: 10px;
   }
+
   .hrLine {
     width: 19rem;
   }
+
   .loginBox2 {
     align-items: unset;
     margin: 1rem;
   }
+
   #loginNormalText1 {
     font-size: 14px;
   }
+
   .battery-calc-button {
     width: 100%;
   }
+
   .container {
     gap: unset;
-    overflow: auto;
+  }
+
+  .login_main{
+    width: unset;
+  }
+
+  .login-footer p{
+    font-size: 12px;
   }
 }

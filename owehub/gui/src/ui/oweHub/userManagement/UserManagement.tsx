@@ -51,6 +51,8 @@ const UserManagement: React.FC = () => {
 
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
+  console.log(selectedOption, "selectedoption")
+
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
     const userRole = localStorage.getItem('role');
@@ -161,6 +163,7 @@ const UserManagement: React.FC = () => {
     const data = {
       page_number: page,
       page_size: 25,
+      sales_rep_status:activeSalesRep,
       filters: [
         {
           Column: 'name',
@@ -204,7 +207,7 @@ const UserManagement: React.FC = () => {
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
-  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm, activeSalesRep]);
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -248,6 +251,8 @@ const UserManagement: React.FC = () => {
     setActiveSalesRep(value);
   };
 
+
+  
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
     const arrayOfPermissions = Object.entries(tablePermissions).map(
@@ -373,6 +378,7 @@ const UserManagement: React.FC = () => {
     }
   };
   console.log(userRoleBasedList, 'userRoleBasedList');
+  console.log(formData, "formdata")
   /** render UI */
   return (
     <>

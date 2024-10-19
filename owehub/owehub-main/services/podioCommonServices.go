@@ -41,7 +41,7 @@ func assignUserRoleToPodioId(role string) int {
  * INPUT:						resp, req
  * RETURNS:    			string
  ******************************************************************************/
- func generatePodioAccessCode() (string, error) {
+func generatePodioAccessCode() (string, error) {
 	var err error
 	log.EnterFn(0, "generatePodioAccessCode")
 	defer func() { log.ExitFn(0, "generatePodioAccessCode", err) }()
@@ -49,40 +49,40 @@ func assignUserRoleToPodioId(role string) int {
 	authURL := "https://podio.com/oauth/token"
 
 	for _, podioConfig := range types.CommGlbCfg.PodioCfg.PodioConfigs {
-			clientID := podioConfig.ClientId
-			clientSecret := podioConfig.ClientSecret
-			username := podioConfig.Username
-			password := podioConfig.Password
+		clientID := podioConfig.ClientId
+		clientSecret := podioConfig.ClientSecret
+		username := podioConfig.Username
+		password := podioConfig.Password
 
-			data := url.Values{}
-			data.Set("grant_type", "password")
-			data.Set("username", username)
-			data.Set("password", password)
-			data.Set("client_id", clientID)
-			data.Set("client_secret", clientSecret)
+		data := url.Values{}
+		data.Set("grant_type", "password")
+		data.Set("username", username)
+		data.Set("password", password)
+		data.Set("client_id", clientID)
+		data.Set("client_secret", clientSecret)
 
-			resp, err := http.PostForm(authURL, data)
-			if err != nil {
-					fmt.Printf("Error making authentication request for config %s: %v\n", podioConfig.ClientId, err)
-					continue
-			}
-			defer resp.Body.Close()
+		resp, err := http.PostForm(authURL, data)
+		if err != nil {
+			fmt.Printf("Error making authentication request for config %s: %v\n", podioConfig.ClientId, err)
+			continue
+		}
+		defer resp.Body.Close()
 
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-					fmt.Printf("Error reading response body for config %s: %v\n", podioConfig.ClientId, err)
-					continue
-			}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf("Error reading response body for config %s: %v\n", podioConfig.ClientId, err)
+			continue
+		}
 
-			var tokenResponse models.AccessTokenResponse
-			if err := json.Unmarshal(body, &tokenResponse); err != nil {
-					fmt.Printf("Error parsing access token response for config %s: %v\n", podioConfig.ClientId, err)
-					continue
-			}
+		var tokenResponse models.AccessTokenResponse
+		if err := json.Unmarshal(body, &tokenResponse); err != nil {
+			fmt.Printf("Error parsing access token response for config %s: %v\n", podioConfig.ClientId, err)
+			continue
+		}
 
-			if tokenResponse.AccessToken != "" {
-					return tokenResponse.AccessToken, nil
-			}
+		if tokenResponse.AccessToken != "" {
+			return tokenResponse.AccessToken, nil
+		}
 	}
 
 	err = fmt.Errorf("failed to generate Podio access code with any configuration")

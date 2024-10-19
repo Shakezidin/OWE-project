@@ -1,6 +1,6 @@
-ALTER TABLE user_details
-    DROP CONSTRAINT IF EXISTS user_details_dealerowner_fkey,
-    DROP CONSTRAINT IF EXISTS user_details_partner_id_fkey;
+-- ALTER TABLE user_details
+--     DROP CONSTRAINT IF EXISTS user_details_dealerowner_fkey,
+--     DROP CONSTRAINT IF EXISTS user_details_partner_id_fkey;
 
 -- Drop the columns that were added
 ALTER TABLE user_details
@@ -269,7 +269,7 @@ BEGIN
         city = COALESCE(NULLIF(p_city, ''), NULL),
         zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
         country = COALESCE(NULLIF(p_country, ''), NULL),
-        partner_id = v_dealer_id,
+         = v_dealer_id,
         tables_permissions = p_tables_permissions,
         updated_at = CURRENT_TIMESTAMP
     WHERE user_code = p_user_code

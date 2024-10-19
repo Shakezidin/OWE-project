@@ -7,7 +7,7 @@
 package models
 
 type UpdateVDealer struct {
-	RecordId      int64  `json:"record_id"`
+	RecordId      string `json:"record_id"`
 	DealerCode    string `json:"dealer_code"`
 	DealerName    string `json:"dealer_name"`
 	Description   string `json:"Description"`
