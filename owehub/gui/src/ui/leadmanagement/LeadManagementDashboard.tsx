@@ -44,8 +44,10 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal, 
-  auroraWebProposal, auroraGenerateWebProposal,auroraListModules } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
+  auroraWebProposal, auroraGenerateWebProposal, auroraListModules
+} from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -1133,21 +1135,21 @@ const LeadManagementDashboard = () => {
     }
   };
 
-//----------------Aurora API integration START-----------------------//
+  //----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
     console.log("leadId", leadId);
     console.log("selectedLeads", selectedLeads);
-  
+
     try {
       // Step 1: Fetch preferred solar modules using dispatch
       const modulesResult = await dispatch(auroraListModules({}));
-  
+
       if (auroraListModules.fulfilled.match(modulesResult)) {
         const modulesData = modulesResult.payload.data;
-  
+
         if (modulesData.length > 0) {
-          const moduleIds = modulesData.map((module:any) => module.id); // Extract the ids from the module list
-  
+          const moduleIds = modulesData.map((module: any) => module.id); // Extract the ids from the module list
+
           // Step 2: Create Project with dynamic preferred solar modules
           const createProjectResult = await dispatch(auroraCreateProject({
             "leads_id": leadId,
@@ -1156,29 +1158,29 @@ const LeadManagementDashboard = () => {
             "preferred_solar_modules": moduleIds,
             "tags": ["third_party_1"]
           }));
-  
+
           if (auroraCreateProject.fulfilled.match(createProjectResult)) {
             // toast.success('Project created successfully!');
-  
+
             // Step 3: Create Design
             const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
-  
+
             if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
               // toast.success('Design created successfully!');
-  
+
               // Step 4: Create Proposal
               const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
-  
+
               if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
                 const proposalData = createProposalResult.payload.data;
-  
+
                 if (proposalData.proposal_link) {
-              // Step 5: Generate Web Proposal
+                  // Step 5: Generate Web Proposal
                   await generateWebProposal(leadId);
 
                   toast.success('Proposal created successfully!');
                   setRefresh((prev) => prev + 1);
-  
+
                   // Open the proposal link in a new tab
                   window.open(proposalData.proposal_link, '_blank');
                 } else {
@@ -1209,7 +1211,7 @@ const LeadManagementDashboard = () => {
     try {
       //Generate Web Proposal
       const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
-  
+
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
         if (generatedProposalData.url) {
@@ -1234,10 +1236,10 @@ const LeadManagementDashboard = () => {
     try {
       //Retrieve Web Proposal
       const webProposalResult = await dispatch(auroraWebProposal(leadId));
-  
+
       if (auroraWebProposal.fulfilled.match(webProposalResult)) {
         const webProposalData = webProposalResult.payload.data;
-  
+
         if (webProposalData.url) {
           toast.success('Web proposal retrieved successfully!');
           window.open(webProposalData.url, '_blank');
@@ -1255,8 +1257,8 @@ const LeadManagementDashboard = () => {
     }
   };
 
-//----------------Aurora API integration END-------------------------//
-//*************************************************************************************************//
+  //----------------Aurora API integration END-------------------------//
+  //*************************************************************************************************//
 
   return (
     <div className={styles.dashboard}>
@@ -1427,10 +1429,11 @@ const LeadManagementDashboard = () => {
                 </div>}
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
                   {isToggledX ? (
-                    <span style={{ fontSize: '18px', color: '#377cf6' }}>{'\u25B2'}</span>
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}>&#x1F781;</div>
                   ) : (
-                    <span style={{ fontSize: '18px', color: '#377cf6' }}>{'\u25BC'}</span>
+                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>&#x1F783;</div>
                   )}
+
 
                   {/* <img
                     src={

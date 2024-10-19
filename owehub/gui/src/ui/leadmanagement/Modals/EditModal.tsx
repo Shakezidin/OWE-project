@@ -76,6 +76,13 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
         ...prevData,
         [name]: trimmedValue,
       }));
+    }else if (name === 'mobile_number') {
+      if (value.length <= 18) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+      }
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -223,7 +230,7 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
 
                 <div className={classes.inputFields}>
                   <Input
-                    type="text"
+                    type="number"
                     value={formData.mobile_number}
                     placeholder="+91 8127577509"
                     onChange={handleInputChange}

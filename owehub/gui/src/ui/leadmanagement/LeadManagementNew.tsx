@@ -72,6 +72,12 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: CorrectValue,
       }));
+    }else if (name === 'notes') {
+      const sanitizedValue = value.replace(/\s+/g, ' ');
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: sanitizedValue,
+      }));
     } else {
       setFormData((prevData) => ({
         ...prevData,

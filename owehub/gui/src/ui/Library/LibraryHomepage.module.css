@@ -32,7 +32,7 @@
   display: flex;
   justify-content: space-between;
   align-items:center;
-  gap:8px
+  gap:8px;
 }
 
 .libGridItem {
@@ -41,6 +41,7 @@
   padding: 25px;
   background-color: #ffffff;
   align-items: center;
+ 
 }
 
 .image_div {
@@ -67,6 +68,7 @@
   border-top-left-radius: 16px !important;
   border-top-right-radius: 16px !important;
   height: 63.5px;
+  
 }
 
 .recycle_div {
@@ -296,13 +298,13 @@
 .file_icon {
   display: flex;
 }
-
+/* 
 .grid_item {
-  /* text-align: center;
+   text-align: center;
   justify-content: end;
-  align-items: center; */
+  align-items: center; 
   
-}
+} */
 
 .table_name {
    text-align: start;
@@ -649,7 +651,12 @@
     font-size: 12px;
   }
   .desktop_hide{
+
+    width: 100%;
+    max-width: 98.5%;
     display: flex;
+    justify-content: space-between;
+  
   }
   .libraryContainer{
     padding-inline: 9px;
@@ -696,9 +703,12 @@
     display: none;
   }
   .desktop_hide{
-    width: 900px;
+    width: 100%;
+    max-width: 724px;
     display: flex;
     justify-content: space-between;
+    /* margin-top: 7px;
+    margin-bottom: 7px; */
     
   }
   .searchWrapper{
@@ -754,7 +764,8 @@
     gap:8px;
   }
   .desktop_hide{
-    width: 415px;
+    width: 100%;
+    max-width: 402px;
     display: flex;
     justify-content: space-between;
     padding-left: 10px;
@@ -801,10 +812,12 @@
   }
   
   .libSecHeader_left{
+    /* justify-content: space-between; */
     gap:5px;
   }
   .desktop_hide{
-    width: 365px;
+    width: 100%;
+    max-width: 356px;
     display: flex;
     justify-content: space-between;
     padding-left: 10px;
