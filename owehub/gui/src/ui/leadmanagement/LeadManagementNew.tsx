@@ -11,7 +11,7 @@ import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 const LeadManagementNew = () => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -114,7 +114,7 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
-     return errors;
+    return errors;
   };
 
   const handleSubmit = async (e: any) => {
@@ -191,7 +191,7 @@ const LeadManagementNew = () => {
                           onChange={handleInputChange}
                           name="first_name"
                           maxLength={30}
-                          // backgroundColor="#F3F3F3"
+                        // backgroundColor="#F3F3F3"
                         />
                         {errors.first_name && (
                           <span
@@ -230,7 +230,7 @@ const LeadManagementNew = () => {
                     <div className={classes.salrep_input_container}>
                       <div
                         className={classes.srs_new_create}
-                        // style={{ marginTop: '-4px' }}
+                      // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -264,8 +264,8 @@ const LeadManagementNew = () => {
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}
                           name={'email_id'}
-                          maxLength={35}
-                          // disabled={formData.isEdit}
+                          maxLength={40}
+                        // disabled={formData.isEdit}
                         />
                         {(emailError || errors.email_id) && (
                           <div className="error-message">
@@ -283,7 +283,7 @@ const LeadManagementNew = () => {
                           placeholder="Address"
                           onChange={handleInputChange}
                           name="address"
-                          maxLength={50}
+                          maxLength={80}
                         />
                         {errors.address && (
                           <span
@@ -328,12 +328,13 @@ const LeadManagementNew = () => {
                           placeholder="Write"
                         ></textarea>
                         <p
-                          className={`character-count ${
-                            formData.notes.trim().length >= 500
+                          className={`character-count ${formData.notes.trim().length >= 300
                               ? 'exceeded'
                               : ''
-                          }`}
-                        ></p>
+                            }`}
+                        >
+                          {formData.notes.trim().length}/300 characters
+                        </p>
                       </div>
                     </div>
                   </div>
