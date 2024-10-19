@@ -1,0 +1,16 @@
+
+.absolute_zoom_control_wrapper{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+}
+.absolute_zoom_control_wrapper button{
+    display: block;
+    cursor: pointer;
+    width: 54px;
+    display: grid;
+    place-items: center;
+    padding-block: 4px;
+    margin-top: 3px;
+}
