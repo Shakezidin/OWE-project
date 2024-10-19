@@ -78,12 +78,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
-		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE)"
+		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE AND li.proposal_created_date IS NULL)"
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
 		if dataReq.ProgressFilter == "DEAL_WON" {
-			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NULL)"
+			whereClause = "WHERE (li.status_id = 5)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
 			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
@@ -92,17 +92,18 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
-			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
-			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+			whereClause = "WHERE (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)"
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause = `
 				WHERE (
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-					OR (li.status_id = 5 AND LOWER(li.aurora_proposal_status) != 'completed')
-					OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')
+					OR (li.status_id = 5)
+					OR (li.status_id != 6 AND li.is_appointment_required = FALSE)
+					OR (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)
 				)
 			`
 		}

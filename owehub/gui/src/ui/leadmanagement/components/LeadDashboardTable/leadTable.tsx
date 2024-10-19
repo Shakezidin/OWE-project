@@ -275,7 +275,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             style={{
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
-                              maxWidth: '150px',
+                              width: '155px',
                               lineHeight: "16px"
                             }}
                             className={styles.name}>{lead.first_name} {lead.last_name}</div>
