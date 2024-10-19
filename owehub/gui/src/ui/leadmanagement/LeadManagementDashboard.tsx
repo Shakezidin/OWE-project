@@ -44,7 +44,8 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal, auroraWebProposal, auroraGenerateWebProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal, 
+  auroraWebProposal, auroraGenerateWebProposal,auroraListModules } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -1132,51 +1133,71 @@ const LeadManagementDashboard = () => {
     }
   };
 
-
+//----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
     console.log("leadId", leadId);
     console.log("selectedLeads", selectedLeads);
+  
     try {
-      // Step 1: Create Project
-      const createProjectResult = await dispatch(auroraCreateProject({
-        "leads_id": leadId,
-        "customer_salutation": "Mr./Mrs.",
-        "status": "In Progress",
-        "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
-        "tags": ["third_party_1"]
-      }));
+      // Step 1: Fetch preferred solar modules using dispatch
+      const modulesResult = await dispatch(auroraListModules({}));
+  
+      if (auroraListModules.fulfilled.match(modulesResult)) {
+        const modulesData = modulesResult.payload.data;
+  
+        if (modulesData.length > 0) {
+          const moduleIds = modulesData.map((module:any) => module.id); // Extract the ids from the module list
+  
+          // Step 2: Create Project with dynamic preferred solar modules
+          const createProjectResult = await dispatch(auroraCreateProject({
+            "leads_id": leadId,
+            "customer_salutation": "Mr./Mrs.",
+            "status": "In Progress",
+            "preferred_solar_modules": moduleIds,
+            "tags": ["third_party_1"]
+          }));
+  
+          if (auroraCreateProject.fulfilled.match(createProjectResult)) {
+            // toast.success('Project created successfully!');
+  
+            // Step 3: Create Design
+            const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
+  
+            if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
+              // toast.success('Design created successfully!');
+  
+              // Step 4: Create Proposal
+              const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
+  
+              if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
+                const proposalData = createProposalResult.payload.data;
+  
+                if (proposalData.proposal_link) {
+              // Step 5: Generate Web Proposal
+                  await generateWebProposal(leadId);
 
-      if (auroraCreateProject.fulfilled.match(createProjectResult)) {
-        // toast.success('Project created successfully!');
-
-        // Step 2: Create Design
-        const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
-
-        if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
-          // toast.success('Design created successfully!');
-
-          // Step 3: Create Proposal
-          const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
-          if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
-            const proposalData = createProposalResult.payload.data;
-
-            if (proposalData.proposal_link) {
-              toast.success('Proposal created successfully!');
-              setRefresh((prev) => prev + 1);
-
-              // Open the proposal link in a new tab
-              window.open(proposalData.proposal_link, '_blank');
+                  toast.success('Proposal created successfully!');
+                  setRefresh((prev) => prev + 1);
+  
+                  // Open the proposal link in a new tab
+                  window.open(proposalData.proposal_link, '_blank');
+                } else {
+                  toast.error('Proposal link not available.');
+                }
+              } else {
+                toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+              }
             } else {
-              toast.error('Proposal link not available.');
+              toast.error(createDesignResult.payload as string || 'Failed to create design');
             }
           } else {
-            toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+            toast.error(createProjectResult.payload as string || 'Failed to create project');
           }
         } else {
-          toast.error(createDesignResult.payload as string || 'Failed to create design');
+          toast.error('No solar modules available.');
         }
       } else {
-        toast.error(createProjectResult.payload as string || 'Failed to create project');
+        toast.error('Failed to fetch solar modules');
       }
     } catch (error) {
       toast.error('An unexpected error occurred');
@@ -1184,76 +1205,58 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  // const fetchWebProposal = async (leadId: number) => {
-  //   try {
-  //     const webProposalResult = await dispatch(auroraWebProposal(leadId));
-
-  //     if (auroraWebProposal.fulfilled.match(webProposalResult)) {
-  //       const webProposalData = webProposalResult.payload.data;
-
-  //       if (webProposalData.url) {
-  //         toast.success('Web proposal retrieved successfully!');
-  //         // Handle the web proposal URL here, e.g., open in a new tab
-  //         window.open(webProposalData.url, '_blank');
-  //       } else if (webProposalData.url_expired) {
-  //         toast.error('Web proposal URL has expired. Please regenerate.');
-  //       } else {
-  //         toast.error('No web proposal available.');
-  //       }
-  //     } else {
-  //       toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
-  //     }
-  //   } catch (error) {
-  //     toast.error('An unexpected error occurred while retrieving web proposal');
-  //     console.error('Error in fetchWebProposal:', error);
-  //   }
-  // };
-
-
-
-  //*************************************************************************************************/
-
-  const fetchWebProposal = async (leadId: number) => {
+  const generateWebProposal = async (leadId: number) => {
     try {
-      // Step 1: Generate Web Proposal
+      //Generate Web Proposal
       const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
-
+  
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
-
         if (generatedProposalData.url) {
-          toast.success('Web proposal generated successfully!');
-
-          // Step 2: Retrieve Web Proposal
-          const webProposalResult = await dispatch(auroraWebProposal(leadId));
-
-          if (auroraWebProposal.fulfilled.match(webProposalResult)) {
-            const webProposalData = webProposalResult.payload.data;
-
-            if (webProposalData.url) {
-              toast.success('Web proposal retrieved successfully!');
-              // Open the URL in a new tab or handle it as needed
-              window.open(webProposalData.url, '_blank');
-            } else if (webProposalData.url_expired) {
-              toast.error('Web proposal URL has expired. Please regenerate.');
-            } else {
-              toast.error('No web proposal available.');
-            }
-          } else {
-            toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
-          }
+          // toast.success('Web proposal generated successfully!');
+          return generatedProposalData;
         } else {
           toast.error('Failed to generate web proposal.');
+          return null;
         }
       } else {
         toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+        return null;
       }
     } catch (error) {
-      toast.error('An unexpected error occurred while generating or retrieving web proposal');
-      console.error('Error in fetchWebProposal:', error);
+      toast.error('An unexpected error occurred while generating the web proposal');
+      console.error('Error in generateWebProposal:', error);
+      return null;
     }
   };
 
+  const retrieveWebProposal = async (leadId: number) => {
+    try {
+      //Retrieve Web Proposal
+      const webProposalResult = await dispatch(auroraWebProposal(leadId));
+  
+      if (auroraWebProposal.fulfilled.match(webProposalResult)) {
+        const webProposalData = webProposalResult.payload.data;
+  
+        if (webProposalData.url) {
+          toast.success('Web proposal retrieved successfully!');
+          window.open(webProposalData.url, '_blank');
+        } else if (webProposalData.url_expired) {
+          toast.error('Web proposal URL has expired. Please regenerate.');
+        } else {
+          toast.error('No web proposal available.');
+        }
+      } else {
+        toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred while retrieving the web proposal');
+      console.error('Error in retrieveWebProposal:', error);
+    }
+  };
+
+//----------------Aurora API integration END-------------------------//
+//*************************************************************************************************//
 
   return (
     <div className={styles.dashboard}>
@@ -1714,15 +1717,14 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )
           ) : (
-            // <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} fetchWebProposal={fetchWebProposal(designID)} />
             <LeadTable
               selectedLeads={selectedLeads}
               setSelectedLeads={setSelectedLeads}
               refresh={refresh}
               setRefresh={setRefresh}
               onCreateProposal={handleCreateProposal}
-              fetchWebProposal={fetchWebProposal}
-            // fetchWebProposal={() => fetchWebProposal(designID,leadIDPdf,leadNamePdf)} 
+              retrieveWebProposal={retrieveWebProposal}
+              generateWebProposal={generateWebProposal}
             />
           )}
           {leadsData.length > 0 && (
