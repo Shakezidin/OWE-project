@@ -164,6 +164,9 @@ import ChecronUpX from "../assets/UpArrowDashboard.svg"
 import videoPlayerIcon from '../assets/video_player_icon.png';
 import VersionLogo from '../assets/version_logo.svg'
 import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
+import LogCalc1 from "../assets/log_calc_1.svg"
+import LogCalc2 from "../assets/log_calc_2.svg"
+import LogCalc3 from "../assets/log_calc_3.svg"
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -345,5 +348,8 @@ export const ICONS = {
   folderImage,
   viedoImageOne,
   viedoplay,
-  VersionLogo: VersionLogo
+  VersionLogo: VersionLogo,
+  LogCalc1: LogCalc1,
+  LogCalc2: LogCalc1,
+  LogCalc3: LogCalc1,
 };
