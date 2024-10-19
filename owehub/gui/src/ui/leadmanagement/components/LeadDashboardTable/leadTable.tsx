@@ -275,7 +275,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             style={{
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
-                              maxWidth: '150px',
+                              width: '155px',
                               lineHeight: "16px"
                             }}
                             className={styles.name}>{lead.first_name} {lead.last_name}</div>
@@ -379,22 +379,32 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                           ) : lead?.proposal_id ? (
                             <div className={styles.progress_status}>
-                              <span style={{fontSize:11}}>Last Updated: 
-                              <br/>
-                                {new Date(lead.proposal_updated_at).toLocaleString('en-GB', {
-                                  year: 'numeric', month: 'long', day: 'numeric'
-                              })}</span>
-                              <br/>
-                              <a 
-                                  href={lead.proposal_link} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="view-proposal-button"
-                                  style={{color:"#377CF6",fontWeight:550,alignItems: "center", display:"flex"}}
-                              >
-                                  View Proposal <IoChevronForward /><IoChevronForward style={{marginLeft: "-8px"}}/>
-                              </a>
-                            </div>
+                           <span style={{ fontSize: 11 }}>
+                              {lead.proposal_updated_at ? (
+                                <>
+                                  Last Updated: 
+                                  <br />
+                                  {new Date(lead.proposal_updated_at).toLocaleString('en-GB', {
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric'
+                                  })}
+                                </>
+                              ) : (
+                                'No update date available'
+                              )}
+                            </span>
+                            <br />
+                            <a 
+                              href={lead.proposal_link} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="view-proposal-button"
+                              style={{ color: "#377CF6", fontWeight: 550, alignItems: "center", display: "flex",justifyContent:"center" }}
+                            >
+                              View Proposal <IoChevronForward /><IoChevronForward style={{ marginLeft: "-8px" }} />
+                            </a>
+                          </div>                          
                           ) :
                             (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                               <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
