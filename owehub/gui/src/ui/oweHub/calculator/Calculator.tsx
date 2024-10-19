@@ -111,10 +111,10 @@ const Calculator: React.FC = () => {
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
 
-    'CAGR': 0,
-    'Years until Next Acquisition / IPO': 0,
+    'CAGR': 10,
+    'Years until Next Acquisition / IPO': 3,
   });
-
+ 
   const handleRangeChange = (label: string, value: number, type: 'earnout' | 'equity') => {
     if (type === 'earnout') {
       setEarnoutValues((prev) => ({ ...prev, [label]: value }));
@@ -122,29 +122,83 @@ const Calculator: React.FC = () => {
       setEquityValues((prev) => ({ ...prev, [label]: value }));
     }
   };
+  const [earnOutCalc, setEarnOutCalc] = useState<string>(''); // State to store the final result
 
   const calculateEarnout = (): string => {
     // Ensure all values are numbers
     const systemInstallPerMonth = Number(earnoutValues['System Install (per month)']);
     const averageSystemSize = Number(earnoutValues['Average system size']);
     const monthsUntilEarnout = Number(earnoutValues['Months until Earnout']);
+    const growthRatePerMonth = Number(earnoutValues['Growth rate (per month)']);
+    const equityper = Number(earnoutValues['Equity Per']);
 
-    // Calculate the first value
+    // Initial first value (system installs per month * average system size)
     let firstvalue = systemInstallPerMonth * averageSystemSize;
-    // Add 100 for each month
-    firstvalue += 100 * monthsUntilEarnout; // Adds 100 for each month until earnout
-    const result = firstvalue * 375;
-    return result.toFixed(2);
+
+    // Create an array to store all firstvalue results
+    const firstValueArray: number[] = [];
+
+    // Store the initial value (first month)
+    firstValueArray.push(firstvalue);
+
+    // Loop through from the second month until earnout and apply compounded growth rate
+    for (let i = 1; i < monthsUntilEarnout; i++) {
+      firstvalue += firstvalue * (growthRatePerMonth / 100); // Increment value by growth rate percentage
+      firstValueArray.push(firstvalue); // Store the current firstvalue in the array
+    }
+
+    // Now calculate the sum for every 12 months
+    let totalSum = 0;
+    let finalResult = 0;
+    let finalResultSalesRep = 0;
+    for (let i = 0; i < firstValueArray.length; i++) {
+      totalSum += firstValueArray[i];
+
+      // Every 12th month, print the sum
+      if ((i + 1) % 12 === 0) {
+        console.log(`Sum for months ${i - 10} to ${i + 1}: ${totalSum.toFixed(2)}`);
+
+        // Check if this is the last 12-month batch
+        if (i + 1 === monthsUntilEarnout) {
+          // Multiply the last 12 months' sum by 375 and return that as the final result
+          finalResult = totalSum * 375;
+          console.log(`Final result (last 12 months sum * 375): ${finalResult.toFixed(2)}`);
+        }
+        finalResultSalesRep = totalSum * equityper;
+           // Set the final result value in state so it can be used elsewhere
+ 
+        totalSum = 0; // Reset the sum for the next batch
+      }
+
+    }
+
+    
+   
+
+   return activeRole === 'Partner' ?  finalResult.toFixed(2) : finalResultSalesRep.toFixed(2)
   };
 
+  
   const [activeRole, setActiveRole] = useState('Partner');
 
-  const calculateEquityGrowth = (): string => {
-    const rate = equityValues['CAGR'] || 0;
-    const years = equityValues['Years until Next Acquisition / IPO'] || 0;
-    const growth = rate * Math.pow(1 + rate / 100, years);
+  const calculateEquityGrowth = (earnOutCalc: any): string => {
+    console.log(earnOutCalc);
+    
+    // Extract the CAGR and Years values, defaulting to 0 if they are not provided
+    const rate = Number(equityValues['CAGR']) || 0; // CAGR as a percentage
+    const years = Number(equityValues['Years until Next Acquisition / IPO']) || 0; // Number of years
+  
+    // Ensure earnOutCalc is a number
+    const initialValue = Number(earnOutCalc);
+  
+    // Calculate the future value based on CAGR and years
+    const growth = initialValue * Math.pow(1 + rate / 100, years);
+    console.log(growth, 'growth')
+    // Return the calculated growth, formatted to 2 decimal places
     return growth.toFixed(2);
   };
+
+  
   const [selectedRole, setSelectedRole] = useState<'Partner' | 'Sales Rep' | null>(null); // New state to track role
 
   const handleInputChange = (label: string, value: string, type: 'earnout' | 'equity') => {
@@ -192,6 +246,7 @@ const Calculator: React.FC = () => {
       'Months until Earnout': 0,
       'Equity Per': 0,
     });
+    
     setActiveRole(role);
   };
   const handleCalcClose = () => {
@@ -199,10 +254,25 @@ const Calculator: React.FC = () => {
 
   };
 
+  const handleResetValues = () => {
+    setEarnoutValues({
+      'System Install (per month)': 0,
+      'Average system size': 0,
+      'Growth rate (per month)': 0,
+      'Months until Earnout': 0,
+      'Equity Per': 0,
+    });
+    setEquityValues({
+      'CAGR':10,
+      'Years until Next Acquisition / IPO':3
+
+    })
+  }
+
   return (
     <>
       <div id="calc-header">
-        <h2>OWE Build earnout and Equity Growth Calculator</h2>
+        <h2>CAGR Calculator</h2>
         <IoClose size={24} className="calendar-closeee" onClick={handleCalcClose} />
       </div>
       <div id="calculator-main">
@@ -306,7 +376,7 @@ const Calculator: React.FC = () => {
           </div>
           <div className="build-footer">
             <button><span>Earnout Amount</span>${calculateEarnout()}</button>
-            <p className="footer-value"><IoMdRefresh size={16} />Reset Values</p>
+            <p className="footer-value" onClick={handleResetValues}><IoMdRefresh size={16} />Reset Values</p>
           </div>
         </div>
 
@@ -363,8 +433,8 @@ const Calculator: React.FC = () => {
 
           </div>
           <div className="equity-footer">
-            <button><span>Equity Growth</span>${calculateEquityGrowth()}</button>
-            <p className="footer-value"><IoMdRefresh size={16} />Reset Values</p>
+            <button><span>Equity Growth</span>${calculateEquityGrowth(calculateEarnout())}</button>
+            <p className="footer-value" onClick={handleResetValues}><IoMdRefresh size={16} />Reset Values</p>
           </div>
         </div>
       </div>
