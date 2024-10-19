@@ -227,7 +227,7 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
                     placeholder="+91 8127577509"
                     onChange={handleInputChange}
                     name="mobile_number"
-                    maxLength={100}
+                    maxLength={16}
                   />
                   <Input
                     type="text"
@@ -235,7 +235,7 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
                     placeholder="johndoe1234@gmail.com"
                     onChange={handleInputChange}
                     name="email_id"
-                    maxLength={100}
+                    maxLength={30}
                   // backgroundColor="#9cc3fb"
                   />
                   <Input
@@ -244,7 +244,7 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
                     placeholder="12778 Domingo Ct, Parker, COLARDO, 2312"
                     onChange={handleInputChange}
                     name="address"
-                    maxLength={100}
+                    maxLength={43}
                   // backgroundColor="#9cc3fb"
                   />
                 </div>

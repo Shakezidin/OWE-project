@@ -1,7 +1,45 @@
+/* Add the following new CSS for role buttons */
+.role-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: absolute; /* Position the buttons above the cards */
+    top: 10px; /* Adjust positioning as needed */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .role-slider {
+    margin: 20px 0;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  .calendar-closeee{
+    font-size: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    left: 95%;
+  }
+  .role-buttons button {
+    padding: 10px 20px;
+    background-color: #638BC1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+   
+
 #calculator-main {
     display: flex;
     padding: 2rem;
     justify-content: space-between;
+    position: relative;
 }
 
 #calculator-main .build-earnout,
@@ -14,10 +52,13 @@
 
 .build-earnout {
     width: 60%;
+    margin-top: 27px;
 }
+
 
 .equity-growth {
     width: 38%;
+    margin-top: 27px;
 }
 
 .build-header,
@@ -84,7 +125,7 @@
 
 .build-body .filter,
 .equity-body .filter {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .build-body .filter input,
@@ -110,7 +151,7 @@
 .equity-body {
     flex: 1;
 }
-
+ 
 .build-footer button,
 .equity-footer button {
     padding: 8px;
@@ -153,3 +194,12 @@
 .rc-slider-handle {
     border-radius: 50%;
 }
+
+/* #calculator-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  } */
+  
+   

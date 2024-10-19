@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import './calculator.css';
+import { useNavigate } from 'react-router-dom';
+import { IoClose } from 'react-icons/io5';
 
 interface Filter {
   label: string;
@@ -53,23 +55,29 @@ const earnoutFilters: Filter[] = [
       15: '15',
     },
   },
-  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 1 , marks:{5: '5',
+  { label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 1 , marks:{0:'0', 5: '5',
     10: '10',
     15: '15',
     20: '20',
     25: '25',
      }},
   { label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 1, marks:{24: '24',
+    30:'30',
     36: '36',
+    42:'42',
     48: '48',
+    54:'54',   
     60:'60'
      }  },
 ];
 
 const equityFilters: Filter[] = [
-  { label: 'CAGR', value: '15', min: 10, max: 30, step: 1, marks:{10: '10',
-    20: '20',
-    30: '30',
+  { label: 'CAGR', value: '15', min: 10, max: 30, step: 1, marks:{
+    10: '10',
+    15:'15',
+    20:'20',
+    25:'25',
+    30:'30'
     
      } },
   { label: 'Years until Next Acquisition / IPO', value: '5', min: 3, max: 7, step: 1, marks:{3: '3',
@@ -86,6 +94,7 @@ const Calculator: React.FC = () => {
     'Average system size': 0,
     'Growth rate (per month)': 0,
     'Months until Earnout': 0,
+    'Equity Per':0,
   });
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
@@ -128,17 +137,25 @@ const Calculator: React.FC = () => {
     const growth = rate * Math.pow(1 + rate / 100, years);
     return growth.toFixed(2);
   };
+  const [selectedRole, setSelectedRole] = useState<'Partner' | 'Sales Rep' | null>(null); // New state to track role
 
   const handleInputChange = (label: string, value: string, type: 'earnout' | 'equity') => {
-    if (value === '' || /^\d{0,3}$/.test(value)) {
-      const numericValue = value === '' ? '' : Number(value);
-      if (type === 'earnout') {
-        setEarnoutValues((prev) => ({ ...prev, [label]: numericValue }));
-      } else {
-        setEquityValues((prev) => ({ ...prev, [label]: numericValue }));
+    const numericValue = value === '' ? '' : Number(value);
+    
+    const filters = type === 'earnout' ? earnoutFilters : equityFilters;
+    const filter = filters.find((f) => f.label === label);
+  
+    if (filter) {
+      if (numericValue === '' || (numericValue >= filter.min && numericValue <= filter.max)) {
+        if (type === 'earnout') {
+          setEarnoutValues((prev) => ({ ...prev, [label]: numericValue }));
+        } else {
+          setEquityValues((prev) => ({ ...prev, [label]: numericValue }));
+        }
       }
     }
   };
+  const navigate = useNavigate();
 
   const handleBlur = (label: string, type: 'earnout' | 'equity') => {
     if (type === 'earnout') {
@@ -157,8 +174,32 @@ const Calculator: React.FC = () => {
     return filter ? (typeof filter.value === 'string' ? parseFloat(filter.value) : filter.value) : 0;
   };
 
+    // Handle role change and reset values
+    const handleRoleChange = (role: 'Partner' | 'Sales Rep') => {
+      setSelectedRole(role);
+      setEarnoutValues({
+        'System Install (per month)': 0,
+        'Average system size': 0,
+        'Growth rate (per month)': 0,
+        'Months until Earnout': 0,
+        'Equity Per':0,
+      });
+    };
+    const handleCalcClose = () => {
+      navigate(-1);
+     
+    };
+
   return (
     <div id="calculator-main">
+            {/* Buttons to select Partner or Sales Rep */}
+            <div className="role-buttons">
+        <button onClick={() => handleRoleChange('Partner')}>Partner</button>
+        <button onClick={() => handleRoleChange('Sales Rep')}>Sales Rep</button>
+      </div>
+      <div onClick={handleCalcClose} style={{ height: '26px', float:'right' }}>
+              <IoClose className="calendar-closeee" />
+            </div>
       {/* Earnout Section */}
       <div className="build-earnout">
         <div className="build-header">
@@ -210,6 +251,48 @@ const Calculator: React.FC = () => {
               </div>
             </div>
           ))}
+            {selectedRole === 'Sales Rep' && (
+            <div className="filter-wrap">
+              <div className="body-header">
+                <p>Equity Per Kw</p>
+                <div className="input-group">
+                  <input
+                    type="number"
+                    value={earnoutValues['Equity Per'] !== '' ? earnoutValues['Equity Per'] : ''}
+                    onChange={(e) => handleRangeChange('Equity Per', Number(e.target.value), 'earnout')}
+                    className="number-input"
+                    maxLength={3}
+                    min={25}
+                    max={300}
+                  />
+                  <span>kw</span>
+                </div>
+              </div>
+              <div className="filter">
+                <Slider
+                  min={25}
+                  max={300}
+                  marks={{ 25: '25', 50: '50', 100: '100', 150: '150' ,200: '200', 250:'250', 300:'300'  }}
+                  step={1}
+                  value={earnoutValues['Equity Per'] || 0}
+                  onChange={(val: number | number[]) => {
+                    if (typeof val === 'number') {
+                      handleRangeChange('Equity Per', val, 'earnout');
+                    }
+                  }}
+                  railStyle={{ backgroundColor: '#e4e4e4', height: 2 }}
+                  trackStyle={{ backgroundColor: '#00c8ff', height: 4 }}
+                  handleStyle={{
+                    borderColor: '#00c8ff',
+                    height: 18,
+                    width: 18,
+                    marginTop: -7,
+                    backgroundColor: '#fff',
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
         <div className="build-footer">
           <p className="footer-heading">Earnout Amount</p>
@@ -267,9 +350,10 @@ const Calculator: React.FC = () => {
               </div>
             </div>
           ))}
+          
         </div>
         <div className="equity-footer">
-          <p className="footer-heading">Equity Value</p>
+          <p className="footer-heading">Equity Growth</p>
           <button>${calculateEquityGrowth()}</button>
         </div>
       </div>

@@ -397,7 +397,7 @@ const LeradManagementHistory = () => {
       }
 
       const csvData = response.data?.leads_history_list?.map?.((item: any) => [
-        item.leads_id,
+        `OWE${item.leads_id}`,
         item.status_id,
         item.first_name,
         item.last_name,

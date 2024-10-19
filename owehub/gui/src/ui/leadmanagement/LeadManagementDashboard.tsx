@@ -44,7 +44,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads, getProjectByLeadId,auroraCreateProject, auroraCreateDesign, auroraCreateProposal, auroraWebProposal, auroraGenerateWebProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal, auroraWebProposal, auroraGenerateWebProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -379,7 +379,7 @@ const LeadManagementDashboard = () => {
   const [designID, setDesignsID] = useState<string>(''); // Change to string
   const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
   const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
-  
+
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -544,10 +544,10 @@ const LeadManagementDashboard = () => {
   }, [isAuthenticated, selectedDates]);
 
   const defaultData: DefaultData = {
-    NEW: { name: 'NEW', value: 0, color: '#FF832A' },
+    NEW: { name: 'NEW', value: 0, color: '#52B650' },
     PROGRESS: { name: 'PROGRESS', value: 0, color: '#81A6E7' },
-    DECLINED: { name: 'DECLINED', value: 0, color: '#52B650' },
-    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#CD4040' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#CD4040' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#FF832A' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -768,37 +768,37 @@ const LeadManagementDashboard = () => {
     }
   };
 
-// Function to fetch designs for a project
-const fetchDesigns = async (projectId: string) => {
-  try {
-    const response = await axios.get(
-      `http://localhost:5000/api/designs/${projectId}`
-    );
-    setDesigns(response.data.designs); // Set the designs for the selected project
-
-    // Find the most recently created design
-    if (response.data.designs && response.data.designs.length > 0) {
-      const sortedDesigns = response.data.designs.sort(
-        (a: Design, b: Design) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  // Function to fetch designs for a project
+  const fetchDesigns = async (projectId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${projectId}`
       );
-      const latestDesign = sortedDesigns[0];
+      setDesigns(response.data.designs); // Set the designs for the selected project
 
-      // Generate new URL every time and fetch the proposal
-      generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
-      // Pass external_provider_id and name to fetchWebProposal
-      // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
-      setDesignsID(latestDesign.id);
-      setLeadPdf(latestDesign.external_provider_id);
-      setLeadNamePdf(latestDesign.name);
+      // Find the most recently created design
+      if (response.data.designs && response.data.designs.length > 0) {
+        const sortedDesigns = response.data.designs.sort(
+          (a: Design, b: Design) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        const latestDesign = sortedDesigns[0];
 
-    } else {
-      console.log('No designs found for this project');
+        // Generate new URL every time and fetch the proposal
+        generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
+        // Pass external_provider_id and name to fetchWebProposal
+        // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
+        setDesignsID(latestDesign.id);
+        setLeadPdf(latestDesign.external_provider_id);
+        setLeadNamePdf(latestDesign.name);
+
+      } else {
+        console.log('No designs found for this project');
+      }
+    } catch (error) {
+      console.error('Error fetching designs:', error);
     }
-  } catch (error) {
-    console.error('Error fetching designs:', error);
-  }
-};
+  };
 
 
   // Function to fetch proposal for a design
@@ -816,30 +816,30 @@ const fetchDesigns = async (projectId: string) => {
     }
   };
 
-// // Function to fetch Web Proposal for a design 
-// const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
-//   try {
-//     // Step 1: Fetch the web proposal from the API
-//     const response = await axios.get<{ web_proposal: { url: string } }>(
-//       `http://localhost:5000/api/web-proposals/${designId}`
-//     );
+  // // Function to fetch Web Proposal for a design 
+  // const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
+  //   try {
+  //     // Step 1: Fetch the web proposal from the API
+  //     const response = await axios.get<{ web_proposal: { url: string } }>(
+  //       `http://localhost:5000/api/web-proposals/${designId}`
+  //     );
 
-//     const proposalLink = response.data.web_proposal.url;
-//     console.log('Proposal Link:', proposalLink);
+  //     const proposalLink = response.data.web_proposal.url;
+  //     console.log('Proposal Link:', proposalLink);
 
-//     // Step 2: Open the link in a new tab (optional)
-//     window.open(proposalLink, '_blank');
+  //     // Step 2: Open the link in a new tab (optional)
+  //     window.open(proposalLink, '_blank');
 
-//     // Step 3: Trigger server-side function to generate and download PDF
-//     await axios.post('http://localhost:5000/download-pdf', {
-//       fileUrl: proposalLink,
-//       leadName: projectName, // Pass the project name
-//       externalProviderId, // Pass the external provider ID if needed
-//     });
-//   } catch (error) {
-//     console.error('Error fetching web proposal:', error);
-//   }
-// };
+  //     // Step 3: Trigger server-side function to generate and download PDF
+  //     await axios.post('http://localhost:5000/download-pdf', {
+  //       fileUrl: proposalLink,
+  //       leadName: projectName, // Pass the project name
+  //       externalProviderId, // Pass the external provider ID if needed
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching web proposal:', error);
+  //   }
+  // };
 
   const downloadFile = async (fileUrl: string) => {
     const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
@@ -879,7 +879,7 @@ const fetchDesigns = async (projectId: string) => {
       const response = await axios.get(`/api/proposals/${proposalId}`, {
         responseType: 'blob' // If you expect to download a PDF
       });
-      
+
       // Create a link element to download the PDF
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -1098,7 +1098,7 @@ const fetchDesigns = async (projectId: string) => {
 
 
       const csvData = response.data?.map?.((item: any) => [
-        item.leads_id,
+        `OWE${item.leads_id}`,
         item.status_id,
         item.first_name,
         item.last_name,
@@ -1159,11 +1159,11 @@ const fetchDesigns = async (projectId: string) => {
           const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
           if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
             const proposalData = createProposalResult.payload.data;
-  
+
             if (proposalData.proposal_link) {
               toast.success('Proposal created successfully!');
               setRefresh((prev) => prev + 1);
-              
+
               // Open the proposal link in a new tab
               window.open(proposalData.proposal_link, '_blank');
             } else {
@@ -1187,10 +1187,10 @@ const fetchDesigns = async (projectId: string) => {
   // const fetchWebProposal = async (leadId: number) => {
   //   try {
   //     const webProposalResult = await dispatch(auroraWebProposal(leadId));
-  
+
   //     if (auroraWebProposal.fulfilled.match(webProposalResult)) {
   //       const webProposalData = webProposalResult.payload.data;
-        
+
   //       if (webProposalData.url) {
   //         toast.success('Web proposal retrieved successfully!');
   //         // Handle the web proposal URL here, e.g., open in a new tab
@@ -1208,28 +1208,28 @@ const fetchDesigns = async (projectId: string) => {
   //     console.error('Error in fetchWebProposal:', error);
   //   }
   // };
-  
+
 
 
   //*************************************************************************************************/
- 
+
   const fetchWebProposal = async (leadId: number) => {
     try {
       // Step 1: Generate Web Proposal
       const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
-  
+
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
-  
+
         if (generatedProposalData.url) {
           toast.success('Web proposal generated successfully!');
-          
+
           // Step 2: Retrieve Web Proposal
           const webProposalResult = await dispatch(auroraWebProposal(leadId));
-  
+
           if (auroraWebProposal.fulfilled.match(webProposalResult)) {
             const webProposalData = webProposalResult.payload.data;
-  
+
             if (webProposalData.url) {
               toast.success('Web proposal retrieved successfully!');
               // Open the URL in a new tab or handle it as needed
@@ -1253,8 +1253,8 @@ const fetchDesigns = async (projectId: string) => {
       console.error('Error in fetchWebProposal:', error);
     }
   };
-  
- 
+
+
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
@@ -1423,13 +1423,19 @@ const fetchDesigns = async (projectId: string) => {
                   <img src={ICONS.includes_icon} alt="" />
                 </div>}
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-                  <img
+                  {isToggledX ? (
+                    <span style={{ fontSize: '18px', color: '#377cf6' }}>{'\u25B2'}</span>
+                  ) : (
+                    <span style={{ fontSize: '18px', color: '#377cf6' }}>{'\u25BC'}</span>
+                  )}
+
+                  {/* <img
                     src={
                       isToggledX === true
                         ? ICONS.ChecronUpX
                         : ICONS.DownArrowDashboard
                     }
-                  />
+                  /> */}
 
                   {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
                 </div>
@@ -1709,15 +1715,15 @@ const fetchDesigns = async (projectId: string) => {
             )
           ) : (
             // <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} fetchWebProposal={fetchWebProposal(designID)} />
-            <LeadTable 
-            selectedLeads={selectedLeads} 
-            setSelectedLeads={setSelectedLeads} 
-            refresh={refresh} 
-            setRefresh={setRefresh} 
-            onCreateProposal={handleCreateProposal} 
-            fetchWebProposal={fetchWebProposal} 
+            <LeadTable
+              selectedLeads={selectedLeads}
+              setSelectedLeads={setSelectedLeads}
+              refresh={refresh}
+              setRefresh={setRefresh}
+              onCreateProposal={handleCreateProposal}
+              fetchWebProposal={fetchWebProposal}
             // fetchWebProposal={() => fetchWebProposal(designID,leadIDPdf,leadNamePdf)} 
-          />
+            />
           )}
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>

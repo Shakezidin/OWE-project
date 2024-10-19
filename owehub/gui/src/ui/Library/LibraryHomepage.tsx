@@ -158,7 +158,7 @@ const LibraryHomepage = () => {
     url: ""
   })
   const isMobile = useMatchMedia("(max-width: 450px)")
-  const isTablet  = useMatchMedia("(max-width: 968px)")
+  const isTablet = useMatchMedia("(max-width: 968px)")
   const [selectedCheckbox, setSelectedCheckbox] = useState<Set<string>>(new Set())
   const [searchParams] = useSearchParams()
   const [isFileViewerOpen, setIsFileViewerOpen] = useState(false)
@@ -993,7 +993,10 @@ const LibraryHomepage = () => {
             setSelected={setSelectedCheckbox}
             onDelete={(id) => {
               OpenModal()
-              setAllIds(prev => [...prev, id])
+              setAllIds(prev => {
+                const uniques = new Set([...prev, id])
+                return Array.from(uniques)
+              })
             }}
             handleCheckboxChange={(ids) => {
               setAllIds(Array.from(ids))
@@ -1094,16 +1097,16 @@ const LibraryHomepage = () => {
 
                           <p data-tooltip-id={`file-name-${data.id}`}
                             data-tooltip-content={data.name} className={styles.name}>{data.name.substring(0, 25)} {data.name.length >= 26 ? '...' : ''}</p>
-                          <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${data.id}`} place="top" />
-                         <div className={styles.size_date_container}> 
-                          {/* <p className={styles.size}>
+                          <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${data.id}`} place="top" />
+                          <div className={styles.size_date_container}>
+                            {/* <p className={styles.size}>
                             {data.size < 1024
                               ? `${data.size} byte${data.size !== 1 ? 's' : ''}`
                               : data.size < 1048576
                                 ? `${Math.round(data.size / 1024)} KB`
                                 : `${Math.round(data.size / 1048576)} MB`}
                           </p> */}
-                          <div className={` ${styles.sm_hide_upload_date} ${styles.grid_item_dates} `}style={{ fontSize: "12px" }}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+                            <div className={` ${styles.sm_hide_upload_date} ${styles.grid_item_dates} `} style={{ fontSize: "12px" }}>{format(new Date(data.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
                           </div>
                         </div>
                       </div>
@@ -1195,25 +1198,25 @@ const LibraryHomepage = () => {
             />
           </div>
           <div className={styles.parentDiv}>
-          <div className={styles.sort_container} >
-            <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
-          </div>
-          <button onClick={() => {
-            setFilesView("list")
-            saveFileTypeView("list")
-            setSelectedCheckbox(new Set())
-            setAllIds([])
-          }} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
-            <TiThMenu />
-          </button>
-          <button onClick={() => {
-            setFilesView("tiles")
-            saveFileTypeView("tiles")
-            setSelectedCheckbox(new Set())
-            setAllIds([])
-          }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
-            <BsGrid />
-          </button>
+            <div className={styles.sort_container} >
+              <SortByLibrary isPalceholder={!isMobile || false} onSort={handleSort} />
+            </div>
+            <button onClick={() => {
+              setFilesView("list")
+              saveFileTypeView("list")
+              setSelectedCheckbox(new Set())
+              setAllIds([])
+            }} className={`  ${filesView === "list" ? styles.active_tile : ""} ${styles.view_btn}`} >
+              <TiThMenu />
+            </button>
+            <button onClick={() => {
+              setFilesView("tiles")
+              saveFileTypeView("tiles")
+              setSelectedCheckbox(new Set())
+              setAllIds([])
+            }} className={` ${filesView === "tiles" ? styles.active_tile : ""} ${styles.view_btn}`}>
+              <BsGrid />
+            </button>
           </div>
         </div>
       </div>
