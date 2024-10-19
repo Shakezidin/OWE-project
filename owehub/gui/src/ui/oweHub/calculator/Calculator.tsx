@@ -79,7 +79,9 @@ const earnoutFilters: Filter[] = [
 
 const equityFilters: Filter[] = [
   {
-    label: 'CAGR %', value: '', min: 10, max: 30, step: 1, marks: {
+    label: 'CAGR %', value: '', min: 0, max: 30, step: 0.5, marks: {
+      0:'0',
+      5:'5',
       10: '10',
       15: '15',
       20: '20',
@@ -110,7 +112,7 @@ const Calculator: React.FC = () => {
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
 
-    'CAGR %': 10,
+    'CAGR %': 0,
     'Years until Next Acquisition / IPO (Yrs)': 3,
   });
  
@@ -244,6 +246,11 @@ const Calculator: React.FC = () => {
       'Months until Earnout (Months)': 0,
       'Equity Per': 25,
     });
+    setEquityValues({
+      'CAGR %':0,
+      'Years until Next Acquisition / IPO (Yrs)':3
+
+    })
     
     setActiveRole(role);
   };
@@ -261,7 +268,7 @@ const Calculator: React.FC = () => {
       'Equity Per': 25,
     });
     setEquityValues({
-      'CAGR %':10,
+      'CAGR %':0,
       'Years until Next Acquisition / IPO (Yrs)':3
 
     })
