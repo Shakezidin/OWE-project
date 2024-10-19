@@ -131,11 +131,21 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// if dataReq.Search != "" {
+	// 	whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
+	// 	whereClause = fmt.Sprintf(
+	// 		"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
+	// 		whereClause,
+	// 		len(whereEleList),
+	// 		len(whereEleList),
+	// 	)
+
 	if dataReq.Search != "" {
 		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
 		whereClause = fmt.Sprintf(
-			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
+			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d OR (li.first_name || ' ' || li.last_name) ILIKE $%d)",
 			whereClause,
+			len(whereEleList),
 			len(whereEleList),
 			len(whereEleList),
 		)
