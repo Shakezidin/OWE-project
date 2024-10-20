@@ -18,7 +18,7 @@ interface Filter {
 const earnoutFilters: Filter[] = [
   {
     label: 'System Install (per month)',
-    value: '0',
+    value: '',
     min: 0,
     max: 200,
     step: 5,
@@ -38,7 +38,7 @@ const earnoutFilters: Filter[] = [
   },
   {
     label: 'Average system size (kw)',
-    value: '5',
+    value: '',
     min: 5,
     max: 15,
     step: 1,
@@ -57,7 +57,7 @@ const earnoutFilters: Filter[] = [
     },
   },
   {
-    label: 'Growth rate (per month) %', value: '0', min: 0, max: 25, step: 0.5, marks: {
+    label: 'Growth rate (per month) %', value: '', min: 0, max: 25, step: 0.5, marks: {
       0: '0', 5: '5',
       10: '10',
       15: '15',
@@ -66,7 +66,7 @@ const earnoutFilters: Filter[] = [
     }
   },
   {
-    label: 'Months until Earnout (Months)', value: '24', min: 0, max: 60, step: 1, marks: {
+    label: 'Months until Earnout (Months)', value: '', min: 0, max: 60, step: 1, marks: {
       0:'0',
       12: '12',
       24: '24',
@@ -172,6 +172,17 @@ const Calculator: React.FC = () => {
  
         totalSum = 0; // Reset the sum for the next batch
       }
+
+    // If there are remaining months after the last full 12-month batch
+    if (totalSum > 0) {
+    console.log(`Sum for remaining months: ${totalSum.toFixed(2)}`);
+
+    // If the remaining months are the last months, apply the multiplication by 375
+    if (monthsUntilEarnout % 12 !== 0) {
+      finalResult = totalSum * 375;
+      console.log(`Final result (remaining months sum * 375): ${finalResult.toFixed(2)}`);
+    }
+  }
 
     }
 
