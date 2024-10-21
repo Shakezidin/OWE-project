@@ -13,6 +13,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
 import { format } from 'date-fns';
+import { Tooltip } from 'react-tooltip';
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -82,7 +83,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
       generateWebProposal(leadId)
       setSelectedType('');
     }
-    
+
     else if (selectedType === 'Appointment Not Required') {
       handleAppNotReq();
       setSelectedType('');
@@ -379,32 +380,32 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                           ) : lead?.proposal_id ? (
                             <div className={styles.progress_status}>
-                           <span style={{ fontSize: 11 }}>
-                              {lead.proposal_updated_at ? (
-                                <>
-                                  Last Updated: 
-                                  <br />
-                                  {new Date(lead.proposal_updated_at).toLocaleString('en-GB', {
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric'
-                                  })}
-                                </>
-                              ) : (
-                                'No update date available'
-                              )}
-                            </span>
-                            <br />
-                            <a 
-                              href={lead.proposal_link} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="view-proposal-button"
-                              style={{ color: "#377CF6", fontWeight: 550, alignItems: "center", display: "flex",justifyContent:"center" }}
-                            >
-                              View Proposal <IoChevronForward /><IoChevronForward style={{ marginLeft: "-8px" }} />
-                            </a>
-                          </div>                          
+                              <span style={{ fontSize: 11 }}>
+                                {lead.proposal_updated_at ? (
+                                  <>
+                                    Last Updated:
+                                    <br />
+                                    {new Date(lead.proposal_updated_at).toLocaleString('en-GB', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </>
+                                ) : (
+                                  'No update date available'
+                                )}
+                              </span>
+                              <br />
+                              <a
+                                href={lead.proposal_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="view-proposal-button"
+                                style={{ color: "#377CF6", fontWeight: 550, alignItems: "center", display: "flex", justifyContent: "center" }}
+                              >
+                                View Proposal <IoChevronForward /><IoChevronForward style={{ marginLeft: "-8px" }} />
+                              </a>
+                            </div>
                           ) :
                             (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                               <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
@@ -426,11 +427,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                     ]
                                     : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
                                       ? [
-                                          { label: 'View Proposal', value: 'viewProposal' },
-                                          { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                          { label: 'Download Proposal', value: 'download' },
-                                          { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        ]
+                                        { label: 'View Proposal', value: 'viewProposal' },
+                                        { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                        { label: 'Download Proposal', value: 'download' },
+                                        { label: 'Reschedule Appointment', value: 'app_sched' },
+                                      ]
                                       : [
                                         { label: 'Create Proposal', value: 'new_proposal' },
                                         { label: 'Schedule Appointment', value: 'app_sched' },
@@ -461,9 +462,24 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           />
 
                         </div>
-                        <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)}>
+                        <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
                           <IoInformationOutline />
                         </div>
+                        <Tooltip
+                          style={{
+                            zIndex: 20,
+                            background: '#f7f7f7',
+                            color: '#000',
+                            fontSize: 12,
+                            paddingBlock: 4,
+                            marginTop:"28px",
+                            marginLeft:"28px"
+                          }}
+                          offset={8}
+                          id="info"
+                          place="bottom"
+                          content="Lead Info"
+                        />
                       </td>
                     </tr>
                   ))
