@@ -73,6 +73,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.first_name,
 					li.last_name,
 					li.email_id,
+					li.proposal_type,
 					li.phone_number,
 					li.street_address,
 					li.city,
@@ -170,6 +171,11 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	notes, ok := leadData["notes"].(string)
 	if ok {
 		apiResponse.Notes = notes
+	}
+
+	proposalType, ok := leadData["proposal_type"].(string)
+	if ok {
+		apiResponse.ProposalType = proposalType
 	}
 
 	createdAt, ok := leadData["created_at"].(time.Time)
