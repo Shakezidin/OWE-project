@@ -1,5 +1,10 @@
 package services
 
+import (
+	oweconfig "OWEApp/shared/oweconfig"
+	"errors"
+)
+
 /*
 * Calculate Total Gross Commissions For Dealer Pay
 * Total Gross Commission	 = Net EPC - RL * (Sys Size*1000)
@@ -48,4 +53,31 @@ func CalcPaymentsDealerPay(totalNetCommissions float64, drawPercent float64, dra
 	m2Payment := totalNetCommissions - m1Payment
 
 	return m1Payment, m2Payment
+}
+
+func GetFinanceFeeByItemID(financeSchedule []oweconfig.FinanceScheduleStruct, itemID int64) (float64, error) {
+	for _, entry := range financeSchedule {
+		if entry.ItemID == itemID {
+			return entry.FinanceFee, nil
+		}
+	}
+	return 0, errors.New("item ID not found")
+}
+
+func GetDealerCreditByUniqueID(financeSchedule []oweconfig.DealerCreditsStruct, UniqueId string) (string, error) {
+	for _, entry := range financeSchedule {
+		if entry.UniqueId == UniqueId {
+			return entry.CreditAmount, nil
+		}
+	}
+	return "", errors.New("item ID not found")
+}
+
+func GetDealerpaymentsByItemID(financeSchedule []oweconfig.DealerPaymentsStruct, UniqueId string) (string, error) {
+	for _, entry := range financeSchedule {
+		if entry.UniqueId == UniqueId {
+			return entry.TypeOfPayment, nil
+		}
+	}
+	return "", errors.New("item ID not found")
 }

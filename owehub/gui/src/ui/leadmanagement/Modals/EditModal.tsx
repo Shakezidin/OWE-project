@@ -237,15 +237,21 @@ const EditModal: React.FC<EditModalProps> = ({refresh, setRefresh, isOpen, onClo
                     name="mobile_number"
                     maxLength={16}
                   />
-                  <Input
-                    type="text"
-                    value={formData.email_id}
-                    placeholder="johndoe1234@gmail.com"
-                    onChange={handleInputChange}
-                    name="email_id"
-                    maxLength={40}
-                  // backgroundColor="#9cc3fb"
-                  />
+                 <div >
+                        <Input
+                          type="email"
+                          value={formData.email_id}
+                          placeholder={'email@mymail.com'}
+                          onChange={(e) => handleInputChange(e)}
+                          name={'email_id'}
+                          maxLength={40}
+                        />
+                        {(emailError || errors.email_id) && (
+                          <div className="error-message">
+                            {emailError || errors.email_id}
+                          </div>
+                        )}
+                      </div>
                   <Input
                     type="text"
                     value={formData.address}

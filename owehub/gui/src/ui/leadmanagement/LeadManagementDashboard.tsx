@@ -1730,11 +1730,11 @@ const LeadManagementDashboard = () => {
               generateWebProposal={generateWebProposal}
             />
           )}
-          {leadsData.length > 0 && (
+          {leadsData.length > 0 && !isLoading && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
+                {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
                 </p>
               </div>
 

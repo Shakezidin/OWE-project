@@ -10,6 +10,7 @@ import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
 import { PiMapPin } from 'react-icons/pi';
 import { MdOutlinePermMedia } from "react-icons/md";
+import { FaCalculator } from "react-icons/fa";
 
 const mob = {
   mob: [
@@ -131,6 +132,14 @@ const mob = {
       sidebarProps: {
         displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.CALCULATOR,
+
+      sidebarProps: {
+        displayText: 'CAGR CALCULATOR',
+        icon: <FaCalculator size={20} style={{ flexShrink: '0' }} />,
       },
     },
     {
