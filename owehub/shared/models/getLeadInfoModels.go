@@ -36,4 +36,5 @@ type GetLeadInfoRes struct {
 	ProposalCreatedDate        *time.Time `json:"proposal_created_date"`
 	StatusID                   int64      `json:"status_id"`
 	CreatedByName              string     `json:"created_by"`
+	ProposalType               string     `json:"proposal_type"`
 }
