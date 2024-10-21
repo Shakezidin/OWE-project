@@ -54,7 +54,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                 <div className='flex mb2 items-center justify-between' >
                     <h4 style={{ fontSize: 14 }} > {name} </h4>
                     <button
-                        className='close-btn'
+                        className={styles.close_btn}
                         onClick={(e) => {
                             onClose?.()
                         }}

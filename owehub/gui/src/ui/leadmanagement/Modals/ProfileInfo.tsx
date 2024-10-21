@@ -197,7 +197,14 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>City</td>
-                                        <td className={classes.rightAlign}>{leadData?.city}</td>
+                                        <td
+                                         style={{
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '200px',
+                                            lineHeight: "16px"
+                                        }}
+                                         className={classes.rightAlign}>{leadData?.city}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Proposal type</td>
@@ -225,7 +232,14 @@ const Profile: React.FC<EditModalProps> = ({
                                         <td className={classes.rightAlign}>{leadData?.proposal_signed.toString()}</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Disposition</td>
+                                        <td className={classes.leftAlign}
+                                        style={{
+                                            lineHeight: "16px",
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '150px',
+                                        }}
+                                        >Appointment Disposition</td>
                                         <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition}</td>
                                     </tr>
 
@@ -242,7 +256,15 @@ const Profile: React.FC<EditModalProps> = ({
                                 <tbody>
                                     <tr>
                                         <td className={classes.leftAlign}>Appointment Disposition Note</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition_note || '.......'}</td>
+                                        <td style={{
+                                            lineHeight: "16px",
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '150px',
+                                        }}
+                                            className={`${classes.rightAlign} ${classes.specialfont}`}>
+                                            {leadData?.appointment_disposition_note || '.......'}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Notes</td>
