@@ -167,7 +167,6 @@ const LeadManagementNew = () => {
     }
 
     console.log(formData, 'FORM SUCCESSFULLY SUBMITTED ');
-    resetFormData();
   };
 
   const resetFormData = () => {
