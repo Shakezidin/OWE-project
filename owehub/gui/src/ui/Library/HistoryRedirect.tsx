@@ -17,12 +17,12 @@ const HistoryRedirect = () => {
   const clickableDivRef = useRef<HTMLDivElement>(null);
 
   const handleHistory = () => {
-    navigate('/leadmng-history');
+    navigate('/leadmng-dashboard/leadmng-history');
   };
 
   const ArchivesTable = () => {
     // setArchive(true);
-    navigate('/lead-dashboard-archieves');
+    navigate('/leadmng-dashboard/lead-dashboard-archieves');
   };
 
   /* HERE FOR RESPONSIVESNESS */

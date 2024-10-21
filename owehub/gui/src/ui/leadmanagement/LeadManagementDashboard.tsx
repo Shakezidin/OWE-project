@@ -453,7 +453,7 @@ const LeadManagementDashboard = () => {
   const navigate = useNavigate();
 
   const handleAddLead = () => {
-    navigate('/leadmgt-addnew');
+    navigate('/leadmng-dashboard/leadmgt-addnew');
   };
 
   const statusMap = {
@@ -493,6 +493,8 @@ const LeadManagementDashboard = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+ 
 
 
   // ************************ API Integration By Saurabh ********************************\\
