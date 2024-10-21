@@ -55,6 +55,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
     <div className="relative drop-ref-container" ref={clickableDivRef}>
       <div className={classes.filtericonLead} onClick={HistoryButtonCalled} data-tooltip-id="Filters">
         <FaFilter size={14} fontWeight={600} />
+        
       </div>
       <Tooltip
         style={{

@@ -462,7 +462,7 @@ const LeradManagementHistory = () => {
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.lm_history_header}>
-            {checkedCount == 0 && <h1>History</h1>}
+            {checkedCount == 0 && <h1>RECORDS</h1>}
             {checkedCount != 0 && (
               <div className={styles.hist_checkbox_count}>
                 <img
