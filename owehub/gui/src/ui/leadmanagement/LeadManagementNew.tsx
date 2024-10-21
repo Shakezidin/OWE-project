@@ -135,7 +135,7 @@ const LeadManagementNew = () => {
     setErrors(errors);
     console.log(formData.zip_code);
 
-    if (Object.keys(errors).length === 0) {
+    if (Object.keys(errors).length  === 0 && emailError === '') {
       setLoad(true);
 
       try {
