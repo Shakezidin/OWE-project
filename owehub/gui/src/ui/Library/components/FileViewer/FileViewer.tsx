@@ -3,6 +3,10 @@ import { ICONS } from "../../../../resources/icons/Icons"
 import { MdClose } from 'react-icons/md'
 import { TransformWrapper, TransformComponent, useControls, ReactZoomPanPinchContentRef, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import styles from "./index.module.css"
+import {  PiPlusBold,PiMinusBold } from "react-icons/pi";
+import { GrPowerReset } from "react-icons/gr";
+import {AiOutlineExpand} from "react-icons/ai"
+import {BiCollapse} from "react-icons/bi"
 interface IProps {
     fileUrl?: string | undefined;
     fileType?: string | undefined;
@@ -47,7 +51,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [onClose]);
-    console.log(zoomWrapperRef?.current, "regggg")
+
     return (
         <div className='transparent-model' >
             <div className='bg-white p2 ml2 mr2' style={{ maxWidth: 800, borderRadius: 12, width: "100%", minHeight: 200 }}>
@@ -83,7 +87,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                         }}>
                             <TransformWrapper
                                 smooth
-                                minScale={1}
+                                minScale={.5}
                                 maxScale={10}
                                 ref={zoomWrapperRef}
                                 zoomAnimation={{
@@ -116,11 +120,13 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                                 </TransformComponent>
 
                             </TransformWrapper>
+                            <div className={styles.zoom_control_wrapper}>
+                            <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomIn()}> <PiPlusBold color='#000' size={18} /> </button>
+                            <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomOut()}> <PiMinusBold color='#000' size={18} /> </button>
+                            </div>
                             <div className={styles.absolute_zoom_control_wrapper}>
-                                <button onClick={() => zoomWrapperRef?.current?.zoomIn()}> + </button>
-                                <button onClick={() => zoomWrapperRef?.current?.zoomOut()}> - </button>
-                                <button onClick={() => zoomWrapperRef?.current?.resetTransform()}> Reset </button>
-                                <button onClick={() => setIsExpanded(prev => !prev)}>  {isExpanded ? "Collapse" : "Expand"}  </button>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.resetTransform()}> <GrPowerReset color='#000' size={18}/> </button>
+                                <button className={styles.zoom_in_btn} onClick={() => setIsExpanded(prev => !prev)}>  {isExpanded ?<BiCollapse color='#000' size={18}/> : <AiOutlineExpand color='#000'size={18}/>}  </button>
                             </div>
                         </div>
 
