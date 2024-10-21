@@ -788,7 +788,7 @@ const LeradManagementHistory = () => {
                     )}
 
                     <div
-                      className={styles.see_more}
+                      className={styles.see_moreHistory}
                       onClick={() => handlesee(item.leads_id)}
                       data-tooltip-id="info"
                     >
