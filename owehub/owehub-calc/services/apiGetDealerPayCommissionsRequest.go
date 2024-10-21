@@ -84,7 +84,14 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
 	RecordCount = len(dlsPayCommResp.DealerPayComm)
 
+	dlsPayCommResp.AmountPrepaid = 200.55
+	dlsPayCommResp.AmountPrepaidPer = 123
+	dlsPayCommResp.Pipeline_Remaining = 356
+	dlsPayCommResp.Pipeline_RemainingPer = 368
+	dlsPayCommResp.Current_Due = 658
+	dlsPayCommResp.Current_Due_Per = 698
+
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealerpay commissions List fetched : %v list %+v", len(dlsPayCommResp.DealerPayComm), dlsPayCommResp.DealerPaymentsData)
+	log.FuncInfoTrace(0, "Number of dealerpay commissions List fetched : %v list %+v", len(dlsPayCommResp.DealerPayComm), dlsPayCommResp)
 	appserver.FormAndSendHttpResp(resp, "Dealerpay commissions Data", http.StatusOK, dlsPayCommResp.DealerPayComm, int64(RecordCount))
 }
