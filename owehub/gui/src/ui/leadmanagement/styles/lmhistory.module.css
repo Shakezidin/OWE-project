@@ -99,10 +99,11 @@
 }
 
 
-.see_more {
+.see_moreHistory {
   display: flex;
   align-items: center;
   justify-content: center;
+  justify-self: center !important;
   border: none;
   padding: 8px 8px;
   border-radius: 6px;
@@ -115,9 +116,10 @@
   transition: all 0.3s ease;
 }
 
-.see_more:hover {
+.see_moreHistory:hover {
   background-color: #d6e5ff;
   transform: scale(1.1);
+  justify-self: center !important;
 }
 
 .history_list_activity {

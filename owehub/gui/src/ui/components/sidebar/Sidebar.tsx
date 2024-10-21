@@ -67,7 +67,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT))
         ) {
-        } else if (item.path !== ROUTES.CONFIG_PAGE) {
+        } else if (item.path !== ROUTES.CONFIG_PAGE || item.path !== ROUTES.CALCULATOR) {
           newArr[0].mob.push(item);
         }
       });
@@ -85,7 +85,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.COMMISSION_DASHBOARD
+          item.path !== ROUTES.COMMISSION_DASHBOARD &&
+          item.path !== ROUTES.CALCULATOR
         ) {
           newArr[0].mob.push(item);
         }
@@ -108,7 +109,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.COMMISSION_DASHBOARD
+          item.path !== ROUTES.COMMISSION_DASHBOARD &&
+          item.path !== ROUTES.CALCULATOR
         ) {
           newArr[0].mob.push(item);
         }
@@ -148,7 +150,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.COMMISSION_DASHBOARD
+            item.path !== ROUTES.COMMISSION_DASHBOARD &&
+            item.path !== ROUTES.CALCULATOR
           ) {
             newArr[0].mob.push(item);
           }

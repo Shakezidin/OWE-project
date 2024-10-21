@@ -8,10 +8,12 @@ package services
 
 import (
 	//"OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/auroraclient"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"errors"
 	"time"
 
 	// "OWEApp/shared/types"
@@ -34,8 +36,9 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		whereEleList []interface{}
-		dataReq      models.GetLeadInfoRequest
-		data         []map[string]interface{}
+
+		dataReq models.GetLeadInfoRequest
+		data    []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleGetLeadInfo")
@@ -70,6 +73,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.first_name,
 					li.last_name,
 					li.email_id,
+					li.proposal_type,
 					li.phone_number,
 					li.street_address,
 					li.city,
@@ -91,6 +95,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.lead_lost_date,
 					li.proposal_created_date,
 					li.status_id,
+					li.aurora_design_id,
 					ud.name as created_by_name
 				FROM
 					get_leads_info_hierarchy($1) li
@@ -168,6 +173,11 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		apiResponse.Notes = notes
 	}
 
+	proposalType, ok := leadData["proposal_type"].(string)
+	if ok {
+		apiResponse.ProposalType = proposalType
+	}
+
 	createdAt, ok := leadData["created_at"].(time.Time)
 	if ok {
 		apiResponse.CreatedAt = &createdAt
@@ -216,6 +226,23 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		apiResponse.StatusID = statusId
 	}
 
+	// if aurora_design_id is present in the db, then get & update the finance type and company
+	auroraDesignId, ok := leadData["aurora_design_id"].(string)
+	if ok {
+		if financeCompany == "" || financeType == "" {
+			financeType, financeCompany, err := getLeadFinanceTypeAndCompany(auroraDesignId, dataReq.LeadsID)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to retreive lead finance type and company err: %v", err)
+			}
+			if financeCompany != "" {
+				apiResponse.FinanceCompany = financeCompany
+			}
+			if financeType != "" {
+				apiResponse.FinanceType = financeType
+			}
+		}
+	}
+
 	apiResponse.LeadsID = leadData["leads_id"].(int64) // LeadsID is asserted as int64
 	apiResponse.FirstName = leadData["first_name"].(string)
 	apiResponse.LastName = leadData["last_name"].(string)
@@ -225,4 +252,86 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	appserver.FormAndSendHttpResp(resp, "Lead Info Data", http.StatusOK, apiResponse, 1)
+}
+
+/******************************************************************************
+ * FUNCTION:        retreiveLeadFinanceTypeAndCompany
+ *
+ * DESCRIPTION:     This function is used to retreive financing type and company
+ * INPUT:			designId, leadsId
+ * RETURNS:         string, string, error
+ ******************************************************************************/
+func getLeadFinanceTypeAndCompany(designId string, leadsId int64) (string, string, error) {
+	var (
+		err                             error
+		auroraListFinancingsApiResponse *auroraclient.ListFinancingsApiResponse
+		auroraGetFinancingApiResponse   *auroraclient.RetreiveFinancingApiResponse
+	)
+
+	log.EnterFn(0, "retreiveLeadFinanceTypeAndCompany")
+	defer log.ExitFn(0, "retreiveLeadFinanceTypeAndCompany", err)
+
+	// Construct the api to list financings
+	auroraListFinancingsApi := auroraclient.ListFinancingsApi{
+		DesignId: designId,
+	}
+
+	auroraListFinancingsApiResponse, err = auroraListFinancingsApi.Call()
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to list financings from aurora api err: %v", err)
+		return "", "", err
+	}
+
+	if len(auroraListFinancingsApiResponse.Financings) == 0 {
+		log.FuncErrorTrace(0, "No financings found for given design id")
+		return "", "", errors.New("No financings found for given design id")
+	}
+
+	finId, ok := auroraListFinancingsApiResponse.Financings[0]["id"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "No financing id found for given design id")
+		return "", "", errors.New("Financing id not found for given design id")
+	}
+
+	finOption, ok := auroraListFinancingsApiResponse.Financings[0]["financing_option"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "No financing option found for given design id")
+		return "", "", errors.New("Financing option not found for given design id")
+	}
+
+	auroraGetFinancingApi := auroraclient.RetreiveFinancingApi{
+		DesignId:    designId,
+		FinancingId: finId,
+	}
+
+	auroraGetFinancingApiResponse, err = auroraGetFinancingApi.Call()
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retreive financing from aurora api err: %v", err)
+		return "", "", err
+	}
+
+	financier, ok := auroraGetFinancingApiResponse.Financing["financier"].(map[string]interface{})
+	if !ok {
+		log.FuncErrorTrace(0, "No financier found for given financing id")
+		return "", "", errors.New("Financier not found for given financing id")
+	}
+
+	financierProvider, ok := financier["provider"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "No financier provider found for given financing id")
+		return "", "", errors.New("Financier provider not found for given financing id")
+	}
+
+	// update the db with finance type and financier provider
+	query := "UPDATE leads_info SET finance_type = $1, finance_company = $2 WHERE leads_id = $3"
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{finOption, financierProvider, leadsId}) //
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update finance type and financier provider in db err: %v", err)
+		return finOption, financierProvider, err
+	}
+
+	return finOption, financierProvider, nil
 }

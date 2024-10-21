@@ -36,6 +36,8 @@ type GetLeadsData struct {
 	QCAudit                string     `json:"qc_audit"`
 	ProposalID             string     `json:"proposal_id"`
 	ProposalStatus         string     `json:"proposal_status"`
+	ProposalLink           string     `json:"proposal_link"`
+	ProposalUpdatedAt      *time.Time `json:"proposal_updated_at"`
 }
 
 // This struct is for deleting Leads

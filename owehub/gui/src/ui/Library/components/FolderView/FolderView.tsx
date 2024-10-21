@@ -57,7 +57,7 @@ function FolderView({
   }, [folderData]);
 
   return (
-    <div className={styles.folderMain_wrapper}>
+    <div className={loading ? "" : styles.folderMain_wrapper}>
       {loading ? (
         <div className={styles.filesLoader} style={{ width: '100%' }}>
           <MicroLoader />
@@ -104,12 +104,12 @@ function FolderView({
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            
-            <div 
-                   data-tooltip-id={`file-name-${folder.id}`}
-                   data-tooltip-content={folder.name}           
-            className={` one-line-text  ${styles.folder_name}`}>{folder.name}</div>
-            <Tooltip style={{ fontSize: 12,zIndex:99 ,maxWidth:300 }} id={`file-name-${folder.id}`} place="top" />
+
+            <div
+              data-tooltip-id={`file-name-${folder.id}`}
+              data-tooltip-content={folder.name}
+              className={` one-line-text  ${styles.folder_name}`}>{folder.name}</div>
+            <Tooltip style={{ fontSize: 12, zIndex: 99, maxWidth: 300 }} id={`file-name-${folder.id}`} place="top" />
             <div className={styles.folderInfo_wrapper}>
               {/* <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`

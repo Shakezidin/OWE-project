@@ -11,7 +11,7 @@ import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 const LeadManagementNew = () => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -56,6 +56,8 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: trimmedValue,
       }));
+
+
     } else if (name === 'zip_code') {
       const trimmedValueC = value.trim();
       const isValidZipCode = validateZipCode(trimmedValueC);
@@ -71,6 +73,12 @@ const LeadManagementNew = () => {
       setFormData((prevData) => ({
         ...prevData,
         [name]: CorrectValue,
+      }));
+    } else if (name === 'notes') {
+      const sanitizedValue = value.replace(/\s+/g, ' ');
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: sanitizedValue,
       }));
     } else {
       setFormData((prevData) => ({
@@ -114,9 +122,7 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
-    if (formData.notes.trim() === '') {
-      errors.notes = 'Notes are required';
-    }
+
 
     return errors;
   };
@@ -124,7 +130,7 @@ const LeadManagementNew = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log('ZIP_CODE');
-    // console.log(formData, 'Checked in Console ');
+
     const errors = validateForm(formData);
     setErrors(errors);
     console.log(formData.zip_code);
@@ -166,6 +172,7 @@ const LeadManagementNew = () => {
   const resetFormData = () => {
     setFormData(initialFormData);
   };
+ 
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/leadmng-dashboard');
@@ -194,8 +201,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter First Name"
                           onChange={handleInputChange}
                           name="first_name"
-                          maxLength={100}
-                          // backgroundColor="#F3F3F3"
+                          maxLength={30}
                         />
                         {errors.first_name && (
                           <span
@@ -217,7 +223,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter Last name"
                           onChange={handleInputChange}
                           name="last_name"
-                          maxLength={100}
+                          maxLength={30}
                         />
                         {errors.last_name && (
                           <span
@@ -234,7 +240,6 @@ const LeadManagementNew = () => {
                     <div className={classes.salrep_input_container}>
                       <div
                         className={classes.srs_new_create}
-                        // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -246,13 +251,18 @@ const LeadManagementNew = () => {
                           value={formData.mobile_number}
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
-                            setFormData((prevData) => ({
+                             setFormData((prevData) => ({
                               ...prevData,
                               mobile_number: phoneNumber,
                             }));
+                            if (phoneNumber.trim() !== '') {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                mobile_number: '',
+                              }));
+                            }
                           }}
-                        />
-                        {phoneNumberError ||
+                        /> {phoneNumberError ||
                           (errors.mobile_number && (
                             <p className="error-message">
                               {phoneNumberError || errors.mobile_number}
@@ -266,10 +276,20 @@ const LeadManagementNew = () => {
                           label="Email"
                           value={formData.email_id}
                           placeholder={'email@mymail.com'}
-                          onChange={(e) => handleInputChange(e)}
+                          maxLength={40}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            handleInputChange(e);
+                            if (value.trim() !== '') {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                email_id: '',
+                              }));
+                            }
+                          }}
                           name={'email_id'}
-                          // disabled={formData.isEdit}
                         />
+
                         {(emailError || errors.email_id) && (
                           <div className="error-message">
                             {emailError || errors.email_id}
@@ -286,7 +306,7 @@ const LeadManagementNew = () => {
                           placeholder="Address"
                           onChange={handleInputChange}
                           name="address"
-                          maxLength={100}
+                          maxLength={80}
                         />
                         {errors.address && (
                           <span
@@ -305,9 +325,24 @@ const LeadManagementNew = () => {
                           label="Zip Code"
                           value={formData.zip_code}
                           placeholder="Zip Code"
-                          onChange={(e) => handleInputChange(e)}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (value.length <= 10) {
+                              handleInputChange(e);
+                              if (value.trim() === '') {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  zip_code: 'Zip Code is required',
+                                }));
+                              } else {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  zip_code: '',
+                                }));
+                              }
+                            }
+                          }}
                           name="zip_code"
-                          maxLength={8}
                         />
                         {(zip_codeError || errors.zip_code) && (
                           <div className="error-message">
@@ -325,18 +360,19 @@ const LeadManagementNew = () => {
                           name="notes"
                           id=""
                           rows={3}
-                          maxLength={500}
+                          maxLength={300}
                           value={formData.notes}
                           onChange={(e) => handleInputChange(e)}
                           placeholder="Write"
                         ></textarea>
                         <p
-                          className={`character-count ${
-                            formData.notes.trim().length >= 500
-                              ? 'exceeded'
-                              : ''
-                          }`}
-                        ></p>
+                          className={`character-count ${formData.notes.trim().length >= 300
+                            ? 'exceeded'
+                            : ''
+                            }`}
+                        >
+                          {formData.notes.trim().length}/300 characters
+                        </p>
                       </div>
                     </div>
                   </div>

@@ -40,6 +40,8 @@
 .sort_btn {
   background-color: #4372e9;
   border: none;
+  height: 32px;
+  width: 32px;
   border-radius: 8px;
   padding: 5px;
   color: #fff;

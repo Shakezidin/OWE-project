@@ -3,6 +3,7 @@ import classes from './index.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { usePopper } from 'react-popper';
 import useEscapeKey from '../../../../../hooks/useEscape';
+import { Tooltip } from 'react-tooltip';
 
 
 interface DropDownLibraryProps {
@@ -74,9 +75,9 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
         setIsVisible(false);
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
-  
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -85,48 +86,58 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
   return (
     <div className={classes.dropdown_container}>
       <div
-         ref={setReferenceElement}
+        ref={setReferenceElement}
         onMouseEnter={() => setIsHovered(true)}
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.verticalDots2}
+        data-tooltip-id="infoSt"
       >
         <BsThreeDotsVertical />
       </div>
+      <Tooltip
+        style={{
+          zIndex: 20,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+        }}
+        offset={8}
+        id="infoSt"
+        place="bottom"
+        content="Status Updates"
+      />
 
       {isVisible && (
         <ul ref={setPopperElement}
-        style={{
-          ...styles.popper,
-          marginRight: '-10px',
-          marginTop: '10px',
-        }}
-        {...attributes.popper} className={classes.dropdownMenu}>
+          style={{
+            ...styles.popper,
+            marginRight: '-10px',
+            marginTop: '10px',
+          }}
+          {...attributes.popper} className={classes.dropdownMenu}>
           <li
             onClick={() => handleSelect('Deal Won')}
-            className={`${classes.dropdownItem} ${
-              selectedType === 'Deal Won' ? classes.selected : ''
-            } ${disabledOptions.includes('Deal Won') ? classes.disabled : ''}`}
+            className={`${classes.dropdownItem} ${selectedType === 'Deal Won' ? classes.selected : ''
+              } ${disabledOptions.includes('Deal Won') ? classes.disabled : ''}`}
           >
             Deal Won
           </li>
           <li
             onClick={() => handleSelect('Deal Loss')}
-            className={`${classes.dropdownItem} ${
-              selectedType === 'Deal Loss' ? classes.selected : ''
-            } ${disabledOptions.includes('Deal Loss') ? classes.disabled : ''}`}
+            className={`${classes.dropdownItem} ${selectedType === 'Deal Loss' ? classes.selected : ''
+              } ${disabledOptions.includes('Deal Loss') ? classes.disabled : ''}`}
           >
             Deal Loss
           </li>
           <li
             onClick={() => handleSelect('Appointment Not Required')}
-            className={`${classes.dropdownItem} ${
-              selectedType === 'Appointment Not Required' ? classes.selected : ''
-            } ${
-              disabledOptions.includes('Appointment Not Required')
+            className={`${classes.dropdownItem} ${selectedType === 'Appointment Not Required' ? classes.selected : ''
+              } ${disabledOptions.includes('Appointment Not Required')
                 ? classes.disabled
                 : ''
-            }`}
+              }`}
           >
             Appointment Not Required
           </li>

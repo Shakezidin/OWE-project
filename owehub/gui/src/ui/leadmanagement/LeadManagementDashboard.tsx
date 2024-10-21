@@ -8,10 +8,11 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   Sector,
 } from 'recharts';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 import axios from 'axios';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
@@ -44,7 +45,10 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createProposal, getLeads, getProjectByLeadId,auroraCreateProject, auroraCreateDesign, auroraCreateProposal, auroraWebProposal, auroraGenerateWebProposal } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
+  auroraWebProposal, auroraGenerateWebProposal, auroraListModules
+} from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
@@ -379,7 +383,7 @@ const LeadManagementDashboard = () => {
   const [designID, setDesignsID] = useState<string>(''); // Change to string
   const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
   const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
-  
+
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -449,7 +453,7 @@ const LeadManagementDashboard = () => {
   const navigate = useNavigate();
 
   const handleAddLead = () => {
-    navigate('/leadmgt-addnew');
+    navigate('/leadmng-dashboard/leadmgt-addnew');
   };
 
   const statusMap = {
@@ -489,6 +493,8 @@ const LeadManagementDashboard = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+ 
 
 
   // ************************ API Integration By Saurabh ********************************\\
@@ -544,10 +550,10 @@ const LeadManagementDashboard = () => {
   }, [isAuthenticated, selectedDates]);
 
   const defaultData: DefaultData = {
-    NEW: { name: 'NEW', value: 0, color: '#FF832A' },
+    NEW: { name: 'NEW', value: 0, color: '#52B650' },
     PROGRESS: { name: 'PROGRESS', value: 0, color: '#81A6E7' },
-    DECLINED: { name: 'DECLINED', value: 0, color: '#52B650' },
-    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#CD4040' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#CD4040' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#FF832A' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -768,37 +774,37 @@ const LeadManagementDashboard = () => {
     }
   };
 
-// Function to fetch designs for a project
-const fetchDesigns = async (projectId: string) => {
-  try {
-    const response = await axios.get(
-      `http://localhost:5000/api/designs/${projectId}`
-    );
-    setDesigns(response.data.designs); // Set the designs for the selected project
-
-    // Find the most recently created design
-    if (response.data.designs && response.data.designs.length > 0) {
-      const sortedDesigns = response.data.designs.sort(
-        (a: Design, b: Design) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  // Function to fetch designs for a project
+  const fetchDesigns = async (projectId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${projectId}`
       );
-      const latestDesign = sortedDesigns[0];
+      setDesigns(response.data.designs); // Set the designs for the selected project
 
-      // Generate new URL every time and fetch the proposal
-      generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
-      // Pass external_provider_id and name to fetchWebProposal
-      // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
-      setDesignsID(latestDesign.id);
-      setLeadPdf(latestDesign.external_provider_id);
-      setLeadNamePdf(latestDesign.name);
+      // Find the most recently created design
+      if (response.data.designs && response.data.designs.length > 0) {
+        const sortedDesigns = response.data.designs.sort(
+          (a: Design, b: Design) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        const latestDesign = sortedDesigns[0];
 
-    } else {
-      console.log('No designs found for this project');
+        // Generate new URL every time and fetch the proposal
+        generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
+        // Pass external_provider_id and name to fetchWebProposal
+        // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
+        setDesignsID(latestDesign.id);
+        setLeadPdf(latestDesign.external_provider_id);
+        setLeadNamePdf(latestDesign.name);
+
+      } else {
+        console.log('No designs found for this project');
+      }
+    } catch (error) {
+      console.error('Error fetching designs:', error);
     }
-  } catch (error) {
-    console.error('Error fetching designs:', error);
-  }
-};
+  };
 
 
   // Function to fetch proposal for a design
@@ -816,30 +822,30 @@ const fetchDesigns = async (projectId: string) => {
     }
   };
 
-// // Function to fetch Web Proposal for a design 
-// const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
-//   try {
-//     // Step 1: Fetch the web proposal from the API
-//     const response = await axios.get<{ web_proposal: { url: string } }>(
-//       `http://localhost:5000/api/web-proposals/${designId}`
-//     );
+  // // Function to fetch Web Proposal for a design 
+  // const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
+  //   try {
+  //     // Step 1: Fetch the web proposal from the API
+  //     const response = await axios.get<{ web_proposal: { url: string } }>(
+  //       `http://localhost:5000/api/web-proposals/${designId}`
+  //     );
 
-//     const proposalLink = response.data.web_proposal.url;
-//     console.log('Proposal Link:', proposalLink);
+  //     const proposalLink = response.data.web_proposal.url;
+  //     console.log('Proposal Link:', proposalLink);
 
-//     // Step 2: Open the link in a new tab (optional)
-//     window.open(proposalLink, '_blank');
+  //     // Step 2: Open the link in a new tab (optional)
+  //     window.open(proposalLink, '_blank');
 
-//     // Step 3: Trigger server-side function to generate and download PDF
-//     await axios.post('http://localhost:5000/download-pdf', {
-//       fileUrl: proposalLink,
-//       leadName: projectName, // Pass the project name
-//       externalProviderId, // Pass the external provider ID if needed
-//     });
-//   } catch (error) {
-//     console.error('Error fetching web proposal:', error);
-//   }
-// };
+  //     // Step 3: Trigger server-side function to generate and download PDF
+  //     await axios.post('http://localhost:5000/download-pdf', {
+  //       fileUrl: proposalLink,
+  //       leadName: projectName, // Pass the project name
+  //       externalProviderId, // Pass the external provider ID if needed
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching web proposal:', error);
+  //   }
+  // };
 
   const downloadFile = async (fileUrl: string) => {
     const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
@@ -879,7 +885,7 @@ const fetchDesigns = async (projectId: string) => {
       const response = await axios.get(`/api/proposals/${proposalId}`, {
         responseType: 'blob' // If you expect to download a PDF
       });
-      
+
       // Create a link element to download the PDF
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -1047,25 +1053,22 @@ const fetchDesigns = async (projectId: string) => {
     let statusId;
     switch (currentFilter) {
       case 'Action Needed':
-        statusId = "ACTION_NEEDED";
+        statusId = 'ACTION_NEEDED';
         break;
-      case 'Pending':
-        statusId = "NEW";
+      case 'New Leads':
+        statusId = 'NEW';
         break;
-      case 'Sent':
-        statusId = 1;
-        break;
-      case 'Accepted':
-        statusId = 2;
+      case 'In Progress':
+        statusId = 'PROGRESS';
         break;
       case 'Declined':
-        statusId = "DECLINED";
+        statusId = 'DECLINED';
         break;
       case 'Projects':
         statusId = 5;
         break;
       default:
-        statusId = "NEW";
+        statusId = 'NEW';
     }
 
     const data = {
@@ -1098,7 +1101,7 @@ const fetchDesigns = async (projectId: string) => {
 
 
       const csvData = response.data?.map?.((item: any) => [
-        item.leads_id,
+        `OWE${item.leads_id}`,
         item.status_id,
         item.first_name,
         item.last_name,
@@ -1132,51 +1135,71 @@ const fetchDesigns = async (projectId: string) => {
     }
   };
 
-
+  //----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
     console.log("leadId", leadId);
     console.log("selectedLeads", selectedLeads);
+
     try {
-      // Step 1: Create Project
-      const createProjectResult = await dispatch(auroraCreateProject({
-        "leads_id": leadId,
-        "customer_salutation": "Mr./Mrs.",
-        "status": "In Progress",
-        "preferred_solar_modules": ["5b8c975b-b114-4d31-9d40-c44a6cfbe383"],
-        "tags": ["third_party_1"]
-      }));
+      // Step 1: Fetch preferred solar modules using dispatch
+      const modulesResult = await dispatch(auroraListModules({}));
 
-      if (auroraCreateProject.fulfilled.match(createProjectResult)) {
-        // toast.success('Project created successfully!');
+      if (auroraListModules.fulfilled.match(modulesResult)) {
+        const modulesData = modulesResult.payload.data;
 
-        // Step 2: Create Design
-        const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
+        if (modulesData.length > 0) {
+          const moduleIds = modulesData.map((module: any) => module.id); // Extract the ids from the module list
 
-        if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
-          // toast.success('Design created successfully!');
+          // Step 2: Create Project with dynamic preferred solar modules
+          const createProjectResult = await dispatch(auroraCreateProject({
+            "leads_id": leadId,
+            "customer_salutation": "Mr./Mrs.",
+            "status": "In Progress",
+            "preferred_solar_modules": moduleIds,
+            "tags": ["third_party_1"]
+          }));
 
-          // Step 3: Create Proposal
-          const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
-          if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
-            const proposalData = createProposalResult.payload.data;
-  
-            if (proposalData.proposal_link) {
-              toast.success('Proposal created successfully!');
-              setRefresh((prev) => prev + 1);
-              
-              // Open the proposal link in a new tab
-              window.open(proposalData.proposal_link, '_blank');
+          if (auroraCreateProject.fulfilled.match(createProjectResult)) {
+            // toast.success('Project created successfully!');
+
+            // Step 3: Create Design
+            const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
+
+            if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
+              // toast.success('Design created successfully!');
+
+              // Step 4: Create Proposal
+              const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
+
+              if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
+                const proposalData = createProposalResult.payload.data;
+
+                if (proposalData.proposal_link) {
+                  // Step 5: Generate Web Proposal
+                  await generateWebProposal(leadId);
+
+                  toast.success('Proposal created successfully!');
+                  setRefresh((prev) => prev + 1);
+
+                  // Open the proposal link in a new tab
+                  window.open(proposalData.proposal_link, '_blank');
+                } else {
+                  toast.error('Proposal link not available.');
+                }
+              } else {
+                toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+              }
             } else {
-              toast.error('Proposal link not available.');
+              toast.error(createDesignResult.payload as string || 'Failed to create design');
             }
           } else {
-            toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+            toast.error(createProjectResult.payload as string || 'Failed to create project');
           }
         } else {
-          toast.error(createDesignResult.payload as string || 'Failed to create design');
+          toast.error('No solar modules available.');
         }
       } else {
-        toast.error(createProjectResult.payload as string || 'Failed to create project');
+        toast.error('Failed to fetch solar modules');
       }
     } catch (error) {
       toast.error('An unexpected error occurred');
@@ -1184,77 +1207,59 @@ const fetchDesigns = async (projectId: string) => {
     }
   };
 
-  // const fetchWebProposal = async (leadId: number) => {
-  //   try {
-  //     const webProposalResult = await dispatch(auroraWebProposal(leadId));
-  
-  //     if (auroraWebProposal.fulfilled.match(webProposalResult)) {
-  //       const webProposalData = webProposalResult.payload.data;
-        
-  //       if (webProposalData.url) {
-  //         toast.success('Web proposal retrieved successfully!');
-  //         // Handle the web proposal URL here, e.g., open in a new tab
-  //         window.open(webProposalData.url, '_blank');
-  //       } else if (webProposalData.url_expired) {
-  //         toast.error('Web proposal URL has expired. Please regenerate.');
-  //       } else {
-  //         toast.error('No web proposal available.');
-  //       }
-  //     } else {
-  //       toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
-  //     }
-  //   } catch (error) {
-  //     toast.error('An unexpected error occurred while retrieving web proposal');
-  //     console.error('Error in fetchWebProposal:', error);
-  //   }
-  // };
-  
-
-
-  //*************************************************************************************************/
- 
-  const fetchWebProposal = async (leadId: number) => {
+  const generateWebProposal = async (leadId: number) => {
     try {
-      // Step 1: Generate Web Proposal
+      //Generate Web Proposal
       const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
-  
+
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
-  
         if (generatedProposalData.url) {
-          toast.success('Web proposal generated successfully!');
-          
-          // Step 2: Retrieve Web Proposal
-          const webProposalResult = await dispatch(auroraWebProposal(leadId));
-  
-          if (auroraWebProposal.fulfilled.match(webProposalResult)) {
-            const webProposalData = webProposalResult.payload.data;
-  
-            if (webProposalData.url) {
-              toast.success('Web proposal retrieved successfully!');
-              // Open the URL in a new tab or handle it as needed
-              window.open(webProposalData.url, '_blank');
-            } else if (webProposalData.url_expired) {
-              toast.error('Web proposal URL has expired. Please regenerate.');
-            } else {
-              toast.error('No web proposal available.');
-            }
-          } else {
-            toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
-          }
+          // toast.success('Web proposal generated successfully!');
+          return generatedProposalData;
         } else {
           toast.error('Failed to generate web proposal.');
+          return null;
         }
       } else {
         toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+        return null;
       }
     } catch (error) {
-      toast.error('An unexpected error occurred while generating or retrieving web proposal');
-      console.error('Error in fetchWebProposal:', error);
+      toast.error('An unexpected error occurred while generating the web proposal');
+      console.error('Error in generateWebProposal:', error);
+      return null;
     }
   };
-  
- 
+
+  const retrieveWebProposal = async (leadId: number) => {
+    try {
+      //Retrieve Web Proposal
+      const webProposalResult = await dispatch(auroraWebProposal(leadId));
+
+      if (auroraWebProposal.fulfilled.match(webProposalResult)) {
+        const webProposalData = webProposalResult.payload.data;
+
+        if (webProposalData.url) {
+          toast.success('Web proposal retrieved successfully!');
+          window.open(webProposalData.url, '_blank');
+        } else if (webProposalData.url_expired) {
+          toast.error('Web proposal URL has expired. Please regenerate.');
+        } else {
+          toast.error('No web proposal available.');
+        }
+      } else {
+        toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred while retrieving the web proposal');
+      console.error('Error in retrieveWebProposal:', error);
+    }
+  };
+
+  //----------------Aurora API integration END-------------------------//
+  //*************************************************************************************************//
+
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
@@ -1422,17 +1427,39 @@ const fetchDesigns = async (projectId: string) => {
                 >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>}
-                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
-                  <img
+                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
+                  {isToggledX ? (
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}>&#x1F781;</div>
+                  ) : (
+                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>&#x1F783;</div>
+                  )}
+
+
+                  {/* <img
                     src={
                       isToggledX === true
                         ? ICONS.ChecronUpX
                         : ICONS.DownArrowDashboard
                     }
-                  />
+                  /> */}
 
                   {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
                 </div>
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    marginTop:"36px",
+                    marginLeft:"36px"
+                  }}
+                  offset={8}
+                  id="downip"
+                  place="top"
+                  content="Minimize or Maximize"
+                />
               </div></div>
           </div>
         </div>
@@ -1510,7 +1537,7 @@ const fetchDesigns = async (projectId: string) => {
                 <LineChart data={lineData}>
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <RechartsTooltip content={<CustomTooltip />} />
                   <Legend
                     className={styles.lineChart_legend}
                     formatter={(value) =>
@@ -1625,14 +1652,42 @@ const fetchDesigns = async (projectId: string) => {
 
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-                <HistoryRedirect
-                // setArchive={setArchive} 
+                <HistoryRedirect />
+                {currentFilter === 'In Progress' && (
+                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
+
+                )}
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                  }}
+                  offset={8}
+                  id="More Pages"
+                  place="bottom"
+                  content="More Pages"
                 />
-                <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                 <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead}>
+                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="NEW"
+                    place="bottom"
+                    content="Add New Lead"
+                  />
 
                   <div
                     className={styles.export_btn}
@@ -1654,6 +1709,24 @@ const fetchDesigns = async (projectId: string) => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="export"
+                    place="bottom"
+                    content="Export"
+                  />
+
+
+
+
                 </div>
               </>
             ) : (
@@ -1708,22 +1781,21 @@ const fetchDesigns = async (projectId: string) => {
               <DataNotFound />
             )
           ) : (
-            // <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh} onCreateProposal={handleCreateProposal} fetchWebProposal={fetchWebProposal(designID)} />
-            <LeadTable 
-            selectedLeads={selectedLeads} 
-            setSelectedLeads={setSelectedLeads} 
-            refresh={refresh} 
-            setRefresh={setRefresh} 
-            onCreateProposal={handleCreateProposal} 
-            fetchWebProposal={fetchWebProposal} 
-            // fetchWebProposal={() => fetchWebProposal(designID,leadIDPdf,leadNamePdf)} 
-          />
+            <LeadTable
+              selectedLeads={selectedLeads}
+              setSelectedLeads={setSelectedLeads}
+              refresh={refresh}
+              setRefresh={setRefresh}
+              onCreateProposal={handleCreateProposal}
+              retrieveWebProposal={retrieveWebProposal}
+              generateWebProposal={generateWebProposal}
+            />
           )}
-          {leadsData.length > 0 && (
+          {leadsData.length > 0 && !isLoading && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
+                  {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
                 </p>
               </div>
 
