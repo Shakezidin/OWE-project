@@ -1,9 +1,13 @@
+.calc-wrapper{
+    margin: -8px -19px;
+    background-color: var(--white-color) !important;
+}
 #calc-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     color: var(--white-color);
-    padding: 1.1rem 5rem;
+    padding: 1.5rem;
     background: linear-gradient(90deg, #159CBF 30%, #6EC135 70%);
 }
 
@@ -25,7 +29,7 @@
 
 #calculator-main {
     display: flex;
-    padding: 1.5rem 3rem;
+    padding: 1.2rem;
     justify-content: space-between;
     position: relative;
 }
@@ -318,7 +322,10 @@
 
 @media (max-width: 1024px){
     #calculator-main{
-        padding: 10px;
+        padding: 10px 12px;
+    }
+    .calc-wrapper{
+        margin: -8px -16px;
     }
     .build-earnout, .equity-growth{
         height: 88vh !important;
@@ -363,6 +370,9 @@
 
 /* Responsive  */
 @media (max-width: 768px) {
+    .calc-wrapper{
+        margin: 0;
+    }
     .desktop-hide{
         display: inline-flex;
     }
