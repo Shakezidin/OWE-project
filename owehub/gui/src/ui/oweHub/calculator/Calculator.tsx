@@ -191,6 +191,7 @@ const Calculator: React.FC = () => {
 
   
   const [activeRole, setActiveRole] = useState('Partner');
+  const [isEquity,setIsEquity]  = useState(false)
 
   const calculateEquityGrowth = (earnOutCalc: any): string => {
     console.log(earnOutCalc);
@@ -299,15 +300,17 @@ const Calculator: React.FC = () => {
       </div>
       <div id="calculator-main">
         {/* Earnout Section */}
-        <div className="build-earnout">
+        <div className={`build-earnout  ${isEquity?"height-mob":""}`}>
           <div className="build-header">
-            <h2>Build Earnout</h2>
-            <div className='build-head-btn'>
+            <h2 className={`sm-btn ${isEquity  ? "mob-header-inactive": "mob-header-active"}`}  onClick={()=>setIsEquity(false)}>Build Earnout</h2>
+            <h2 className= {`sm-btn desktop-hide ${isEquity  ? "mob-header-active": "mob-header-inactive"}`} onClick={()=>setIsEquity(true)}>Equity Growth</h2>
+
+            <div className={`build-head-btn hide-mob ${!isEquity?"selected-tab":""}`}>
               <button className={activeRole === 'Partner' ? 'active' : ''} onClick={() => handleRoleChange('Partner')}>Partner</button>
               <button className={activeRole === 'Sales Rep' ? 'active' : ''} onClick={() => handleRoleChange('Sales Rep')}>Sales Rep</button>
             </div>
           </div>
-          <div className="build-body">
+          <div className={`build-body build-body-mob ${!isEquity?"selected-tab":""}`}>
             {earnoutFilters.map(({ label, min, max, step, marks }) => (
               <div className="filter-wrap" key={label}>
                 <div className="body-header">
@@ -395,18 +398,19 @@ const Calculator: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="build-footer">
+          <div className={`build-footer hide-mob ${!isEquity?"selected-tab":""}`}>
             <button><span>Earnout Amount</span>${calculateEarnout()}</button>
             <p className="footer-value" onClick={handleResetValues}><IoMdRefresh size={16} />Reset Values</p>
           </div>
         </div>
 
         {/* Equity Growth Section */}
-        <div className="equity-growth">
+        <div className={`equity-growth ${isEquity?"selected-tab":""}`}>
           <div className="equity-header">
             <h2>Equity Growth</h2>
+       
           </div>
-          <div className="equity-body">
+          <div className="equity-body margin-mob">
             {equityFilters.map(({ label, min, max, step, marks }) => (
               <div className="filter-wrap" key={label}>
                 <div className="body-header">
