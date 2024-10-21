@@ -62,7 +62,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 24px;
 }
 
 .other {
@@ -229,7 +229,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 1px;
+    margin-top: 0px; 
    
   }
   

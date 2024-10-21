@@ -25,7 +25,7 @@ type UpdateItemRequest struct {
 
 type PodioDatas struct {
 	DealerItemId int64
-	PartnerId    int64
+	PartnerId    string
 	PositionId   int
 	ItemId       int64
 }

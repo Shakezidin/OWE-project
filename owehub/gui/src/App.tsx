@@ -46,6 +46,7 @@ import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
 import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
 import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
+import LoanCalculator from './ui/oweHub/calculator/Calculator';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -165,6 +166,7 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+        <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
       </Routes>
     </BrowserRouter>
   );

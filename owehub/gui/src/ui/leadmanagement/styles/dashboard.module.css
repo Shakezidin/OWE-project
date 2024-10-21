@@ -884,17 +884,30 @@ input[type='checkbox']:checked {
 } */
 /* margin-left: -105px !important */
 
+.upKeys_DownKeysX{
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-bottom: 5.5px !important;
+  color: #2979ff;
+  
+
+}
+.upKeys_DownKeys{
+  color: #2979ff;
+  padding-top: 9px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 
 
+}
 .ButtonAbovearrov{
-  border: 1px solid #377cf6;
-  width: 32px;
+  /* border: 1px solid #377cf6; */
+  width: 32px !important;
+  background-color: #ddebff ;
+  border-radius: 7px;
   height: 32px;
-  margin-left: 5px !important;
-  /* margin-top: 2px !important; */
-  padding-left: 0px !important;
-  border-radius: 8px;
-  background-color: #ddebff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -903,7 +916,8 @@ input[type='checkbox']:checked {
 }
 .ButtonAbovearrov:hover {
   transform: scale(1.06);
-  /* background-color: #0b4cbd; */
+  background-color: #E5E5E5;
+  border: none;
 }
 .date_calendar {
   display: flex;

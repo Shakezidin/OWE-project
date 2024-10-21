@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import MicroLoader from "../../components/loader/MicroLoader";
 import DataNotFound from "../../components/loader/DataNotFound";
 import { format, parseISO } from "date-fns";
+import { Tooltip } from "react-tooltip";
 
 interface EditModalProps {
     isOpen1: boolean;
@@ -101,15 +102,15 @@ const Profile: React.FC<EditModalProps> = ({
 
     useEffect(() => {
         const handleEscapeKey = (event: any) => {
-          if (event.key === 'Escape') {
-            onClose1();
-          }
+            if (event.key === 'Escape') {
+                onClose1();
+            }
         };
         document.addEventListener('keydown', handleEscapeKey);
         return () => {
-          document.removeEventListener('keydown', handleEscapeKey);
+            document.removeEventListener('keydown', handleEscapeKey);
         };
-      }, []);
+    }, []);
 
     return <div>
         {isOpen1 && <div className="transparent-model">
@@ -118,7 +119,7 @@ const Profile: React.FC<EditModalProps> = ({
                     <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
                     <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', marginTop:"200px" }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: "200px" }}>
                         <MicroLoader />
                     </div>
                 ) : leadData ? (
@@ -127,6 +128,7 @@ const Profile: React.FC<EditModalProps> = ({
 
                             <table>
                                 <tbody>
+
 
                                     <tr
                                         className={classes.RowDiv}
@@ -137,19 +139,47 @@ const Profile: React.FC<EditModalProps> = ({
 
                                     <tr>
                                         <td className={classes.leftAlign}>First Name</td>
-                                        <td className={classes.rightAlign}>{leadData?.first_name}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.first_name}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Last Name</td>
-                                        <td className={classes.rightAlign}>{leadData?.last_name}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.last_name}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Email Id</td>
-                                        <td className={classes.rightAlign}>{leadData?.email_id}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.email_id}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Phone Number</td>
-                                        <td className={classes.rightAlign}>{leadData?.phone_number}</td>
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={classes.rightAlign}>{leadData?.phone_number}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Street Address</td>
@@ -167,12 +197,19 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>City</td>
-                                        <td className={classes.rightAlign}>{leadData?.city}</td>
+                                        <td
+                                         style={{
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '200px',
+                                            lineHeight: "16px"
+                                        }}
+                                         className={classes.rightAlign}>{leadData?.city}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Proposal type</td>
                                         <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >......</td>
+                                        >85001</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Finance Type</td>
@@ -195,7 +232,14 @@ const Profile: React.FC<EditModalProps> = ({
                                         <td className={classes.rightAlign}>{leadData?.proposal_signed.toString()}</td>
                                     </tr>
                                     <tr>
-                                        <td className={classes.leftAlign}>Appointment Disposition</td>
+                                        <td className={classes.leftAlign}
+                                        style={{
+                                            lineHeight: "16px",
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '150px',
+                                        }}
+                                        >Appointment Disposition</td>
                                         <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition}</td>
                                     </tr>
 
@@ -212,11 +256,46 @@ const Profile: React.FC<EditModalProps> = ({
                                 <tbody>
                                     <tr>
                                         <td className={classes.leftAlign}>Appointment Disposition Note</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition_note || '.......'}</td>
+                                        <td style={{
+                                            lineHeight: "16px",
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '150px',
+                                        }}
+                                            className={`${classes.rightAlign} ${classes.specialfont}`}>
+                                            {leadData?.appointment_disposition_note || '.......'}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Notes</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.notes || '.......'}</td>
+                                        <td style={{
+                                            lineHeight: "16px",
+                                            whiteSpace: 'pre-wrap',
+                                            overflowWrap: 'break-word',
+                                            maxWidth: '150px',
+                                        }} className={`${classes.rightAlign} ${classes.specialfont}`} data-tooltip-id="notes">
+                                            {leadData?.notes && leadData.notes.length > 60 ? (
+                                                <>
+                                                    {leadData.notes.slice(0, 60)}...
+                                                    <Tooltip
+                                                        style={{
+                                                            zIndex: 20,
+                                                            background: '#f7f7f7',
+                                                            color: '#000',
+                                                            fontSize: 12,
+                                                            paddingBlock: 4,
+                                                            maxWidth: '500px'
+                                                        }}
+                                                        offset={8}
+                                                        id="notes"
+                                                        place="bottom"
+                                                        content={leadData.notes}
+                                                    />
+                                                </>
+                                            ) : (
+                                                leadData?.notes || '.......'
+                                            )}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Created At</td>
@@ -275,7 +354,14 @@ const Profile: React.FC<EditModalProps> = ({
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Created By</td>
-                                        <td className={`${classes.rightAlign} `}
+                                        <td
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '200px',
+                                                lineHeight: "16px"
+                                            }}
+                                            className={`${classes.rightAlign} ${classes.specialfont}`}
                                         >{leadData?.created_by || '.....'}</td>
                                     </tr>
 

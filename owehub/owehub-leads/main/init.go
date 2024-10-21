@@ -180,6 +180,41 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_list_modules",
+		apiHandler.HandleAuroraListModulestRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_modules",
+		apiHandler.HandleAuroraRetrieveModulestRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_generate_web_proposal",
+		apiHandler.HandleAuroraGenerateWebProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_Web_Proposal",
+		apiHandler.HandleAuroraRetrieveWebProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_generate_pdf",
+		apiHandler.HandleAuroraGeneratePdfRequest,
+		false,
+		leadsRoleGroup,
+	},
 
 	// WEBHOOKS
 	{
@@ -187,16 +222,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-leads-service/v1/aurora_webhook",
 		apiHandler.HandleAuroraWebhookAction,
 		false,
-		[]types.UserGroup{types.GroupAdminDealer},
-	},
-
-	// aurora list modules
-	{
-		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/aurora_list_modules",
-		apiHandler.HandleAuroraListModulestRequest,
-		false,
-		[]types.UserGroup{types.GroupAdminDealer},
+		[]types.UserGroup{},
 	},
 }
 

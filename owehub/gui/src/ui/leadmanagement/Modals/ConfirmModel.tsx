@@ -110,7 +110,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
         setReschedule(false);
-        setRefresh((val) => val+1)
+        setRefresh((val) => val + 1)
         setVisibleDiv(1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
@@ -121,7 +121,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.error('Error submitting form:', error);
     }
   };
-  
+
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
 
@@ -180,17 +180,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
- 
+
 
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-
     if (name === 'reason') {
-      if (value.trim() !== '') {
-        setReason(value);
+      const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
+      if (sanitizedValue.trim() !== '') {
+        setReason(sanitizedValue);
         setReasonError(''); // Clear any previous error message
       } else {
         setReason('');
@@ -211,7 +211,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         'update_lead_status',
         {
           leads_id: leadId,
-          status_id: 5,
+          status_id: 6,
           reason: reason,
         },
         true
@@ -221,7 +221,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         toast.success('Status Updated Successfully');
         HandleModal();
         setReason('');
-        setRefresh((val) => val+1)
+        setRefresh((val) => val + 1)
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -436,7 +436,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.pers_det_top}>
                   <div className={classes.Column1Details}>
                     <div className={classes.main_name}>
-                      {leadData?.first_name} {leadData?.last_name}{' '}
+                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 15
+                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 15)}...`
+                        : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
                       <img
                         onClick={HandleModal}
                         className={classes.crossIconImg}
@@ -602,11 +604,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.ApptSentConfirm}>
                     Appointment sent successfully{' '}
                   </span>
-                  {/* <span className={classes.ApptSentDate}>
+                  <span className={classes.ApptSentDate}>
                     {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                     {selectedTime}
-                  </span> */}
-                  {leadData?.appointment_date ? (
+                  </span>
+                  {/* {leadData?.appointment_date ? (
                     <span className={classes.ApptSentDate}>
                       {format(new Date(leadData.appointment_date), 'dd MMM, yyyy.  hh:mm a')}
                     </span>
@@ -615,7 +617,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                       {selectedTime}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div className={classes.survey_button}>
                   {leadData?.appointment_scheduled_date ? (
@@ -673,7 +675,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            
+
             {visibleDiv === 67 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited2}>

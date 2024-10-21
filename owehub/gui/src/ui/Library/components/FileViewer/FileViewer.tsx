@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, RefObject } from 'react';
 import { ICONS } from "../../../../resources/icons/Icons"
 import { MdClose } from 'react-icons/md'
+import { TransformWrapper, TransformComponent, useControls, ReactZoomPanPinchContentRef, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
+import styles from "./index.module.css"
+import {  PiPlusBold,PiMinusBold } from "react-icons/pi";
+import { GrPowerReset } from "react-icons/gr";
+import {AiOutlineExpand} from "react-icons/ai"
+import {BiCollapse} from "react-icons/bi"
 interface IProps {
     fileUrl?: string | undefined;
     fileType?: string | undefined;
@@ -9,6 +15,8 @@ interface IProps {
 }
 
 const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
+    const zoomWrapperRef = React.useRef<ReactZoomPanPinchRef>(null);
+    const [isExpanded, setIsExpanded] = useState(false)
     const isAudio = (mimeType: string): boolean => {
         switch (mimeType) {
             case "audio/mpeg":
@@ -50,7 +58,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                 <div className='flex mb2 items-center justify-between' >
                     <h4 style={{ fontSize: 14 }} > {name} </h4>
                     <button
-                        className='close-btn'
+                        className={styles.close_btn}
                         onClick={(e) => {
                             onClose?.()
                         }}
@@ -64,7 +72,64 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                             <img className='mx-auto block' src={ICONS.audioPlaceholder} alt="" />
                             <audio controls className='mx-auto block mt2' src={fileUrl} style={{ maxWidth: "100%", maxHeight: 500 }} />
                         </>
-                        : <img className='mx-auto block' src={fileUrl} alt={name} style={{ maxWidth: "100%", maxHeight: 500 }} />
+                        :
+                        <div className='relative flex items-center justify-center mx-auto' style={{
+                            maxWidth: isExpanded ? '100%' : 800,
+                            borderRadius: 12,
+                            width: "100%",
+                            minHeight: 200,
+                            position: isExpanded ? 'fixed' : 'relative',
+                            top: isExpanded ? 0 : 'auto',
+                            left: isExpanded ? 0 : 'auto',
+                            right: isExpanded ? 0 : 'auto',
+                            bottom: isExpanded ? 0 : 'auto',
+                            zIndex: isExpanded ? 9999 : 'auto'
+                        }}>
+                            <TransformWrapper
+                                smooth
+                                minScale={.5}
+                                maxScale={10}
+                                ref={zoomWrapperRef}
+                                zoomAnimation={{
+                                    animationType: "linear",
+                                    animationTime: 500
+                                }}
+                                wheel={{
+                                    smoothStep: .1
+                                }}
+                            >
+                                <TransformComponent  >
+                                    <div
+                                        className='mx-auto'
+                                        style={{ width: '100%', height: '100%', cursor: "zoom-in" }}
+                                    >
+                                        <img
+                                            className='mx-auto block'
+                                            src={fileUrl}
+                                            alt={name}
+                                            style={{
+                                                maxWidth: "100%",
+                                                maxHeight: isExpanded ? '100vh' : 500,
+                                                pointerEvents: 'none'
+                                            }}
+                                        />
+
+
+                                    </div>
+
+                                </TransformComponent>
+
+                            </TransformWrapper>
+                            <div className={styles.zoom_control_wrapper}>
+                            <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomIn()}> <PiPlusBold color='#000' size={18} /> </button>
+                            <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomOut()}> <PiMinusBold color='#000' size={18} /> </button>
+                            </div>
+                            <div className={styles.absolute_zoom_control_wrapper}>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.resetTransform()}> <GrPowerReset color='#000' size={18}/> </button>
+                                <button className={styles.zoom_in_btn} onClick={() => setIsExpanded(prev => !prev)}>  {isExpanded ?<BiCollapse color='#000' size={18}/> : <AiOutlineExpand color='#000'size={18}/>}  </button>
+                            </div>
+                        </div>
+
                 }
 
             </div>

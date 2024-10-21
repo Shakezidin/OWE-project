@@ -43,3 +43,13 @@
 .name_div:hover .name_hide{
     display: block;
 }
+
+.grid_date{
+    padding-right: 43px;
+}
+.grid_icon{
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 276px;
+   
+}

@@ -110,3 +110,48 @@ export const auroraCreateProposal = createAsyncThunk(
     }
   }
 );
+
+export const auroraGenerateWebProposal = createAsyncThunk(
+  'proposal/auroraGenerateWebProposal',
+  async (params: { leads_id: number }, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_generate_web_proposal',params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to Generate Web Proposal');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to Generate Web Proposal');
+    }
+  }
+);
+
+export const auroraWebProposal = createAsyncThunk(
+  'proposal/aurora_retrieve_Web_Proposal',
+  async (leadId: number, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_retrieve_Web_Proposal', { leads_id: leadId }, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to fetch Web Proposal');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to fetch Web Proposal');
+    }
+  }
+);
+
+export const auroraListModules = createAsyncThunk(
+  'modules/auroraListModules',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('aurora_list_modules', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to fetch modules');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to fetch modules');
+    }
+  }
+);

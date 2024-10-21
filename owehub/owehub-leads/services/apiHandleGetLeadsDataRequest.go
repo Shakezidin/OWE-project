@@ -78,12 +78,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
-		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE)"
+		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE AND li.proposal_created_date IS NULL)"
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
 		if dataReq.ProgressFilter == "DEAL_WON" {
-			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NULL)"
+			whereClause = "WHERE (li.status_id = 5)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
 			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
@@ -92,17 +92,18 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
-			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
-			whereClause = "WHERE (li.status_id = 5 AND li.proposal_created_date IS NOT NULL AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')"
+			whereClause = "WHERE (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)"
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause = `
 				WHERE (
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-					OR (li.status_id = 5 AND LOWER(li.aurora_proposal_status) != 'completed')
-					OR (li.status_id != 6 AND li.is_appointment_required = FALSE AND LOWER(li.aurora_proposal_status) IS DISTINCT FROM 'completed')
+					OR (li.status_id = 5)
+					OR (li.status_id != 6 AND li.is_appointment_required = FALSE)
+					OR (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)
 				)
 			`
 		}
@@ -130,11 +131,21 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// if dataReq.Search != "" {
+	// 	whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
+	// 	whereClause = fmt.Sprintf(
+	// 		"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
+	// 		whereClause,
+	// 		len(whereEleList),
+	// 		len(whereEleList),
+	// 	)
+
 	if dataReq.Search != "" {
 		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
 		whereClause = fmt.Sprintf(
-			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
+			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d OR (li.first_name || ' ' || li.last_name) ILIKE $%d)",
 			whereClause,
+			len(whereEleList),
 			len(whereEleList),
 			len(whereEleList),
 		)
@@ -200,6 +211,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.aurora_proposal_id,
 				li.is_appointment_required,
 				li.aurora_proposal_status,
+				li.aurora_proposal_link,
+				li.aurora_proposal_updated_at,
 				li.status_id
 				
 			FROM get_leads_info_hierarchy($1) li
@@ -222,14 +235,15 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range data {
 		// appointment label & appointment date
 		var (
-			aptStatusLabel   string
-			aptStatusDate    *time.Time
-			wonLostLabel     string
-			wonLostDate      *time.Time
-			scheduledDatePtr *time.Time
-			acceptedDatePtr  *time.Time
-			leadWonDatePtr   *time.Time
-			declinedDatePtr  *time.Time
+			aptStatusLabel       string
+			aptStatusDate        *time.Time
+			wonLostLabel         string
+			wonLostDate          *time.Time
+			scheduledDatePtr     *time.Time
+			acceptedDatePtr      *time.Time
+			leadWonDatePtr       *time.Time
+			declinedDatePtr      *time.Time
+			proposalUpdatedAtPtr *time.Time
 		)
 
 		leadsId, ok := item["leads_id"].(int64)
@@ -309,6 +323,12 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			proposalStatus = ""
 		}
 
+		proposalLink, ok := item["aurora_proposal_link"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_link from leads info Item %+v", item)
+			proposalLink = ""
+		}
+
 		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
@@ -339,6 +359,14 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			declinedDatePtr = nil
 		} else {
 			declinedDatePtr = &declinedDate
+		}
+
+		proposalUpdatedAt, ok := item["aurora_proposal_updated_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_updated_at from leads info Item: %+v\n", item)
+			proposalUpdatedAtPtr = nil
+		} else {
+			proposalUpdatedAtPtr = &proposalUpdatedAt
 		}
 
 		if !isAptRequired {
@@ -390,6 +418,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			QCAudit:                qcAudit,
 			ProposalID:             proposalId,
 			ProposalStatus:         proposalStatus,
+			ProposalLink:           proposalLink,
+			ProposalUpdatedAt:      proposalUpdatedAtPtr,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)
