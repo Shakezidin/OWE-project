@@ -15,7 +15,9 @@ interface AppointmentSchedulerProps {
 
 const today = new Date();
 const CurrentDate = today.toISOString().split('T')[0];
-// 2024-10-09
+ 
+
+
 
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   setVisibleDiv,
@@ -28,7 +30,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   const [time, setTime] = useState(new Date());
   const [isManualInput, setIsManualInput] = useState(false);
   const manualInputTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  console.log(selectedTime, "doner soem")
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     onDateChange(date);
@@ -36,28 +38,66 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 
   var newTime = new Date(time);
 
+  // const handleDigitalTimeChange = (e: any) => {
+  //   setIsManualInput(true);
+
+  //   if (manualInputTimeoutRef.current) {
+  //     clearTimeout(manualInputTimeoutRef.current);
+  //   }
+
+  //   const [hours, minutes] = e.target.value.split(':').map(Number);
+
+  //   newTime.setHours(hours);
+  //   newTime.setMinutes(minutes);
+  //   newTime.setSeconds(0);
+  //   setTime(newTime);
+
+
+
+
+  //   console.log(`Selected time: ${selectedTime}`);
+  //   setSelectedTime(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+  //   onTimeChange(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+  // };
+
+
   const handleDigitalTimeChange = (e: any) => {
     setIsManualInput(true);
-
+  
     if (manualInputTimeoutRef.current) {
       clearTimeout(manualInputTimeoutRef.current);
     }
-
-    const [hours, minutes] = e.target.value.split(':').map(Number);
-
+  
+    const inputValue = e.target.value;
+    let hours = 0;
+    let minutes = 0;
+  
+    if (inputValue) {
+      const [inputHours, inputMinutes] = inputValue.split(':').map(Number);
+      hours = isNaN(inputHours) ? 0 : inputHours;
+      minutes = isNaN(inputMinutes) ? 0 : inputMinutes;
+    }
+  
     newTime.setHours(hours);
     newTime.setMinutes(minutes);
     newTime.setSeconds(0);
     setTime(newTime);
-
-
-
-
+  
     console.log(`Selected time: ${selectedTime}`);
-    setSelectedTime(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
-    onTimeChange(newTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+  
+    const formattedTime = inputValue
+      ? newTime.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+      : '00:00';
+  
+    setSelectedTime(formattedTime);
+    onTimeChange(formattedTime);
   };
 
+  
   return (
     <div className="appointmentSchedulerContainer">
       {/* <div className="selectorButtons">
@@ -155,8 +195,9 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       </div>
 
       <div
-        className={`sendAppointmentBtn ${selectedTime ? '' : 'sendAppointmentBtnDisabled'}`}
-      // className='sendAppointmentBtn'
+        className={`sendAppointmentBtn ${
+          selectedTime && selectedDate ? '' : 'sendAppointmentBtnDisabled'
+        }`}
       >
         <button
           onClick={() => {

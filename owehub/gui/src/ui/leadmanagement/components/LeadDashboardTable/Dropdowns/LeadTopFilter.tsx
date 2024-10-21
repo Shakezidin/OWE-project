@@ -5,6 +5,7 @@ import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
 import { CiFilter } from 'react-icons/ci';
 import { FaFilter } from 'react-icons/fa';
 import useEscapeKey from '../../../../../hooks/useEscape';
+import { Tooltip } from 'react-tooltip';
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
@@ -37,7 +38,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
     };
   }, []);
 
-  
+
 
   const handleItemClick = (value: string) => {
     setSelectedValue(value);
@@ -52,9 +53,22 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
 
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
-      <div className={classes.filtericonLead} onClick={HistoryButtonCalled}>
+      <div className={classes.filtericonLead} onClick={HistoryButtonCalled} data-tooltip-id="Filters">
         <FaFilter size={14} fontWeight={600} />
       </div>
+      <Tooltip
+        style={{
+          zIndex: 20,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+        }}
+        offset={8}
+        id="Filters"
+        place="bottom"
+        content="Filters"
+      />
       {modenIsOpenX && (
         <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParentLT_FLTR">
           <ul>
@@ -72,7 +86,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
               className={`${classes.selectedFilter} ${selectedValue === 'DEAL_WON' ? classes.active : ''}`}
               onClick={() => handleItemClick('DEAL_WON')}
             >
-             
+
               Deal Won
             </li>
 
@@ -84,20 +98,20 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
               Appointment Accepted{' '}
             </li>
             <li className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_SENT' ? classes.active : ''}`}
-              
+
               onClick={() => handleItemClick('APPOINTMENT_SENT')}
             >
               {' '}
               Appointment Sent
             </li>
             <li className={`${classes.selectedFilter} ${selectedValue === 'PROPOSAL_IN_PROGRESS' ? classes.active : ''}`}
-              
+
               onClick={() => handleItemClick('PROPOSAL_IN_PROGRESS')}
             >
               Proposal In Progress{' '}
             </li>
             <li className={`${classes.selectedFilter} ${selectedValue === 'APPOINTMENT_NOT_REQUIRED' ? classes.active : ''}`}
-             
+
               onClick={() => handleItemClick('APPOINTMENT_NOT_REQUIRED')}
             >
               {' '}
