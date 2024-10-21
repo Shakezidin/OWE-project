@@ -5,6 +5,18 @@
     z-index: 10;
 }
 
+.close_btn {
+    border: none;
+    transition: all 0.3s ease-in-out;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.close_btn:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease-in-out;
+}
+
 .absolute_zoom_control_wrapper button {
     display: block;
     cursor: pointer;
