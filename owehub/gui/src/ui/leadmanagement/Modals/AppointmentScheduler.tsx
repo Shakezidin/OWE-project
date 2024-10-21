@@ -82,8 +82,13 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       newTime.setHours(hours);
       newTime.setMinutes(minutes);
       newTime.setSeconds(0);
-      setSelectedTime(newTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }));
-      onTimeChange(newTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }));
+      const formattedTime = newTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      setSelectedTime(formattedTime);
+      onTimeChange(formattedTime);
     }
   
     setTime(newTime);

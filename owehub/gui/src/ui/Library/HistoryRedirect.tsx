@@ -99,7 +99,7 @@ const HistoryRedirect = () => {
         >
           <ul>
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>
-              History{' '}
+              Records{' '}
             </li>
             <li style={{ color: '#000 !important' }} onClick={ArchivesTable}>
               {' '}
