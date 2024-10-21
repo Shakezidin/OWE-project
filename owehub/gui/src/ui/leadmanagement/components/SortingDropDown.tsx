@@ -4,6 +4,8 @@ import './index.css';
 import classes from "./LeadDashboardTable/Dropdowns/index.module.css"
 import { CiFilter } from 'react-icons/ci';
 import useEscapeKey from '../../../hooks/useEscape';
+import { FaFilter } from 'react-icons/fa';
+import { Tooltip } from 'react-tooltip';
 interface propTypes {
   onChange?: (val: number) => void;
   default?: 'asc' | 'desc' | 'all';
@@ -44,9 +46,24 @@ useEscapeKey(toggleDropdown);
         onClick={toggleDropdown}
         ref={dropdownRef}
         className={`flex items-center justify-center  sort_btn`}
+        data-tooltip-id="Filters"
       >
-        <CiFilter size={22} />
+        <FaFilter size={14} fontWeight={600} />
       </button>
+
+      <Tooltip
+        style={{
+          zIndex: 20,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+        }}
+        offset={8}
+        id="Filters"
+        place="bottom"
+        content="Filters"
+      />
 
       {isDropdownOpen && (
         
