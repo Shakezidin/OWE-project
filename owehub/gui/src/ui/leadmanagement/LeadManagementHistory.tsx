@@ -462,7 +462,7 @@ const LeradManagementHistory = () => {
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.lm_history_header}>
-            {checkedCount == 0 && <h1>RECORDS</h1>}
+            {checkedCount == 0 && <h1>Records</h1>}
             {checkedCount != 0 && (
               <div className={styles.hist_checkbox_count}>
                 <img
@@ -777,7 +777,14 @@ const LeradManagementHistory = () => {
                         <div className={styles.email}>
                           <p>{item.email_id ? item.email_id : 'N/A'}</p>
                         </div>
-                        <div className={styles.address}>
+                        <div className={styles.address}
+                        style={{
+                          whiteSpace: 'pre-wrap',
+                          overflowWrap: 'break-word',
+                          width: '299px',
+                          lineHeight: "16px"
+                        }}
+                        >
                           {item?.street_address
                             ? item.street_address.length > 49
                               ? `${item.street_address.slice(0, 49)}...`

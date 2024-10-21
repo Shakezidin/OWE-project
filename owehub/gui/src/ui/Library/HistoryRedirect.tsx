@@ -17,7 +17,7 @@ const HistoryRedirect = () => {
   const clickableDivRef = useRef<HTMLDivElement>(null);
 
   const handleHistory = () => {
-    navigate('/leadmng-dashboard/leadmng-history');
+    navigate('/leadmng-dashboard/leadmng-records');
   };
 
   const ArchivesTable = () => {
