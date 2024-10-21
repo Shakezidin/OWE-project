@@ -100,6 +100,15 @@ const equityFilters: Filter[] = [
     }
   },
 ];
+// Dynamically add Equity Per validation only if Sales Rep is selected
+const equityPerFilter: Filter = {
+  label: 'Equity Per',
+  value:'',
+  min: 0,
+  max: 300,
+  step: 1,
+  // other options if needed
+};
 
 const Calculator: React.FC = () => {
   const [earnoutValues, setEarnoutValues] = useState<Record<string, number | ''>>({
@@ -132,63 +141,56 @@ const Calculator: React.FC = () => {
     const monthsUntilEarnout = Number(earnoutValues['Months until Earnout (Months)']);
     const growthRatePerMonth = Number(earnoutValues['Growth rate (per month) %']);
     const equityper = Number(earnoutValues['Equity Per']);
-
-    console.log(systemInstallPerMonth, 'systemInstallPerMonth', averageSystemSize, 'averageSystemSize', growthRatePerMonth, 'growthRatePerMonth',  monthsUntilEarnout, 'monthsUntilEarnout', equityper , 'equityper ')
-
+  
     // Initial first value (system installs per month * average system size)
     let firstvalue = systemInstallPerMonth * averageSystemSize;
-
+  
     // Create an array to store all firstvalue results
     const firstValueArray: number[] = [];
-
+  
     // Store the initial value (first month)
     firstValueArray.push(firstvalue);
-
+  
     // Loop through from the second month until earnout and apply compounded growth rate
     for (let i = 1; i < monthsUntilEarnout; i++) {
       firstvalue += firstvalue * (growthRatePerMonth / 100); // Increment value by growth rate percentage
       firstValueArray.push(firstvalue); // Store the current firstvalue in the array
     }
-
-    // Now calculate the sum for every 12 months
+  
+    // Now calculate the sum for the last 12 months (or all if less than 12)
     let totalSum = 0;
     let finalResult = 0;
     let finalResultSalesRep = 0;
-    for (let i = 0; i < firstValueArray.length; i++) {
-      totalSum += firstValueArray[i];
-
-      // Every 12th month, print the sum
-      if ((i + 1) % 12 === 0) {
-        console.log(`Sum for months ${i - 10} to ${i + 1}: ${totalSum.toFixed(2)}`);
-
-        // Check if this is the last 12-month batch
-        if (i + 1 === monthsUntilEarnout) {
-          // Multiply the last 12 months' sum by 375 and return that as the final result
-          finalResult = totalSum * 375;
-          console.log(`Final result (last 12 months sum * 375): ${finalResult.toFixed(2)}`);
-        }
-        finalResultSalesRep = totalSum * equityper;
-           // Set the final result value in state so it can be used elsewhere
- 
-        totalSum = 0; // Reset the sum for the next batch
-      }
-
-    // If there are remaining months after the last full 12-month batch
-    if (totalSum > 0) {
-    console.log(`Sum for remaining months: ${totalSum.toFixed(2)}`);
-
-    // If the remaining months are the last months, apply the multiplication by 375
-    if (monthsUntilEarnout % 12 !== 0) {
+  
+    console.log(firstValueArray)
+    // If monthsUntilEarnout > 12, sum the last 12 months
+    if (monthsUntilEarnout > 12) {
+      // Get the last 12 values from the array
+      const last12Months = firstValueArray.slice(-12);
+     console.log(last12Months, "las12month")
+      // Sum the last 12 months
+      totalSum = last12Months.reduce((sum, value) => sum + value, 0);
+     console.log(totalSum, 'last12monthsvalue')
+      // Multiply the total by 375
       finalResult = totalSum * 375;
-      console.log(`Final result (remaining months sum * 375): ${finalResult.toFixed(2)}`);
+      finalResultSalesRep = totalSum * equityper;
+  
+      console.log(`Final result (last 12 months sum * 375): ${finalResult.toFixed(2)}`);
+    } else {
+      // If monthsUntilEarnout <= 12, sum all the values in the array
+      totalSum = firstValueArray.reduce((sum, value) => sum + value, 0);
+  
+      // Multiply the total by 375
+      finalResult = totalSum * 375;
+      finalResultSalesRep = totalSum * equityper;
+  
+      console.log(`Final result (sum of all months * 375): ${finalResult.toFixed(2)}`);
     }
-  }
-
-    }
-
-   return activeRole === 'Partner' ?  finalResult.toFixed(2) : finalResultSalesRep.toFixed(2)
+  
+    // Return the final result based on the role
+    return activeRole === 'Partner' ? finalResult.toFixed(2) : finalResultSalesRep.toFixed(2);
   };
-
+  
   
   const [activeRole, setActiveRole] = useState('Partner');
   const [isEquity,setIsEquity]  = useState(false)
@@ -215,10 +217,17 @@ const Calculator: React.FC = () => {
 
   const handleInputChange = (label: string, value: string, type: 'earnout' | 'equity') => {
     const numericValue = value === '' ? '' : Number(value);
-    console.log(label, value, type ,"details")
-    const filters = type === 'earnout' ? earnoutFilters : equityFilters;
+    
+    // Fetch filters based on type
+    const filters = type === 'earnout' ? [...earnoutFilters] : [...equityFilters];
+    
+    // If Sales Rep is selected, add the Equity Per filter to earnout
+    if (selectedRole === 'Sales Rep' && label === 'Equity Per') {
+      filters.push(equityPerFilter); // Add the Equity Per filter dynamically
+    }
+  
     const filter = filters.find((f) => f.label === label);
-
+    
     if (filter) {
       if (numericValue === '' || (numericValue >= filter.min && numericValue <= filter.max)) {
         if (type === 'earnout') {
@@ -226,9 +235,14 @@ const Calculator: React.FC = () => {
         } else {
           setEquityValues((prev) => ({ ...prev, [label]: numericValue }));
         }
+      } else {
+        console.error(`Value for ${label} is out of range!`);
       }
     }
   };
+  
+
+  
   const navigate = useNavigate();
 
   // const handleBlur = (label: string, type: 'earnout' | 'equity') => {
@@ -256,7 +270,7 @@ const Calculator: React.FC = () => {
       'Average system size (kw)': 5,
       'Growth rate (per month) %': 0,
       'Months until Earnout (Months)': 0,
-      'Equity Per': 25,
+      'Equity Per': 0,
     });
     setEquityValues({
       'CAGR %':0,
@@ -277,7 +291,7 @@ const Calculator: React.FC = () => {
       'Average system size (kw)': 5,
       'Growth rate (per month) %': 0,
       'Months until Earnout (Months)': 0,
-      'Equity Per': 25,
+      'Equity Per': 0,
     });
    
   }
@@ -364,19 +378,19 @@ const Calculator: React.FC = () => {
                     <input
                       type="number"
                       value={earnoutValues['Equity Per'] !== '' ? earnoutValues['Equity Per'] : ''}
-                      onChange={(e) => handleRangeChange('Equity Per', Number(e.target.value), 'earnout')}
+                      onChange={(e) => handleInputChange('Equity Per', e.target.value, 'earnout')}
                       className="number-input"
                       maxLength={3}
-                      min={25}
+                      min={0}
                       max={300}
                     />
                   </div>
                 </div>
                 <div className="filter">
                   <Slider
-                    min={25}
+                    min={0}
                     max={300}
-                    marks={{ 25: '25', 50: '50', 100: '100', 150: '150', 200: '200', 250: '250', 300: '300' }}
+                    marks={{ 0:'0', 50: '50', 100: '100', 150: '150', 200: '200', 250: '250', 300: '300' }}
                     step={1}
                     value={earnoutValues['Equity Per'] || 0}
                     onChange={(val: number | number[]) => {

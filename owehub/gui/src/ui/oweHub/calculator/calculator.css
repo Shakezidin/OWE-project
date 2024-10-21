@@ -370,6 +370,7 @@
         flex-direction: column;
         padding: 0;
     }
+    .equity-growth{box-shadow: unset !important}
 
     .mob-header-active{
         color: #5E5E5E !important;
