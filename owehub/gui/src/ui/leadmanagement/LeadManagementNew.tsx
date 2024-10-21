@@ -56,6 +56,8 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: trimmedValue,
       }));
+
+
     } else if (name === 'zip_code') {
       const trimmedValueC = value.trim();
       const isValidZipCode = validateZipCode(trimmedValueC);
@@ -72,7 +74,7 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: CorrectValue,
       }));
-    }else if (name === 'notes') {
+    } else if (name === 'notes') {
       const sanitizedValue = value.replace(/\s+/g, ' ');
       setFormData((prevData) => ({
         ...prevData,
@@ -120,13 +122,15 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
+
+
     return errors;
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log('ZIP_CODE');
-    // console.log(formData, 'Checked in Console ');
+
     const errors = validateForm(formData);
     setErrors(errors);
     console.log(formData.zip_code);
@@ -163,11 +167,13 @@ const LeadManagementNew = () => {
     }
 
     console.log(formData, 'FORM SUCCESSFULLY SUBMITTED ');
+    resetFormData();
   };
 
   const resetFormData = () => {
     setFormData(initialFormData);
   };
+ 
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/leadmng-dashboard');
@@ -197,7 +203,6 @@ const LeadManagementNew = () => {
                           onChange={handleInputChange}
                           name="first_name"
                           maxLength={30}
-                        // backgroundColor="#F3F3F3"
                         />
                         {errors.first_name && (
                           <span
@@ -236,7 +241,6 @@ const LeadManagementNew = () => {
                     <div className={classes.salrep_input_container}>
                       <div
                         className={classes.srs_new_create}
-                      // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -248,13 +252,18 @@ const LeadManagementNew = () => {
                           value={formData.mobile_number}
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
-                            setFormData((prevData) => ({
+                             setFormData((prevData) => ({
                               ...prevData,
                               mobile_number: phoneNumber,
                             }));
+                            if (phoneNumber.trim() !== '') {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                mobile_number: '',
+                              }));
+                            }
                           }}
-                        />
-                        {phoneNumberError ||
+                        /> {phoneNumberError ||
                           (errors.mobile_number && (
                             <p className="error-message">
                               {phoneNumberError || errors.mobile_number}
@@ -268,11 +277,20 @@ const LeadManagementNew = () => {
                           label="Email"
                           value={formData.email_id}
                           placeholder={'email@mymail.com'}
-                          onChange={(e) => handleInputChange(e)}
-                          name={'email_id'}
                           maxLength={40}
-                        // disabled={formData.isEdit}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            handleInputChange(e);
+                            if (value.trim() !== '') {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                email_id: '',
+                              }));
+                            }
+                          }}
+                          name={'email_id'}
                         />
+
                         {(emailError || errors.email_id) && (
                           <div className="error-message">
                             {emailError || errors.email_id}
@@ -308,9 +326,24 @@ const LeadManagementNew = () => {
                           label="Zip Code"
                           value={formData.zip_code}
                           placeholder="Zip Code"
-                          onChange={(e) => handleInputChange(e)}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (value.length <= 10) {
+                              handleInputChange(e);
+                              if (value.trim() === '') {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  zip_code: 'Zip Code is required',
+                                }));
+                              } else {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  zip_code: '',
+                                }));
+                              }
+                            }
+                          }}
                           name="zip_code"
-                          maxLength={8}
                         />
                         {(zip_codeError || errors.zip_code) && (
                           <div className="error-message">
@@ -335,8 +368,8 @@ const LeadManagementNew = () => {
                         ></textarea>
                         <p
                           className={`character-count ${formData.notes.trim().length >= 300
-                              ? 'exceeded'
-                              : ''
+                            ? 'exceeded'
+                            : ''
                             }`}
                         >
                           {formData.notes.trim().length}/300 characters
