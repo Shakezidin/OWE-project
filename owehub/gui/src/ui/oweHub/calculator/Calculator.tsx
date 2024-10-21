@@ -18,7 +18,7 @@ interface Filter {
 const earnoutFilters: Filter[] = [
   {
     label: 'System Install (per month)',
-    value: '80',
+    value: '',
     min: 0,
     max: 200,
     step: 5,
@@ -37,8 +37,8 @@ const earnoutFilters: Filter[] = [
     },
   },
   {
-    label: 'Average system size',
-    value: '11',
+    label: 'Average system size (kw)',
+    value: '',
     min: 5,
     max: 15,
     step: 1,
@@ -57,7 +57,7 @@ const earnoutFilters: Filter[] = [
     },
   },
   {
-    label: 'Growth rate (per month)', value: '20', min: 0, max: 25, step: 1, marks: {
+    label: 'Growth rate (per month) %', value: '', min: 0, max: 25, step: 0.5, marks: {
       0: '0', 5: '5',
       10: '10',
       15: '15',
@@ -66,21 +66,22 @@ const earnoutFilters: Filter[] = [
     }
   },
   {
-    label: 'Months until Earnout', value: '30', min: 24, max: 60, step: 1, marks: {
+    label: 'Months until Earnout (Months)', value: '', min: 0, max: 60, step: 1, marks: {
+      0:'0',
+      12: '12',
       24: '24',
-      30: '30',
       36: '36',
-      42: '42',
       48: '48',
-      54: '54',
-      60: '60'
+      60: '60',
     }
   },
 ];
 
 const equityFilters: Filter[] = [
   {
-    label: 'CAGR', value: '15', min: 10, max: 30, step: 1, marks: {
+    label: 'CAGR %', value: '', min: 0, max: 30, step: 0.5, marks: {
+      0:'0',
+      5:'5',
       10: '10',
       15: '15',
       20: '20',
@@ -90,7 +91,7 @@ const equityFilters: Filter[] = [
     }
   },
   {
-    label: 'Years until Next Acquisition / IPO', value: '5', min: 3, max: 7, step: 1, marks: {
+    label: 'Years until Next Acquisition / IPO (Yrs)', value: '', min: 3, max: 7, step: 1, marks: {
       3: '3',
       4: '4',
       5: '5',
@@ -103,16 +104,16 @@ const equityFilters: Filter[] = [
 const Calculator: React.FC = () => {
   const [earnoutValues, setEarnoutValues] = useState<Record<string, number | ''>>({
     'System Install (per month)': 0,
-    'Average system size': 0,
-    'Growth rate (per month)': 0,
-    'Months until Earnout': 0,
-    'Equity Per': 0,
+    'Average system size (kw)': 5,
+    'Growth rate (per month) %': 0,
+    'Months until Earnout (Months)': 0,
+    'Equity Per': 25,
   });
 
   const [equityValues, setEquityValues] = useState<Record<string, number | ''>>({
 
-    'CAGR': 10,
-    'Years until Next Acquisition / IPO': 3,
+    'CAGR %': 0,
+    'Years until Next Acquisition / IPO (Yrs)': 3,
   });
  
   const handleRangeChange = (label: string, value: number, type: 'earnout' | 'equity') => {
@@ -127,10 +128,12 @@ const Calculator: React.FC = () => {
   const calculateEarnout = (): string => {
     // Ensure all values are numbers
     const systemInstallPerMonth = Number(earnoutValues['System Install (per month)']);
-    const averageSystemSize = Number(earnoutValues['Average system size']);
-    const monthsUntilEarnout = Number(earnoutValues['Months until Earnout']);
-    const growthRatePerMonth = Number(earnoutValues['Growth rate (per month)']);
+    const averageSystemSize = Number(earnoutValues['Average system size (kw)']);
+    const monthsUntilEarnout = Number(earnoutValues['Months until Earnout (Months)']);
+    const growthRatePerMonth = Number(earnoutValues['Growth rate (per month) %']);
     const equityper = Number(earnoutValues['Equity Per']);
+
+    console.log(systemInstallPerMonth, 'systemInstallPerMonth', averageSystemSize, 'averageSystemSize', growthRatePerMonth, 'growthRatePerMonth',  monthsUntilEarnout, 'monthsUntilEarnout', equityper , 'equityper ')
 
     // Initial first value (system installs per month * average system size)
     let firstvalue = systemInstallPerMonth * averageSystemSize;
@@ -170,10 +173,18 @@ const Calculator: React.FC = () => {
         totalSum = 0; // Reset the sum for the next batch
       }
 
-    }
+    // If there are remaining months after the last full 12-month batch
+    if (totalSum > 0) {
+    console.log(`Sum for remaining months: ${totalSum.toFixed(2)}`);
 
-    
-   
+    // If the remaining months are the last months, apply the multiplication by 375
+    if (monthsUntilEarnout % 12 !== 0) {
+      finalResult = totalSum * 375;
+      console.log(`Final result (remaining months sum * 375): ${finalResult.toFixed(2)}`);
+    }
+  }
+
+    }
 
    return activeRole === 'Partner' ?  finalResult.toFixed(2) : finalResultSalesRep.toFixed(2)
   };
@@ -185,25 +196,25 @@ const Calculator: React.FC = () => {
     console.log(earnOutCalc);
     
     // Extract the CAGR and Years values, defaulting to 0 if they are not provided
-    const rate = Number(equityValues['CAGR']) || 0; // CAGR as a percentage
-    const years = Number(equityValues['Years until Next Acquisition / IPO']) || 0; // Number of years
+    const rate = Number(equityValues['CAGR %']) || 0; // CAGR as a percentage
+    const years = Number(equityValues['Years until Next Acquisition / IPO (Yrs)']) || 0; // Number of years
   
     // Ensure earnOutCalc is a number
     const initialValue = Number(earnOutCalc);
   
     // Calculate the future value based on CAGR and years
-    const growth = initialValue * Math.pow(1 + rate / 100, years);
+    const growth = initialValue * Math.pow(1 + rate / 100, years-1);
     console.log(growth, 'growth')
     // Return the calculated growth, formatted to 2 decimal places
     return growth.toFixed(2);
   };
 
   
-  const [selectedRole, setSelectedRole] = useState<'Partner' | 'Sales Rep' | null>(null); // New state to track role
+  const [selectedRole, setSelectedRole] = useState<'Partner' | 'Sales Rep' | null>(null); 
 
   const handleInputChange = (label: string, value: string, type: 'earnout' | 'equity') => {
     const numericValue = value === '' ? '' : Number(value);
-
+    console.log(label, value, type ,"details")
     const filters = type === 'earnout' ? earnoutFilters : equityFilters;
     const filter = filters.find((f) => f.label === label);
 
@@ -219,17 +230,17 @@ const Calculator: React.FC = () => {
   };
   const navigate = useNavigate();
 
-  const handleBlur = (label: string, type: 'earnout' | 'equity') => {
-    if (type === 'earnout') {
-      if (earnoutValues[label] === '') {
-        setEarnoutValues((prev) => ({ ...prev, [label]: getDefaultValue(label, earnoutFilters) }));
-      }
-    } else {
-      if (equityValues[label] === '') {
-        setEquityValues((prev) => ({ ...prev, [label]: getDefaultValue(label, equityFilters) }));
-      }
-    }
-  };
+  // const handleBlur = (label: string, type: 'earnout' | 'equity') => {
+  //   if (type === 'earnout') {
+  //     if (earnoutValues[label] === '') {
+  //       setEarnoutValues((prev) => ({ ...prev, [label]: getDefaultValue(label, earnoutFilters) }));
+  //     }
+  //   } else {
+  //     if (equityValues[label] === '') {
+  //       setEquityValues((prev) => ({ ...prev, [label]: getDefaultValue(label, equityFilters) }));
+  //     }
+  //   }
+  // };
 
   const getDefaultValue = (label: string, filters: Filter[]): number => {
     const filter = filters.find((f) => f.label === label);
@@ -241,11 +252,16 @@ const Calculator: React.FC = () => {
     setSelectedRole(role);
     setEarnoutValues({
       'System Install (per month)': 0,
-      'Average system size': 0,
-      'Growth rate (per month)': 0,
-      'Months until Earnout': 0,
-      'Equity Per': 0,
+      'Average system size (kw)': 5,
+      'Growth rate (per month) %': 0,
+      'Months until Earnout (Months)': 0,
+      'Equity Per': 25,
     });
+    setEquityValues({
+      'CAGR %':0,
+      'Years until Next Acquisition / IPO (Yrs)':3
+
+    })
     
     setActiveRole(role);
   };
@@ -257,17 +273,23 @@ const Calculator: React.FC = () => {
   const handleResetValues = () => {
     setEarnoutValues({
       'System Install (per month)': 0,
-      'Average system size': 0,
-      'Growth rate (per month)': 0,
-      'Months until Earnout': 0,
-      'Equity Per': 0,
+      'Average system size (kw)': 5,
+      'Growth rate (per month) %': 0,
+      'Months until Earnout (Months)': 0,
+      'Equity Per': 25,
     });
+   
+  }
+
+  const handleResetValues1 = () => {
+    
     setEquityValues({
-      'CAGR':10,
-      'Years until Next Acquisition / IPO':3
+      'CAGR %':0,
+      'Years until Next Acquisition / IPO (Yrs)':3
 
     })
   }
+
 
   return (
     <>
@@ -295,7 +317,7 @@ const Calculator: React.FC = () => {
                       type="number"
                       value={earnoutValues[label] !== '' ? earnoutValues[label] : ''}
                       onChange={(e) => handleInputChange(label, e.target.value, 'earnout')}
-                      onBlur={() => handleBlur(label, 'earnout')}
+                      // onBlur={() => handleBlur(label, 'earnout')}
                       className="number-input"
                       maxLength={3}
                       min={min}
@@ -334,7 +356,7 @@ const Calculator: React.FC = () => {
             {selectedRole === 'Sales Rep' && (
               <div className="filter-wrap">
                 <div className="body-header">
-                  <p>Equity Per Kw</p>
+                  <p>Equity Per (kw)</p>
                   <div className="input-group">
                     <input
                       type="number"
@@ -345,7 +367,6 @@ const Calculator: React.FC = () => {
                       min={25}
                       max={300}
                     />
-                    <span>kw</span>
                   </div>
                 </div>
                 <div className="filter">
@@ -395,9 +416,9 @@ const Calculator: React.FC = () => {
                       type="number"
                       value={equityValues[label] !== '' ? equityValues[label] : ''}
                       onChange={(e) => handleInputChange(label, e.target.value, 'equity')}
-                      onBlur={() => handleBlur(label, 'equity')}
+                      
                       className="number-input"
-                      maxLength={3}
+                     
                       min={min}
                       max={max}
                     />
@@ -434,7 +455,7 @@ const Calculator: React.FC = () => {
           </div>
           <div className="equity-footer">
             <button><span>Equity Growth</span>${calculateEquityGrowth(calculateEarnout())}</button>
-            <p className="footer-value" onClick={handleResetValues}><IoMdRefresh size={16} />Reset Values</p>
+            <p className="footer-value" onClick={handleResetValues1}><IoMdRefresh size={16} />Reset Values</p>
           </div>
         </div>
       </div>

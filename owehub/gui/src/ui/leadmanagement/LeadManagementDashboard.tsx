@@ -8,10 +8,11 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   Sector,
 } from 'recharts';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 import axios from 'axios';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
@@ -1050,25 +1051,22 @@ const LeadManagementDashboard = () => {
     let statusId;
     switch (currentFilter) {
       case 'Action Needed':
-        statusId = "ACTION_NEEDED";
+        statusId = 'ACTION_NEEDED';
         break;
-      case 'Pending':
-        statusId = "NEW";
+      case 'New Leads':
+        statusId = 'NEW';
         break;
-      case 'Sent':
-        statusId = 1;
-        break;
-      case 'Accepted':
-        statusId = 2;
+      case 'In Progress':
+        statusId = 'PROGRESS';
         break;
       case 'Declined':
-        statusId = "DECLINED";
+        statusId = 'DECLINED';
         break;
       case 'Projects':
         statusId = 5;
         break;
       default:
-        statusId = "NEW";
+        statusId = 'NEW';
     }
 
     const data = {
@@ -1427,7 +1425,7 @@ const LeadManagementDashboard = () => {
                 >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>}
-                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov}>
+                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
                   {isToggledX ? (
                     <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}>&#x1F781;</div>
                   ) : (
@@ -1445,6 +1443,21 @@ const LeadManagementDashboard = () => {
 
                   {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
                 </div>
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    marginTop:"36px",
+                    marginLeft:"36px"
+                  }}
+                  offset={8}
+                  id="downip"
+                  place="top"
+                  content="Minimize or Maximize"
+                />
               </div></div>
           </div>
         </div>
@@ -1522,7 +1535,7 @@ const LeadManagementDashboard = () => {
                 <LineChart data={lineData}>
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <RechartsTooltip content={<CustomTooltip />} />
                   <Legend
                     className={styles.lineChart_legend}
                     formatter={(value) =>
@@ -1637,14 +1650,42 @@ const LeadManagementDashboard = () => {
 
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-                <HistoryRedirect
-                // setArchive={setArchive} 
+                <HistoryRedirect />
+                {currentFilter === 'In Progress' && (
+                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
+
+                )}
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                  }}
+                  offset={8}
+                  id="More Pages"
+                  place="bottom"
+                  content="More Pages"
                 />
-                <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                 <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead}>
+                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="NEW"
+                    place="bottom"
+                    content="Add New Lead"
+                  />
 
                   <div
                     className={styles.export_btn}
@@ -1666,6 +1707,24 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="export"
+                    place="bottom"
+                    content="Export"
+                  />
+
+
+
+
                 </div>
               </>
             ) : (
@@ -1730,11 +1789,11 @@ const LeadManagementDashboard = () => {
               generateWebProposal={generateWebProposal}
             />
           )}
-          {leadsData.length > 0 && (
+          {leadsData.length > 0 && !isLoading && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
+                  {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
                 </p>
               </div>
 
