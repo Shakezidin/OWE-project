@@ -230,11 +230,15 @@ const AddNew = () => {
                           }}
                           controlStyles={{
                             backgroundColor: '#F3F3F3',
-                            width: '80%',
+                            width: '85%',
                             borderStyle: 'none',
-                            '@media only screen and (max-width: 750px)': {
+                            '@media only screen and (max-width: 600px)': {
                               width: '240%',
                             },
+                            '@media only screen and (min-width: 600px) and (max-width: 820px)': {
+                              width: '100%',
+                            },
+
                           }}
                           enableHoverEffect={false}
                         />

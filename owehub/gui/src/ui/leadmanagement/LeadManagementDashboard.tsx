@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   PieChart,
   Pie,
@@ -8,10 +8,11 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   Sector,
 } from 'recharts';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 import axios from 'axios';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
@@ -22,7 +23,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import ThreeDotsImage from '../Library/stylesFolder/ThreeDots.svg';
+import Papa from 'papaparse';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -44,11 +45,18 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
+  auroraWebProposal, auroraGenerateWebProposal, auroraListModules
+} from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
-// import { Select } from 'react-day-picker';
-// import styles from './styles/lmhistory.module.css';
+import LeadTable from './components/LeadDashboardTable/leadTable';
+import { MdDownloading } from 'react-icons/md';
+import { LuImport } from 'react-icons/lu';
+import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
+import { debounce } from '../../utiles/debounce';
+import useEscapeKey from '../../hooks/useEscape';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -78,6 +86,8 @@ interface Proposal {
   proposal_template_id: string;
   proposal_link: string;
 }
+
+
 
 interface WebProposal {
   url: string;
@@ -132,152 +142,7 @@ type Lead = {
   status: string;
 };
 
-const leads = [
-  {
-    id: '1',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '2',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '3',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '4',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '5',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '6',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '7',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '8',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '9',
-    name: 'Rabindra Kumar Sharma',
-    phone: '+00 876472822',
-    email: 'rabindr718@gmail.com',
-    address: 'Patel Nagar, Dehradun, UK',
-    status: 'Accepted',
-  },
-  {
-    id: '10',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Declined',
-  },
-  {
-    id: '11',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '12',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Accepted',
-  },
-  {
-    id: '13',
-    name: 'XYZ Name',
-    phone: '+00 876472822',
-    email: 'xyz8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '14',
-    name: 'Virendra Sehwag',
-    phone: '+00 876472822',
-    email: 'sehwag8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '15',
-    name: 'Bhuvneshwar Kumar',
-    phone: '+00 876472822',
-    email: 'bhuvi8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'No Response',
-  },
-  {
-    id: '16',
-    name: 'Jasprit Bumrah',
-    phone: '+00 876472822',
-    email: 'jasprit8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Update Status',
-  },
-  {
-    id: '17',
-    name: 'Risabh Pant',
-    phone: '+00 876472822',
-    email: 'rp8772@gmail.com',
-    address: 'haridwar, Delhi',
-    status: 'No Response',
-  },
-  {
-    id: '18',
-    name: 'Virat Kohli',
-    phone: '+00 876472822',
-    email: 'king8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Deal Won',
-  },
-];
+
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -396,36 +261,8 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Pending':
-      return '#FF832A';
-    case 'Sent':
-      return '#81A6E7';
-    case 'Accepted':
-      return '#52B650';
-    case 'Declined':
-      return '#CD4040';
-    case 'Action Needed':
-      return '#63ACA3';
-    default:
-      return '#000000';
-  }
-};
 
-// const ActionNeeded={
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-// }
-const statusMap = {
-  'Pending leads': 'Pending',
-  'Appointment accepted': 'Accepted',
-  'Appointment sent': 'Sent',
-  'Appointment declined': 'Declined',
-  'Action Needed': 'Action Needed',
-};
+
 
 const CustomTooltip = ({
   active,
@@ -442,7 +279,7 @@ const CustomTooltip = ({
         style={{
           backgroundColor: 'white',
           padding: '5px 10px',
-          zIndex:"99",
+          zIndex: '99',
           borderRadius: '4px',
           // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
@@ -471,8 +308,7 @@ const CustomTooltip = ({
 
 const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [currentFilter, setCurrentFilter] = useState('Pending');
-  const [filteredLeads, setFilteredLeads] = useState(leads);
+  const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -480,7 +316,10 @@ const LeadManagementDashboard = () => {
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
+  // const [ChevronClick, setChevronClick] = useState(true);
   const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
+  const [selectedValue, setSelectedValue] = useState('ALL');
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -527,21 +366,29 @@ const LeadManagementDashboard = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
+  const isMobileChevron = useMatchMedia('(max-width: 767px)');
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const isMobileFixed = useMatchMedia(
+    '(min-width: 320px) and (max-width: 480px)'
+  );
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
   const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
-
+  const [isToggledX, setIsToggledX] = useState(true);
+  const [designID, setDesignsID] = useState<string>(''); // Change to string
+  const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
+  const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
 
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
   };
+
 
   const goToNextPage = () => {
     setPage(page + 1);
@@ -550,10 +397,19 @@ const LeadManagementDashboard = () => {
   const goToPrevPage = () => {
     setPage(page - 1);
   };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
+  };
 
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+
+  const handleCalenderClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(handleCalenderClose);
 
   //CALLING FOR RANGE PICK IN USING SELECT CODE
   const handlePeriodChange = (
@@ -597,7 +453,14 @@ const LeadManagementDashboard = () => {
   const navigate = useNavigate();
 
   const handleAddLead = () => {
-    navigate('/leadmgt-addnew');
+    navigate('/leadmng-dashboard/leadmgt-addnew');
+  };
+
+  const statusMap = {
+    'NEW': 'New Leads',
+    'PROGRESS': 'In Progress',
+    'DECLINED': 'Declined',
+    'ACTION_NEEDED': 'Action Needed',
   };
 
   useEffect(() => {
@@ -605,7 +468,6 @@ const LeadManagementDashboard = () => {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
-      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
     }
   }, [activeIndex]);
 
@@ -615,7 +477,6 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
-    setFilteredLeads(leads.filter((lead) => lead.status === filter));
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -623,33 +484,7 @@ const LeadManagementDashboard = () => {
     );
   };
 
-  const handleLeadSelection = (leadId: number) => {
-    setSelectedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
-    );
-  };
 
-  const handleReschedule = (lead: any) => {
-    setShowConfirmModal(true);
-  };
-
-  const handleArchive = (lead: Lead) => {
-    setLeadToArchive(lead); // Store the lead to be archived
-    setShowArchiveModal(true); // Show the modal
-  };
-
-  const handleDetailModal = (lead: Lead) => {
-    setShowConfirmModal(true); // Show detail modal
-  };
-
-  const handleChevronClick = (itemId: number) => {
-    console.log(itemId);
-    setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId) ? [] : [itemId]
-    );
-  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -659,16 +494,8 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
-  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
-  const handleOpenArcModal = () => {
-    console.log('click on arch');
-    setIsArcModalOpen(true);
-    console.log(isArcModalOpen);
-  };
+ 
 
-  const handleCloseArcModal = () => {
-    setIsArcModalOpen(false);
-  };
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -723,11 +550,10 @@ const LeadManagementDashboard = () => {
   }, [isAuthenticated, selectedDates]);
 
   const defaultData: DefaultData = {
-    PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
-    SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
-    ACCEPTED: { name: 'Appointment accepted', value: 0, color: '#52B650' },
-    DECLINED: { name: 'Appointment declined', value: 0, color: '#CD4040' },
-    'ACTION NEEDED': { name: 'Action Needed', value: 0, color: '#63ACA3' },
+    NEW: { name: 'NEW', value: 0, color: '#52B650' },
+    PROGRESS: { name: 'PROGRESS', value: 0, color: '#81A6E7' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#CD4040' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#FF832A' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -741,6 +567,8 @@ const LeadManagementDashboard = () => {
   const [totalValue, setTotalValue] = useState<number>(0);
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
+
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -759,24 +587,25 @@ const LeadManagementDashboard = () => {
             },
             true
           );
-  
+
           if (response.status === 200) {
-            const apiData = response.data.leads;
+            const apiData = response.data;
             const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => { 
-                acc[item.status_name] = {
-                  name: defaultData[item.status_name].name,
-                  value: item.count,
-                  color: defaultData[item.status_name].color,
-                };
+              (acc: DefaultData, item: any) => {
+                const statusName = item.status_name;
+                if (statusName in defaultData) {
+                  acc[statusName] = {
+                    name: defaultData[statusName].name,
+                    value: item.count,
+                    color: defaultData[statusName].color,
+                  };
+                }
                 return acc;
               },
-              {} as DefaultData
+              { ...defaultData }
             );
-            const mergedData = Object.values({
-              ...defaultData,
-              ...formattedData,
-            }) as StatusData[];
+
+            const mergedData = Object.values(formattedData) as StatusData[];
             setPieData(mergedData);
           } else if (response.status > 201) {
             toast.error(response.data.message);
@@ -787,10 +616,10 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-  
+
       fetchData();
     }
-  }, [isAuthenticated, selectedDates,ref,isModalOpen, refresh]);
+  }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -807,7 +636,7 @@ const LeadManagementDashboard = () => {
   );
 
   const getAuroraData = async () => {
-    setIsLoading(true);
+    setIsProjectLoading(true); // Start project-specific loader
     try {
       const response = await axios.get('http://localhost:5000/api/projects');
       // Handle the response as needed
@@ -816,35 +645,41 @@ const LeadManagementDashboard = () => {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setIsLoading(false);
+      setIsProjectLoading(false); // Stop project-specific loader
     }
   };
-  
+
+  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('');
+
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 800),
+    []
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
       switch (currentFilter) {
         case 'Action Needed':
-          statusId = 4;
+          statusId = 'ACTION_NEEDED';
           break;
-        case 'Pending':
-          statusId = 0;
+        case 'New Leads':
+          statusId = 'NEW';
           break;
-        case 'Sent':
-          statusId = 1;
-          break;
-        case 'Accepted':
-          statusId = 2;
+        case 'In Progress':
+          statusId = 'PROGRESS';
           break;
         case 'Declined':
-          statusId = 3;
+          statusId = 'DECLINED';
           break;
         case 'Projects':
           statusId = 5;
           break;
         default:
-        statusId = 0;
+          statusId = 'NEW';
       }
 
       const data = {
@@ -854,9 +689,11 @@ const LeadManagementDashboard = () => {
         end_date: selectedDates.endDate
           ? format(selectedDates.endDate, 'dd-MM-yyyy')
           : '',
-        status_id: statusId,
+        "status": statusId,
         is_archived: archive,
-        page_size: 10,
+        progress_filter: selectedValue ? selectedValue : "ALL",
+        search: searchTerm,
+        page_size: itemsPerPage,
         page_number: archive ? 1 : page,
       };
 
@@ -867,6 +704,7 @@ const LeadManagementDashboard = () => {
       }
     }
   }, [
+    searchTerm,
     selectedDates,
     isModalOpen,
     archive,
@@ -874,10 +712,10 @@ const LeadManagementDashboard = () => {
     itemsPerPage,
     page,
     currentFilter,
+    selectedValue,
     refresh,
     ref,
   ]);
-
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -918,112 +756,516 @@ const LeadManagementDashboard = () => {
   };
 
   // Function to fetch project details
-const fetchProjectDetails = async (projectId: string) => {
-  try {
+  const fetchProjectDetails = async (projectId: string) => {
+    const monthlyEnergy = [
+      100, 200, 150, 100, 250, 300, 100, 400, 100, 350, 450, 100,
+    ]; // Example data
+    const monthlyBill = [50, 75, 60, 50, 80, 90, 90, 100, 110, 120, 50, 60]; // Example data
+    try {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}`
       );
-    setSelectedProject(response.data); // Set the selected project details
-    fetchDesigns(projectId); // Fetch designs for the selected project
-  } catch (error) {
-    console.error('Error fetching project details:', error);
-  }
-};
+      setSelectedProject(response.data); // Set the selected project details
+      fetchDesigns(projectId); // Fetch designs for the selected project
+      // fetchConsumptionProfile(projectId); // Fetch Consumption Profile for the selected project
+      // updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
+    } catch (error) {
+      console.error('Error fetching project details:', error);
+    }
+  };
 
-// Function to fetch designs for a project
-const fetchDesigns = async (projectId: string) => {
-  try {
-    const response = await axios.get(`http://localhost:5000/api/designs/${projectId}`);
-    setDesigns(response.data.designs); // Set the designs for the selected project
-    
-    // Find the most recently created design
-    if (response.data.designs && response.data.designs.length > 0) {
-      const sortedDesigns = response.data.designs.sort((a: Design, b: Design) => 
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  // Function to fetch designs for a project
+  const fetchDesigns = async (projectId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${projectId}`
       );
-      const latestDesign = sortedDesigns[0];
-      
-      // Call fetchProposal with the latest design's ID
-      // fetchProposal(latestDesign.id);
-      // fetchWebProposal(latestDesign.id);
-      generateWebProposalUrl(latestDesign.id);
-    } else {
-      console.log('No designs found for this project');
+      setDesigns(response.data.designs); // Set the designs for the selected project
+
+      // Find the most recently created design
+      if (response.data.designs && response.data.designs.length > 0) {
+        const sortedDesigns = response.data.designs.sort(
+          (a: Design, b: Design) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        const latestDesign = sortedDesigns[0];
+
+        // Generate new URL every time and fetch the proposal
+        generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
+        // Pass external_provider_id and name to fetchWebProposal
+        // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
+        setDesignsID(latestDesign.id);
+        setLeadPdf(latestDesign.external_provider_id);
+        setLeadNamePdf(latestDesign.name);
+
+      } else {
+        console.log('No designs found for this project');
+      }
+    } catch (error) {
+      console.error('Error fetching designs:', error);
     }
-  } catch (error) {
-    console.error('Error fetching designs:', error);
-  }
-};
+  };
 
-// Function to fetch proposal for a design
-const fetchProposal = async (designId: string) => {
-  try {
-    const response = await axios.get<{ proposal: Proposal }>(`http://localhost:5000/api/proposals/${designId}`);
-    setProposal(response.data.proposal);
-    
-    // Automatically open the proposal link in a new tab
-    openProposalLink(response.data.proposal.proposal_link);
-  } catch (error) {
-    console.error('Error fetching proposal:', error);
-  }
-};
 
-// Function to fetch Web Proposal for a design
-const fetchWebProposal = async (designId: string) => {
-  try {
-    const response = await axios.get<{ web_proposal: WebProposal }>(
-      `http://localhost:5000/api/web-proposals/${designId}`
-    );
-    
-    // Set the web proposal in state if you want to store it
-    setWebProposal(response.data.web_proposal);
-    
-    // Automatically open the web proposal link in a new tab
-    openProposalLink(response.data.web_proposal.url);
-  } catch (error) {
-    console.error('Error fetching web proposal:', error);
-  }
-};
+  // Function to fetch proposal for a design
+  const fetchProposal = async (designId: string) => {
+    try {
+      const response = await axios.get<{ proposal: Proposal }>(
+        `http://localhost:5000/api/proposals/${designId}`
+      );
+      setProposal(response.data.proposal);
 
-// const generateWebProposalUrl = async (designId: string) => {
-//   try {
-//     const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
-//     console.log('Generated Web Proposal URL:', response.data);
-//     // Handle the response data as needed (e.g., open the URL in a new tab)
-//   } catch (error) {
-//     console.error('Error generating web proposal URL:', error);
-//   }
-// };
-
-const generateWebProposalUrl = async (designId: string) => {
-  try {
-    const response = await axios.post(`http://localhost:5000/api/web-proposals/${designId}/generate`);
-    const proposalUrl = response.data.web_proposal.url;
-    
-    if (!response.data.web_proposal.url_expired) {
-      console.log('Generated Web Proposal URL:', proposalUrl);
-      openProposalLink(proposalUrl); // Open the proposal URL in a new tab
-    } else {
-      console.error('The web proposal URL has expired.');
+      // Automatically open the proposal link in a new tab
+      openProposalLink(response.data.proposal.proposal_link);
+    } catch (error) {
+      console.error('Error fetching proposal:', error);
     }
-  } catch (error) {
-    console.error('Error generating web proposal URL:', error);
+  };
+
+  // // Function to fetch Web Proposal for a design 
+  // const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
+  //   try {
+  //     // Step 1: Fetch the web proposal from the API
+  //     const response = await axios.get<{ web_proposal: { url: string } }>(
+  //       `http://localhost:5000/api/web-proposals/${designId}`
+  //     );
+
+  //     const proposalLink = response.data.web_proposal.url;
+  //     console.log('Proposal Link:', proposalLink);
+
+  //     // Step 2: Open the link in a new tab (optional)
+  //     window.open(proposalLink, '_blank');
+
+  //     // Step 3: Trigger server-side function to generate and download PDF
+  //     await axios.post('http://localhost:5000/download-pdf', {
+  //       fileUrl: proposalLink,
+  //       leadName: projectName, // Pass the project name
+  //       externalProviderId, // Pass the external provider ID if needed
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching web proposal:', error);
+  //   }
+  // };
+
+  const downloadFile = async (fileUrl: string) => {
+    const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch the file');
+      }
+
+      // Convert the response to a Blob
+      const blob = await response.blob();
+
+      // Create a link element, set its href to the Blob, and trigger the download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'proposal.pdf'; // Adjust filename if needed
+      link.click();
+
+      // Cleanup the object URL
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
+
+  // Function to handle click event and call API
+  const handleViewProposalClick = async (proposalId: number) => {
+    try {
+      // Replace this URL with the actual API endpoint
+      const response = await axios.get(`/api/proposals/${proposalId}`, {
+        responseType: 'blob' // If you expect to download a PDF
+      });
+
+      // Create a link element to download the PDF
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'proposal.pdf'); // Specify the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Failed to download proposal:', error);
+    }
   }
-};
 
-// Function to open the proposal link in a new tab
-const openProposalLink = (link: string) => {
-  window.open(link, '_blank', 'noopener,noreferrer');
-};
+  const generateWebProposalUrl = async (designId: string) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/web-proposals/${designId}/generate`
+      );
+      const proposalUrl = response.data.web_proposal.url;
 
-  //************************************************************************************************ */
+      if (!response.data.web_proposal.url_expired) {
+        console.log('Generated Web Proposal URL:', proposalUrl);
+        openProposalLink(proposalUrl); // Open the proposal URL in a new tab
+      } else {
+        console.error('The web proposal URL has expired.');
+      }
+    } catch (error) {
+      console.error('Error generating web proposal URL:', error);
+    }
+  };
+
+  const fetchDesignSummary = async (designId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/summary`
+      );
+      console.log('Retrieved Design Summary:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design summary:', error);
+      throw error;
+    }
+  };
+
+  const fetchDesignPricing = async (designId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/pricing`
+      );
+      console.log('Retrieved Design Pricing:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching design pricing:', error);
+      throw error;
+    }
+  };
+
+  const fetchFinanceListing = async (designId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/financings`
+      );
+      const financings = response.data.financings;
+
+      console.log('Retrieved Financings:', financings);
+
+      if (financings && financings.length > 0) {
+        // Assuming you want to use the first financing ID
+        const financingId = financings[0].id;
+
+        // Call the next API using the financing ID
+        fetchFinancingDetails(designId, financingId);
+      } else {
+        console.error('No financings found');
+      }
+    } catch (error) {
+      console.error('Error fetching financings:', error);
+    }
+  };
+
+  const fetchFinancingDetails = async (
+    designId: string,
+    financingId: string
+  ) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/designs/${designId}/financings/${financingId}`
+      );
+      console.log('Financing details fetched successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching financing details:', error);
+      throw error;
+    }
+  };
+
+  const fetchConsumptionProfile = async (projectId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/projects/${projectId}/consumption_profile`
+      );
+      console.log('Retrieved Consumption Profile:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching consumption profile:', error);
+      throw error;
+    }
+  };
+
+  const updateConsumptionProfile = async (
+    projectId: string,
+    monthlyEnergy: (number | null)[],
+    monthlyBill: (number | null)[]
+  ) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/projects/${projectId}/consumption_profile`,
+        {
+          consumption_profile: {
+            monthly_energy: monthlyEnergy,
+            // monthly_bill: monthlyBill,
+          },
+        }
+      );
+      console.log('Consumption Profile Updated:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating consumption profile:', error);
+      throw error;
+    }
+  };
+
+  // Function to open the proposal link in a new tab
+  const openProposalLink = (link: string) => {
+    window.open(link, '_blank', 'noopener,noreferrer');
+  };
+
+
+  const OpenWindowClick = () => {
+    setIsToggledX((prev) => !prev);
+  };
+
+  const [exporting, setIsExporting] = useState(false);
+
+  const exportCsv = async () => {
+    setIsExporting(true);
+    const headers = [
+      'Leads ID',
+      'Status ID',
+      'First Name',
+      'Last Name',
+      'Phone Number',
+      'Email ID',
+      'Street Address',
+      'Zipcode',
+      'Deal Date',
+      'Deal Status',
+      'Appointment Scheduled',
+      'Appointment Accepted',
+      'Appointment Date',
+      'Deal Won',
+      'Proposal Sent',
+    ];
+
+    let statusId;
+    switch (currentFilter) {
+      case 'Action Needed':
+        statusId = 'ACTION_NEEDED';
+        break;
+      case 'New Leads':
+        statusId = 'NEW';
+        break;
+      case 'In Progress':
+        statusId = 'PROGRESS';
+        break;
+      case 'Declined':
+        statusId = 'DECLINED';
+        break;
+      case 'Projects':
+        statusId = 5;
+        break;
+      default:
+        statusId = 'NEW';
+    }
+
+    const data = {
+      start_date: selectedDates.startDate
+        ? format(selectedDates.startDate, 'dd-MM-yyyy')
+        : '',
+      end_date: selectedDates.endDate
+        ? format(selectedDates.endDate, 'dd-MM-yyyy')
+        : '',
+      "status": statusId,
+      is_archived: archive,
+      progress_filter: selectedValue ? selectedValue : "ALL",
+      page_size: 0,
+      page_number: 0,
+    };
+
+    try {
+      const response = await postCaller(
+        'get_leads',
+        data,
+        true
+      );
+
+      if (response.status > 201) {
+        toast.error(response.data.message);
+        setIsExporting(false);
+        return;
+      }
+
+
+
+      const csvData = response.data?.map?.((item: any) => [
+        `OWE${item.leads_id}`,
+        item.status_id,
+        item.first_name,
+        item.last_name,
+        item.phone_number,
+        item.email_id,
+        item.street_address,
+        item.appointment_status_label,
+        item.appointment_status_date,
+        item.won_lost_label,
+        item.won_lost_date,
+        item.finance_company,
+        item.finance_type,
+        item.qc_audit,
+      ]);
+
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'leads.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while exporting the data.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  //----------------Aurora API integration START-----------------------//
+  const handleCreateProposal = async (leadId: number) => {
+    console.log("leadId", leadId);
+    console.log("selectedLeads", selectedLeads);
+
+    try {
+      // Step 1: Fetch preferred solar modules using dispatch
+      const modulesResult = await dispatch(auroraListModules({}));
+
+      if (auroraListModules.fulfilled.match(modulesResult)) {
+        const modulesData = modulesResult.payload.data;
+
+        if (modulesData.length > 0) {
+          const moduleIds = modulesData.map((module: any) => module.id); // Extract the ids from the module list
+
+          // Step 2: Create Project with dynamic preferred solar modules
+          const createProjectResult = await dispatch(auroraCreateProject({
+            "leads_id": leadId,
+            "customer_salutation": "Mr./Mrs.",
+            "status": "In Progress",
+            "preferred_solar_modules": moduleIds,
+            "tags": ["third_party_1"]
+          }));
+
+          if (auroraCreateProject.fulfilled.match(createProjectResult)) {
+            // toast.success('Project created successfully!');
+
+            // Step 3: Create Design
+            const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
+
+            if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
+              // toast.success('Design created successfully!');
+
+              // Step 4: Create Proposal
+              const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
+
+              if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
+                const proposalData = createProposalResult.payload.data;
+
+                if (proposalData.proposal_link) {
+                  // Step 5: Generate Web Proposal
+                  await generateWebProposal(leadId);
+
+                  toast.success('Proposal created successfully!');
+                  setRefresh((prev) => prev + 1);
+
+                  // Open the proposal link in a new tab
+                  window.open(proposalData.proposal_link, '_blank');
+                } else {
+                  toast.error('Proposal link not available.');
+                }
+              } else {
+                toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+              }
+            } else {
+              toast.error(createDesignResult.payload as string || 'Failed to create design');
+            }
+          } else {
+            toast.error(createProjectResult.payload as string || 'Failed to create project');
+          }
+        } else {
+          toast.error('No solar modules available.');
+        }
+      } else {
+        toast.error('Failed to fetch solar modules');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred');
+      console.error('Error in handleCreateProposal:', error);
+    }
+  };
+
+  const generateWebProposal = async (leadId: number) => {
+    try {
+      //Generate Web Proposal
+      const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
+
+      if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
+        const generatedProposalData = generateProposalResult.payload.data;
+        if (generatedProposalData.url) {
+          // toast.success('Web proposal generated successfully!');
+          return generatedProposalData;
+        } else {
+          toast.error('Failed to generate web proposal.');
+          return null;
+        }
+      } else {
+        toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+        return null;
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred while generating the web proposal');
+      console.error('Error in generateWebProposal:', error);
+      return null;
+    }
+  };
+
+  const retrieveWebProposal = async (leadId: number) => {
+    try {
+      //Retrieve Web Proposal
+      const webProposalResult = await dispatch(auroraWebProposal(leadId));
+
+      if (auroraWebProposal.fulfilled.match(webProposalResult)) {
+        const webProposalData = webProposalResult.payload.data;
+
+        if (webProposalData.url) {
+          toast.success('Web proposal retrieved successfully!');
+          window.open(webProposalData.url, '_blank');
+        } else if (webProposalData.url_expired) {
+          toast.error('Web proposal URL has expired. Please regenerate.');
+        } else {
+          toast.error('No web proposal available.');
+        }
+      } else {
+        toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred while retrieving the web proposal');
+      console.error('Error in retrieveWebProposal:', error);
+    }
+  };
+
+  //----------------Aurora API integration END-------------------------//
+  //*************************************************************************************************//
+
   return (
     <div className={styles.dashboard}>
       <div style={{ marginLeft: 6, marginTop: 6 }}>
         <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
           <div className="bread-link">
             <div className="" style={{ cursor: 'pointer' }}>
-              <h3>Lead Management</h3>
             </div>
             <div className="">
               <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
@@ -1031,7 +1273,6 @@ const openProposalLink = (link: string) => {
           </div>
         </div>
       </div>
-
       <ConfirmModel
         isOpen1={isModalOpen}
         onClose1={handleCloseModal}
@@ -1040,23 +1281,191 @@ const openProposalLink = (link: string) => {
         setRefresh={setRefresh}
         reschedule={reschedule}
         action={action}
+        setReschedule={setReschedule}
       />
-
-      <ArchiveModal
-        isArcOpen={isArcModalOpen}
-        onArcClose={handleCloseArcModal}
-        leadId={leadId}
-        activeIndex={ref}
-        setActiveIndex={setRef}
-      />
-
       <div className={styles.chartGrid}>
-        <div className={styles.card}>
-          <div className={styles.cardHeaderFirst}>
-            Overview
-            <div>Total leads: {totalValue ? totalValue : '0'}</div>
+        <div className={styles.horizontal}>
+          <div className={styles.FirstColHead}>
+            {isToggledX && (
+              <div className={styles.customLeft}>
+                Overview
+              </div>
+            )}
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              Total leads: {totalValue ? totalValue : '0'}
+            </div>
           </div>
-          <div className={styles.cardContent}>
+          <div className={styles.SecondColHead}>
+            <div>
+              {isToggledX && <div className={styles.customLeft}
+              // className={`${styles.customLeft} ${styles.custom3}`}
+              >Total Won Lost</div>}
+            </div>
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              <div className={styles.date_calendar}>
+                <div className={styles.lead__datepicker_wrapper}>
+                  {isCalendarOpen && (
+                    <div
+                      ref={calendarRef}
+                      className={styles.lead__datepicker_content}
+                    >
+                      <DateRange
+                        editableDateInputs={true}
+                        onChange={handleRangeChange}
+                        moveRangeOnFirstSelection={false}
+                        ranges={selectedRanges}
+                      />
+                      <div className={styles.lead__datepicker_btns}>
+                        <button className="reset-calender" onClick={onReset}>
+                          Reset
+                        </button>
+                        <button className="apply-calender" onClick={onApply}>
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {selectedDates.startDate && selectedDates.endDate && (
+                  <div className={styles.hist_date}>
+                    {isToggledX && <span className={styles.date_display}>
+                      {selectedDates.startDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.startDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.startDate.getFullYear()}
+                      {' - '}
+                      {selectedDates.endDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.endDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.endDate.getFullYear()}
+                    </span>}
+                  </div>
+                )}
+
+
+                {isToggledX && <Select
+                  value={selectedPeriod}
+                  onChange={handlePeriodChange}
+                  options={periodFilterOptions}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      marginTop: 'px',
+                      borderRadius: '8px',
+                      outline: 'none',
+                      color: '#3E3E3E',
+                      width: '140px',
+                      height: '36px',
+                      fontSize: '12px',
+                      border: '1px solid #d0d5dd',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      alignContent: 'center',
+                      backgroundColor: '#fffff',
+                      boxShadow: 'none',
+                      '&:focus-within': {
+                        borderColor: '#377CF6',
+                        boxShadow: '0 0 0 1px #377CF6',
+                        caretColor: '#3E3E3E',
+                      },
+                      '&:hover': {
+                        borderColor: '#377CF6',
+                        boxShadow: '0 0 0 1px #377CF6',
+                      },
+                    }),
+                    placeholder: (baseStyles) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                    }),
+                    indicatorSeparator: () => ({
+                      display: 'none',
+                    }),
+                    dropdownIndicator: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                      '&:hover': {
+                        color: '#3E3E3E',
+                      },
+                    }),
+                    option: (baseStyles, state) => ({
+                      ...baseStyles,
+                      fontSize: '13px',
+                      fontWeight: '400',
+                      color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                      backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                      '&:hover': {
+                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                      },
+                      cursor: 'pointer',
+                    }),
+                    singleValue: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: '#3E3E3E',
+                    }),
+                    menu: (baseStyles) => ({
+                      ...baseStyles,
+                      width: '140px',
+                      marginTop: '0px',
+                      zIndex: "100"
+                    }),
+                  }}
+                />}
+                {isToggledX && <div
+                  ref={toggleRef}
+                  className={styles.calender}
+                  onClick={toggleCalendar}
+                >
+                  <img src={ICONS.includes_icon} alt="" />
+                </div>}
+                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
+                  {isToggledX ? (
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}>&#x1F781;</div>
+                  ) : (
+                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>&#x1F783;</div>
+                  )}
+
+
+                  {/* <img
+                    src={
+                      isToggledX === true
+                        ? ICONS.ChecronUpX
+                        : ICONS.DownArrowDashboard
+                    }
+                  /> */}
+
+                  {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
+                </div>
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    marginTop:"36px",
+                    marginLeft:"36px"
+                  }}
+                  offset={8}
+                  id="downip"
+                  place="top"
+                  content="Minimize or Maximize"
+                />
+              </div></div>
+          </div>
+        </div>
+        {/* //HORIZONTAL ENDED */}
+        {isToggledX && <div className={styles.vertical1}>
+          <div style={{ width: "100%" }}>
             {loading ? (
               <div
                 style={{
@@ -1096,7 +1505,7 @@ const openProposalLink = (link: string) => {
                         className={styles.legendColor}
                         style={{ backgroundColor: item.color }}
                       ></div>
-                      <span className={styles.legendText}>{item.name}</span>
+                      <span className={styles.legendText}>{item.name} LEADS</span>
                     </div>
                   ))}
                 </div>
@@ -1105,207 +1514,70 @@ const openProposalLink = (link: string) => {
               <DataNotFound />
             )}
           </div>
-        </div>
-
-        <div className={`${styles.card} ${styles.lineCard}`}>
-          {/* shams start */}
-          <div className={styles.cardHeaderSecond}>
-            <span>Total Won Lost</span>
-            <div className={styles.date_calendar}>
-              <div className={styles.lead__datepicker_wrapper}>
-                {isCalendarOpen && (
-                  <div
-                    ref={calendarRef}
-                    className={styles.lead__datepicker_content}
-                  >
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={handleRangeChange}
-                      moveRangeOnFirstSelection={false}
-                      ranges={selectedRanges}
-                    />
-                    <div className={styles.lead__datepicker_btns}>
-                      <button className="reset-calender" onClick={onReset}>
-                        Reset
-                      </button>
-                      <button className="apply-calender" onClick={onApply}>
-                        Apply
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {selectedDates.startDate && selectedDates.endDate && (
-                <div className={styles.hist_date}>
-                  <span className={styles.date_display}>
-                    {selectedDates.startDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                    }) +
-                      ' ' +
-                      selectedDates.startDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                      }) +
-                      ' ' +
-                      selectedDates.startDate.getFullYear()}
-                    {' - '}
-                    {selectedDates.endDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                    }) +
-                      ' ' +
-                      selectedDates.endDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                      }) +
-                      ' ' +
-                      selectedDates.endDate.getFullYear()}
-                  </span>
-                </div>
-              )}
-
-              {/* RABINDR718.....DATE_PICKER STARTED */}
-              <Select
-                value={selectedPeriod}
-                onChange={handlePeriodChange}
-                options={periodFilterOptions}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    marginTop: 'px',
-                    borderRadius: '8px',
-                    outline: 'none',
-                    color: '#3E3E3E',
-                    width: '140px',
-                    height: '36px',
-                    fontSize: '12px',
-                    border: '1px solid #d0d5dd',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    alignContent: 'center',
-                    backgroundColor: '#fffff',
-                    boxShadow: 'none',
-                    '&:focus-within': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                      caretColor: '#3E3E3E',
-                    },
-                    '&:hover': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                    },
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                    '&:hover': {
-                      color: '#3E3E3E',
-                    },
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                    },
-                    cursor: 'pointer',
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '140px',
-                    marginTop: '0px',
-                    zIndex:"100"
-                  }),
-                }}
-              />
-              <div
-                ref={toggleRef}
-                className={styles.calender}
-                onClick={toggleCalendar}
-              >
-                <img src={ICONS.includes_icon} alt="" />
-              </div>
+        </div>}
+        {/* VERTICAL 1 ENDED */}
+        {isToggledX && <div className={styles.vertical2}>
+          {loading ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MicroLoader />
             </div>
-          </div>
-          {/* RABINDR718.....DATE_PICKER ENDED */}
-          <div
-            className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
-          >
-            {loading ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+          ) : lineData.length > 0 ? (
+            <>
+              <ResponsiveContainer
+                className={styles.chart_main_grid}
+                width="100%"
+                height={300}
               >
-                <MicroLoader />
-              </div>
-            ) : lineData.length > 0 ? (
-              <>
-                <ResponsiveContainer
-                  className={styles.chart_main_grid}
-                  width="100%"
-                  height={300}
-                >
-                  <LineChart data={lineData}>
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend
-                      className={styles.lineChart_legend}
-                      formatter={(value) =>
-                        value === 'won' ? 'Total won' : 'Total Lost'
-                      }
-                      wrapperStyle={{
-                        fontSize: '12px',
-                        fontWeight: 550,
-                        marginBottom: -15,
-                      }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="won"
-                      stroke="#57B93A"
-                      strokeWidth={2}
-                      name="won"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="lost"
-                      stroke="#CD4040"
-                      strokeWidth={2}
-                      name="lost"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </>
-            ) : (
-              <DataNotFound />
-            )}
-          </div>
+                <LineChart data={lineData}>
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <RechartsTooltip content={<CustomTooltip />} />
+                  <Legend
+                    className={styles.lineChart_legend}
+                    formatter={(value) =>
+                      value === 'won' ? 'Total won' : 'Total Lost'
+                    }
+                    wrapperStyle={{
+                      fontSize: '12px',
+                      fontWeight: 550,
+                      marginBottom: -15,
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="won"
+                    stroke="#57B93A"
+                    strokeWidth={2}
+                    name="won"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="lost"
+                    stroke="#CD4040"
+                    strokeWidth={2}
+                    name="lost"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </>
+          ) : (
+            <DataNotFound />
+          )}
         </div>
-      </div>
 
+        }
+
+
+
+        {/* HERE NOT ENTER BELOW CODES */}
+      </div>
       <div className={styles.card}>
-        {archive == true && (
-          <ArchivedPages
-            setArchive={setArchive}
-            activeIndex={ref}
-            setActiveIndex={setRef}
-          />
-        )}
         {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
@@ -1314,19 +1586,16 @@ const openProposalLink = (link: string) => {
                   {pieData.map((data) => {
                     let displayStatus = '';
                     switch (data.name) {
-                      case 'Pending leads':
-                        displayStatus = 'Pending';
+                      case 'NEW':
+                        displayStatus = 'New Leads';
                         break;
-                      case 'Appointment sent':
-                        displayStatus = 'Sent';
+                      case 'PROGRESS':
+                        displayStatus = 'In Progress';
                         break;
-                      case 'Appointment accepted':
-                        displayStatus = 'Accepted';
-                        break;
-                      case 'Appointment declined':
+                      case 'DECLINED':
                         displayStatus = 'Declined';
                         break;
-                      case 'Action Needed':
+                      case 'ACTION_NEEDED':
                         displayStatus = 'Action Needed';
                         break;
                       default:
@@ -1337,7 +1606,7 @@ const openProposalLink = (link: string) => {
                       <button
                         key={data.name}
                         className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
-                         ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                           ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
                         onClick={() => handleFilterClick(displayStatus)}
                       >
                         <p
@@ -1345,27 +1614,119 @@ const openProposalLink = (link: string) => {
                         >
                           {data.value}
                         </p>
-                        {displayStatus}
+                        <span className={styles.displayStatus}>{displayStatus}</span>
                       </button>
                     );
                   })}
-                   <button
+                  {/* <button
                     onClick={handleNewButtonClick}
                     className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
-                    >
+                  >
                     <p className={styles.statusInactive}></p>
-                        Aurora Projects
-                  </button>
+                    Aurora Projects
+                  </button> */}
                 </div>
+                <div className={styles.searchBar}>
+                  <div className={styles.searchIcon}>
+                    {/* You can use an SVG or a FontAwesome icon here */}
+                    <img src={ICONS.SearchICON001} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search by customer name"
+                    className={styles.searchInput}
+                    onChange={(e) => {
+                      if (e.target.value.length <= 50) {
+                        e.target.value = e.target.value.replace(
+                          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                          ''
+                        );
+                        handleSearchChange(e);
+                        setSearch(e.target.value);
+                      }
+                    }}
+                  />
+
+                </div>
+
 
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-                <HistoryRedirect setArchive={setArchive} />
+                <HistoryRedirect />
+                {currentFilter === 'In Progress' && (
+                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
 
+                )}
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                  }}
+                  offset={8}
+                  id="More Pages"
+                  place="bottom"
+                  content="More Pages"
+                />
                 <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead}>
+                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="NEW"
+                    place="bottom"
+                    content="Add New Lead"
+                  />
+
+                  <div
+                    className={styles.export_btn}
+                    onClick={exportCsv}
+                    data-tooltip-id="export"
+                    style={{
+                      pointerEvents: exporting ? 'none' : 'auto',
+                      opacity: exporting ? 0.6 : 1,
+                      cursor: exporting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {exporting ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={20}
+                        color="white"
+                      />
+                    ) : (
+                      <LuImport size={20} color="white" />
+                    )}
+                  </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="export"
+                    place="bottom"
+                    content="Export"
+                  />
+
+
+
+
                 </div>
               </>
             ) : (
@@ -1396,222 +1757,45 @@ const openProposalLink = (link: string) => {
           </div>
         )}
         <div className={styles.cardContent}>
-          {archive == false && (
-            <table className={styles.table}>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={leadsData.length}>
-                      <div
-                        style={{ display: 'flex', justifyContent: 'center' }}
-                      >
-                        <MicroLoader />
-                      </div>
-                    </td>
-                  </tr>
-                ) : currentFilter == 'Projects' && projects.length > 0 ? (
-                  projects.map((project: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr
-                        key={project.id}
-                        className={styles.history_lists}
-                        onClick={() => fetchProjectDetails(project.id)}
-                      >
-                          <td className={styles.project_list}>
-                          <div style={{ fontWeight: 'bold' }}>
-                              {project.name}
-                            </div>
-
-                          <div>{project.property_address}</div>
-
-                            <div>
-                              {new Date(project.created_at).toLocaleString()}
-                            </div>
-                          <div>{project.id}</div>
-                          </td>
-                        </tr>
-                        </React.Fragment>
-                      ))
-                ) : leadsData.length > 0 ? (
-                  leadsData.map((lead: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr className={styles.history_lists}>
-                        <td
-                          className={`${
-                            lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
-                            ? styles.history_list_inner_declined
-                            : styles.history_list_inner
-                            }`}
-                          onClick={(e) => {
-                            setLeadId(lead['leads_id']);
-                            if (
-                              !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest('#icon-closest')
-                            ) {
-                              if (
-                                currentFilter !== 'Declined' &&
-                                currentFilter !== 'Action Needed'
-                              ) {
-                                setReschedule(false);
-                                setAction(false);
-                                handleOpenModal();
-                                                              }
-                            }
-                          }}
-                        >
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={selectedLeads.includes(lead['leads_id'])}
-                              onChange={() =>
-                                handleLeadSelection(lead['leads_id'])
-                              }
-                            />
-                          </label>
-                          <div
-                            className={styles.user_name}
-                            onClick={() =>
-                              currentFilter == 'Pending' &&
-                              handleDetailModal(lead)
-                            }
-                          >
-                            <h2>
-                              {lead.first_name} {lead.last_name}
-                            </h2>
-                            <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter === 'Action Needed'
-                                ? lead.action_needed_message
-                                : currentFilter}
-                            </p>
-                          </div>
-                          <div className={styles.phone_number}>
-                            {lead.phone_number}
-                          </div>
-                          <div className={styles.email}>
-                            <span>{lead.email_id}</span>
-                          </div>
-                          <div className={styles.address}>
-                            {lead?.street_address
-                              ? lead.street_address.length >= 20
-                                ? `${lead.street_address.slice(0, 45)}...`
-                                : lead.street_address
-                              : 'N/A'}
-                          </div>
-
-                          {currentFilter === 'Declined' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  handleOpenModal();
-                                  setReschedule(true);
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                Reschedule
-                              </button>
-                              {isTablet ? (
-                                <button
-                                  onClick={() => handleOpenArcModal()}
-                                  className={styles.archiveButton}
-                                >
-                                  <img src={ICONS.declinedArchive} />
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => handleOpenArcModal()}
-                                  className={styles.archiveButton}
-                                >
-                                  Archive
-                                </button>
-                              )}
-                            </div>
-                          )}
-
-                          {currentFilter === 'Action Needed' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  if (
-                                    lead.action_needed_message ===
-                                    'Update Status'
-                                  ) {
-                                    handleOpenModal();
-                                    setAction(true);
-                                  }
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                {lead.action_needed_message === 'Update Status'
-                                  ? 'Update Status'
-                                  : 'Create Proposal'}
-                              </button>
-                            </div>
-                          )}
-
-                          <div
-                            id='icon-closest'
-                            className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead['leads_id'])}
-                            style={{
-                              marginLeft: currentFilter !== 'Declined' && currentFilter !== 'Action Needed'
-                                ? "57px"
-                                : currentFilter === 'Declined'
-                                  ? "-11px"
-                                  : ""
-                            }}
-                          >
-                            <img
-                              src={
-                                toggledId.includes(lead['leads_id'])
-                                  ? ICONS.chevronUp
-                                  : ICONS.chevronDown
-                              }
-                              alt={
-                                toggledId.includes(lead['leads_id'])
-                                  ? 'chevronUp-icon'
-                                  : 'chevronDown-icon'
-                              }
-                            />
-                          </div>
-                        </td>
-                      </tr>
-
-                      {toggledId.includes(lead['leads_id']) && isMobile && (
-                        <tr>
-                          <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
-                            <div className={''}>
-                              <span>{lead.email_id}</span>
-                            </div>
-                            <div className={''}>
-                              {lead?.street_address
-                                ? lead.street_address.length > 20
-                                  ? `${lead.street_address.slice(0, 20)}...`
-                                  : lead.street_address
-                                : 'N/A'}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <tr style={{ border: 0 }}>
-                    <td colSpan={10}>
-                      <DataNotFound />
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          {currentFilter === 'Projects' ? (
+            isProjectLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <MicroLoader />
+              </div>
+            ) : projects.length > 0 ? (
+              projects.map((project: any, index: number) => (
+                <div
+                  key={project.id}
+                  className={styles.history_lists}
+                  onClick={() => fetchProjectDetails(project.id)}
+                >
+                  <div className={styles.project_list}>
+                    <div style={{ fontWeight: 'bold' }}>{project.name}</div>
+                    <div>{project.property_address}</div>
+                    <div>{new Date(project.created_at).toLocaleString()}</div>
+                    <div>{project.id}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <DataNotFound />
+            )
+          ) : (
+            <LeadTable
+              selectedLeads={selectedLeads}
+              setSelectedLeads={setSelectedLeads}
+              refresh={refresh}
+              setRefresh={setRefresh}
+              onCreateProposal={handleCreateProposal}
+              retrieveWebProposal={retrieveWebProposal}
+              generateWebProposal={generateWebProposal}
+            />
           )}
-
-          {leadsData.length > 0 && (
+          {leadsData.length > 0 && !isLoading && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
+                  {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
                 </p>
               </div>
 
@@ -1624,6 +1808,7 @@ const openProposalLink = (link: string) => {
                   goToNextPage={goToNextPage}
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
                 />
               </div>
             </div>

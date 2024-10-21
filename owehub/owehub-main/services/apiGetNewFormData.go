@@ -99,7 +99,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				}
 				var roleBase string
 				if role == "Account Manager" {
-					roleBase = "account_manager"
+					roleBase = "account_manager2"
 				} else {
 					roleBase = "account_executive"
 				}
@@ -107,7 +107,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				query = fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
 				dbIndex = db.RowDataDBIndex
 			} else {
-				query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
+				query = "SELECT sales_partner_name as data FROM sales_partner_dbhub_schema"
 			}
 		case "available_states":
 			query = `select DISTINCT(CASE 

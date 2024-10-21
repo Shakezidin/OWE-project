@@ -24,7 +24,9 @@ import (
 	"strconv"
 	"strings"
 
+	azidentity "github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/google/uuid"
+	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -34,6 +36,7 @@ type CfgFilePaths struct {
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
 	AuroraConfJsonPath  string
+	OutlookApiConfig    string
 }
 
 var (
@@ -144,6 +147,20 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_project",
+		apiHandler.HandleAuroraCreateProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_design",
+		apiHandler.HandleAuroraCreateDesignRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_create_proposal",
 		apiHandler.HandleAuroraCreateProposalRequest,
 		true,
@@ -151,10 +168,61 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/aurora_get_proposal",
+		"/owe-leads-service/v1/aurora_get_project",
 		apiHandler.HandleAuroraGetProjectRequest,
 		true,
 		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_get_proposal",
+		apiHandler.HandleAuroraGetProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_list_modules",
+		apiHandler.HandleAuroraListModulestRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_modules",
+		apiHandler.HandleAuroraRetrieveModulestRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_generate_web_proposal",
+		apiHandler.HandleAuroraGenerateWebProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_Web_Proposal",
+		apiHandler.HandleAuroraRetrieveWebProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_generate_pdf",
+		apiHandler.HandleAuroraGeneratePdfRequest,
+		false,
+		leadsRoleGroup,
+	},
+
+	// WEBHOOKS
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_webhook",
+		apiHandler.HandleAuroraWebhookAction,
+		false,
+		[]types.UserGroup{},
 	},
 }
 
@@ -260,6 +328,25 @@ func init() {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
 	}
 
+	//*******************************************************************************************
+	/* Initializing Graph Api Connection */
+	err = FetchgraphApiCfg()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to get Graph Api Cfg error = %+v", err)
+		return
+	} else {
+		log.FuncDebugTrace(0, "Successfully Fetched Graph Api Cgf")
+	}
+
+	/* Creating outlook client */
+	err = GenerateGraphApiClient()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to get generate Graph Api Client error = %+v", err)
+		return
+	} else {
+		log.FuncDebugTrace(0, "Successfully created Graph Api Client")
+	}
+
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
@@ -277,6 +364,72 @@ func handleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) {
 
 func handleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) {
 	types.CommGlbCfg.HTTPCfg = HandleDynamicHttpConf(resp, req)
+}
+
+/******************************************************************************
+* FUNCTION:        FetchgraphApiCfg
+*
+* DESCRIPTION:   function is used to get the Graph Api configurations
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func FetchgraphApiCfg() (err error) {
+	log.EnterFn(0, "FetchgraphApiCfg")
+	defer func() { log.ExitFn(0, "FetchgraphApiCfg", err) }()
+
+	var graphApiCfg models.GraphApiConfInfo
+
+	log.ConfDebugTrace(0, "Reading Graph Api Config from: %+v", gCfgFilePaths.OutlookApiConfig)
+	file, err := os.Open(gCfgFilePaths.OutlookApiConfig)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.OutlookApiConfig, err)
+		panic(err)
+	}
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &graphApiCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.OutlookApiConfig, err)
+		panic(err)
+	}
+
+	types.CommGlbCfg.GraphApiCfg = graphApiCfg
+	log.ConfDebugTrace(0, "Graph Api Configurations: %+v", types.CommGlbCfg.GraphApiCfg)
+
+	return err
+}
+
+/******************************************************************************
+* FUNCTION:        GenerateGraphApiClient
+*
+* DESCRIPTION:   function is used to generate the Graph Api client
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func GenerateGraphApiClient() error {
+	cred, err := azidentity.NewClientSecretCredential(
+		types.CommGlbCfg.GraphApiCfg.TenantId,
+		types.CommGlbCfg.GraphApiCfg.ClientId,
+		types.CommGlbCfg.GraphApiCfg.ClientSecret,
+		nil,
+	)
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to GenerateGraphApiClient: %v", err)
+		return err
+	}
+
+	client, err := msgraphsdk.NewGraphServiceClientWithCredentials(cred, []string{
+		"https://graph.microsoft.com/.default",
+	})
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to create Graph client: %v", err)
+		return err
+	}
+
+	types.CommGlbCfg.ScheduleGraphApiClient = client
+	log.ConfDebugTrace(0, "Graph Client Created: %+v", types.CommGlbCfg.ScheduleGraphApiClient)
+	return nil
 }
 
 /******************************************************************************
@@ -365,6 +518,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
 	gCfgFilePaths.AuroraConfJsonPath = gCfgFilePaths.CfgJsonDir + "auroraConfig.json"
+	gCfgFilePaths.OutlookApiConfig = gCfgFilePaths.CfgJsonDir + "outlookGraphConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
@@ -464,7 +618,7 @@ func FetchAuroraCfg() (err error) {
 	log.EnterFn(0, "FetchAuroraCfg")
 	defer func() { log.ExitFn(0, "FetchAuroraCfg", err) }()
 
-	var auroraCfg leadsService.AuroraConfig
+	var auroraCfg leadsService.LeadAppConfig
 	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.AuroraConfJsonPath)
 	file, err := os.Open(gCfgFilePaths.AuroraConfJsonPath)
 	if err != nil {
@@ -477,8 +631,8 @@ func FetchAuroraCfg() (err error) {
 		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
 		panic(err)
 	}
-	leadsService.AuroraCfg = auroraCfg
-	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.AuroraCfg)
+	leadsService.LeadAppCfg = auroraCfg
+	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.LeadAppCfg)
 
 	return err
 }

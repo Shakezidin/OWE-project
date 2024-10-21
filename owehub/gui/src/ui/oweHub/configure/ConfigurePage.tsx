@@ -45,12 +45,16 @@ const ConfigurePage: React.FC = () => {
         { title: 'Dealer Payments', route: ROUTES.CONFIG_DEALERPAYMENTS },
         { title: 'Finance Schedule', route: ROUTES.CONFIG_FINANCE_SCHEDULE },
         { title: 'Sales Partner Pay Schedule', route: ROUTES.CONFIG_SALES_PARTNER_PAY },
+        { title: 'Finance Types', route: ROUTES.CONFIG_FINANCE_TYPES },
       ],
       state: useState<boolean>(true),
     },
     {
       title: 'Common',
-      data: [{ title: 'Slack Config', route: ROUTES.CONFIG_SLACK }],
+      data: [{ title: 'Slack Config', route: ROUTES.CONFIG_SLACK },
+        { title: 'Site Survey Onboarding', route: ROUTES.SS_ONBOARDING },
+
+      ],
       state: useState<boolean>(true),
     },
   ];
@@ -63,7 +67,7 @@ const ConfigurePage: React.FC = () => {
   return (
     <>
       <div className="configure-container">
-        <div className="configure-header">
+        {/* <div className="configure-header">
           <Breadcrumb
             head=""
             linkPara="Configure"
@@ -71,7 +75,7 @@ const ConfigurePage: React.FC = () => {
             linkparaSecond=""
             marginLeftMobile="12px"
           />
-        </div>
+        </div> */}
         <div className="configure-main">
           <div className="configure-main-section">
             {accordionSections.map(({ title, data, state }, index) => {

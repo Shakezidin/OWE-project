@@ -235,7 +235,7 @@ const MyMapComponent: React.FC = () => {
     }
   }, [createRePayData.state]);
 
-  console.log(createRePayData.state, 'all');
+  
 
   // Function to calculate the distance between two points in miles
   const calculateDistanceInMiles = (
@@ -322,30 +322,42 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    // Ensure the state field exists before proceeding
-    if (createRePayData.state !== 'All') {
-      const geocoder = new window.google.maps.Geocoder();
-      const stateName = createRePayData.state; // Assuming `createPayData.state` holds the state's name or label
-
-      console.log(stateName, 'stateName');
-
-      // Perform geocoding to get the new state's coordinates and update the map
-      geocoder.geocode({ address: stateName }, (results, status) => {
-        if (status === 'OK' && results && results.length > 0) {
-          const stateBounds = results[0].geometry.viewport;
-          const stateCenter = results[0].geometry.location;
-
-          if (mapRef.current) {
-            // Update the map center and bounds with the new state's location
+    // Ensure the map is initialized before proceeding
+    if (mapRef.current) {
+      // Check if the state is not 'All'
+      if (createRePayData.state && createRePayData.state !== 'All') {
+        const geocoder = new window.google.maps.Geocoder();
+        const stateName = createRePayData.state;
+  
+        console.log(stateName, 'stateName');
+  
+        // Perform geocoding to get the state's coordinates
+        geocoder.geocode({ address: stateName }, (results, status) => {
+          if (status === 'OK' && results && results.length > 0) {
+            const stateBounds = results[0].geometry.viewport;
+            const stateCenter = results[0].geometry.location;
+  
+            // Update the map center and fit bounds to the new state's location
             setCenter({ lat: stateCenter.lat(), lng: stateCenter.lng() });
-            mapRef.current.fitBounds(stateBounds);
+            mapRef.current?.fitBounds(stateBounds); // Use optional chaining to safely access fitBounds
+          } else {
+            console.log('Failed to find state location.', status);
           }
-        } else {
-          console.log('Failed to find state location.');
-        }
-      });
+        });
+      } else {
+        // If state is 'All', fit the map to the bounds of all locations
+        const bounds = new window.google.maps.LatLngBounds();
+        const locationsToShow = filteredLocations.length > 0 ? filteredLocations : locations;
+  
+        locationsToShow.forEach((location) => {
+          bounds.extend({ lat: location.lat, lng: location.lng });
+        });
+  
+        mapRef.current?.fitBounds(bounds); // Use optional chaining to safely access fitBounds
+      }
     }
-  }, [createRePayData.state]); // Trigger effect whenever `createPayData.state` changes
+  }, [createRePayData.state, filteredLocations, locations, mapRef]);
+  
 
   const onMarkerHover = useCallback(
     (location: LocationInfo) => {

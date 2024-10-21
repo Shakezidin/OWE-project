@@ -103,12 +103,3 @@ CREATE TABLE IF NOT EXISTS team_members (
     FOREIGN KEY (team_id) REFERENCES teams(team_id),
     FOREIGN KEY (user_id) REFERENCES user_details(user_id)
 );
-
-CREATE TABLE partners (
-    partner_id serial NOT NULL,
-    partner_name character varying,
-    description character varying,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    PRIMARY KEY (partner_id)
-);

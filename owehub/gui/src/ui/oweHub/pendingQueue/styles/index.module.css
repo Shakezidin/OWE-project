@@ -148,6 +148,36 @@
   position: relative;
 }
 
+.pendingActionTable{
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.pendingActionTable::-webkit-scrollbar {
+  height: 10px;
+}
+
+.pendingActionTable::-webkit-scrollbar {
+  display: initial;
+}
+
+.pendingActionTable::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.pendingActionTable::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.pendingActionTable::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.pendingActionTable::-webkit-scrollbar-corner {
+  background-color: transparent; 
+}
+
 @media (max-width: 968px) {
   .grid_3 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

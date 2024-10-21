@@ -29,10 +29,11 @@ interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
   leadId?: number;
-  refresh?: number;
-  setRefresh?: (value: number) => void;
+  refresh: number;
+  setRefresh: (value: number | ((prevValue: number) => number)) => void;
   reschedule?: boolean;
   action?: boolean;
+  setReschedule: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface LeadData {
   first_name: string;
@@ -52,7 +53,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   leadId,
   reschedule,
   action,
+  setRefresh,
+  refresh,
+  setReschedule
 }) => {
+  console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
@@ -96,7 +101,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
           status_id: 1,
           appointment_date: selectedDate
             ? format(selectedDate, 'dd-MM-yyyy')
-            : '',
+            : format(new Date(), 'dd-MM-yyyy'),
           appointment_time: selectedTime ? selectedTime : '',
         },
         true
@@ -104,6 +109,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
+        setReschedule(false);
+        setRefresh((val) => val + 1)
         setVisibleDiv(1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
@@ -143,7 +150,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
             if (reschedule === true) {
               setVisibleDiv(0);
             } else if (action == true) {
-               setVisibleDiv(67);
+              setVisibleDiv(67);
             } else {
               setVisibleDiv(response.data?.status_id);
             }
@@ -159,7 +166,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId, isOpen1, isModalOpen]);
+  }, [isAuthenticated, leadId, isOpen1, refresh]);
 
   useEffect(() => {
     const handleEscapeKey = (event: any) => {
@@ -173,40 +180,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
-  const handleCloseWon = async () => {
-    setLoad(true);
-    try {
-      const response = await postCaller(
-        'update_lead_status',
-        {
-          leads_id: leadId,
-          status_id: 5,
-        },
-        true
-      );
 
-      if (response.status === 200) {
-        toast.success('Status Updated Successfully');
-        setVisibleDiv(5);
-      } else if (response.status >= 201) {
-        toast.warn(response.message);
-      }
-      setLoad(false);
-    } catch (error) {
-      setLoad(false);
-      console.error('Error submitting form:', error);
-    }
-  };
 
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-
     if (name === 'reason') {
-      if (value.trim() !== '') {
-        setReason(value);
+      const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
+      if (sanitizedValue.trim() !== '') {
+        setReason(sanitizedValue);
         setReasonError(''); // Clear any previous error message
       } else {
         setReason('');
@@ -227,7 +211,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         'update_lead_status',
         {
           leads_id: leadId,
-          status_id: 5,
+          status_id: 6,
           reason: reason,
         },
         true
@@ -237,6 +221,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         toast.success('Status Updated Successfully');
         HandleModal();
         setReason('');
+        setRefresh((val) => val + 1)
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -276,7 +261,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-    // Function to create project, design, and proposal in sequence
+  // Function to create project, design, and proposal in sequence
 
   const handleCreateProposal = async () => {
     if (!leadData) {
@@ -290,46 +275,46 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     try {
       // Generate a timestamp
       const timestamp = new Date().getTime();
-    
+
       // Create Project
       const projectResponse = await axios.post(
         'http://localhost:5000/api/create-project',
         {
-        project: {
-          location: {
-            property_address: leadData.street_address,
+          project: {
+            location: {
+              property_address: leadData.street_address,
+            },
+            external_provider_id: leadId?.toString() || 'YourId123',
+            name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+            customer_salutation: 'Mr./Mrs.',
+            customer_first_name: leadData.first_name,
+            customer_last_name: leadData.last_name,
+            mailing_address: leadData.street_address,
+            customer_email: leadData.email_id,
+            customer_phone: leadData.phone_number,
+            status: 'Remote Assessment Completed',
+            preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+            tags: ['third_party_1'],
           },
-          external_provider_id: leadId?.toString() || 'YourId123',
-          name: `Project for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-          customer_salutation: 'Mr./Mrs.',
-          customer_first_name: leadData.first_name,
-          customer_last_name: leadData.last_name,
-          mailing_address: leadData.street_address,
-          customer_email: leadData.email_id,
-          customer_phone: leadData.phone_number,
-          status: 'Remote Assessment Completed',
-          preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-          tags: ['third_party_1'],
-        },
         }
       );
       console.log('Project created:', projectResponse.data);
       const projectId = projectResponse.data.project.id;
-    
+
       // Create Design
       const designResponse = await axios.post(
         'http://localhost:5000/api/create-design',
         {
-        design: {
-          external_provider_id: leadId?.toString() || 'YourId123',
-          project_id: projectId,
-          name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
-        },
+          design: {
+            external_provider_id: leadId?.toString() || 'YourId123',
+            project_id: projectId,
+            name: `Design for ${leadData.first_name} ${leadData.last_name} - ${timestamp}`,
+          },
         }
       );
       console.log('Design created:', designResponse.data);
       const designId = designResponse.data.design.id;
-    
+
       // Create Proposal
       const proposalResponse = await axios.post(
         'http://localhost:5000/api/create-proposal',
@@ -338,7 +323,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.log('Proposal created:', proposalResponse.data);
       setProposalLink(proposalResponse.data.proposal.proposal_link);
       toast.success('Proposal created successfully');
-    
+
       // Open the proposal in a new tab
       window.open(proposalResponse.data.proposal.proposal_link, '_blank');
     } catch (error) {
@@ -357,66 +342,66 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-    // const handleCreateProposal = async () => {
-    //   setLoadingProposal(true);
-    //   setError('');
-  
-    //   try {
-    //     // Create Project
-    //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
-    //       project: {
-    //         location: {
-    //           latitude: 37.77960043,
-    //           longitude: -122.39530086,
-    //         },
-    //         external_provider_id: 'YourId123',
-    //         name: 'My first test project',
-    //         customer_salutation: 'Mrs.',
-    //         customer_first_name: 'Jane',
-    //         customer_last_name: 'Doe',
-    //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
-    //         customer_email: 'jane@example.com',
-    //         customer_phone: '(555) 111-5151',
-    //         status: 'Remote Assessment Completed',
-    //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
-    //         tags: ['third_party_1'],
-    //       },
-    //     });
-    //     console.log('Project created:', projectResponse.data);
-    //     const projectId = projectResponse.data.project.id;
-  
-    //     // Create Design
-    //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
-    //       design: {
-    //         external_provider_id: 'YourId123',
-    //         project_id: projectId,
-    //         name: `Mydesign${projectId}`,
-    //       },
-    //     });
-    //     console.log('Design created:', designResponse.data);
-    //     const designId = designResponse.data.design.id;
-  
-    //     // Create Proposal
-    //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
-    //     console.log('Proposal created:', proposalResponse.data);
-    //     setProposalLink(proposalResponse.data.proposal.proposal_link);
-    //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
-    //     toast.success('Proposal created successfully'); // Notify success
-  
-    //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
-    //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
-        
-    //     // Close the component/modal after success
-    //     // setShowCreateProposal(false);
-  
-    //   } catch (error) {
-    //     const err = error as any; // Type assertion to 'any'
-    //     console.error('Error during proposal creation:', err.response?.data || err.message);
-    //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
-    //   } finally {
-    //     setLoadingProposal(false);
-    //   }
-    // };
+  // const handleCreateProposal = async () => {
+  //   setLoadingProposal(true);
+  //   setError('');
+
+  //   try {
+  //     // Create Project
+  //     const projectResponse = await axios.post('http://localhost:5000/api/create-project', {
+  //       project: {
+  //         location: {
+  //           latitude: 37.77960043,
+  //           longitude: -122.39530086,
+  //         },
+  //         external_provider_id: 'YourId123',
+  //         name: 'My first test project',
+  //         customer_salutation: 'Mrs.',
+  //         customer_first_name: 'Jane',
+  //         customer_last_name: 'Doe',
+  //         mailing_address: '434 Brannan St, San Francisco, CA, USA',
+  //         customer_email: 'jane@example.com',
+  //         customer_phone: '(555) 111-5151',
+  //         status: 'Remote Assessment Completed',
+  //         preferred_solar_modules: ['5b8c975b-b114-4d31-9d40-c44a6cfbe383'],
+  //         tags: ['third_party_1'],
+  //       },
+  //     });
+  //     console.log('Project created:', projectResponse.data);
+  //     const projectId = projectResponse.data.project.id;
+
+  //     // Create Design
+  //     const designResponse = await axios.post('http://localhost:5000/api/create-design', {
+  //       design: {
+  //         external_provider_id: 'YourId123',
+  //         project_id: projectId,
+  //         name: `Mydesign${projectId}`,
+  //       },
+  //     });
+  //     console.log('Design created:', designResponse.data);
+  //     const designId = designResponse.data.design.id;
+
+  //     // Create Proposal
+  //     const proposalResponse = await axios.post('http://localhost:5000/api/create-proposal', { designId });
+  //     console.log('Proposal created:', proposalResponse.data);
+  //     setProposalLink(proposalResponse.data.proposal.proposal_link);
+  //     // setIframeSrc(proposalResponse.data.proposal.proposal_link); // Set the iframe source here
+  //     toast.success('Proposal created successfully'); // Notify success
+
+  //     // Optionally, you can redirect to the proposal URL in an iframe or a new tab
+  //     window.open(proposalResponse.data.proposal.proposal_link, '_blank');
+
+  //     // Close the component/modal after success
+  //     // setShowCreateProposal(false);
+
+  //   } catch (error) {
+  //     const err = error as any; // Type assertion to 'any'
+  //     console.error('Error during proposal creation:', err.response?.data || err.message);
+  //     setError(`Error during proposal creation: ${err.response?.data?.message || err.message}`);
+  //   } finally {
+  //     setLoadingProposal(false);
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -451,7 +436,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.pers_det_top}>
                   <div className={classes.Column1Details}>
                     <div className={classes.main_name}>
-                      {leadData?.first_name} {leadData?.last_name}{' '}
+                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 15
+                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 15)}...`
+                        : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
                       <img
                         onClick={HandleModal}
                         className={classes.crossIconImg}
@@ -465,15 +452,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
                       {leadData?.street_address
-                      ? leadData.street_address.length > 20
+                        ? leadData.street_address.length > 20
                           ? `${leadData.street_address.slice(0, 30)}...`
-                        : leadData.street_address
+                          : leadData.street_address
                         : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
                       {/* <span className={classes.verified}> */}
-                        {/* <svg
+                      {/* <svg
                           className={classes.verifiedMarked}
                           width="13"
                           height="13"
@@ -502,26 +489,24 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                             </clipPath>
                           </defs>
                         </svg>{' '} */}
-                        {/* <span className={classes.verifyLetter}> Verified</span>
+                      {/* <span className={classes.verifyLetter}> Verified</span>
                       </span> */}
                     </span>
-                    <div>
-                      {visibleDiv === 0 ||
-                        (visibleDiv === 11 && (
-                          <div
-                            className={classes.edit_modal_openMediaScreen}
-                            onClick={handleOpenModal}
-                          >
-                            <span className={classes.edit_modal_button2}>
-                              <img
-                                className={classes.editPenStyle}
-                                src={Pen}
-                              ></img>{' '}
-                              Edit
-                            </span>
-                          </div>
-                        ))}
-                    </div>
+                    {(visibleDiv === 0 || visibleDiv === 11) && (
+                      <div
+                        className={classes.edit_modal_open}
+                        onClick={handleOpenModal}
+                      >
+                        <span className={classes.edit_modal_button}>
+                          <img
+                            className={classes.editPenStyle}
+                            src={Pen}
+                            alt="Edit Pen"
+                          />{' '}
+                          Edit
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -529,7 +514,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   "No Data Found"
                 </div>
               )}
-              <div>
+              {/* <div>
                 {(visibleDiv === 0 || visibleDiv === 11) && (
                   <div
                     className={classes.edit_modal_open}
@@ -545,12 +530,14 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
             <EditModal
               isOpen={isModalOpen}
               onClose={handleCloseModal}
               leadData={leadData}
+              refresh={refresh}
+              setRefresh={setRefresh}
             />
             {visibleDiv === 0 && (
               <AppointmentScheduler
@@ -602,7 +589,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {/* FROM HERE  WE DO NOT NEED EDIT BUTTON */}
             {visibleDiv === 1 && (
               <>
                 <div className={classes.success_not}>
@@ -618,20 +604,20 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.ApptSentConfirm}>
                     Appointment sent successfully{' '}
                   </span>
-                  {/* <span className={classes.ApptSentDate}>
-                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
-                    {selectedTime}
-                  </span> */}
-                  {leadData?.appointment_date ? (
-                    <span className={classes.ApptSentDate}>
-                      {format(new Date(leadData.appointment_date), 'dd MMM, yyyy.  hh:mm a')}
-                    </span>
-                  ) : (
                   <span className={classes.ApptSentDate}>
                     {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
                     {selectedTime}
                   </span>
-                  )}
+                  {/* {leadData?.appointment_date ? (
+                    <span className={classes.ApptSentDate}>
+                      {format(new Date(leadData.appointment_date), 'dd MMM, yyyy.  hh:mm a')}
+                    </span>
+                  ) : (
+                    <span className={classes.ApptSentDate}>
+                      {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
+                      {selectedTime}
+                    </span>
+                  )} */}
                 </div>
                 <div className={classes.survey_button}>
                   {leadData?.appointment_scheduled_date ? (
@@ -639,9 +625,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       Appointment sent on {format(new Date(leadData?.appointment_scheduled_date), 'dd MMM, yyyy')}
                     </span>
                   ) : (
-                  <span className={classes.AppSentDate2}>
-                    Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
-                  </span>
+                    <span className={classes.AppSentDate2}>
+                      Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
+                    </span>
                   )}
                   <span className={classes.AppSentDate2}>
                     Waiting for confirmation
@@ -672,8 +658,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.remaningDate}>
                     {leadData?.appointment_accepted_date
                       ? calculateRemainingDays(
-                          leadData.appointment_accepted_date
-                        )
+                        leadData.appointment_accepted_date
+                      )
                       : ''}
                   </span>
                 </div>
@@ -689,65 +675,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 67 && (
-              <>
-                <div className={classes.success_not}>
-                  <div>
-                    <img height="110.23px" width="156px" src={QuestionMarks} />{' '}
-                  </div>
-                </div>
 
-                <div className={classes.closedButtonQuestionmark}>
-                  <button
-                    className={classes.self}
-                    onClick={handleCloseWon}
-                    style={{
-                      backgroundColor: '#3AC759',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      pointerEvents: load || loading ? 'none' : 'auto',
-                      opacity: load || loading ? 0.6 : 1,
-                      cursor: load || loading ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    CLOSED WON
-                  </button>
-                  <button
-                    onClick={() => setVisibleDiv(3)}
-                    id="otherButtonId"
-                    style={{
-                      backgroundColor: '#CD4040',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      pointerEvents: load || loading ? 'none' : 'auto',
-                      opacity: load || loading ? 0.6 : 1,
-                      cursor: load || loading ? 'not-allowed' : 'pointer',
-                    }}
-                    className={classes.other}
-                  >
-                    CLOSED LOST
-                  </button>
-                  <button
-                    id="otherButtonId"
-                    style={{
-                      backgroundColor: '#D3D3D3',
-                      color: '#888888',
-                      border: 'none',
-                      pointerEvents: load || loading ? 'none' : 'auto',
-                      opacity: load || loading ? 0.6 : 1,
-                      cursor: load || loading ? 'not-allowed' : 'pointer',
-                    }}
-                    className={classes.other}
-                    onClick={() => setVisibleDiv(0)}
-                  >
-                    Reschedule Appointment
-                  </button>
-                  <span className={classes.getAppointment}></span>
-                  <span className={classes.notAvailableCtmr}></span>
-                </div>
-              </>
-            )}
-            {visibleDiv === 3 && (
+            {visibleDiv === 67 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited2}>
                   <div className={classes.success_not_Edited4Model}>
@@ -799,86 +728,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
-            {visibleDiv === 5 && (
-              <>
-                <div className={classes.customer_wrapper_list_Edited}>
-                  <div className={classes.success_not_Edited4Model}>
-                    <div>
-                      <img
-                        className={classes.HandShakeLogo}
-                        height="154px"
-                        width="154px"
-                        src={DoneLogo}
-                      />{' '}
-                    </div>
-                  </div>
-                  <div className={classes.congratulationLetter}>
-                    <span className={classes.congratulations}>
-                      Congratulations!
-                    </span>
-                  </div>
-                  <br />
-                  <div className={classes.ctmracquiredDiv}>
-                    <span className={classes.ctmracquired}>
-                      Customer acquired
-                    </span>
-                  </div>
-                  <div className={classes.suceesButtonAfterProposal}>
-                    <button
-                      className={classes.self}
-                      style={{
-                        backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
-                        color: '#FFFFFF',
-                        border: 'none',
-                      }}
-                      onClick={handleCreateProposal} 
-                      disabled={loadingProposal}
-                    >
-                      {loadingProposal ? (
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            color: '#3AC759',
-                            border: '1px solid #3AC759',
-                            borderRadius: 10,
-                          }}
-                        >
-                          Creating Proposal...
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              transform: 'scale(0.5)',
-                            }}
-                          >
-                            <MicroLoader />
-                          </div>
-                        </div>
-                      ) : (
-                        'Create Proposal'
-                      )}
-                    </button>
-                      {/* <button
-                        className={classes.self}
-                        style={{
-                          backgroundColor: '#3AC759',
-                          color: '#FFFFFF',
-                          border: 'none',
-                        }}
-                        onClick={() => setShowCreateProposal(true)} // Show the create proposal component
-                      >
-                        CREATE PROPOSAL
-                      </button> */}
-                    <span className={classes.n}>
-                      {' '}
-                      <img src={FileAttach} /> Attach proposal
-                    </span>
-                  </div>
-                </div>
-              </>
-            )}{' '}
             {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (

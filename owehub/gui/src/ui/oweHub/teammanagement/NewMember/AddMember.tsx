@@ -188,9 +188,7 @@ const AddMember: React.FC<createUserProps> = ({
     }
   };
 
-  console.log(errors, 'Errors');
-  console.log(selectedDropdown, selectedRole, selectedOptions);
-
+ 
   return (
     <div className="transparent-model">
       {loading && (

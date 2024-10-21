@@ -1,7 +1,7 @@
 import { ROUTES } from './routes';
-import { BiSupport } from 'react-icons/bi';
+import { BiDollar, BiSupport } from 'react-icons/bi';
 import { RiUserSettingsLine } from 'react-icons/ri';
-import { MdOutlinePayment, MdPendingActions } from 'react-icons/md';
+import { MdPendingActions } from 'react-icons/md';
 import { GrDocumentConfig } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
@@ -9,6 +9,8 @@ import { ImStatsBars2 } from 'react-icons/im';
 import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
 import { PiMapPin } from 'react-icons/pi';
+import { MdOutlinePermMedia } from "react-icons/md";
+import { FaCalculator } from "react-icons/fa";
 
 const mob = {
   mob: [
@@ -72,7 +74,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Dealer Pay',
         icon: (
-          <MdOutlinePayment
+          <BiDollar
             size={20}
             style={{ marginLeft: '5px' }}
             className="hover-icon"
@@ -98,7 +100,7 @@ const mob = {
     {
       path: ROUTES.LEAD_MANAGEMENT,
       sidebarProps: {
-        displayText: 'Lead Management',
+        displayText: 'Leads',
         icon: (
           <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
         ),
@@ -109,7 +111,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Library',
         icon: (
-          <IoCloudUploadOutline
+          <MdOutlinePermMedia
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
@@ -130,6 +132,14 @@ const mob = {
       sidebarProps: {
         displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.CALCULATOR,
+
+      sidebarProps: {
+        displayText: 'CAGR CALCULATOR',
+        icon: <FaCalculator size={20} style={{ flexShrink: '0' }} />,
       },
     },
     {

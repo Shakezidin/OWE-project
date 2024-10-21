@@ -153,7 +153,7 @@
   border: 0;
   border-radius: 0;
   outline: 0;
-  width: 80% !important;
+  width: 85% !important;
 }
 
 .custom_label {
@@ -166,7 +166,7 @@
 
 .innerView {
   border: none !important;
-  width: 80% !important;
+  width: 85% !important;
 }
 
 .scroll_user {
@@ -226,11 +226,21 @@
 } */
 
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 550px) {
+  .custom_label{
+    width: 210px;
+    margin-top: 5px;
+
+  }
+
+  .an_head{
+    line-height: 5px;
+
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (max-width: 750px) {
+@media only screen and (max-width: 600px) {
   .salrep_input_container.reverse_col {
     flex-direction: column-reverse !important;
   }
@@ -269,12 +279,24 @@
     border-radius: 8px;
   }
   .submitbut {
-    width: 95%;
+    width: 97%;
   }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
+@media (min-width: 600px) and (max-width: 820px) {
+  .innerView{
+    width: 100% !important;
+  }
+  .custom_Input{
+    width: 100% !important;
+  }
+  .scroll_user{
+    padding-left: 0px;
+  }
+  .an_head{
+    margin-left: 16px;
+  }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */

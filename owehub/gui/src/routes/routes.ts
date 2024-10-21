@@ -2,7 +2,7 @@ export const ROUTES = {
   LOGIN: '/login',
   RESETPASSWORD: '/resetPassword',
   OTP: '/otp',
-  COMMISSION_DASHBOARD: '/dashboard',
+  COMMISSION_DASHBOARD: '/dealer-pay',
   REPPAY_DASHBOARD: '/reppay/dashboard',
   AR_DASHBOARD: '/ar/dashboard',
   TEAM_MANAGEMENT_DASHBOARD: '/teammanagement/dashboard',
@@ -50,12 +50,14 @@ export const ROUTES = {
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
   CONFIG_APDEALER: '/config/ap-dealer',
-  CONFIG_DEALERPAYMENTS: '/config/dealer-payments',
+  CONFIG_DEALERPAYMENTS: '/config/d-payments',
   CONFIG_FINANCE_SCHEDULE: '/config/finance-schedule',
   CONFIG_SALES_PARTNER_PAY: '/config/sales-partner-commision',
-  TEAM_MANAGEMENT_TABLE: '/team-management/:id',
+  CONFIG_FINANCE_TYPES: '/config/finance-types',
+  TEAM_MANAGEMENT_TABLE: '/teammanagement/dashboard/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
+  SS_ONBOARDING: '/ss-onboarding',
 
 
   // other routes
@@ -83,13 +85,14 @@ export const ROUTES = {
   SCHEDULE_SALES_REP_SURVEY: '/schedule-sales-rep',
   PEINDING_QUEUE: '/pending-actions',
   LEAD_MANAGEMENT: '/leadmng-dashboard',
-  LEAD_MANAGEMENT_ARCHIEVES: '/lead-dashboard-archieves',
-  LEAD_MANAGEMENT_ADD_NEW: '/leadmgt-addnew',
+  LEAD_MANAGEMENT_ARCHIEVES: '/leadmng-dashboard/lead-dashboard-archieves',
+  LEAD_MANAGEMENT_ADD_NEW: '/leadmng-dashboard/leadmgt-addnew',
   LEAD_MANAGEMENT_ADD_NEW_MODAL: '/leadmgt-addnew-model',
-  LEAD_MANAGEMENT_HISTORY: '/leadmng-history',
+  LEAD_MANAGEMENT_HISTORY: '/leadmng-dashboard/leadmng-history',
   LEAD_MANAGEMENT_SUCCESS_MODAl: '/lead-mgmt-success-modal',
   MAP_ADDRESS: '/map-address',
   SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
   FOLDER_DETAIL:"/library/*",
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
+  CALCULATOR:'/calculator'
 };

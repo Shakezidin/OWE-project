@@ -26,6 +26,10 @@ import MicroLoader from '../components/loader/MicroLoader';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import { Tooltip } from 'react-tooltip';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { IoInformationOutline } from 'react-icons/io5';
+import Profile from './Modals/ProfileInfo';
+import useEscapeKey from '../../hooks/useEscape';
 
 interface HistoryTableProp {
   first_name: string;
@@ -58,6 +62,7 @@ const LeradManagementHistory = () => {
   const [see, setSee] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [leadId, setLeadId] = useState(0);
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -180,11 +185,10 @@ const LeradManagementHistory = () => {
   };
 
   const handlesee = (itemId: number) => {
-    setExpandedItemIds((prevExpandedItemIds) =>
-      prevExpandedItemIds.includes(itemId)
-        ? prevExpandedItemIds.filter((id) => id !== itemId)
-        : [...prevExpandedItemIds, itemId]
-    );
+    console.log("RABINDRA ")
+    setLeadId(itemId);
+    setIsProfileOpen(true);
+
   };
 
   const handleCross = () => {
@@ -241,6 +245,7 @@ const LeradManagementHistory = () => {
 
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [historyTable, setHistoryTable] = useState<HistoryTableProp[]>([]);
   const [refresh, setRefresh] = useState(1);
   const [remove, setRemove] = useState(false);
@@ -392,7 +397,7 @@ const LeradManagementHistory = () => {
       }
 
       const csvData = response.data?.leads_history_list?.map?.((item: any) => [
-        item.leads_id,
+        `OWE${item.leads_id}`,
         item.status_id,
         item.first_name,
         item.last_name,
@@ -411,7 +416,7 @@ const LeradManagementHistory = () => {
         item.timeline.find((event: any) => event.label === 'Appointment Date')
           ?.date || '',
         item.timeline.find((event: any) => event.label === 'Deal Won')?.date ||
-          '',
+        '',
         item.timeline.find((event: any) => event.label === 'Proposal Sent')
           ?.date || '',
       ]);
@@ -434,479 +439,432 @@ const LeradManagementHistory = () => {
     }
   };
 
+  const calClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(calClose);
+
+
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
 
+  const handleCloseProfileModal = () => {
+    setIsProfileOpen(false);
+
+  };
   return (
-    <div className={`flex justify-between mt2 ${styles.h_screen}`}>
-      <div className={styles.customer_wrapper_list}>
-        <div className={styles.lm_history_header}>
-          {checkedCount == 0 && <h1>History</h1>}
-          {checkedCount != 0 && (
-            <div className={styles.hist_checkbox_count}>
-              <img
-                src={ICONS.cross}
-                alt=""
-                height={28}
-                width={28}
-                style={{ cursor: 'pointer' }}
-                onClick={handleCrossClick}
-              />
-              <h1>{checkedCount} Selected</h1>
-            </div>
-          )}
-          {checkedCount == 0 && (
-            <>
-              <div className={styles.top_filters}>
-                <div>
-                  {isMobile &&
-                  selectedDates.startDate &&
-                  selectedDates.endDate ? (
-                    <div className={styles.hist_date}>
-                      <span>
-                        {selectedDates.startDate.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                        }) +
-                          ' ' +
-                          selectedDates.startDate.toLocaleDateString('en-US', {
-                            month: 'short',
-                          }) +
-                          ' ' +
-                          selectedDates.startDate.getFullYear()}
-                        {' - '}
-                        {selectedDates.endDate.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                        }) +
-                          ' ' +
-                          selectedDates.endDate.toLocaleDateString('en-US', {
-                            month: 'short',
-                          }) +
-                          ' ' +
-                          selectedDates.endDate.getFullYear()}
-                      </span>
-                    </div>
-                  ) : null}
-                </div>
-                <div className={styles.filters}>
-                  <div className={styles.lead__datepicker_wrapper}>
-                    {isCalendarOpen && (
-                      <div
-                        className={styles.lead__datepicker_content}
-                        ref={dateRangeRef}
-                      >
-                        <DateRange
-                          editableDateInputs={true}
-                          onChange={handleRangeChange}
-                          moveRangeOnFirstSelection={false}
-                          ranges={selectedRanges}
-                        />
-                        <div className={styles.lead__datepicker_btns}>
-                          <button className="reset-calender" onClick={onReset}>
-                            Reset
-                          </button>
-                          <button className="apply-calender" onClick={onApply}>
-                            Apply
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  {!isMobile &&
-                  selectedDates.startDate &&
-                  selectedDates.endDate ? (
-                    <div className={styles.hist_date}>
-                      <span>
-                        {selectedDates.startDate.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                        }) +
-                          ' ' +
-                          selectedDates.startDate.toLocaleDateString('en-US', {
-                            month: 'short',
-                          }) +
-                          ' ' +
-                          selectedDates.startDate.getFullYear()}
-                        {' - '}
-                        {selectedDates.endDate.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                        }) +
-                          ' ' +
-                          selectedDates.endDate.toLocaleDateString('en-US', {
-                            month: 'short',
-                          }) +
-                          ' ' +
-                          selectedDates.endDate.getFullYear()}
-                      </span>
-                    </div>
-                  ) : null}
-
-                  <Select
-                    value={selectedPeriod}
-                    onChange={handlePeriodChange}
-                    options={periodFilterOptions}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: 'px',
-                        borderRadius: '8px',
-                        outline: 'none',
-                        color: '#3E3E3E',
-                        width: '140px',
-                        height: '36px',
-                        fontSize: '12px',
-                        border: '1px solid #d0d5dd',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        alignContent: 'center',
-                        backgroundColor: '#fffff',
-                        boxShadow: 'none',
-                        '@media only screen and (max-width: 767px)': {
-                          width: '80px',
-                          // width: 'fit-content',
-                        },
-                        '&:focus-within': {
-                          borderColor: '#377CF6',
-                          boxShadow: '0 0 0 1px #377CF6',
-                          caretColor: '#3E3E3E',
-                        },
-                        '&:hover': {
-                          borderColor: '#377CF6',
-                          boxShadow: '0 0 0 1px #377CF6',
-                        },
-                      }),
-                      placeholder: (baseStyles) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                      }),
-                      indicatorSeparator: () => ({
-                        display: 'none',
-                      }),
-                      dropdownIndicator: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                        '&:hover': {
-                          color: '#3E3E3E',
-                        },
-                      }),
-                      option: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '13px',
-                        color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                        backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                        '&:hover': {
-                          backgroundColor: state.isSelected
-                            ? '#ddebff'
-                            : '#ddebff',
-                        },
-                        cursor: 'pointer',
-                      }),
-                      singleValue: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                      }),
-                      menu: (baseStyles) => ({
-                        ...baseStyles,
-                        width: '140px',
-                        marginTop: '0px',
-                      }),
-                    }}
-                  />
-
-                  <div
-                    className={styles.calender}
-                    onClick={toggleCalendar}
-                    ref={calendarRef}
-                  >
-                    <img src={ICONS.includes_icon} alt="" />
-                  </div>
-                  <div className={styles.sort_drop}>
-                    <SortingDropDown onChange={handleSortingChange} />
-                  </div>
-                  <div
-                    className={styles.calender}
-                    onClick={exportCsv}
-                    data-tooltip-id="export"
-                    style={{
-                      pointerEvents: exporting ? 'none' : 'auto',
-                      opacity: exporting ? 0.6 : 1,
-                      cursor: exporting ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    {exporting ? (
-                      <MdDownloading
-                        className="downloading-animation"
-                        size={20}
-                        color="white"
-                      />
-                    ) : (
-                      <LuImport size={20} color="white" />
-                    )}
-                  </div>
-
-                  <Tooltip
-                    style={{
-                      zIndex: 20,
-                      background: '#f7f7f7',
-                      color: '#000',
-                      fontSize: 12,
-                      paddingBlock: 4,
-                    }}
-                    offset={8}
-                    id="export"
-                    place="bottom"
-                    content="Export"
-                  />
-
-                  <div className={styles.hist_ret} onClick={handleCross}>
-                    <img src={ICONS.cross} alt="" height="26" width="26" />
-                  </div>
-                </div>
+    <>
+      <Profile
+        isOpen1={isProfileOpen}
+        onClose1={handleCloseProfileModal}
+        leadId={leadId}
+      />
+      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+        <div className={styles.customer_wrapper_list}>
+          <div className={styles.lm_history_header}>
+            {checkedCount == 0 && <h1>RECORDS</h1>}
+            {checkedCount != 0 && (
+              <div className={styles.hist_checkbox_count}>
+                <img
+                  src={ICONS.cross}
+                  alt=""
+                  height={28}
+                  width={28}
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleCrossClick}
+                />
+                <h1>{checkedCount} Selected</h1>
               </div>
-            </>
-          )}
-          {checkedCount != 0 && (
-            <div
-              style={{
-                pointerEvents: remove ? 'none' : 'auto',
-                opacity: remove ? 0.6 : 1,
-                cursor: remove ? 'not-allowed' : 'pointer',
-              }}
-              onClick={deleteLeads}
-              className={styles.lead_his_remove}
-            >
-              {remove ? 'Removing...' : 'Remove'}
-            </div>
-          )}
-        </div>
+            )}
+            {checkedCount == 0 && (
+              <>
+                <div className={styles.top_filters}>
+                  <div>
+                    {isMobile &&
+                      selectedDates.startDate &&
+                      selectedDates.endDate ? (
+                      <div className={styles.hist_date}>
+                        <span>
+                          {selectedDates.startDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                          }) +
+                            ' ' +
+                            selectedDates.startDate.toLocaleDateString('en-US', {
+                              month: 'short',
+                            }) +
+                            ' ' +
+                            selectedDates.startDate.getFullYear()}
+                          {' - '}
+                          {selectedDates.endDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                          }) +
+                            ' ' +
+                            selectedDates.endDate.toLocaleDateString('en-US', {
+                              month: 'short',
+                            }) +
+                            ' ' +
+                            selectedDates.endDate.getFullYear()}
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className={styles.filters}>
+                    <div className={styles.lead__datepicker_wrapper}>
+                      {isCalendarOpen && (
+                        <div
+                          className={styles.lead__datepicker_content}
+                          ref={dateRangeRef}
+                        >
+                          <DateRange
+                            editableDateInputs={true}
+                            onChange={handleRangeChange}
+                            moveRangeOnFirstSelection={false}
+                            ranges={selectedRanges}
+                          />
+                          <div className={styles.lead__datepicker_btns}>
+                            <button className="reset-calender" onClick={onReset}>
+                              Reset
+                            </button>
+                            <button className="apply-calender" onClick={onApply}>
+                              Apply
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {!isMobile &&
+                      selectedDates.startDate &&
+                      selectedDates.endDate ? (
+                      <div className={styles.hist_date}>
+                        <span>
+                          {selectedDates.startDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                          }) +
+                            ' ' +
+                            selectedDates.startDate.toLocaleDateString('en-US', {
+                              month: 'short',
+                            }) +
+                            ' ' +
+                            selectedDates.startDate.getFullYear()}
+                          {' - '}
+                          {selectedDates.endDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                          }) +
+                            ' ' +
+                            selectedDates.endDate.toLocaleDateString('en-US', {
+                              month: 'short',
+                            }) +
+                            ' ' +
+                            selectedDates.endDate.getFullYear()}
+                        </span>
+                      </div>
+                    ) : null}
 
-        <div className={styles.history_list}>
-          {isLoading ? (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <MicroLoader />
-            </div>
-          ) : historyTable.length > 0 ? (
-            historyTable.map((item) => (
+                    <Select
+                      value={selectedPeriod}
+                      onChange={handlePeriodChange}
+                      options={periodFilterOptions}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop: 'px',
+                          borderRadius: '8px',
+                          outline: 'none',
+                          color: '#3E3E3E',
+                          width: '140px',
+                          height: '36px',
+                          fontSize: '12px',
+                          border: '1px solid #d0d5dd',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          alignContent: 'center',
+                          backgroundColor: '#fffff',
+                          boxShadow: 'none',
+                          '@media only screen and (max-width: 767px)': {
+                            width: '80px',
+                            // width: 'fit-content',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#377CF6',
+                            boxShadow: '0 0 0 1px #377CF6',
+                            caretColor: '#3E3E3E',
+                          },
+                          '&:hover': {
+                            borderColor: '#377CF6',
+                            boxShadow: '0 0 0 1px #377CF6',
+                          },
+                        }),
+                        placeholder: (baseStyles) => ({
+                          ...baseStyles,
+                          color: '#3E3E3E',
+                        }),
+                        indicatorSeparator: () => ({
+                          display: 'none',
+                        }),
+                        dropdownIndicator: (baseStyles, state) => ({
+                          ...baseStyles,
+                          color: '#3E3E3E',
+                          '&:hover': {
+                            color: '#3E3E3E',
+                          },
+                        }),
+                        option: (baseStyles, state) => ({
+                          ...baseStyles,
+                          fontSize: '13px',
+                          color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                          backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                          '&:hover': {
+                            backgroundColor: state.isSelected
+                              ? '#ddebff'
+                              : '#ddebff',
+                          },
+                          cursor: 'pointer',
+                        }),
+                        singleValue: (baseStyles, state) => ({
+                          ...baseStyles,
+                          color: '#3E3E3E',
+                        }),
+                        menu: (baseStyles) => ({
+                          ...baseStyles,
+                          width: '140px',
+                          marginTop: '0px',
+                        }),
+                      }}
+                    />
+
+                    <div
+                      className={styles.calender}
+                      onClick={toggleCalendar}
+                      ref={calendarRef}
+                    >
+                      <img src={ICONS.includes_icon} alt="" />
+                    </div>
+                    <div className={styles.sort_drop}>
+                      <SortingDropDown onChange={handleSortingChange} />
+                    </div>
+                    <div
+                      className={styles.calender}
+                      onClick={exportCsv}
+                      data-tooltip-id="export"
+                      style={{
+                        pointerEvents: exporting ? 'none' : 'auto',
+                        opacity: exporting ? 0.6 : 1,
+                        cursor: exporting ? 'not-allowed' : 'pointer',
+                      }}
+                    >
+                      {exporting ? (
+                        <MdDownloading
+                          className="downloading-animation"
+                          size={20}
+                          color="white"
+                        />
+                      ) : (
+                        <LuImport size={20} color="white" />
+                      )}
+                    </div>
+
+                    <Tooltip
+                      style={{
+                        zIndex: 20,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                      }}
+                      offset={8}
+                      id="export"
+                      place="bottom"
+                      content="Export"
+                    />
+
+                    <div className={styles.hist_ret} onClick={handleCross}>
+                      <img src={ICONS.cross} alt="" height="26" width="26" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            {checkedCount != 0 && (
               <div
-                style={
-                  expandedItemIds.includes(item.leads_id)
-                    ? {
+                style={{
+                  pointerEvents: remove ? 'none' : 'auto',
+                  opacity: remove ? 0.6 : 1,
+                  cursor: remove ? 'not-allowed' : 'pointer',
+                }}
+                onClick={deleteLeads}
+                className={styles.lead_his_remove}
+              >
+                {remove ? 'Removing...' : 'Remove'}
+              </div>
+            )}
+          </div>
+
+          <div className={styles.history_list}>
+            {isLoading ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MicroLoader />
+              </div>
+            ) : historyTable.length > 0 ? (
+              historyTable.map((item) => (
+                <div
+                  style={
+                    expandedItemIds.includes(item.leads_id)
+                      ? {
                         width: '100%',
                         backgroundColor: '#EEF5FF',
                         borderTopLeftRadius: '8px',
                         borderTopRightRadius: '8px',
                       }
-                    : {}
-                }
-                className={styles.history_lists}
-              >
-                <div className={styles.history_list_inner}>
-                  <div className={styles.hist_checkname}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedItemIds.includes(item.leads_id)}
-                        onChange={() => handleCheckboxChange(item.leads_id)}
+                      : {}
+                  }
+                  className={styles.history_lists}
+                >
+                  <div className={styles.history_list_inner}>
+                    <div className={styles.hist_checkname}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedItemIds.includes(item.leads_id)}
+                          onChange={() => handleCheckboxChange(item.leads_id)}
+                          style={{
+                            width: '16.42px',
+                            height: '16px',
+                            gap: '0px',
+                            borderRadius: '8pxpx',
+                            border: '1px solid #797979',
+                          }}
+                        />
+                      </label>
+                      <div className={styles.user_name}
                         style={{
-                          width: '16.42px',
-                          height: '16px',
-                          gap: '0px',
-                          borderRadius: '8pxpx',
-                          border: '1px solid #797979',
-                        }}
-                      />
-                    </label>
-                    <div className={styles.user_name}>
-                      <h2>
-                        {item.first_name} {item.last_name}
-                      </h2>
-                      <p
-                        style={{
-                          color:
-                            item.deal_status === 'Deal Won'
-                              ? '#52B650'
-                              : item.deal_status === 'Deal Loss'
-                                ? '#F55B5B'
-                                : '#81a6e7',
+                          whiteSpace: 'pre-wrap',
+                          overflowWrap: 'break-word',
+                          width: '155px',
+                          lineHeight: "16px"
                         }}
                       >
-                        {item.deal_status ? item.deal_status : 'N/A'}:{' '}
-                        {item.deal_date ? item.deal_date : 'N/A'}
-                      </p>
+                        <h2>
+                          {item.first_name} {item.last_name}
+                        </h2>
+                        <p
+                          style={{
+                            color:
+                              item.deal_status === 'Deal Won'
+                                ? '#52B650'
+                                : item.deal_status === 'Deal Loss'
+                                  ? '#F55B5B'
+                                  : '#81a6e7',
+                          }}
+                        >
+                          {item.deal_status ? item.deal_status : 'N/A'}:{' '}
+                          {item.deal_date ? item.deal_date : 'N/A'}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                    {!isMobile && (
+                      <>
+                        {!isTablet && (
+                          <div className={styles.phone_number}>
+                            {item.phone_number ? item.phone_number : 'N/A'}
+                          </div>
+                        )}
+                        <div className={styles.email}>
+                          <p>{item.email_id ? item.email_id : 'N/A'}</p>
+                        </div>
+                        <div className={styles.address}>
+                          {item?.street_address
+                            ? item.street_address.length > 49
+                              ? `${item.street_address.slice(0, 49)}...`
+                              : item.street_address
+                            : 'N/A'}
+                        </div>
+                      </>
+                    )}
 
-                  {!isMobile && (
+                    <div
+                      className={styles.see_moreHistory}
+                      onClick={() => handlesee(item.leads_id)}
+                      data-tooltip-id="info"
+                    >
+                      <IoInformationOutline />
+                    </div>
+                    <Tooltip
+                      style={{
+                        zIndex: 20,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                      }}
+                      offset={8}
+                      id="info"
+                      place="bottom"
+                      content="Lead Info"
+                    />
+                  </div>
+                  {!isMobile && expandedItemIds.includes(item.leads_id) && (
                     <>
-                      {!isTablet && (
+                      {isTablet && (
+                        <div className={styles.phone_number_tab}>
+                          {item.phone_number}
+                        </div>
+                      )}
+
+                    </>
+                  )}
+                  {isMobile && expandedItemIds.includes(item.leads_id) && (
+                    <>
+                      <div className={styles.personal_info_mob}>
                         <div className={styles.phone_number}>
                           {item.phone_number ? item.phone_number : 'N/A'}
                         </div>
-                      )}
-                      <div className={styles.email}>
-                        <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                      </div>
-                      <div className={styles.address}>
-                        {item?.street_address
-                          ? item.street_address.length > 20
-                            ? `${item.street_address.slice(0, 20)}...`
-                            : item.street_address
-                          : 'N/A'}
+                        <div className={styles.email}>
+                          <p>{item.email_id ? item.email_id : 'N/A'}</p>
+                        </div>
+                        <div className={styles.address}>
+                          {item?.street_address
+                            ? item.street_address.length > 40
+                              ? `${item.street_address.slice(0, 40)}...`
+                              : item.street_address
+                            : 'N/A'}
+                        </div>
                       </div>
                     </>
                   )}
-
-                  <div
-                    className={styles.see_more}
-                    onClick={() => handlesee(item.leads_id)}
-                  >
-                    <p>
-                      {expandedItemIds.includes(item.leads_id)
-                        ? 'See Less'
-                        : 'See More'}
-                    </p>
-                    <img
-                      src={ICONS.SeeMore}
-                      alt="img"
-                      style={{
-                        transform: expandedItemIds.includes(item.leads_id)
-                          ? 'rotate(180deg)'
-                          : 'none',
-                      }}
-                    />
-                  </div>
                 </div>
-                {!isMobile && expandedItemIds.includes(item.leads_id) && (
-                  <>
-                    {isTablet && (
-                      <div className={styles.phone_number_tab}>
-                        {item.phone_number}
-                      </div>
-                    )}
-                    <div style={{ padding: '0px 12px' }}>
-                      <div
-                        style={{ backgroundColor: '#fff' }}
-                        className={styles.history_list_activity}
-                      >
-                        <div className={styles.history_list_head}>Activity</div>
+              ))
+            ) : (
+              <DataNotFound />
+            )}
+          </div>
 
-                        <div className={styles.history_list_activities}>
-                          {item.timeline.map((activity: any, index: number) => (
-                            <div
-                              key={index}
-                              className={styles.history_list_activity_det}
-                            >
-                              <div className={styles.circle_with_line}>
-                                <div className={styles.line1}></div>
-                                <div className={styles.circle}></div>
-                              </div>
-                              <div className={styles.activity_info}>
-                                <div className={styles.act_head}>
-                                  {activity.label}
-                                </div>
-                                <div className={styles.act_date}>
-                                  {new Date(activity.date).toLocaleDateString(
-                                    'en-US',
-                                    {
-                                      day: 'numeric',
-                                      month: 'short',
-                                      year: 'numeric',
-                                    }
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-                {isMobile && expandedItemIds.includes(item.leads_id) && (
-                  <>
-                    <div className={styles.personal_info_mob}>
-                      <div className={styles.phone_number}>
-                        {item.phone_number ? item.phone_number : 'N/A'}
-                      </div>
-                      <div className={styles.email}>
-                        <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                      </div>
-                      <div className={styles.address}>
-                        {item?.street_address
-                          ? item.street_address.length > 20
-                            ? `${item.street_address.slice(0, 20)}...`
-                            : item.street_address
-                          : 'N/A'}
-                      </div>
-                    </div>
+          {!!totalCount && !isLoading && (
+            <div className="page-heading-container">
+              <p className="page-heading">
+                {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item
+              </p>
 
-                    <div style={{ padding: '0px 12px' }}>
-                      <div
-                        style={{ backgroundColor: '#fff' }}
-                        className={styles.history_list_activity_mob}
-                      >
-                        <div className={styles.history_list_head}>Activity</div>
-                        {item.timeline.map((activity: any, index: number) => (
-                          <div
-                            key={index}
-                            className={styles.history_list_activity_det}
-                          >
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.line_mob}></div>
-                              <div className={styles.circle_mob}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>
-                                {activity.label}
-                              </div>
-                              <div className={styles.act_date}>
-                                {new Date(activity.date).toLocaleDateString(
-                                  'en-US',
-                                  {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                  }
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))
-          ) : (
-            <DataNotFound />
+              <Pagination
+                currentPage={page}
+                totalPages={totalPage}
+                paginate={(num) => setPage(num)}
+                currentPageData={[]}
+                goToNextPage={() => 0}
+                goToPrevPage={() => 0}
+                perPage={itemsPerPage}
+                onPerPageChange={handlePerPageChange}
+              />
+            </div>
           )}
         </div>
-
-        {!!totalCount && (
-          <div className="page-heading-container">
-            <p className="page-heading">
-              {startIndex} - {endIndex} of {totalCount} item
-            </p>
-
-            <Pagination
-              currentPage={page}
-              totalPages={totalPage}
-              paginate={(num) => setPage(num)}
-              currentPageData={[]}
-              goToNextPage={() => 0}
-              goToPrevPage={() => 0}
-              perPage={itemsPerPage}
-              onPerPageChange={handlePerPageChange}
-            />
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

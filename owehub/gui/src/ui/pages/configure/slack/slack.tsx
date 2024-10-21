@@ -211,12 +211,6 @@ const Slack = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb
-        head=""
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Slack Config"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Slack Config"
