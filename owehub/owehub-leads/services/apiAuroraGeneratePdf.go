@@ -254,7 +254,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	filename := fmt.Sprintf("%d.pdf", leadId)
-	filePath := fmt.Sprintf("/leads/proposals/%s.pdf", filename)
+	filePath := fmt.Sprintf("/leads/proposals/%s", filename)
 	err = leadsService.S3PutObject(filePath, bytes.NewReader((pdfBytes)))
 
 	if err != nil {
