@@ -81,7 +81,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// retreive design id from database
-	query = "SELECT aurora_design_id FROM leads_info WHERE leads_id = $1"
+	query = "SELECT aurora_design_id, proposal_pdf_key FROM leads_info WHERE leads_id = $1"
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadId})
 
 	if err != nil {
@@ -93,6 +93,18 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	if len(data) == 0 {
 		log.FuncErrorTrace(0, "Failed to find aurora design id for lead id %d", leadId)
 		handler.SendError("Lead not found")
+		return
+	}
+
+	// try to get proposal_pdf_key, if found, skip to last step
+	pdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	if ok {
+		log.FuncDebugTrace(0, "PDF key found in DB: %s", pdfKey)
+		handler.SendData(map[string]interface{}{
+			"current_step": totalSteps,
+			"total_steps":  totalSteps,
+			"url":          leadsService.S3GetObjectUrl(pdfKey),
+		}, true)
 		return
 	}
 
@@ -266,6 +278,15 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		"current_step": 10,
 		"total_steps":  totalSteps,
 	}, false)
+
+	// update leads info
+	query = "UPDATE leads_info SET proposal_pdf_key = $1 WHERE leads_id = $2"
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{filePath, leadId})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update leads info err %v", err)
+		handler.SendError("Server side error")
+		return
+	}
 
 	// end the response providing the url
 	handler.SendData(map[string]interface{}{
