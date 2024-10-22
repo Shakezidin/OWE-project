@@ -92,4 +92,12 @@
   .iconSection2-mobile .mobileTitle {
     display: none;
   }
+  .loginButton, .cancel{
+    width: 100px;
+  }
+  .fildelb-btn{
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+  }
 }
