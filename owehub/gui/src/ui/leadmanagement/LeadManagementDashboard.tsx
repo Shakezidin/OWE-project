@@ -1463,6 +1463,7 @@ const LeadManagementDashboard = () => {
                     fontWeight:"400"
                   }}
                   offset={8}
+                  delayShow={800}
                   id="downip"
                   place="bottom"
                   content= {isToggledX ? "Minimize" : "Maximize"}
@@ -1673,6 +1674,7 @@ const LeadManagementDashboard = () => {
                     paddingBlock: 4,
                     fontWeight:"400"
                   }}
+                  delayShow={800}
                   offset={8}
                   id="More Pages"
                   place="bottom"
@@ -1696,6 +1698,7 @@ const LeadManagementDashboard = () => {
                     id="NEW"
                     place="bottom"
                     content="Add New Lead"
+                    delayShow={800}
                   />
 
                   <div
@@ -1729,6 +1732,7 @@ const LeadManagementDashboard = () => {
                       fontWeight:"400"
                     }}
                     offset={8}
+                    delayShow={800}
                     id="export"
                     place="bottom"
                     content="Export"

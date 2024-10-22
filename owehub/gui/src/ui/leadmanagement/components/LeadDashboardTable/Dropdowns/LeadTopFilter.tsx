@@ -67,6 +67,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
           fontWeight:"400"
         }}
         offset={8}
+        delayShow={800}
         id="Filters"
         place="bottom"
         content="Filters"
