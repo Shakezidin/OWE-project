@@ -27,5 +27,13 @@
     .mobile_gap {
        gap: 6px;
     }
+    .flex_auto{
+        flex: 1;
+        max-width: 170px;
+        margin-right: auto;
+    }
+    .flex_auto ::placeholder{
+        font-size: 10px;
+    }
     
 }

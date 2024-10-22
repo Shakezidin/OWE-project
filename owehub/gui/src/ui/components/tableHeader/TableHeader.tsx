@@ -55,7 +55,7 @@ const TableHeader = (props: TableProps) => {
 
       <div className="iconContainer">
         {onPressViewArchive ? (
-          <div className="iconsSection2">
+          <div className="iconsSection2 config-archive">
             <div className="flex items-center">
               <label
                 htmlFor="h6 "
@@ -103,7 +103,7 @@ const TableHeader = (props: TableProps) => {
             <img src={ICONS.importIcon} alt="" /> Import
           </button>
         </div> */}
-        <div className="iconsSection2-confex">
+        <div className="iconsSection2-confex config-export">
           {onpressExport ? (
             <button type="button" onClick={onpressExport}>
              {isExportingData ? (
@@ -118,7 +118,7 @@ const TableHeader = (props: TableProps) => {
             </button>
           ) : null}
         </div>
-        <div className="iconsSection2-conan">
+        <div className="iconsSection2-conan config-add">
           <button
             type="button"
             style={{
