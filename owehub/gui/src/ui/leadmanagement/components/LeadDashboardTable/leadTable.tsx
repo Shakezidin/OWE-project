@@ -35,6 +35,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
   >('Deal Won');
 
   const [leadId, setLeadId] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
@@ -57,6 +58,40 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+
+  const downloadProposalWithSSE = (leadId: number) => {
+    setIsDownloading(true);
+    const eventSource = new EventSource(
+      "https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf"
+    );
+  
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+  
+      if (data.is_done) {
+        setIsDownloading(false);
+        const pdfUrl = data.pdf_url;
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'Proposal.pdf';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+  
+        eventSource.close();
+      } else {
+        console.log('PDF generation progress:', data);
+      }
+    };
+  
+    eventSource.onerror = (error) => {
+      console.error('Error with SSE connection', error);
+      setIsDownloading(false);
+      eventSource.close();
+    };
   };
 
   useEffect(() => {
@@ -82,7 +117,10 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'renew_proposal') {
       generateWebProposal(leadId)
       setSelectedType('');
-    }
+    } else if (selectedType === 'download') {
+      downloadProposalWithSSE(leadId); 
+      setSelectedType('');
+    } 
 
     else if (selectedType === 'Appointment Not Required') {
       handleAppNotReq();
