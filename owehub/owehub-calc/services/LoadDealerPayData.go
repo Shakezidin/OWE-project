@@ -69,6 +69,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	uniqueID := dlrPayData.UniqueId
 	DealerCode := dlrPayData.DealerCode
 	SystemSize := dlrPayData.SystemSize
+	Rl := dlrPayData.RL
 	ContractDolDol := dlrPayData.ContractDolDol
 	OtherAdders := dlrPayData.OtherAdders
 	Rep1 := dlrPayData.Rep1
@@ -80,61 +81,50 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	DrawAmt := dlrPayData.DrawAmt
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
-	financeFee, err := GetFinanceFeeByItemID(financeSchedule.FinanceScheduleData, 1234)
-	if err != nil {
-		financeFee = 0.0
-	}
-	dealercredit, err := GetDealerCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
-	if err != nil {
-		dealercredit = ""
-	}
+	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
 
-	dealerpayments, err := GetDealerpaymentsByItemID(dealerPayments.DealerPaymentsData, uniqueID)
-	if err != nil {
-		dealerpayments = ""
-	}
-	Rl := 0.0 // config is not available
-	drawPercent := 0.0
-	drawMax := 0.0
+	amt_paid := 0.0 // how to calculate sum of dealer payments
+	balance := 0.0  //Total Net Commission - Sum of Dealer Paid by Project ID how I get these values?
+
 	dlrOvrdAmount := 0.0
 	mktFee := 0.0
 	payments := 0.0
-	amt_paid := 0.0 // how to calculate sum of dealer payments
-	balance := 0.0  //Total Net Commission - Sum of Dealer Paid by Project ID how I get these values?
+	drawPercent := 0.0
+	drawMax := 0.0
+
+	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, 1234) //there is no unique id
+	financeFee := GetFinanceFeeByItemID(financeSchedule.FinanceScheduleData, 1234)       //there is no unique id
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, payments)
 	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, drawPercent, drawMax)
+	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
 
-	var amount float64
-	if !NtpCompleteDate.IsZero() {
-		amount = m1Payment
-	} else if !PvComplettionDate.IsZero() {
-		amount = m2Payment
-	}
 	outData["home_owner"] = HomeOwner
 	outData["currect_status"] = CurrectStatus
 	outData["unique_id"] = uniqueID
 	outData["dealer_code"] = DealerCode
+	outData["today"] = time.Now()
+	outData["amount"] = amount
 	outData["sys_size"] = SystemSize
+	outData["rl"] = Rl
 	outData["contract_dol_dol"] = ContractDolDol
+	outData["loan_fee"] = LoanFee
+	outData["epc"] = ContractDolDol / (SystemSize * 1000)
+	outData["net_epc"] = NetEpc
 	outData["other_adders"] = OtherAdders
+	outData["credit"] = credit
 	outData["rep_1"] = Rep1
 	outData["rep_2"] = Rep2
 	outData["setter"] = Setter
+	outData["draw_amt"] = DrawAmt
+	outData["amt_paid"] = amt_paid
+	outData["balance"] = balance
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
-	outData["net_epc"] = NetEpc
-	outData["draw_amt"] = DrawAmt
+
 	outData["ntp_complete_date"] = NtpCompleteDate
 	outData["pv_complete_date"] = PvComplettionDate
 	outData["finance_fee"] = financeFee
-	outData["dealer_credit"] = dealercredit
-	outData["dealer_payments"] = dealerpayments
-	outData["today"] = time.Now()
-	outData["amount"] = amount
-	outData["epc"] = ContractDolDol / (SystemSize * 1000)
-	outData["amt_paid"] = amt_paid
-	outData["balance"] = balance
 	outData["total_gross_commission"] = totalGrossCommission
 	outData["total_net_commission"] = totalNetCommission
 	outData["m1_payment"] = m1Payment

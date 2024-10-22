@@ -2,7 +2,7 @@ package services
 
 import (
 	oweconfig "OWEApp/shared/oweconfig"
-	"errors"
+	"time"
 )
 
 /*
@@ -55,29 +55,38 @@ func CalcPaymentsDealerPay(totalNetCommissions float64, drawPercent float64, dra
 	return m1Payment, m2Payment
 }
 
-func GetFinanceFeeByItemID(financeSchedule []oweconfig.FinanceScheduleStruct, itemID int64) (float64, error) {
+func CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate time.Time, m1Payment, m2Payment float64) (amount float64) {
+	if !NtpCompleteDate.IsZero() {
+		amount = m1Payment
+	} else if !PvComplettionDate.IsZero() {
+		amount = m2Payment
+	}
+	return amount
+}
+
+func GetFinanceFeeByItemID(financeSchedule []oweconfig.FinanceScheduleStruct, itemID int64) float64 {
 	for _, entry := range financeSchedule {
 		if entry.ItemID == itemID {
-			return entry.FinanceFee, nil
+			return entry.FinanceFee
 		}
 	}
-	return 0, errors.New("item ID not found")
+	return 0
 }
 
-func GetDealerCreditByUniqueID(financeSchedule []oweconfig.DealerCreditsStruct, UniqueId string) (string, error) {
-	for _, entry := range financeSchedule {
+func GetCreditByUniqueID(dealerCredit []oweconfig.DealerCreditsStruct, UniqueId string) string {
+	for _, entry := range dealerCredit {
 		if entry.UniqueId == UniqueId {
-			return entry.CreditAmount, nil
+			return entry.CreditAmount
 		}
 	}
-	return "", errors.New("item ID not found")
+	return ""
 }
 
-func GetDealerpaymentsByItemID(financeSchedule []oweconfig.DealerPaymentsStruct, UniqueId string) (string, error) {
+func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleStruct, UniqueId int64) (loanfee float64) {
 	for _, entry := range financeSchedule {
-		if entry.UniqueId == UniqueId {
-			return entry.TypeOfPayment, nil
+		if entry.ItemID == UniqueId {
+			loanfee += entry.FinanceFee
 		}
 	}
-	return "", errors.New("item ID not found")
+	return loanfee
 }

@@ -31,6 +31,7 @@ type InitialStruct struct {
 	DrawAmt           float64
 	NtpCompleteDate   time.Time
 	PvComplettionDate time.Time
+	RL                float64
 }
 
 type InitialDataLists struct {
@@ -51,7 +52,8 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			 cdv.contracted_system_size, cdv.total_system_cost,cdv.adder_breakdown_and_total_new,
 			 cdv.primary_sales_rep, cdv.secondary_sales_rep, cdv.setter, 
 			 cdv.state, cdv.sale_date, cdv.net_epc, cdv.m1_sales_partner_draw_percentage, 
-			 cdv.ntp_complete_date, cdv.pv_completion_date
+			 cdv.ntp_complete_date, cdv.pv_completion_date, 
+			 CAST(cdv.redline AS float) AS redline
 			 from consolidated_data_view`
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
@@ -156,6 +158,12 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.PvComplettionDate = pvCompletionDate.(time.Time)
 		} else {
 			InitialDataa.PvComplettionDate = time.Time{}
+		}
+
+		if redLine, ok := data["redline"]; (ok) && (redLine != nil) {
+			InitialDataa.RL = redLine.(float64)
+		} else {
+			InitialDataa.RL = 0.0
 		}
 
 		InitialData.InitialDataList = append(InitialData.InitialDataList, InitialDataa)
