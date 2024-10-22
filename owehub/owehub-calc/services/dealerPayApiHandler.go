@@ -2,6 +2,7 @@ package services
 
 import (
 	oweconfig "OWEApp/shared/oweconfig"
+	"strconv"
 	"time"
 )
 
@@ -64,15 +65,6 @@ func CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate time.Time, m1Payment
 	return amount
 }
 
-func GetFinanceFeeByItemID(financeSchedule []oweconfig.FinanceScheduleStruct, itemID int64) float64 {
-	for _, entry := range financeSchedule {
-		if entry.ItemID == itemID {
-			return entry.FinanceFee
-		}
-	}
-	return 0
-}
-
 func GetCreditByUniqueID(dealerCredit []oweconfig.DealerCreditsStruct, UniqueId string) string {
 	for _, entry := range dealerCredit {
 		if entry.UniqueId == UniqueId {
@@ -89,4 +81,41 @@ func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleS
 		}
 	}
 	return loanfee
+}
+
+func CalcAmtPaidByDealer(dealerPayments []oweconfig.DealerPaymentsStruct, dealer string) (amtPaid float64) {
+	for _, entry := range dealerPayments {
+		if entry.SalesPartner == dealer {
+			// Convert PaymentAmount from string to float64
+			paymentAmount, err := strconv.ParseFloat(entry.PaymentAmount, 64)
+			if err != nil {
+				continue // Skip this entry if conversion fails
+			}
+			amtPaid += paymentAmount
+		}
+	}
+	return amtPaid
+}
+
+func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, dealer string, uniqueId string) (amtPaid float64) {
+	for _, entry := range dealerPayments {
+		if entry.SalesPartner == dealer && entry.UniqueId == uniqueId {
+			// Convert PaymentAmount from string to float64
+			paymentAmount, err := strconv.ParseFloat(entry.PaymentAmount, 64)
+			if err != nil {
+				continue // Skip this entry if conversion fails
+			}
+			amtPaid += paymentAmount
+		}
+	}
+	return amtPaid
+}
+
+func CalcDealerOvrdCommissionDealerPay(dealerOvrd []oweconfig.DealerOverrideStruct, dealer string) (dealerovrd float64) {
+	for _, entry := range dealerOvrd {
+		if entry.Dealer == dealer {
+			dealerovrd += entry.PayRate
+		}
+	}
+	return dealerovrd
 }

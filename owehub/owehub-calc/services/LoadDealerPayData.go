@@ -22,10 +22,11 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
 	dealerPayments, err := oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
+	dealerOvrd, err := oweconfig.GetDealerOverrideConfigFromDB(dataReq)
 
 	for _, data := range InitailData.InitialDataList {
 		var dlrPayData map[string]interface{}
-		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments)
+		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd)
 
 		if err != nil || dlrPayData == nil {
 			if len(data.UniqueId) > 0 {
@@ -60,7 +61,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 * DESCRIPTION:     calculate the calculated data for DLR Pay
 * RETURNS:         outData
 *****************************************************************************/
-func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule oweconfig.FinanceSchedule, dealerCredit oweconfig.DealerCredits, dealerPayments oweconfig.DealerPayments) (outData map[string]interface{}, err error) {
+func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule oweconfig.FinanceSchedule, dealerCredit oweconfig.DealerCredits, dealerPayments oweconfig.DealerPayments, dealerovrd oweconfig.DealerOverride) (outData map[string]interface{}, err error) {
 	// this row data is from sales data
 	outData = make(map[string]interface{})
 
@@ -78,26 +79,26 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	ST := dlrPayData.ST
 	ContractDate := dlrPayData.ContractDate
 	NetEpc := dlrPayData.NetEpc
-	DrawAmt := dlrPayData.DrawAmt
+	DrawAmt := dlrPayData.DrawAmt // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
 	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
+	amt_paid := CalcAmtPaidByDealer(dealerPayments.DealerPaymentsData, DealerCode)
+	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
+	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
 
-	amt_paid := 0.0 // how to calculate sum of dealer payments
-	balance := 0.0  //Total Net Commission - Sum of Dealer Paid by Project ID how I get these values?
-
-	dlrOvrdAmount := 0.0
+	//from here to
 	mktFee := 0.0
 	payments := 0.0
-	drawPercent := 0.0
 	drawMax := 0.0
-
 	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, 1234) //there is no unique id
-	financeFee := GetFinanceFeeByItemID(financeSchedule.FinanceScheduleData, 1234)       //there is no unique id
-	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, payments)
-	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, drawPercent, drawMax)
+	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawAmt, drawMax)
 	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
+	// here i have some doubts
+
+	dealerPaidByProjectId := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
+	balance := totalNetCommission - dealerPaidByProjectId
 
 	outData["home_owner"] = HomeOwner
 	outData["currect_status"] = CurrectStatus
@@ -122,12 +123,11 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
 
-	outData["ntp_complete_date"] = NtpCompleteDate
-	outData["pv_complete_date"] = PvComplettionDate
-	outData["finance_fee"] = financeFee
-	outData["total_gross_commission"] = totalGrossCommission
-	outData["total_net_commission"] = totalNetCommission
-	outData["m1_payment"] = m1Payment
-	outData["m2payment"] = m2Payment
+	// outData["ntp_complete_date"] = NtpCompleteDate
+	// outData["pv_complete_date"] = PvComplettionDate
+	// outData["total_gross_commission"] = totalGrossCommission
+	// outData["total_net_commission"] = totalNetCommission
+	// outData["m1_payment"] = m1Payment
+	// outData["m2payment"] = m2Payment
 	return outData, err
 }
