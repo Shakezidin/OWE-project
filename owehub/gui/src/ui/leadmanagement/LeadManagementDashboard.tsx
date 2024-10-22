@@ -1033,21 +1033,24 @@ const LeadManagementDashboard = () => {
   const exportCsv = async () => {
     setIsExporting(true);
     const headers = [
-      'Leads ID',
+      'Lead ID',
       'Status ID',
       'First Name',
       'Last Name',
+      'Email',
       'Phone Number',
-      'Email ID',
       'Street Address',
-      'Zipcode',
-      'Deal Date',
-      'Deal Status',
-      'Appointment Scheduled',
-      'Appointment Accepted',
-      'Appointment Date',
-      'Deal Won',
-      'Proposal Sent',
+      'Appointment Status',
+      'Appointment Status Date',
+      'Won/Lost Status',
+      'Won/Lost Date',
+      'Finance Company',
+      'Finance Type',
+      'QC Audit',
+      'Proposal ID',
+      'Proposal Status',
+      'Proposal Link',
+      'Proposal Updated At',
     ];
 
     let statusId;
@@ -1105,8 +1108,8 @@ const LeadManagementDashboard = () => {
         item.status_id,
         item.first_name,
         item.last_name,
-        item.phone_number,
         item.email_id,
+        item.phone_number,
         item.street_address,
         item.appointment_status_label,
         item.appointment_status_date,
@@ -1115,6 +1118,10 @@ const LeadManagementDashboard = () => {
         item.finance_company,
         item.finance_type,
         item.qc_audit,
+        item.proposal_id,
+        item.proposal_status,
+        item.proposal_link,
+        item.proposal_updated_at,
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -1429,21 +1436,10 @@ const LeadManagementDashboard = () => {
                 </div>}
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
                   {isToggledX ? (
-                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}>&#x1F781;</div>
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DownArrowDashboardAboveDirection} /></div>
                   ) : (
-                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>&#x1F783;</div>
+                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}><img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} /></div>
                   )}
-
-
-                  {/* <img
-                    src={
-                      isToggledX === true
-                        ? ICONS.ChecronUpX
-                        : ICONS.DownArrowDashboard
-                    }
-                  /> */}
-
-                  {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
                 </div>
                 <Tooltip
                   style={{
@@ -1456,6 +1452,7 @@ const LeadManagementDashboard = () => {
                     fontWeight:"400"
                   }}
                   offset={8}
+                  delayShow={800}
                   id="downip"
                   place="bottom"
                   content= {isToggledX ? "Minimize" : "Maximize"}
@@ -1666,6 +1663,7 @@ const LeadManagementDashboard = () => {
                     paddingBlock: 4,
                     fontWeight:"400"
                   }}
+                  delayShow={800}
                   offset={8}
                   id="More Pages"
                   place="bottom"
@@ -1689,6 +1687,7 @@ const LeadManagementDashboard = () => {
                     id="NEW"
                     place="bottom"
                     content="Add New Lead"
+                    delayShow={800}
                   />
 
                   <div
@@ -1722,6 +1721,7 @@ const LeadManagementDashboard = () => {
                       fontWeight:"400"
                     }}
                     offset={8}
+                    delayShow={800}
                     id="export"
                     place="bottom"
                     content="Export"

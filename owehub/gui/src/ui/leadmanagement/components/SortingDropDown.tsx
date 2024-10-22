@@ -60,6 +60,7 @@ useEscapeKey(toggleDropdown);
           paddingBlock: 4,
         }}
         offset={8}
+        delayShow={800}
         id="Filters"
         place="bottom"
         content="Filters"
