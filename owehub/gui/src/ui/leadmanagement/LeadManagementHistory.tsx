@@ -334,7 +334,7 @@ const LeradManagementHistory = () => {
 
       if (response.status === 200) {
         setRefresh((prev) => prev + 1);
-        toast.success('Lead History deleted successfully');
+        toast.success('Lead Record deleted successfully');
         setRemove(false);
         handleCrossClick();
       } else {
@@ -366,11 +366,6 @@ const LeradManagementHistory = () => {
       'Zipcode',
       'Deal Date',
       'Deal Status',
-      'Appointment Scheduled',
-      'Appointment Accepted',
-      'Appointment Date',
-      'Deal Won',
-      'Proposal Sent',
     ];
 
     try {
@@ -407,18 +402,6 @@ const LeradManagementHistory = () => {
         item.zipcode,
         item.deal_date,
         item.deal_status,
-        item.timeline.find(
-          (event: any) => event.label === 'Appoitment Scheduled'
-        )?.date || '',
-        item.timeline.find(
-          (event: any) => event.label === 'Appointment Accepted'
-        )?.date || '',
-        item.timeline.find((event: any) => event.label === 'Appointment Date')
-          ?.date || '',
-        item.timeline.find((event: any) => event.label === 'Deal Won')?.date ||
-        '',
-        item.timeline.find((event: any) => event.label === 'Proposal Sent')
-          ?.date || '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -427,7 +410,7 @@ const LeradManagementHistory = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'leads_history.csv');
+      link.setAttribute('download', 'leads_records.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
