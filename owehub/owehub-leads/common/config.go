@@ -14,6 +14,7 @@ type LeadAppConfig struct {
 	AwsS3Region            string `json:"awsS3Region"`
 	AwsS3AccessKeyId       string `json:"awsS3AccessKeyId"`
 	AwsS3SecretKey         string `json:"awsS3SecretKey"`
+	RodUrl                 string `json:"rodUrl"`
 }
 
 var LeadAppCfg LeadAppConfig

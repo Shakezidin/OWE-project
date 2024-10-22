@@ -74,9 +74,6 @@ func (handler *SSEHandler) SendError(errorMsg string) {
 
 	errJson := fmt.Sprintf("{\"is_done\":true, \"error\": \"%s\", \"data\": null}", errorMsg)
 	_, err = fmt.Fprintf(*handler.resp, "data: %s\n\n", errJson)
-	if err != nil {
-		return
-	}
 	handler.respController.Flush()
 }
 

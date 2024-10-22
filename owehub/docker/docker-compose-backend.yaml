@@ -149,6 +149,16 @@ services:
       - /var/log/owe/:/var/log/owe/
     privileged: true
 
+  ############### HEADLESS BROWSER #####################
+  service-owehub-browser:
+    restart: always
+    image: ghcr.io/go-rod/rod
+    container_name: owehub-headless
+    ports:
+      - "7317:7317"
+    networks:
+      owe_net:
+        ipv4_address: 172.30.0.216
 networks:
   owe_net:
     driver: bridge

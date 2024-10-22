@@ -18,6 +18,8 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/gson"
 )
@@ -43,6 +45,8 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		data                    []map[string]interface{}
 		proposalUrl             string
 		browser                 *rod.Browser
+		browserLauncher         *launcher.Launcher
+		browserClient           *cdp.Client
 		page                    *rod.Page
 		reader                  *rod.StreamReader
 		retreiveWebProposalResp *auroraclient.RetrieveWebProposalApiResponse
@@ -131,7 +135,22 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	})
 
 	// follow step 3 to 10 for generating pdf
-	browser = rod.New()
+	browserLauncher, err = launcher.NewManaged(leadsService.LeadAppCfg.RodUrl)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create rod browser launcher err %v", err)
+		handler.SendError("Server side error")
+		return
+	}
+	browserLauncher.Headless(true)
+
+	browserClient, err = browserLauncher.Client()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create rod browser launcher client err %v", err)
+		handler.SendError("Server side error")
+		return
+	}
+
+	browser = rod.New().Client(browserClient)
 	err = browser.Connect()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to connect rod browser err %v", err)
