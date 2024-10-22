@@ -144,7 +144,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     e.preventDefault();
     const errors = validateForm(formData);
     setErrors(errors);
-    if (Object.keys(errors).length === 0) {
+    if (Object.keys(errors).length === 0 && emailError === '') {
       try {
         const response = await postCaller(
           'edit_leads',

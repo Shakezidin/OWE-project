@@ -127,6 +127,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
+          <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
@@ -166,7 +167,7 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
-        <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
+        
       </Routes>
     </BrowserRouter>
   );

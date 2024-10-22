@@ -209,7 +209,7 @@ const Profile: React.FC<EditModalProps> = ({
                                     <tr>
                                         <td className={classes.leftAlign}>Proposal type</td>
                                         <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >85001</td>
+                                        >{leadData?.proposal_type ? leadData?.proposal_type : "....."}</td>
                                     </tr>
                                     <tr>
                                         <td className={classes.leftAlign}>Finance Type</td>
