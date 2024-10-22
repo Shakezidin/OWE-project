@@ -212,7 +212,7 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("GET"),
 		"/owe-leads-service/v1/aurora_generate_pdf",
 		apiHandler.HandleAuroraGeneratePdfRequest,
-		false,
+		true,
 		leadsRoleGroup,
 	},
 
