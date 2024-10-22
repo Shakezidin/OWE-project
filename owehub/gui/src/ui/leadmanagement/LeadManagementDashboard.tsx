@@ -1436,21 +1436,10 @@ const LeadManagementDashboard = () => {
                 </div>}
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
                   {isToggledX ? (
-                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}>&#x1F781;</div>
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DownArrowDashboardAboveDirection} /></div>
                   ) : (
-                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>&#x1F783;</div>
+                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}><img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} /></div>
                   )}
-
-
-                  {/* <img
-                    src={
-                      isToggledX === true
-                        ? ICONS.ChecronUpX
-                        : ICONS.DownArrowDashboard
-                    }
-                  /> */}
-
-                  {/* HERE CHEWRON FOR DASHBOARD GRAPHS  ENDED */}
                 </div>
                 <Tooltip
                   style={{
