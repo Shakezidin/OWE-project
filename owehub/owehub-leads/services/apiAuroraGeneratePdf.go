@@ -78,8 +78,8 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// retreive design id from database
-	query = "SELECT aurora_design_id FROM leads_info"
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	query = "SELECT aurora_design_id FROM leads_info WHERE leads_id = $1"
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadId})
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to query database err %v", err)
@@ -157,8 +157,8 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	log.FuncDebugTrace(0, "PDF GENERATION: Browser connected")
 	defer browser.Close()
-
 	handler.SendData(map[string]interface{}{
 		"current_step": 3,
 		"total_steps":  totalSteps,
@@ -170,6 +170,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	log.FuncDebugTrace(0, "PDF GENERATION: Page loaded")
 	handler.SendData(map[string]interface{}{
 		"current_step": 4,
 		"total_steps":  totalSteps,
@@ -181,6 +182,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	log.FuncDebugTrace(0, "PDF GENERATION: Page loaded")
 	handler.SendData(map[string]interface{}{
 		"current_step": 5,
 		"total_steps":  totalSteps,
@@ -192,6 +194,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	log.FuncDebugTrace(0, "PDF GENERATION: Page idle")
 	handler.SendData(map[string]interface{}{
 		"current_step": 6,
 		"total_steps":  totalSteps,
@@ -203,12 +206,14 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	log.FuncDebugTrace(0, "PDF GENERATION: DOM stable")
 	handler.SendData(map[string]interface{}{
 		"current_step": 7,
 		"total_steps":  totalSteps,
 	}, false)
 
 	page.WaitRequestIdle(time.Second*2, nil, nil, nil)()
+	log.FuncDebugTrace(0, "PDF GENERATION: Request idle")
 	handler.SendData(map[string]interface{}{
 		"current_step": 8,
 		"total_steps":  totalSteps,
@@ -230,6 +235,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	log.FuncDebugTrace(0, "PDF GENERATION: PDF generated")
 	handler.SendData(map[string]interface{}{
 		"current_step": 9,
 		"total_steps":  totalSteps,
