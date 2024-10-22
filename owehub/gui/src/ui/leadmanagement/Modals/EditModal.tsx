@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import classes from '../styles/confirmmodal.module.css';
 import Input from '../../components/text_input/Input';
 import { validateEmail } from '../../../utiles/Validation';
@@ -25,6 +25,8 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
   const [emailError, setEmailError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [load, setLoad] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+
 
   useEffect(() => {
     if (isOpen) {
@@ -50,42 +52,57 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     }
   }, [leadData]);
 
-  const validateForm = (formData: any) => {
-    const errors: { [key: string]: string } = {};
-    if (formData.email_id.trim() === '') {
-      errors.email_id = 'Email is required';
-    }
-    return errors;
-  };
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
-
-    // Update form data
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    // Validate email if it is the email input
     if (name === 'email_id') {
+      const isOnlyNumbers = /^\d+$/.test(value.trim());
       const isValidEmail = validateEmail(value.trim());
-      if (!isValidEmail) {
-        setEmailError('Please enter a valid email address.'); // Set email error
+      if (isOnlyNumbers) {
+        setEmailError('Email cannot consist of only numbers.');
         setErrors((prevErrors) => ({
           ...prevErrors,
-          email_id: 'Please enter a valid email address.', // Add to errors
+          email_id: 'Email cannot consist of only numbers.',
         }));
-      } else {
-        setEmailError(''); // Clear email error if valid
+      }
+      else if (!isValidEmail) {
+        setEmailError('Please enter a valid email address.');
         setErrors((prevErrors) => ({
           ...prevErrors,
-          email_id: '', // Clear from errors if valid
+          email_id: 'Please enter a valid email address.',
+        }));
+      }
+      else {
+        setEmailError('');
+        setErrors((prevErrors) => {
+          const newErrors = { ...prevErrors };
+          delete newErrors.email_id;
+          return newErrors;
+        });
+      }
+
+
+
+
+      const trimmedValue = value.replace(/\s/g, '');
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: trimmedValue,
+      }));
+    } else if (name === 'mobile_number') {
+      if (value.length <= 16) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
         }));
       }
     } else {
-      // For other fields, manage their respective errors
-      const errors = validateForm(formData);
-      setErrors(errors);
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+      const err = { ...errors };
+      delete err[name];
+      setErrors(err);
     }
   };
 
@@ -103,58 +120,57 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     };
   }, [isOpen, onClose]);
 
-  const handleConfrm = async (e: any) => {
-    e.preventDefault();
 
-    console.log('ZIP_CODE');
 
-    const errors = validateForm(formData);
-    setErrors(errors);
-
-    const isValidEmail = validateEmail(formData.email_id.trim());
-    if (!isValidEmail) {
-      setEmailError('Please enter a valid email address.');
-      errors.email_id = 'Please enter a valid email address.';
-      setErrors(errors);
-    } else {
-      setEmailError('');
-      if (errors.email_id) {
-        delete errors.email_id;
-        setErrors(errors);
-      }
+  const validateForm = (formData: any) => {
+    const errors: { [key: string]: string } = {};
+    if (formData.email_id.trim() === '') {
+      errors.email_id = 'Email is required';
     }
-
-    if (Object.keys(errors).length > 0) {
-      return;
+    if (formData.mobile_number.trim() === '') {
+      errors.mobile_number = 'Phone number is required';
     }
-
-    setLoad(true);
-    try {
-      const response = await postCaller(
-        'edit_leads',
-        {
-          leads_id: leadData?.leads_id,
-          email_id: formData.email_id,
-          phone_number: formData.mobile_number,
-          street_address: formData.address,
-        },
-        true
-      );
-
-      if (response.status === 200) {
-        toast.success('Lead Updated Successfully');
-        setRefresh((prev) => prev + 1);
-        onClose();
-      } else if (response.status >= 201) {
-        toast.warn(response.message);
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      setLoad(false);
+    if (formData.address.trim() === '') {
+      errors.address = 'Address is required';
     }
+    return errors;
   };
 
+
+
+
+  const handleConfrm = async (e: any) => {
+    setLoad(true);
+    e.preventDefault();
+    const errors = validateForm(formData);
+    setErrors(errors);
+    if (Object.keys(errors).length === 0 && emailError === '') {
+      try {
+        const response = await postCaller(
+          'edit_leads',
+          {
+            leads_id: leadData?.leads_id,
+            email_id: formData.email_id,
+            phone_number: formData.mobile_number,
+            street_address: formData.address,
+          },
+          true
+        );
+        if (response.status === 200) {
+          toast.success('Lead Updated Succesfully');
+          setRefresh((prev) => prev + 1);
+          onClose();
+        } else if (response.status >= 201) {
+          toast.warn(response.message);
+        }
+        setLoad(false);
+      } catch (error) {
+        setLoad(false);
+        console.error('Error submitting form:', error);
+      }
+    }
+    setLoad(false);
+  };
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleConfrm(e);
@@ -167,17 +183,41 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const checkZoomLevel = useCallback(() => {
+    const zoomLevel = Math.round(window.devicePixelRatio * 100);
+    
+    if (containerRef.current) {
+      if (zoomLevel > 138) {
+        containerRef.current.style.marginTop = "0";
+      } else if (zoomLevel > 100) {
+        containerRef.current.style.marginTop = "-310px"; 
+      } else {
+        containerRef.current.style.marginTop = "-317px"; 
+      }
+      console.log(`Zoom Level: ${zoomLevel}, Margin Top: ${containerRef.current.style.marginTop}`);
+      console.log("Rabindra");
+    }
+  }, []);
 
-
+  useEffect(() => {
+        checkZoomLevel();
+    window.addEventListener('resize', checkZoomLevel);
+    return () => {
+      window.removeEventListener('resize', checkZoomLevel);
+    };
+  }, [checkZoomLevel]);
 
   return (
+
     <>
       {(isOpen || isVisible) && (
         <div
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
 
-          <div className={classes.customer_wrapper_list_edit}>
+          <div  ref={containerRef}  className={classes.customer_wrapper_list_edit}>
             <div className={classes.Edit_DetailsMcontainer}>
               <div className={classes.edit_closeicon} onClick={onClose}>
                 <RiArrowDropDownLine
@@ -244,60 +284,73 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
               </div>
 
               <div className={classes.inputFields}>
-                <Input
-                  type="number"
-                  value={formData.mobile_number}
-                  placeholder="+91 8127577509"
-                  onChange={(e) => {
-                    const { value } = e.target;
-                    if (value.length <= 16) {
+                <div>
+                  <Input
+                    type="number"
+                    value={formData.mobile_number}
+                    placeholder="+91 8127577509"
+                    onChange={(e) => {
+                      const { value } = e.target;
                       handleInputChange(e);
-                    }
-                  }}
-                  name="mobile_number"
-                  maxLength={16}
-                />
+                      if (value.trim() !== '') {
+                        setErrors((prevErrors) => {
+                          const newErrors = { ...prevErrors };
+                          delete newErrors.mobile_number;
+                          return newErrors;
+                        });
+                      }
+                    }}
+                    name="mobile_number"
+                    maxLength={15}
+                  />
+                  {errors.mobile_number && (
+                    <p className="error-message">{errors.mobile_number}</p>
+                  )}
 
+                </div>
                 <div>
                   <Input
                     type="email"
                     value={formData.email_id}
                     placeholder={'email@mymail.com'}
-                    onChange={handleInputChange}
-                    name={'email_id'}
                     maxLength={40}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      handleInputChange(e);
+                      if (value.trim() !== '') {
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          email_id: '',
+                        }));
+                      }
+                    }}
+                    name={'email_id'}
                   />
+
                   {(emailError || errors.email_id) && (
                     <div className="error-message">
                       {emailError || errors.email_id}
                     </div>
                   )}
                 </div>
-
-                {/* <div >
-                  <Input
-                    type="email"
-                    value={formData.email_id}
-                    placeholder={'email@mymail.com'}
-                    onChange={(e) => handleInputChange(e)}
-                    name={'email_id'}
-                    maxLength={40}
-                  />
-                  {(emailError || errors.email_id) && (
-                    <div className="error-message">
-                      {emailError || errors.email_id}
-                    </div>
-                  )}
-                </div> */}
-                <Input
+                <div> <Input
                   type="text"
                   value={formData.address}
-                  placeholder="12778 Domingo Ct, Parker, COLARDO, 2312"
+                  placeholder="Address"
                   onChange={handleInputChange}
                   name="address"
                   maxLength={80}
-                // backgroundColor="#9cc3fb"
                 />
+                  {errors.address && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error-message"
+                    >
+                      {errors.address}
+                    </span>
+                  )}</div>
               </div>
 
               <div

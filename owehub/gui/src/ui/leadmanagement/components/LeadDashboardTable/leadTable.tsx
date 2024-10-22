@@ -196,18 +196,20 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
   }
   const [side, setSide] = useState('left');
 
-  const tableContainerRef = useRef<HTMLDivElement>(null);
+ 
   const handleMoreClick = () => {
+    const elm = document.getElementById("tes-table") as HTMLDivElement
+    elm.scroll({left:700,behavior:"smooth"})
     if (side == 'left') {
-      if (tableContainerRef.current) {
-        tableContainerRef.current.scrollLeft += 800;
-        setSide('right');
-      }
+      // if (tableContainerRef.current) {
+      //   tableContainerRef.current.scrollLeft += 800;
+      //   setSide('right');
+      // }
+      elm.scroll({left:700,behavior:"smooth"})
+      setSide('right');
     } else if (side == 'right') {
-      if (tableContainerRef.current) {
-        tableContainerRef.current.scrollLeft -= 800;
-        setSide('left');
-      }
+      elm.scroll({left:-700,behavior:"smooth"})
+      setSide('left');
     }
   };
 
@@ -235,11 +237,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
       <div className={styles.dashTabTop}>
 
-        <div className={styles.TableContainer1}>
+        <div className={styles.TableContainer1} id='tes-table'>
           <div
             // style={{ overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px" }}
-            ref={tableContainerRef}
-            style={{ width: '100%', overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px", scrollBehavior: 'smooth' }}
+            // ref={tableContainerRef}
+            style={{ width: '100%',  whiteSpace: 'nowrap', minHeight: "400px", scrollBehavior: 'smooth' }}
             className={styles.scrolly}
           >
             <table>
@@ -510,8 +512,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             color: '#000',
                             fontSize: 12,
                             paddingBlock: 4,
-                            marginTop:"28px",
-                            marginLeft:"28px"
+                            
                           }}
                           offset={8}
                           id="info"

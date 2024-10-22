@@ -17,12 +17,12 @@ const HistoryRedirect = () => {
   const clickableDivRef = useRef<HTMLDivElement>(null);
 
   const handleHistory = () => {
-    navigate('/leadmng-history');
+    navigate('/leadmng-dashboard/leadmng-records');
   };
 
   const ArchivesTable = () => {
     // setArchive(true);
-    navigate('/lead-dashboard-archieves');
+    navigate('/leadmng-dashboard/lead-dashboard-archieves');
   };
 
   /* HERE FOR RESPONSIVESNESS */
@@ -85,8 +85,10 @@ const HistoryRedirect = () => {
           color: '#000',
           fontSize: 12,
           paddingBlock: 4,
+          fontWeight:"400"
         }}
         offset={8}
+        delayShow={800}
         id="More Pages"
         place="bottom"
         content="More Pages"
@@ -99,7 +101,7 @@ const HistoryRedirect = () => {
         >
           <ul>
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>
-              History{' '}
+              Records{' '}
             </li>
             <li style={{ color: '#000 !important' }} onClick={ArchivesTable}>
               {' '}

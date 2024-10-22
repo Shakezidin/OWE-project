@@ -885,17 +885,27 @@ input[type='checkbox']:checked {
 /* margin-left: -105px !important */
 
 .upKeys_DownKeysX{
+  transform: rotate(180deg);
   display: flex !important;
+
   justify-content: center !important;
   align-items: center !important;
-  padding-bottom: 5.5px !important;
+ 
   color: #2979ff;
   
 
 }
+
+.ArrowDX{
+  position: relative;
+ 
+}
+.ArrowD{
+  position: relative;
+}
 .upKeys_DownKeys{
   color: #2979ff;
-  padding-top: 9px !important;
+
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
