@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 
+	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -95,7 +97,7 @@ func S3PutObject(path string, object io.Reader) error {
  * RETURNS:         string
  ******************************************************************************/
 func S3GetObjectUrl(path string) string {
-	return fmt.Sprintf("https://%s.s3.amazonaws.com/%s", LeadAppCfg.AwsS3Bucket, path)
+	return fmt.Sprintf("https://%s.s3.amazonaws.com/%s", LeadAppCfg.AwsS3Bucket, strings.TrimPrefix(path, "/"))
 }
 
 /******************************************************************************
