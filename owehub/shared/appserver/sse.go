@@ -49,7 +49,7 @@ func (handler *SSEHandler) sendPayload(payload types.SSERespPayload) error {
 		handler.SendError("Failed to marshal data to json")
 		return err
 	}
-	_, err = fmt.Fprintf(*handler.resp, "data: %s\n\n", string(ssePayloadBytes))
+	_, err = fmt.Fprintf(*handler.resp, "data: %s\nretry: 3600000\n\n", string(ssePayloadBytes))
 	if err != nil {
 		handler.SendError("Failed to write to response")
 		return err
