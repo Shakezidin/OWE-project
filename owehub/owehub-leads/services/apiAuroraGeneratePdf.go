@@ -12,7 +12,9 @@ import (
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -44,6 +46,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		query                   string
 		data                    []map[string]interface{}
 		proposalUrl             string
+		pdfBytes                []byte
 		browser                 *rod.Browser
 		browserLauncher         *launcher.Launcher
 		browserClient           *cdp.Client
@@ -242,9 +245,17 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	}, false)
 
 	// upload to s3
+	pdfBytes, err = io.ReadAll(reader)
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read pdf bytes err %v", err)
+		handler.SendError("Server side error")
+		return
+	}
+
 	filename := fmt.Sprintf("%d.pdf", leadId)
 	filePath := fmt.Sprintf("/leads/proposals/%s.pdf", filename)
-	err = leadsService.S3PutObject(filePath, reader)
+	err = leadsService.S3PutObject(filePath, bytes.NewReader((pdfBytes)))
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to upload pdf to s3 err %v", err)
