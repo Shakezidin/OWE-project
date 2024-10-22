@@ -7,11 +7,15 @@
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/ysmood/gson"
 )
 
 type SSERespPayload struct {
@@ -29,42 +33,78 @@ type SSERespPayload struct {
  ******************************************************************************/
 func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		ssePayloadBytes []byte
+		err     error
+		fileUrl string
 	)
+
+	const totalSteps = 10
+
 	log.EnterFn(0, "HandleAuroraGeneratePdfRequest")
 	defer func() { log.ExitFn(0, "HandleAuroraGeneratePdfRequest", err) }()
 
-	resp.Header().Set("Content-Type", "text/event-stream")
-	resp.Header().Set("Cache-Control", "no-cache")
-	resp.Header().Set("Connection", "keep-alive")
+	handler := appserver.NewSSEHandler(resp, req)
+	defer handler.EndResponse(map[string]interface{}{
+		"current_step": totalSteps,
+		"total_steps":  totalSteps,
+		"url":          fileUrl,
+	})
 
-	respController := http.NewResponseController(resp)
-	clientGone := req.Context().Done()
+}
 
-	for i := 0; i < 10; i++ {
-		ssePayloadBytes, err = json.Marshal(SSERespPayload{
-			Data: map[string]interface{}{
-				"step": i + 1,
-			},
-			IsDone: i == 9,
-		})
+func GeneratePdfForUrl(url string) error {
+	var (
+		err      error
+		browser  *rod.Browser
+		page     *rod.Page
+		reader   *rod.StreamReader
+		pdfBytes []byte
+	)
 
-		if err != nil {
-			return
-		}
+	browser = rod.New()
 
-		_, err = fmt.Fprintf(resp, "data: %s\n\n", string(ssePayloadBytes))
-		if err != nil {
-			return
-		}
-		err = respController.Flush()
-		if err != nil {
-			return
-		}
-		time.Sleep(time.Second)
+	err = browser.Connect()
+	if err != nil {
+		return err
 	}
 
-	<-clientGone
+	page, err = browser.Page(proto.TargetCreateTarget{URL: url})
+	if err != nil {
+		return err
+	}
 
+	err = page.WaitLoad()
+	if err != nil {
+		return err
+	}
+
+	err = page.WaitIdle(time.Second * 2)
+	if err != nil {
+		return err
+	}
+
+	err = page.WaitDOMStable(time.Second*2, 0)
+	if err != nil {
+		return err
+	}
+
+	page.WaitRequestIdle(time.Second*2, nil, nil, nil)()
+
+	reader, err = page.PDF(&proto.PagePrintToPDF{
+		PreferCSSPageSize: true,
+		PrintBackground:   true,
+		GenerateTaggedPDF: true,
+		Landscape:         true,
+		PaperWidth:        gson.Num(8.3),
+		MarginTop:         gson.Num(0),
+		MarginBottom:      gson.Num(0),
+		MarginLeft:        gson.Num(0),
+		MarginRight:       gson.Num(0),
+	})
+	if err != nil {
+		return err
+	}
+
+	err = leadsService.S3PutObject("", reader)
+
+	return nil
 }
