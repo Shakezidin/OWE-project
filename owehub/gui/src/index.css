@@ -575,6 +575,12 @@ br {
   .react-tel-input .country-list * {
     text-align: left;
   }
+  .create-input-container{
+    margin-left: 0 !important;
+  }
+  .filter-section, .createProfileTextView{
+    padding: 1rem;
+  }
 }
 .one-line-text {
   overflow: hidden;

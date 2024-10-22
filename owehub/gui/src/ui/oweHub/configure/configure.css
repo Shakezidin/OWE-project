@@ -533,4 +533,19 @@ table tbody tr:has(td[colspan='10'] .data-not-found):hover {
   .dashBoard-container {
     margin: 10px;
   }
+
+  .commission-back{
+    gap: 5px;
+  }
+
+  .iconContainer{
+    gap: 10px;
+  }
+
+  .commissionSection h3{
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    text-wrap: nowrap;
+    width: 130px;
+  }
 }
