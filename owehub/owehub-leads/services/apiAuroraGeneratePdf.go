@@ -59,6 +59,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	defer func() { log.ExitFn(0, "HandleAuroraGeneratePdfRequest", err) }()
 
 	handler := appserver.NewSSEHandler(resp, req)
+	defer func() { err = handler.EndResponse() }()
 
 	// retreive lead id from url query
 	leadIdStr := req.URL.Query().Get("leads_id")
@@ -77,9 +78,8 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// retreive design id from database
-	query = "SELECT aurora_design_id FROM get_leads_info_hierarchy($1)"
-	authenticatedUserEmail := req.Context().Value("emailid").(string)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedUserEmail})
+	query = "SELECT aurora_design_id FROM leads_info"
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to query database err %v", err)
@@ -103,7 +103,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 1,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	// retrieve proposal url from aurora, if not found, generate it
 	retrieveWebProposalApi := auroraclient.RetrieveWebProposalApi{DesignId: designId}
@@ -132,7 +132,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 2,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	// follow step 3 to 10 for generating pdf
 	browserLauncher, err = launcher.NewManaged(leadsService.LeadAppCfg.RodUrl)
@@ -157,10 +157,12 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+	defer browser.Close()
+
 	handler.SendData(map[string]interface{}{
 		"current_step": 3,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	page, err = browser.Page(proto.TargetCreateTarget{URL: proposalUrl})
 	if err != nil {
@@ -171,7 +173,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 4,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	err = page.WaitLoad()
 	if err != nil {
@@ -182,7 +184,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 5,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	err = page.WaitIdle(time.Second * 2)
 	if err != nil {
@@ -193,7 +195,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 6,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	err = page.WaitDOMStable(time.Second*2, 0)
 	if err != nil {
@@ -204,13 +206,13 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 7,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	page.WaitRequestIdle(time.Second*2, nil, nil, nil)()
 	handler.SendData(map[string]interface{}{
 		"current_step": 8,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	reader, err = page.PDF(&proto.PagePrintToPDF{
 		PreferCSSPageSize: true,
@@ -231,7 +233,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 9,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	// upload to s3
 	filename := fmt.Sprintf("%d.pdf", leadId)
@@ -246,12 +248,12 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	handler.SendData(map[string]interface{}{
 		"current_step": 10,
 		"total_steps":  totalSteps,
-	})
+	}, false)
 
 	// end the response providing the url
-	handler.EndResponse(map[string]interface{}{
+	handler.SendData(map[string]interface{}{
 		"current_step": totalSteps,
 		"total_steps":  totalSteps,
 		"url":          leadsService.S3GetObjectUrl(filePath),
-	})
+	}, true)
 }

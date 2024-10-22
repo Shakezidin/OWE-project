@@ -84,28 +84,27 @@ func (handler *SSEHandler) SendError(errorMsg string) {
  * INPUT:			payload
  * RETURNS:    		error
  ******************************************************************************/
-func (handler *SSEHandler) SendData(payload map[string]interface{}) error {
+func (handler *SSEHandler) SendData(payload map[string]interface{}, isDone bool) error {
 	var err error
 	log.EnterFn(0, "SSEHandler.SendData")
 	defer func() { log.ExitFn(0, "SSEHandler.SendData", err) }()
 
-	err = handler.sendPayload(types.SSERespPayload{IsDone: false, Data: payload})
+	err = handler.sendPayload(types.SSERespPayload{IsDone: isDone, Data: payload})
 	return err
 }
 
 /******************************************************************************
- * FUNCTION:        SSEHandler.SendData
+ * FUNCTION:        SSEHandler.EndResponse
  *
- * DESCRIPTION:     Use this function to send last SSE to the client
+ * DESCRIPTION:     Use this function to end SSE loop (recommended with defer)
  * INPUT:			payload
  * RETURNS:    		error
  ******************************************************************************/
-func (handler *SSEHandler) EndResponse(payload map[string]interface{}) error {
+func (handler *SSEHandler) EndResponse() error {
 	var err error
 	log.EnterFn(0, "SSEHandler.EndResponse")
 	defer func() { log.ExitFn(0, "SSEHandler.EndResponse", err) }()
 
-	err = handler.sendPayload(types.SSERespPayload{IsDone: false, Data: payload})
 	<-handler.clientDisconnect
 	return err
 }

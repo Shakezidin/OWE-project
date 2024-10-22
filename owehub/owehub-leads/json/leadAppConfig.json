@@ -7,5 +7,5 @@
   "awsS3Region": "ap-southeast-2",
   "awsS3AccessKeyId": "AKIAZ3MGNJPKYMV53JNU",
   "awsS3SecretKey": "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",
-  "rodUrl": "http://owehub-browser:7317"
+  "rodUrl": "http://172.30.0.216:7317"
 }
