@@ -453,7 +453,7 @@ const LeadManagementDashboard = () => {
   const navigate = useNavigate();
 
   const handleAddLead = () => {
-    navigate('/leadmgt-addnew');
+    navigate('/leadmng-dashboard/leadmgt-addnew');
   };
 
   const statusMap = {
@@ -493,6 +493,8 @@ const LeadManagementDashboard = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+ 
 
 
   // ************************ API Integration By Saurabh ********************************\\
@@ -1450,13 +1452,13 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    marginTop:"36px",
-                    marginLeft:"36px"
+                    
+                    fontWeight:"400"
                   }}
                   offset={8}
                   id="downip"
-                  place="top"
-                  content="Minimize or Maximize"
+                  place="bottom"
+                  content= {isToggledX ? "Minimize" : "Maximize"}
                 />
               </div></div>
           </div>
@@ -1662,6 +1664,7 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
+                    fontWeight:"400"
                   }}
                   offset={8}
                   id="More Pages"
@@ -1680,6 +1683,7 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
+                      fontWeight:"400"
                     }}
                     offset={8}
                     id="NEW"
@@ -1715,11 +1719,13 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
+                      fontWeight:"400"
                     }}
                     offset={8}
                     id="export"
                     place="bottom"
                     content="Export"
+                    
                   />
 
 
