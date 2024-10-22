@@ -30,6 +30,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoInformationOutline } from 'react-icons/io5';
 import Profile from './Modals/ProfileInfo';
 import useEscapeKey from '../../hooks/useEscape';
+import { FaFilter } from 'react-icons/fa';
 
 interface HistoryTableProp {
   first_name: string;
@@ -72,6 +73,7 @@ const LeradManagementHistory = () => {
   const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
   const [expandedItemIds, setExpandedItemIds] = useState<number[]>([]);
   const [isAuthenticated, setAuthenticated] = useState(false);
+  const clickableDivRef = useRef<HTMLDivElement>(null);
 
   function getUserTimezone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -165,10 +167,11 @@ const LeradManagementHistory = () => {
 
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
+    setSelectedPeriod(null);
   };
 
   const onReset = () => {
-    setSelectedDates({ startDate: new Date(), endDate: new Date() });
+    setSelectedDates({ startDate: startOfThisWeek, endDate: today });
     setIsCalendarOpen(false);
   };
 
@@ -243,6 +246,7 @@ const LeradManagementHistory = () => {
     }
   };
 
+
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -306,15 +310,20 @@ const LeradManagementHistory = () => {
     refresh,
   ]);
 
-  const handlePeriodChange = (
-    selectedOption: SingleValue<DateRangeWithLabel>
-  ) => {
+  const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
       setSelectedDates({
         startDate: selectedOption.start,
         endDate: selectedOption.end,
       });
       setSelectedPeriod(selectedOption);
+      setSelectedRanges([
+        {
+          startDate: selectedOption.start,
+          endDate: selectedOption.end,
+          key: 'selection',
+        },
+      ]);
     } else {
       setSelectedDates({ startDate: null, endDate: null });
       setSelectedPeriod(null);
@@ -334,7 +343,7 @@ const LeradManagementHistory = () => {
 
       if (response.status === 200) {
         setRefresh((prev) => prev + 1);
-        toast.success('Lead History deleted successfully');
+        toast.success('Lead Record deleted successfully');
         setRemove(false);
         handleCrossClick();
       } else {
@@ -366,11 +375,6 @@ const LeradManagementHistory = () => {
       'Zipcode',
       'Deal Date',
       'Deal Status',
-      'Appointment Scheduled',
-      'Appointment Accepted',
-      'Appointment Date',
-      'Deal Won',
-      'Proposal Sent',
     ];
 
     try {
@@ -407,18 +411,6 @@ const LeradManagementHistory = () => {
         item.zipcode,
         item.deal_date,
         item.deal_status,
-        item.timeline.find(
-          (event: any) => event.label === 'Appoitment Scheduled'
-        )?.date || '',
-        item.timeline.find(
-          (event: any) => event.label === 'Appointment Accepted'
-        )?.date || '',
-        item.timeline.find((event: any) => event.label === 'Appointment Date')
-          ?.date || '',
-        item.timeline.find((event: any) => event.label === 'Deal Won')?.date ||
-        '',
-        item.timeline.find((event: any) => event.label === 'Proposal Sent')
-          ?.date || '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -427,7 +419,7 @@ const LeradManagementHistory = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'leads_history.csv');
+      link.setAttribute('download', 'leads_records.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -452,6 +444,16 @@ const LeradManagementHistory = () => {
     setIsProfileOpen(false);
 
   };
+
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTooltip(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       <Profile
@@ -462,7 +464,7 @@ const LeradManagementHistory = () => {
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.lm_history_header}>
-            {checkedCount == 0 && <h1>RECORDS</h1>}
+            {checkedCount == 0 && <h1>Records</h1>}
             {checkedCount != 0 && (
               <div className={styles.hist_checkbox_count}>
                 <img
@@ -637,10 +639,19 @@ const LeradManagementHistory = () => {
                       onClick={toggleCalendar}
                       ref={calendarRef}
                     >
-                      <img src={ICONS.includes_icon} alt="" />
+                      <img src={ICONS.includes_icon} alt="CalendarICON" />
                     </div>
-                    <div className={styles.sort_drop}>
-                      <SortingDropDown onChange={handleSortingChange} />
+                    <div className={styles.sort_drop} >
+                      <FaFilter
+                        size={14}
+                        color="#FFFFFF"
+                        onClick={() => handleSortingChange(1)}
+                        fontWeight={600}
+                      />
+
+
+                      {/* <SortingDropDown onChange={handleSortingChange} /> */}
+
                     </div>
                     <div
                       className={styles.calender}
@@ -671,11 +682,14 @@ const LeradManagementHistory = () => {
                         fontSize: 12,
                         paddingBlock: 4,
                       }}
+                      delayShow={600} // Delay in showing the tooltip (in milliseconds)
+                      // delayHide={100}
                       offset={8}
                       id="export"
                       place="bottom"
                       content="Export"
                     />
+
 
                     <div className={styles.hist_ret} onClick={handleCross}>
                       <img src={ICONS.cross} alt="" height="26" width="26" />
@@ -777,7 +791,14 @@ const LeradManagementHistory = () => {
                         <div className={styles.email}>
                           <p>{item.email_id ? item.email_id : 'N/A'}</p>
                         </div>
-                        <div className={styles.address}>
+                        <div className={styles.address}
+                          style={{
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word',
+                            width: '299px',
+                            lineHeight: "16px"
+                          }}
+                        >
                           {item?.street_address
                             ? item.street_address.length > 49
                               ? `${item.street_address.slice(0, 49)}...`
@@ -806,6 +827,7 @@ const LeradManagementHistory = () => {
                       id="info"
                       place="bottom"
                       content="Lead Info"
+                      delayShow={800}
                     />
                   </div>
                   {!isMobile && expandedItemIds.includes(item.leads_id) && (

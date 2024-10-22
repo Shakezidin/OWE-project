@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import classes from '../styles/confirmmodal.module.css';
 import Input from '../../components/text_input/Input';
 import { validateEmail } from '../../../utiles/Validation';
@@ -144,7 +144,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     e.preventDefault();
     const errors = validateForm(formData);
     setErrors(errors);
-    if (Object.keys(errors).length === 0) {
+    if (Object.keys(errors).length === 0 && emailError === '') {
       try {
         const response = await postCaller(
           'edit_leads',
@@ -183,17 +183,41 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const checkZoomLevel = useCallback(() => {
+    const zoomLevel = Math.round(window.devicePixelRatio * 100);
+    
+    if (containerRef.current) {
+      if (zoomLevel > 138) {
+        containerRef.current.style.marginTop = "0";
+      } else if (zoomLevel > 100) {
+        containerRef.current.style.marginTop = "-310px"; 
+      } else {
+        containerRef.current.style.marginTop = "-317px"; 
+      }
+      console.log(`Zoom Level: ${zoomLevel}, Margin Top: ${containerRef.current.style.marginTop}`);
+      console.log("Rabindra");
+    }
+  }, []);
 
-
+  useEffect(() => {
+        checkZoomLevel();
+    window.addEventListener('resize', checkZoomLevel);
+    return () => {
+      window.removeEventListener('resize', checkZoomLevel);
+    };
+  }, [checkZoomLevel]);
 
   return (
+
     <>
       {(isOpen || isVisible) && (
         <div
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
 
-          <div className={classes.customer_wrapper_list_edit}>
+          <div  ref={containerRef}  className={classes.customer_wrapper_list_edit}>
             <div className={classes.Edit_DetailsMcontainer}>
               <div className={classes.edit_closeicon} onClick={onClose}>
                 <RiArrowDropDownLine
