@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type SSEHandler struct {
@@ -23,14 +24,22 @@ type SSEHandler struct {
  * RETURNS:    		SSEHandler
  ******************************************************************************/
 func NewSSEHandler(resp http.ResponseWriter, req *http.Request) *SSEHandler {
+	var err error
+
+	log.EnterFn(0, "NewSSEHandler")
+	defer func() { log.ExitFn(0, "NewSSEHandler", err) }()
+
 	resp.Header().Set("Content-Type", "text/event-stream")
 	resp.Header().Set("Cache-Control", "no-cache")
 	resp.Header().Set("Connection", "keep-alive")
 
+	respController := http.NewResponseController(resp)
+	err = respController.SetWriteDeadline(time.Time{})
+
 	return &SSEHandler{
 		req:              req,
 		resp:             &resp,
-		respController:   http.NewResponseController(resp),
+		respController:   respController,
 		clientDisconnect: req.Context().Done(),
 	}
 }
