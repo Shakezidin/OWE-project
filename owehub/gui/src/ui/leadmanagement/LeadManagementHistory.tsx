@@ -167,10 +167,11 @@ const LeradManagementHistory = () => {
 
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
+    setSelectedPeriod(null);
   };
 
   const onReset = () => {
-    setSelectedDates({ startDate: new Date(), endDate: new Date() });
+    setSelectedDates({ startDate: startOfThisWeek, endDate: today });
     setIsCalendarOpen(false);
   };
 
@@ -309,15 +310,20 @@ const LeradManagementHistory = () => {
     refresh,
   ]);
 
-  const handlePeriodChange = (
-    selectedOption: SingleValue<DateRangeWithLabel>
-  ) => {
+  const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
       setSelectedDates({
         startDate: selectedOption.start,
         endDate: selectedOption.end,
       });
       setSelectedPeriod(selectedOption);
+      setSelectedRanges([
+        {
+          startDate: selectedOption.start,
+          endDate: selectedOption.end,
+          key: 'selection',
+        },
+      ]);
     } else {
       setSelectedDates({ startDate: null, endDate: null });
       setSelectedPeriod(null);
@@ -337,7 +343,7 @@ const LeradManagementHistory = () => {
 
       if (response.status === 200) {
         setRefresh((prev) => prev + 1);
-        toast.success('Lead History deleted successfully');
+        toast.success('Lead Record deleted successfully');
         setRemove(false);
         handleCrossClick();
       } else {
@@ -369,11 +375,6 @@ const LeradManagementHistory = () => {
       'Zipcode',
       'Deal Date',
       'Deal Status',
-      'Appointment Scheduled',
-      'Appointment Accepted',
-      'Appointment Date',
-      'Deal Won',
-      'Proposal Sent',
     ];
 
     try {
@@ -410,18 +411,6 @@ const LeradManagementHistory = () => {
         item.zipcode,
         item.deal_date,
         item.deal_status,
-        item.timeline.find(
-          (event: any) => event.label === 'Appoitment Scheduled'
-        )?.date || '',
-        item.timeline.find(
-          (event: any) => event.label === 'Appointment Accepted'
-        )?.date || '',
-        item.timeline.find((event: any) => event.label === 'Appointment Date')
-          ?.date || '',
-        item.timeline.find((event: any) => event.label === 'Deal Won')?.date ||
-        '',
-        item.timeline.find((event: any) => event.label === 'Proposal Sent')
-          ?.date || '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -430,7 +419,7 @@ const LeradManagementHistory = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'leads_history.csv');
+      link.setAttribute('download', 'leads_records.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -455,6 +444,16 @@ const LeradManagementHistory = () => {
     setIsProfileOpen(false);
 
   };
+
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTooltip(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       <Profile
@@ -683,11 +682,14 @@ const LeradManagementHistory = () => {
                         fontSize: 12,
                         paddingBlock: 4,
                       }}
+                      delayShow={600} // Delay in showing the tooltip (in milliseconds)
+                      // delayHide={100}
                       offset={8}
                       id="export"
                       place="bottom"
                       content="Export"
                     />
+
 
                     <div className={styles.hist_ret} onClick={handleCross}>
                       <img src={ICONS.cross} alt="" height="26" width="26" />
@@ -790,12 +792,12 @@ const LeradManagementHistory = () => {
                           <p>{item.email_id ? item.email_id : 'N/A'}</p>
                         </div>
                         <div className={styles.address}
-                        style={{
-                          whiteSpace: 'pre-wrap',
-                          overflowWrap: 'break-word',
-                          width: '299px',
-                          lineHeight: "16px"
-                        }}
+                          style={{
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word',
+                            width: '299px',
+                            lineHeight: "16px"
+                          }}
                         >
                           {item?.street_address
                             ? item.street_address.length > 49
@@ -825,6 +827,7 @@ const LeradManagementHistory = () => {
                       id="info"
                       place="bottom"
                       content="Lead Info"
+                      delayShow={800}
                     />
                   </div>
                   {!isMobile && expandedItemIds.includes(item.leads_id) && (

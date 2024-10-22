@@ -104,6 +104,7 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
           paddingBlock: 4,
         }}
         offset={8}
+        delayShow={800}
         id="infoSt"
         place="bottom"
         content="Status Updates"
