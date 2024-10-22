@@ -67,7 +67,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT))
         ) {
-        } else if (item.path !== ROUTES.CONFIG_PAGE || item.path !== ROUTES.CALCULATOR) {
+        } else if (item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.CALCULATOR) {
           newArr[0].mob.push(item);
         }
       });
@@ -386,7 +386,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )}
           </div>
         ))}
-        <div style={{ marginTop: 32 }}>
+     {!toggleOpen &&   <div style={{ marginTop: 32 }}>
           <p
             style={{
               fontSize: '12px',
@@ -407,7 +407,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           >
             All rights reserved. eOS: v1.5
           </p>
-        </div>
+        </div>}
       </div>
     </div>
   );

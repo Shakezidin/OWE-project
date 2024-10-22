@@ -83,6 +83,8 @@ const DealerCredit: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
+
+  
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
   const handleAddCommission = () => {
@@ -358,7 +360,7 @@ if (exportData.status > 201) {
 
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "70vh" }}
         >
           <table>
             <thead>
