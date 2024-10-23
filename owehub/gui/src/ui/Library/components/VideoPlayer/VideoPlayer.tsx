@@ -226,7 +226,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                             src={url}
                             loop
                             autoPlay={false}
-                            playsInline
+                            // playsInline={!isFullscreen}
                             onClick={() => {
                                 if (!isBuffering) {
                                     togglePlay()
