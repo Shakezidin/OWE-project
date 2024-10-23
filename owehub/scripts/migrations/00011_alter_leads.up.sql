@@ -70,6 +70,7 @@ ALTER TABLE leads_info ADD COLUMN proposal_pdf_key VARCHAR(80);
 ALTER TABLE leads_info ADD COLUMN aurora_proposal_updated_at TIMESTAMPTZ;
 
 
+
 CREATE OR REPLACE FUNCTION update_lead_add_proposal(
     p_leads_id INT,
     p_authenticated_email_id VARCHAR,
@@ -80,18 +81,22 @@ DECLARE
     v_user_id INT;
 BEGIN
 
+    
     SELECT user_id INTO v_user_id
     FROM user_details
     WHERE email_id = p_authenticated_email_id;
 
+    
     IF NOT FOUND THEN
         RAISE EXCEPTION 'User with email_id % not found', p_authenticated_email_id;
     END IF;
 
+    
     UPDATE leads_info
     SET
         aurora_proposal_link = p_aurora_proposal_link,
         aurora_proposal_id = p_aurora_proposal_id,
+        aurora_proposal_status = 'Created',  
         last_updated_by = v_user_id,
         updated_at = CURRENT_TIMESTAMP,
         proposal_created_date = CURRENT_TIMESTAMP,
@@ -99,5 +104,6 @@ BEGIN
     WHERE leads_id = p_leads_id;
     
     RETURN 0;
+
 END;
 $$ LANGUAGE plpgsql;
