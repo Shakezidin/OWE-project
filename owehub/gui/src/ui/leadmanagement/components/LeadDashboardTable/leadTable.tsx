@@ -219,34 +219,37 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       </div>
                     </th>
                   ))}
-                  <th
-                    onClick={handleMoreClick}
-                    style={{
-                      fontWeight: '500',
-                      color: 'black',
-                      background: 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start',
-                      cursor: 'pointer',
-                      minWidth:"200px"
-                    }}
-                    className={styles.FixedColumn}
-                  >
-                    <div className={styles.slidebutton}>
-                      {side === 'left' ? (
-                        <>
-                          More
-                          <FaAngleRight />
-                        </>
-                      ) : side === 'right' ? (
-                        <>
-                          <FaAngleLeft />
-                          More
-                        </>
-                      ) : null}
-                    </div>
-                  </th>
+                  {selectedLeads.length === 0 &&
+                    <th
+                      onClick={handleMoreClick}
+                      style={{
+                        fontWeight: '500',
+                        color: 'black',
+                        background: 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        cursor: 'pointer',
+                        minWidth: "200px",
+                        zIndex:"102"
+                      }}
+                      className={styles.FixedColumn}
+                    >
+                      <div className={styles.slidebutton}>
+                        {side === 'left' ? (
+                          <>
+                            More
+                            <FaAngleRight />
+                          </>
+                        ) : side === 'right' ? (
+                          <>
+                            <FaAngleLeft />
+                            More
+                          </>
+                        ) : null}
+                      </div>
+                    </th>
+                  }
                 </tr>
               </thead>
               <tbody>
@@ -382,7 +385,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           <div onClick={() => (setLeadId(lead.leads_id))}>
                             {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                            )  :
+                            ) :
                               (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                                 <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                               ) : (
@@ -407,15 +410,15 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                           { label: 'Recreate Proposal', value: 'renew_proposal' },
                                           { label: 'Download Proposal', value: 'download' },
                                           { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        ]: lead  && lead.proposal_id !== ''
-                                        ? [
-                                          { label: 'View Proposal', value: 'viewProposal' },
-                                          { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                        ]
-                                        : [
-                                          { label: 'Create Proposal', value: 'new_proposal' },
-                                          { label: 'Schedule Appointment', value: 'app_sched' },
-                                        ]
+                                        ] : lead && lead.proposal_id !== ''
+                                          ? [
+                                            { label: 'View Proposal', value: 'viewProposal' },
+                                            { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                          ]
+                                          : [
+                                            { label: 'Create Proposal', value: 'new_proposal' },
+                                            { label: 'Schedule Appointment', value: 'app_sched' },
+                                          ]
                                   }
                                 />
                               )}

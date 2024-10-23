@@ -167,3 +167,8 @@
   border-radius: 7.16px;
   border: 0.89px solid #d1d5db;
 }
+
+.react-datepicker--time-only .react-datepicker__time-container {
+  border-left: 0;
+  border: 1px solid #aeaeae;
+}

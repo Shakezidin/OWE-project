@@ -16,7 +16,9 @@
     gap: 20px;
 }
 
-
+.TableContainer1 table thead tr{
+    z-index: 102;
+}
 
 
 
