@@ -23,7 +23,6 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(1);
-    const [isMuted, setIsMuted] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [isBuffering, setIsBuffering] = useState(true);
     const [timeStamp, setTimeStamp] = useState("")
@@ -155,12 +154,13 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     };
 
     const toggleMute = () => {
-        if (isMuted) {
-            videoRef.current!.volume = volume;
-            setIsMuted(false);
+        if (volume===0) {
+            videoRef.current!.volume = 1;
+            setVolume(1)
         } else {
             videoRef.current!.volume = 0;
-            setIsMuted(true);
+            setVolume(0)
+
         }
     };
 
@@ -185,7 +185,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     };
 
     const volumeBarStyles = {
-        background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${volume * 100}%, #ffffff ${volume * 100}%, #ffffff 100%)`,
+        background: `linear-gradient(to right, #FF0000 0%, #FF0000 ${volume * 100}%, #ffffff ${volume * 100}%, #ffffff 100%)`,
     };
 
     const handleBarHover = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -212,12 +212,13 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                         <MdClose color='#000' size={32} />
                     </button>
                 </div>
-                <div ref={containerRef} className={` relative ${styles.container}`}>
+                <div ref={containerRef} className={` flex items-center justify-center relative ${styles.container}`}>
                     <video
                         ref={videoRef}
                         className={styles.video}
                         src={url}
                         autoPlay={false}
+                        playsInline
                         onClick={() => {
                             if (!isBuffering) {
                                 togglePlay()
@@ -253,7 +254,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                                 </button>
                                 <div className={styles.flexCenter}>
                                     <button onClick={toggleMute} className={styles.button}>
-                                        {isMuted ? <PiSpeakerSimpleXFill color='#fff' /> : <PiSpeakerSimpleHighFill color='#fff' />}
+                                        {volume===0 ? <PiSpeakerSimpleXFill color='#fff' /> : <PiSpeakerSimpleHighFill color='#fff' />}
                                     </button>
                                     <input
                                         type="range"
