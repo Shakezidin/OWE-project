@@ -31,7 +31,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		dataReq      models.UpdateLeadStatusRequest
 		query        string
 		data         []map[string]interface{}
-		aptDate      time.Time
+		dateTime     time.Time
 	)
 
 	log.EnterFn(0, "HandleUpdateLeadStatusRequest")
@@ -113,10 +113,18 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 
 		isRescheduling := leadStatus != 0
 
-		aptDate, err = time.Parse("02-01-2006 03:04 PM", dataReq.AppointmentDate+" "+dataReq.AppointmentTime)
+		// aptDate, err = time.Parse("02-01-2006 03:04 PM", dataReq.AppointmentDate+" "+dataReq.AppointmentTime)
+		// if err != nil {
+		// 	log.FuncErrorTrace(0, "Failed to parse appointment date and time err: %v", err)
+		// 	appserver.FormAndSendHttpResp(resp, "Appointment date and time format is incorrect", http.StatusBadRequest, nil)
+		// 	return
+		// }
+
+		// validating date time
+		dateTime, err = time.Parse(time.RFC3339, dataReq.AppointmentDateTime)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to parse appointment date and time err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Appointment date and time format is incorrect", http.StatusBadRequest, nil)
+			log.FuncErrorTrace(0, "Failed to convert date time :%+v to time.Time err: %+v", dataReq.AppointmentDateTime, err)
+			appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
 			return
 		}
 
@@ -143,7 +151,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		name := firstName + " " + lastName
 
 		//Function call sentAppointmentEmail
-		err = sentAppointmentEmail(leadEmail, &aptDate, isRescheduling, name)
+		err = sentAppointmentEmail(leadEmail, &dateTime, isRescheduling, name)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send the email to the lead %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to send the email to the lead", http.StatusInternalServerError, nil, 0)
@@ -157,14 +165,19 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 					updated_at = CURRENT_TIMESTAMP,
 					last_updated_by = $2 
 					WHERE leads_id = $3`
-		whereEleList = []interface{}{aptDate, authenticatedUserId, dataReq.LeadsId}
+		whereEleList = []interface{}{dateTime, authenticatedUserId, dataReq.LeadsId}
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update the lead details in db : %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to update the lead details in db", http.StatusInternalServerError, nil)
 			return
 		}
-		appserver.FormAndSendHttpResp(resp, "Appointment Sent", http.StatusOK, nil, 0)
+
+		respData := models.UpdateLeadStatusResponse{
+			AppointmentDateTime: dataReq.AppointmentDateTime, //same date-time string back in the response
+		}
+
+		appserver.FormAndSendHttpResp(resp, "Appointment Sent", http.StatusOK, respData, 0)
 		return
 	}
 

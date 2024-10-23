@@ -224,6 +224,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/receive_graph_notification",
+		apiHandler.HandleReceiveGraphNotificationRequest,
+		false,
+		[]types.UserGroup{},
+	},
 }
 
 /******************************************************************************

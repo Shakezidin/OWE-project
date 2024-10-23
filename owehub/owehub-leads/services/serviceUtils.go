@@ -1,13 +1,14 @@
 package services
 
 import (
+	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
 	"errors"
+	"fmt"
 
 	"time"
 
 	leadsService "OWEApp/owehub-leads/common"
-	graphApi "OWEApp/shared/graphApi"
 	models "OWEApp/shared/models"
 
 	"github.com/google/uuid"
@@ -30,6 +31,9 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 		model              models.OutlookEventRequest
 		appointmentEndTime string
 	)
+
+	log.EnterFn(0, "sentAppointmentEmail")
+	defer func() { log.ExitFn(0, "sentAppointmentEmail", err) }()
 
 	appointmentTimeStr = appointmentDate.Format(time.RFC3339Nano)
 	appointmentEndTime = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
@@ -74,10 +78,25 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	}
 
 	//  OUTLOOK FUNCTION CALL
-	event, err := graphApi.CreateOutlookEvent(model)
-	if err != nil {
-		return err
+	event, eventErr := graphapi.CreateOutlookEvent(model)
+	if eventErr != nil {
+		err = eventErr
+		return eventErr
 	}
-	log.FuncDebugTrace(0, "got response from create outlook event %+v", event)
+	log.FuncDebugTrace(0, "created outlook event %+v", event)
+
+	// create subscription for decline
+	sub, subErr := graphapi.CreateSubscription(models.SubscriptionRequest{
+		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
+		ChangeType:         "created,updated",
+		Resource:           fmt.Sprintf("users/%s/events", leadsService.LeadAppCfg.AppointmentSenderEmail),
+		ExpirationDateTime: appointmentEndTime,
+	})
+	if subErr != nil {
+		log.FuncErrorTrace(0, "Failed to create subscription: %v", subErr)
+	} else {
+		log.FuncDebugTrace(0, "created outlook subscription %+v", sub)
+	}
+
 	return nil
 }
