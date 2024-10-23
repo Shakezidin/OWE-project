@@ -1697,7 +1697,7 @@ const LeadManagementDashboard = () => {
 
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
@@ -1734,7 +1734,7 @@ const LeadManagementDashboard = () => {
 
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,

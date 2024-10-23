@@ -114,6 +114,7 @@ const Profile: React.FC<EditModalProps> = ({
 
     return <div>
         {isOpen1 && <div className="transparent-model">
+            <div className={classes.customer_wrapper_list_mob_inner}>
             <div className={classes.customer_wrapper_list}>
                 <div className={classes.btnContainer}>
                     <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
@@ -374,6 +375,7 @@ const Profile: React.FC<EditModalProps> = ({
                         <DataNotFound />
                     </div>
                 )}
+            </div>
             </div>
         </div>
         }

@@ -230,7 +230,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                         alignItems: 'center',
                         justifyContent: 'flex-start',
                         cursor: 'pointer',
-                        minWidth: "200px"
+                        minWidth: "200px",
+                        zIndex:"102"
                       }}
                       className={styles.FixedColumn}
                     >
