@@ -10,17 +10,26 @@ interface TileData {
   current_due: number;
   pipeline_remaining: number;
 }
-const initialState = {
+
+// Define the interface for the initial state
+interface DealerPayState {
+  loading: boolean;
+  data: any[]; // Adjust 'any' if you have more specific data structure
+  count: number;
+  error: string;
+  tileData: any;
+}
+
+// Initialize the state with type safety
+const initialState: DealerPayState = {
   loading: false,
   data: [],
   count: 0,
   error: '',
-  tileData: {
-    amount_prepaid: 0,
-    current_due: 0,
-    pipeline_remaining: 0,
-  } as TileData,
+  tileData:{}
 };
+
+
 
 const dealerPaySlice = createSlice({
   name: 'dealerPaySlice',
@@ -34,6 +43,7 @@ const dealerPaySlice = createSlice({
       state.loading = false;
       state.data = action.payload?.list;
       state.count = action.payload?.count;
+      state.tileData = action.payload?.tileData
     });
     builder.addCase(getDealerPay.rejected, (state, action) => {
       state.loading = false;

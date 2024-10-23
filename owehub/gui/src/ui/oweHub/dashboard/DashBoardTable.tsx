@@ -86,6 +86,8 @@ const DashBoardTable = ({
     });
   }
 
+  console.log(data, "currentpage")
+
   return (
     <>
       <div className="dashBoard-container">
@@ -173,7 +175,7 @@ const DashBoardTable = ({
                     </td>
                     <td>{el.loan_fee || 'N/A'}</td>
                     <td>
-                      {el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}
+                      {el.net_epc ? el.net_epc : 'N/A'}
                     </td>
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
                       {el.credit ?? 'N/A'}
@@ -185,7 +187,7 @@ const DashBoardTable = ({
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
                       ${el.amount ?? 'N/A'}
                     </td>
-                    <td>{el.epc ? Number(el.epc).toFixed(2) : 'N/A'}</td>
+                    <td>{el.epc ? el.epc : 'N/A'}</td>
                     <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
                       ${el.amt_paid ?? 'N/A'}
                     </td>

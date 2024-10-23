@@ -107,7 +107,7 @@ const ConfigurePage: React.FC = () => {
                       const randomCardColor = cardColors[colorIndex];
                       const randomArrowColor = arrowColors[colorIndex];
                       return (
-                        <div key={index}>
+                        <div key={index} className='pay-card-wrapper'>
                           <Link
                             to={item.route}
                             className={`pay-card ${hoverSwithClass(randomCardColor)}`}

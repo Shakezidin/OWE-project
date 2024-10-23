@@ -30,7 +30,6 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoInformationOutline } from 'react-icons/io5';
 import Profile from './Modals/ProfileInfo';
 import useEscapeKey from '../../hooks/useEscape';
-import { FaFilter } from 'react-icons/fa';
 
 interface HistoryTableProp {
   first_name: string;
@@ -73,7 +72,6 @@ const LeradManagementHistory = () => {
   const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
   const [expandedItemIds, setExpandedItemIds] = useState<number[]>([]);
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const clickableDivRef = useRef<HTMLDivElement>(null);
 
   function getUserTimezone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -167,11 +165,22 @@ const LeradManagementHistory = () => {
 
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
-    setSelectedPeriod(null);
+    // setSelectedPeriod(null);
   };
 
   const onReset = () => {
+    const currentDate = new Date();
     setSelectedDates({ startDate: startOfThisWeek, endDate: today });
+    setSelectedPeriod(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
+    setSelectedRanges([
+      {
+        startDate: currentDate,
+        endDate: currentDate,
+        key: 'selection',
+      },
+    ]);
     setIsCalendarOpen(false);
   };
 
@@ -179,6 +188,7 @@ const LeradManagementHistory = () => {
     const startDate = selectedRanges[0].startDate;
     const endDate = selectedRanges[0].endDate;
     setSelectedDates({ startDate, endDate });
+    setSelectedPeriod(null);
     setIsCalendarOpen(false);
   };
 
@@ -245,7 +255,6 @@ const LeradManagementHistory = () => {
       setSelectedValue(value);
     }
   };
-
 
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -639,19 +648,10 @@ const LeradManagementHistory = () => {
                       onClick={toggleCalendar}
                       ref={calendarRef}
                     >
-                      <img src={ICONS.includes_icon} alt="CalendarICON" />
+                      <img src={ICONS.includes_icon} alt="" />
                     </div>
-                    <div className={styles.sort_drop} >
-                      <FaFilter
-                        size={14}
-                        color="#FFFFFF"
-                        onClick={() => handleSortingChange(1)}
-                        fontWeight={600}
-                      />
-
-
-                      {/* <SortingDropDown onChange={handleSortingChange} /> */}
-
+                    <div className={styles.sort_drop}>
+                      <SortingDropDown onChange={handleSortingChange} />
                     </div>
                     <div
                       className={styles.calender}
