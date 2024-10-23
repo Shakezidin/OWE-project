@@ -6,10 +6,15 @@
 package common
 
 type LeadAppConfig struct {
-	AuroraTenantId         string `json:"tenantId"`
-	AuroraBearerToken      string `json:"bearerToken"`
-	AuroraApiBaseUrl       string `json:"apiBaseUrl"`
+	AuroraTenantId         string `json:"auroraTenantId"`
+	AuroraBearerToken      string `json:"auroraBearerToken"`
+	AuroraApiBaseUrl       string `json:"auroraApiBaseUrl"`
 	AppointmentSenderEmail string `json:"appointmentSenderEmail"`
+	AwsS3Bucket            string `json:"awsS3Bucket"`
+	AwsS3Region            string `json:"awsS3Region"`
+	AwsS3AccessKeyId       string `json:"awsS3AccessKeyId"`
+	AwsS3SecretKey         string `json:"awsS3SecretKey"`
+	RodUrl                 string `json:"rodUrl"`
 }
 
 var LeadAppCfg LeadAppConfig

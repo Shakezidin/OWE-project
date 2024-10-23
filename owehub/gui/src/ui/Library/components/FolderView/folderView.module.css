@@ -7,7 +7,7 @@
   padding: 0px 24px;
   border-bottom-left-radius: 16px !important;
   border-bottom-right-radius: 16px !important;
-  min-height: 60vh;
+  
 
 }
 
@@ -248,7 +248,7 @@
     /* padding: 0px 24px; */
     border-bottom-left-radius: 16px !important;
     border-bottom-right-radius: 16px !important;
-    min-height: 60vh;
+    
     
   }
   .folderIcon_wrapper {

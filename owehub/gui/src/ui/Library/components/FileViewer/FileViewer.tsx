@@ -3,10 +3,10 @@ import { ICONS } from "../../../../resources/icons/Icons"
 import { MdClose } from 'react-icons/md'
 import { TransformWrapper, TransformComponent, useControls, ReactZoomPanPinchContentRef, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import styles from "./index.module.css"
-import {  PiPlusBold,PiMinusBold } from "react-icons/pi";
+import { PiPlusBold, PiMinusBold } from "react-icons/pi";
 import { GrPowerReset } from "react-icons/gr";
-import {AiOutlineExpand} from "react-icons/ai"
-import {BiCollapse} from "react-icons/bi"
+import { AiOutlineExpand } from "react-icons/ai"
+import { BiCollapse } from "react-icons/bi"
 interface IProps {
     fileUrl?: string | undefined;
     fileType?: string | undefined;
@@ -120,13 +120,18 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                                 </TransformComponent>
 
                             </TransformWrapper>
-                            <div className={styles.zoom_control_wrapper}>
-                            <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomIn()}> <PiPlusBold color='#000' size={18} /> </button>
-                            <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomOut()}> <PiMinusBold color='#000' size={18} /> </button>
+                        <div className={styles.zoom_control_wrapper}>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomIn()}> <PiPlusBold color='#000' size={18} /> </button>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomOut()}> <PiMinusBold color='#000' size={18} /> </button>
                             </div>
                             <div className={styles.absolute_zoom_control_wrapper}>
-                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.resetTransform()}> <GrPowerReset color='#000' size={18}/> </button>
-                                <button className={styles.zoom_in_btn} onClick={() => setIsExpanded(prev => !prev)}>  {isExpanded ?<BiCollapse color='#000' size={18}/> : <AiOutlineExpand color='#000'size={18}/>}  </button>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.resetTransform()}> <GrPowerReset color='#000' size={18} /> </button>
+                                <button className={styles.zoom_in_btn} onClick={() => {
+                                    if (!isExpanded) {
+                                        zoomWrapperRef?.current?.resetTransform()
+                                    }
+                                    setIsExpanded(prev => !prev)
+                                }}>  {isExpanded ? <BiCollapse color='#000' size={18} /> : <AiOutlineExpand color='#000' size={18} />}  </button>
                             </div>
                         </div>
 

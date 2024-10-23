@@ -19,11 +19,11 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  const { tileData } = useAppSelector((state) => state.dealerPaySlice);
+  const { data, count, loading , tileData} = useAppSelector(
+    (state) => state.dealerPaySlice
+  );
 
-  useEffect(() => {
-    dispatch(getDealerPayTileData({ dealer: 'dealer' }));
-  }, [dispatch]);
+  console.log(data, 'dta')
 
   const data1 = [
     {
@@ -49,7 +49,7 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
       arrow: <IoArrowDown />
     },
     {
-      doller: '$' + tileData?.current_due?.toFixed(2),
+      doller: '$' + tileData["current_Due "]?.toFixed(2),
       paid: 'Current Due',
       img: ICONS.rep3,
       bar: ICONS.repBar3,
@@ -126,8 +126,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                         el.doller.length > 5 ? 'break-all' : 'normal',
                     }}
                   >
-                    {/* {el.doller} */}
-                    {"$0.00"}
+                    {el.doller}
+                  
                   </h4>
                 </div>
                 <div className='total-section-desc'>
