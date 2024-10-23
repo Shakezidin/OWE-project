@@ -58,13 +58,14 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
             videoRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
             videoRef.current.addEventListener('waiting', handleBufferStart);
             videoRef.current.addEventListener('canplay', handleBufferEnd);
+          
         }
         return () => {
             if (videoRef.current) {
                 videoRef.current.removeEventListener('timeupdate', handleTimeUpdate);
                 videoRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
                 videoRef.current.removeEventListener('waiting', handleBufferStart);
-                videoRef.current.removeEventListener('canplay', handleBufferEnd);
+                videoRef.current.addEventListener('canplay', handleBufferEnd);
             }
         };
     }, []);
@@ -102,6 +103,8 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                 (containerRef.current as any).mozRequestFullScreen();
             } else if ((containerRef.current as any)?.msRequestFullscreen) {
                 (containerRef.current as any).msRequestFullscreen();
+            } else if ((containerRef.current as any)?.webkitEnterFullscreen) { // Added for Safari mobile
+                (containerRef.current as any).webkitEnterFullscreen();
             }
             setIsTooltipVisible(true);
         } else {
@@ -113,6 +116,8 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                 (document as any).mozCancelFullScreen();
             } else if ((document as any).msExitFullscreen) {
                 (document as any).msExitFullscreen();
+            } else if ((document as any).webkitExitFullscreen) { // Added for Safari mobile
+                (document as any).webkitExitFullscreen();
             }
             setIsTooltipVisible(false);
         }
@@ -126,6 +131,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
 
     const handleLoadedMetadata = () => {
         setDuration(videoRef.current!.duration);
+        handleBufferEnd()
     };
 
     const handleBufferStart = () => {
