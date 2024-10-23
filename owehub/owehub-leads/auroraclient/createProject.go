@@ -103,7 +103,7 @@ func (api *CreateProjectApi) Call() (*CreateProjectApiResponse, error) {
 		err = fmt.Errorf("cannot create project without Location.PropertyAddress")
 		return nil, err
 	}
-	if api.ProjectType != "commertial" && api.ProjectType != "residential" {
+	if api.ProjectType != "commercial" && api.ProjectType != "residential" {
 		err = fmt.Errorf("cannot create project with invalid project type")
 		return nil, err
 	}

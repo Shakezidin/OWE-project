@@ -60,9 +60,9 @@ func HandleAuroraCreateProjectRequest(resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	if dataReq.ProjectType != "commertial" && dataReq.ProjectType != "residential" {
+	if dataReq.ProjectType != "commercial" && dataReq.ProjectType != "residential" {
 		log.FuncErrorTrace(0, "Invalid project type")
-		appserver.FormAndSendHttpResp(resp, "Project type must be commertial or residential", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Project type must be commercial or residential", http.StatusBadRequest, nil)
 		return
 	}
 
