@@ -226,6 +226,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                             src={url}
                             loop
                             autoPlay={false}
+                            style={{maxHeight:isFullscreen?undefined:"70vh"}}
                             // playsInline={!isFullscreen}
                             onClick={() => {
                                 if (!isBuffering) {
