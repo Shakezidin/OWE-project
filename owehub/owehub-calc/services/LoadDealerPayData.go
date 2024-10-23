@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func ExecDlrPayInitialCalculation(resultChan chan string) {
+func ExecDlrPayInitialCalculation() error {
 	var (
 		err            error
 		dlrPayDataList []map[string]interface{}
@@ -19,6 +19,9 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	count := 0
 	dataReq := models.DataRequestBody{}
 	InitailData, err := oweconfig.LoadDlrPayInitialData()
+	if err != nil {
+		log.FuncErrorTrace(0, "error while loading initial data %v", err)
+	}
 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
 	dealerPayments, err := oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
@@ -53,7 +56,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v", err)
 	}
 
-	resultChan <- "SUCCESS"
+	return err
 }
 
 /******************************************************************************
@@ -82,26 +85,23 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	DrawAmt := dlrPayData.DrawAmt // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
+	drawMax := dlrPayData.DrawMax
 	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
-	amt_paid := CalcAmtPaidByDealer(dealerPayments.DealerPaymentsData, DealerCode)
+	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
-
-	//from here to
-	mktFee := 0.0
-	payments := 0.0
-	drawMax := 0.0
-	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, 1234) //there is no unique id
-	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, payments)
+	mktFee := 5.0 //pemding from Colten sice
+	financeType := dlrPayData.FinanceType
+	financeCompany := dlrPayData.FinanceCompany
+	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST, time.Time{})
+	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, amt_paid)
 	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawAmt, drawMax)
 	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
+	balance := totalNetCommission - amt_paid
 	// here i have some doubts
 
-	dealerPaidByProjectId := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
-	balance := totalNetCommission - dealerPaidByProjectId
-
 	outData["home_owner"] = HomeOwner
-	outData["currect_status"] = CurrectStatus
+	outData["current_status"] = CurrectStatus
 	outData["unique_id"] = uniqueID
 	outData["dealer_code"] = DealerCode
 	outData["today"] = time.Now()

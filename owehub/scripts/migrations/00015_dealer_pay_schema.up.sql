@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS dealer_pay{
+CREATE TABLE IF NOT EXISTS dealer_pay(
     home_owner TEXT,
     current_status TEXT,
     unique_id TEXT,
@@ -21,4 +21,4 @@ CREATE TABLE IF NOT EXISTS dealer_pay{
     balance float,
     st TEXT,
     contract_date TIMESTAMP
-}
+)

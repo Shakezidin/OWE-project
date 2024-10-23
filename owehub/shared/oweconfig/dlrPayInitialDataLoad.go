@@ -11,6 +11,9 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -32,6 +35,9 @@ type InitialStruct struct {
 	NtpCompleteDate   time.Time
 	PvComplettionDate time.Time
 	RL                float64
+	DrawMax           float64
+	FinanceType       string
+	FinanceCompany    string
 }
 
 type InitialDataLists struct {
@@ -44,39 +50,45 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 		dataList []map[string]interface{}
 	)
 
-	log.EnterFn(0, "LoadSaleData")
-	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	log.EnterFn(0, "LoadDlrPayInitialData")
+	defer func() { log.ExitFn(0, "LoadDlrPayInitialData", err) }()
 
 	// uidList := []string{"OUR21563"} //OUR21190
-	query = `SELECT cdv.customer, cdv.project_status, cdv.unique_id, 
-			 cdv.contracted_system_size, cdv.total_system_cost,cdv.adder_breakdown_and_total_new,
-			 cdv.primary_sales_rep, cdv.secondary_sales_rep, cdv.setter, 
-			 cdv.state, cdv.sale_date, cdv.net_epc, cdv.m1_sales_partner_draw_percentage, 
-			 cdv.ntp_complete_date, cdv.pv_completion_date, 
-			 CAST(cdv.redline AS float) AS redline
-			 from consolidated_data_view`
+	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer,
+			 cs.contracted_system_size, cs.total_system_cost,cs.adder_breakdown_and_total_new,
+			 cs.primary_sales_rep,cs.secondary_sales_rep, cs.setter, 
+			 cs.state, cs.sale_date, ns.net_epc, 
+			 ns.ntp_complete_date,ps.pv_completion_date, 
+             --cdv.m1_sales_partner_draw_percentage, 
+			 --CAST(cdv.redline AS float) AS redline, 
+             --cdv.adder_breakdown_and_total_new, for mkt_fee,
+             --CAST(cdv.m1_sales_partner_not_to_exceed as float) as m1_sales_partner_not_to_exceed  for draw max,
+			 ns.finance_type, ns.finance
+			 from customers_customers_schema cs
+             LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+             LEFT JOIN pv_install_install_subcontracting_schema ps ON ps.customer_unique_id = cs.unique_id`
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
-		log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
-		err = fmt.Errorf("failed to fetch sale data from db")
+		log.FuncErrorTrace(0, "Failed to inital data from DB err: %+v", err)
+		err = fmt.Errorf("failed to fetch inital data from db")
 		return InitialData, err
 	}
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
 
-	/* Clean the sale Data List before updating new data */
-	InitialData.InitialDataList = InitialData.InitialDataList[:0]
+	/* Clean the inital data List before updating new data */
+	// InitialData.InitialDataList = InitialData.InitialDataList[:0]
 	for _, data := range dataList {
 		var InitialDataa InitialStruct
 
 		if uniqueId, ok := data["unique_id"]; (ok) && (uniqueId != nil) {
 			InitialDataa.UniqueId = uniqueId.(string)
 		} else {
-			// log.ConfWarnTrace(0, "No UniqueId for found in Sale Data")
+			// log.ConfWarnTrace(0, "No UniqueId for found in inital data")
 			continue
 		}
 
-		if homeOwner, ok := data["customer"]; (ok) && (homeOwner != nil) {
+		if homeOwner, ok := data["customer_name"]; (ok) && (homeOwner != nil) {
 			InitialDataa.HomeOwner = homeOwner.(string)
 		} else {
 			InitialDataa.HomeOwner = ""
@@ -94,8 +106,29 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.SystemSize = 0.0
 		}
 
+		if dealerCode, ok := data["dealer"]; (ok) && (dealerCode != nil) {
+			InitialDataa.DealerCode = dealerCode.(string)
+		} else {
+			InitialDataa.DealerCode = ""
+		}
+
 		if totalSystemCost, ok := data["total_system_cost"]; (ok) && (totalSystemCost != nil) {
-			InitialDataa.ContractDolDol = totalSystemCost.(float64)
+			// Step 1: Trim spaces
+			costStr := strings.TrimSpace(totalSystemCost.(string))
+
+			// Step 2: Remove any HTML tags using a regular expression
+			re := regexp.MustCompile(`<.*?>`)
+			costStr = re.ReplaceAllString(costStr, "")
+
+			// Step 3: Remove commas
+			costStr = strings.ReplaceAll(costStr, ",", "")
+
+			// Step 4: Convert the cleaned string to a float
+			InitialDataa.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+				InitialDataa.ContractDolDol = 0.0
+			}
 		} else {
 			InitialDataa.ContractDolDol = 0.0
 		}
@@ -166,6 +199,23 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.RL = 0.0
 		}
 
+		if m1SalesPartnerNottoExceed, ok := data["m1_sales_partner_not_to_exceed"]; (ok) && (m1SalesPartnerNottoExceed != nil) {
+			InitialDataa.DrawMax = m1SalesPartnerNottoExceed.(float64)
+		} else {
+			InitialDataa.DrawMax = 0.0
+		}
+
+		if FinanceCompany, ok := data["finance"]; (ok) && (FinanceCompany != nil) {
+			InitialDataa.FinanceCompany = FinanceCompany.(string)
+		} else {
+			InitialDataa.FinanceCompany = ""
+		}
+
+		if FinanceType, ok := data["finance_type"]; (ok) && (FinanceType != nil) {
+			InitialDataa.FinanceType = FinanceType.(string)
+		} else {
+			InitialDataa.FinanceType = ""
+		}
 		InitialData.InitialDataList = append(InitialData.InitialDataList, InitialDataa)
 	}
 	return InitialData, err

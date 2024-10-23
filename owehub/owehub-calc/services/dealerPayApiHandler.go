@@ -74,9 +74,9 @@ func GetCreditByUniqueID(dealerCredit []oweconfig.DealerCreditsStruct, UniqueId 
 	return ""
 }
 
-func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleStruct, UniqueId int64) (loanfee float64) {
+func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleStruct, financeType, financeCompany, state string, saleDate time.Time) (loanfee float64) {
 	for _, entry := range financeSchedule {
-		if entry.ItemID == UniqueId {
+		if entry.FinanceType == financeType && entry.FinanceCompany == financeCompany && entry.State3 == state {
 			loanfee += entry.FinanceFee
 		}
 	}
