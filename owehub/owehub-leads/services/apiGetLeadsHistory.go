@@ -163,8 +163,8 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		timeline := getLeadHistoryTimeline(item)
 
 		var (
-			leadWonDatePtr  *time.Time
-			leadLostDatePtr *time.Time
+			dealDate   *time.Time
+			dealStatus string
 		)
 
 		streetAddress, ok := item["street_address"].(string)
@@ -176,19 +176,21 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		leadWonDate, ok := item["lead_won_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get lead won date from leads info Item: %+v\n", item)
-			leadWonDatePtr = nil
 		} else {
-			leadWonDatePtr = &leadWonDate
+			dealDate = &leadWonDate
+			dealStatus = "Won"
 		}
 
 		leadLostDate, ok := item["lead_lost_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get lead lost date from leads info Item: %+v\n", item)
-			leadLostDatePtr = nil
 		} else {
-			leadLostDatePtr = &leadLostDate
+			dealDate = &leadLostDate
+			dealStatus = "Lost"
 		}
 		LeadsHistory := models.GetLeadsHistoryResponse{
+			DealDate:      dealDate,
+			DealStatus:    dealStatus,
 			FirstName:     item["first_name"].(string),
 			LastName:      item["last_name"].(string),
 			EmailId:       item["email_id"].(string),
@@ -196,8 +198,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			LeadsID:       item["leads_id"].(int64),
 			StatusID:      item["status_id"].(int64),
 			StreetAddress: streetAddress,
-			DealWonDate:   leadWonDatePtr,
-			DealLostDate:  leadLostDatePtr,
 			Timeline:      timeline,
 		}
 

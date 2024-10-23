@@ -38,10 +38,8 @@ type GetLeadsHistoryResponse struct {
 	EmailId       string                 `json:"email_id"`
 	StreetAddress string                 `json:"street_address"`
 	Zipcode       string                 `json:"zipcode"`
-	DealDate      string                 `json:"deal_date"`   // Deal date (updated_at)
+	DealDate      *time.Time             `json:"deal_date"`
 	DealStatus    string                 `json:"deal_status"` // Won or Lost
-	DealWonDate   *time.Time             `json:"deal_won_date"`
-	DealLostDate  *time.Time             `json:"deal_lost_date"`
 	Timeline      []GetLeadsTimelineItem `json:"timeline"`
 }
 
