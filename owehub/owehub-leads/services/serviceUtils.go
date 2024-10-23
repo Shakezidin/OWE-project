@@ -4,7 +4,6 @@ import (
 	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
 	"errors"
-	"fmt"
 
 	"time"
 
@@ -84,19 +83,5 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 		return eventErr
 	}
 	log.FuncDebugTrace(0, "created outlook event %+v", event)
-
-	// create subscription for decline
-	sub, subErr := graphapi.CreateSubscription(models.SubscriptionRequest{
-		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
-		ChangeType:         "created,updated",
-		Resource:           fmt.Sprintf("users/%s/events", leadsService.LeadAppCfg.AppointmentSenderEmail),
-		ExpirationDateTime: appointmentEndTime,
-	})
-	if subErr != nil {
-		log.FuncErrorTrace(0, "Failed to create subscription: %v", subErr)
-	} else {
-		log.FuncDebugTrace(0, "created outlook subscription %+v", sub)
-	}
-
 	return nil
 }
