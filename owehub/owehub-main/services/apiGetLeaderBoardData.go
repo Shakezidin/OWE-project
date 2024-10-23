@@ -181,13 +181,15 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	dealerIn += ")"
 
 	//temporory
-	if dataReq.GroupBy == "team" || dataReq.GroupBy == "region" {
-		dataReq.GroupBy = fmt.Sprintf("cdv.%v", dataReq.GroupBy)
+	if dataReq.GroupBy == "team" {
+		dataReq.GroupBy = "split_part(ss.team_region_untd, '/'::text, 1)"
+	} else if dataReq.GroupBy == "region" {
+		dataReq.GroupBy = "split_part(ss.team_region_untd, '/'::text, 2)"
 	} else {
 		dataReq.GroupBy = fmt.Sprintf("cs.%v", dataReq.GroupBy)
 	}
 
-	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "cdv.region" {
+	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(ss.team_region_untd, '/'::text, 2)" {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, cs.dealer as dealer, ", dataReq.GroupBy)
 	} else {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
@@ -405,12 +407,12 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		case "count":
 			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) AS sale, ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) AS ntp, ", len(whereEleList)-1, len(whereEleList)))
-			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN cdv.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
+			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) AS install", len(whereEleList)-1, len(whereEleList)))
 		case "kw":
 			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS sale, ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS ntp, ", len(whereEleList)-1, len(whereEleList)))
-			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cdv.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
+			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList)))
 		}
 	} else {
@@ -419,7 +421,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 			// Total count without date filters
 			filtersBuilder.WriteString(" COUNT(cs.sale_date) AS sale, ")
 			filtersBuilder.WriteString(" COUNT(ns.ntp_complete_date) AS ntp, ")
-			filtersBuilder.WriteString(" COUNT(cdv.cancelled_date) AS cancel, ")
+			filtersBuilder.WriteString(" COUNT(ss.cancelled_date) AS cancel, ")
 			filtersBuilder.WriteString(" COUNT(pis.pv_completion_date) AS install")
 		case "kw":
 			// Total sum without date filters
@@ -433,7 +435,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
+								LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
 								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id`)
 	if len(dealerIn) > 16 {
 		filtersBuilder.WriteString(" WHERE ")
@@ -450,7 +452,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
 	}
 
-	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "cdv.region" {
+	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(ss.team_region_untd, '/'::text, 2)" {
 		if dataReq.GroupBy != "dealer" {
 			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v, cs.dealer HAVING", dataReq.GroupBy))
 		} else {
@@ -465,12 +467,12 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		case "count":
 			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
-			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN cdv.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
+			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN 1 ELSE NULL END)  > 0", len(whereEleList)-1, len(whereEleList)))
 		case "kw":
 			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END)  > 0 OR ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
-			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cdv.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
+			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) > 0 OR ", len(whereEleList)-1, len(whereEleList)))
 			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) > 0", len(whereEleList)-1, len(whereEleList)))
 		}
 	} else {
@@ -479,7 +481,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 			// Total count without date filters
 			filtersBuilder.WriteString(" COUNT(cs.sale_date) > 0 OR ")
 			filtersBuilder.WriteString(" COUNT(ns.ntp_complete_date) > 0 OR ")
-			filtersBuilder.WriteString(" COUNT(cdv.cancelled_date) > 0 OR ")
+			filtersBuilder.WriteString(" COUNT(ss.cancelled_date) > 0 OR ")
 			filtersBuilder.WriteString(" COUNT(pis.pv_completion_date) > 0")
 		case "kw":
 			// Total sum without date filters
