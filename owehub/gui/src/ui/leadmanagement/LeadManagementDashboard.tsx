@@ -494,7 +494,7 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
- 
+
 
 
   // ************************ API Integration By Saurabh ********************************\\
@@ -1437,10 +1437,19 @@ const LeadManagementDashboard = () => {
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
                   {isToggledX ? (
                     <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DownArrowDashboardAboveDirection} /></div>
-                  ) : (
-                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}><img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} /></div>
+                  ) : (<div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
+                    <img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} />
+                  </div>
                   )}
                 </div>
+                {/* <div className={styles.HideContent}>
+                    <div className={styles.customFontMobile}>
+                      Total leads: {totalValue ? totalValue : '0'}
+                    </div>
+                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
+                      <img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} />
+                    </div>
+                  </div> */}
                 <Tooltip
                   style={{
                     zIndex: 20,
@@ -1448,20 +1457,31 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    
-                    fontWeight:"400"
+
+                    fontWeight: "400"
                   }}
                   offset={8}
                   delayShow={800}
                   id="downip"
                   place="bottom"
-                  content= {isToggledX ? "Minimize" : "Maximize"}
+                  content={isToggledX ? "Minimize" : "Maximize"}
                 />
               </div></div>
           </div>
         </div>
         {/* //HORIZONTAL ENDED */}
         {isToggledX && <div className={styles.vertical1}>
+          <div className={styles.FirstColHeadMobile}>
+
+            <div className={`${styles.customLeftMobile} ${styles.customFont}`}>
+              Overview
+            </div>
+
+            <div className={styles.customFont}>
+              Total leads: {totalValue ? totalValue : '0'}
+            </div>
+          </div>
+
           <div style={{ width: "100%" }}>
             {loading ? (
               <div
@@ -1661,7 +1681,7 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    fontWeight:"400"
+                    fontWeight: "400"
                   }}
                   delayShow={800}
                   offset={8}
@@ -1681,7 +1701,7 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }}
                     offset={8}
                     id="NEW"
@@ -1718,14 +1738,14 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }}
                     offset={8}
                     delayShow={800}
                     id="export"
                     place="bottom"
                     content="Export"
-                    
+
                   />
 
 
