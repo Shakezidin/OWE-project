@@ -33,7 +33,7 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	)
 
 	log.EnterFn(0, "sentAppointmentEmail")
-	defer log.ExitFn(0, "sentAppointmentEmail", err)
+	defer func() { log.ExitFn(0, "sentAppointmentEmail", err) }()
 
 	appointmentTimeStr = appointmentDate.Format(time.RFC3339Nano)
 	appointmentEndTime = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
@@ -86,30 +86,17 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	log.FuncDebugTrace(0, "created outlook event %+v", event)
 
 	// create subscription for decline
-	declineSub, declineSubErr := graphapi.CreateSubscription(models.SubscriptionRequest{
+	sub, subErr := graphapi.CreateSubscription(models.SubscriptionRequest{
 		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
-		ChangeType:         "created",
-		Resource:           fmt.Sprintf("/users/%s/events/%s/decline", leadsService.LeadAppCfg.AppointmentSenderEmail, *event.GetId()),
+		ChangeType:         "updated",
+		Resource:           fmt.Sprintf("users/%s/events", leadsService.LeadAppCfg.AppointmentSenderEmail),
 		ExpirationDateTime: appointmentEndTime,
 	})
-	if declineSubErr != nil {
-		err = declineSubErr
-		return declineSubErr
+	if subErr != nil {
+		err = subErr
+		return subErr
 	}
-	log.FuncDebugTrace(0, "created outlook subscription %+v", declineSub)
-
-	// create subscription for accept
-	acceptSub, acceptSubErr := graphapi.CreateSubscription(models.SubscriptionRequest{
-		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
-		ChangeType:         "created",
-		Resource:           fmt.Sprintf("/users/%s/events/%s/accept", leadsService.LeadAppCfg.AppointmentSenderEmail, *event.GetId()),
-		ExpirationDateTime: appointmentEndTime,
-	})
-	if acceptSubErr != nil {
-		err = acceptSubErr
-		return acceptSubErr
-	}
-	log.FuncDebugTrace(0, "created outlook subscription %+v", acceptSub)
+	log.FuncDebugTrace(0, "created outlook subscription %+v", sub)
 
 	return nil
 }
