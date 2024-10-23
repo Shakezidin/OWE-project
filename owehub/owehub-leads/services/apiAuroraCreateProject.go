@@ -180,7 +180,7 @@ func HandleAuroraCreateProjectRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	// update the lead info record
-	query = "UPDATE leads_info SET aurora_project_id = $1, aurora_project_name = $2, proposal_type = $3 WHERE leads_id = $3"
+	query = "UPDATE leads_info SET aurora_project_id = $1, aurora_project_name = $2, proposal_type = $3 WHERE leads_id = $4"
 
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{projectId, projectName, dataReq.ProjectType, dataReq.LeadsId})
 	if err != nil {
