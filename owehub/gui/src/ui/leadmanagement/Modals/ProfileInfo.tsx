@@ -112,270 +112,278 @@ const Profile: React.FC<EditModalProps> = ({
         };
     }, []);
 
+    
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list_mob_inner}>
-            <div className={classes.customer_wrapper_list}>
-                <div className={classes.btnContainer}>
-                    <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
-                    <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
-                {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: "200px" }}>
-                        <MicroLoader />
-                    </div>
-                ) : leadData ? (
-                    <div className={classes.DetailsMcontainer}>
-                        <div className={classes.Column1Details}>
+                <div className={classes.customer_wrapper_list}>
+                    <div className={classes.btnContainer}>
+                        <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
+                        <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
+                    {loading ? (
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: "200px" }}>
+                            <MicroLoader />
+                        </div>
+                    ) : leadData ? (
+                        <div className={classes.DetailsMcontainer}>
+                            <div className={classes.Column1Details}>
 
-                            <table>
-                                <tbody>
+                                <table>
+                                    <tbody>
 
 
-                                    <tr
-                                        className={classes.RowDiv}
-                                    >
-                                        <td className={classes.leftAlign}>Leads Id</td>
-                                        <td className={classes.rightAlign}>OWE{leadData?.leads_id}</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td className={classes.leftAlign}>First Name</td>
-                                        <td
-                                            style={{
-                                                whiteSpace: 'pre-wrap',
-                                                overflowWrap: 'break-word',
-                                                maxWidth: '200px',
-                                                lineHeight: "16px"
-                                            }}
-                                            className={classes.rightAlign}>{leadData?.first_name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Last Name</td>
-                                        <td
-                                            style={{
-                                                whiteSpace: 'pre-wrap',
-                                                overflowWrap: 'break-word',
-                                                maxWidth: '200px',
-                                                lineHeight: "16px"
-                                            }}
-                                            className={classes.rightAlign}>{leadData?.last_name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Email Id</td>
-                                        <td
-                                            style={{
-                                                whiteSpace: 'pre-wrap',
-                                                overflowWrap: 'break-word',
-                                                maxWidth: '200px',
-                                                lineHeight: "16px"
-                                            }}
-                                            className={classes.rightAlign}>{leadData?.email_id}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Phone Number</td>
-                                        <td
-                                            style={{
-                                                whiteSpace: 'pre-wrap',
-                                                overflowWrap: 'break-word',
-                                                maxWidth: '200px',
-                                                lineHeight: "16px"
-                                            }}
-                                            className={classes.rightAlign}>{leadData?.phone_number}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Street Address</td>
-                                        <td
-                                            style={{
-                                                whiteSpace: 'pre-wrap',
-                                                overflowWrap: 'break-word',
-                                                maxWidth: '200px',
-                                                lineHeight: "16px"
-                                            }}
-                                            className={classes.rightAlign}
+                                        <tr
+                                            className={classes.RowDiv}
                                         >
-                                            {leadData?.street_address}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>City</td>
-                                        <td
-                                         style={{
-                                            whiteSpace: 'pre-wrap',
-                                            overflowWrap: 'break-word',
-                                            maxWidth: '200px',
-                                            lineHeight: "16px"
-                                        }}
-                                         className={classes.rightAlign}>{leadData?.city}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Proposal type</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >{leadData?.proposal_type ? leadData?.proposal_type : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Finance Type</td>
-                                        <td className={classes.rightAlign} >{leadData?.finance_type ? leadData?.finance_type : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Finance Company</td>
-                                        <td className={classes.rightAlign}>{leadData?.finance_company ? leadData?.finance_company : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Sale Submission triggered</td>
-                                        <td className={classes.rightAlign}>{leadData?.sale_submission_triggered.toString()}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>QC Audit</td>
-                                        <td className={classes.rightAlign}>{leadData?.qc_audit}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Proposal Signed</td>
-                                        <td className={classes.rightAlign}>{leadData?.proposal_signed.toString()}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}
-                                        style={{
-                                            lineHeight: "16px",
-                                            whiteSpace: 'pre-wrap',
-                                            overflowWrap: 'break-word',
-                                            maxWidth: '150px',
-                                        }}
-                                        >Appointment Disposition</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition}</td>
-                                    </tr>
+                                            <td className={classes.leftAlign}>Leads Id</td>
+                                            <td className={classes.rightAlign}>OWE{leadData?.leads_id}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td className={classes.leftAlign}>First Name</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={classes.rightAlign}>{leadData?.first_name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Last Name</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={classes.rightAlign}>{leadData?.last_name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Email Id</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={classes.rightAlign}>{leadData?.email_id}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Phone Number</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={classes.rightAlign}>{leadData?.phone_number}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Street Address</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={classes.rightAlign}
+                                            >
+                                                {leadData?.street_address}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>City</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={classes.rightAlign}>{leadData?.city}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Proposal type</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            >{leadData?.proposal_type ? leadData?.proposal_type : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Finance Type</td>
+                                            <td className={classes.rightAlign} >{leadData?.finance_type ? leadData?.finance_type : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Finance Company</td>
+                                            <td className={classes.rightAlign}>{leadData?.finance_company ? leadData?.finance_company : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Sale Submission triggered</td>
+                                            <td className={classes.rightAlign}>{leadData?.sale_submission_triggered.toString()}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>QC Audit</td>
+                                            <td className={classes.rightAlign}>{leadData?.qc_audit}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Proposal Signed</td>
+                                            <td className={classes.rightAlign}>{leadData?.proposal_signed.toString()}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}
+                                                style={{
+                                                    lineHeight: "16px",
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '150px',
+                                                }}
+                                            >Appointment Disposition</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition}</td>
+                                        </tr>
 
 
 
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className={classes.Column2Details}>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className={classes.Column2Details}>
 
-                            <table>
+                                <table>
 
 
-                                <tbody>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Appointment Disposition Note</td>
-                                        <td style={{
-                                            lineHeight: "16px",
-                                            whiteSpace: 'pre-wrap',
-                                            overflowWrap: 'break-word',
-                                            maxWidth: '150px',
-                                        }}
-                                            className={`${classes.rightAlign} ${classes.specialfont}`}>
-                                            {leadData?.appointment_disposition_note || '.......'}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Notes</td>
-                                        <td style={{
-                                            lineHeight: "16px",
-                                            whiteSpace: 'pre-wrap',
-                                            overflowWrap: 'break-word',
-                                            maxWidth: '150px',
-                                        }} className={`${classes.rightAlign} ${classes.specialfont}`} data-tooltip-id="notes">
-                                            {leadData?.notes && leadData.notes.length > 60 ? (
-                                                <>
-                                                    {leadData.notes.slice(0, 60)}...
-                                                    <Tooltip
-                                                        style={{
-                                                            zIndex: 20,
-                                                            background: '#f7f7f7',
-                                                            color: '#000',
-                                                            fontSize: 12,
-                                                            paddingBlock: 4,
-                                                            maxWidth: '500px'
-                                                        }}
-                                                        offset={8}
-                                                        id="notes"
-                                                        place="bottom"
-                                                        content={leadData.notes}
-                                                    />
-                                                </>
-                                            ) : (
-                                                leadData?.notes || '.......'
-                                            )}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Created At</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.created_at ? format(parseISO(leadData.created_at), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Updated At</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.updated_at ? format(parseISO(leadData.updated_at), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Appointment Scheduled Date</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >{leadData?.appointment_scheduled_date ? format(parseISO(leadData.appointment_scheduled_date), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td className={classes.leftAlign}>Appointment Declined Date</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_declined_date ? format(parseISO(leadData.appointment_declined_date), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Appointment Accepted date</td>
-                                        <td className={classes.rightAlign}>{leadData?.appointment_accepted_date ? format(parseISO(leadData.appointment_accepted_date), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Appointment Date</td>
-                                        <td className={classes.rightAlign}>{leadData?.appointment_date ? format(parseISO(leadData.appointment_date), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Lead Won Date</td>
-                                        <td className={classes.rightAlign}>{leadData?.lead_won_date ? format(parseISO(leadData.lead_won_date), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Lead Lost Date</td>
-                                        <td className={classes.rightAlign}>{leadData?.lead_lost_date ? format(parseISO(leadData.lead_lost_date), 'dd-MM-yyyy')
-                                            : "....."}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Proposal Created Date</td>
-                                        <td className={classes.rightAlign}>
-                                            {leadData?.proposal_created_date
-                                                ? format(parseISO(leadData.proposal_created_date), 'dd-MM-yyyy')
-                                                : "....."}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Status Id</td>
-                                        <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >{leadData?.status_id || '.......'}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className={classes.leftAlign}>Created By</td>
-                                        <td
-                                            style={{
+                                    <tbody>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Appointment Disposition Note</td>
+                                            <td style={{
+                                                lineHeight: "16px",
                                                 whiteSpace: 'pre-wrap',
                                                 overflowWrap: 'break-word',
-                                                maxWidth: '200px',
-                                                lineHeight: "16px"
+                                                maxWidth: '150px',
                                             }}
-                                            className={`${classes.rightAlign} ${classes.specialfont}`}
-                                        >{leadData?.created_by || '.....'}</td>
-                                    </tr>
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}>
+                                                {leadData?.appointment_disposition_note || '.......'}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Notes</td>
+                                            <td style={{
+                                                lineHeight: "16px",
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '150px',
+                                            }} className={`${classes.rightAlign} ${classes.specialfont}`} data-tooltip-id="notes">
+                                                {leadData?.notes && leadData.notes.length > 60 ? (
+                                                    <>
+                                                        {leadData.notes.slice(0, 60)}...
+                                                        <Tooltip
+                                                            style={{
+                                                                zIndex: 20,
+                                                                background: '#f7f7f7',
+                                                                color: '#000',
+                                                                fontSize: 12,
+                                                                paddingBlock: 4,
+                                                                maxWidth: '500px'
+                                                            }}
+                                                            offset={8}
+                                                            id="notes"
+                                                            place="bottom"
+                                                            content={leadData.notes}
+                                                        />
+                                                    </>
+                                                ) : (
+                                                    leadData?.notes || '.......'
+                                                )}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Created At</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.created_at ? format(parseISO(leadData.created_at), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Updated At</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.updated_at ? format(parseISO(leadData.updated_at), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Appointment Scheduled Date</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            >{leadData?.appointment_scheduled_date ? format(parseISO(leadData.appointment_scheduled_date), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
 
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Appointment Declined Date</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_declined_date ? format(parseISO(leadData.appointment_declined_date), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Appointment Accepted date</td>
+                                            {/* <td className={classes.rightAlign}>{leadData?.appointment_accepted_date ? format(parseISO(leadData.appointment_accepted_date), 'dd-MM-yyyy')
+                                            : "....."}</td> */}
+                                            <td className={classes.rightAlign}>
+                                                {leadData?.appointment_accepted_date ? (
+                                                    new Date(leadData.appointment_accepted_date).toISOString()
+                                                ) : (
+                                                    "....."
+                                                )}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Appointment Date</td>
+                                            <td className={classes.rightAlign}>{leadData?.appointment_date ? format(parseISO(leadData.appointment_date), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Lead Won Date</td>
+                                            <td className={classes.rightAlign}>{leadData?.lead_won_date ? format(parseISO(leadData.lead_won_date), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Lead Lost Date</td>
+                                            <td className={classes.rightAlign}>{leadData?.lead_lost_date ? format(parseISO(leadData.lead_lost_date), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Proposal Created Date</td>
+                                            <td className={classes.rightAlign}>
+                                                {leadData?.proposal_created_date
+                                                    ? format(parseISO(leadData.proposal_created_date), 'dd-MM-yyyy')
+                                                    : "....."}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Status Id</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            >{leadData?.status_id || '.......'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Created By</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            >{leadData?.created_by || '.....'}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <DataNotFound />
-                    </div>
-                )}
-            </div>
+                    ) : (
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <DataNotFound />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
         }
