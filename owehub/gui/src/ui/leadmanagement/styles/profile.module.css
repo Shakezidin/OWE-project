@@ -9,6 +9,7 @@
   background-color: #fff;
   max-width: 1012px;
   min-height: 572px;
+  min-width: 612px;
 }
 
 .Column1Details {
@@ -138,6 +139,7 @@ tr {
     height: 635px;
     scroll-behavior: smooth;
     overflow-y: auto;
+    min-width: 290px;
   }
 
   .customer_wrapper_list::-webkit-scrollbar {
