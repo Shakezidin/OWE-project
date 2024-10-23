@@ -1,13 +1,14 @@
 package services
 
 import (
+	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
 	"errors"
+	"fmt"
 
 	"time"
 
 	leadsService "OWEApp/owehub-leads/common"
-	graphApi "OWEApp/shared/graphApi"
 	models "OWEApp/shared/models"
 
 	"github.com/google/uuid"
@@ -25,7 +26,7 @@ func ValidateCreateLeadsRequest(req models.CreateLeadsReq) error {
 func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isReschedule bool, name string) error {
 	// Creating a new model instance
 	var (
-		err                error
+		eventErr           error
 		appointmentTimeStr string
 		model              models.OutlookEventRequest
 		appointmentEndTime string
@@ -74,10 +75,35 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	}
 
 	//  OUTLOOK FUNCTION CALL
-	event, err := graphApi.CreateOutlookEvent(model)
-	if err != nil {
-		return err
+	event, eventErr := graphapi.CreateOutlookEvent(model)
+	if eventErr != nil {
+		return eventErr
 	}
-	log.FuncDebugTrace(0, "got response from create outlook event %+v", event)
+	log.FuncDebugTrace(0, "created outlook event %+v", event)
+
+	// create subscription for decline
+	declineSub, declineSubErr := graphapi.CreateSubscription(models.SubscriptionRequest{
+		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
+		ChangeType:         "create",
+		Resource:           fmt.Sprintf("/users/%s/events/%s/decline", leadsService.LeadAppCfg.AppointmentSenderEmail, *event.GetId()),
+		ExpirationDateTime: appointmentEndTime,
+	})
+	if declineSubErr != nil {
+		return declineSubErr
+	}
+	log.FuncDebugTrace(0, "created outlook subscription %+v", declineSub)
+
+	// create subscription for accept
+	acceptSub, acceptSubErr := graphapi.CreateSubscription(models.SubscriptionRequest{
+		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
+		ChangeType:         "create",
+		Resource:           fmt.Sprintf("/users/%s/events/%s/accept", leadsService.LeadAppCfg.AppointmentSenderEmail, *event.GetId()),
+		ExpirationDateTime: appointmentEndTime,
+	})
+	if acceptSubErr != nil {
+		return acceptSubErr
+	}
+	log.FuncDebugTrace(0, "created outlook subscription %+v", acceptSub)
+
 	return nil
 }
