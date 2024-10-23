@@ -46,7 +46,7 @@ func HandleAuroraWebhookAction(resp http.ResponseWriter, req *http.Request) {
 		status := req.URL.Query().Get("status")
 		projectId := req.URL.Query().Get("project_id")
 
-		query = `UPDATE leads_info SET aurora_proposal_status = $1 WHERE project_id = $2`
+		query = `UPDATE leads_info SET aurora_proposal_status = $1 WHERE aurora_project_id = $2`
 		whereEleList = []interface{}{status, projectId}
 
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
@@ -57,8 +57,4 @@ func HandleAuroraWebhookAction(resp http.ResponseWriter, req *http.Request) {
 		}
 
 	}
-	// if action == "project_created" {
-	// 	projectId := req.URL.Query().Get("project_id")
-	// 	source := req.URL.Query().Get("source")
-	// }
 }
