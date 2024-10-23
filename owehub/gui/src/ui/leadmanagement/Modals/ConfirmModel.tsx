@@ -65,7 +65,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [selectedTime, setSelectedTime] = useState('');
   const [load, setLoad] = useState(false);
   const [leadData, setLeadData] = useState<LeadData | null>(null);
-  const [showCreateProposal, setShowCreateProposal] = useState(false);
+ 
   const [loadingProposal, setLoadingProposal] = useState(false);
   const [error, setError] = useState('');
   const [proposalLink, setProposalLink] = useState<string | null>(null);
@@ -112,6 +112,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         setReschedule(false);
         setRefresh((val) => val + 1)
         setVisibleDiv(1);
+        setSelectedTime('');
+        setSelectedDate(null);
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -121,6 +123,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.error('Error submitting form:', error);
     }
   };
+  console.log(selectedDate, "what you are doing man")
 
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
