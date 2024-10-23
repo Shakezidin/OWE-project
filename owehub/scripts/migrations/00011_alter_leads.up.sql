@@ -66,6 +66,7 @@ ALTER TABLE leads_info ADD COLUMN aurora_proposal_id VARCHAR(40);
 ALTER TABLE leads_info ADD COLUMN aurora_proposal_status VARCHAR(40);
 ALTER TABLE leads_info ADD COLUMN is_appointment_required BOOLEAN DEFAULT TRUE;
 ALTER TABLE leads_info ADD COLUMN aurora_proposal_link VARCHAR(255);
+ALTER TABLE leads_info ADD COLUMN proposal_pdf_key VARCHAR(80);
 ALTER TABLE leads_info ADD COLUMN aurora_proposal_updated_at TIMESTAMPTZ;
 
 

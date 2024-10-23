@@ -14,6 +14,7 @@ import userManIcon from '../../resources/assets/userManag.svg';
 import techIcon from '../../resources/assets/techIcon.svg';
 import accountIcon from '../../resources/assets/accountIcon.svg';
 import logoutIcon from '../../resources/assets/logoutIcon.svg';
+import DashboardHideArrow from "../assets/ArrowDashboard.svg"
 import trackerIcon from '../../resources/assets/trackerIcon.svg';
 import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
@@ -198,11 +199,12 @@ export const ICONS = {
   cutOff,
 
   groupActiveIcon: groupActive,
+  DashboardHideArrow:DashboardHideArrow,
   ChecronUpX:ChecronUpX,
   DeleteICONBOX: DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,
-  DownArrowDashboard:DownArrowDashboard,
+  DownArrowDashboardAboveDirection:DownArrowDashboard,
   dashHead: dashHead,
   SearchICON001:SearchICONbyRabindra,
   dashActive: dashActive,

@@ -36,7 +36,7 @@ export const DashboardPage: React.FC = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const dispatch = useAppDispatch();
-
+ 
   const handleSelect = (ranges: Date) => {
     setSelectionRange(ranges);
   };
@@ -85,31 +85,21 @@ export const DashboardPage: React.FC = () => {
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOptionsFetched) {
+   
       dispatch(
         getDealerPay({
           page_number: currentPage,
           page_size: itemsPerPage,
-          pay_roll_start_date: moment(appliedDate).format(
-            'YYYY-MM-DD HH:mm:ss'
-          ),
-          pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
-          use_cutoff: 'NO',
-          dealer_name: dealer.value,
-          sort_by: 'unique_id',
-          commission_model: selectedOption2,
-          filters,
-          preffered_type: prefferedType,
+          partner_name: selectedDealer,
         })
       );
-    }
+    
   }, [
     currentPage,
     selectedOption2,
     appliedDate,
     filters,
     dealer,
-    isOptionsFetched,
     prefferedType,
   ]);
 
@@ -192,6 +182,7 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
+  console.log(selectedDealer, 'jkrgrjgb')
   return (
     <>
       <div className="Dashboard-section-container">
