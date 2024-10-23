@@ -15,7 +15,7 @@ export const LeadColumn = [
   },
 
   {
-    displayName: 'Deal Won/Loss',
+    displayName: 'Deal Status',
   },
   {
     displayName: 'Proposal Status',

@@ -463,16 +463,17 @@ func CsvDownloadRetrieveQueryFunc() string {
 	// Build the SQL Query
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(`
-        SELECT cs.unique_id,cdv.home_owner,cs.email_address,
+        SELECT cs.unique_id,cs.customer_name as home_owner,cs.email_address,
         cs.phone_number,cs.address,cs.state,
         scs.contracted_system_size_parent, 
         cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
-        cdv.pto_date, cdv.canceled_date, cs.primary_sales_rep, 
+        ps.pto_granted as pto_date, ss.cancelled_date, cs.primary_sales_rep, 
         cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
-								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id 
+                                LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+                                LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id 
         `)
 
 	return filtersBuilder.String()
