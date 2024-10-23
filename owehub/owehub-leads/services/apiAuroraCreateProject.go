@@ -60,6 +60,12 @@ func HandleAuroraCreateProjectRequest(resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
+	if dataReq.ProjectType != "commertial" && dataReq.ProjectType != "residential" {
+		log.FuncErrorTrace(0, "Invalid project type")
+		appserver.FormAndSendHttpResp(resp, "Project type must be commertial or residential", http.StatusBadRequest, nil)
+		return
+	}
+
 	// validate required fields
 	query = `
 		SELECT
@@ -149,6 +155,7 @@ func HandleAuroraCreateProjectRequest(resp http.ResponseWriter, req *http.Reques
 		Status:                dataReq.Status,
 		PreferredSolarModules: dataReq.PreferredSolarModules,
 		Tags:                  dataReq.Tags,
+		ProjectType:           dataReq.ProjectType,
 		Location: auroraclient.CreateProjectApiLocation{
 			PropertyAddress: streetAddress,
 		},
@@ -173,9 +180,9 @@ func HandleAuroraCreateProjectRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	// update the lead info record
-	query = "UPDATE leads_info SET aurora_project_id = $1, aurora_project_name = $2 WHERE leads_id = $3"
+	query = "UPDATE leads_info SET aurora_project_id = $1, aurora_project_name = $2, proposal_type = $3 WHERE leads_id = $3"
 
-	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{projectId, projectName, dataReq.LeadsId})
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{projectId, projectName, dataReq.ProjectType, dataReq.LeadsId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update leads info in DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to update leads info in DB", http.StatusInternalServerError, nil)

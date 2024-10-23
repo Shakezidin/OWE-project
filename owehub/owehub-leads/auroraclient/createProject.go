@@ -24,11 +24,11 @@ type CreateProjectApi struct {
 	OwnerId               string                   `json:"owner_id,omitempty"`
 	TeamId                string                   `json:"team_id,omitempty"`
 	Status                string                   `json:"status"`
+	ProjectType           string                   `json:"project_type"`
 	PreferredSolarModules []string                 `json:"preferred_solar_modules"`
 	Tags                  []string                 `json:"tags"`
 	PartnerId             string                   `json:"partner_id,omitempty"`
 	Location              CreateProjectApiLocation `json:"location"`
-	ProjectType           string                   `json:"project_type,omitempty"`
 }
 type CreateProjectApiLocation struct {
 	PropertyAddress string `json:"property_address"`
@@ -101,6 +101,10 @@ func (api *CreateProjectApi) Call() (*CreateProjectApiResponse, error) {
 	}
 	if api.Location.PropertyAddress == "" {
 		err = fmt.Errorf("cannot create project without Location.PropertyAddress")
+		return nil, err
+	}
+	if api.ProjectType != "commertial" && api.ProjectType != "residential" {
+		err = fmt.Errorf("cannot create project with invalid project type")
 		return nil, err
 	}
 

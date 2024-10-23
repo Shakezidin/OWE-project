@@ -9,6 +9,7 @@ package models
 type AuroraCreateProjectRequest struct {
 	LeadsId               int64    `json:"leads_id"`
 	ProjectName           string   `json:"project_name,omitempty"`
+	ProjectType           string   `json:"project_type"`
 	CustomerSalutation    string   `json:"customer_salutation"`
 	Status                string   `json:"status"`
 	PreferredSolarModules []string `json:"preferred_solar_modules"`
