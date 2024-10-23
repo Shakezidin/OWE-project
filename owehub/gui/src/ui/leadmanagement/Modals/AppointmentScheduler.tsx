@@ -51,12 +51,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   const handleTimeChange = (time: any) => {
     setSelectedTime(time);
     if (time) {
-      const formattedTime = new Date(time).toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true,
-      }).replace(/^(\d):/, (match, hour) => (hour.length === 1 ? `0${hour}:` : match));
-      onTimeChange(formattedTime);
+      onTimeChange(time);
     } else {
       onTimeChange('');
     }

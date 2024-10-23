@@ -231,7 +231,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                         justifyContent: 'flex-start',
                         cursor: 'pointer',
                         minWidth: "200px",
-                        zIndex:"102"
+                        zIndex: "102"
                       }}
                       className={styles.FixedColumn}
                     >
@@ -358,7 +358,16 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               ? "#21BC27"
                               : lead.proposal_status === "Remote Assesment Required"
                                 ? "#EC9311"
-                                : "inherit",
+                                : lead.proposal_status === "CREATED"
+                                  ? "#B459FC"
+                                  : "inherit",
+                            color: lead.proposal_status === "In Progress"
+                              ? "#fff"
+                              : lead.proposal_status === "Remote Assesment Required"
+                                ? "#fff"
+                                : lead.proposal_status === "CREATED"
+                                  ? "#fff"
+                                  : "black",
                           }}
                           className={styles.appointment_status}
                         >
@@ -368,11 +377,6 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             <span style={{ color: "black" }}>_____</span>
                           )}
                         </div>
-                        {/* <div style={{ marginLeft: '14px' }} className={styles.info}>15 Sep 2024</div> */}
-                        {/* <div className={styles.progressBar}>
-                          <div className={styles.progress} style={{ width: '40%' }}></div>
-                        </div>
-                        <div style={{ marginLeft: '14px' }} className={styles.info}>2/6</div> */}
                       </td>
 
 
@@ -399,7 +403,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                     setSelected(index);
                                   }}
                                   options={
-                                    lead?.appointment_status_label === "Appointment Sent"
+                                    lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
                                       ? [
                                         { label: 'Reschedule Appointment', value: 'app_sched' },
                                         { label: 'Create Proposal', value: 'new_proposal' },
