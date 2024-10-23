@@ -88,15 +88,15 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	// create subscription for decline
 	sub, subErr := graphapi.CreateSubscription(models.SubscriptionRequest{
 		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
-		ChangeType:         "updated",
+		ChangeType:         "created,updated",
 		Resource:           fmt.Sprintf("users/%s/events", leadsService.LeadAppCfg.AppointmentSenderEmail),
 		ExpirationDateTime: appointmentEndTime,
 	})
 	if subErr != nil {
-		err = subErr
-		return subErr
+		log.FuncErrorTrace(0, "Failed to create subscription: %v", subErr)
+	} else {
+		log.FuncDebugTrace(0, "created outlook subscription %+v", sub)
 	}
-	log.FuncDebugTrace(0, "created outlook subscription %+v", sub)
 
 	return nil
 }
