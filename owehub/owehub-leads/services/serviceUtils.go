@@ -26,11 +26,14 @@ func ValidateCreateLeadsRequest(req models.CreateLeadsReq) error {
 func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isReschedule bool, name string) error {
 	// Creating a new model instance
 	var (
-		eventErr           error
+		err                error
 		appointmentTimeStr string
 		model              models.OutlookEventRequest
 		appointmentEndTime string
 	)
+
+	log.EnterFn(0, "sentAppointmentEmail")
+	defer log.ExitFn(0, "sentAppointmentEmail", err)
 
 	appointmentTimeStr = appointmentDate.Format(time.RFC3339Nano)
 	appointmentEndTime = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
@@ -77,6 +80,7 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	//  OUTLOOK FUNCTION CALL
 	event, eventErr := graphapi.CreateOutlookEvent(model)
 	if eventErr != nil {
+		err = eventErr
 		return eventErr
 	}
 	log.FuncDebugTrace(0, "created outlook event %+v", event)
@@ -84,11 +88,12 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	// create subscription for decline
 	declineSub, declineSubErr := graphapi.CreateSubscription(models.SubscriptionRequest{
 		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
-		ChangeType:         "create",
+		ChangeType:         "created",
 		Resource:           fmt.Sprintf("/users/%s/events/%s/decline", leadsService.LeadAppCfg.AppointmentSenderEmail, *event.GetId()),
 		ExpirationDateTime: appointmentEndTime,
 	})
 	if declineSubErr != nil {
+		err = declineSubErr
 		return declineSubErr
 	}
 	log.FuncDebugTrace(0, "created outlook subscription %+v", declineSub)
@@ -96,11 +101,12 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 	// create subscription for accept
 	acceptSub, acceptSubErr := graphapi.CreateSubscription(models.SubscriptionRequest{
 		NotificationURL:    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification",
-		ChangeType:         "create",
+		ChangeType:         "created",
 		Resource:           fmt.Sprintf("/users/%s/events/%s/accept", leadsService.LeadAppCfg.AppointmentSenderEmail, *event.GetId()),
 		ExpirationDateTime: appointmentEndTime,
 	})
 	if acceptSubErr != nil {
+		err = acceptSubErr
 		return acceptSubErr
 	}
 	log.FuncDebugTrace(0, "created outlook subscription %+v", acceptSub)
