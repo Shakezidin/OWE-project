@@ -94,6 +94,29 @@ interface WebProposal {
   url_expired: boolean;
 }
 
+type SSEPayload =
+  | {
+    is_done: false;
+    data: {
+      current_step: number;
+      total_steps: number;
+    };
+  }
+  | {
+    is_done: true;
+    data: {
+      current_step: number;
+      total_steps: number;
+      url: string;
+    };
+    error: null;
+  }
+  | {
+    is_done: true;
+    error: string;
+    data: null;
+  };
+
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
@@ -1180,6 +1203,7 @@ const LeadManagementDashboard = () => {
           const createProjectResult = await dispatch(auroraCreateProject({
             "leads_id": leadId,
             "customer_salutation": "Mr./Mrs.",
+            "project_type":"residential",
             "status": "In Progress",
             "preferred_solar_modules": moduleIds,
             "tags": ["third_party_1"]
@@ -1202,7 +1226,7 @@ const LeadManagementDashboard = () => {
 
                 if (proposalData.proposal_link) {
                   // Step 5: Generate Web Proposal
-                  await generateWebProposal(leadId);
+                  await downloadProposalWithSSE(leadId);
 
                   toast.success('Proposal created successfully!');
                   setRefresh((prev) => prev + 1);
@@ -1281,6 +1305,30 @@ const LeadManagementDashboard = () => {
       toast.error('An unexpected error occurred while retrieving the web proposal');
       console.error('Error in retrieveWebProposal:', error);
     }
+  };
+
+  const downloadProposalWithSSE = (leadId: number) => {
+
+
+    const eventSource = new EventSource(
+      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const payload: SSEPayload = JSON.parse(event.data);
+
+      if (!payload.is_done) {
+        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
+        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+      } else if (payload.is_done) {
+
+        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('Error with SSE connection', error);
+    };
   };
 
   console.log(pieData, "hgfsfhfsdhahfg")
