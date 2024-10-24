@@ -18,6 +18,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import FilterDropDown from './components/FilterDropdown/FilterDropDown';
 import { ICONS } from '../../../resources/icons/Icons';
 import { FaCircleCheck } from 'react-icons/fa6';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 const current = new Date();
 interface IOptions {
   label: string;
@@ -135,6 +136,7 @@ const Index = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [searchParams] = useSearchParams();
   const isEditing = searchParams.get('isEditing');
+  const isMobile = useMatchMedia('(max-width:450px)');
 
   const getCordsOnChange = (id: string, type: 'start' | 'end') => {
     const findElm = document.querySelectorAll(
@@ -312,7 +314,10 @@ const Index = () => {
       <div className="flex items-end justify-between">
         <div className="">
           <h4 className={styles.detail_heading}>Schedule</h4>
-          <div className="flex items-center">
+          <div
+            style={{ display: isMobile ? 'none' : 'block' }}
+            className="flex items-center"
+          >
             <Link
               to="/scheduler"
               style={{ fontSize: 12 }}
@@ -328,22 +333,28 @@ const Index = () => {
         </div>
 
         {!isEditing && (
-          <div className="flex " style={{ gap: 15 }}>
+          <div className="flex " style={{ gap: isMobile ? 7 : 15, marginLeft:isMobile? 18:'',marginRight: isMobile?18:'' }}>
             <SelectOption
               dropdownIndicatorStyles={{ display: 'none' }}
-              width="157px"
+              controlStyles={{
+                marginTop: 0,
+                minHeight: 'auto',
+                width: isMobile ? '73px' : '157px', // Apply width here instead of style
+                height: isMobile ? '28px' : 'auto',
+                fontSize: isMobile ? '12px' : '',
+                fontWeight: isMobile ? '500' : '',
+              }}
               options={timeSlots}
               value={startTime}
               onChange={(e) => handleTimeChange(e, 'start')}
               optionStyles={{
                 '&:hover': {
-                  backgroundColor: '#fff ',
+                  backgroundColor: '#fff',
                   color: '#377CF6',
                 },
                 background: '#fff',
                 color: '#000',
               }}
-              controlStyles={{ marginTop: 0 }}
               singleValueStyles={{ color: '#000000', fontWeight: 600 }}
             />
 
@@ -361,12 +372,20 @@ const Index = () => {
                 background: '#fff',
                 color: '#000',
               }}
-              controlStyles={{ marginTop: 0 }}
+              controlStyles={{
+                marginTop: 0,
+                minHeight: 'auto',
+
+                width: isMobile ? '73px' : '157px',
+                height: isMobile ? '28px' : 'auto',
+                fontSize: isMobile ? '12px' : '',
+                fontWeight: isMobile ? '500' : '',
+              }}
               singleValueStyles={{ color: '#000000', fontWeight: 600 }}
             />
 
             <button className={styles.refresh_btn}>
-              <LuRefreshCcw size={22} color="#377CF6" />
+              <LuRefreshCcw size={isMobile ? 17 : 22} color="#377CF6" />
             </button>
 
             <div
@@ -380,14 +399,18 @@ const Index = () => {
         )}
       </div>
 
-      <div className="mt3">
-        <div className={` flex flex-column ${styles.survery_users_container}`}>
+      <div className="mt3" style={{ marginTop: isMobile ? '18px' : 'initial' }}>
+      <div className={` flex flex-column ${styles.survery_users_container}`}>
           <div className={`${styles.suvery_grid_wrapper}`}>
             <div
               className={` flex items-end justify-center  ${styles.surver_filter}`}
             >
-              <div className="flex items-center">
-                <h5 style={{ color: '#377CF6' }}>Surveyor</h5>
+              <div
+                className={`${isMobile ? styles.filter_flex : ''}flex items-center`}
+              >
+                <h5 className={styles.surveyor} style={{ color: '#377CF6' }}>
+                  Surveyor
+                </h5>
 
                 <FilterDropDown />
               </div>
@@ -405,12 +428,20 @@ const Index = () => {
                         className={`mx-auto cursor-pointer  ${item === activeDate ? styles.active_date : styles.inactive_date}`}
                         onClick={() => setActiveDate(item)}
                       >
-                        <span style={{ fontSize: 18, fontWeight: 500 }}>
+                        <span
+                          style={{
+                            fontSize: isMobile ? 11 : 18,
+                            fontWeight: 500,
+                          }}
+                        >
                           {' '}
                           {format(item, 'EEEE').slice(0, 3)}{' '}
                         </span>
                         <span
-                          style={{ fontSize: 20, fontWeight: 600 }}
+                          style={{
+                            fontSize: isMobile ? 11 : 20,
+                            fontWeight: isMobile ? 500 : 600,
+                          }}
                           className="block text-center"
                         >
                           {' '}
@@ -431,7 +462,7 @@ const Index = () => {
                       <div
                         key={ind}
                         style={{
-                          fontSize: 14,
+                          fontSize: isMobile ? 10 : 14,
                           transform: ind > 0 ? 'translateX(-10px)' : '',
                         }}
                         className={` ${startTime.value === time.value || endTime?.value === time.value ? styles.text_primary : ''} ${ind === 0 ? 'left-align' : ''}   `}
