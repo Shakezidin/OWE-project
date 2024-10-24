@@ -31,15 +31,15 @@ func HandleReceiveGraphNotificationRequest(resp http.ResponseWriter, req *http.R
 	validationToken := req.URL.Query().Get("validationToken")
 	if validationToken == "" {
 		log.FuncErrorTrace(0, "Failed to fetch token from url query: %s", req.URL.RawQuery)
-		appserver.FormAndSendHttpResp(resp, "Failed to fetch token", http.StatusBadRequest, nil)
-		return
+		// appserver.FormAndSendHttpResp(resp, "Failed to fetch token", http.StatusBadRequest, nil)
+		// return
 	}
 
 	decodedToken, err = url.QueryUnescape(validationToken)
 	if err != nil {
 		log.FuncErrorTrace(0, "Error decoding validation token: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Invalid validation token", http.StatusBadRequest, nil)
-		return
+		// appserver.FormAndSendHttpResp(resp, "Invalid validation token", http.StatusBadRequest, nil)
+		// return
 	}
 
 	reqBody, err := io.ReadAll(req.Body)
