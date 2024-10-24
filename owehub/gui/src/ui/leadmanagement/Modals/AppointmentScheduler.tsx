@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/appointmentScheduler.css';
 import { toast } from 'react-toastify';
 import classes from "./AppoitnmentSchedular.module.css"
+import { startOfDay } from 'date-fns';
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
@@ -72,7 +73,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
           <DatePicker
             selected={selectedDate}
             onChange={handleDateChange}
-            minDate={new Date()}
+            minDate={startOfDay(new Date())}
             inline
             renderCustomHeader={({
               date,
