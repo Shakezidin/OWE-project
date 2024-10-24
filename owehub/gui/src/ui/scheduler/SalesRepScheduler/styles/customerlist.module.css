@@ -1,3 +1,8 @@
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+
 .schedule_detail {
   font-size: 16px;
   color: #263747;
@@ -28,7 +33,7 @@
   flex-basis: calc(45% - 13px);
   border-radius: 8px;
   background-color: #fff;
-  padding-top: 15px;
+  padding-top: 25px;
   padding-inline: 20px;
   padding-left: 0;
   padding-right: 0;
@@ -89,7 +94,7 @@
   align-items: center;
   padding-left: 16px;
   padding-right: 25px;
-  padding-bottom: 30px;
+  padding-bottom: 25px;
   border-bottom: 1px solid black;
 }
 
@@ -124,7 +129,7 @@
 
 .filter {
   display: flex;
-  gap: 25px;
+  gap: 13px;
   justify-content: center;
   align-items: center;
 }
@@ -145,15 +150,17 @@
   background-color: #377cf6;
   border: none;
   border-radius: 8px;
-  padding: 8.5px;
+  /* padding: 8.5px; */
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
 }
 
 .filtericon:hover {
   background-color: #005eff;
-  transform: scale(1.04);
+  /* transform: scale(1.04); */
 }
 
 .filtericon img {
@@ -240,6 +247,13 @@
   max-height: calc(100vh - 250px);
   overflow-y: scroll;
   flex-shrink: 0;
+  scrollbar-width: 6px !;
+
+  
+}
+
+.cust_det_list::-webkit-scrollbar {
+  width: 2px !important; /* Set the width of the scrollbar */
 }
 
 .head_det {
@@ -271,6 +285,7 @@
   cursor: pointer;
   transition: all 500ms;
   color: #377cf6;
+  justify-content: center;
 }
 
 .accordian_btn:focus-within {
@@ -409,6 +424,21 @@
 .customer_details_selected.open {
   max-height: 700px;
 }
+.time_slot_label{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.slotContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .select_custom{
+  background-color: #377cf6 !important;
+} */
 
 .time_slot_pill_wrapper {
   display: flex;
@@ -418,9 +448,9 @@
   margin-bottom: 40px;
 }
 
-.customer_details_selected.open.accordian_btn {
+/* .customer_details_selected.open.accordian_btn {
   color: #fff !important;
-}
+} */
 
 .calendar_schedule_btn {
   background-color: #377cf6;
@@ -439,6 +469,46 @@
 .calendar_close_btn_mobile {
   display: none;
 }
+/* /////////////////////////////////////////////////////// */
+.schedule_page_wrapper {
+  transition: filter 0.3s ease-in-out;
+}
+
+.blurred {
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.drawer_overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawer_content {
+  width: 50%;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ///////////////////////////////////////////// */
 
 @media (max-width: 968px) {
   .calendar_btn_mobile {
@@ -507,8 +577,9 @@
   }
 
   .schedule_header {
-    padding-block: 14px;
-  }
+    padding-bottom: 20px;
+    padding-left: 7px;
+    padding-right: 7px;  }
 
   .schedule_page_wrapper {
     padding-block: 14px;
@@ -553,9 +624,15 @@
     font-size: 12px;
   }
 
-  .pending h3 {
+  /* .pending h3 {
     line-height: 20px;
     font-size: 12px;
+  } */
+
+  .pending h3{
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
   }
 
   .day_cell {
@@ -571,5 +648,27 @@
   .schedule_page_wrapper {
     padding-block: 0;
     padding-inline: 8px;
+  }
+
+  .customer_wrapper_list{
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: 8px;
+    margin-left: 8px;
+  }
+  .schedule_header{
+    padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 15px;
+  }
+  /* .filtericon{
+    padding: 8.5px;
+  } */
+  .filter{
+    gap: 12px;
+  }
+
+  .calendar_btn_mobile{
+    padding: 7px;
   }
 }

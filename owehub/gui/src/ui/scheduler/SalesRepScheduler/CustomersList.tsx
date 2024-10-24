@@ -19,6 +19,15 @@ import SelectOption from '../../components/selectOption/SelectOption';
 import { CalendarIcon } from './components/Icons';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoClose } from 'react-icons/io5';
+import axios from 'axios';
+import { parseISO } from 'date-fns';
+import ScheduledActivity from '../components/ScheduledActivity/ScheduledActivity';
+import { MdOutlineAdd } from 'react-icons/md';
+import Select from './components/Select';
+import { HiSortDescending } from 'react-icons/hi';
+import Sort from './components/Sort';
+import useEscapeKey from '../../../hooks/useEscape';
+
 interface ITimeSlot {
   id: number;
   time: string;
@@ -37,6 +46,7 @@ const Marker = ({
 interface propTypes {
   mapStyles?: CSSObjectWithLabel;
 }
+
 export interface ICustomer {
   roof_type: string;
   home_owner: string;
@@ -45,101 +55,159 @@ export interface ICustomer {
   system_size: string;
   address: string;
 }
-const customers = [
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jon Jones',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-];
+
+interface IApiResponse {
+  status: number;
+  message: string;
+  dbRecCount: number;
+  data: {
+    customer_email: string;
+    details: {
+      date: string;
+      colorcode: string;
+      progress: number;
+    }[];
+  };
+}
+
+interface ISalesRepResponse {
+  status: number;
+  message: string;
+  dbRecCount: number;
+  data: {
+    sale_rep_project: ISalesRepProject[];
+  };
+}
+
+interface ISalesRepProject {
+  prospect_id: string;
+  customer_first_name: string;
+  customer_last_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  state: string;
+  zipcode: number;
+  roof_type: string;
+  system_size: string;
+  latitude: number;
+  longitude: number;
+  is_battery_installed: boolean;
+  is_appointment_approved: boolean;
+  is_appointment_self_scheduled: boolean;
+  self_scheduled_date: string;
+  self_scheduled_start_time: string;
+  self_scheduled_end_time: string;
+  customer_created_by: string;
+}
+
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
+interface DayWithProgress {
+  id: number;
+  date: Date;
+  progress: number;
+  colorCode: string; // Change from colorcode to colorCode
+}
+
+// const customers = [
+//   {
+//     roof_type: 'XYZ Rooftype',
+//     home_owner: 'Jacob Martin',
+//     customer_email: 'Alexsimon322@gmail.com',
+//     customer_phone_number: '(831) 544-1235',
+//     system_size: '450 KW',
+//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+//   },
+//   {
+//     roof_type: 'XYZ Rooftype',
+//     home_owner: 'Jacob Martin',
+//     customer_email: 'Alexsimon322@gmail.com',
+//     customer_phone_number: '(831) 544-1235',
+//     system_size: '450 KW',
+//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+//   },
+//   {
+//     roof_type: 'XYZ Rooftype',
+//     home_owner: 'Jacob Martin',
+//     customer_email: 'Alexsimon322@gmail.com',
+//     customer_phone_number: '(831) 544-1235',
+//     system_size: '450 KW',
+//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+//   },
+//   {
+//     roof_type: 'XYZ Rooftype',
+//     home_owner: 'Jacob Martin',
+//     customer_email: 'Alexsimon322@gmail.com',
+//     customer_phone_number: '(831) 544-1235',
+//     system_size: '450 KW',
+//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+//   },
+//   {
+//     roof_type: 'XYZ Rooftype',
+//     home_owner: 'Jacob Martin',
+//     customer_email: 'Alexsimon322@gmail.com',
+//     customer_phone_number: '(831) 544-1235',
+//     system_size: '450 KW',
+//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+//   },
+//   {
+//     roof_type: 'XYZ Rooftype',
+//     home_owner: 'Jon Jones',
+//     customer_email: 'Alexsimon322@gmail.com',
+//     customer_phone_number: '(831) 544-1235',
+//     system_size: '450 KW',
+//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+//   },
+// ];
 const CustomersList = () => {
   const navigate = useNavigate();
-  const [customer, setCustomers] = useState<ICustomer[]>(customers);
+  const [customers, setCustomers] = useState<ISalesRepProject[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(-1);
   const [collapse, setCollapse] = useState(-1);
   const [isPending, setIsPending] = useState(true);
   const [page, setPage] = useState(1);
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>();
   const [isSurveyScheduled, setIsSurveyScheduled] = useState(false);
-  const [sortBy, setSortBy] = useState('New To Old');
+  const [selectedSort, setSelectedSort] = useState('newToOld'); // Manage selected sort option here
   const isSmallScreen = useMatchMedia('(max-width:968px)');
   const isMobile = useMatchMedia('(max-width:450px)');
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [calendarData, setCalendarData] = useState<
+    IApiResponse['data']['details']
+  >([]);
 
   const toggleCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
 
-  const getCustomers = async () => {
-    try {
-      setIsPending(true);
-      const data = await postCaller('scheduling_home', {
-        page_number: page,
-        page_size: 10,
-        queue: 'priority',
-        order: 'asc',
-      });
-      if (data.status > 201) {
-        setIsPending(false);
-        toast.error((data as Error).message as string);
-        return;
-      }
-      setCustomers(data?.data?.scheduling_list || customers);
-      setIsPending(false);
-    } catch (error) {
-      setIsPending(false);
-      toast.error((error as Error).message as string);
-    }
-  };
-
-  useEffect(() => {
-    getCustomers();
-  }, [page]);
+  // const getCustomers = async () => {
+  //   try {
+  //     setIsPending(true);
+  //     const data = await postCaller('scheduling_home', {
+  //       page_number: page,
+  //       page_size: 10,
+  //       queue: 'priority',
+  //       order: 'asc',
+  //     });
+  //     if (data.status > 201) {
+  //       setIsPending(false);
+  //       toast.error((data as Error).message as string);
+  //       return;
+  //     }
+  //     setCustomers(data?.data?.scheduling_list || customers);
+  //     setIsPending(false);
+  //   } catch (error) {
+  //     setIsPending(false);
+  //     toast.error((error as Error).message as string);
+  //   }
+  // };
 
   const handleAddClick = () => {
     navigate('/add-new-salesrep-schedule');
@@ -152,46 +220,141 @@ const CustomersList = () => {
     },
     zoom: 11,
   };
-  const timeSlots = [
-    { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
-    { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
-    { id: 7, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
-    { id: 1, time: '4:30 Pm - 7:30 Pm', uniqueId: 4 },
-    { id: 7, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
+  // const timeSlots = [
+  //   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
+  //   { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
+  //   { id: 7, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
+  //   { id: 1, time: '4:30 Pm - 7:30 Pm', uniqueId: 4 },
+  //   { id: 7, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
+  // ];
+
+  // const dayWithProgress = [
+  //   { id: 1, date: new Date(2024, 8, 20), progress: 75 },
+  //   { id: 2, date: new Date(2024, 8, 23), progress: 35 },
+  //   { id: 3, date: new Date(2024, 8, 24), progress: 70 },
+  //   { id: 4, date: new Date(2024, 8, 25), progress: 63 },
+  //   { id: 5, date: new Date(2024, 8, 26), progress: 79 },
+  //   { id: 6, date: new Date(2024, 8, 27), progress: 20 },
+  //   { id: 7, date: new Date(2024, 9, 1), progress: 95 },
+  // ];
+  const sortOptions = [
+    { label: 'New to Old', value: 'newToOld' },
+    { label: 'Old to New', value: 'oldToNew' },
   ];
 
-  const dayWithProgress = [
-    { id: 1, date: new Date(2024, 8, 20), progress: 75 },
-    { id: 2, date: new Date(2024, 8, 23), progress: 35 },
-    { id: 3, date: new Date(2024, 8, 24), progress: 70 },
-    { id: 4, date: new Date(2024, 8, 25), progress: 63 },
-    { id: 5, date: new Date(2024, 8, 26), progress: 79 },
-    { id: 6, date: new Date(2024, 8, 27), progress: 20 },
-    { id: 7, date: new Date(2024, 9, 1), progress: 95 },
-  ];
-  const sortOptions = [
-    { label: 'New To Old', value: 'New To Old' },
-    { label: 'Old To New', value: 'Old To New' },
-  ];
+  const getCustomers = async () => {
+    try {
+      setIsPending(true);
+      const response = await axios.post<ISalesRepResponse>(
+        'https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep',
+        {
+          sort_order: selectedSort === 'newToOld' ? 'new_to_old' : 'old_to_new',
+        }
+      );
+
+      if (response.data.status === 200) {
+        setCustomers(response.data.data.sale_rep_project);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to fetch customers'
+      );
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  useEffect(() => {
+    getCustomers();
+  }, [selectedSort]);
+
+  useEffect(() => {
+    fetchCalendarData();
+  }, []);
+
+  const fetchCalendarData = async () => {
+    try {
+      const response = await axios.post<IApiResponse>(
+        'https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep_calendar'
+      );
+      if (response.data.status === 200) {
+        toast.success('Calendar data fetched successfully');
+        const details = response.data.data.details;
+        setCalendarData(details);
+
+        if (details.length > 0) {
+          // setSelectedDate(parseISO(details[0].date));
+        }
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching calendar data:', error);
+      toast.error('Failed to fetch calendar data');
+    }
+  };
+
+  useEffect(() => {
+    console.log('Updated calendarData:', calendarData);
+  }, [calendarData]);
+
+  const transformedCalendarData: DayWithProgress[] = calendarData.map(
+    (item, index) => ({
+      id: index,
+      date: new Date(item.date),
+      progress: item.progress,
+      colorCode: item.colorcode || '#fff',
+    })
+  );
+
+  useEffect(() => {
+    if (selectedDate) {
+      const selectedDateData = calendarData.find(
+        (item) =>
+          format(parseISO(item.date), 'yyyy-MM-dd') ===
+          format(selectedDate, 'yyyy-MM-dd')
+      );
+
+      if (selectedDateData) {
+        // setAvailableSlots(timeSlots.filter((slot) => slot.id === 1));
+      } else {
+        setAvailableSlots([]);
+      }
+
+      setSelectedTime(undefined);
+    }
+  }, [selectedDate, calendarData]);
+
+  const handleScheduleRepeat = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const handleSortChange = (sortOrder: string) => {
+    setSelectedSort(sortOrder);
+    console.log('Selected sort order:', sortOrder);
+  };
+
+  useEscapeKey(() => setCollapse(-1)); // Example usage
 
   return (
-    <div className={styles.schedule_page_wrapper}>
+    <div className={`${styles.schedule_page_wrapper}`}>
       <div
-        className={`flex items-center justify-between ${styles.schedule_header}`}
+        className={`flex items-center justify-between ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
       >
         <h1 className={styles.schedule_detail}>Schedule</h1>
 
         {isSmallScreen && (
-          <button
-            className={styles.calendar_btn_mobile}
-            onClick={toggleCalendar}
-          >
-            <CalendarIcon />
-          </button>
+          <div className={styles.filtericon} onClick={toggleCalendar}>
+            <CalendarIcon size={19} />
+          </div>
         )}
       </div>
 
-      <div className={`flex justify-between  `}>
+      <div
+        className={`flex justify-between ${isDrawerOpen ? styles.blurred : ''} `}
+      >
         <div
           className={`${
             selectedCustomer === -1 && !isCalendarOpen
@@ -210,31 +373,31 @@ const CustomersList = () => {
             </div>
 
             <div className={styles.filter}>
-              <div className={styles.newproj}>
-                <SelectOption
-                  value={sortOptions.find((item) => item.value === sortBy)}
-                  onChange={(e) => e && setSortBy(e.value)}
-                  options={sortOptions}
-                  controlStyles={{ marginTop: 0, minWidth: 100 }}
-                />
+              <Sort
+                options={sortOptions}
+                selectedValue={selectedSort}
+                onChange={handleSortChange}
+              />
+              <div className={styles.filtericon} onClick={handleScheduleRepeat}>
+                <img src={ICONS.ScheduleRepeat} alt="" />
               </div>
               <div className={styles.filtericon} onClick={handleAddClick}>
-                <img src={ICONS.AddIconSr} alt="" />
+                <MdOutlineAdd size={23} />
               </div>
             </div>
           </div>
 
-          <div className={` scrollbar ${styles.cust_det_list}`}>
+          <div className={`  ${styles.cust_det_list}`}>
             {isPending ? (
               <div className="flex items-center justify-center">
                 <MicroLoader />
               </div>
-            ) : !Boolean(customer.length) || !customer ? (
+            ) : !Boolean(customers.length) || !customers ? (
               <div className="flex items-center justify-center">
                 <DataNotFound />
               </div>
             ) : (
-              customer.map((customer, index) => (
+              customers.map((customer, index) => (
                 <div
                   key={index}
                   onClick={() => {
@@ -253,14 +416,10 @@ const CustomersList = () => {
                           className={styles.name_icon}
                         >
                           <span>
-                            {customer.home_owner
-                              .split(' ')
-                              .map((name) => name[0])
-                              .join('')
-                              .toUpperCase()}{' '}
+                            {`${customer.customer_first_name[0]}${customer.customer_last_name[0]}`.toUpperCase()}
                           </span>
                         </div>
-                        {customer.home_owner}
+                        {`${customer.customer_first_name} ${customer.customer_last_name}`}
                       </div>
                       <button
                         className={styles.accordian_btn}
@@ -300,7 +459,7 @@ const CustomersList = () => {
                           >
                             <CiMail size={15} />
                           </div>
-                          <span>{customer.customer_email}</span>
+                          <span>{customer.email}</span>
                         </div>
                       </div>
 
@@ -314,7 +473,7 @@ const CustomersList = () => {
                               style={{ transform: 'translateX(10px)' }}
                             />
                           </div>
-                          <span>{customer.customer_phone_number}</span>
+                          <span>{customer.phone}</span>
                         </div>
                       </div>
                     </div>
@@ -383,7 +542,10 @@ const CustomersList = () => {
           {!isSurveyScheduled ? (
             <>
               <div className="flex items-center justify-between mb3">
-                <h5 style={{ fontWeight: 500, fontSize: 16 }} className=" ml2">
+                <h5
+                  style={{ fontWeight: 600, fontSize: 16, marginLeft: '20px' }}
+                  className=" ml2"
+                >
                   Select Date & Time
                 </h5>
 
@@ -409,50 +571,37 @@ const CustomersList = () => {
                   selectedDate={selectedDate}
                   onClick={(e) => {
                     setSelectedDate(e.date);
-
-                    setSelectedTime(undefined);
-                    setAvailableSlots([
-                      ...timeSlots.filter((slot) => slot.id === e.event.id),
-                    ]);
                   }}
-                  dayWithProgress={dayWithProgress}
+                  dayWithProgress={transformedCalendarData}
                 />
-                {selectedDate ? (
+                {selectedDate && (
                   <div
-                    className="flex flex-column  justify-center"
+                    className={`${styles.slotContainer}`}
                     style={{ width: '100%' }}
                   >
-                    <h5
-                      className={`mb2 ${styles.time_slot_label}`}
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 500,
-                        textAlign: 'center',
-                      }}
-                    >
-                      {' '}
+                    <h5 className={`mb2 ${styles.time_slot_label}`}>
                       Select time slot
                     </h5>
                     <div className={styles.time_slot_pill_wrapper}>
-                      {!!availableSlots.length ? (
-                        availableSlots.map((slot) => {
-                          return (
-                            <button
-                              onClick={() => setSelectedTime(slot)}
-                              key={slot.uniqueId}
-                              className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot} `}
-                            >
-                              {slot.time}
-                            </button>
-                          );
-                        })
+                      {availableSlots.length > 0 ? (
+                        availableSlots.map((slot) => (
+                          <button
+                            onClick={() => setSelectedTime(slot)}
+                            key={slot.uniqueId}
+                            className={`${styles.time_slot_pill} ${
+                              selectedTime?.uniqueId === slot.uniqueId
+                                ? styles.active_time_slot
+                                : styles.inactive_time_slot
+                            }`}
+                          >
+                            {slot.time}
+                          </button>
+                        ))
                       ) : (
                         <h5>No Slot Available</h5>
                       )}
                     </div>
                   </div>
-                ) : (
-                  ''
                 )}
               </div>
               {selectedTime && selectedDate && (
@@ -492,6 +641,19 @@ const CustomersList = () => {
           )}
         </div>
       </div>
+      {isDrawerOpen && (
+        <div
+          className={styles.drawer_overlay}
+          onClick={() => setIsDrawerOpen(false)}
+        >
+          <div
+            className={styles.drawer_content}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ScheduledActivity onClose={() => setIsDrawerOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
