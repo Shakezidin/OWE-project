@@ -280,7 +280,7 @@ const CustomersList = () => {
         'https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep_calendar'
       );
       if (response.data.status === 200) {
-        toast.success('Calendar data fetched successfully');
+        // toast.success('Calendar data fetched successfully');
         const details = response.data.data.details;
         setCalendarData(details);
 
@@ -299,6 +299,11 @@ const CustomersList = () => {
   useEffect(() => {
     console.log('Updated calendarData:', calendarData);
   }, [calendarData]);
+
+  useEffect(() => {
+    console.log('Updated CustomersList:', customers);
+  }, [customers]);
+
 
   const transformedCalendarData: DayWithProgress[] = calendarData.map(
     (item, index) => ({
