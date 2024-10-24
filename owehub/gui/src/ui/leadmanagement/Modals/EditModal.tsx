@@ -355,7 +355,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
 
               <div
                 className={classes.survey_button}
-                style={{ paddingBottom: '38px' }}
+                style={{ paddingBottom: '18px' }}
               >
                 <button
                   id='EnterKeys'
