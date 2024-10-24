@@ -1283,8 +1283,7 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  console.log(pieData, "hgfsfhfsdhahfg")
-
+  
   //----------------Aurora API integration END-------------------------//
   //*************************************************************************************************//
 
