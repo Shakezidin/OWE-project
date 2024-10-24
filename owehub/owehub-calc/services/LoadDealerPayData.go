@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func ExecDlrPayInitialCalculation(resultChan chan string) {
+func ExecDlrPayInitialCalculation() error {
 	var (
 		err            error
 		dlrPayDataList []map[string]interface{}
@@ -19,13 +19,17 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	count := 0
 	dataReq := models.DataRequestBody{}
 	InitailData, err := oweconfig.LoadDlrPayInitialData()
+	if err != nil {
+		log.FuncErrorTrace(0, "error while loading initial data %v", err)
+	}
 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
 	dealerPayments, err := oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
+	dealerOvrd, err := oweconfig.GetDealerOverrideConfigFromDB(dataReq)
 
 	for _, data := range InitailData.InitialDataList {
 		var dlrPayData map[string]interface{}
-		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments)
+		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd)
 
 		if err != nil || dlrPayData == nil {
 			if len(data.UniqueId) > 0 {
@@ -52,7 +56,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v", err)
 	}
 
-	resultChan <- "SUCCESS"
+	return err
 }
 
 /******************************************************************************
@@ -60,7 +64,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 * DESCRIPTION:     calculate the calculated data for DLR Pay
 * RETURNS:         outData
 *****************************************************************************/
-func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule oweconfig.FinanceSchedule, dealerCredit oweconfig.DealerCredits, dealerPayments oweconfig.DealerPayments) (outData map[string]interface{}, err error) {
+func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule oweconfig.FinanceSchedule, dealerCredit oweconfig.DealerCredits, dealerPayments oweconfig.DealerPayments, dealerovrd oweconfig.DealerOverride) (outData map[string]interface{}, err error) {
 	// this row data is from sales data
 	outData = make(map[string]interface{})
 
@@ -69,6 +73,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	uniqueID := dlrPayData.UniqueId
 	DealerCode := dlrPayData.DealerCode
 	SystemSize := dlrPayData.SystemSize
+	Rl := dlrPayData.RL
 	ContractDolDol := dlrPayData.ContractDolDol
 	OtherAdders := dlrPayData.OtherAdders
 	Rep1 := dlrPayData.Rep1
@@ -77,67 +82,53 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	ST := dlrPayData.ST
 	ContractDate := dlrPayData.ContractDate
 	NetEpc := dlrPayData.NetEpc
-	DrawAmt := dlrPayData.DrawAmt
+	DrawAmt := dlrPayData.DrawAmt // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
-	financeFee, err := GetFinanceFeeByItemID(financeSchedule.FinanceScheduleData, 1234)
-	if err != nil {
-		financeFee = 0.0
-	}
-	dealercredit, err := GetDealerCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
-	if err != nil {
-		dealercredit = ""
-	}
-
-	dealerpayments, err := GetDealerpaymentsByItemID(dealerPayments.DealerPaymentsData, uniqueID)
-	if err != nil {
-		dealerpayments = ""
-	}
-	Rl := 0.0 // config is not available
-	drawPercent := 0.0
-	drawMax := 0.0
-	dlrOvrdAmount := 0.0
-	mktFee := 0.0
-	payments := 0.0
-	amt_paid := 0.0 // how to calculate sum of dealer payments
-	balance := 0.0  //Total Net Commission - Sum of Dealer Paid by Project ID how I get these values?
+	drawMax := dlrPayData.DrawMax
+	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
+	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
-	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, payments)
-	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, drawPercent, drawMax)
+	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
+	mktFee := 5.0 //pemding from Colten sice
+	financeType := dlrPayData.FinanceType
+	financeCompany := dlrPayData.FinanceCompany
+	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST, time.Time{})
+	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, amt_paid)
+	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawAmt, drawMax)
+	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
+	balance := totalNetCommission - amt_paid
+	// here i have some doubts
 
-	var amount float64
-	if !NtpCompleteDate.IsZero() {
-		amount = m1Payment
-	} else if !PvComplettionDate.IsZero() {
-		amount = m2Payment
-	}
 	outData["home_owner"] = HomeOwner
-	outData["currect_status"] = CurrectStatus
+	outData["current_status"] = CurrectStatus
 	outData["unique_id"] = uniqueID
 	outData["dealer_code"] = DealerCode
+	outData["today"] = time.Now()
+	outData["amount"] = amount
 	outData["sys_size"] = SystemSize
+	outData["rl"] = Rl
 	outData["contract_dol_dol"] = ContractDolDol
+	outData["loan_fee"] = LoanFee
+	outData["epc"] = ContractDolDol / (SystemSize * 1000)
+	outData["net_epc"] = NetEpc
 	outData["other_adders"] = OtherAdders
+	outData["credit"] = credit
 	outData["rep_1"] = Rep1
 	outData["rep_2"] = Rep2
 	outData["setter"] = Setter
-	outData["st"] = ST
-	outData["contract_date"] = ContractDate
-	outData["net_epc"] = NetEpc
 	outData["draw_amt"] = DrawAmt
-	outData["ntp_complete_date"] = NtpCompleteDate
-	outData["pv_complete_date"] = PvComplettionDate
-	outData["finance_fee"] = financeFee
-	outData["dealer_credit"] = dealercredit
-	outData["dealer_payments"] = dealerpayments
-	outData["today"] = time.Now()
-	outData["amount"] = amount
-	outData["epc"] = ContractDolDol / (SystemSize * 1000)
 	outData["amt_paid"] = amt_paid
 	outData["balance"] = balance
-	outData["total_gross_commission"] = totalGrossCommission
-	outData["total_net_commission"] = totalNetCommission
-	outData["m1_payment"] = m1Payment
-	outData["m2payment"] = m2Payment
+	outData["st"] = ST
+	outData["contract_date"] = ContractDate
+	outData["finance_type"] = financeType
+
+	// outData["ntp_complete_date"] = NtpCompleteDate
+	// outData["pv_complete_date"] = PvComplettionDate
+	// outData["total_gross_commission"] = totalGrossCommission
+	// outData["total_net_commission"] = totalNetCommission
+	// outData["m1_payment"] = m1Payment
+	// outData["m2payment"] = m2Payment
 	return outData, err
 }
