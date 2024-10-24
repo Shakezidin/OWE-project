@@ -16,6 +16,7 @@ import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
 import { toZonedTime } from 'date-fns-tz'
 import useMatchMedia from '../../../../hooks/useMatchMedia';
+import Pagination from '../../../components/pagination/Pagination';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
 
@@ -249,16 +250,16 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
   const handleMoreClick = () => {
     const elm = document.getElementById("tes-table") as HTMLDivElement
-    elm.scroll({ left: 700, behavior: "smooth" })
+    elm.scroll({ left: 1800, behavior: "smooth" })
     if (side == 'left') {
       // if (tableContainerRef.current) {
       //   tableContainerRef.current.scrollLeft += 800;
       //   setSide('right');
       // }
-      elm.scroll({ left: 700, behavior: "smooth" })
+      elm.scroll({ left: 1800, behavior: "smooth" })
       setSide('right');
     } else if (side == 'right') {
-      elm.scroll({ left: -700, behavior: "smooth" })
+      elm.scroll({ left: -1800, behavior: "smooth" })
       setSide('left');
     }
   };
@@ -280,6 +281,31 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
       backgroundColor: "#808080",
       color: "#fff"
     }
+  };
+
+
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    setPage(pageNumber);
+  };
+
+
+  const goToNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const goToPrevPage = () => {
+    setPage(page - 1);
+  };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
   };
 
 
@@ -330,7 +356,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       style={{
                         fontWeight: '500',
                         color: 'black',
-                        background: isMobile ? 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 100%)': 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
+                        background: isMobile ? 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 100%)' : 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
@@ -461,9 +487,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
                       <td>
                         <div
-                        style={lead.proposal_status in statusStyles 
-                          ? statusStyles[lead.proposal_status as ProposalStatus] 
-                          : { backgroundColor: "inherit", color: "black" }}
+                          style={lead.proposal_status in statusStyles
+                            ? statusStyles[lead.proposal_status as ProposalStatus]
+                            : { backgroundColor: "inherit", color: "black" }}
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
@@ -673,8 +699,32 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                 )}
               </tbody>
             </table>
+
           </div>
+
         </div>
+        {leadsData.length > 0 && !isLoading && (
+          <div className="page-heading-container">
+
+            <p className="page-heading">
+              {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+            </p>
+
+
+          
+              <Pagination
+                currentPage={page}
+                totalPages={totalPage}
+                paginate={paginate}
+                currentPageData={[]}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+                onPerPageChange={handlePerPageChange}
+              />
+            </div>
+         
+        )}
       </div>
     </>
   )

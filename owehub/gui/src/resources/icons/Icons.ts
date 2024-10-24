@@ -169,6 +169,8 @@ import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 import LogCalc1 from "../assets/log_calc_1.svg"
 import LogCalc2 from "../assets/log_calc_2.svg"
 import LogCalc3 from "../assets/log_calc_3.svg"
+import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
+
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -356,4 +358,5 @@ export const ICONS = {
   LogCalc1: LogCalc1,
   LogCalc2: LogCalc1,
   LogCalc3: LogCalc1,
+  ScheduleRepeat: ScheduleRepeat,
 };

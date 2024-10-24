@@ -2013,7 +2013,7 @@ const LeadManagementDashboard = () => {
               generateWebProposal={generateWebProposal}
             />
           )}
-          {leadsData.length > 0 && !isLoading && (
+          {/* {leadsData.length > 0 && !isLoading && (
             <div className={styles.leadpagination}>
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
@@ -2034,7 +2034,7 @@ const LeadManagementDashboard = () => {
                 />
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

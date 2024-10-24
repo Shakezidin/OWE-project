@@ -29,3 +29,12 @@
     margin-left: 15px;
   }
 }
+
+@media screen and (max-width: 450px) {
+  .schedule{
+    margin-left: 16px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
