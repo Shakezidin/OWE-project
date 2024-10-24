@@ -272,6 +272,7 @@
 .head_det span {
   font-size: 14px;
   font-weight: 400;
+  word-break: break-all;
 }
 
 .accordian_btn {
@@ -531,7 +532,8 @@
   }
 
   .date_time_wrapper div:first-child {
-    margin-inline: auto;
+    margin-right: auto;
+    margin-left: auto !important;
   }
   .calendar_close_btn_mobile {
     display: block;
