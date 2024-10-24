@@ -14,13 +14,10 @@ import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
 import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
-<<<<<<< HEAD
-import useMatchMedia from '../../../../hooks/useMatchMedia';
-=======
 import { toZonedTime } from 'date-fns-tz'
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
->>>>>>> 0715aed26383d11b8e7d5eea58b732641e350ce3
 
 interface LeadSelectionProps {
   selectedLeads: number[];
