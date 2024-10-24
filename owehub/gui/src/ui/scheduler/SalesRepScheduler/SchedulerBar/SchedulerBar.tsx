@@ -9,6 +9,7 @@ import { MdOutlineEmail } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
 import { LuClock } from 'react-icons/lu';
 import { RxCalendar } from 'react-icons/rx';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 const current = new Date();
 const timeRange = [
   {
@@ -85,6 +86,7 @@ const SchedulerBar = () => {
   const scheduleRef = useRef<HTMLDivElement>(null);
   const timeOutIds = useRef<NodeJS.Timeout[]>([]);
   const filteredTime = timeSlots.filter((item) => !item.value.includes(':30'));
+  const isMobile = useMatchMedia('(max-width:450px)');
   const getTimeIndex = useCallback((time: string) => {
     let init = 0;
     filteredTime.forEach((item, ind) => {
@@ -209,13 +211,21 @@ const SchedulerBar = () => {
                           onClick={() => setActiveDate(item)}
                         >
                           <span style={{ fontSize: 18, fontWeight: 500 }}>
+
+
+                          {/* <span className={sharedStyles.span_day}> */}
+                          {/* <span style={{ fontSize: isMobile ? 11 : 18, fontWeight: 500 }}> */}
+                          
+
                             {' '}
                             {format(item, 'EEEE').slice(0, 3)}{' '}
                           </span>
-                          <span
-                            style={{ fontSize: 20, fontWeight: 600 }}
-                            className="block text-center"
-                          >
+                          <span style={{ fontSize: 20, fontWeight: 600 }} className="block text-center" > 
+
+                            
+                          {/* <span className={`${sharedStyles.span_date} block text-center`}> */}
+                             {/* <span style={{ fontSize: isMobile ? 11 : 20, fontWeight: isMobile ? 500 : 600 }} className="block text-center"> */}
+
                             {' '}
                             {format(item, 'dd')}{' '}
                           </span>
