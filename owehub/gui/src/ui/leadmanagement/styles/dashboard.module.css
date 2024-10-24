@@ -558,63 +558,162 @@ input[type='checkbox']:checked {
 .customFontMobile{
   display: none;
 }
+
+.cardHeaderForMobile{
+  display: none;
+}
+.MobileViewHide{
+  display: none;
+}
 /* *******************************************RABINDRA DATE 22.10.2024 ************************************************************************* */
 @media (max-width: 600px) {
-  .chartGrid {
+    /* From DASHBOARD GRAPH ENDED */
+    .chartGrid {
+      display: flex;
+      flex-direction: column;
+      width: 94% !important;
+      align-items: center !important;
+      margin: 0 auto;
+    }
+  
+    .vertical1 {
+      order: 3;
+      border-right: none;
+      display: flex;
+      width: 100%;
+      margin-top: 9px;
+      flex-direction: column;
+      border-top: 1.4px solid #ccc;
+    }
+  
+    .vertical2 {
+      order: 2;
+      width: 115% !important;
+      left: 0 !important;
+      margin: 0;
+      padding-left: 0 !important;
+      margin-bottom: 14px;
+    }
+    .HideContent {
+      display: flex;
+      width: 100%;
+      top: 0;
+      left: 0;
+      justify-content: space-between;
+    }
+    .ButtonAbovearrov {
+      all: unset;
+      width: 100%;
+    }
+    .customFontMobile {
+      font-weight: 600;
+      display: block;
+    }
+    .upKeys_DownKeysX {
+      all: unset;
+    }
+  
+    .MobileViewHide {
+      display: block;
+      font-weight: 600;
+    }
+  
+    .horizontal {
+      all: unset;
+      order: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      /* background-color: teal; */
+      width: 100%;
+    }
+    .FirstColHead {
+      display: none;
+    }
+    .FirstColHeadMobile {
+      width: 100% !important;
+      display: flex;
+      margin-top: 9px;
+      justify-content: space-between;
+    }
+    .SecondColHead {
+      width: 100%;
+    }
+  
+    .card {
+      /* background-color: rgb(38, 158, 48); */
+    }
+  /* ANOTHER SECTION RESPONSIVENESS ADEDDD */
+
+  .cardHeader{
+    display: none;
+  }
+  .cardHeaderForMobile {
     display: flex;
+    margin-top: 10px;
     flex-direction: column;
-    width: 94% !important;
-    align-items: center !important;
+  }
+
+  .FirstRowSearch {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+    width: 94%;
+    justify-content: center;
+    align-items: center;
     margin: 0 auto;
   }
 
-  .vertical1 {
-    order: 3;
-    border-right: none;
+  .buttonGroupMobile {
     display: flex;
-    flex-direction: column;
-    border-top: 1.4px solid #ccc;
+    flex-direction: row;
+    overflow-x: scroll;
+    align-items: center;
+    white-space: nowrap;
+    /* justify-content: space-between; */
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 7.5px;
+    width: 135%;
+    box-shadow: unset;
   }
 
-  .vertical2 {
-    order: 2;
-    width: 115% !important;
-    left: 0 !important; 
-    margin: 0;
-    padding-left: 0 !important;
-    margin-bottom: 14px;
-}
-.HideContent{
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-}
-.ButtonAbovearrov{
-  all: unset;
-  width: 100%;
-}
-.customFontMobile{
-  font-weight: 600;
-}
-.upKeys_DownKeysX{
-  all: unset;
-}
-  .horizontal {
-    all: unset;
-    order: 1;
-  }
-  .FirstColHead {
-    display: none;
-  }
-  .FirstColHeadMobile{
-    width: 100% !important;
+
+  .filterCallToActionMobile {
     display: flex;
-    justify-content: space-between;
+    transform: scale(0.75);
+    position: inherit;
+    gap: 9px;
   }
-  .SecondColHead {
-    width: 100%;
+  .searchBarMobile {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+    height: 36px;
+    width: 252px !important;
+    margin-right: 0;
   }
 
+  .searchBarMobile input::placeholder{
+    font-size: 11.8px;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 }
 
 /* *********************************************** RABINDRA ********************************************************************* */

@@ -162,6 +162,37 @@
   }
 }
 
+
+
+
+@media screen and (max-width: 768px) {
+
+.filtericonLead{
+  display: flex;
+  width: 31px !important;
+  height: 31px !important;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 10.8px 10.8px;
+  cursor: pointer;
+  border-radius: 50%; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+  font-weight: 500;
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+.filtericonLead:hover {
+  background-color: #013ea6;
+  transform: scale(1.1);
+}
+
+}
+
+
 @media screen and (max-width: 768px) {
   .filtericonHistory {
     display: flex;

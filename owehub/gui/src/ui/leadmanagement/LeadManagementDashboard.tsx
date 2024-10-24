@@ -52,7 +52,7 @@ import {
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
-import { MdDownloading } from 'react-icons/md';
+import { MdDownloading, MdHeight } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
@@ -368,7 +368,7 @@ const LeadManagementDashboard = () => {
     setSelectedPeriod(null);
     setIsCalendarOpen(false);
   };
-  
+
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -603,29 +603,29 @@ const LeadManagementDashboard = () => {
 
           if (response.status === 200) {
             const apiData = response.data;
-            
+
             const formattedData = apiData.reduce(
               (acc: DefaultData, item: any) => {
                 const statusName = item.status_name;
                 const defaultDataKey = Object.keys(defaultData).find(
                   (key) => key === statusName || defaultData[key].name === statusName
                 );
-            
+
                 if (defaultDataKey) {
                   acc[defaultDataKey] = {
                     ...defaultData[defaultDataKey],
                     value: item.count,
                   };
                 }
-            
+
                 return acc;
               },
               { ...defaultData }
             );
-            
+
             const mergedData = Object.values(formattedData) as StatusData[];
             setPieData(mergedData);
-            
+
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -1313,20 +1313,30 @@ const LeadManagementDashboard = () => {
       />
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
+
           <div className={styles.FirstColHead}>
+            {/* HERE FOR TOGGLE VIEW WHEN HIDE OTHER BOTTONS */}
+
             {isToggledX && (
               <div className={styles.customLeft}>
                 Overview
               </div>
             )}
+
+
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads: {totalValue ? totalValue : '0'}
             </div>
           </div>
           <div className={styles.SecondColHead}>
+            {
+              isToggledX == false && <div className={styles.MobileViewHide}>
+                Total leads: {totalValue ? totalValue : '0'}
+              </div>
+            }
+            {/* CARD DESIGNING STRTED */}
             <div>
               {isToggledX && <div className={styles.customLeft}
-              // className={`${styles.customLeft} ${styles.custom3}`}
               >Total Won Lost</div>}
             </div>
             <div className={`${styles.customRight} ${styles.customFont}`}>
@@ -1455,22 +1465,17 @@ const LeadManagementDashboard = () => {
                 >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>}
+
+
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
                   {isToggledX ? (
-                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DownArrowDashboardAboveDirection} /></div>
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DashboardNewIcon} /></div>
                   ) : (<div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
-                    <img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} />
+                    <img className={styles.ArrowDX} src={ICONS.DashboardNewIcon} />
                   </div>
                   )}
                 </div>
-                {/* <div className={styles.HideContent}>
-                    <div className={styles.customFontMobile}>
-                      Total leads: {totalValue ? totalValue : '0'}
-                    </div>
-                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
-                      <img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} />
-                    </div>
-                  </div> */}
+
                 <Tooltip
                   style={{
                     zIndex: 20,
@@ -1503,7 +1508,7 @@ const LeadManagementDashboard = () => {
             </div>
           </div>
 
-          <div style={{ width: "100%" }}>
+          <div style={{ width: "120%" }}>
             {loading ? (
               <div
                 style={{
@@ -1702,7 +1707,7 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    fontWeight: "400"
+                    fontWeight:"400"
                   }}
                   delayShow={800}
                   offset={8}
@@ -1717,12 +1722,12 @@ const LeadManagementDashboard = () => {
 
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight: "400"
+                      fontWeight:"400"
                     }}
                     offset={8}
                     id="NEW"
@@ -1754,19 +1759,19 @@ const LeadManagementDashboard = () => {
 
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight: "400"
+                      fontWeight:"400"
                     }}
                     offset={8}
                     delayShow={800}
                     id="export"
                     place="bottom"
                     content="Export"
-
+                    
                   />
 
 
@@ -1801,6 +1806,178 @@ const LeadManagementDashboard = () => {
             )}
           </div>
         )}
+        {/* ///HERE I NEED TO CHANGE RABINDRA */}
+        {archive == false && (
+          <div className={styles.cardHeaderForMobile}>
+            <div className={styles.FirstRowSearch}>
+              {selectedLeads.length === 0 ? (
+                <><div className={styles.searchBarMobile}>
+                    <div className={styles.searchIcon}>
+                      {/* You can use an SVG or a FontAwesome icon here */}
+                      <img src={ICONS.SearchICON001} />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search by customer name"
+                      className={styles.searchInput}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 50) {
+                          e.target.value = e.target.value.replace(
+                            /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                            ''
+                          );
+                          handleSearchChange(e);
+                          setSearch(e.target.value);
+                        }
+                      }}
+                    />
+                  </div>
+                  <HistoryRedirect />
+                  {currentFilter === 'In Progress' && (
+                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
+                  )}
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                      fontWeight: "400"
+                    }}
+                    delayShow={800}
+                    offset={8}
+                    id="More Pages"
+                    place="bottom"
+                    content="More Pages"
+                  />
+                  <div className={styles.filterCallToActionMobile}>
+                    <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                      <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                    </div>
+
+                    <Tooltip
+                      style={{
+                        zIndex: 20,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      id="NEW"
+                      place="bottom"
+                      content="Add New Lead"
+                      delayShow={800}
+                    />
+
+                    <div
+                      className={styles.export_btn}
+                      onClick={exportCsv}
+                      data-tooltip-id="export"
+                      style={{
+                        pointerEvents: exporting ? 'none' : 'auto',
+                        opacity: exporting ? 0.6 : 1,
+                        cursor: exporting ? 'not-allowed' : 'pointer',
+                      }}
+                    >
+                      {exporting ? (
+                        <MdDownloading
+                          className="downloading-animation"
+                          size={20}
+                          color="white"
+                        />
+                      ) : (
+                        <LuImport size={20} color="white" />
+                      )}
+                    </div>
+
+                    <Tooltip
+                      style={{
+                        zIndex: 20,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      delayShow={800}
+                      id="export"
+                      place="bottom"
+                      content="Export"
+
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className={styles.selectionHeader}>
+                  <div className={styles.selectionInfo}>
+
+
+                    <span
+                      className={styles.closeIcon}
+                      onClick={() => setSelectedLeads([])}
+                    >
+                      <img src={ICONS.cross} alt="" height="26" width="26" />
+                    </span>
+                    <span>{selectedLeads.length} Selected</span>
+                  </div>
+                  <button
+                    style={{
+                      pointerEvents: archived ? 'none' : 'auto',
+                      opacity: archived ? 0.6 : 1,
+                      cursor: archived ? 'not-allowed' : 'pointer',
+                    }}
+                    className={styles.removeButton}
+                    onClick={handleArchiveSelected}
+                    disabled={archived}
+                  >
+                    {archived ? 'Archiving...' : 'Archive'}
+                  </button>
+                </div>
+              )}</div>
+            <div className={styles.buttonGroupMobile}>
+              {pieData.map((data) => {
+                let displayStatus = '';
+                switch (data.name) {
+                  case 'NEW':
+                    displayStatus = 'New Leads';
+                    break;
+                  case 'PROGRESS':
+                    displayStatus = 'In Progress';
+                    break;
+                  case 'DECLINED':
+                    displayStatus = 'Declined';
+                    break;
+                  case 'ACTION_NEEDED':
+                    displayStatus = 'Action Needed';
+                    break;
+                  default:
+                    displayStatus = data.name;
+                }
+
+                return (
+                  <button
+                    key={data.name}
+                    className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
+                           ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                    onClick={() => handleFilterClick(displayStatus)}
+                  >
+                    <p
+                      className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
+                    >
+                      {data.value}
+                    </p>
+                    <span className={styles.displayStatus}>{displayStatus}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className={styles.cardContent}>
           {currentFilter === 'Projects' ? (
             isProjectLoading ? (
