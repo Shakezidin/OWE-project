@@ -183,31 +183,31 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
-  const containerRef = useRef<HTMLDivElement>(null);
+  // const containerRef = useRef<HTMLDivElement>(null);
   
-  const checkZoomLevel = useCallback(() => {
-    const zoomLevel = Math.round(window.devicePixelRatio * 100);
+  // const checkZoomLevel = useCallback(() => {
+  //   const zoomLevel = Math.round(window.devicePixelRatio * 100);
     
-    if (containerRef.current) {
-      if (zoomLevel > 138) {
-        containerRef.current.style.marginTop = "0";
-      } else if (zoomLevel > 100) {
-        containerRef.current.style.marginTop = "-310px"; 
-      } else {
-        containerRef.current.style.marginTop = "-317px"; 
-      }
-      console.log(`Zoom Level: ${zoomLevel}, Margin Top: ${containerRef.current.style.marginTop}`);
-      console.log("Rabindra");
-    }
-  }, []);
+  //   if (containerRef.current) {
+  //     if (zoomLevel > 138) {
+  //       containerRef.current.style.marginTop = "0";
+  //     } else if (zoomLevel > 100) {
+  //       containerRef.current.style.marginTop = "-310px"; 
+  //     } else {
+  //       containerRef.current.style.marginTop = "-317px"; 
+  //     }
+  //     console.log(`Zoom Level: ${zoomLevel}, Margin Top: ${containerRef.current.style.marginTop}`);
+  //     console.log("Rabindra");
+  //   }
+  // }, []);
 
-  useEffect(() => {
-        checkZoomLevel();
-    window.addEventListener('resize', checkZoomLevel);
-    return () => {
-      window.removeEventListener('resize', checkZoomLevel);
-    };
-  }, [checkZoomLevel]);
+  // useEffect(() => {
+  //       checkZoomLevel();
+  //   window.addEventListener('resize', checkZoomLevel);
+  //   return () => {
+  //     window.removeEventListener('resize', checkZoomLevel);
+  //   };
+  // }, [checkZoomLevel]);
 
   return (
 
@@ -217,7 +217,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
 
-          <div  ref={containerRef}  className={classes.customer_wrapper_list_edit}>
+          <div  className={classes.customer_wrapper_list_edit}>
             <div className={classes.Edit_DetailsMcontainer}>
               <div className={classes.edit_closeicon} onClick={onClose}>
                 <RiArrowDropDownLine

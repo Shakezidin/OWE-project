@@ -71,7 +71,7 @@ const FolderDetail = () => {
     const [videoName, setVideoName] = useState("")
     const [isHovered, setIsHovered] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 10
+    const itemsPerPage = 25
 
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

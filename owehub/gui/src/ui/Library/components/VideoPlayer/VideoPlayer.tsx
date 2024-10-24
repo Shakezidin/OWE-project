@@ -23,7 +23,6 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(1);
-    const [isMuted, setIsMuted] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [isBuffering, setIsBuffering] = useState(true);
     const [timeStamp, setTimeStamp] = useState("")
@@ -59,13 +58,14 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
             videoRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
             videoRef.current.addEventListener('waiting', handleBufferStart);
             videoRef.current.addEventListener('canplay', handleBufferEnd);
+          
         }
         return () => {
             if (videoRef.current) {
                 videoRef.current.removeEventListener('timeupdate', handleTimeUpdate);
                 videoRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
                 videoRef.current.removeEventListener('waiting', handleBufferStart);
-                videoRef.current.removeEventListener('canplay', handleBufferEnd);
+                videoRef.current.addEventListener('canplay', handleBufferEnd);
             }
         };
     }, []);
@@ -103,8 +103,10 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                 (containerRef.current as any).mozRequestFullScreen();
             } else if ((containerRef.current as any)?.msRequestFullscreen) {
                 (containerRef.current as any).msRequestFullscreen();
+            } else if ((containerRef.current as any)?.webkitEnterFullscreen) { // Added for Safari mobile
+                (containerRef.current as any).webkitEnterFullscreen();
             }
-            setIsTooltipVisible(true); 
+            setIsTooltipVisible(true);
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
@@ -114,8 +116,10 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                 (document as any).mozCancelFullScreen();
             } else if ((document as any).msExitFullscreen) {
                 (document as any).msExitFullscreen();
+            } else if ((document as any).webkitExitFullscreen) { // Added for Safari mobile
+                (document as any).webkitExitFullscreen();
             }
-            setIsTooltipVisible(false); 
+            setIsTooltipVisible(false);
         }
     };
 
@@ -127,6 +131,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
 
     const handleLoadedMetadata = () => {
         setDuration(videoRef.current!.duration);
+        handleBufferEnd()
     };
 
     const handleBufferStart = () => {
@@ -155,12 +160,13 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     };
 
     const toggleMute = () => {
-        if (isMuted) {
-            videoRef.current!.volume = volume;
-            setIsMuted(false);
+        if (volume === 0) {
+            videoRef.current!.volume = 1;
+            setVolume(1)
         } else {
             videoRef.current!.volume = 0;
-            setIsMuted(true);
+            setVolume(0)
+
         }
     };
 
@@ -185,7 +191,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
     };
 
     const volumeBarStyles = {
-        background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${volume * 100}%, #ffffff ${volume * 100}%, #ffffff 100%)`,
+        background: `linear-gradient(to right, #FF0000 0%, #FF0000 ${volume * 100}%, #ffffff ${volume * 100}%, #ffffff 100%)`,
     };
 
     const handleBarHover = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -195,13 +201,14 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
         const hoveredTime = (x / rect.width) * duration;
         setTimeStamp(formatTime(hoveredTime));
         setIsTooltipVisible(true);
-        setTooltipPosition({ left: e.clientX-20, top: e.clientY - 35 });
+        setTooltipPosition({ left: e.clientX - 20, top: e.clientY - 35 });
     };
 
     return (
         <div className='transparent-model'>
-            <div className='bg-white p2' style={{ borderRadius: 12, width: "100%", maxWidth: 768 }} >
-                <div className='flex mb2 items-center justify-between' >
+            <div className='bg-white' style={{ borderRadius: 12, width: "100%", maxWidth: 968 }} >
+                <div ref={containerRef} className={`flex flex-column justify-between relative ${styles.container}`}>
+                <div style={{paddingTop:!isFullscreen?".5rem":undefined}} className={`flex  items-center justify-between ${styles.title_wrapper}`} >
                     <h4 className={styles.video_title}> {videoName} </h4>
                     <button
                         className={styles.close_btn}
@@ -209,28 +216,32 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                             onClose?.()
                         }}
                     >
-                        <MdClose color='#000' size={32} />
+                        <MdClose color='#fff' size={32} />
                     </button>
                 </div>
-                <div ref={containerRef} className={` relative ${styles.container}`}>
-                    <video
-                        ref={videoRef}
-                        className={styles.video}
-                        src={url}
-                        autoPlay={false}
-                        onClick={() => {
-                            if (!isBuffering) {
-                                togglePlay()
-                            }
-                        }}
+                    <div style={{marginBlock:isFullscreen?undefined:".5rem"}} className='flex items-center justify-center '>
+                        <video
+                            ref={videoRef}
+                            className={styles.video}
+                            src={url}
+                            loop
+                            autoPlay={false}
+                            style={{maxHeight:isFullscreen?undefined:"70vh"}}
+                            // playsInline={!isFullscreen}
+                            onClick={() => {
+                                if (!isBuffering) {
+                                    togglePlay()
+                                }
+                            }}
 
-                    />
+                        />
+                    </div>
                     {isBuffering && (
                         <div className={`flex  justify-center ${styles.loader_container}`}>
                             <MicroLoader />
                         </div>
                     )}
-                    <div className={styles.controlsContainer}>
+                    <div style={{paddingBottom:!isFullscreen?".5rem":undefined}} className={styles.controlsContainer}>
                         <div
                             className={styles.seekBar}
                             style={seekBarStyles}
@@ -253,7 +264,7 @@ const VideoPlayer = ({ width = 900, height = 650, url = "", onClose, videoName }
                                 </button>
                                 <div className={styles.flexCenter}>
                                     <button onClick={toggleMute} className={styles.button}>
-                                        {isMuted ? <PiSpeakerSimpleXFill color='#fff' /> : <PiSpeakerSimpleHighFill color='#fff' />}
+                                        {volume === 0 ? <PiSpeakerSimpleXFill color='#fff' /> : <PiSpeakerSimpleHighFill color='#fff' />}
                                     </button>
                                     <input
                                         type="range"
