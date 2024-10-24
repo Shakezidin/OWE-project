@@ -664,20 +664,46 @@ input[type='checkbox']:checked {
     margin: 0 auto;
   }
 
-  .buttonGroupMobile {
+  /* .buttonGroupMobile {
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
     align-items: center;
     white-space: nowrap;
-    /* justify-content: space-between; */
     margin: 0 auto;
     padding-top: 15px;
     padding-bottom: 7.5px;
     width: 135%;
     box-shadow: unset;
+  } */
+  .buttonGroupMobile {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto; 
+    overflow-y: hidden; 
+    align-items: center;
+    white-space: nowrap;
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 7.5px;
+    width: 135%;
+    box-shadow: unset;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent; 
   }
-
+    .buttonGroupMobile::-webkit-scrollbar {
+    height: 6px; 
+  }
+  
+  .buttonGroupMobile::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+  
+  .buttonGroupMobile::-webkit-scrollbar-track {
+    background: transparent; 
+  }
+  
 
   .filterCallToActionMobile {
     display: flex;
