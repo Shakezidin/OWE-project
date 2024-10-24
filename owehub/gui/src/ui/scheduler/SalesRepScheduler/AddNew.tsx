@@ -243,8 +243,10 @@ const AddNew = () => {
       isValid = false;
     }
 
+    console.log('formData', formData);
     setErrors(newErrors);
     return isValid;
+    
   };
 
   return (
@@ -449,6 +451,7 @@ const AddNew = () => {
                               width: '85%',
                               minHeight: '36px',
                               borderRadius: '8px',
+                              fontSize:'12px',
                               '@media only screen and (max-width: 600px)': {
                                 width: '240%',
                               },
@@ -569,13 +572,32 @@ const AddNew = () => {
 
                       <div className={styles.srs_new_create}>
                         <Input
-                          type="text"
+                          type="number"
                           label="House's Square Foot"
                           value={formData.house}
                           placeholder="Enter House's Square Foot"
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (/^\d{0,20}$/.test(value)) {
+                              handleInputChange(e);
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                house: '',
+                              }));
+                            } else if (value.trim() === '') {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                house: 'House Square Foot is required',
+                              }));
+                            } else {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                house: 'House Square Foot cannot exceed 20 digits',
+                              }));
+                            }
+                          }}
                           name="house"
-                          maxLength={30}
+                          maxLength={20}
                           backgroundColor="#F3F3F3"
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
