@@ -11,6 +11,8 @@ import { ICONS } from '../../../../resources/icons/Icons';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../../routes/routes';
 import { MdLocationOn } from 'react-icons/md';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
+
 const Marker = ({
   text,
   lat,
@@ -49,33 +51,39 @@ const Index = ({
     zoom: 11,
   };
   const key = process.env.REACT_APP_GOOGLE_KEY;
+  const isMobile = useMatchMedia('(max-width:450px)');
+
   return (
     <div
       className={styles.customer_wrapper}
       style={{ maxHeight: isOpen ? 700 : 62 }}
     >
       <div className={`${styles.customer_grid}`}>
-        <div className="flex items-center">
+        <div className={`flex items-center`}>
           <div
             className={` flex items-center justify-center ${styles.bg_name} ${styles.avatar_circle}`}
           >
             {name.slice(0, 2) || 'N/A'}
           </div>
 
-          <h3 className={` ml1 ${styles.customer_name}`}> {name || 'N/A'} </h3>
+          <h3 className={`${styles.name_customer}  ml1 ${styles.customer_name}`}> {name || 'N/A'} </h3>
         </div>
 
-        <div className="flex items-start">
-          <div
-            className={` flex items-center justify-center ${styles.bg_green} ${styles.avatar_circle}`}
-          >
-            <CiMail size={14} />
+        {!isMobile ? (
+          <div className="flex items-start">
+            <div
+              className={` flex items-center justify-center ${styles.bg_green} ${styles.avatar_circle}`}
+            >
+              <CiMail size={14} />
+            </div>
+            <div className="ml1">
+              <h3 className={styles.customer_name}>Email</h3>
+              <p className={styles.sm_text}> {email || 'N/A'} </p>
+            </div>
           </div>
-          <div className="ml1">
-            <h3 className={styles.customer_name}>Email</h3>
-            <p className={styles.sm_text}> {email || 'N/A'} </p>
-          </div>
-        </div>
+        ) : (
+          ''
+        )}
 
         <div className="flex items-start">
           <div
@@ -89,6 +97,8 @@ const Index = ({
             <p className={styles.sm_text}> {mobile || 'N/A'} </p>
           </div>
         </div>
+
+
 
         <button
           onClick={() => setIsOpen((prev) => !prev)}
@@ -105,6 +115,27 @@ const Index = ({
       </div>
       <div className="mt2">
         <div className={styles.other_info_grid}>
+          {isMobile ? (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+          marginBottom: '22px'
+            }}  className={`${styles.mail_mobile}flex items-start`}>
+              <div
+                className={` flex items-center justify-center ${styles.bg_green} ${styles.avatar_circle}`}
+              >
+                <CiMail size={14} />
+              </div>
+              <div className="ml1">
+                <h3 className={styles.customer_name}>Email</h3>
+                <p className={styles.sm_text}> {email || 'N/A'} </p>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
+        <div className={styles.other_info_grid}>
           <div className="flex items-start">
             <div
               className={` flex items-center justify-center ${styles.bg_phone} ${styles.avatar_circle}`}
@@ -113,11 +144,15 @@ const Index = ({
             </div>
             <div style={{ marginLeft: 6 }}>
               <h4
-                style={{ fontSize: 14, fontWeight: 600, lineHeight: 'normal' }}
-              >
+style={{
+  fontSize: isMobile ? '12px' : '14px',
+  fontWeight: 600,
+  lineHeight: 'normal',
+}}              >
                 System Size
               </h4>
-              <p className={styles.sm_text} style={{ fontSize: 12 }}>
+              <p className={styles.sm_text} style={{
+  fontSize: isMobile ? '12px' : '14px', }}>
                 {sysSize}
               </p>
             </div>
@@ -131,16 +166,22 @@ const Index = ({
             </div>
             <div className="ml1">
               <h3 className={styles.customer_name}>Roof Type</h3>
-              <p className={styles.sm_text}> {roofType} </p>
+              <p className={styles.sm_text} style={{
+  fontSize: isMobile ? '12px' : '14px' }}> {roofType} </p>
             </div>
           </div>
         </div>
 
         <div
-          className={`flex  justify-between ${withSecondaryBtn ? 'items-end ' : 'mt1'}`}
-        >
+  className={`flex justify-between ${withSecondaryBtn ? 'items-end' : 'mt1'}`}
+  style={{
+    display: isMobile ? 'flex' : undefined,
+    flexDirection: isMobile ? 'column-reverse' : undefined,
+    marginTop: isMobile ? '24px' : ''
+  }}
+>
           <div
-            style={{ flexBasis: 250 }}
+            style={{ flexBasis: isMobile ? '0px' : '250px', }}
             className=" flex justify-between flex-column"
           >
             {!withSecondaryBtn && (
@@ -148,7 +189,7 @@ const Index = ({
                 <h4
                   style={{
                     color: '#AFAFAF',
-                    fontSize: 14,
+                    fontSize: isMobile ? '12px' : '14px',
                     fontWeight: 600,
                     marginBottom: 11,
                   }}
@@ -182,10 +223,15 @@ const Index = ({
             </div>
           </div>
 
-          <div style={mapStyles}>
+          <div
+  style={{
+    ...mapStyles, // Spread the existing mapStyles
+    flexBasis: isMobile ? '0px' : '265px', // Conditionally set flex-basis
+  }}
+>
             <div
               className={styles.map_wrapper}
-              style={{ height: withSecondaryBtn ? 101 : 170 }}
+              style={{ height: withSecondaryBtn ? 101 : 170, }}
             >
               <GoogleMapReact
                 bootstrapURLKeys={{

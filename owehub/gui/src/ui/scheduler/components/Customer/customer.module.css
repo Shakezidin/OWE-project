@@ -45,6 +45,7 @@
 .sm_text {
   color: #afafaf;
   font-size: 10px;
+  font-weight: 500;
 }
 
 .accordian_btn {
@@ -117,4 +118,57 @@
   background-color: #dde9ff;
   transition: all 500ms;
   color: #4372e9;
+}
+
+
+@media only screen and (max-width: 450px) {
+  .customer_wrapper .customer_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    align-items: center;
+  }
+
+  
+  .other_info_grid{
+    display: flex;
+    flex-direction: row;
+    gap: 44px;
+  }
+
+  .mail_mobile{
+    display: flex !important;
+    flex-direction: row !important;
+  }
+
+  .customer_name{
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .name_customer{
+    font-size: 14px !important;
+
+  }
+  .primary_btn{
+    margin-top: 24px;
+
+  }
+
+  .appointment_status{
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .map_location {
+    font-size: 12px;
+    font-weight: 500;
+  }
+/* 
+  .wrapper_map{
+    display: flex;
+    flex-direction: column-reverse;
+
+  } */
+
+
 }
