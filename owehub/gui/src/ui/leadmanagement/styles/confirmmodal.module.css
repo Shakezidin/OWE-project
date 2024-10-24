@@ -653,11 +653,10 @@
     color: #20963a;
     margin-left: 5px;
   }
-
   .DetailsMcontainer {
     display: flex;
-    flex-direction: row;
-    padding: 0 12px 3px 12px;
+    /* flex-direction: row; */
+    padding: 20px 12px 3px 12px !important; 
     width: 100%;
     height: auto;
     border: 1px solid #377cf6;
@@ -665,8 +664,9 @@
     border-top-right-radius: 8px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    background-color: #eef5ff;
+    background-color: #eef5ff; 
   }
+  
 
   .Edit_DetailsMcontainer {
     display: flex;
