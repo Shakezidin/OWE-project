@@ -146,7 +146,7 @@
     color: #8a8a8a;
 }
 
-button{
+.main_container button{
     border-radius: 6px;
     padding: 6px 12px;
     border: none;
