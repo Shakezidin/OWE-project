@@ -1885,11 +1885,11 @@ const LeadManagementDashboard = () => {
                       {exporting ? (
                         <MdDownloading
                           className="downloading-animation"
-                          size={20}
+                          size={26}
                           color="white"
                         />
                       ) : (
-                        <LuImport size={20} color="white" />
+                        <LuImport  color="white" />
                       )}
                     </div>
 
