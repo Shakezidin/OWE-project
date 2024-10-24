@@ -13,7 +13,7 @@ import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import CreateProposal from './CreateProposal'; // Import the new component
 import axios from 'axios';
 import {
@@ -65,7 +65,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [selectedTime, setSelectedTime] = useState('');
   const [load, setLoad] = useState(false);
   const [leadData, setLeadData] = useState<LeadData | null>(null);
-  const [showCreateProposal, setShowCreateProposal] = useState(false);
+
   const [loadingProposal, setLoadingProposal] = useState(false);
   const [error, setError] = useState('');
   const [proposalLink, setProposalLink] = useState<string | null>(null);
@@ -89,20 +89,65 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  console.log(action, 'do something new');
+  console.log(selectedDate, selectedTime, 'do something new');
 
+  // const handleSendAppointment = async () => {
+  //   setLoad(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'update_lead_status',
+  //       {
+  //         leads_id: leadId,
+  //         status_id: 1,
+  //         appointment_date: selectedDate
+  //           ? format(selectedDate, 'dd-MM-yyyy')
+  //           : format(new Date(), 'dd-MM-yyyy'),
+  //         appointment_time: selectedTime ? selectedTime : '',
+  //       },
+  //       true
+  //     );
+
+  //     if (response.status === 200) {
+  //       toast.success('Appointment Sent Successfully');
+  //       setReschedule(false);
+  //       setRefresh((val) => val + 1)
+  //       setVisibleDiv(1);
+  //       setSelectedTime('');
+  //       setSelectedDate(null);
+  //     } else if (response.status >= 201) {
+  //       toast.warn(response.message);
+  //     }
+  //     setLoad(false);
+  //   } catch (error) {
+  //     setLoad(false);
+  //     console.error('Error submitting form:', error);
+  //   }
+  // };
+
+  const [success, setSuccess] = useState('');
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
+      const date = selectedDate ? new Date(selectedDate) : new Date();
+      const time = selectedTime ? new Date(selectedTime) : new Date();
+      console.log(date, "date show");
+      console.log(time, "time show");
+
+      // Set the time components from the time object to the date object
+      date.setHours(time.getHours());
+      date.setMinutes(time.getMinutes());
+      date.setSeconds(time.getSeconds());
+
+      // Format the date and time in the desired format
+      const formattedDateTime = date.toISOString();
+      console.log(formattedDateTime, "wht are you bsdvbvs");
+
       const response = await postCaller(
         'update_lead_status',
         {
           leads_id: leadId,
           status_id: 1,
-          appointment_date: selectedDate
-            ? format(selectedDate, 'dd-MM-yyyy')
-            : format(new Date(), 'dd-MM-yyyy'),
-          appointment_time: selectedTime ? selectedTime : '',
+          "appointment_date_time": formattedDateTime
         },
         true
       );
@@ -112,6 +157,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         setReschedule(false);
         setRefresh((val) => val + 1)
         setVisibleDiv(1);
+        setSelectedTime('');
+        setSelectedDate(null);
+        setSuccess(response.data?.appointment_date_time)
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -414,6 +462,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   }, [reschedule, action, leadData]);
 
+  console.log(success, "succccccccccccc")
+
 
   return (
     <div>
@@ -605,8 +655,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     Appointment sent successfully{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
-                    {selectedTime}
+                    {success ? (
+                      <>
+                        {format(parseISO(success), 'dd MMM, yyyy')}
+                        {' '}
+                        {format(parseISO(success), 'hh:mm a')}
+                      </>
+                    ) : (
+                      ''
+                    )}
                   </span>
                   {/* {leadData?.appointment_date ? (
                     <span className={classes.ApptSentDate}>

@@ -1,182 +1,180 @@
 .dashTabTop {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    min-height: 100px;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  min-height: 100px;
 }
 
 .FixedColumn {
-    position: sticky;
-    right: 0;
-    background-color: var(--white-color);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+  position: sticky;
+  right: 0;
+  background-color: var(--white-color);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
-
-
-
+.TableContainer1 table thead tr {
+  z-index: 102;
+}
 
 .TableContainer1 {
-    position: relative;
-    height: 60vh;
-    background: var(--white-color);
-    width: 100%;
-    z-index: 9;
-    overflow-y: auto;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-
+  position: relative;
+  height: 60vh;
+  background: var(--white-color);
+  width: 100%;
+  z-index: 9;
+  overflow-y: auto;
+  overflow-x: auto;
+  scroll-behavior: smooth;
 }
 
 .TableContainer1::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  width: 10px;
+  height: 10px;
 }
 
 .TableContainer1::-webkit-scrollbar {
-    display: initial;
+  display: initial;
 }
 
 .TableContainer1::-webkit-scrollbar-thumb {
-    background-color: rgb(173, 173, 173);
-    border-radius: 30px;
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
 }
 
 .TableContainer1::-webkit-scrollbar-button {
-    display: initial;
+  display: initial;
 }
 
 .TableContainer1::-webkit-scrollbar {
-    -ms-overflow-style: initial;
-    scrollbar-width: thin;
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
 }
 
 .TableContainer1::-webkit-scrollbar-corner {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .TableContainer2 {
-    position: relative;
-    height: 60vh;
-    background: var(--white-color);
-    width: 25%;
+  position: relative;
+  height: 60vh;
+  background: var(--white-color);
+  width: 25%;
 }
 
 .name {
-    color: #101828;
-    font-weight: 600;
-    font-size: 14px;
+  color: #101828;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .ids {
-    font-size: 12px;
-    font-weight: 500;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .info {
-    font-size: 12px;
-    font-weight: 400;
-    color: #3E3E3E;
-    width: 220px;
-    word-wrap: break-word;
-    white-space: normal;
+  font-size: 12px;
+  font-weight: 400;
+  color: #3e3e3e;
+  width: 220px;
+  word-wrap: break-word;
+  white-space: normal;
 }
 .TableContainer1 table tbody tr:hover {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }
 
 .TableContainer1 table tbody tr td {
-    border-right: 1px solid #F5F5F5;
+  border-right: 1px solid #f5f5f5;
 }
 
 .appointment_status {
-    padding: 2px 6px;
-    font-size: 10px;
-    font-weight: 500;
-    color: #fff;
-    display: flex;
-    width: 149px;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  width: 149px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
 }
 
 .progressBar {
-    width: 100%;
-    height: 10px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .progress {
-    height: 100%;
-    background-color: #377CF6;
+  height: 100%;
+  background-color: #377cf6;
 }
 
 .infoIcon {
-    padding: 5px 5px;
-    border-radius: 50%;
-    border: 1px solid #377CF6;
-    color: #377CF6;
-    display: flex;
-    font-size: 19px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  padding: 5px 5px;
+  border-radius: 50%;
+  border: 1px solid #377cf6;
+  color: #377cf6;
+  display: flex;
+  font-size: 19px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .infoIcon:hover {
-    background-color: #ddebff;
-    transform: scale(1.06);
+  background-color: #ddebff;
+  transform: scale(1.06);
 }
 
 .prop_send {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    color: #377CF6;
-    font-weight: 500;
-    text-decoration: underline;
-    cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #377cf6;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .create_proposal {
-    background-color: #377CF6;
-    color: #fff;
-    font-weight: 500;
-    font-size: 12px;
-    border-radius: 6px;
-    padding: 6px 12px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-left: 10px
+  background-color: #377cf6;
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 10px;
 }
 
 .create_proposal:hover {
-    background-color: #043891;
-    transform: scale(1.06);
+  background-color: #043891;
+  transform: scale(1.06);
 }
 
 .slidebutton {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    transition: all 0.3s ease;
-    padding-left: 10px;
-
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+  padding-left: 10px;
 }
 
 .slidebutton:hover {
-    color: #377CF6;
-    text-decoration: underline;
+  color: #377cf6;
+  text-decoration: underline;
 }
 
 /* .slidebutton::after{
@@ -185,10 +183,60 @@
 } */
 
 .progress_status span {
-    width: 119px;
-    word-wrap: break-word;
-    white-space: normal;
+  width: 119px;
+  word-wrap: break-word;
+  white-space: normal;
 }
-.progress_status{
-    text-align: center;
+.progress_status {
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .FixedColumnMobile {
+    position: sticky;
+    right: 0;
+    background-color: var(--white-color);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    display: flex;
+    width: 130px;
+    flex-direction: column;
+    padding: 0 !important;
+    border-left: 1px solid #d5d5d7;
+  }
+  .RowMobile {
+    display: flex;
+    flex-direction: row;
+    right: 0;
+  }
+  .RowMobileTwo {
+    padding-top: 3px;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: row;
+    right: 0;
+    gap: 8px;
+    padding-bottom: 7px;
+    padding-left: 5px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .create_proposal {
+    background-color: #377cf6;
+    color: #fff;
+    font-weight: 500;
+    font-size: 12px;
+    border-radius: 6px;
+    padding: 6px 12px;
+    min-width: 91px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+  }
+  
 }

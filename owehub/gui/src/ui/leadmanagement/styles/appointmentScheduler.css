@@ -1,7 +1,7 @@
 .appointmentSchedulerContainer {
   background-color: white;
   border-radius: 10px;
-  padding: 20px;
+  padding: 8px;
   max-width: 400px;
   margin: 0 auto;
   font-family: 'Arial', sans-serif;
@@ -166,4 +166,45 @@
   height: 28.64px;
   border-radius: 7.16px;
   border: 0.89px solid #d1d5db;
+}
+
+.react-datepicker--time-only .react-datepicker__time-container {
+  border-left: 0;
+  border: 1px solid #aeaeae;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+  width: 85px;
+  overflow-x: hidden;
+  margin: 0 auto;
+  text-align: center;
+  border-bottom-right-radius: 0.3rem;
+  scroll-behavior: smooth;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ::-webkit-scrollbar {
+  display: initial;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ::-webkit-scrollbar-corner {
+  background-color: transparent;
 }

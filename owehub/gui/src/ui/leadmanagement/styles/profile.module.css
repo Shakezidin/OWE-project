@@ -9,6 +9,7 @@
   background-color: #fff;
   max-width: 1012px;
   min-height: 572px;
+  min-width: 612px;
 }
 
 .Column1Details {
@@ -122,4 +123,56 @@ tr {
 
 .crossIconImg:hover {
   transform: scale(1.09);
+}
+
+
+
+
+
+@media screen and (max-width: 767px) {
+  .DetailsMcontainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .customer_wrapper_list {
+    height: 635px;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    min-width: 290px;
+  }
+
+  .customer_wrapper_list::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .customer_wrapper_list::-webkit-scrollbar {
+    display: initial;
+  }
+
+  .customer_wrapper_list::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+
+  .customer_wrapper_list::-webkit-scrollbar-button {
+    display: initial;
+  }
+
+  .customer_wrapper_list::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+
+  .customer_wrapper_list::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  .leftAlign {
+    line-height: 14px;
+  }
+  .customer_wrapper_list_mob_inner{
+    padding: 0 8px;
+  }
 }
