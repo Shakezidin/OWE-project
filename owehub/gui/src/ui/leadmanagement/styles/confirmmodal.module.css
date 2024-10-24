@@ -52,7 +52,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 48px;
+  margin-top: 18px;
   gap: 11px;
 }
 
@@ -152,7 +152,7 @@
   background-color: #fff;
   max-width: 593px;
   height: auto;
-  padding-bottom: 27px;
+  padding-bottom: 14px;
 }
 
 .customer_wrapper_list_Edited {
@@ -183,7 +183,7 @@
   flex-direction: column;
   width: auto;
   height: auto;
-  padding: 16px 12px 3px 12px;
+  padding: 4px 12px 3px 12px;
   border: 1px solid #377cf6;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -215,7 +215,7 @@
   display: flex;
   flex-direction: column;
   flex-basis: auto;
-  padding: 1px 14px 14px 14px;
+  padding: 1px 14px 1px 14px;
   margin: 0px 0px 5px 12px;
   font-size: 14px;
   margin-bottom: 1.5%;
@@ -420,7 +420,7 @@
   display: flex;
   flex-direction: column;
   flex-basis: auto;
-  padding: 1px 14px 14px 14px;
+  padding: 1px 14px 1px 14px;
   margin: 0px 0px 5px 12px;
   font-size: 14px;
 }
@@ -435,7 +435,7 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   background-color: #eef5ff;
-  margin-top: -317px;
+  margin-top: -302px;
 } 
 
 .zoomed-out .Edit_DetailsMcontainer {
@@ -468,7 +468,7 @@
 
 .crossBtn {
   cursor: pointer;
-  margin-top: -8px;
+  /* margin-top: -8px; */
   width: 19.5px;
   height: 19.5px;
   transition: all 0.3s ease;
@@ -602,7 +602,7 @@
   .pers_det_top {
     display: flex;
     flex-direction: column;
-    /* gap: 10px; */
+    max-width: 264px;
   }
 
   .Column1Details {
@@ -622,6 +622,7 @@
   }
 
   .main_name {
+    gap: 6px;
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 3.7%;
@@ -683,7 +684,7 @@
   .Column1DetailsEdited_Mode {
     display: flex;
     flex-direction: column;
-    padding: 1px 14px 14px 14px;
+    padding: 1px 14px 1px 14px;
     margin: -12px 0px 5px 12px;
   }
 

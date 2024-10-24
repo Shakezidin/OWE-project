@@ -12,9 +12,15 @@ import ConfirmaModel from '../../Modals/ConfirmModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
+<<<<<<< HEAD
 import useMatchMedia from '../../../../hooks/useMatchMedia';
+=======
+import { toZonedTime } from 'date-fns-tz'
+
+type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
+>>>>>>> 0715aed26383d11b8e7d5eea58b732641e350ce3
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -177,7 +183,24 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     }
   };
 
-  console.log(selectedType, "selectedType shows")
+  const statusStyles = {
+    "In Progress": {
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
+    "Send Docs": {
+      backgroundColor: "#EC9311",
+      color: "#fff"
+    },
+    "CREATED": {
+      backgroundColor: "#B459FC",
+      color: "#fff"
+    },
+    "Clear selection": {
+      backgroundColor: "#808080",
+      color: "#fff"
+    }
+  };
 
 
   return (
@@ -327,7 +350,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               {lead.appointment_status_label}
                             </div>
                             <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
-                              {lead.appointment_status_date ? format(lead.appointment_status_date, 'dd-MM-yyyy') : ""}
+                              {lead.appointment_status_date ? format(toZonedTime(parseISO(lead.appointment_status_date), 'UTC'), 'dd-MM-yyyy') : ""}
                             </div>
                           </>
                         ) : (
@@ -344,8 +367,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               {lead.won_lost_label}
                             </div>
                             {lead.won_lost_date && (
-                              <div style={{ marginLeft: '14px' }} className={styles.info}>
-                                {lead.won_lost_date ? format(lead.won_lost_date, 'dd-MM-yyyy') : ""}
+                              <div style={{ marginLeft: '29px' }} className={styles.info}>
+                                {lead.won_lost_date ? format(toZonedTime(parseISO(lead.won_lost_date), 'UTC'), 'dd-MM-yyyy') : ""}
+
                               </div>
                             )}
                           </>
@@ -357,22 +381,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
                       <td>
                         <div
-                          style={{
-                            backgroundColor: lead.proposal_status === "In Progress"
-                              ? "#21BC27"
-                              : lead.proposal_status === "Remote Assesment Required"
-                                ? "#EC9311"
-                                : lead.proposal_status === "CREATED"
-                                  ? "#B459FC"
-                                  : "inherit",
-                            color: lead.proposal_status === "In Progress"
-                              ? "#fff"
-                              : lead.proposal_status === "Remote Assesment Required"
-                                ? "#fff"
-                                : lead.proposal_status === "CREATED"
-                                  ? "#fff"
-                                  : "black",
-                          }}
+                        style={lead.proposal_status in statusStyles 
+                          ? statusStyles[lead.proposal_status as ProposalStatus] 
+                          : { backgroundColor: "inherit", color: "black" }}
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
