@@ -27,6 +27,7 @@ import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
 import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 
 interface Option {
   value: string;
@@ -62,6 +63,7 @@ export const DashboardPage: React.FC = () => {
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [tileData, setTileData] = useState({})
+  const [isExportingData, setIsExporting] = useState(false);
   const [loading, setLoading] = useState(false)
   const [data,setData] = useState<any>([]);
   const [count, setTotalCount] = useState<number>(0)
@@ -228,7 +230,101 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
-  console.log(data, 'dataaaaaaaaaaaaaa')
+  const handleExportOpen = () => {
+    exportCsv();
+  }
+
+
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_dealerpaycommissions', {
+    page_number: 1,
+    page_size: count,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Unique Id',
+      'Home Owner',
+      'Current Status',
+      'Dealer Code',
+      'Sys Size',
+      'Contract $$',
+      'Other Adders',
+      'Rep 1',
+      'Rep 2',
+      'Setter',
+      'ST',
+      'Contract Date',
+      'Loan Fee',
+      'NET EPC',
+      'Credit',
+      'Draw Amt',
+      'RL',
+      'Type',
+      'Toady',
+      'Amount',
+      'EPC',
+      'Amount Paid',
+      'Balance',
+      'Help'
+    ];
+  
+   
+     
+    const csvData = exportData?.data.DealerPayComm?.map?.((item: any) => [
+      item.unique_id,
+      item.home_owner,
+      item.current_status,
+      item.dealer_code,
+      item.sys_size,
+      item.contract,
+      item.address,
+      item.rep1,
+      item.rep2,
+      item.setter,
+      item.st,
+      item.contract_date,
+      item.loan_fee,
+      item.net_epc,
+      item.credit,
+      item.draw_amt,
+      item.rl,
+      item.type,
+      item.today,
+      item.amount,
+      item.epc, 
+      item.amt_paid,
+      item.balance,
+
+    ]);
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'dealerpay.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
+ 
  
   return (
     <>
@@ -346,7 +442,7 @@ export const DashboardPage: React.FC = () => {
                   style={{ height: '36px', padding: '8px 12px' }}
                 >
                   <FaUpload size={12} className="mr-1 dealer-exp-svg" />
-                  <span className='dealer-export-mob'>{' Export '}</span>
+                  <span className='dealer-export-mob' onClick={handleExportOpen} >{' Export '}</span>
                 </button>
               </div>
             </div>
