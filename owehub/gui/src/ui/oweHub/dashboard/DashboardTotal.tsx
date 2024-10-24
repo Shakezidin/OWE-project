@@ -85,19 +85,19 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
       <div className="">
         <div className="commission-section-dash" ref={ref}>
           {loading ? (
-            <tr>
-              <td colSpan={8}>
+             
                 <div
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    margin:'auto'
+                    
                   }}
                 >
                   <MicroLoader />
                 </div>
-              </td>
-            </tr>
+              
           ) : (
             <>
               {data1.length > 0
