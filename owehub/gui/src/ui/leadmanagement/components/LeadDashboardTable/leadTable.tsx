@@ -512,7 +512,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                           ) :
-                            (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
+                            ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                               <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                             ) : (
                               <>
@@ -603,10 +603,10 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       </td> : <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
                         {/* FIRST ROW FIRST COLUMNS STARTED*/}
                         <div onClick={() => (setLeadId(lead.leads_id))}>
-                          {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
+                          {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                             <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                           ) :
-                            (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
+                            ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                               <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                             ) : (
                               <DropDownLeadTable
