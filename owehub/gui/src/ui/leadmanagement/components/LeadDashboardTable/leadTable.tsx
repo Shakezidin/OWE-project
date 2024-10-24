@@ -478,73 +478,63 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
                       <td>{lead.finance_type ? lead.finance_type : "_____"}</td>
                       <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
-                      {selectedLeads.length === 0 &&
-
-                        <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
-                          <div onClick={() => {
+                      {selectedLeads.length === 0 && isMobile ? <td className={styles.FixedColumnMobile}  style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
+                        <div className={styles.RowMobile} onClick={() => {
                             setLeadId(lead.leads_id); // Set lead ID
                             setLeadPropsalLink(lead.proposal_link); // Set proposal link
-                          }}> 
+                          }}>
                           {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
-                              <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
+                            <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
+                          ) :
+                            (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
+                              <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                             ) : (
-                              lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "") ? (
-                                <button className={styles.create_proposal} onClick={() => onCreateProposal(lead.leads_id)}>
-                                  {downloadingLeadId === lead.leads_id ? (
-                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                      <MicroLoader />
-                                    </div>
-                                  ) : "Create Proposal"}
-                                </button>
-                              ) : (
-                                <>
-                                  {downloadingLeadId === lead.leads_id ? (
-                                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                   <MicroLoader />
-                                   <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
-                                 </div>
-                                  ) : (
-                                    <DropDownLeadTable
-                                      selectedType={selectedType}
-                                      onSelectType={(type: string) => {
-                                        setSelectedType(type);
-                                        setActiveSection(activeSection);
-                                        // if (type === 'download') {
-                                        //   downloadProposalWithSSE(lead.leads_id);  // Trigger download with loader
-                                        // }
-                                      }}
-                                      cb={() => {
-                                        setSelected(index);
-                                      }}
-                                      options={
-                                        lead?.appointment_status_label === "Appointment Sent"
-                                          ? [
-                                            { label: 'Reschedule Appointment', value: 'app_sched' },
-                                                                                        { label: 'Create Proposal', value: 'new_proposal' },
-                                          ]
-                                          : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
-                                            ? [
-                                              { label: 'View Proposal', value: 'viewProposal' },
-                                              { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                              { label: 'Download Proposal', value: 'download' },
-                                              { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        ]: lead  && lead.proposal_id !== ''
-                                              ? [
-                                                { label: 'View Proposal', value: 'viewProposal' },
+                              <>
+                                {downloadingLeadId === lead.leads_id ? (
+                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                 <MicroLoader />
+                                 <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
+                               </div>
+                            ) : (
+                              <DropDownLeadTable
+                                selectedType={selectedType}
+                                onSelectType={(type: string) => {
+                                  setSelectedType(type);
+                                  setActiveSection(activeSection);
+                                }}
+                                cb={() => {
+                                  setSelected(index);
+                                }}
+                                options={
+                                  lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
+                                    ? [
+                                      { label: 'Reschedule Appointment', value: 'app_sched' },
+                                      { label: 'Create Proposal', value: 'new_proposal' },
+                                    ]
+                                    : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                      ? [
+                                        { label: 'View Proposal', value: 'viewProposal' },
+                                        { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                        { label: 'Download Proposal', value: 'download' },
+                                        { label: 'Reschedule Appointment', value: 'app_sched' },
+                                      ] : lead && lead.proposal_id !== ''
+                                        ? [
+                                          { label: 'View Proposal', value: 'viewProposal' },
                                           { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                              ]
-                                              : [
-                                                { label: 'Create Proposal', value: 'new_proposal' },
-                                                { label: 'Schedule Appointment', value: 'app_sched' },
-                                              ]
-                                      }
-                                    />
+                                        ]
+                                        : [
+                                          { label: 'Create Proposal', value: 'new_proposal' },
+                                          { label: 'Schedule Appointment', value: 'app_sched' },
+                                        ]
+                                }
+                              />
                                   )}
                                 </>
                               )
-                            )}
-                          </div>
-                          <div onClick={() => (setLeadId(lead.leads_id))}>
+                            }
+                        </div>
+                        <div className={styles.RowMobileTwo}>
+                          <div className={styles.RowMobileColumns} onClick={() => (setLeadId(lead.leads_id))}>
                             <ChangeStatus
                               selectedType={selectedType}
                               onSelectType={(type: string) => {
@@ -583,8 +573,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             place="bottom"
                             content="Lead Info"
                           />
-                      </td>
-                      } : <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
+                        </div>
+                      </td> : <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
                         {/* FIRST ROW FIRST COLUMNS STARTED*/}
                         <div onClick={() => (setLeadId(lead.leads_id))}>
                           {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
