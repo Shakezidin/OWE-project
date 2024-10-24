@@ -52,7 +52,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 48px;
+  margin-top: 18px;
   gap: 11px;
 }
 
@@ -152,7 +152,7 @@
   background-color: #fff;
   max-width: 593px;
   height: auto;
-  padding-bottom: 27px;
+  padding-bottom: 14px;
 }
 
 .customer_wrapper_list_Edited {
@@ -183,7 +183,7 @@
   flex-direction: column;
   width: auto;
   height: auto;
-  padding: 16px 12px 3px 12px;
+  padding: 4px 12px 3px 12px;
   border: 1px solid #377cf6;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -215,7 +215,7 @@
   display: flex;
   flex-direction: column;
   flex-basis: auto;
-  padding: 1px 14px 14px 14px;
+  padding: 1px 14px 1px 14px;
   margin: 0px 0px 5px 12px;
   font-size: 14px;
   margin-bottom: 1.5%;
@@ -371,7 +371,8 @@
   width: 80%;
   border-radius: 8px;
   height: 40px;
-  text-align: center;
+  text-align: left;
+  padding-left: 6px;
 }
 
 .dropdownModal {
@@ -399,10 +400,12 @@
   font-size: 12px;
   font-weight: 500;
 }
+
 .notEditable {
   display: flex;
   justify-content: space-between;
 }
+
 .whydeniedDiv {
   display: flex;
   align-items: center;
@@ -417,12 +420,12 @@
   display: flex;
   flex-direction: column;
   flex-basis: auto;
-  padding: 1px 14px 14px 14px;
+  padding: 1px 14px 1px 14px;
   margin: 0px 0px 5px 12px;
   font-size: 14px;
 }
 
-.Edit_DetailsMcontainer {
+ .Edit_DetailsMcontainer {
   top: 0;
   display: flex;
   flex-direction: column;
@@ -432,14 +435,18 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   background-color: #eef5ff;
-  margin-top: -313px;
+  margin-top: -302px;
+} 
+
+.zoomed-out .Edit_DetailsMcontainer {
+  margin-top: 0;
 }
 
 .customer_wrapper_list_edit {
   flex-basis: calc(100%);
   border-radius: 8px;
   max-width: 593px;
-  height: auto;
+  min-height: auto;
 }
 
 .edit_closeicon {
@@ -447,7 +454,9 @@
   flex-direction: row;
   justify-content: flex-end;
   cursor: pointer;
+  margin-bottom: -10px;
 }
+
 .editPenStyle {
   padding-top: 1px;
 }
@@ -459,7 +468,7 @@
 
 .crossBtn {
   cursor: pointer;
-  margin-top: -8px;
+  /* margin-bottom: -11px; */
   width: 19.5px;
   height: 19.5px;
   transition: all 0.3s ease;
@@ -500,9 +509,11 @@
 .editmodal_transparent_model.close {
   opacity: 0;
 }
+
 .crossIconImg {
   display: none;
 }
+
 .edit_modal_openMediaScreen {
   display: none;
 }
@@ -534,6 +545,7 @@
   .crossBtn {
     display: none;
   }
+
   /* .edit_modal_open {
     display: none;
   } */
@@ -568,6 +580,7 @@
     height: 20px;
     width: 20px;
   }
+
   .crossIconImg:hover {
     display: block;
     transform: scale(1.06);
@@ -576,6 +589,7 @@
   .verifyLetter {
     font-size: 10px;
   }
+
   .customer_wrapper_list {
     flex-basis: 100%;
     margin-top: 20px;
@@ -584,10 +598,11 @@
     max-width: 356px;
     height: auto;
   }
+
   .pers_det_top {
     display: flex;
     flex-direction: column;
-    /* gap: 10px; */
+    max-width: 264px;
   }
 
   .Column1Details {
@@ -599,14 +614,15 @@
     display: flex;
     flex-direction: column;
   }
+
   .edit_modal_button {
     margin-top: -25px;
     margin-bottom: 0;
     margin-right: -80px;
   }
-  
 
   .main_name {
+    gap: 6px;
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 3.7%;
@@ -614,6 +630,7 @@
     justify-content: space-between;
     align-items: center;
   }
+
   .mobileNumber {
     color: #4e4e4e;
     font-weight: 400;
@@ -626,21 +643,20 @@
     margin-top: -15px;
     font-size: 14px;
   }
+
   .emailStyle {
     color: #4e4e4e;
     font-weight: 400;
   }
+
   .verified {
     color: #20963a;
     margin-left: 5px;
   }
-  
-
- 
   .DetailsMcontainer {
     display: flex;
-    flex-direction: row;
-    padding: 0 12px 3px 12px;
+    /* flex-direction: row; */
+    padding: 20px 12px 3px 12px !important; 
     width: 100%;
     height: auto;
     border: 1px solid #377cf6;
@@ -648,8 +664,9 @@
     border-top-right-radius: 8px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    background-color: #eef5ff;
+    background-color: #eef5ff; 
   }
+  
 
   .Edit_DetailsMcontainer {
     display: flex;
@@ -663,12 +680,11 @@
     background-color: #eef5ff;
     /* margin-left: 16.4px; */
   }
-  
 
   .Column1DetailsEdited_Mode {
     display: flex;
     flex-direction: column;
-    padding: 1px 14px 14px 14px;
+    padding: 1px 14px 1px 14px;
     margin: -12px 0px 5px 12px;
   }
 
@@ -680,14 +696,13 @@
   }
 }
 
-
 @media screen and (max-width: 767px) {
   .survey_button button {
     width: 270px;
     height: 38px;
   }
+
   .customer_wrapper_list_edit {
     margin-top: 56px;
   }
-
 }

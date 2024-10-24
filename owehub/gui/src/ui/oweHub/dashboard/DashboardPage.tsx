@@ -11,6 +11,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { Calendar } from 'react-date-range';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { configPostCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import moment from 'moment';
 import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
 import FilterHoc from '../../components/FilterModal/FilterHoc';
@@ -25,6 +26,7 @@ import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
+import { toast } from 'react-toastify';
 
 interface Option {
   value: string;
@@ -34,9 +36,9 @@ interface Option {
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
+  
   const dispatch = useAppDispatch();
-
+ 
   const handleSelect = (ranges: Date) => {
     setSelectionRange(ranges);
   };
@@ -44,6 +46,7 @@ export const DashboardPage: React.FC = () => {
   const handleResetDates = () => {
     setSelectionRange(new Date());
   };
+ 
 
   const itemsPerPage = 25;
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,8 +61,10 @@ export const DashboardPage: React.FC = () => {
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
-
-
+  const [tileData, setTileData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [data,setData] = useState<any>([]);
+  const [count, setTotalCount] = useState<number>(0)
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[comissionValueData.length - 1].value
   );
@@ -85,35 +90,63 @@ export const DashboardPage: React.FC = () => {
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOptionsFetched) {
-      dispatch(
-        getDealerPay({
+    (async () => {
+      setLoading(true);  // Start loading before the request
+  
+      try {
+        const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          pay_roll_start_date: moment(appliedDate).format(
-            'YYYY-MM-DD HH:mm:ss'
-          ),
-          pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
-          use_cutoff: 'NO',
-          dealer_name: dealer.value,
-          sort_by: 'unique_id',
-          commission_model: selectedOption2,
+          partner_name: selectedDealer,
           filters,
-          preffered_type: prefferedType,
-        })
-      );
-    }
-  }, [
-    currentPage,
-    selectedOption2,
-    appliedDate,
-    filters,
-    dealer,
-    isOptionsFetched,
-    prefferedType,
-  ]);
-
+        });
   
+        if (resp.status > 201) {
+          toast.error(resp.message);  // Display error toast
+          setData([]); 
+          setTileData(''); // Reset data state to indicate failure
+          setLoading(false);  // Stop loading
+          return;
+        }
+  
+        // Success: Set data and other states
+        setData(resp.data.DealerPayComm);
+        setTotalCount(resp.dbRecCount);
+        setTileData(resp.data);
+  
+      } catch (error) {
+        console.error(error);  // Log the error
+        setData([]);  // Reset data on error
+        toast.error('An unexpected error occurred');  // Show a generic error message
+  
+      } finally {
+        setLoading(false);  // Ensure loading stops in both success and error cases
+      }
+    })();
+  }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType]);
+  
+
+  // useEffect(() => {
+   
+  //     dispatch(
+  //       getDealerPay({
+  //         page_number: currentPage,
+  //         page_size: itemsPerPage,
+  //         partner_name: selectedDealer,
+  //         filters
+  //       })
+  //     );
+    
+  // }, [
+  //   currentPage,
+  //   selectedOption2,
+  //   appliedDate,
+  //   filters,
+  //   dealer,
+  //   prefferedType,
+  // ]);
+
+
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
       value,
@@ -135,6 +168,9 @@ export const DashboardPage: React.FC = () => {
     setIsFetched(true);
   };
 
+
+  console.log(selectionRange, 'selectrange');
+  
   const handleEscapeKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && showDatePicker) {
       setShowDatePicker(false);
@@ -192,6 +228,8 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
+  console.log(data, 'dataaaaaaaaaaaaaa')
+ 
   return (
     <>
       <div className="Dashboard-section-container">
@@ -314,7 +352,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="">
-            <DashboardTotal setPrefferedType={setPrefferedType} />
+            <DashboardTotal setPrefferedType={setPrefferedType} tileData={tileData} loading={loading} />
             {/* <DonutChart /> */}
           </div>
         </div>
@@ -334,6 +372,9 @@ export const DashboardPage: React.FC = () => {
             <DashBoardTable
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
+              data={data}
+              count={count}
+              loading={loading}
             />
           )}
           {active === 1 && <DashBoardChart />}

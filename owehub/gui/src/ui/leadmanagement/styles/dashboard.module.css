@@ -40,25 +40,25 @@
   justify-content: space-between;
   width: 100%;
 }
-.customFont, .customLeft{
+.customFont,
+.customLeft {
   font-weight: 600;
-
 }
- .vertical2 {
+.vertical2 {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
   max-width: auto !important;
-  
-}.vertical1 {
+}
+.vertical1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-right:1.4px solid #ccc ;
+  border-right: 1.4px solid #ccc;
   padding: 10px;
+  padding-left: 0px !important;
   max-width: auto !important;
-  
 }
 
 @media (min-width: 0px) {
@@ -66,7 +66,7 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
   }
-  
+
   .horizontal {
     grid-column: 1 / span 2;
   }
@@ -77,10 +77,9 @@
     margin-right: 0px;
     font-weight: 600;
     padding-right: 119px;
-    margin-right: 0px;}
-  
+    margin-right: 0px;
+  }
 }
-
 
 .mainHeader {
   display: grid;
@@ -88,7 +87,6 @@
   height: 20px;
   margin-right: 0;
   padding-right: 0;
-
 }
 
 .mainHeader > div {
@@ -294,11 +292,10 @@ table tbody tr:hover {
 }
 .FirstColHead {
   display: flex;
- 
-  justify-content: space-between; 
-  align-items: center; 
+
+  justify-content: space-between;
+  align-items: center;
   width: 35%;
-  
 }
 
 /* .customLeft {
@@ -310,9 +307,9 @@ table tbody tr:hover {
   flex: 1; 
   text-align: right; 
 } */
-.SecondColHead{
+.SecondColHead {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   width: 55%;
 }
@@ -320,31 +317,30 @@ table tbody tr:hover {
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
-  border-radius: 8px; 
+  border-radius: 8px;
   padding: 5px;
   height: 36px;
   width: 369px !important;
-  margin-right: 20px;   
+  margin-right: 20px;
 }
 
 .searchIcon {
-  margin-left: 5px; 
+  margin-left: 5px;
   margin-right: 5px;
   display: flex;
   align-items: center;
   color: #000000;
-  height: 12px !important; 
+  height: 12px !important;
   width: 12px !important;
 }
 
 .searchInput {
-  border: none; 
+  border: none;
   outline: none;
-  width: 100%; 
-  padding: 2.5px; 
+  width: 100%;
+  padding: 2.5px;
   border-radius: 5px;
 }
-
 
 .filterCallToAction {
   display: flex;
@@ -556,10 +552,276 @@ input[type='checkbox']:checked {
 .tabs_setting {
   padding: 10px 0 0 5px;
 }
+.FirstColHeadMobile {
+  display: none;
+}
+.customFontMobile {
+  display: none;
+}
 
-/* -----------------Vaibhav End----------------- */
+.cardHeaderForMobile {
+  display: none;
+}
+.MobileViewHide {
+  display: none;
+}
+/* *******************************************RABINDRA DATE 22.10.2024 ************************************************************************* */
+@media (max-width: 600px) {
+  /* From DASHBOARD GRAPH ENDED */
+  .chartGrid {
+    display: flex;
+    flex-direction: column;
+    width: 94% !important;
+    align-items: center !important;
+    margin: 0 auto;
+  }
 
-/* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
+  .vertical1 {
+    order: 3;
+    border-right: none;
+    display: flex;
+    width: 100%;
+    margin-top: 9px;
+    flex-direction: column;
+    border-top: 1.4px solid #ccc;
+  }
+
+  .vertical2 {
+    order: 2;
+    width: 115% !important;
+    left: 0 !important;
+    margin: 0;
+    padding-left: 0 !important;
+    margin-bottom: 14px;
+  }
+  .HideContent {
+    display: flex;
+    width: 100%;
+    top: 0;
+    left: 0;
+    justify-content: space-between;
+  }
+  .ButtonAbovearrov {
+    all: unset;
+    width: 100%;
+  }
+  .customFontMobile {
+    font-weight: 600;
+    display: block;
+  }
+  .upKeys_DownKeysX {
+    all: unset;
+  }
+
+  .MobileViewHide {
+    display: block;
+    font-weight: 600;
+  }
+
+  .horizontal {
+    all: unset;
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* background-color: teal; */
+    width: 100%;
+  }
+  .FirstColHead {
+    display: none;
+  }
+  .FirstColHeadMobile {
+    width: 100% !important;
+    display: flex;
+    margin-top: 9px;
+    justify-content: space-between;
+  }
+  .SecondColHead {
+    width: 100%;
+  }
+
+  .card {
+    /* background-color: rgb(38, 158, 48); */
+  }
+  /* ANOTHER SECTION RESPONSIVENESS ADEDDD */
+
+  .cardHeader {
+    display: none;
+  }
+  .cardHeaderForMobile {
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+  }
+
+  .FirstRowSearch {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+    width: 94%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .buttonGroupMobile {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: center;
+    white-space: nowrap;
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 7.5px;
+    width: 378px;
+    box-shadow: unset;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+    scroll-behavior: smooth;
+  }
+  .buttonGroupMobile::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .buttonGroupMobile::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+
+  .buttonGroupMobile::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .filterCallToActionMobile {
+    display: flex;
+    transform: scale(0.75);
+    position: inherit;
+    gap: 9px;
+  }
+  .searchBarMobile {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+    height: 36px;
+    width: 252px !important;
+    margin-right: 0;
+  }
+
+  .searchBarMobile input::placeholder {
+    font-size: 11.8px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .cardHeader {
+    display: none;
+  }
+  .cardHeaderForMobile {
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+  }
+
+  .FirstRowSearch {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+    width: 94%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    /* background-color: teal; */
+  }
+
+  .buttonGroupMobile {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    white-space: nowrap;
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 7.5px;
+    width: 74%;
+    box-shadow: unset;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+    scroll-behavior: smooth;
+  }
+  .buttonGroupMobile::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .buttonGroupMobile::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+
+  .buttonGroupMobile::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .filterCallToActionMobile {
+    display: flex;
+    transform: scale(0.75);
+    position: inherit;
+    gap: 15px;
+  }
+  .searchBarMobile {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+    height: 36px;
+    width: 352px !important;
+    margin-right: 26px;
+  }
+
+  .searchBarMobile input {
+    padding-left: 16px;
+  }
+
+  .searchBarMobile input::placeholder {
+    font-size: 12px;
+    text-align: left;
+    padding-left: 10px;
+    color: #999;
+  }
+
+  .searchIcon {
+    margin-left: 17px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    color: #000000;
+    height: 12px !important;
+    width: 12px !important;
+  }
+
+  .filtericon {
+    padding: 21.25px;
+  }
+
+  .export_btn {
+    width: 42.5px !important;
+    height: 42.5px !important;
+    margin-bottom: 5px;
+  }
+
+  .export_btn:hover {
+    transform: scale(1.06);
+    background-color: #0b4cbd;
+  }
+}
+
+/* *********************************************** RABINDRA ********************************************************************* */
 
 /* For tablets and larger screens */
 @media (min-width: 768px) {
@@ -600,8 +862,7 @@ input[type='checkbox']:checked {
     flex: 1;
   }
 }
-.ButtonAbovearrov{
-
+.ButtonAbovearrov {
 }
 @media screen and (min-width: 336px) and (max-width: 436px) {
   .date_calendar {
@@ -870,7 +1131,6 @@ input[type='checkbox']:checked {
   background-color: #0b4cbd;
 }
 
-
 /* @media only screen and (min-width: 1400px)and (max-width: 2561px) {
   .ButtonAbovearrov {
     margin-left: unset;
@@ -884,28 +1144,33 @@ input[type='checkbox']:checked {
 } */
 /* margin-left: -105px !important */
 
-.upKeys_DownKeysX{
+.upKeys_DownKeysX {
+  transform: rotate(180deg);
   display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding-bottom: 5.5px !important;
-  color: #2979ff;
-  
 
-}
-.upKeys_DownKeys{
-  color: #2979ff;
-  padding-top: 9px !important;
-  display: flex !important;
   justify-content: center !important;
   align-items: center !important;
 
-
+  color: #2979ff;
 }
-.ButtonAbovearrov{
+
+.ArrowDX {
+  position: relative;
+}
+.ArrowD {
+  position: relative;
+}
+.upKeys_DownKeys {
+  color: #2979ff;
+
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.ButtonAbovearrov {
   /* border: 1px solid #377cf6; */
-  width: 32px !important;
-  background-color: #ddebff ;
+  width: 32px;
+  background-color: #ddebff;
   border-radius: 7px;
   height: 32px;
   display: flex;
@@ -916,7 +1181,7 @@ input[type='checkbox']:checked {
 }
 .ButtonAbovearrov:hover {
   transform: scale(1.06);
-  background-color: #E5E5E5;
+  background-color: #e5e5e5;
   border: none;
 }
 .date_calendar {

@@ -112,3 +112,9 @@ type ApiResponse struct {
 	DbRecCount int64  `json:"dbRecCount"`
 	Data       Data   `json:"data"`
 }
+
+type SSERespPayload struct {
+	Data   map[string]interface{} `json:"data"`
+	Error  map[string]interface{} `json:"error"`
+	IsDone bool                   `json:"is_done"`
+}

@@ -18,19 +18,24 @@ import { dateFormat } from '../../../utiles/formatDate';
 const DashBoardTable = ({
   currentPage,
   setCurrentPage,
+  data,
+  count,
+  loading
 }: {
+  data:any,
+  count:number,
+  loading:any,
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
 }) => {
   const [editedCommission] = useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const { data, count, loading } = useAppSelector(
-    (state) => state.dealerPaySlice
-  );
+
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [editData, setEditData] = useState<any>({});
+
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const handleIconOpen = () => setOpenIcon(true);
@@ -86,6 +91,8 @@ const DashBoardTable = ({
     });
   }
 
+  console.log(data, "currentpage")
+
   return (
     <>
       <div className="dashBoard-container">
@@ -126,8 +133,8 @@ const DashBoardTable = ({
                     </div>
                   </td>
                 </tr>
-              ) : currentPageData.length > 0 ? (
-                currentPageData.map((el: any, index: any) => (
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, index: any) => (
                   <tr key={index}>
                     <td style={{ fontWeight: '500' }}>
                       <div className="flex-check">
@@ -173,7 +180,7 @@ const DashBoardTable = ({
                     </td>
                     <td>{el.loan_fee || 'N/A'}</td>
                     <td>
-                      {el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}
+                      {el.net_epc ? el.net_epc : 'N/A'}
                     </td>
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
                       {el.credit ?? 'N/A'}
@@ -185,7 +192,7 @@ const DashBoardTable = ({
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
                       ${el.amount ?? 'N/A'}
                     </td>
-                    <td>{el.epc ? Number(el.epc).toFixed(2) : 'N/A'}</td>
+                    <td>{el.epc ? el.epc : 'N/A'}</td>
                     <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
                       ${el.amt_paid ?? 'N/A'}
                     </td>

@@ -23,6 +23,7 @@ import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAc
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import useAuth from '../../hooks/useAuth';
 import Profile from './Modals/ProfileInfo';
+import { Tooltip } from 'react-tooltip';
 
 interface PendingState {
   [key: number]: boolean;
@@ -455,9 +456,16 @@ const ArchivedPages = () => {
                             <h2>
                               {lead.first_name} {lead.last_name}
                             </h2>
-                            <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p>
+                            {/* <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p> */}
                           </div>
-                          <div className={styles.phone_number}>
+                          <div className={styles.phone_number}
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: '200px',
+                              lineHeight: "16px"
+                            }}
+                          >
                             {lead.phone_number}
                           </div>
                           <div className={styles.email}>
@@ -465,12 +473,12 @@ const ArchivedPages = () => {
                           </div>
                           <div
                             style={{
-                             whiteSpace: 'pre-wrap',
-                             overflowWrap: 'break-word',
-                             maxWidth: isMobile ? '100px' : '200px',
-                             lineHeight: "16px"
-                           }}
-                           className={styles.address}>
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: isMobile ? '100px' : '200px',
+                              lineHeight: "16px"
+                            }}
+                            className={styles.address}>
                             {/* {lead.street_address ? lead.street_address : 'N/A'} */}
 
                             {lead?.street_address
@@ -521,26 +529,47 @@ const ArchivedPages = () => {
                             ''
                           )}
                           {/* isProfileOpen */}
-                          <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)}>
+                          <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
                             <IoInformationOutline />
                           </div>
+                          <Tooltip
+                            style={{
+                              zIndex: 20,
+                              background: '#f7f7f7',
+                              color: '#000',
+                              fontSize: 12,
+                              paddingBlock: 4,
+                              
+                            }}
+                            offset={8}
+                            id="info"
+                            place="bottom"
+                            content="Lead Info"
+                          />
                         </td>
 
                       </tr>
                       {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
+                            <div
+                              style={{
+                                whiteSpace: 'pre-wrap',
+                                overflowWrap: 'break-word',
+                                width: '155px',
+                                lineHeight: "16px"
+                              }}
+                              className={''}>{lead.phone_number}</div>
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
                             <div className={''}
-                            style={{
-                              whiteSpace: 'pre-wrap',
-                              overflowWrap: 'break-word',
-                              maxWidth: '210px',
-                              lineHeight: "16px"
-                            }}
+                              style={{
+                                whiteSpace: 'pre-wrap',
+                                overflowWrap: 'break-word',
+                                maxWidth: '210px',
+                                lineHeight: "16px"
+                              }}
                             >
                               {/* {lead.street_address ? lead.street_address : 'N/A'} */}
 
@@ -556,17 +585,18 @@ const ArchivedPages = () => {
                       {toggledId === lead.id && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone}</div>
+                            <div
+                              className={''}>{lead.phone}</div>
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
                             <div className={''}
-                             style={{
-                              whiteSpace: 'pre-wrap',
-                              overflowWrap: 'break-word',
-                              maxWidth: '20px',
-                              lineHeight: "16px"
-                            }}
+                              style={{
+                                whiteSpace: 'pre-wrap',
+                                overflowWrap: 'break-word',
+                                maxWidth: '200px',
+                                lineHeight: "16px"
+                              }}
                             >
                               {lead?.street_address
                                 ? lead.street_address.length > 30
@@ -594,14 +624,12 @@ const ArchivedPages = () => {
 
           </div>
           {leadsData.length > 0 && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
-                </p>
-              </div>
-
-              <div className={styles.rightitem}>
+            <div className="page-heading-container">           
+              <p className="page-heading">
+                  {startIndex} -
+                  {endIndex > totalcount! ? totalcount : endIndex} of{' '}
+                  {totalcount} item
+                </p>           
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -612,7 +640,6 @@ const ArchivedPages = () => {
                   perPage={itemsPerPage}
                   onPerPageChange={handlePerPageChange}
                 />
-              </div>
             </div>
           )}
         </div>

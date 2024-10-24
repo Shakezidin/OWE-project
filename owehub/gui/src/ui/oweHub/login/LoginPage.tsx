@@ -253,12 +253,12 @@ export const LoginPage = () => {
                         <p>Battery Calc</p>
                       </div>
                     </Link>
-                    <Link to={ROUTES.CALCULATOR}>
+                    {/* <Link to={ROUTES.CALCULATOR}>
                       <div className="login_footer_calc">
                         <img src={ICONS.LogCalc2} alt="battery-calc" />
                         <p>CAGR Calculator</p>
                       </div>
-                    </Link>
+                    </Link> */}
                     <Link to={ROUTES.SALE_RP_CUSTOMER_FORM}>
                       <div className="login_footer_calc">
                         <img src={ICONS.LogCalc3} alt="battery-calc" />

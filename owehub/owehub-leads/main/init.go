@@ -35,7 +35,7 @@ type CfgFilePaths struct {
 	LoggingConfJsonPath string
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
-	AuroraConfJsonPath  string
+	LeadAppConfJsonPath string
 	OutlookApiConfig    string
 }
 
@@ -208,12 +208,26 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_generate_pdf",
+		apiHandler.HandleAuroraGeneratePdfRequest,
+		false,
+		leadsRoleGroup,
+	},
 
 	// WEBHOOKS
 	{
 		strings.ToUpper("GET"),
 		"/owe-leads-service/v1/aurora_webhook",
 		apiHandler.HandleAuroraWebhookAction,
+		false,
+		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/receive_graph_notification",
+		apiHandler.HandleReceiveGraphNotificationRequest,
 		false,
 		[]types.UserGroup{},
 	},
@@ -510,7 +524,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
-	gCfgFilePaths.AuroraConfJsonPath = gCfgFilePaths.CfgJsonDir + "auroraConfig.json"
+	gCfgFilePaths.LeadAppConfJsonPath = gCfgFilePaths.CfgJsonDir + "leadAppConfig.json"
 	gCfgFilePaths.OutlookApiConfig = gCfgFilePaths.CfgJsonDir + "outlookGraphConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
@@ -612,16 +626,16 @@ func FetchAuroraCfg() (err error) {
 	defer func() { log.ExitFn(0, "FetchAuroraCfg", err) }()
 
 	var auroraCfg leadsService.LeadAppConfig
-	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.AuroraConfJsonPath)
-	file, err := os.Open(gCfgFilePaths.AuroraConfJsonPath)
+	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.LeadAppConfJsonPath)
+	file, err := os.Open(gCfgFilePaths.LeadAppConfJsonPath)
 	if err != nil {
-		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.LeadAppConfJsonPath, err)
 		panic(err)
 	}
 	bVal, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(bVal, &auroraCfg)
 	if err != nil {
-		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.LeadAppConfJsonPath, err)
 		panic(err)
 	}
 	leadsService.LeadAppCfg = auroraCfg

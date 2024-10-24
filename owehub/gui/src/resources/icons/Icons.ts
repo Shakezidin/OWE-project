@@ -6,6 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
 import scheduleDoor from '../../resources/assets/schedule_door.png';
 import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
 import dashIcon from '../../resources/assets/dashIcon.svg';
@@ -14,6 +15,7 @@ import userManIcon from '../../resources/assets/userManag.svg';
 import techIcon from '../../resources/assets/techIcon.svg';
 import accountIcon from '../../resources/assets/accountIcon.svg';
 import logoutIcon from '../../resources/assets/logoutIcon.svg';
+import DashboardHideArrow from "../assets/ArrowDashboard.svg"
 import trackerIcon from '../../resources/assets/trackerIcon.svg';
 import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
@@ -167,6 +169,8 @@ import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 import LogCalc1 from "../assets/log_calc_1.svg"
 import LogCalc2 from "../assets/log_calc_2.svg"
 import LogCalc3 from "../assets/log_calc_3.svg"
+import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
+
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -178,6 +182,7 @@ export const ICONS = {
   DOWN_ARROW: require('../../resources/assets/arrow-down.png'),
   VIEW_ARCHIVE: viewA,
   FILTER: filter,
+  DashboardNewIcon:DashboardNewIcon,
   Ellipse: ellipse,
   FILTERACTIVE: filterActive,
   ARCHIVE: archive,
@@ -198,11 +203,12 @@ export const ICONS = {
   cutOff,
 
   groupActiveIcon: groupActive,
+  DashboardHideArrow:DashboardHideArrow,
   ChecronUpX:ChecronUpX,
   DeleteICONBOX: DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,
-  DownArrowDashboard:DownArrowDashboard,
+  DownArrowDashboardAboveDirection:DownArrowDashboard,
   dashHead: dashHead,
   SearchICON001:SearchICONbyRabindra,
   dashActive: dashActive,
@@ -352,4 +358,5 @@ export const ICONS = {
   LogCalc1: LogCalc1,
   LogCalc2: LogCalc1,
   LogCalc3: LogCalc1,
+  ScheduleRepeat: ScheduleRepeat,
 };

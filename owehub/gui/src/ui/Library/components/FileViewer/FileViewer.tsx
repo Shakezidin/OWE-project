@@ -3,6 +3,10 @@ import { ICONS } from "../../../../resources/icons/Icons"
 import { MdClose } from 'react-icons/md'
 import { TransformWrapper, TransformComponent, useControls, ReactZoomPanPinchContentRef, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import styles from "./index.module.css"
+import { PiPlusBold, PiMinusBold } from "react-icons/pi";
+import { GrPowerReset } from "react-icons/gr";
+import { AiOutlineExpand } from "react-icons/ai"
+import { BiCollapse } from "react-icons/bi"
 interface IProps {
     fileUrl?: string | undefined;
     fileType?: string | undefined;
@@ -47,23 +51,24 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [onClose]);
-    console.log(zoomWrapperRef?.current, "regggg")
+    const isAudioFile = isAudio(fileType)
+
     return (
         <div className='transparent-model' >
-            <div className='bg-white p2 ml2 mr2' style={{ maxWidth: 800, borderRadius: 12, width: "100%", minHeight: 200 }}>
-                <div className='flex mb2 items-center justify-between' >
-                    <h4 style={{ fontSize: 14 }} > {name} </h4>
-                    <button
-                        className='close-btn'
+            <div className={`ml2 mr2   ${isAudioFile ? "bg-white py1" : isExpanded ? styles.transparent : styles.bg_black} `} style={{ maxWidth: 800, borderRadius: 12, width: "100%", minHeight: 200, overflow: "hidden" }}>
+                <div className={`flex  items-center justify-between px2  ${!isAudioFile ? "p1" : "mb2 "}`}>
+                    {!isExpanded && <h4 style={{ fontSize: 14, color: isAudioFile ? "#000" : '#fff' }} > {name} </h4>}
+                    {!isExpanded && <button
+                        className={styles.close_btn}
                         onClick={(e) => {
                             onClose?.()
                         }}
                     >
-                        <MdClose color='#000' size={32} />
-                    </button>
+                        <MdClose color={isAudioFile ? "#000" : '#fff'} size={32} />
+                    </button>}
                 </div>
                 {
-                    isAudio(fileType) ?
+                    isAudioFile ?
                         <>
                             <img className='mx-auto block' src={ICONS.audioPlaceholder} alt="" />
                             <audio controls className='mx-auto block mt2' src={fileUrl} style={{ maxWidth: "100%", maxHeight: 500 }} />
@@ -83,7 +88,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                         }}>
                             <TransformWrapper
                                 smooth
-                                minScale={1}
+                                minScale={.5}
                                 maxScale={10}
                                 ref={zoomWrapperRef}
                                 zoomAnimation={{
@@ -97,7 +102,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                                 <TransformComponent  >
                                     <div
                                         className='mx-auto'
-                                        style={{ width: '100%', height: '100%', cursor: "zoom-in" }}
+                                        style={{ width: '100%', height: '100%', cursor: "zoom-in",maxHeight:"90vh" }}
                                     >
                                         <img
                                             className='mx-auto block'
@@ -116,11 +121,18 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                                 </TransformComponent>
 
                             </TransformWrapper>
+                            <div className={styles.zoom_control_wrapper}>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomIn()}> <PiPlusBold color='#000' size={18} /> </button>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.zoomOut()}> <PiMinusBold color='#000' size={18} /> </button>
+                            </div>
                             <div className={styles.absolute_zoom_control_wrapper}>
-                                <button onClick={() => zoomWrapperRef?.current?.zoomIn()}> + </button>
-                                <button onClick={() => zoomWrapperRef?.current?.zoomOut()}> - </button>
-                                <button onClick={() => zoomWrapperRef?.current?.resetTransform()}> Reset </button>
-                                <button onClick={() => setIsExpanded(prev => !prev)}>  {isExpanded ? "Collapse" : "Expand"}  </button>
+                                <button className={styles.zoom_in_btn} onClick={() => zoomWrapperRef?.current?.resetTransform()}> <GrPowerReset color='#000' size={18} /> </button>
+                                <button className={styles.zoom_in_btn} onClick={() => {
+                                    if (!isExpanded) {
+                                        zoomWrapperRef?.current?.resetTransform()
+                                    }
+                                    setIsExpanded(prev => !prev)
+                                }}>  {isExpanded ? <BiCollapse color='#000' size={18} /> : <AiOutlineExpand color='#000' size={18} />}  </button>
                             </div>
                         </div>
 

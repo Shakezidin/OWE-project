@@ -13,7 +13,7 @@ import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import CreateProposal from './CreateProposal'; // Import the new component
 import axios from 'axios';
 import {
@@ -65,7 +65,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [selectedTime, setSelectedTime] = useState('');
   const [load, setLoad] = useState(false);
   const [leadData, setLeadData] = useState<LeadData | null>(null);
-  const [showCreateProposal, setShowCreateProposal] = useState(false);
+
   const [loadingProposal, setLoadingProposal] = useState(false);
   const [error, setError] = useState('');
   const [proposalLink, setProposalLink] = useState<string | null>(null);
@@ -89,20 +89,65 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  console.log(action, 'do something new');
+  console.log(selectedDate, selectedTime, 'do something new');
 
+  // const handleSendAppointment = async () => {
+  //   setLoad(true);
+  //   try {
+  //     const response = await postCaller(
+  //       'update_lead_status',
+  //       {
+  //         leads_id: leadId,
+  //         status_id: 1,
+  //         appointment_date: selectedDate
+  //           ? format(selectedDate, 'dd-MM-yyyy')
+  //           : format(new Date(), 'dd-MM-yyyy'),
+  //         appointment_time: selectedTime ? selectedTime : '',
+  //       },
+  //       true
+  //     );
+
+  //     if (response.status === 200) {
+  //       toast.success('Appointment Sent Successfully');
+  //       setReschedule(false);
+  //       setRefresh((val) => val + 1)
+  //       setVisibleDiv(1);
+  //       setSelectedTime('');
+  //       setSelectedDate(null);
+  //     } else if (response.status >= 201) {
+  //       toast.warn(response.message);
+  //     }
+  //     setLoad(false);
+  //   } catch (error) {
+  //     setLoad(false);
+  //     console.error('Error submitting form:', error);
+  //   }
+  // };
+
+  const [success, setSuccess] = useState('');
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
+      const date = selectedDate ? new Date(selectedDate) : new Date();  
+      const time = selectedTime ? new Date(selectedTime) : new Date();
+      console.log(date, "date show");
+      console.log(time, "time show");
+
+      // Set the time components from the time object to the date object
+      date.setHours(time.getHours());
+      date.setMinutes(time.getMinutes());
+      date.setSeconds(time.getSeconds());
+
+      // Format the date and time in the desired format
+      const formattedDateTime = date.toISOString();
+      console.log(formattedDateTime, "wht are you bsdvbvs");
+
       const response = await postCaller(
         'update_lead_status',
         {
           leads_id: leadId,
           status_id: 1,
-          appointment_date: selectedDate
-            ? format(selectedDate, 'dd-MM-yyyy')
-            : format(new Date(), 'dd-MM-yyyy'),
-          appointment_time: selectedTime ? selectedTime : '',
+          "appointment_date_time": formattedDateTime
         },
         true
       );
@@ -112,6 +157,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         setReschedule(false);
         setRefresh((val) => val + 1)
         setVisibleDiv(1);
+        setSelectedTime('');
+        setSelectedDate(null);
+        setSuccess(response.data?.appointment_date_time)
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -414,6 +462,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   }, [reschedule, action, leadData]);
 
+  console.log(success, "succccccccccccc")
+
 
   return (
     <div>
@@ -459,38 +509,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
-                      {/* <span className={classes.verified}> */}
-                      {/* <svg
-                          className={classes.verifiedMarked}
-                          width="13"
-                          height="13"
-                          viewBox="0 0 13 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g clipPath="url(#clip0_6615_16896)">
-                            <path
-                              d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
-                              fill="#20963A"
-                            />
-                            <path
-                              d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
-                              fill="white"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_6615_16896">
-                              <rect
-                                width="12.16"
-                                height="12.16"
-                                fill="white"
-                                transform="translate(0 0.421875)"
-                              />
-                            </clipPath>
-                          </defs>
-                        </svg>{' '} */}
-                      {/* <span className={classes.verifyLetter}> Verified</span>
-                      </span> */}
+                      
                     </span>
                     {(visibleDiv === 0 || visibleDiv === 11) && (
                       <div
@@ -605,8 +624,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     Appointment sent successfully{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
-                    {selectedTime}
+                    {success ? (
+                      <>
+                        {format(parseISO(success), 'dd MMM, yyyy')}
+                        {' '}
+                        {format(parseISO(success), 'hh:mm a')}
+                      </>
+                    ) : (
+                      ''
+                    )}
                   </span>
                   {/* {leadData?.appointment_date ? (
                     <span className={classes.ApptSentDate}>

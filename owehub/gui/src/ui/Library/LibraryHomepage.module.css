@@ -98,6 +98,8 @@
 .libSecHeader_left {
   display: flex;
   flex-direction: row;
+  /* border: 1px solid black; */
+  height: 30px;
   gap: 14px;
 }
 
@@ -718,6 +720,17 @@
 }
 
 @media (max-width: 450px) {
+  .libSecHeader_right {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-left: 10px;
+    /* width: 100%; */
+    max-width: 97.1%;
+  }
   .sort_container{
     max-width: 59px;
   }

@@ -16,8 +16,13 @@ type RetrieveWebProposalApi struct {
 	DesignId string `json:"design_id"`
 }
 
+type RetrieveWebProposalApiResponseWebProposal struct {
+	URL        *string `json:"url"`
+	URLExpired bool    `json:"url_expired"`
+}
+
 type RetrieveWebProposalApiResponse struct {
-	WebProposal interface{} `json:"web_proposal"`
+	WebProposal RetrieveWebProposalApiResponseWebProposal `json:"web_proposal"`
 }
 
 /******************************************************************************
