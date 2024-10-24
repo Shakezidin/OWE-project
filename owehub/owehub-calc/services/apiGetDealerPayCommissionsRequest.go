@@ -11,6 +11,8 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	oweconfig "OWEApp/shared/oweconfig"
+	"strings"
 	"time"
 
 	"encoding/json"
@@ -31,6 +33,9 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		dataReq        models.DealerPayReportRequest
 		RecordCount    int
 		dlsPayCommResp models.DealerPayCommissions
+		whereEleList   []interface{}
+		query          string
+		filter         string
 	)
 
 	log.EnterFn(0, "HandleGetDealerPayCommissionsRequest")
@@ -57,16 +62,20 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
+	tableName := "dealer_pay"
 	// Calculate pagination
-	offset := (dataReq.PageNumber - 1) * dataReq.PageSize
-	query := `SELECT home_owner, current_status, unique_id, dealer_code, 
+	query = `SELECT home_owner, current_status, unique_id, dealer_code, 
 				today, amount, sys_size, rl, contract_dol_dol, loan_fee, 
 				epc, net_epc, other_adders, credit, rep_1, rep_2, 
 				setter, draw_amt, amt_paid, balance, st, contract_date 
-				FROM dealer_pay 
-				LIMIT $1 OFFSET $2`
+				FROM dealer_pay`
 
-	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.PageSize, offset})
+	filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq)
+	if filter != "" {
+		query = query + filter
+	}
+
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get dealer pay commissions from DB err: %v", err)
@@ -77,29 +86,73 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	for _, item := range data {
 		var dlrPay models.DealerPayReportResponse
 
-		// Populate the DealerPayReportResponse struct with values from the database
-		dlrPay.Home_Owner = item["home_owner"].(string)
-		dlrPay.Current_Status = item["current_status"].(string)
-		dlrPay.Unique_ID = item["unique_id"].(string)
-		dlrPay.Dealer_Code = item["dealer_code"].(string)
-		dlrPay.Today = item["today"].(time.Time)
-		dlrPay.Amount = item["amount"].(float64)
-		dlrPay.Sys_Size = item["sys_size"].(string)
-		dlrPay.RL = item["rl"].(string)
-		dlrPay.Contract = item["contract_dol_dol"].(string)
-		dlrPay.Loan_Fee = item["loan_fee"].(string)
-		dlrPay.EPC = item["epc"].(string)
-		dlrPay.Net_EPC = item["net_epc"].(string)
-		dlrPay.Other_Adders = item["other_adders"].(string)
-		dlrPay.Credit = item["credit"].(string)
-		dlrPay.Rep1 = item["rep_1"].(string)
-		dlrPay.Rep2 = item["rep_2"].(string)
-		dlrPay.Setter = item["setter"].(string)
-		dlrPay.Draw_Amt = item["draw_amt"].(float64)
-		dlrPay.Amt_Paid = item["amt_paid"].(float64)
-		dlrPay.Balance = item["balance"].(string)
-		dlrPay.ST = item["st"].(string)
-		dlrPay.Contract_Date = item["contract_date"].(time.Time)
+		// Populate the DealerPayReportResponse struct with values from the database safely
+		if val, ok := item["home_owner"].(string); ok {
+			dlrPay.Home_Owner = val
+		}
+		if val, ok := item["current_status"].(string); ok {
+			dlrPay.Current_Status = val
+		}
+		if val, ok := item["unique_id"].(string); ok {
+			dlrPay.Unique_ID = val
+		}
+		if val, ok := item["dealer_code"].(string); ok {
+			dlrPay.Dealer_Code = val
+		}
+		if val, ok := item["today"].(time.Time); ok {
+			dlrPay.Today = val
+		}
+		if val, ok := item["amount"].(float64); ok {
+			dlrPay.Amount = val
+		}
+		if val, ok := item["sys_size"].(string); ok {
+			dlrPay.Sys_Size = val
+		}
+		if val, ok := item["rl"].(string); ok {
+			dlrPay.RL = val
+		}
+		if val, ok := item["contract_dol_dol"].(string); ok {
+			dlrPay.Contract = val
+		}
+		if val, ok := item["loan_fee"].(string); ok {
+			dlrPay.Loan_Fee = val
+		}
+		if val, ok := item["epc"].(string); ok {
+			dlrPay.EPC = val
+		}
+		if val, ok := item["net_epc"].(string); ok {
+			dlrPay.Net_EPC = val
+		}
+		if val, ok := item["other_adders"].(string); ok {
+			dlrPay.Other_Adders = val
+		}
+		if val, ok := item["credit"].(string); ok {
+			dlrPay.Credit = val
+		}
+		if val, ok := item["rep_1"].(string); ok {
+			dlrPay.Rep1 = val
+		}
+		if val, ok := item["rep_2"].(string); ok {
+			dlrPay.Rep2 = val
+		}
+		if val, ok := item["setter"].(string); ok {
+			dlrPay.Setter = val
+		}
+		if val, ok := item["draw_amt"].(float64); ok {
+			dlrPay.Draw_Amt = val
+		}
+		if val, ok := item["amt_paid"].(float64); ok {
+			dlrPay.Amt_Paid = val
+		}
+		if val, ok := item["balance"].(string); ok {
+			dlrPay.Balance = val
+		}
+		if val, ok := item["st"].(string); ok {
+			dlrPay.ST = val
+		}
+		if val, ok := item["contract_date"].(time.Time); ok {
+			dlrPay.Contract_Date = val
+		}
 
 		// Append the populated struct to the response
 		dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
@@ -107,14 +160,117 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	RecordCount = len(dlsPayCommResp.DealerPayComm)
 
-	//  dlsPayCommResp.AmountPrepaid = 200.55
-	//  dlsPayCommResp.AmountPrepaidPer = 123
-	//  dlsPayCommResp.Pipeline_Remaining = 356
-	//  dlsPayCommResp.Pipeline_RemainingPer = 368
-	//  dlsPayCommResp.Current_Due = 658
-	//  dlsPayCommResp.Current_Due_Per = 698
+	dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+
+	dlsPayCommResp.AmountPrepaid = 200.55
+	dlsPayCommResp.AmountPrepaidPer = 123
+	dlsPayCommResp.Pipeline_Remaining = 356
+	dlsPayCommResp.Pipeline_RemainingPer = 368
+	dlsPayCommResp.Current_Due = 658
+	dlsPayCommResp.Current_Due_Per = 698
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dealer pay commissions fetched: %v, data: %+v", RecordCount, dlsPayCommResp)
 	appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp.DealerPayComm, int64(RecordCount))
+}
+
+func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
+	start := (pageNumber - 1) * pageSize
+	if start >= int64(len(data)) {
+		return []T{}
+	}
+
+	end := start + pageSize
+	if end > int64(len(data)) {
+		end = int64(len(data))
+	}
+
+	return data[start:end]
+}
+
+func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReportRequest) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareDealerPayFilters")
+	defer func() { log.ExitFn(0, "PrepareDealerPayFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	var whereAdder bool
+
+	// Check if there are filters
+	if len(dataFilter.Filters) > 0 {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdder = true
+
+		for i, filter := range dataFilter.Filters {
+			// Check if the column is a foreign key
+			column := filter.Column
+
+			// Determine the operator and value based on the filter operation
+			operator := oweconfig.GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = oweconfig.GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+
+			// Build the filter condition using correct db column name
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+			switch column {
+			case "hhome_owner":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(home_owner) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "current_status":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(current_status) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "unique_id":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "today":
+				filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "amount":
+				filtersBuilder.WriteString(fmt.Sprintf("amount %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "draw_amt":
+				filtersBuilder.WriteString(fmt.Sprintf("draw_amt %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "amt_paid":
+				filtersBuilder.WriteString(fmt.Sprintf("amt_paid %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "contract_date":
+				filtersBuilder.WriteString(fmt.Sprintf("contract_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			default:
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			}
+		}
+	}
+
+	if len(dataFilter.PartnerName) > 0 {
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		filtersBuilder.WriteString(" dealer_code IN (")
+		for i, dealer := range dataFilter.PartnerName {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.PartnerName)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
+	}
+
+	filters = filtersBuilder.String()
+
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters, whereEleList
 }
