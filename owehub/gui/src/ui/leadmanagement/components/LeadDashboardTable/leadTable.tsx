@@ -25,6 +25,29 @@ interface LeadSelectionProps {
   generateWebProposal: (leadId: number) => void;
 }
 
+type SSEPayload =
+  | {
+    is_done: false;
+    data: {
+      current_step: number;
+      total_steps: number;
+    };
+  }
+  | {
+    is_done: true;
+    data: {
+      current_step: number;
+      total_steps: number;
+      url: string;
+    };
+    error: null;
+  }
+  | {
+    is_done: true;
+    error: string;
+    data: null;
+  };
+
 const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal }: LeadSelectionProps) => {
 
 
@@ -35,7 +58,10 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
   >('Deal Won');
 
   const [leadId, setLeadId] = useState(0);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [leadProposalLink, setLeadPropsalLink] = useState('');
+  const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<number>(0); // Track download percentage
+
 
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
@@ -62,34 +88,47 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
 
   const downloadProposalWithSSE = (leadId: number) => {
-    setIsDownloading(true);
+    setDownloadingLeadId(leadId); // Set downloading state for this row
+    setDownloadProgress(0); // Reset the progress initially
+
     const eventSource = new EventSource(
-      "https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf"
+      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
     );
-  
+
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-  
-      if (data.is_done) {
-        setIsDownloading(false);
-        const pdfUrl = data.pdf_url;
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.download = 'Proposal.pdf';
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-  
-        eventSource.close();
-      } else {
-        console.log('PDF generation progress:', data);
+      const payload: SSEPayload = JSON.parse(event.data);
+
+      if (!payload.is_done) {
+        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
+        setDownloadProgress(progressPercentage); // Update the progress state
+        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+      } else if (payload.is_done) {
+        setDownloadingLeadId(null); // Reset downloading state once done
+        setDownloadProgress(0); // Reset progress
+
+        if (payload.error === null) {
+          // PDF generation successful, trigger download
+          const pdfUrl = payload.data.url;
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.download = 'Proposal.pdf';
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          // Handle generation error
+          console.error(`Error during PDF generation: ${payload.error}`);
+        }
+
+        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
       }
     };
-  
+
     eventSource.onerror = (error) => {
       console.error('Error with SSE connection', error);
-      setIsDownloading(false);
+      setDownloadingLeadId(null); // Reset downloading state on error
+      setDownloadProgress(0); // Reset progress on error
       eventSource.close();
     };
   };
@@ -114,13 +153,19 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'viewProposal') {
       retrieveWebProposal(leadId)
       setSelectedType('');
+    } else if (selectedType === 'editProposal') {
+      // Open the proposal link in a new tab
+      if (leadProposalLink) {
+        window.open(leadProposalLink, '_blank');
+      }
+      setSelectedType('');
     } else if (selectedType === 'renew_proposal') {
       generateWebProposal(leadId)
       setSelectedType('');
     } else if (selectedType === 'download') {
-      downloadProposalWithSSE(leadId); 
+      downloadProposalWithSSE(leadId);
       setSelectedType('');
-    } 
+    }
 
     else if (selectedType === 'Appointment Not Required') {
       handleAppNotReq();
@@ -417,46 +462,68 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       {selectedLeads.length === 0 &&
 
                         <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
-                          <div onClick={() => (setLeadId(lead.leads_id))}>
-                            {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
+                          <div onClick={() => {
+                            setLeadId(lead.leads_id); // Set lead ID
+                            setLeadPropsalLink(lead.proposal_link); // Set proposal link
+                          }}> 
+                          {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                            )  :
-                              (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
-                                <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
+                            ) : (
+                              lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "") ? (
+                                <button className={styles.create_proposal} onClick={() => onCreateProposal(lead.leads_id)}>
+                                  {downloadingLeadId === lead.leads_id ? (
+                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                      <MicroLoader />
+                                    </div>
+                                  ) : "Create Proposal"}
+                                </button>
                               ) : (
-                                <DropDownLeadTable
-                                  selectedType={selectedType}
-                                  onSelectType={(type: string) => {
-                                    setSelectedType(type);
-                                    setActiveSection(activeSection);
-                                  }}
-                                  cb={() => {
-                                    setSelected(index);
-                                  }}
-                                  options={
-                                    lead?.appointment_status_label === "Appointment Sent"
-                                      ? [
-                                        { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        { label: 'Create Proposal', value: 'new_proposal' },
-                                      ]
-                                      : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
-                                        ? [
-                                          { label: 'View Proposal', value: 'viewProposal' },
-                                          { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                          { label: 'Download Proposal', value: 'download' },
-                                          { label: 'Reschedule Appointment', value: 'app_sched' },
+                                <>
+                                  {downloadingLeadId === lead.leads_id ? (
+                                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                   <MicroLoader />
+                                   <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
+                                 </div>
+                                  ) : (
+                                    <DropDownLeadTable
+                                      selectedType={selectedType}
+                                      onSelectType={(type: string) => {
+                                        setSelectedType(type);
+                                        setActiveSection(activeSection);
+                                        // if (type === 'download') {
+                                        //   downloadProposalWithSSE(lead.leads_id);  // Trigger download with loader
+                                        // }
+                                      }}
+                                      cb={() => {
+                                        setSelected(index);
+                                      }}
+                                      options={
+                                        lead?.appointment_status_label === "Appointment Sent"
+                                          ? [
+                                            { label: 'Reschedule Appointment', value: 'app_sched' },
+                                                                                        { label: 'Create Proposal', value: 'new_proposal' },
+                                          ]
+                                          : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                            ? [
+                                              { label: 'View Proposal', value: 'viewProposal' },
+                                              { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                              { label: 'Download Proposal', value: 'download' },
+                                              { label: 'Reschedule Appointment', value: 'app_sched' },
                                         ]: lead  && lead.proposal_id !== ''
-                                        ? [
-                                          { label: 'View Proposal', value: 'viewProposal' },
+                                              ? [
+                                                { label: 'View Proposal', value: 'viewProposal' },
                                           { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                        ]
-                                        : [
-                                          { label: 'Create Proposal', value: 'new_proposal' },
-                                          { label: 'Schedule Appointment', value: 'app_sched' },
-                                        ]
-                                  }
-                                />
-                              )}
+                                              ]
+                                              : [
+                                                { label: 'Create Proposal', value: 'new_proposal' },
+                                                { label: 'Schedule Appointment', value: 'app_sched' },
+                                              ]
+                                      }
+                                    />
+                                  )}
+                                </>
+                              )
+                            )}
                           </div>
                           <div onClick={() => (setLeadId(lead.leads_id))}>
                             <ChangeStatus
