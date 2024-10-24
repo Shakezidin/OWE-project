@@ -602,7 +602,7 @@
   .pers_det_top {
     display: flex;
     flex-direction: column;
-    /* gap: 10px; */
+    max-width: 264px;
   }
 
   .Column1Details {
