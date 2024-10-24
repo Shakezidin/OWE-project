@@ -122,6 +122,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["balance"] = balance
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
+	outData["finance_type"] = financeType
 
 	// outData["ntp_complete_date"] = NtpCompleteDate
 	// outData["pv_complete_date"] = PvComplettionDate

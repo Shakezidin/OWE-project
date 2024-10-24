@@ -67,7 +67,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	query = `SELECT home_owner, current_status, unique_id, dealer_code, 
 				today, amount, sys_size, rl, contract_dol_dol, loan_fee, 
 				epc, net_epc, other_adders, credit, rep_1, rep_2, 
-				setter, draw_amt, amt_paid, balance, st, contract_date 
+				setter, draw_amt, amt_paid, balance, st, contract_date,finance_type 
 				FROM dealer_pay`
 
 	filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq)
@@ -154,6 +154,10 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 			dlrPay.Contract_Date = val
 		}
 
+		if val, ok := item["finance_type"].(string); ok {
+			dlrPay.Type = val
+		}
+
 		// Append the populated struct to the response
 		dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
 	}
@@ -218,7 +222,7 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(" AND ")
 			}
 			switch column {
-			case "hhome_owner":
+			case "home_owner":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(home_owner) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "current_status":
