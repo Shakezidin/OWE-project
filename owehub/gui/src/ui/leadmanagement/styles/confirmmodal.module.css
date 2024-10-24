@@ -152,7 +152,7 @@
   background-color: #fff;
   max-width: 593px;
   height: auto;
-  padding-bottom: 27px;
+  padding-bottom: 14px;
 }
 
 .customer_wrapper_list_Edited {
@@ -183,7 +183,7 @@
   flex-direction: column;
   width: auto;
   height: auto;
-  padding: 16px 12px 3px 12px;
+  padding: 4px 12px 3px 12px;
   border: 1px solid #377cf6;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -468,7 +468,7 @@
 
 .crossBtn {
   cursor: pointer;
-  margin-top: -8px;
+  /* margin-top: -8px; */
   width: 19.5px;
   height: 19.5px;
   transition: all 0.3s ease;
@@ -622,6 +622,7 @@
   }
 
   .main_name {
+    gap: 6px;
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 3.7%;
