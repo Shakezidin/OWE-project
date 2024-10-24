@@ -154,9 +154,9 @@ const AddNew = () => {
           phone: formData.mobile_number,
           address: formData.address,
           roof_type: formData.roof_type,
-          battery_installed: formData.battery_installed,
-          stories_in_house: formData.stories_in_house,
-          house_size: formData.house,
+          is_battery_installed: formData.battery_installed,
+          house_stories: formData.stories_in_house,
+          house_area_sqft: formData.house,
           system_size: formData.size,
         }
       );
