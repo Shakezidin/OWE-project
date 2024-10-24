@@ -219,34 +219,37 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       </div>
                     </th>
                   ))}
-                  <th
-                    onClick={handleMoreClick}
-                    style={{
-                      fontWeight: '500',
-                      color: 'black',
-                      background: 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start',
-                      cursor: 'pointer',
-                      minWidth:"200px"
-                    }}
-                    className={styles.FixedColumn}
-                  >
-                    <div className={styles.slidebutton}>
-                      {side === 'left' ? (
-                        <>
-                          More
-                          <FaAngleRight />
-                        </>
-                      ) : side === 'right' ? (
-                        <>
-                          <FaAngleLeft />
-                          More
-                        </>
-                      ) : null}
-                    </div>
-                  </th>
+                  {selectedLeads.length === 0 &&
+                    <th
+                      onClick={handleMoreClick}
+                      style={{
+                        fontWeight: '500',
+                        color: 'black',
+                        background: 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        cursor: 'pointer',
+                        minWidth: "200px",
+                        zIndex: "102"
+                      }}
+                      className={styles.FixedColumn}
+                    >
+                      <div className={styles.slidebutton}>
+                        {side === 'left' ? (
+                          <>
+                            More
+                            <FaAngleRight />
+                          </>
+                        ) : side === 'right' ? (
+                          <>
+                            <FaAngleLeft />
+                            More
+                          </>
+                        ) : null}
+                      </div>
+                    </th>
+                  }
                 </tr>
               </thead>
               <tbody>
@@ -355,7 +358,16 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               ? "#21BC27"
                               : lead.proposal_status === "Remote Assesment Required"
                                 ? "#EC9311"
-                                : "inherit",
+                                : lead.proposal_status === "CREATED"
+                                  ? "#B459FC"
+                                  : "inherit",
+                            color: lead.proposal_status === "In Progress"
+                              ? "#fff"
+                              : lead.proposal_status === "Remote Assesment Required"
+                                ? "#fff"
+                                : lead.proposal_status === "CREATED"
+                                  ? "#fff"
+                                  : "black",
                           }}
                           className={styles.appointment_status}
                         >
@@ -365,11 +377,6 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             <span style={{ color: "black" }}>_____</span>
                           )}
                         </div>
-                        {/* <div style={{ marginLeft: '14px' }} className={styles.info}>15 Sep 2024</div> */}
-                        {/* <div className={styles.progressBar}>
-                          <div className={styles.progress} style={{ width: '40%' }}></div>
-                        </div>
-                        <div style={{ marginLeft: '14px' }} className={styles.info}>2/6</div> */}
                       </td>
 
 
@@ -382,7 +389,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           <div onClick={() => (setLeadId(lead.leads_id))}>
                             {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                            )  :
+                            ) :
                               (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                                 <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                               ) : (
@@ -396,7 +403,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                     setSelected(index);
                                   }}
                                   options={
-                                    lead?.appointment_status_label === "Appointment Sent"
+                                    lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
                                       ? [
                                         { label: 'Reschedule Appointment', value: 'app_sched' },
                                         { label: 'Create Proposal', value: 'new_proposal' },
@@ -407,15 +414,15 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                           { label: 'Recreate Proposal', value: 'renew_proposal' },
                                           { label: 'Download Proposal', value: 'download' },
                                           { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        ]: lead  && lead.proposal_id !== ''
-                                        ? [
-                                          { label: 'View Proposal', value: 'viewProposal' },
-                                          { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                        ]
-                                        : [
-                                          { label: 'Create Proposal', value: 'new_proposal' },
-                                          { label: 'Schedule Appointment', value: 'app_sched' },
-                                        ]
+                                        ] : lead && lead.proposal_id !== ''
+                                          ? [
+                                            { label: 'View Proposal', value: 'viewProposal' },
+                                            { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                          ]
+                                          : [
+                                            { label: 'Create Proposal', value: 'new_proposal' },
+                                            { label: 'Schedule Appointment', value: 'app_sched' },
+                                          ]
                                   }
                                 />
                               )}
