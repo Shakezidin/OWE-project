@@ -231,8 +231,7 @@
   }
   
   .icon:hover {
-    color: #377cf6; /* Use the desired color */
-  }
+    transform: scale(1.04);  }
 
 .header_right{
     display: flex;
