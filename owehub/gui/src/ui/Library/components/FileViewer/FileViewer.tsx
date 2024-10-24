@@ -102,7 +102,7 @@ const FileViewer = ({ fileUrl = "", fileType = "", onClose, name }: IProps) => {
                                 <TransformComponent  >
                                     <div
                                         className='mx-auto'
-                                        style={{ width: '100%', height: '100%', cursor: "zoom-in" }}
+                                        style={{ width: '100%', height: '100%', cursor: "zoom-in",maxHeight:"90vh" }}
                                     >
                                         <img
                                             className='mx-auto block'

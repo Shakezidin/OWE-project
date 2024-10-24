@@ -18,19 +18,24 @@ import { dateFormat } from '../../../utiles/formatDate';
 const DashBoardTable = ({
   currentPage,
   setCurrentPage,
+  data,
+  count,
+  loading
 }: {
+  data:any,
+  count:number,
+  loading:any,
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
 }) => {
   const [editedCommission] = useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const { data, count, loading } = useAppSelector(
-    (state) => state.dealerPaySlice
-  );
+
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [editData, setEditData] = useState<any>({});
+
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const handleIconOpen = () => setOpenIcon(true);
@@ -128,8 +133,8 @@ const DashBoardTable = ({
                     </div>
                   </td>
                 </tr>
-              ) : currentPageData.length > 0 ? (
-                currentPageData.map((el: any, index: any) => (
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, index: any) => (
                   <tr key={index}>
                     <td style={{ fontWeight: '500' }}>
                       <div className="flex-check">

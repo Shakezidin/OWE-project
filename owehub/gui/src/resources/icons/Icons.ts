@@ -6,6 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
 import scheduleDoor from '../../resources/assets/schedule_door.png';
 import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
 import dashIcon from '../../resources/assets/dashIcon.svg';
@@ -168,6 +169,8 @@ import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 import LogCalc1 from "../assets/log_calc_1.svg"
 import LogCalc2 from "../assets/log_calc_2.svg"
 import LogCalc3 from "../assets/log_calc_3.svg"
+import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
+
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -179,6 +182,7 @@ export const ICONS = {
   DOWN_ARROW: require('../../resources/assets/arrow-down.png'),
   VIEW_ARCHIVE: viewA,
   FILTER: filter,
+  DashboardNewIcon:DashboardNewIcon,
   Ellipse: ellipse,
   FILTERACTIVE: filterActive,
   ARCHIVE: archive,
@@ -354,4 +358,5 @@ export const ICONS = {
   LogCalc1: LogCalc1,
   LogCalc2: LogCalc1,
   LogCalc3: LogCalc1,
+  ScheduleRepeat: ScheduleRepeat,
 };

@@ -98,6 +98,8 @@
 .libSecHeader_left {
   display: flex;
   flex-direction: row;
+  /* border: 1px solid black; */
+  height: 30px;
   gap: 14px;
 }
 

@@ -456,7 +456,7 @@ const ArchivedPages = () => {
                             <h2>
                               {lead.first_name} {lead.last_name}
                             </h2>
-                            <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p>
+                            {/* <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p> */}
                           </div>
                           <div className={styles.phone_number}
                             style={{
@@ -624,16 +624,12 @@ const ArchivedPages = () => {
 
           </div>
           {leadsData.length > 0 && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
+            <div className="page-heading-container">           
+              <p className="page-heading">
                   {startIndex} -
                   {endIndex > totalcount! ? totalcount : endIndex} of{' '}
                   {totalcount} item
-                </p>
-              </div>
-
-              <div className={styles.rightitem}>
+                </p>           
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -644,7 +640,6 @@ const ArchivedPages = () => {
                   perPage={itemsPerPage}
                   onPerPageChange={handlePerPageChange}
                 />
-              </div>
             </div>
           )}
         </div>

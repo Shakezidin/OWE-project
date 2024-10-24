@@ -15,9 +15,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
+  width: 30px;
   /* Adjust the size of the circle */
-  height: 34px;
+  height: 30px;
   /* Make height equal to width for a perfect circle */
   /* border: none; */
   /* Border for the circle */
