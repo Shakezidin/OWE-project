@@ -54,15 +54,16 @@
   .filtericonHistory {
     display: flex;
     align-items: center;
-    height: 31px;
-    width: 33px;
+    height: 31.88px;
+    width: 31.88px;
     margin-top: 1px !important;
-    margin-left: 99px !important;
+    margin-left: 69px !important;
     border-radius: 50%;
     border: 1.2px solid #377cf6 !important;
     cursor: pointer;
   }
   .ICONSTYLETHREEDOT {
+    
     width: auto;
     height: auto;
     margin-left: 14px;
