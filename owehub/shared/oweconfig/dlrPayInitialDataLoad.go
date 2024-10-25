@@ -31,13 +31,12 @@ type InitialStruct struct {
 	ST                string
 	ContractDate      time.Time
 	NetEpc            float64
-	DrawAmt           float64
 	NtpCompleteDate   time.Time
 	PvComplettionDate time.Time
-	RL                float64
-	DrawMax           float64
-	FinanceType       string
-	FinanceCompany    string
+	// RL                float64
+	// DrawMax        float64
+	FinanceType    string
+	FinanceCompany string
 }
 
 type InitialDataLists struct {
@@ -59,10 +58,6 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			 cs.primary_sales_rep,cs.secondary_sales_rep, cs.setter, 
 			 cs.state, cs.sale_date, ns.net_epc, 
 			 ns.ntp_complete_date,ps.pv_completion_date, 
-             --cdv.m1_sales_partner_draw_percentage, 
-			 --CAST(cdv.redline AS float) AS redline, 
-             --cdv.adder_breakdown_and_total_new, for mkt_fee,
-             --CAST(cdv.m1_sales_partner_not_to_exceed as float) as m1_sales_partner_not_to_exceed  for draw max,
 			 ns.finance_type, ns.finance
 			 from customers_customers_schema cs
              LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
@@ -112,21 +107,29 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.DealerCode = ""
 		}
 
-		if totalSystemCost, ok := data["total_system_cost"]; (ok) && (totalSystemCost != nil) {
-			// Step 1: Trim spaces
+		if totalSystemCost, ok := data["total_system_cost"]; ok && totalSystemCost != nil {
+			// Step 1: Convert to string and trim spaces
 			costStr := strings.TrimSpace(totalSystemCost.(string))
 
-			// Step 2: Remove any HTML tags using a regular expression
+			// Step 2: Remove any HTML tags if present
 			re := regexp.MustCompile(`<.*?>`)
 			costStr = re.ReplaceAllString(costStr, "")
 
-			// Step 3: Remove commas
+			// Step 3: Remove commas and "$" symbols
 			costStr = strings.ReplaceAll(costStr, ",", "")
+			costStr = strings.ReplaceAll(costStr, "$", "")
 
-			// Step 4: Convert the cleaned string to a float
-			InitialDataa.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+			// Step 4: Final trim to remove any residual spaces after cleaning
+			costStr = strings.TrimSpace(costStr)
+
+			// Step 5: Attempt to parse the cleaned string as a float
+			if costStr != "" { // Ensure the string is not empty
+				InitialDataa.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+					InitialDataa.ContractDolDol = 0.0
+				}
+			} else {
 				InitialDataa.ContractDolDol = 0.0
 			}
 		} else {
@@ -175,12 +178,6 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.NetEpc = 0.0
 		}
 
-		if m1SalesPartnerDrawPercentage, ok := data["m1_sales_partner_draw_percentage"]; (ok) && (m1SalesPartnerDrawPercentage != nil) {
-			InitialDataa.DrawAmt = m1SalesPartnerDrawPercentage.(float64)
-		} else {
-			InitialDataa.DrawAmt = 0.0
-		}
-
 		if ntpCompleteDate, ok := data["ntp_complete_date"]; (ok) && (ntpCompleteDate != nil) {
 			InitialDataa.NtpCompleteDate = ntpCompleteDate.(time.Time)
 		} else {
@@ -193,17 +190,11 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.PvComplettionDate = time.Time{}
 		}
 
-		if redLine, ok := data["redline"]; (ok) && (redLine != nil) {
-			InitialDataa.RL = redLine.(float64)
-		} else {
-			InitialDataa.RL = 0.0
-		}
-
-		if m1SalesPartnerNottoExceed, ok := data["m1_sales_partner_not_to_exceed"]; (ok) && (m1SalesPartnerNottoExceed != nil) {
-			InitialDataa.DrawMax = m1SalesPartnerNottoExceed.(float64)
-		} else {
-			InitialDataa.DrawMax = 0.0
-		}
+		// if m1SalesPartnerNottoExceed, ok := data["m1_sales_partner_not_to_exceed"]; (ok) && (m1SalesPartnerNottoExceed != nil) {
+		// 	InitialDataa.DrawMax = m1SalesPartnerNottoExceed.(float64)
+		// } else {
+		// 	InitialDataa.DrawMax = 0.0
+		// }
 
 		if FinanceCompany, ok := data["finance"]; (ok) && (FinanceCompany != nil) {
 			InitialDataa.FinanceCompany = FinanceCompany.(string)
