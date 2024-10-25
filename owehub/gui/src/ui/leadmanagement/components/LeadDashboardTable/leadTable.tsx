@@ -206,7 +206,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / itemsPerPage);
+  const totalPage = Math.ceil(totalcount / itemsPerPage);
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
