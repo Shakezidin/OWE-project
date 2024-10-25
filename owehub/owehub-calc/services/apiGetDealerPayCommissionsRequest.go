@@ -77,7 +77,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
-	if err != nil || len(data) <= 0 {
+	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer pay commissions from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get dealer pay commissions from DB", http.StatusBadRequest, nil)
 		return
@@ -272,7 +272,7 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 			whereAdder = true
 		}
 
-		filtersBuilder.WriteString(" ntp_date <= ?")
+		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date <= $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, formattedDate)
 	}
 
