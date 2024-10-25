@@ -12,8 +12,13 @@ import ConfirmaModel from '../../Modals/ConfirmModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
+import { toZonedTime } from 'date-fns-tz'
+import useMatchMedia from '../../../../hooks/useMatchMedia';
+import Pagination from '../../../components/pagination/Pagination';
+
+type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -25,16 +30,44 @@ interface LeadSelectionProps {
   generateWebProposal: (leadId: number) => void;
 }
 
+type SSEPayload =
+  | {
+    is_done: false;
+    data: {
+      current_step: number;
+      total_steps: number;
+    };
+  }
+  | {
+    is_done: true;
+    data: {
+      current_step: number;
+      total_steps: number;
+      url: string;
+    };
+    error: null;
+  }
+  | {
+    is_done: true;
+    error: string;
+    data: null;
+  };
+
 const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal }: LeadSelectionProps) => {
 
 
   const [selectedType, setSelectedType] = useState('');
   const [selected, setSelected] = useState(-1)
+  const isMobile = useMatchMedia('(max-width: 767px)');
   const [activeSection, setActiveSection] = useState<
     'Deal Won' | 'Deal Loss' | 'Appointment Not Required' | null
   >('Deal Won');
 
   const [leadId, setLeadId] = useState(0);
+  const [leadProposalLink, setLeadPropsalLink] = useState('');
+  const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<number>(0); // Track download percentage
+
 
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
@@ -59,19 +92,72 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     setIsModalOpen(false);
   };
 
+
+  const downloadProposalWithSSE = (leadId: number) => {
+    setDownloadingLeadId(leadId); // Set downloading state for this row
+    setDownloadProgress(0); // Reset the progress initially
+
+    const eventSource = new EventSource(
+      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const payload: SSEPayload = JSON.parse(event.data);
+
+      if (!payload.is_done) {
+        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
+        setDownloadProgress(progressPercentage); // Update the progress state
+        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+      } else if (payload.is_done) {
+        setDownloadingLeadId(null); // Reset downloading state once done
+        setDownloadProgress(0); // Reset progress
+
+        if (payload.error === null) {
+          // PDF generation successful, trigger download
+          const pdfUrl = payload.data.url;
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.download = 'Proposal.pdf';
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          // Handle generation error
+          console.error(`Error during PDF generation: ${payload.error}`);
+        }
+
+        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('Error with SSE connection', error);
+      setDownloadingLeadId(null); // Reset downloading state on error
+      setDownloadProgress(0); // Reset progress on error
+      eventSource.close();
+    };
+  };
+  const [won, setWon] = useState(false);
   useEffect(() => {
     if (selectedType === 'app_sched') {
       handleOpenModal();
       setAction(false);
+      setWon(false);
       setReschedule(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
       setReschedule(false);
+      setWon(false);
       setAction(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Won') {
-      handleCloseWon();
+      // handleCloseWon();
+      handleOpenModal();
+      setAction(false);
+      setReschedule(false);
+      setWon(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
@@ -79,8 +165,17 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'viewProposal') {
       retrieveWebProposal(leadId)
       setSelectedType('');
+    } else if (selectedType === 'editProposal') {
+      // Open the proposal link in a new tab
+      if (leadProposalLink) {
+        window.open(leadProposalLink, '_blank');
+      }
+      setSelectedType('');
     } else if (selectedType === 'renew_proposal') {
       generateWebProposal(leadId)
+      setSelectedType('');
+    } else if (selectedType === 'download') {
+      downloadProposalWithSSE(leadId);
       setSelectedType('');
     }
 
@@ -161,21 +256,63 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
   const handleMoreClick = () => {
     const elm = document.getElementById("tes-table") as HTMLDivElement
-    elm.scroll({ left: 700, behavior: "smooth" })
+    elm.scroll({ left: 1800, behavior: "smooth" })
     if (side == 'left') {
       // if (tableContainerRef.current) {
       //   tableContainerRef.current.scrollLeft += 800;
       //   setSide('right');
       // }
-      elm.scroll({ left: 700, behavior: "smooth" })
+      elm.scroll({ left: 1800, behavior: "smooth" })
       setSide('right');
     } else if (side == 'right') {
-      elm.scroll({ left: -700, behavior: "smooth" })
+      elm.scroll({ left: -1800, behavior: "smooth" })
       setSide('left');
     }
   };
 
-  console.log(selectedType, "selectedType shows")
+  const statusStyles = {
+    "In Progress": {
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
+    "Send Docs": {
+      backgroundColor: "#EC9311",
+      color: "#fff"
+    },
+    "CREATED": {
+      backgroundColor: "#B459FC",
+      color: "#fff"
+    },
+    "Clear selection": {
+      backgroundColor: "#808080",
+      color: "#fff"
+    }
+  };
+
+
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
+  const totalPage = Math.ceil(totalcount / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    setPage(pageNumber);
+  };
+
+
+  const goToNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const goToPrevPage = () => {
+    setPage(page - 1);
+  };
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
+  };
 
 
   return (
@@ -189,6 +326,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
         reschedule={reschedule}
         action={action}
         setReschedule={setReschedule}
+        won={won}
+        setWon={setWon}
       />
 
       <Profile
@@ -225,28 +364,35 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       style={{
                         fontWeight: '500',
                         color: 'black',
-                        background: 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
+                        background: isMobile ? 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 100%)' : 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
+
+                        cursor: 'pointer',
+                        minWidth: isMobile ? '65px' : "200px",
+                        zIndex: "102",
+
+                      }}
+                      className={styles.FixedColumn}
+
+                    >
+                      <div style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
-                        cursor: 'pointer',
-                        minWidth: "200px",
-                        zIndex: "102"
-                      }}
-                      className={styles.FixedColumn}
-                    >
-                      <div className={styles.slidebutton}>
-                        {side === 'left' ? (
-                          <>
-                            More
-                            <FaAngleRight />
-                          </>
-                        ) : side === 'right' ? (
-                          <>
-                            <FaAngleLeft />
-                            More
-                          </>
-                        ) : null}
+                        width: "100%"
+                      }}>
+                        <div className={styles.slidebutton}>
+                          {side === 'left' ? (
+                            <>
+                              More
+                              <FaAngleRight />
+                            </>
+                          ) : side === 'right' ? (
+                            <>
+                              <FaAngleLeft />
+                              More
+                            </>
+                          ) : null}
+                        </div>
                       </div>
                     </th>
                   }
@@ -323,7 +469,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               {lead.appointment_status_label}
                             </div>
                             <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
-                              {lead.appointment_status_date ? format(lead.appointment_status_date, 'dd-MM-yyyy') : ""}
+                              {lead.appointment_status_date ? format(toZonedTime(parseISO(lead.appointment_status_date), 'UTC'), 'dd-MM-yyyy') : ""}
                             </div>
                           </>
                         ) : (
@@ -340,8 +486,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               {lead.won_lost_label}
                             </div>
                             {lead.won_lost_date && (
-                              <div style={{ marginLeft: '14px' }} className={styles.info}>
-                                {lead.won_lost_date ? format(lead.won_lost_date, 'dd-MM-yyyy') : ""}
+                              <div style={{ marginLeft: '29px' }} className={styles.info}>
+                                {lead.won_lost_date ? format(toZonedTime(parseISO(lead.won_lost_date), 'UTC'), 'dd-MM-yyyy') : ""}
+
                               </div>
                             )}
                           </>
@@ -353,22 +500,9 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
                       <td>
                         <div
-                          style={{
-                            backgroundColor: lead.proposal_status === "In Progress"
-                              ? "#21BC27"
-                              : lead.proposal_status === "Remote Assesment Required"
-                                ? "#EC9311"
-                                : lead.proposal_status === "CREATED"
-                                  ? "#B459FC"
-                                  : "inherit",
-                            color: lead.proposal_status === "In Progress"
-                              ? "#fff"
-                              : lead.proposal_status === "Remote Assesment Required"
-                                ? "#fff"
-                                : lead.proposal_status === "CREATED"
-                                  ? "#fff"
-                                  : "black",
-                          }}
+                          style={lead.proposal_status in statusStyles
+                            ? statusStyles[lead.proposal_status as ProposalStatus]
+                            : { backgroundColor: "inherit", color: "black" }}
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
@@ -383,75 +517,194 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
                       <td>{lead.finance_type ? lead.finance_type : "_____"}</td>
                       <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
-                      {selectedLeads.length === 0 &&
-
-                        <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
-                          <div onClick={() => (setLeadId(lead.leads_id))}>
-                            {lead?.appointment_status_label === "No Response" || lead.appointment_status_label === "Appointment Declined" ? (
+                      {(selectedLeads.length === 0 && isMobile) &&
+                        <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
+                          <div className={styles.RowMobile} onClick={() => (setLeadId(lead.leads_id))}>
+                            {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                             ) :
-                              (lead.appointment_status_label === "Not Required" || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
+                              ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                                 <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                               ) : (
-                                <DropDownLeadTable
-                                  selectedType={selectedType}
-                                  onSelectType={(type: string) => {
-                                    setSelectedType(type);
-                                    setActiveSection(activeSection);
-                                  }}
-                                  cb={() => {
-                                    setSelected(index);
-                                  }}
-                                  options={
-                                    lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
-                                      ? [
-                                        { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        { label: 'Create Proposal', value: 'new_proposal' },
-                                      ]
-                                      : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
-                                        ? [
-                                          { label: 'View Proposal', value: 'viewProposal' },
-                                          { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                          { label: 'Download Proposal', value: 'download' },
-                                          { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        ] : lead && lead.proposal_id !== ''
+                                <>
+                                  {downloadingLeadId === lead.leads_id ? (
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                      <MicroLoader />
+                                      <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
+                                    </div>
+                                  ) : (
+                                    <DropDownLeadTable
+                                      selectedType={selectedType}
+                                      onSelectType={(type: string) => {
+                                        setSelectedType(type);
+                                        setActiveSection(activeSection);
+                                      }}
+                                      cb={() => {
+                                        setSelected(index);
+                                      }}
+                                      options={
+                                        lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
                                           ? [
-                                            { label: 'View Proposal', value: 'viewProposal' },
-                                            { label: 'Recreate Proposal', value: 'renew_proposal' },
-                                          ]
-                                          : [
+                                            { label: 'Reschedule Appointment', value: 'app_sched' },
                                             { label: 'Create Proposal', value: 'new_proposal' },
-                                            { label: 'Schedule Appointment', value: 'app_sched' },
                                           ]
-                                  }
-                                />
+                                          : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                            ? [
+                                              { label: 'View Proposal', value: 'viewProposal' },
+                                              { label: 'Refresh Url', value: 'renew_proposal' },
+                                              { label: 'Download Proposal', value: 'download' },
+                                              { label: 'Reschedule Appointment', value: 'app_sched' },
+                                            ] : lead && lead.proposal_id !== ''
+                                              ? [
+                                                { label: 'View Proposal', value: 'viewProposal' },
+                                                { label: 'Edit Proposal', value: 'editProposal' },
+                                                { label: 'Refresh Url', value: 'renew_proposal' },
+                                              ]
+                                              : [
+                                                { label: 'Create Proposal', value: 'new_proposal' },
+                                                { label: 'Schedule Appointment', value: 'app_sched' },
+                                              ]
+                                      }
+                                    />
+                                  )}
+                                </>
                               )}
                           </div>
-                          <div onClick={() => (setLeadId(lead.leads_id))}>
-                            <ChangeStatus
-                              selectedType={selectedType}
-                              onSelectType={(type: string) => {
-                                setSelectedType(type);
-                                setActiveSection(activeSection);
-                              }}
-                              cb={() => {
-                                setSelected(index)
-                              }}
-                              disabledOptions={
-                                lead.appointment_status_label !== ''
-                                  ? lead.won_lost_label !== ''
-                                    ? ['Appointment Not Required', 'Deal Won']
-                                    : ['Appointment Not Required']
-                                  : lead.won_lost_label !== ''
-                                    ? ['Deal Won']
-                                    : []
-                              }
-                            />
+                          <div className={styles.RowMobileTwo}>
+                            <div className={styles.RowMobileColumns} onClick={() => (setLeadId(lead.leads_id))}>
+                              <ChangeStatus
+                                selectedType={selectedType}
+                                onSelectType={(type: string) => {
+                                  setSelectedType(type);
+                                  setActiveSection(activeSection);
+                                }}
+                                cb={() => {
+                                  setSelected(index)
+                                }}
+                                disabledOptions={
+                                  lead.appointment_status_label !== ''
+                                    ? lead.won_lost_label !== ''
+                                      ? ['Appointment Not Required', 'Deal Won']
+                                      : ['Appointment Not Required']
+                                    : lead.won_lost_label !== ''
+                                      ? ['Deal Won']
+                                      : []
+                                }
+                              />
 
+                            </div>
+                            <div className={`${styles.RowMobileColumns} ${styles.infoIcon}`} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
+                              <IoInformationOutline />
+                            </div>
+                            <Tooltip
+                              style={{
+                                zIndex: 20,
+                                background: '#f7f7f7',
+                                color: '#000',
+                                fontSize: 12,
+                                paddingBlock: 4,
+
+                              }}
+                              offset={8}
+                              id="info"
+                              place="bottom"
+                              content="Lead Info"
+                            />
                           </div>
-                          <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
-                            <IoInformationOutline />
+                        </td>
+                      }
+                      {(selectedLeads.length === 0 && !isMobile) &&
+
+                        <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
+                          {/* FIRST ROW FIRST COLUMNS STARTED*/}
+                          <div style={{
+                            display: 'flex',
+                            gap:"20px",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: "100%"
+                          }}>
+                            <div onClick={() => (setLeadId(lead.leads_id))}>
+                              {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
+                                <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
+                              ) :
+                                ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
+                                  <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
+                                ) : (
+                                  <>
+                                    {downloadingLeadId === lead.leads_id ? (
+                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <MicroLoader />
+                                        <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
+                                      </div>
+                                    ) : (
+                                      <DropDownLeadTable
+                                        selectedType={selectedType}
+                                        onSelectType={(type: string) => {
+                                          setSelectedType(type);
+                                          setActiveSection(activeSection);
+                                        }}
+                                        cb={() => {
+                                          setSelected(index);
+                                        }}
+                                        options={
+                                          lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
+                                            ? [
+                                              { label: 'Reschedule Appointment', value: 'app_sched' },
+                                              { label: 'Create Proposal', value: 'new_proposal' },
+                                            ]
+                                            : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                              ? [
+                                                { label: 'View Proposal', value: 'viewProposal' },
+                                                { label: 'Refresh Url', value: 'renew_proposal' },
+                                                { label: 'Download Proposal', value: 'download' },
+                                                { label: 'Reschedule Appointment', value: 'app_sched' },
+                                              ] : lead && lead.proposal_id !== ''
+                                                ? [
+                                                  { label: 'View Proposal', value: 'viewProposal' },
+                                                  { label: 'Download', value: 'download' },
+                                                  { label: 'Refresh Url', value: 'renew_proposal' },
+                                                ]
+                                                : [
+                                                  { label: 'Create Proposal', value: 'new_proposal' },
+                                                  { label: 'Schedule Appointment', value: 'app_sched' },
+                                                ]
+                                        }
+                                      />
+                                    )}
+                                  </>
+                                )}
+                            </div>
+                            {/* FIRST ROW FIRST COLUMNS ENDED */}
+                            {/* SECOND ROW FIRST COLUMNS STARTED */}
+                            <div onClick={() => (setLeadId(lead.leads_id))}>
+                              <ChangeStatus
+                                selectedType={selectedType}
+                                onSelectType={(type: string) => {
+                                  setSelectedType(type);
+                                  setActiveSection(activeSection);
+                                }}
+                                cb={() => {
+                                  setSelected(index)
+                                }}
+                                disabledOptions={
+                                  lead.appointment_status_label !== ''
+                                    ? lead.won_lost_label !== ''
+                                      ? ['Appointment Not Required', 'Deal Won']
+                                      : ['Appointment Not Required']
+                                    : lead.won_lost_label !== ''
+                                      ? ['Deal Won']
+                                      : []
+                                }
+                              />
+
+                            </div>
+                            {/* SECOND ROW SECOND COLUMNS STARTED */}
+                            <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
+                              <IoInformationOutline />
+                            </div>
                           </div>
+                          {/* SECOND ROW SECOND COLUMNS ENDED */}
                           <Tooltip
                             style={{
                               zIndex: 20,
@@ -468,6 +721,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                           />
                         </td>
                       }
+
                     </tr>
                   ))
                 ) : (
@@ -479,8 +733,32 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                 )}
               </tbody>
             </table>
+
           </div>
+
         </div>
+        {/* {leadsData.length > 0 && !isLoading && (
+          <div className="page-heading-container">
+
+            <p className="page-heading">
+              {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+            </p>
+
+
+
+            <Pagination
+              currentPage={page}
+              totalPages={totalPage}
+              paginate={paginate}
+              currentPageData={[]}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+              onPerPageChange={handlePerPageChange}
+            />
+          </div>
+
+        )} */}
       </div>
     </>
   )
@@ -491,3 +769,4 @@ export default LeadTable
 
 // Status - won = Won - dis
 //st- sched, any status - not req - disable     <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh}/>
+

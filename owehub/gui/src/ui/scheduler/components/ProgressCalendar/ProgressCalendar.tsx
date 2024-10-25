@@ -13,6 +13,7 @@ type DayWithProgress = {
   date: Date;
   progress: number;
   id: number;
+  colorCode?: string; // Added colorCode property
 };
 
 type TEvent = {
@@ -56,12 +57,6 @@ const getNextSevenWeekdays = (): Date[] => {
   return nextSevenWeekdays;
 };
 
-const getColorByPercent = (percent: number): string => {
-  if (percent >= 90) return '#F73419';
-  if (percent > 70) return '#F8B128';
-  return '#53B543';
-};
-
 const DayButton = ({
   day,
   selected,
@@ -76,14 +71,16 @@ const DayButton = ({
   const isNext = nextSevenWeekdays.some(
     (date) => date.getTime() === new Date(day.date).setHours(0, 0, 0, 0)
   );
+  
   const findDay = dayWithProgress?.find(
     (date) =>
       date.date.getDate() === day.date.getDate() &&
       date.date.getMonth() === day.date.getMonth() &&
       date.date.getFullYear() === day.date.getFullYear()
   );
+  
   const colorProgress = findDay?.progress;
-  const getColor = colorProgress ? getColorByPercent(colorProgress) : '';
+  const getColor = findDay?.colorCode || ''; // Use colorCode instead of calculating
   const isSelected =
     selected?.getTime() === new Date(day.date).setHours(0, 0, 0, 0);
 
@@ -91,7 +88,7 @@ const DayButton = ({
     <button
       {...buttonProps}
       disabled={!isNext}
-      className={`${className} ${!isNext ? styles.disable_day_cell : ''}  ${dayCellClassName}`}
+      className={`${className} ${!isNext ? styles.disable_day_cell : ''} ${dayCellClassName}`}
       onClick={() =>
         onDateSelect?.({ date: day.date, event: { id: findDay?.id! } })
       }
@@ -132,16 +129,15 @@ const DayPickerCalendar = ({
   }, [selectedDate]);
 
   return (
-    <div>
+    <div style={{marginLeft:'20px'}}>
       <h5
-        style={{ fontWeight: 600 }}
-        className={`  mb2 ${defaultClassNames.month_caption} ${!selected ? 'flex justify-center' : 'ml2'} `}
+        style={{ fontWeight: 600, fontSize:'14px' }}
+        className={`mb2 ${defaultClassNames.month_caption} ${!selected ? 'flex justify-center' : 'ml2'}`}
       >
-        {' '}
         {format(
           selected || new Date(),
           selected ? 'dd MMMM yyyy' : 'MMMM yyyy'
-        )}{' '}
+        )}
       </h5>
 
       <DayPicker
@@ -157,7 +153,7 @@ const DayPickerCalendar = ({
         selected={selected}
         classNames={{
           caption_label: styles.caption_label,
-          month_caption: `hidden`,
+          month_caption: 'hidden',
         }}
         components={{
           DayButton: (props) => (

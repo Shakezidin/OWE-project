@@ -52,7 +52,7 @@ import {
 import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
-import { MdDownloading } from 'react-icons/md';
+import { MdDownloading, MdHeight } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
@@ -93,6 +93,29 @@ interface WebProposal {
   url: string;
   url_expired: boolean;
 }
+
+type SSEPayload =
+  | {
+    is_done: false;
+    data: {
+      current_step: number;
+      total_steps: number;
+    };
+  }
+  | {
+    is_done: true;
+    data: {
+      current_step: number;
+      total_steps: number;
+      url: string;
+    };
+    error: null;
+  }
+  | {
+    is_done: true;
+    error: string;
+    data: null;
+  };
 
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -344,6 +367,8 @@ const LeadManagementDashboard = () => {
     setSelectedRanges([ranges.selection]);
   };
 
+
+
   const onReset = () => {
     const currentDate = new Date();
     setSelectedDates({ startDate: startOfThisWeek, endDate: today });
@@ -368,7 +393,7 @@ const LeadManagementDashboard = () => {
     setSelectedPeriod(null);
     setIsCalendarOpen(false);
   };
-  
+
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -481,6 +506,7 @@ const LeadManagementDashboard = () => {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
+      setPage(1);
     }
   }, [activeIndex]);
 
@@ -490,6 +516,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
+    setPage(1);
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -507,7 +534,7 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
- 
+
 
 
   // ************************ API Integration By Saurabh ********************************\\
@@ -603,29 +630,29 @@ const LeadManagementDashboard = () => {
 
           if (response.status === 200) {
             const apiData = response.data;
-            
+
             const formattedData = apiData.reduce(
               (acc: DefaultData, item: any) => {
                 const statusName = item.status_name;
                 const defaultDataKey = Object.keys(defaultData).find(
                   (key) => key === statusName || defaultData[key].name === statusName
                 );
-            
+
                 if (defaultDataKey) {
                   acc[defaultDataKey] = {
                     ...defaultData[defaultDataKey],
                     value: item.count,
                   };
                 }
-            
+
                 return acc;
               },
               { ...defaultData }
             );
-            
+
             const mergedData = Object.values(formattedData) as StatusData[];
             setPieData(mergedData);
-            
+
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -698,7 +725,7 @@ const LeadManagementDashboard = () => {
           statusId = 5;
           break;
         default:
-          statusId = 'NEW';
+          statusId = '';
       }
 
       const data = {
@@ -1048,8 +1075,11 @@ const LeadManagementDashboard = () => {
   };
 
   const [exporting, setIsExporting] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
+
 
   const exportCsv = async () => {
+    setShowTooltip(false);
     setIsExporting(true);
     const headers = [
       'Lead ID',
@@ -1159,6 +1189,7 @@ const LeadManagementDashboard = () => {
     } finally {
       setIsExporting(false);
     }
+    setShowTooltip(true);
   };
 
   //----------------Aurora API integration START-----------------------//
@@ -1180,6 +1211,7 @@ const LeadManagementDashboard = () => {
           const createProjectResult = await dispatch(auroraCreateProject({
             "leads_id": leadId,
             "customer_salutation": "Mr./Mrs.",
+            "project_type": "residential",
             "status": "In Progress",
             "preferred_solar_modules": moduleIds,
             "tags": ["third_party_1"]
@@ -1202,7 +1234,7 @@ const LeadManagementDashboard = () => {
 
                 if (proposalData.proposal_link) {
                   // Step 5: Generate Web Proposal
-                  await generateWebProposal(leadId);
+                  await downloadProposalWithSSE(leadId);
 
                   toast.success('Proposal created successfully!');
                   setRefresh((prev) => prev + 1);
@@ -1241,7 +1273,7 @@ const LeadManagementDashboard = () => {
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
         if (generatedProposalData.url) {
-          // toast.success('Web proposal generated successfully!');
+          toast.success('Web proposal generated successfully!');
           return generatedProposalData;
         } else {
           toast.error('Failed to generate web proposal.');
@@ -1283,9 +1315,48 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  const downloadProposalWithSSE = (leadId: number) => {
+
+
+    const eventSource = new EventSource(
+      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const payload: SSEPayload = JSON.parse(event.data);
+
+      if (!payload.is_done) {
+        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
+        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+      } else if (payload.is_done) {
+
+        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('Error with SSE connection', error);
+    };
+  };
+  //----------------Aurora API integration END-------------------------//
+
   console.log(pieData, "hgfsfhfsdhahfg")
 
-  //----------------Aurora API integration END-------------------------//
+  useEffect(() => {
+    if (searchTerm !== '') {
+      setCurrentFilter('');
+    } else {
+      setCurrentFilter('New Leads');
+    }
+  }, [searchTerm]);
+
+  const handleCrossIcon = () => {
+    setCurrentFilter('New Leads');
+    setSearchTerm('');
+    setSearch('');
+  }
+
+
   //*************************************************************************************************//
 
   return (
@@ -1301,7 +1372,7 @@ const LeadManagementDashboard = () => {
           </div>
         </div>
       </div>
-      <ConfirmModel
+      {/* <ConfirmModel
         isOpen1={isModalOpen}
         onClose1={handleCloseModal}
         leadId={leadId}
@@ -1310,23 +1381,33 @@ const LeadManagementDashboard = () => {
         reschedule={reschedule}
         action={action}
         setReschedule={setReschedule}
-      />
+      /> */}
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
+
           <div className={styles.FirstColHead}>
+            {/* HERE FOR TOGGLE VIEW WHEN HIDE OTHER BOTTONS */}
+
             {isToggledX && (
               <div className={styles.customLeft}>
                 Overview
               </div>
             )}
+
+
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads: {totalValue ? totalValue : '0'}
             </div>
           </div>
           <div className={styles.SecondColHead}>
+            {
+              isToggledX == false && <div className={styles.MobileViewHide}>
+                Total leads: {totalValue ? totalValue : '0'}
+              </div>
+            }
+            {/* CARD DESIGNING STRTED */}
             <div>
               {isToggledX && <div className={styles.customLeft}
-              // className={`${styles.customLeft} ${styles.custom3}`}
               >Total Won Lost</div>}
             </div>
             <div className={`${styles.customRight} ${styles.customFont}`}>
@@ -1455,13 +1536,17 @@ const LeadManagementDashboard = () => {
                 >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>}
+
+
                 <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
                   {isToggledX ? (
-                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DownArrowDashboardAboveDirection} /></div>
-                  ) : (
-                    <div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}><img className={styles.ArrowDX} src={ICONS.DownArrowDashboardAboveDirection} /></div>
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DashboardNewIcon} /></div>
+                  ) : (<div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
+                    <img className={styles.ArrowDX} src={ICONS.DashboardNewIcon} />
+                  </div>
                   )}
                 </div>
+
                 <Tooltip
                   style={{
                     zIndex: 20,
@@ -1469,21 +1554,32 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    
-                    fontWeight:"400"
+
+                    fontWeight: "400"
                   }}
                   offset={8}
                   delayShow={800}
                   id="downip"
                   place="bottom"
-                  content= {isToggledX ? "Minimize" : "Maximize"}
+                  content={isToggledX ? "Minimize" : "Maximize"}
                 />
               </div></div>
           </div>
         </div>
         {/* //HORIZONTAL ENDED */}
         {isToggledX && <div className={styles.vertical1}>
-          <div style={{ width: "100%" }}>
+          <div className={styles.FirstColHeadMobile}>
+
+            <div className={`${styles.customLeftMobile} ${styles.customFont}`}>
+              Overview
+            </div>
+
+            <div className={styles.customFont}>
+              Total leads: {totalValue ? totalValue : '0'}
+            </div>
+          </div>
+
+          <div style={{ width: "120%" }}>
             {loading ? (
               <div
                 style={{
@@ -1644,6 +1740,30 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button> */}
                 </div>
+                {searchTerm !== '' && (
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "15px",
+                      marginTop: "2px",
+                      transition: "transform 0.3s ease-in-out",
+                      display: "inline-block",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.13)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                    onClick={handleCrossIcon}
+                  >
+                    <img
+                      src={ICONS.crossIconUser}
+                      alt="cross"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </div>
+                )}
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
                     {/* You can use an SVG or a FontAwesome icon here */}
@@ -1651,7 +1771,8 @@ const LeadManagementDashboard = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search by customer name"
+                    value={search}
+                    placeholder="Enter customer name or id"
                     className={styles.searchInput}
                     onChange={(e) => {
                       if (e.target.value.length <= 50) {
@@ -1682,7 +1803,7 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    fontWeight:"400"
+                    fontWeight: "400"
                   }}
                   delayShow={800}
                   offset={8}
@@ -1702,7 +1823,7 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }}
                     offset={8}
                     id="NEW"
@@ -1731,23 +1852,24 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
+                  {showTooltip &&
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      delayShow={800}
+                      id="export"
+                      place="bottom"
+                      content="Export"
 
-                  <Tooltip
-                    style={{
-                      zIndex: 103,
-                      background: '#f7f7f7',
-                      color: '#000',
-                      fontSize: 12,
-                      paddingBlock: 4,
-                      fontWeight:"400"
-                    }}
-                    offset={8}
-                    delayShow={800}
-                    id="export"
-                    place="bottom"
-                    content="Export"
-                    
-                  />
+                    />
+                  }
 
 
 
@@ -1781,6 +1903,205 @@ const LeadManagementDashboard = () => {
             )}
           </div>
         )}
+        {/* ///HERE I NEED TO CHANGE RABINDRA */}
+        {archive == false && (
+          <div className={styles.cardHeaderForMobile}>
+            <div className={styles.FirstRowSearch}>
+              {selectedLeads.length === 0 ? (
+                <>
+                  {searchTerm !== '' && (
+                    <div
+                      style={{
+                        cursor: "pointer",
+                        marginRight: "15px",
+                        marginTop: "2px",
+                        transition: "transform 0.3s ease-in-out",
+                        display: "inline-block",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "scale(1.13)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                      onClick={handleCrossIcon}
+                    >
+                      <img
+                        src={ICONS.crossIconUser}
+                        alt="cross"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                    </div>
+                  )}
+                  <div className={styles.searchBarMobile}>
+                    <div className={styles.searchIcon}>
+                      {/* You can use an SVG or a FontAwesome icon here */}
+                      <img src={ICONS.SearchICON001} />
+                    </div>
+                    <input
+                      value={search}
+                      type="text"
+                      placeholder="Enter customer name or id"
+                      className={styles.searchInput}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 50) {
+                          e.target.value = e.target.value.replace(
+                            /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                            ''
+                          );
+                          handleSearchChange(e);
+                          setSearch(e.target.value);
+                        }
+                      }}
+                    />
+                  </div>
+                  <HistoryRedirect />
+                  {currentFilter === 'In Progress' && (
+                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
+                  )}
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                      fontWeight: "400"
+                    }}
+                    delayShow={800}
+                    offset={8}
+                    id="More Pages"
+                    place="bottom"
+                    content="More Pages"
+                  />
+                  <div className={styles.filterCallToActionMobile}>
+                    <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                      <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                    </div>
+
+                    <Tooltip
+                      style={{
+                        zIndex: 20,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      id="NEW"
+                      place="bottom"
+                      content="Add New Lead"
+                      delayShow={800}
+                    />
+
+                    <div
+                      className={styles.export_btn}
+                      onClick={exportCsv}
+                      data-tooltip-id="export"
+                      style={{
+                        pointerEvents: exporting ? 'none' : 'auto',
+                        opacity: exporting ? 0.6 : 1,
+                        cursor: exporting ? 'not-allowed' : 'pointer',
+                      }}
+                    >
+                      {exporting ? (
+                        <MdDownloading
+                          className="downloading-animation"
+                          size={26}
+                          color="white"
+                        />
+                      ) : (
+                        <LuImport color="white" />
+                      )}
+                    </div>
+                    {showTooltip &&
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: "400"
+                        }}
+                        offset={8}
+                        delayShow={800}
+                        id="export"
+                        place="bottom"
+                        content="Export"
+
+                      />
+                    }
+                  </div>
+                </>
+              ) : (
+                <div className={styles.selectionHeader}>
+                  <div className={styles.selectionInfo}>
+
+
+                    <span
+                      className={styles.closeIcon}
+                      onClick={() => setSelectedLeads([])}
+                    >
+                      <img src={ICONS.cross} alt="" height="26" width="26" />
+                    </span>
+                    <span>{selectedLeads.length} Selected</span>
+                  </div>
+                  <button
+                    style={{
+                      pointerEvents: archived ? 'none' : 'auto',
+                      opacity: archived ? 0.6 : 1,
+                      cursor: archived ? 'not-allowed' : 'pointer',
+                    }}
+                    className={styles.removeButton}
+                    onClick={handleArchiveSelected}
+                    disabled={archived}
+                  >
+                    {archived ? 'Archiving...' : 'Archive'}
+                  </button>
+                </div>
+              )}</div>
+            <div className={styles.buttonGroupMobile}>
+              {pieData.map((data) => {
+                let displayStatus = '';
+                switch (data.name) {
+                  case 'NEW':
+                    displayStatus = 'New Leads';
+                    break;
+                  case 'PROGRESS':
+                    displayStatus = 'In Progress';
+                    break;
+                  case 'DECLINED':
+                    displayStatus = 'Declined';
+                    break;
+                  case 'ACTION_NEEDED':
+                    displayStatus = 'Action Needed';
+                    break;
+                  default:
+                    displayStatus = data.name;
+                }
+
+                return (
+                  <button
+                    key={data.name}
+                    className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
+                           ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                    onClick={() => handleFilterClick(displayStatus)}
+                  >
+                    <p
+                      className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
+                    >
+                      {data.value}
+                    </p>
+                    <span className={styles.displayStatus}>{displayStatus}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className={styles.cardContent}>
           {currentFilter === 'Projects' ? (
             isProjectLoading ? (
@@ -1817,26 +2138,23 @@ const LeadManagementDashboard = () => {
             />
           )}
           {leadsData.length > 0 && !isLoading && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
-                  {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
-                </p>
-              </div>
+            <div className="page-heading-container">
 
-              <div className={styles.rightitem}>
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPage}
-                  paginate={paginate}
-                  currentPageData={[]}
-                  goToNextPage={goToNextPage}
-                  goToPrevPage={goToPrevPage}
-                  perPage={itemsPerPage}
-                  onPerPageChange={handlePerPageChange}
-                />
-              </div>
+              <p className="page-heading">
+                {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+              </p>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPage}
+                paginate={paginate}
+                currentPageData={[]}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+                onPerPageChange={handlePerPageChange}
+              />
             </div>
+
           )}
         </div>
       </div>

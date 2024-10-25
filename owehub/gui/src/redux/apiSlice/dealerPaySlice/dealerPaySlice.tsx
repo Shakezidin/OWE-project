@@ -41,6 +41,7 @@ const dealerPaySlice = createSlice({
     });
     builder.addCase(getDealerPay.fulfilled, (state, action) => {
       state.loading = false;
+      console.log(action.payload?.list, "dtaaaaa")
       state.data = action.payload?.list;
       state.count = action.payload?.count;
       state.tileData = action.payload?.tileData

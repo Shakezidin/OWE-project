@@ -11,6 +11,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { Calendar } from 'react-date-range';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { configPostCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import moment from 'moment';
 import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
 import FilterHoc from '../../components/FilterModal/FilterHoc';
@@ -25,6 +26,9 @@ import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
+import { toast } from 'react-toastify';
+import Papa from 'papaparse';
+import { dateFormat } from '../../../utiles/formatDate';
 
 interface Option {
   value: string;
@@ -34,7 +38,7 @@ interface Option {
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
+  
   const dispatch = useAppDispatch();
  
   const handleSelect = (ranges: Date) => {
@@ -44,6 +48,7 @@ export const DashboardPage: React.FC = () => {
   const handleResetDates = () => {
     setSelectionRange(new Date());
   };
+ 
 
   const itemsPerPage = 25;
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,8 +63,11 @@ export const DashboardPage: React.FC = () => {
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
-
-
+  const [tileData, setTileData] = useState({})
+  const [isExportingData, setIsExporting] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [data,setData] = useState<any>([]);
+  const [count, setTotalCount] = useState<number>(0)
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[comissionValueData.length - 1].value
   );
@@ -83,27 +91,78 @@ export const DashboardPage: React.FC = () => {
   const [isFetched, setIsFetched] = useState(false);
 
   const datePickerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-   
-      dispatch(
-        getDealerPay({
+    if (!selectedDealer || selectedDealer.length === 0) return; // Exit early if selectedDealer is empty
+    
+    (async () => {
+      setLoading(true);  // Start loading before the request
+      
+      // Set the applied date or a default if undefined
+      const date = appliedDate ? new Date(appliedDate) : new Date();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const year = date.getUTCFullYear();
+      const customFormattedDate = `${month}-${day}-${year}`; // Output: "MM-DD-YYYY"
+    
+      try {
+        const partnerNames = selectedDealer.map(dealer => dealer.value); // Extract all values
+  
+        const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          partner_name: selectedDealer,
-        })
-      );
+          partner_name: partnerNames, // Send all values
+          filters,
+          payrole_date: appliedDate ? customFormattedDate : undefined
+        });
     
-  }, [
-    currentPage,
-    selectedOption2,
-    appliedDate,
-    filters,
-    dealer,
-    prefferedType,
-  ]);
-
+        if (resp.status > 201) {
+          toast.error(resp.message);
+          setData([]);
+          setTileData('');
+          setLoading(false);
+          return;
+        }
+    
+        setData(resp.data.DealerPayComm);
+        setTotalCount(resp.dbRecCount);
+        setTileData(resp.data);
   
+      } catch (error) {
+        console.error(error);
+        setData([]);
+        toast.error('An unexpected error occurred');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType, selectedDealer]);
+  
+  
+  
+  
+  
+
+  // useEffect(() => {
+   
+  //     dispatch(
+  //       getDealerPay({
+  //         page_number: currentPage,
+  //         page_size: itemsPerPage,
+  //         partner_name: selectedDealer,
+  //         filters
+  //       })
+  //     );
+    
+  // }, [
+  //   currentPage,
+  //   selectedOption2,
+  //   appliedDate,
+  //   filters,
+  //   dealer,
+  //   prefferedType,
+  // ]);
+
+
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
       value,
@@ -125,6 +184,9 @@ export const DashboardPage: React.FC = () => {
     setIsFetched(true);
   };
 
+
+  console.log(selectionRange, 'selectrange');
+  
   const handleEscapeKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && showDatePicker) {
       setShowDatePicker(false);
@@ -182,7 +244,102 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
-  console.log(selectedDealer, 'jkrgrjgb')
+  const handleExportOpen = () => {
+    exportCsv();
+  }
+
+
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+  // Function to remove HTML tags from strings
+  const removeHtmlTags = (str:any) => {
+    if (!str) return '';
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  setIsExporting(true);
+  const exportData = await configPostCaller('get_dealerpaycommissions', {
+    page_number: 1,
+    page_size: count,
+  });
+  if (exportData.status > 201) {
+    toast.error(exportData.message);
+    return;
+  }
+  
+    
+    const headers = [
+      'Unique Id',
+      'Home Owner',
+      'Current Status',
+      'Dealer Code',
+      'Sys Size',
+      'Contract $$',
+      'Other Adders',
+      'Rep 1',
+      'Rep 2',
+      'Setter',
+      'ST',
+      'Contract Date',
+      'Loan Fee',
+      'NET EPC',
+      'Credit',
+      'Draw Amt',
+      'RL',
+      'Type',
+      'Toady',
+      'Amount',
+      'EPC',
+      'Amount Paid',
+      'Balance',
+      'Help'
+    ];
+  
+   
+     
+    const csvData = exportData?.data.DealerPayComm?.map?.((item: any) => [
+      item.unique_id,
+      item.home_owner,
+      item.current_status,
+      item.dealer_code,
+      item.sys_size,
+      item.contract,
+      item.address,
+      item.rep1,
+      item.rep2,
+      item.setter,
+      item.st,
+      item.contract_date,
+      item.loan_fee,
+      item.net_epc,
+      item.credit,
+      item.draw_amt,
+      item.rl,
+      item.type,
+      item.today,
+      item.amount,
+      item.epc, 
+      item.amt_paid,
+      item.balance,
+
+    ]);
+  
+    const csvRows = [headers, ...csvData];
+  
+    const csvString = Papa.unparse(csvRows);
+  
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'dealerpay.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+   
+  };
+ 
+ 
   return (
     <>
       <div className="Dashboard-section-container">
@@ -299,13 +456,13 @@ export const DashboardPage: React.FC = () => {
                   style={{ height: '36px', padding: '8px 12px' }}
                 >
                   <FaUpload size={12} className="mr-1 dealer-exp-svg" />
-                  <span className='dealer-export-mob'>{' Export '}</span>
+                  <span className='dealer-export-mob' onClick={handleExportOpen} >{' Export '}</span>
                 </button>
               </div>
             </div>
           </div>
           <div className="">
-            <DashboardTotal setPrefferedType={setPrefferedType} />
+            <DashboardTotal setPrefferedType={setPrefferedType} tileData={tileData} loading={loading} />
             {/* <DonutChart /> */}
           </div>
         </div>
@@ -325,6 +482,9 @@ export const DashboardPage: React.FC = () => {
             <DashBoardTable
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
+              data={data}
+              count={count}
+              loading={loading}
             />
           )}
           {active === 1 && <DashBoardChart />}

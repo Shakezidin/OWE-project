@@ -18,19 +18,24 @@ import { dateFormat } from '../../../utiles/formatDate';
 const DashBoardTable = ({
   currentPage,
   setCurrentPage,
+  data,
+  count,
+  loading
 }: {
+  data:any,
+  count:number,
+  loading:any,
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
 }) => {
   const [editedCommission] = useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const { data, count, loading } = useAppSelector(
-    (state) => state.dealerPaySlice
-  );
+
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [editData, setEditData] = useState<any>({});
+
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const handleIconOpen = () => setOpenIcon(true);
@@ -128,8 +133,8 @@ const DashBoardTable = ({
                     </div>
                   </td>
                 </tr>
-              ) : currentPageData.length > 0 ? (
-                currentPageData.map((el: any, index: any) => (
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, index: any) => (
                   <tr key={index}>
                     <td style={{ fontWeight: '500' }}>
                       <div className="flex-check">
@@ -180,7 +185,7 @@ const DashBoardTable = ({
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
                       {el.credit ?? 'N/A'}
                     </td>
-                    <td>{el.draw_amt || 'N/A'}</td>
+                    <td>{el.draw_amt || '$0'}</td>
                     <td>{el.rl || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
                     <td>{el.today || 'N/A'}</td>
@@ -192,7 +197,7 @@ const DashBoardTable = ({
                       ${el.amt_paid ?? 'N/A'}
                     </td>
                     <td style={{ color: '#379DE3', fontWeight: '500' }}>
-                      ${el.balance ?? 'N/A'}
+                      {el.balance ? '$' + el.balance : '$0'}
                     </td>
                     <td className="zoom-out-help">
                       <img
