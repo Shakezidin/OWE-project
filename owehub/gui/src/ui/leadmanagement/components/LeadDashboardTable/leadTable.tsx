@@ -138,20 +138,26 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
       eventSource.close();
     };
   };
-
+  const [won, setWon] = useState(false);
   useEffect(() => {
     if (selectedType === 'app_sched') {
       handleOpenModal();
       setAction(false);
+      setWon(false);
       setReschedule(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
       setReschedule(false);
+      setWon(false);
       setAction(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Won') {
-      handleCloseWon();
+      // handleCloseWon();
+      handleOpenModal();
+      setAction(false);
+      setReschedule(false);
+      setWon(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
@@ -320,6 +326,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
         reschedule={reschedule}
         action={action}
         setReschedule={setReschedule}
+        won={won}
+        setWon={setWon}
       />
 
       <Profile

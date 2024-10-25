@@ -1211,7 +1211,7 @@ const LeadManagementDashboard = () => {
           const createProjectResult = await dispatch(auroraCreateProject({
             "leads_id": leadId,
             "customer_salutation": "Mr./Mrs.",
-            "project_type":"residential",
+            "project_type": "residential",
             "status": "In Progress",
             "preferred_solar_modules": moduleIds,
             "tags": ["third_party_1"]
@@ -1372,7 +1372,7 @@ const LeadManagementDashboard = () => {
           </div>
         </div>
       </div>
-      <ConfirmModel
+      {/* <ConfirmModel
         isOpen1={isModalOpen}
         onClose1={handleCloseModal}
         leadId={leadId}
@@ -1381,7 +1381,7 @@ const LeadManagementDashboard = () => {
         reschedule={reschedule}
         action={action}
         setReschedule={setReschedule}
-      />
+      /> */}
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
 
@@ -1740,9 +1740,30 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button> */}
                 </div>
-                {searchTerm !== '' &&
-                  <div style={{ cursor: "pointer", marginRight: "15px", marginTop: "2px" }} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }} /></div>
-                }
+                {searchTerm !== '' && (
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "15px",
+                      marginTop: "2px",
+                      transition: "transform 0.3s ease-in-out",
+                      display: "inline-block",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.13)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                    onClick={handleCrossIcon}
+                  >
+                    <img
+                      src={ICONS.crossIconUser}
+                      alt="cross"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </div>
+                )}
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
                     {/* You can use an SVG or a FontAwesome icon here */}
@@ -1888,9 +1909,30 @@ const LeadManagementDashboard = () => {
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
                 <>
-                  {searchTerm !== '' &&
-                    <div style={{ cursor: "pointer", marginRight: "15px", marginTop: "2px" }} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }} /></div>
-                  }
+                  {searchTerm !== '' && (
+                    <div
+                      style={{
+                        cursor: "pointer",
+                        marginRight: "15px",
+                        marginTop: "2px",
+                        transition: "transform 0.3s ease-in-out",
+                        display: "inline-block",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "scale(1.13)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                      onClick={handleCrossIcon}
+                    >
+                      <img
+                        src={ICONS.crossIconUser}
+                        alt="cross"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                    </div>
+                  )}
                   <div className={styles.searchBarMobile}>
                     <div className={styles.searchIcon}>
                       {/* You can use an SVG or a FontAwesome icon here */}
@@ -1973,24 +2015,24 @@ const LeadManagementDashboard = () => {
                         <LuImport color="white" />
                       )}
                     </div>
-                 {showTooltip && 
-                    <Tooltip
-                      style={{
-                        zIndex: 20,
-                        background: '#f7f7f7',
-                        color: '#000',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                        fontWeight: "400"
-                      }}
-                      offset={8}
-                      delayShow={800}
-                      id="export"
-                      place="bottom"
-                      content="Export"
+                    {showTooltip &&
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: "400"
+                        }}
+                        offset={8}
+                        delayShow={800}
+                        id="export"
+                        place="bottom"
+                        content="Export"
 
-                    />
-}
+                      />
+                    }
                   </div>
                 </>
               ) : (
