@@ -225,10 +225,10 @@ useEscapeKey(() => setCollapse(-1));
                           <div>
                             {appointment.status === 'Pending' ? (
                               <div className={Styles.button_container}>
-                                <button style={{backgroundColor:'#e33737', color:'#fff'}} onClick={() => handleEdit(appointment)}>
+                                <button className={Styles.button} style={{backgroundColor:'#e33737', color:'#fff'}} onClick={() => handleEdit(appointment)}>
                                   Cancel site survey
                                 </button>
-                                <button
+                                <button className={Styles.button}
                                 style={{backgroundColor:'#fff', color:'#377cf6', border: '1px solid #377cf6'}}
                                   onClick={() => handleCancel(appointment)}
                                 >
