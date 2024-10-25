@@ -196,13 +196,13 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid,
 				
-				(SELECT SUM(balance) 
+				(SELECT SUM(amount) 
 				 FROM dealer_pay 
 				 WHERE unique_id IS NOT NULL 
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS pipeline_remaining,
 				
-				(SELECT SUM(draw_amt) 
+				(SELECT SUM(balance) 
 				 FROM dealer_pay 
 				 WHERE dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS current_due,
@@ -213,13 +213,13 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid_last_month,
 				
-				(SELECT SUM(balance) 
+				(SELECT SUM(amount) 
 				 FROM dealer_pay 
 				 WHERE unique_id IS NOT NULL 
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS pipeline_remaining_last_month,
 				
-				(SELECT SUM(draw_amt) 
+				(SELECT SUM(balance) 
 				 FROM dealer_pay 
 				 WHERE dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS current_due_last_month`,
