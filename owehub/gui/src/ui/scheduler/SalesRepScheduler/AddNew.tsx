@@ -13,6 +13,7 @@ import { FaXmark } from 'react-icons/fa6';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
+import useEscapeKey from '../../../hooks/useEscape';
 
 interface FormInput
   extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
@@ -35,7 +36,6 @@ const AddNew = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [count, setCount] = useState(0);
   const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -65,53 +65,88 @@ const AddNew = () => {
     { value: 'STANDING SEAM - METAL', label: 'STANDING SEAM - METAL' },
   ];
 
-  const handleIncrement = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      stories_in_house: prevData.stories_in_house + 1,
-    }));
-  };
+  // const handleIncrement = () => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     stories_in_house: prevData.stories_in_house + 1,
+  //   }));
+  // };
 
-  const handleDecrement = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      stories_in_house:
-        prevData.stories_in_house > 0 ? prevData.stories_in_house - 1 : 0,
-    }));
+  // const handleDecrement = () => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     stories_in_house:
+  //       prevData.stories_in_house > 0 ? prevData.stories_in_house - 1 : 0,
+  //   }));
+  // };
+
+  const handleNumericInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow: backspace, delete, tab, escape, enter
+    if (
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+      // Allow: Ctrl+A, Command+A
+      (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+      // Allow: home, end, left, right, down, up
+      (e.keyCode >= 35 && e.keyCode <= 40)
+    ) {
+      return;
+    }
+    // Ensure that it is a number and stop the keypress if it's not
+    if (
+      (e.shiftKey || e.keyCode < 48 || e.keyCode > 57) &&
+      (e.keyCode < 96 || e.keyCode > 105)
+    ) {
+      e.preventDefault();
+    }
   };
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
-    const lettersAndSpacesPattern = /^[A-Za-z\s]*$/;
+    let updatedValue = value;
 
     if (name === 'mobile_number') {
-      const isValidPhoneNumber = /^[0-9+]*$/.test(value);
-      if (!isValidPhoneNumber) {
-        setPhoneNumberError('Please enter a valid phone number.');
-      } else {
+      // Remove any non-digit characters
+      updatedValue = value.replace(/\D/g, '');
+      if (updatedValue.length > 0) {
         setPhoneNumberError('');
       }
+    } else if (name === 'house') {
+      // Remove any non-digit characters
+      updatedValue = value.replace(/\D/g, '');
+      if (updatedValue.length > 20) {
+        updatedValue = updatedValue.slice(0, 20);
+      }
+      setErrors((prev) => ({ ...prev, house: '' }));
+    } else if (name === 'size') {
+      // Remove any non-digit characters
+      updatedValue = value.replace(/\D/g, '');
+      if (updatedValue.length > 7) {
+        updatedValue = updatedValue.slice(0, 7);
+      }
+      setErrors((prev) => ({ ...prev, size: '' }));
+    } else if (name === 'email_id') {
+      const isValidEmail = validateEmail(value.trim());
+      setEmailError(
+        !isValidEmail && value.length > 0
+          ? 'Please enter a valid email address.'
+          : ''
+      );
     } else if (name === 'first_name' || name === 'last_name') {
+      const lettersAndSpacesPattern = /^[A-Za-z\s]*$/;
       if (value === '' || lettersAndSpacesPattern.test(value)) {
         setErrors((prev) => ({ ...prev, [name]: '' }));
       } else {
         setErrors((prev) => ({
           ...prev,
-          [name]: 'Only letters and spaces are allowed.',
+          [name]: `${name === 'first_name' ? 'First' : 'Last'} Name can only contain letters`,
         }));
-      }
-    } else if (name === 'email_id') {
-      const isValidEmail = validateEmail(value.trim());
-      if (!isValidEmail) {
-        setEmailError('Please enter a valid email address.');
-      } else {
-        setEmailError('');
+        return; 
       }
     }
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
+    setFormData((prev) => ({
+      ...prev,
+      [name]: updatedValue,
     }));
   };
 
@@ -145,20 +180,22 @@ const AddNew = () => {
     }
 
     try {
+      const requestData = {
+        customer_first_name: formData.first_name,
+        customer_last_name: formData.last_name,
+        email: formData.email_id,
+        phone: formData.mobile_number,
+        address: formData.address,
+        roof_type: formData.roof_type,
+        is_battery_installed: formData.battery_installed,
+        house_stories: Number(formData.stories_in_house),
+        house_area_sqft: Number(formData.house) || 0,
+        system_size: formData.size,
+      };
+
       const response = await axios.post(
         'https://staging.owe-hub.com/api/owe-schedule-service/v1/create_sales_rep_proj',
-        {
-          customer_first_name: formData.first_name,
-          customer_last_name: formData.last_name,
-          email: formData.email_id,
-          phone: formData.mobile_number,
-          address: formData.address,
-          roof_type: formData.roof_type,
-          battery_installed: formData.battery_installed,
-          stories_in_house: formData.stories_in_house,
-          house_size: formData.house,
-          system_size: formData.size,
-        }
+        requestData
       );
 
       console.log('API response:', response.data);
@@ -180,13 +217,25 @@ const AddNew = () => {
 
       filterClose();
     } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Error submitting the form. Please try again.');
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Error submitting form:', error.response.data);
+        toast.error(
+          error.response.data.message ||
+            'Error submitting the form. Please try again.'
+        );
+      } else {
+        console.error('Unexpected error:', error);
+        toast.error('An unexpected error occurred. Please try again.');
+      }
     }
   };
+
   const handleBack = () => {
     navigate(-1);
   };
+
+  useEscapeKey(() => navigate(-1)); 
+
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -243,10 +292,9 @@ const AddNew = () => {
       isValid = false;
     }
 
-    console.log('formData', formData);
     setErrors(newErrors);
+    console.log('formData', formData);
     return isValid;
-    
   };
 
   return (
@@ -377,22 +425,14 @@ const AddNew = () => {
 
                       <div className={styles.srs_new_create}>
                         <Input
+                          type="text"
                           label="Phone Number"
-                          type="number"
                           value={formData.mobile_number}
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (value.length <= 20) {
-                              handleInputChange(e);
-                              if (value.trim() === '') {
-                                setPhoneNumberError('Phone Number is required');
-                              } else {
-                                setPhoneNumberError('');
-                              }
-                            }
-                          }}
-                          name="mobile_number"
                           placeholder="Enter phone number"
+                          onChange={handleInputChange}
+                          onKeyDown={handleNumericInput}
+                          name="mobile_number"
+                          maxLength={15}
                           className={styles.custom_Input}
                           backgroundColor="#F3F3F3"
                           labelClassName={styles.custom_label}
@@ -451,7 +491,7 @@ const AddNew = () => {
                               width: '85%',
                               minHeight: '36px',
                               borderRadius: '8px',
-                              fontSize:'12px',
+                              fontSize: '12px',
                               '@media only screen and (max-width: 600px)': {
                                 width: '240%',
                               },
@@ -572,30 +612,12 @@ const AddNew = () => {
 
                       <div className={styles.srs_new_create}>
                         <Input
-                          type="number"
+                          type="text"
                           label="House's Square Foot"
                           value={formData.house}
                           placeholder="Enter House's Square Foot"
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (/^\d{0,20}$/.test(value)) {
-                              handleInputChange(e);
-                              setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                house: '',
-                              }));
-                            } else if (value.trim() === '') {
-                              setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                house: 'House Square Foot is required',
-                              }));
-                            } else {
-                              setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                house: 'House Square Foot cannot exceed 20 digits',
-                              }));
-                            }
-                          }}
+                          onChange={handleInputChange}
+                          onKeyDown={handleNumericInput}
                           name="house"
                           maxLength={20}
                           backgroundColor="#F3F3F3"
@@ -627,31 +649,14 @@ const AddNew = () => {
 
                       <div className={styles.srs_new_create}>
                         <Input
-                          type="number"
+                          type="text"
                           label="System Size"
                           value={formData.size}
                           placeholder="Enter System Size"
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (/^\d{0,7}$/.test(value)) {
-                              handleInputChange(e);
-                              setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                house: '',
-                              }));
-                            } else if (value.trim() === '') {
-                              setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                house: 'System Size is required',
-                              }));
-                            } else {
-                              setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                house: 'System Size cannot exceed 7 digits',
-                              }));
-                            }
-                          }}
+                          onChange={handleInputChange}
+                          onKeyDown={handleNumericInput}
                           name="size"
+                          maxLength={7}
                           backgroundColor="#F3F3F3"
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}

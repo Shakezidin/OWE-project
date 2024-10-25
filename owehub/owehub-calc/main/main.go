@@ -8,6 +8,7 @@
 package main
 
 import (
+	"OWEApp/owehub-calc/services"
 	"OWEApp/shared/types"
 	"fmt"
 	"os"
@@ -41,6 +42,12 @@ func main() {
 		} else {
 			appserver.StartServiceServer("HTTPS", false, router)
 		}
+	}
+
+	err = services.ExecDlrPayInitialCalculation()
+	if err != nil {
+		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
+		return
 	}
 
 	/* Spawn signal handler routine*/

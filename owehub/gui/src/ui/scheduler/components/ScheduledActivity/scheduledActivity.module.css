@@ -146,7 +146,7 @@
     color: #8a8a8a;
 }
 
-button{
+.main_container button{
     border-radius: 6px;
     padding: 6px 12px;
     border: none;
@@ -231,8 +231,7 @@ button{
   }
   
   .icon:hover {
-    color: #377cf6; /* Use the desired color */
-  }
+    transform: scale(1.04);  }
 
 .header_right{
     display: flex;

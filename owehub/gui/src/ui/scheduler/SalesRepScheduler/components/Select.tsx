@@ -66,6 +66,7 @@ const Select: React.FC<SelectProps> = ({
         <span>
           {isAllSelected ? 'All Selected' : (selectedOptions.length > 0 ? selectedOptions.map(opt => opt.label).join(', ') : placeholder)}
         </span>
+        <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
         <BiChevronDown
           size={22}
           style={{
@@ -73,6 +74,7 @@ const Select: React.FC<SelectProps> = ({
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
           }}
         />
+        </div>
       </div>
       {isOpen && (
         <div className={styles.selectDropdown} style={dropdownStyle}>
