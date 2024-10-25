@@ -1772,7 +1772,7 @@ const LeadManagementDashboard = () => {
                   <input
                     type="text"
                     value={search}
-                    placeholder="Search by customer name or id"
+                    placeholder="Enter customer name or id"
                     className={styles.searchInput}
                     onChange={(e) => {
                       if (e.target.value.length <= 50) {

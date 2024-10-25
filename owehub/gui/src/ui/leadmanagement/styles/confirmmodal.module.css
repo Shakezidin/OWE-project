@@ -546,7 +546,31 @@
   .notEditable {
     display: block;
   }
-
+  .ctmracquiredDiv {
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: -347px;
+    width: 772px;
+    font-size: 12px !important;
+  }
+  .congratulationLetter {
+   
+   
+  padding-bottom: 0;
+  margin-bottom: 0;
+  }
+  
+  
+  .ctmracquired {
+    padding-left: 35.6%;
+    font-weight: 450;
+    font-size: 14px;
+    color: #1f2937;
+  }
+  
   .crossBtn {
     display: none;
   }
@@ -565,6 +589,15 @@
     width: auto;
     height: auto;
   }
+
+  .congratulations {
+    padding-left: 26.5%;
+    font-weight: 600;
+    font-size: 18px;
+    color: #3ac759;
+   
+  }
+  
 
   .btnImageCrossParent {
     display: flex;
