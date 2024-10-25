@@ -26,10 +26,11 @@ func ExecDlrPayInitialCalculation() error {
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
 	dealerPayments, err := oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
 	dealerOvrd, err := oweconfig.GetDealerOverrideConfigFromDB(dataReq)
+	partnerPaySchedule, err := oweconfig.GetPartnerPayScheduleConfigFromDB(dataReq)
 
 	for _, data := range InitailData.InitialDataList {
 		var dlrPayData map[string]interface{}
-		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd)
+		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd, partnerPaySchedule)
 
 		if err != nil || dlrPayData == nil {
 			if len(data.UniqueId) > 0 {
@@ -64,7 +65,7 @@ func ExecDlrPayInitialCalculation() error {
 * DESCRIPTION:     calculate the calculated data for DLR Pay
 * RETURNS:         outData
 *****************************************************************************/
-func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule oweconfig.FinanceSchedule, dealerCredit oweconfig.DealerCredits, dealerPayments oweconfig.DealerPayments, dealerovrd oweconfig.DealerOverride) (outData map[string]interface{}, err error) {
+func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule oweconfig.FinanceSchedule, dealerCredit oweconfig.DealerCredits, dealerPayments oweconfig.DealerPayments, dealerovrd oweconfig.DealerOverride, partnerPaySchedule oweconfig.PartnerPaySchedule) (outData map[string]interface{}, err error) {
 	// this row data is from sales data
 	outData = make(map[string]interface{})
 
@@ -73,7 +74,6 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	uniqueID := dlrPayData.UniqueId
 	DealerCode := dlrPayData.DealerCode
 	SystemSize := dlrPayData.SystemSize
-	Rl := dlrPayData.RL
 	ContractDolDol := dlrPayData.ContractDolDol
 	OtherAdders := dlrPayData.OtherAdders
 	Rep1 := dlrPayData.Rep1
@@ -82,16 +82,15 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	ST := dlrPayData.ST
 	ContractDate := dlrPayData.ContractDate
 	NetEpc := dlrPayData.NetEpc
-	DrawAmt := dlrPayData.DrawAmt // draw %
+	financeType := dlrPayData.FinanceType
+	mktFee := 5.0                                                                                                                                               //pemding from Colten sice
+	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
-	drawMax := dlrPayData.DrawMax
 	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
 	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
-	mktFee := 5.0 //pemding from Colten sice
-	financeType := dlrPayData.FinanceType
 	financeCompany := dlrPayData.FinanceCompany
 	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST, time.Time{})
 	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, amt_paid)
@@ -123,6 +122,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
 	outData["finance_type"] = financeType
+	outData["ntp_date"] = NtpCompleteDate
 
 	// outData["ntp_complete_date"] = NtpCompleteDate
 	// outData["pv_complete_date"] = PvComplettionDate

@@ -253,6 +253,29 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 		}
 	}
 
+	if dataFilter.PayroleDate != "" {
+		// Parse dataFilter.PayroleDate to time.Time using the given format
+		date, err := time.Parse("02-01-2006", dataFilter.PayroleDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while formatting PayroleDate")
+			return
+		}
+
+		// Format date to the layout required for SQL (e.g., "2006-01-02")
+		formattedDate := date.Format("2006-01-02")
+
+		// Append to where clause with parameterized date format
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		filtersBuilder.WriteString(" ntp_date <= ?")
+		whereEleList = append(whereEleList, formattedDate)
+	}
+
 	if len(dataFilter.PartnerName) > 0 {
 		if whereAdder {
 			filtersBuilder.WriteString(" AND ")
