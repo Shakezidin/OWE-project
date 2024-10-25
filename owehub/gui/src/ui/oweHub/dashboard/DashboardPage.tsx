@@ -28,6 +28,7 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
+import { dateFormat } from '../../../utiles/formatDate';
 
 interface Option {
   value: string;
@@ -95,37 +96,45 @@ export const DashboardPage: React.FC = () => {
     (async () => {
       setLoading(true);  // Start loading before the request
   
+      // Check if appliedDate is valid, otherwise set a default date
+      const date = appliedDate ? new Date(appliedDate) : new Date();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const year = date.getUTCFullYear();
+      const customFormattedDate = `${month}-${day}-${year}`; // Output: "MM-DD-YYYY"
+  
       try {
         const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
           partner_name: selectedDealer,
           filters,
+          payrole_date: appliedDate ? customFormattedDate : undefined // Only send if date is valid
         });
   
         if (resp.status > 201) {
-          toast.error(resp.message);  // Display error toast
-          setData([]); 
-          setTileData(''); // Reset data state to indicate failure
-          setLoading(false);  // Stop loading
+          toast.error(resp.message);
+          setData([]);
+          setTileData('');
+          setLoading(false);
           return;
         }
   
-        // Success: Set data and other states
         setData(resp.data.DealerPayComm);
         setTotalCount(resp.dbRecCount);
         setTileData(resp.data);
   
       } catch (error) {
-        console.error(error);  // Log the error
-        setData([]);  // Reset data on error
-        toast.error('An unexpected error occurred');  // Show a generic error message
+        console.error(error);
+        setData([]);
+        toast.error('An unexpected error occurred');
   
       } finally {
-        setLoading(false);  // Ensure loading stops in both success and error cases
+        setLoading(false);
       }
     })();
   }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType]);
+  
   
 
   // useEffect(() => {
