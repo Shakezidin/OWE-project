@@ -483,6 +483,7 @@ const LeadManagementDashboard = () => {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
+      setPage(1);
     }
   }, [activeIndex]);
 
@@ -492,6 +493,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
+    setPage(1);
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
