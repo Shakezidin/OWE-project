@@ -626,7 +626,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
           </div>
 
         </div>
-        {leadsData.length > 0 && !isLoading && (
+        {/* {leadsData.length > 0 && !isLoading && (
           <div className="page-heading-container">
 
             <p className="page-heading">
@@ -647,7 +647,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
             />
           </div>
 
-        )}
+        )} */}
       </div>
     </>
   )

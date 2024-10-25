@@ -2038,28 +2038,25 @@ const LeadManagementDashboard = () => {
               generateWebProposal={generateWebProposal}
             />
           )}
-          {/* {leadsData.length > 0 && !isLoading && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
-                  {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
-                </p>
-              </div>
+            {leadsData.length > 0 && !isLoading && (
+          <div className="page-heading-container">
 
-              <div className={styles.rightitem}>
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPage}
-                  paginate={paginate}
-                  currentPageData={[]}
-                  goToNextPage={goToNextPage}
-                  goToPrevPage={goToPrevPage}
-                  perPage={itemsPerPage}
-                  onPerPageChange={handlePerPageChange}
-                />
-              </div>
-            </div>
-          )} */}
+            <p className="page-heading">
+              {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+            </p>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPage}
+              paginate={paginate}
+              currentPageData={[]}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+              onPerPageChange={handlePerPageChange}
+            />
+          </div>
+
+        )}
         </div>
       </div>
     </div>
