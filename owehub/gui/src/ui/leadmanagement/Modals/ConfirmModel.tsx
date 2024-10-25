@@ -34,6 +34,9 @@ interface EditModalProps {
   reschedule?: boolean;
   action?: boolean;
   setReschedule: React.Dispatch<React.SetStateAction<boolean>>;
+
+  won?: boolean;
+  setWon: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface LeadData {
   first_name: string;
@@ -55,7 +58,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   action,
   setRefresh,
   refresh,
-  setReschedule
+  setReschedule,
+  won,
+  setWon
 }) => {
   console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
@@ -128,7 +133,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
-      const date = selectedDate ? new Date(selectedDate) : new Date();  
+      const date = selectedDate ? new Date(selectedDate) : new Date();
       const time = selectedTime ? new Date(selectedTime) : new Date();
       console.log(date, "date show");
       console.log(time, "time show");
@@ -452,17 +457,46 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   // };
 
 
+  const [loadWon, setLoadWon] = useState(false);
+  const handleCloseWon = async () => {
+    setLoadWon(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+        },
+        true
+      );
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setRefresh((prev) => prev + 1);
+        setLoadWon(false);
+        HandleModal();
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoadWon(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
   useEffect(() => {
     if (reschedule === true) {
       setVisibleDiv(0);
     } else if (action === true) {
       setVisibleDiv(67);
+    } else if (won === true) {
+      setVisibleDiv(5);
     } else if (leadData) {
       setVisibleDiv(leadData.status_id);
     }
   }, [reschedule, action, leadData]);
 
-  console.log(success, "succccccccccccc")
+  console.log(won, "succccccccccccc")
 
 
   return (
@@ -509,7 +543,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
-                      
+
                     </span>
                     {(visibleDiv === 0 || visibleDiv === 11) && (
                       <div
@@ -754,6 +788,54 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
+
+            {visibleDiv === 5 && (
+              <>
+                <div className={classes.customer_wrapper_list_Edited}>
+                  <div className={classes.success_not_Edited4Model}>
+                    <div>
+                      <img
+                        className={classes.HandShakeLogo}
+                        height="154px"
+                        width="154px"
+                        src={DoneLogo}
+                      />{' '}
+                    </div>
+                  </div>
+                  <div className={classes.congratulationLetter}>
+                    <span className={classes.congratulations}>
+                      Congratulations!
+                    </span>
+                  </div>
+                  <br />
+                  <div className={classes.ctmracquiredDiv}>
+                    <span className={classes.ctmracquired}>
+                      Lead marked as Deal Won!
+                    </span>
+                    <span className={classes.ctmracquired}>
+                      Moving it to the In Progress section.
+                    </span>
+                  </div>
+                  <div className={classes.suceesButtonAfterProposal}>
+                    <button
+                      className={classes.self}
+                      style={{
+                        backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
+                        color: '#FFFFFF',
+                        border: 'none',
+                        pointerEvents: (loadWon || !leadId) ? 'none' : 'auto',
+                        opacity: (loadWon || !leadId) ? 0.6 : 1,
+                        cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
+                      }}
+                      onClick={handleCloseWon}
+                    
+                    >
+                      {loadWon ? "Wait..." : "Confirm"}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}{' '}
             {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (

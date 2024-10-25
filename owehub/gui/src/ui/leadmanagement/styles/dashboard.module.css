@@ -1347,3 +1347,10 @@ input[type='checkbox']:checked {
   padding: 16px;
   gap: 16px;
 }
+
+.ichove{
+  transition: all 0.3s ease;
+}
+.ichove:hover{
+  transform: scale(1.08);
+}
