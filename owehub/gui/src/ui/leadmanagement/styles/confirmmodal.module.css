@@ -474,8 +474,8 @@
 .crossBtn {
   cursor: pointer;
   /* margin-bottom: -11px; */
-  width: 19.5px;
-  height: 19.5px;
+  width: 30.5px;
+  height: 30.5px;
   transition: all 0.3s ease;
 }
 

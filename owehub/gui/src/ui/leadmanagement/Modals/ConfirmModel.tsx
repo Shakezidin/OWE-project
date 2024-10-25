@@ -8,6 +8,7 @@ import failledLogo from './Modalimages/FAILLED.png';
 import DoneLogo from './Modalimages/DoneLogo.png';
 import FileAttach from './Modalimages/FileAttach.png';
 import EditModal from './EditModal';
+import { ICONS } from '../../../resources/icons/Icons';
 import AppointmentScheduler from './AppointmentScheduler';
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
@@ -508,7 +509,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
                 <img
                   className={classes.crossBtn}
-                  src={CrossIcon}
+                  src={ICONS.cross}
                   onClick={HandleModal}
                 />
               </div>
