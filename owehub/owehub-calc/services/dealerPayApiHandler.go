@@ -101,10 +101,20 @@ func CalcAmtPaidByDealer(dealerPayments []oweconfig.DealerPaymentsStruct, dealer
 
 func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, dealer string, uniqueId string) (amtPaid float64) {
 	for _, entry := range dealerPayments {
+		if uniqueId == entry.UniqueId {
+			log.Printf("here it is loading %v unique_id %v", dealer, uniqueId)
+		}
 		if entry.SalesPartner == dealer && entry.UniqueId == uniqueId {
-			// Convert PaymentAmount from string to float64
-			paymentAmount, err := strconv.ParseFloat(entry.PaymentAmount, 64)
+			// Handle currency prefix if present (e.g., "USD ")
+			paymentAmountStr := entry.PaymentAmount
+			if len(paymentAmountStr) > 4 && paymentAmountStr[:4] == "USD " {
+				paymentAmountStr = paymentAmountStr[4:] // Remove "USD " prefix
+			}
+
+			// Convert cleaned payment amount string to float64
+			paymentAmount, err := strconv.ParseFloat(paymentAmountStr, 64)
 			if err != nil {
+				log.Printf("error while converting string to float with err %v", err)
 				continue // Skip this entry if conversion fails
 			}
 			amtPaid += paymentAmount

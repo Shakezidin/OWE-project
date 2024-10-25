@@ -107,21 +107,29 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			InitialDataa.DealerCode = ""
 		}
 
-		if totalSystemCost, ok := data["total_system_cost"]; (ok) && (totalSystemCost != nil) {
-			// Step 1: Trim spaces
+		if totalSystemCost, ok := data["total_system_cost"]; ok && totalSystemCost != nil {
+			// Step 1: Convert to string and trim spaces
 			costStr := strings.TrimSpace(totalSystemCost.(string))
 
-			// Step 2: Remove any HTML tags using a regular expression
+			// Step 2: Remove any HTML tags if present
 			re := regexp.MustCompile(`<.*?>`)
 			costStr = re.ReplaceAllString(costStr, "")
 
-			// Step 3: Remove commas
+			// Step 3: Remove commas and "$" symbols
 			costStr = strings.ReplaceAll(costStr, ",", "")
+			costStr = strings.ReplaceAll(costStr, "$", "")
 
-			// Step 4: Convert the cleaned string to a float
-			InitialDataa.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+			// Step 4: Final trim to remove any residual spaces after cleaning
+			costStr = strings.TrimSpace(costStr)
+
+			// Step 5: Attempt to parse the cleaned string as a float
+			if costStr != "" { // Ensure the string is not empty
+				InitialDataa.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+					InitialDataa.ContractDolDol = 0.0
+				}
+			} else {
 				InitialDataa.ContractDolDol = 0.0
 			}
 		} else {
