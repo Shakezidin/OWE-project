@@ -8,6 +8,7 @@
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -40,6 +41,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		whereClause      string
 		paginationClause string
 		recordCount      int64
+		proposalPdfLink  string
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -213,7 +215,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.aurora_proposal_status,
 				li.aurora_proposal_link,
 				li.aurora_proposal_updated_at,
-				li.status_id
+				li.status_id,
+				li.proposal_pdf_key
 				
 			FROM get_leads_info_hierarchy($1) li
 			%s
@@ -401,6 +404,13 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = declinedDatePtr
 		}
 
+		proposalPdfKey, ok := item["proposal_pdf_key"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get proposal pdf key from leads info Item: %+v\n", item)
+		} else {
+			proposalPdfLink = leadsService.S3GetObjectUrl(proposalPdfKey)
+		}
+
 		LeadsData := models.GetLeadsData{
 			LeadID:                 leadsId,
 			FirstName:              fName,
@@ -420,6 +430,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ProposalStatus:         proposalStatus,
 			ProposalLink:           proposalLink,
 			ProposalUpdatedAt:      proposalUpdatedAtPtr,
+			ProposalPdfLink:        proposalPdfLink,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)
