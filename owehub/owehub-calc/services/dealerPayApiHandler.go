@@ -2,6 +2,8 @@ package services
 
 import (
 	oweconfig "OWEApp/shared/oweconfig"
+	"log"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -118,4 +120,40 @@ func CalcDealerOvrdCommissionDealerPay(dealerOvrd []oweconfig.DealerOverrideStru
 		}
 	}
 	return dealerovrd
+}
+
+func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer, financePartner, state string, contractDate time.Time) (drawPerc, drawMax, redline float64) {
+	partnerRegex := regexp.MustCompile(`^(.*?)(?: -|-)`)
+	for _, entry := range partnerPaySchedule {
+		matches := partnerRegex.FindStringSubmatch(entry.Finance_partner)
+		partnerName := entry.Finance_partner
+		if len(matches) > 1 {
+			partnerName = matches[1] // Capture the portion before " -" or "-"
+		}
+		if entry.Sales_partner == dealer && entry.State == state && partnerName == financePartner && entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
+			// Convert M1SalesPartnerDrawPercentage from string to float64
+			percentage, err := strconv.ParseFloat(entry.M1SalesPartnerDrawPercentage, 64)
+			if err != nil {
+				log.Printf("Error converting M1SalesPartnerDrawPercentage to float: %v", err)
+				continue // Skip this entry if there's a conversion error
+			}
+			drawPerc += percentage
+
+			// Convert M1SalesPartnerNotToExceed from string to float64
+			notToExceed, err := strconv.ParseFloat(entry.M1SalesPartnerNotToExceed, 64)
+			if err != nil {
+				log.Printf("Error converting M1SalesPartnerNotToExceed to float: %v", err)
+				continue // Skip this entry if there's a conversion error
+			}
+			drawMax += notToExceed
+
+			redLine, err := strconv.ParseFloat(entry.Redline, 64)
+			if err != nil {
+				log.Printf("Error converting redline to float: %v", err)
+				continue // Skip this entry if there's a conversion error
+			}
+			redline += redLine
+		}
+	}
+	return drawPerc, drawMax, redline
 }

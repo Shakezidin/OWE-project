@@ -613,7 +613,7 @@ input[type='checkbox']:checked {
 
   .history_list_inner {
     display: grid;
-    grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr !important;
+    grid-template-columns: 0.2fr auto 0.2fr  0.1fr !important;
     align-items: baseline;
   }
 

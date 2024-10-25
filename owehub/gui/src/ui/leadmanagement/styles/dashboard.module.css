@@ -57,7 +57,7 @@
   align-items: center;
   border-right: 1.4px solid #ccc;
   padding: 10px;
-  padding-left: 0px !important;
+  padding-left: 0 !important;
   max-width: auto !important;
 }
 
@@ -137,6 +137,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-top: 16px;
+  padding-left: 35px;
 }
 
 .legendItem {
@@ -1345,4 +1346,11 @@ input[type='checkbox']:checked {
   align-items: center;
   padding: 16px;
   gap: 16px;
+}
+
+.ichove{
+  transition: all 0.3s ease;
+}
+.ichove:hover{
+  transform: scale(1.08);
 }

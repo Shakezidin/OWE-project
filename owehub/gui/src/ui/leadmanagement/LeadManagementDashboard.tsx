@@ -94,6 +94,29 @@ interface WebProposal {
   url_expired: boolean;
 }
 
+type SSEPayload =
+  | {
+    is_done: false;
+    data: {
+      current_step: number;
+      total_steps: number;
+    };
+  }
+  | {
+    is_done: true;
+    data: {
+      current_step: number;
+      total_steps: number;
+      url: string;
+    };
+    error: null;
+  }
+  | {
+    is_done: true;
+    error: string;
+    data: null;
+  };
+
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
@@ -483,6 +506,7 @@ const LeadManagementDashboard = () => {
       const pieName = pieData[activeIndex].name;
       const newFilter = statusMap[pieName as keyof typeof statusMap];
       setCurrentFilter(newFilter);
+      setPage(1);
     }
   }, [activeIndex]);
 
@@ -492,6 +516,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
+    setPage(1);
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -1050,8 +1075,11 @@ const LeadManagementDashboard = () => {
   };
 
   const [exporting, setIsExporting] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
+
 
   const exportCsv = async () => {
+    setShowTooltip(false);
     setIsExporting(true);
     const headers = [
       'Lead ID',
@@ -1161,6 +1189,7 @@ const LeadManagementDashboard = () => {
     } finally {
       setIsExporting(false);
     }
+    setShowTooltip(true);
   };
 
   //----------------Aurora API integration START-----------------------//
@@ -1182,6 +1211,7 @@ const LeadManagementDashboard = () => {
           const createProjectResult = await dispatch(auroraCreateProject({
             "leads_id": leadId,
             "customer_salutation": "Mr./Mrs.",
+            "project_type": "residential",
             "status": "In Progress",
             "preferred_solar_modules": moduleIds,
             "tags": ["third_party_1"]
@@ -1204,7 +1234,7 @@ const LeadManagementDashboard = () => {
 
                 if (proposalData.proposal_link) {
                   // Step 5: Generate Web Proposal
-                  await generateWebProposal(leadId);
+                  await downloadProposalWithSSE(leadId);
 
                   toast.success('Proposal created successfully!');
                   setRefresh((prev) => prev + 1);
@@ -1243,7 +1273,7 @@ const LeadManagementDashboard = () => {
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
         if (generatedProposalData.url) {
-          // toast.success('Web proposal generated successfully!');
+          toast.success('Web proposal generated successfully!');
           return generatedProposalData;
         } else {
           toast.error('Failed to generate web proposal.');
@@ -1285,6 +1315,32 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  const downloadProposalWithSSE = (leadId: number) => {
+
+
+    const eventSource = new EventSource(
+      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const payload: SSEPayload = JSON.parse(event.data);
+
+      if (!payload.is_done) {
+        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
+        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+      } else if (payload.is_done) {
+
+        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('Error with SSE connection', error);
+    };
+  };
+  //----------------Aurora API integration END-------------------------//
+
+  console.log(pieData, "hgfsfhfsdhahfg")
 
   useEffect(() => {
     if (searchTerm !== '') {
@@ -1301,7 +1357,6 @@ const LeadManagementDashboard = () => {
   }
 
 
-  //----------------Aurora API integration END-------------------------//
   //*************************************************************************************************//
 
   return (
@@ -1317,7 +1372,7 @@ const LeadManagementDashboard = () => {
           </div>
         </div>
       </div>
-      <ConfirmModel
+      {/* <ConfirmModel
         isOpen1={isModalOpen}
         onClose1={handleCloseModal}
         leadId={leadId}
@@ -1326,7 +1381,7 @@ const LeadManagementDashboard = () => {
         reschedule={reschedule}
         action={action}
         setReschedule={setReschedule}
-      />
+      /> */}
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
 
@@ -1685,9 +1740,30 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button> */}
                 </div>
-                {searchTerm !== '' &&
-                  <div style={{cursor:"pointer", marginRight:"15px", marginTop:"2px"}} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }}/></div>
-                }
+                {searchTerm !== '' && (
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "15px",
+                      marginTop: "2px",
+                      transition: "transform 0.3s ease-in-out",
+                      display: "inline-block",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.13)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                    onClick={handleCrossIcon}
+                  >
+                    <img
+                      src={ICONS.crossIconUser}
+                      alt="cross"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </div>
+                )}
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
                     {/* You can use an SVG or a FontAwesome icon here */}
@@ -1696,7 +1772,7 @@ const LeadManagementDashboard = () => {
                   <input
                     type="text"
                     value={search}
-                    placeholder="Search by customer name or id"
+                    placeholder="Enter customer name or id"
                     className={styles.searchInput}
                     onChange={(e) => {
                       if (e.target.value.length <= 50) {
@@ -1776,23 +1852,24 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
+                  {showTooltip &&
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      delayShow={800}
+                      id="export"
+                      place="bottom"
+                      content="Export"
 
-                  <Tooltip
-                    style={{
-                      zIndex: 103,
-                      background: '#f7f7f7',
-                      color: '#000',
-                      fontSize: 12,
-                      paddingBlock: 4,
-                      fontWeight: "400"
-                    }}
-                    offset={8}
-                    delayShow={800}
-                    id="export"
-                    place="bottom"
-                    content="Export"
-
-                  />
+                    />
+                  }
 
 
 
@@ -1832,9 +1909,30 @@ const LeadManagementDashboard = () => {
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
                 <>
-               {searchTerm !== '' &&
-                  <div style={{cursor:"pointer", marginRight:"15px", marginTop:"2px"}} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }}/></div>
-                }
+                  {searchTerm !== '' && (
+                    <div
+                      style={{
+                        cursor: "pointer",
+                        marginRight: "15px",
+                        marginTop: "2px",
+                        transition: "transform 0.3s ease-in-out",
+                        display: "inline-block",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "scale(1.13)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                      onClick={handleCrossIcon}
+                    >
+                      <img
+                        src={ICONS.crossIconUser}
+                        alt="cross"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                    </div>
+                  )}
                   <div className={styles.searchBarMobile}>
                     <div className={styles.searchIcon}>
                       {/* You can use an SVG or a FontAwesome icon here */}
@@ -1843,7 +1941,7 @@ const LeadManagementDashboard = () => {
                     <input
                       value={search}
                       type="text"
-                      placeholder="Search by customer name or id"
+                      placeholder="Enter customer name or id"
                       className={styles.searchInput}
                       onChange={(e) => {
                         if (e.target.value.length <= 50) {
@@ -1917,23 +2015,24 @@ const LeadManagementDashboard = () => {
                         <LuImport color="white" />
                       )}
                     </div>
+                    {showTooltip &&
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: "400"
+                        }}
+                        offset={8}
+                        delayShow={800}
+                        id="export"
+                        place="bottom"
+                        content="Export"
 
-                    <Tooltip
-                      style={{
-                        zIndex: 20,
-                        background: '#f7f7f7',
-                        color: '#000',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                        fontWeight: "400"
-                      }}
-                      offset={8}
-                      delayShow={800}
-                      id="export"
-                      place="bottom"
-                      content="Export"
-
-                    />
+                      />
+                    }
                   </div>
                 </>
               ) : (
@@ -2038,28 +2137,25 @@ const LeadManagementDashboard = () => {
               generateWebProposal={generateWebProposal}
             />
           )}
-          {/* {leadsData.length > 0 && !isLoading && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
-                  {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
-                </p>
-              </div>
+          {leadsData.length > 0 && !isLoading && (
+            <div className="page-heading-container">
 
-              <div className={styles.rightitem}>
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPage}
-                  paginate={paginate}
-                  currentPageData={[]}
-                  goToNextPage={goToNextPage}
-                  goToPrevPage={goToPrevPage}
-                  perPage={itemsPerPage}
-                  onPerPageChange={handlePerPageChange}
-                />
-              </div>
+              <p className="page-heading">
+                {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+              </p>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPage}
+                paginate={paginate}
+                currentPageData={[]}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+                onPerPageChange={handlePerPageChange}
+              />
             </div>
-          )} */}
+
+          )}
         </div>
       </div>
     </div>

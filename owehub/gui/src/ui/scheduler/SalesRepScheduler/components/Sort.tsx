@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { HiSortDescending } from 'react-icons/hi';
 import styles from './Sort.module.css';
+import useEscapeKey from '../../../../hooks/useEscape';
 
 interface SortOption {
   label: string;
@@ -40,6 +41,9 @@ const Sort: React.FC<SortProps> = ({
     onChange(value);
     setIsOpen(false);
   };
+
+  useEscapeKey(() => setIsOpen(false)); // Example usage
+
 
   return (
     <div ref={dropdownRef} className={styles.sortContainer}>

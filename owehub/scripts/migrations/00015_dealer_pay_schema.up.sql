@@ -21,5 +21,6 @@ CREATE TABLE IF NOT EXISTS dealer_pay(
     balance float,
     st TEXT,
     contract_date TIMESTAMP,
-    finance_type TEXT
+    finance_type TEXT,
+    ntp_date TIMESTAMP
 )

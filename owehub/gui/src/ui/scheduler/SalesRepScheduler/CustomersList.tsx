@@ -341,7 +341,8 @@ const CustomersList = () => {
     console.log('Selected sort order:', sortOrder);
   };
 
-  useEscapeKey(() => setCollapse(-1)); // Example usage
+  useEscapeKey(() => setIsDrawerOpen(false));
+  useEscapeKey(() => setCollapse(-1)); 
 
   return (
     <div className={`${styles.schedule_page_wrapper}`}>

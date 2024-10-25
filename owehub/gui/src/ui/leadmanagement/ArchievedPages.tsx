@@ -121,13 +121,6 @@ const ArchivedPages = () => {
     // setArchive(false);
   };
 
-  const handleChevronClick = (itemId: number) => {
-    console.log(itemId);
-    setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId) ? [] : [itemId]
-    );
-  };
-
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
       prev.includes(leadId)
@@ -507,7 +500,7 @@ const ArchivedPages = () => {
                               </button>
                             </div>
                           )}
-                          {isMobile || isTablet ? (
+                          {/* {isMobile || isTablet ? (
                             <div
                               className={styles.chevron_down}
                               onClick={() => handleChevronClick(lead['leads_id'])}
@@ -525,9 +518,10 @@ const ArchivedPages = () => {
                                 }
                               />
                             </div>
-                          ) : (
-                            ''
-                          )}
+                          ) 
+                          : ( */}
+                            {/* ''
+                          )} */}
                           {/* isProfileOpen */}
                           <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
                             <IoInformationOutline />
