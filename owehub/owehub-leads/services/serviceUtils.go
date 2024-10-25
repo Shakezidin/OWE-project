@@ -4,6 +4,7 @@ import (
 	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
 	"errors"
+	"fmt"
 
 	"time"
 
@@ -22,32 +23,32 @@ func ValidateCreateLeadsRequest(req models.CreateLeadsReq) error {
 }
 
 // Send appointment to client via outlook api
-func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isReschedule bool, name string) error {
+func sentAppointmentEmail(id int64, name, email string, appointmentDate *time.Time, isReschedule bool) error {
 	// Creating a new model instance
 	var (
-		err                error
-		appointmentTimeStr string
-		model              models.OutlookEventRequest
-		appointmentEndTime string
+		err          error
+		startTimeStr string
+		model        models.OutlookEventRequest
+		endTimeStr   string
 	)
 
 	log.EnterFn(0, "sentAppointmentEmail")
 	defer func() { log.ExitFn(0, "sentAppointmentEmail", err) }()
 
-	appointmentTimeStr = appointmentDate.Format(time.RFC3339Nano)
-	appointmentEndTime = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
+	startTimeStr = appointmentDate.Format(time.RFC3339Nano)
+	endTimeStr = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
 	if isReschedule {
 		model = models.OutlookEventRequest{
 			OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
 			Subject:   "Team Meeting",
 			Body:      "Let's discuss about the proposal, we have rescheduled your meeting",
-			StartTime: appointmentTimeStr,
-			EndTime:   appointmentEndTime,
+			StartTime: startTimeStr,
+			EndTime:   endTimeStr,
 			TimeZone:  "Pacific Standard Time",
 			Location:  "Conference Room A",
 			AttendeeEmails: []models.Attendee{
 				{
-					Email: clientEmail,
+					Email: email,
 					Name:  name,
 					Type:  "required",
 				},
@@ -60,19 +61,19 @@ func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isResc
 			OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
 			Subject:   "Team Meeting",
 			Body:      "Let's discuss about the proposal",
-			StartTime: appointmentTimeStr,
-			EndTime:   appointmentEndTime,
+			StartTime: startTimeStr,
+			EndTime:   endTimeStr,
 			TimeZone:  "Pacific Standard Time",
 			Location:  "Conference Room A",
 			AttendeeEmails: []models.Attendee{
 				{
-					Email: clientEmail,
+					Email: email,
 					Name:  name,
 					Type:  "required",
 				},
 			},
 			AllowNewTimeProposals: true,
-			TransactionID:         uuid.NewString(),
+			TransactionID:         fmt.Sprintf("OWEHUB-LEADS-%d", id),
 		}
 	}
 

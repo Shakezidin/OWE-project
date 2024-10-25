@@ -34,6 +34,9 @@ interface EditModalProps {
   reschedule?: boolean;
   action?: boolean;
   setReschedule: React.Dispatch<React.SetStateAction<boolean>>;
+
+  won?: boolean;
+  setWon: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface LeadData {
   first_name: string;
@@ -55,7 +58,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   action,
   setRefresh,
   refresh,
-  setReschedule
+  setReschedule,
+  won,
+  setWon
 }) => {
   console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
@@ -452,17 +457,46 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   // };
 
 
+  const [loadWon, setLoadWon] = useState(false);
+  const handleCloseWon = async () => {
+    setLoadWon(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+        },
+        true
+      );
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setRefresh((prev) => prev + 1);
+        setLoadWon(false);
+        HandleModal();
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoadWon(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
   useEffect(() => {
     if (reschedule === true) {
       setVisibleDiv(0);
     } else if (action === true) {
       setVisibleDiv(67);
+    } else if (won === true) {
+      setVisibleDiv(5);
     } else if (leadData) {
       setVisibleDiv(leadData.status_id);
     }
   }, [reschedule, action, leadData]);
 
-  console.log(success, "succccccccccccc")
+  console.log(won, "succccccccccccc")
 
 
   return (
@@ -509,38 +543,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
-                      {/* <span className={classes.verified}> */}
-                      {/* <svg
-                          className={classes.verifiedMarked}
-                          width="13"
-                          height="13"
-                          viewBox="0 0 13 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g clipPath="url(#clip0_6615_16896)">
-                            <path
-                              d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
-                              fill="#20963A"
-                            />
-                            <path
-                              d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
-                              fill="white"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_6615_16896">
-                              <rect
-                                width="12.16"
-                                height="12.16"
-                                fill="white"
-                                transform="translate(0 0.421875)"
-                              />
-                            </clipPath>
-                          </defs>
-                        </svg>{' '} */}
-                      {/* <span className={classes.verifyLetter}> Verified</span>
-                      </span> */}
+
                     </span>
                     {(visibleDiv === 0 || visibleDiv === 11) && (
                       <div
@@ -785,6 +788,54 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}
+
+            {visibleDiv === 5 && (
+              <>
+                <div className={classes.customer_wrapper_list_Edited}>
+                  <div className={classes.success_not_Edited4Model}>
+                    <div>
+                      <img
+                        className={classes.HandShakeLogo}
+                        height="154px"
+                        width="154px"
+                        src={DoneLogo}
+                      />{' '}
+                    </div>
+                  </div>
+                  <div className={classes.congratulationLetter}>
+                    <span className={classes.congratulations}>
+                      Congratulations!
+                    </span>
+                  </div>
+                  <br />
+                  <div className={classes.ctmracquiredDiv}>
+                    <span className={classes.ctmracquired}>
+                      Lead marked as Deal Won!
+                    </span>
+                    <span className={classes.ctmracquired}>
+                      Moving it to the In Progress section.
+                    </span>
+                  </div>
+                  <div className={classes.suceesButtonAfterProposal}>
+                    <button
+                      className={classes.self}
+                      style={{
+                        backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
+                        color: '#FFFFFF',
+                        border: 'none',
+                        pointerEvents: (loadWon || !leadId) ? 'none' : 'auto',
+                        opacity: (loadWon || !leadId) ? 0.6 : 1,
+                        cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
+                      }}
+                      onClick={handleCloseWon}
+                    
+                    >
+                      {loadWon ? "Wait..." : "Confirm"}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}{' '}
             {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
             {/* Display iframe if proposal link exists */}
             {iframeSrc && (

@@ -1,5 +1,5 @@
 .error-message {
-  color: red;
+  color: #db4437;
   font-size: 12px;
   margin-top: 5px;
 }
@@ -20,7 +20,7 @@
 }
 
 .character-count.exceeded {
-  color: red;
+  color: #db4437;
 }
 .um-createUserActionButton {
   margin-top: 2px;

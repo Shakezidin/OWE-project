@@ -7,7 +7,6 @@
 package models
 
 import (
-	"OWEApp/owehub-leads/common"
 	"time"
 )
 
@@ -24,8 +23,8 @@ type GetLeadsHistoryRequest struct {
 
 // Lead timeline containing relevant dates
 type GetLeadsTimelineItem struct {
-	Label common.LeadTimelineLabel `json:"label"`
-	Date  *time.Time               `json:"date"`
+	Label string     `json:"label"`
+	Date  *time.Time `json:"date"`
 }
 
 // Sent to UI

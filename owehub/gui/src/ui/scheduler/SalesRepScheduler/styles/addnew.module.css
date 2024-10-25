@@ -86,9 +86,9 @@
 }
 
 .tenst_inp {
-  padding-left: 10px;
+  padding-left: 13px;
   width: 94px;
-  height: 38px;
+  height: 34px;
   border-radius: 8px;
   background-color: #f3f3f3;
   border: none;
@@ -177,6 +177,21 @@
   padding-top: 6px;
   padding-left: 19px;
   padding-bottom: 9px;
+}
+
+.back_button {
+  cursor: pointer;
+}
+
+.icon {
+  height: 20px;
+  width: 27px;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.icon:hover {
+  transform: scale(1.02);
 }
 
 /* @media screen and (max-width: 1055px){
@@ -269,17 +284,21 @@
   }
   .inputView {
     padding-left: 0px !important;
+    padding-right: 17px;
   }
   .innerView {
     width: 240% !important;
     border-radius: 8px;
   }
   .custom_Input {
-    width: 250% !important;
+    width: 230% !important;
     border-radius: 8px;
   }
   .submitbut {
     width: 97%;
+  }
+  .tentaclesicons {
+top: 71%;
   }
 }
 
@@ -295,7 +314,7 @@
     padding-left: 0px;
   }
   .an_head{
-    margin-left: 16px;
+    margin-left: 0px;
   }
 }
 

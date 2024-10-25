@@ -121,13 +121,6 @@ const ArchivedPages = () => {
     // setArchive(false);
   };
 
-  const handleChevronClick = (itemId: number) => {
-    console.log(itemId);
-    setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId) ? [] : [itemId]
-    );
-  };
-
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
       prev.includes(leadId)
@@ -456,7 +449,7 @@ const ArchivedPages = () => {
                             <h2>
                               {lead.first_name} {lead.last_name}
                             </h2>
-                            <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p>
+                            {/* <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p> */}
                           </div>
                           <div className={styles.phone_number}
                             style={{
@@ -507,7 +500,7 @@ const ArchivedPages = () => {
                               </button>
                             </div>
                           )}
-                          {isMobile || isTablet ? (
+                          {/* {isMobile || isTablet ? (
                             <div
                               className={styles.chevron_down}
                               onClick={() => handleChevronClick(lead['leads_id'])}
@@ -525,9 +518,10 @@ const ArchivedPages = () => {
                                 }
                               />
                             </div>
-                          ) : (
-                            ''
-                          )}
+                          ) 
+                          : ( */}
+                            {/* ''
+                          )} */}
                           {/* isProfileOpen */}
                           <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
                             <IoInformationOutline />
@@ -624,16 +618,12 @@ const ArchivedPages = () => {
 
           </div>
           {leadsData.length > 0 && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
+            <div className="page-heading-container">           
+              <p className="page-heading">
                   {startIndex} -
                   {endIndex > totalcount! ? totalcount : endIndex} of{' '}
                   {totalcount} item
-                </p>
-              </div>
-
-              <div className={styles.rightitem}>
+                </p>           
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -644,7 +634,6 @@ const ArchivedPages = () => {
                   perPage={itemsPerPage}
                   onPerPageChange={handlePerPageChange}
                 />
-              </div>
             </div>
           )}
         </div>

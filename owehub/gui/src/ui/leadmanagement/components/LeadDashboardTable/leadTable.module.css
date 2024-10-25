@@ -1,7 +1,7 @@
 .dashTabTop {
   display: flex;
   width: 100%;
-  flex-direction: row;
+  flex-direction: column;
   min-height: 100px;
 }
 
@@ -9,11 +9,6 @@
   position: sticky;
   right: 0;
   background-color: var(--white-color);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
 }
 
 .TableContainer1 table thead tr {
