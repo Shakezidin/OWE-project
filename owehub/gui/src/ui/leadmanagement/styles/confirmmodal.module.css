@@ -314,10 +314,9 @@
 }
 
 .congratulationLetter {
-  padding-top: 13px;
+  padding-top: 25px;
   padding-bottom: 0;
-  margin-bottom: 63px;
-  
+  margin-bottom: 0;
 }
 
 .notAvailableCtmr {
@@ -349,15 +348,14 @@
 }
 
 .ctmracquired {
-
   padding-left: 35.6%;
-  font-weight: 450;
-  font-size: 15px;
+  font-weight: 500;
+  font-size: 18px;
   color: #1f2937;
 }
 
 .ctmracquiredDiv {
- 
+  margin-top: -20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -549,7 +547,7 @@
     display: block;
   }
   .ctmracquiredDiv {
-    margin-top: 29px;
+  
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -560,7 +558,7 @@
   }
   .congratulationLetter {
    
-    padding-top: 32px;
+   
   padding-bottom: 0;
   margin-bottom: 0;
   }
