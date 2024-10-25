@@ -6,7 +6,7 @@ import '../styles/appointmentScheduler.css';
 import { toast } from 'react-toastify';
 import classes from "./AppoitnmentSchedular.module.css"
 import { startOfDay } from 'date-fns';
-
+import { isBefore } from "date-fns"
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
   onDateChange: (date: Date) => void;
@@ -47,7 +47,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   //   onTimeChange(newTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }));
   // };
 
-  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedTime, setSelectedTime] = useState<Date>(new Date());
 
   const handleTimeChange = (time: any) => {
     setSelectedTime(time);
@@ -163,6 +163,13 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       >
         <button
           onClick={() => {
+            const current = new Date()
+            const selectedTimeDate = new Date(selectedDate)
+            selectedTimeDate.setHours(selectedTime.getHours(), selectedTime.getMinutes(), 0, 0) // Combine selected date and time
+            if (isBefore(selectedTimeDate, current)) {
+              toast.warn(`Selected date and time cannot be in the past.`);
+              return
+            }
             if (selectedTime && selectedDate) {
               setVisibleDiv(11);
             } else {
