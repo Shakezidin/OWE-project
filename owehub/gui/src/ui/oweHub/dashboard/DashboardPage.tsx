@@ -91,27 +91,30 @@ export const DashboardPage: React.FC = () => {
   const [isFetched, setIsFetched] = useState(false);
 
   const datePickerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
+    if (!selectedDealer || selectedDealer.length === 0) return; // Exit early if selectedDealer is empty
+    
     (async () => {
       setLoading(true);  // Start loading before the request
-  
-      // Check if appliedDate is valid, otherwise set a default date
+      
+      // Set the applied date or a default if undefined
       const date = appliedDate ? new Date(appliedDate) : new Date();
       const month = String(date.getUTCMonth() + 1).padStart(2, '0');
       const day = String(date.getUTCDate()).padStart(2, '0');
       const year = date.getUTCFullYear();
       const customFormattedDate = `${month}-${day}-${year}`; // Output: "MM-DD-YYYY"
-  
+    
       try {
+        const partnerNames = selectedDealer.map(dealer => dealer.value); // Extract all values
+  
         const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          partner_name: selectedDealer,
+          partner_name: partnerNames, // Send all values
           filters,
-          payrole_date: appliedDate ? customFormattedDate : undefined // Only send if date is valid
+          payrole_date: appliedDate ? customFormattedDate : undefined
         });
-  
+    
         if (resp.status > 201) {
           toast.error(resp.message);
           setData([]);
@@ -119,7 +122,7 @@ export const DashboardPage: React.FC = () => {
           setLoading(false);
           return;
         }
-  
+    
         setData(resp.data.DealerPayComm);
         setTotalCount(resp.dbRecCount);
         setTileData(resp.data);
@@ -128,12 +131,14 @@ export const DashboardPage: React.FC = () => {
         console.error(error);
         setData([]);
         toast.error('An unexpected error occurred');
-  
       } finally {
         setLoading(false);
       }
     })();
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType]);
+  }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType, selectedDealer]);
+  
+  
+  
   
   
 
