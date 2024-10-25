@@ -319,6 +319,10 @@ const LeradManagementHistory = () => {
     refresh,
   ]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [selectedValue, selectedDates])
+
   const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
       setSelectedDates({
