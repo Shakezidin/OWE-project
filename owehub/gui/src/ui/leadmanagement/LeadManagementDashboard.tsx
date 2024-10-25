@@ -1050,8 +1050,11 @@ const LeadManagementDashboard = () => {
   };
 
   const [exporting, setIsExporting] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
+
 
   const exportCsv = async () => {
+    setShowTooltip(false);
     setIsExporting(true);
     const headers = [
       'Lead ID',
@@ -1161,6 +1164,7 @@ const LeadManagementDashboard = () => {
     } finally {
       setIsExporting(false);
     }
+    setShowTooltip(true);
   };
 
   //----------------Aurora API integration START-----------------------//
@@ -1686,7 +1690,7 @@ const LeadManagementDashboard = () => {
                   </button> */}
                 </div>
                 {searchTerm !== '' &&
-                  <div style={{cursor:"pointer", marginRight:"15px", marginTop:"2px"}} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }}/></div>
+                  <div style={{ cursor: "pointer", marginRight: "15px", marginTop: "2px" }} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }} /></div>
                 }
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
@@ -1776,23 +1780,24 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
+                  {showTooltip &&
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      delayShow={800}
+                      id="export"
+                      place="bottom"
+                      content="Export"
 
-                  <Tooltip
-                    style={{
-                      zIndex: 103,
-                      background: '#f7f7f7',
-                      color: '#000',
-                      fontSize: 12,
-                      paddingBlock: 4,
-                      fontWeight: "400"
-                    }}
-                    offset={8}
-                    delayShow={800}
-                    id="export"
-                    place="bottom"
-                    content="Export"
-
-                  />
+                    />
+                  }
 
 
 
@@ -1832,9 +1837,9 @@ const LeadManagementDashboard = () => {
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
                 <>
-               {searchTerm !== '' &&
-                  <div style={{cursor:"pointer", marginRight:"15px", marginTop:"2px"}} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }}/></div>
-                }
+                  {searchTerm !== '' &&
+                    <div style={{ cursor: "pointer", marginRight: "15px", marginTop: "2px" }} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }} /></div>
+                  }
                   <div className={styles.searchBarMobile}>
                     <div className={styles.searchIcon}>
                       {/* You can use an SVG or a FontAwesome icon here */}
@@ -1917,7 +1922,7 @@ const LeadManagementDashboard = () => {
                         <LuImport color="white" />
                       )}
                     </div>
-
+                 {showTooltip && 
                     <Tooltip
                       style={{
                         zIndex: 20,
@@ -1934,6 +1939,7 @@ const LeadManagementDashboard = () => {
                       content="Export"
 
                     />
+}
                   </div>
                 </>
               ) : (
@@ -2038,25 +2044,25 @@ const LeadManagementDashboard = () => {
               generateWebProposal={generateWebProposal}
             />
           )}
-            {leadsData.length > 0 && !isLoading && (
-          <div className="page-heading-container">
+          {leadsData.length > 0 && !isLoading && (
+            <div className="page-heading-container">
 
-            <p className="page-heading">
-              {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
-            </p>
-            <Pagination
-              currentPage={page}
-              totalPages={totalPage}
-              paginate={paginate}
-              currentPageData={[]}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-              onPerPageChange={handlePerPageChange}
-            />
-          </div>
+              <p className="page-heading">
+                {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+              </p>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPage}
+                paginate={paginate}
+                currentPageData={[]}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+                onPerPageChange={handlePerPageChange}
+              />
+            </div>
 
-        )}
+          )}
         </div>
       </div>
     </div>

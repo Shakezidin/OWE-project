@@ -371,7 +371,11 @@ const LeradManagementHistory = () => {
 
   const [exporting, setIsExporting] = useState(false);
 
+  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
+
+
   const exportCsv = async () => {
+    setShowTooltip(false);
     setIsExporting(true);
     const headers = [
       'Leads ID',
@@ -438,6 +442,7 @@ const LeradManagementHistory = () => {
     } finally {
       setIsExporting(false);
     }
+    setShowTooltip(true);
   };
 
   const calClose = () => {
@@ -454,15 +459,7 @@ const LeradManagementHistory = () => {
 
   };
 
-  const [showTooltip, setShowTooltip] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowTooltip(true);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <>
       <Profile
@@ -656,7 +653,7 @@ const LeradManagementHistory = () => {
                     <div
                       className={styles.calender}
                       onClick={exportCsv}
-                      data-tooltip-id="export"
+                      data-tooltip-id={showTooltip ? "export" : undefined}
                       style={{
                         pointerEvents: exporting ? 'none' : 'auto',
                         opacity: exporting ? 0.6 : 1,
@@ -673,23 +670,23 @@ const LeradManagementHistory = () => {
                         <LuImport size={20} color="white" />
                       )}
                     </div>
-
-                    <Tooltip
-                      style={{
-                        zIndex: 20,
-                        background: '#f7f7f7',
-                        color: '#000',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                      }}
-                      delayShow={600} // Delay in showing the tooltip (in milliseconds)
-                      // delayHide={100}
-                      offset={8}
-                      id="export"
-                      place="bottom"
-                      content="Export"
-                    />
-
+                    {showTooltip &&
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                        }}
+                        delayShow={600} // Delay in showing the tooltip (in milliseconds)
+                        // delayHide={100}
+                        offset={8}
+                        id="export"
+                        place="bottom"
+                        content="Export"
+                      />
+                    }
 
                     <div className={styles.hist_ret} onClick={handleCross}>
                       <img src={ICONS.cross} alt="" height="26" width="26" />
