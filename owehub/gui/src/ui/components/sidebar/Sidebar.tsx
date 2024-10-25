@@ -386,7 +386,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )}
           </div>
         ))}
-        <div style={{ marginTop: 32 }}>
+     {!toggleOpen &&   <div style={{ marginTop: 32 }}>
           <p
             style={{
               fontSize: '12px',
@@ -407,7 +407,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           >
             All rights reserved. eOS: v1.5
           </p>
-        </div>
+        </div>}
       </div>
     </div>
   );

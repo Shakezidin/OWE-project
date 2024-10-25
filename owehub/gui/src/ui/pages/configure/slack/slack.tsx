@@ -235,7 +235,7 @@ const Slack = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "70vh" }}
         >
           <table>
             <thead>

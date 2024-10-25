@@ -244,7 +244,7 @@ const LibraryHomepage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isPending, setIsPending] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // You can adjust this value as needed
+  const itemsPerPage = 25; // You can adjust this value as needed
 
   const getPaginatedData = (data: FileOrFolder[], page: number, itemsPerPage: number) => {
     const startIndex = (page - 1) * itemsPerPage;

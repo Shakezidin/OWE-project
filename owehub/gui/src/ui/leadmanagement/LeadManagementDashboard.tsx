@@ -345,17 +345,30 @@ const LeadManagementDashboard = () => {
   };
 
   const onReset = () => {
-    setSelectedDates({ startDate: new Date(), endDate: new Date() });
+    const currentDate = new Date();
+    setSelectedDates({ startDate: startOfThisWeek, endDate: today });
+    setSelectedPeriod(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
+    setSelectedRanges([
+      {
+        startDate: currentDate,
+        endDate: currentDate,
+        key: 'selection',
+      },
+    ]);
     setIsCalendarOpen(false);
   };
+
 
   const onApply = () => {
     const startDate = selectedRanges[0].startDate;
     const endDate = selectedRanges[0].endDate;
     setSelectedDates({ startDate, endDate });
+    setSelectedPeriod(null);
     setIsCalendarOpen(false);
   };
-
+  
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -590,23 +603,29 @@ const LeadManagementDashboard = () => {
 
           if (response.status === 200) {
             const apiData = response.data;
+            
             const formattedData = apiData.reduce(
               (acc: DefaultData, item: any) => {
                 const statusName = item.status_name;
-                if (statusName in defaultData) {
-                  acc[statusName] = {
-                    name: defaultData[statusName].name,
+                const defaultDataKey = Object.keys(defaultData).find(
+                  (key) => key === statusName || defaultData[key].name === statusName
+                );
+            
+                if (defaultDataKey) {
+                  acc[defaultDataKey] = {
+                    ...defaultData[defaultDataKey],
                     value: item.count,
-                    color: defaultData[statusName].color,
                   };
                 }
+            
                 return acc;
               },
               { ...defaultData }
             );
-
+            
             const mergedData = Object.values(formattedData) as StatusData[];
             setPieData(mergedData);
+            
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -735,7 +754,7 @@ const LeadManagementDashboard = () => {
       );
 
       if (response.status === 200) {
-        toast.success('Leads Archieved successfully');
+        toast.success('Leads Archived Successfully');
         setSelectedLeads([]);
         setRefresh((prev) => prev + 1);
         setArchived(false);
@@ -1264,6 +1283,8 @@ const LeadManagementDashboard = () => {
     }
   };
 
+  console.log(pieData, "hgfsfhfsdhahfg")
+
   //----------------Aurora API integration END-------------------------//
   //*************************************************************************************************//
 
@@ -1676,7 +1697,7 @@ const LeadManagementDashboard = () => {
 
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
@@ -1713,7 +1734,7 @@ const LeadManagementDashboard = () => {
 
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
