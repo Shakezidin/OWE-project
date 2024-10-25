@@ -77,7 +77,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
-	if err != nil || len(data) <= 0 {
+	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer pay commissions from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get dealer pay commissions from DB", http.StatusBadRequest, nil)
 		return
@@ -251,6 +251,29 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	if dataFilter.PayroleDate != "" {
+		// Parse dataFilter.PayroleDate to time.Time using the given format
+		date, err := time.Parse("02-01-2006", dataFilter.PayroleDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while formatting PayroleDate")
+			return
+		}
+
+		// Format date to the layout required for SQL (e.g., "2006-01-02")
+		formattedDate := date.Format("2006-01-02")
+
+		// Append to where clause with parameterized date format
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date <= $%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, formattedDate)
 	}
 
 	if len(dataFilter.PartnerName) > 0 {
