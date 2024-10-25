@@ -1273,7 +1273,7 @@ const LeadManagementDashboard = () => {
       if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
         const generatedProposalData = generateProposalResult.payload.data;
         if (generatedProposalData.url) {
-          // toast.success('Web proposal generated successfully!');
+          toast.success('Web proposal generated successfully!');
           return generatedProposalData;
         } else {
           toast.error('Failed to generate web proposal.');
@@ -1338,6 +1338,7 @@ const LeadManagementDashboard = () => {
       console.error('Error with SSE connection', error);
     };
   };
+  //----------------Aurora API integration END-------------------------//
 
   console.log(pieData, "hgfsfhfsdhahfg")
 
@@ -1356,7 +1357,6 @@ const LeadManagementDashboard = () => {
   }
 
 
-  //----------------Aurora API integration END-------------------------//
   //*************************************************************************************************//
 
   return (

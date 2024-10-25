@@ -543,13 +543,14 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                           : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
                                             ? [
                                               { label: 'View Proposal', value: 'viewProposal' },
-                                              { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                              { label: 'Refresh Url', value: 'renew_proposal' },
                                               { label: 'Download Proposal', value: 'download' },
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                             ] : lead && lead.proposal_id !== ''
                                               ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
-                                                { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                                { label: 'Edit Proposal', value: 'editProposal' },
+                                                { label: 'Refresh Url', value: 'renew_proposal' },
                                               ]
                                               : [
                                                 { label: 'Create Proposal', value: 'new_proposal' },
@@ -647,13 +648,14 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                             : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
                                               ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
-                                                { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                                { label: 'Refresh Url', value: 'renew_proposal' },
                                                 { label: 'Download Proposal', value: 'download' },
                                                 { label: 'Reschedule Appointment', value: 'app_sched' },
                                               ] : lead && lead.proposal_id !== ''
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
-                                                  { label: 'Recreate Proposal', value: 'renew_proposal' },
+                                                  { label: 'Download', value: 'download' },
+                                                  { label: 'Refresh Url', value: 'renew_proposal' },
                                                 ]
                                                 : [
                                                   { label: 'Create Proposal', value: 'new_proposal' },
