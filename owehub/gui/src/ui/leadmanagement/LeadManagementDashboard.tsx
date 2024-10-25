@@ -344,6 +344,8 @@ const LeadManagementDashboard = () => {
     setSelectedRanges([ranges.selection]);
   };
 
+
+
   const onReset = () => {
     const currentDate = new Date();
     setSelectedDates({ startDate: startOfThisWeek, endDate: today });
@@ -698,7 +700,7 @@ const LeadManagementDashboard = () => {
           statusId = 5;
           break;
         default:
-          statusId = 'NEW';
+          statusId = '';
       }
 
       const data = {
@@ -1283,7 +1285,21 @@ const LeadManagementDashboard = () => {
     }
   };
 
-  console.log(pieData, "hgfsfhfsdhahfg")
+
+  useEffect(() => {
+    if (searchTerm !== '') {
+      setCurrentFilter('');
+    } else {
+      setCurrentFilter('New Leads');
+    }
+  }, [searchTerm]);
+
+  const handleCrossIcon = () => {
+    setCurrentFilter('New Leads');
+    setSearchTerm('');
+    setSearch('');
+  }
+
 
   //----------------Aurora API integration END-------------------------//
   //*************************************************************************************************//
@@ -1669,6 +1685,9 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button> */}
                 </div>
+                {searchTerm !== '' &&
+                  <div style={{cursor:"pointer", marginRight:"15px", marginTop:"2px"}} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }}/></div>
+                }
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
                     {/* You can use an SVG or a FontAwesome icon here */}
@@ -1676,7 +1695,8 @@ const LeadManagementDashboard = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search by customer name"
+                    value={search}
+                    placeholder="Search by customer name or id"
                     className={styles.searchInput}
                     onChange={(e) => {
                       if (e.target.value.length <= 50) {
@@ -1707,7 +1727,7 @@ const LeadManagementDashboard = () => {
                     color: '#000',
                     fontSize: 12,
                     paddingBlock: 4,
-                    fontWeight:"400"
+                    fontWeight: "400"
                   }}
                   delayShow={800}
                   offset={8}
@@ -1727,7 +1747,7 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }}
                     offset={8}
                     id="NEW"
@@ -1764,14 +1784,14 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }}
                     offset={8}
                     delayShow={800}
                     id="export"
                     place="bottom"
                     content="Export"
-                    
+
                   />
 
 
@@ -1811,14 +1831,19 @@ const LeadManagementDashboard = () => {
           <div className={styles.cardHeaderForMobile}>
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
-                <><div className={styles.searchBarMobile}>
+                <>
+               {searchTerm !== '' &&
+                  <div style={{cursor:"pointer", marginRight:"15px", marginTop:"2px"}} onClick={handleCrossIcon}><img src={ICONS.crossIconUser} alt="cross" style={{ width: '20px', height: '20px' }}/></div>
+                }
+                  <div className={styles.searchBarMobile}>
                     <div className={styles.searchIcon}>
                       {/* You can use an SVG or a FontAwesome icon here */}
                       <img src={ICONS.SearchICON001} />
                     </div>
                     <input
+                      value={search}
                       type="text"
-                      placeholder="Search by customer name"
+                      placeholder="Search by customer name or id"
                       className={styles.searchInput}
                       onChange={(e) => {
                         if (e.target.value.length <= 50) {
@@ -1889,7 +1914,7 @@ const LeadManagementDashboard = () => {
                           color="white"
                         />
                       ) : (
-                        <LuImport  color="white" />
+                        <LuImport color="white" />
                       )}
                     </div>
 

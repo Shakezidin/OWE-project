@@ -7,7 +7,7 @@
 package services
 
 import (
-	"OWEApp/owehub-leads/common"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -235,59 +235,59 @@ func getLeadHistoryTimeline(resultItem map[string]interface{}) (timeline []model
 
 	if appointmentScheduledDate, ok := resultItem["appointment_scheduled_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelScheduled,
+			Label: string(leadsService.LeadTimelineLabelScheduled),
 			Date:  &appointmentScheduledDate,
 		})
 	} else {
 		log.FuncErrorTrace(0, "Failed to get appointment scheduled date for Lead: %+v\n", resultItem)
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelScheduled,
+			Label: string(leadsService.LeadTimelineLabelScheduled),
 			Date:  nil,
 		})
 	}
 
 	if appointmentAcceptedDate, ok := resultItem["appointment_accepted_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAccepted,
+			Label: string(leadsService.LeadTimelineLabelAccepted),
 			Date:  &appointmentAcceptedDate,
 		})
 	} else {
 		log.FuncErrorTrace(0, "Failed to get appointment accepted date for Lead: %+v\n", resultItem)
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAccepted,
+			Label: string(leadsService.LeadTimelineLabelAccepted),
 			Date:  nil,
 		})
 	}
 
 	if appointmentDate, ok := resultItem["appointment_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAppointment,
+			Label: string(leadsService.LeadTimelineLabelAppointment),
 			Date:  &appointmentDate,
 		})
 	} else {
 		log.FuncErrorTrace(0, "Failed to get appointment date for Lead: %+v\n", resultItem)
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAppointment,
+			Label: string(leadsService.LeadTimelineLabelAppointment),
 			Date:  nil,
 		})
 	}
 
 	if leadWonDate, ok := resultItem["lead_won_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelWon,
+			Label: string(leadsService.LeadTimelineLabelWon),
 			Date:  &leadWonDate,
 		})
 
 		// if won, also append proposal created date
 		if proposalCreatedDate, ok := resultItem["proposal_created_date"].(time.Time); ok {
 			timeline = append(timeline, models.GetLeadsTimelineItem{
-				Label: common.LeadTimelineLabelProposalCreated,
+				Label: string(leadsService.LeadTimelineLabelProposalCreated),
 				Date:  &proposalCreatedDate,
 			})
 		} else {
 			log.FuncErrorTrace(0, "Failed to get proposal created date for Lead: %+v\n", resultItem)
 			timeline = append(timeline, models.GetLeadsTimelineItem{
-				Label: common.LeadTimelineLabelProposalCreated,
+				Label: string(leadsService.LeadTimelineLabelProposalCreated),
 				Date:  nil,
 			})
 		}
@@ -295,14 +295,14 @@ func getLeadHistoryTimeline(resultItem map[string]interface{}) (timeline []model
 
 	if dealLostDate, ok := resultItem["lead_lost_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelLost,
+			Label: string(leadsService.LeadTimelineLabelLost),
 			Date:  &dealLostDate,
 		})
 
 		// if lost, also append reason (dispoition note)
 		if reason, ok := resultItem["appointment_disposition_note"].(string); ok {
 			timeline = append(timeline, models.GetLeadsTimelineItem{
-				Label: common.LeadTimelineLabel(reason),
+				Label: reason,
 				Date:  &dealLostDate,
 			})
 		} else {
