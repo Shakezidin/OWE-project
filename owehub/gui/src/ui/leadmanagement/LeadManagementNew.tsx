@@ -134,8 +134,9 @@ const LeadManagementNew = () => {
     const errors = validateForm(formData);
     setErrors(errors);
     console.log(formData.zip_code);
-
-    if (Object.keys(errors).length  === 0 && emailError === '') {
+   
+    if (Object.keys(errors).length  === 0 && emailError === '' && zip_codeError==='' && phoneNumberError==='') {
+ 
       setLoad(true);
 
       try {
@@ -172,7 +173,7 @@ const LeadManagementNew = () => {
   const resetFormData = () => {
     setFormData(initialFormData);
   };
- 
+
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/leadmng-dashboard');
@@ -184,7 +185,7 @@ const LeadManagementNew = () => {
         Create New Lead
         <img src={ICONS.cross} alt="" onClick={handleBack} />
       </div>
-      <div style={{paddingRight:"12px"}} className={`flex justify-between mt2 ${classes.h_screen}`}>
+      <div style={{ paddingRight: "12px" }} className={`flex justify-between mt2 ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
@@ -238,9 +239,8 @@ const LeadManagementNew = () => {
                       </div>
                     </div>
                     <div className={classes.salrep_input_container}>
-                      <div
-                        className={classes.srs_new_create}
-                      >
+                     
+                      <div className={classes.srs_new_create}>
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
                           countryCodeEditable={false}
@@ -251,7 +251,12 @@ const LeadManagementNew = () => {
                           value={formData.mobile_number}
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
-                             setFormData((prevData) => ({
+                            if (phoneNumber.length < 11) {
+                              setPhoneNumberError("Please Enter at least 10 Digit");
+                            } else {
+                              setPhoneNumberError("");
+                            }
+                            setFormData((prevData) => ({
                               ...prevData,
                               mobile_number: phoneNumber,
                             }));
@@ -262,13 +267,15 @@ const LeadManagementNew = () => {
                               }));
                             }
                           }}
-                        /> {phoneNumberError ||
-                          (errors.mobile_number && (
-                            <p className="error-message">
-                              {phoneNumberError || errors.mobile_number}
-                            </p>
-                          ))}
+                        />
+                        {(phoneNumberError || errors.mobile_number) && (
+                          <p className="error-message" style={{ color: '#db4437' }}>
+                            {phoneNumberError || errors.mobile_number}
+                          </p>
+                        )}
+
                       </div>
+
 
                       <div className={classes.srs_new_create}>
                         <Input

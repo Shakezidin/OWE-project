@@ -78,7 +78,7 @@
 
 .history_list_inner > *:nth-child(4) {
   justify-self: start;
-  padding-left: 85px;
+  /* padding-left: 85px; */
 }
 
 .email {
@@ -155,6 +155,8 @@
   padding: 35px 0px 20px 0px;
   width: 100%;
 }
+
+
 
 .history_list_activities {
   display: flex;
@@ -536,6 +538,29 @@
   }
 }
 
+
+@media (min-width:768) and (max-width:1024){
+
+  .history_list_inner > *:nth-child(4) {
+    justify-self: start;
+    padding-left: 7px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media screen and (max-width: 1024px) {
   .history_list_inner {
     display: flex;
@@ -550,10 +575,7 @@
     justify-self: center;
   }
 
-  .history_list_inner > *:nth-child(4) {
-    justify-self: start;
-    padding-left: 0;
-  }
+
 
   .customer_wrapper_list {
     padding-inline: 3px;
