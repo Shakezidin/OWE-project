@@ -328,12 +328,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -632,7 +632,7 @@ const Table = ({
   ]);
 
 
-   
+
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {
@@ -727,8 +727,8 @@ const Table = ({
       setExportShow(false);
     }
   };
-   
-  
+
+
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -766,11 +766,11 @@ const Table = ({
 
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, "");
+    };
 
     setIsExporting(true);
     const headers = [
@@ -808,11 +808,11 @@ const Table = ({
       item.phone_number,
       item.address,
       item.state,
-      removeHtmlTags(item.contract_total), 
+      removeHtmlTags(item.contract_total),
       item.contracted_system_size_parent,
       item.sale_date,
       item.ntp_complete_date,
-      item.pv_completion_date,      
+      item.pv_completion_date,
       item.pto_date,
       item.canceled_date,
       item.primary_sales_rep,
@@ -861,10 +861,16 @@ const Table = ({
       return 'Partner Name';
     }
   }, [role, authData, groupBy]);
+
   return (
-    <div className="leaderboard-data" style={{ borderRadius: 12 }}>
-      {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
+    <div className="leaderboard-data" style={{ borderRadius: 16 }}>
       <div className="relative exportt" ref={wrapperReff}>
+        <div className="leaderboard-data__title">
+          <img src={award} alt="" />
+          <h2 style={{fontSize: "18px", fontWeight: 600, color: "#292B2E" }}>
+            Leaderboard
+          </h2>
+        </div>
         <div
           className="export-trigger overflow-hidden"
           onClick={() => !isExporting && !isExportingData && toggleExportShow()}
@@ -872,7 +878,7 @@ const Table = ({
           {isExporting || isExportingData ? (
             <MdDownloading className="downloading-animation" size={20} />
           ) : (
-            <FaUpload size={12} className="mr1" />
+            <FaUpload size={12} />
           )}
           <span>
             {' '}
@@ -904,66 +910,8 @@ const Table = ({
           </div>
         )}
       </div>
-      {/* <div className="leaderboard-data__export">
-        <Select
-          options={exportOptions}
-          value={exportOption}
-          onChange={(selectedOption) => {
-            setExportOption(selectedOption);
-            // handleExport(selectedOption.value);
-          }}
-          isSearchable={false}
-          placeholder="Export Options"
-          styles={{
-            control: (baseStyles) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              fontWeight: '500',
-              border: 'none',
-              outline: 'none',
-              width: '120px',
-              alignContent: 'center',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              boxShadow: 'none',
-            }),
-            indicatorSeparator: () => ({
-              display: 'none',
-            }),
-            dropdownIndicator: (baseStyles) => ({
-              ...baseStyles,
-              color: '#ee824d',
-            }),
-            option: (baseStyles, state) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              backgroundColor: state.isSelected ? '#ee824d' : '#fff',
-              '&:hover': {
-                backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
-                color: state.isSelected ? '#fff' : '#ee824d',
-              },
-            }),
-            singleValue: (baseStyles) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              color: exportOption ? '#ee824d' : '#222',
-              width: 'fit-content',
-            }),
-            menu: (baseStyles) => ({
-              ...baseStyles,
-              marginTop: '-4px',
-            }),
-          }}
-        />
-      </div> */}
 
       <div>
-        <div className="leaderboard-data__title">
-          <img src={award} alt="" />
-          <h2 className="h3" style={{ fontWeight: 600 }}>
-            Leaderboard
-          </h2>
-        </div>
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Rank by:"
@@ -1001,10 +949,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN ||
-              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-              role === TYPE_OF_USER.ACCOUNT_MANAGER
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

@@ -58,6 +58,7 @@
 .leaderboard-data__datepicker-content {
   position: absolute;
   right: 0;
+  top: 36px;
   z-index: 10;
   background-color: var(--white-color);
   border-radius: 4px;
@@ -82,12 +83,11 @@
 .leaderboard-data__title {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
 .leaderboard-data__title img {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   margin-right: 0.5rem;
 }
 
@@ -95,12 +95,15 @@
   display: flex;
   justify-content: space-between;
   align-items: end;
+  margin-bottom: 1rem;
 }
 
 .leaderboard-data__select-filter label {
   display: block;
-  font-size: 0.875rem;
+  font-size: 14px;
   margin-bottom: 0.25rem;
+  color: var(--input-border-color);
+  font-weight: 500;
 }
 
 .leaderboard-data__select-filter--mobile {
@@ -117,7 +120,7 @@
 
 .leaderboard-data__selected-dates {
   text-align: right;
-  font-size: 0.875rem;
+  font-size: 12px;
   color: var(--orange-color);
   margin-bottom: 0.5rem;
 }
@@ -135,7 +138,7 @@
   border: 1px solid var(--orange-color);
   padding: 6px 12px;
   font-size: 12px;
-  border-radius: 4px;
+  border-radius: 8px;
   color: var(--orange-color);
   margin-right: 0.5rem;
   margin-top: 0.5rem;
@@ -200,11 +203,11 @@
 }
 
 .leaderboard-table thead tr th:first-child {
-  border-top-left-radius: 12px;
+  border-top-left-radius: 16px;
 }
 
 .leaderboard-table thead tr th:last-child {
-  border-top-right-radius: 12px;
+  border-top-right-radius: 16px;
 }
 
 .leaderboard-table tbody tr td {
@@ -284,13 +287,13 @@
 }
 
 .leaderbord-tab-container .tab:first-child {
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .leaderbord-tab-container .tab:last-child {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .leaderbord-tab-container .tab.activehead {
@@ -435,16 +438,17 @@
 }
 
 .export-trigger {
-  margin-left: auto;
-  width: fit-content;
   cursor: pointer;
   z-index: 10;
   background-color: var(--orange-color);
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: 13px;
   color: #f1f1f1;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .export-trigger:hover {
@@ -496,17 +500,12 @@
   border-radius: 8px;
 }
 
-/* .exportt {
-  margin-left: auto;
-  width: fit-content;
-  cursor: pointer;
-  z-index: 10;
-  background-color: var(--orange-color);
-  border-radius: 5px;
-  padding: 6px 12px;
-  font-size: 12px;
-  color: #f1f1f1;
-} */
+.exportt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
 .export-btn {
   background: transparent;
   display: flex;

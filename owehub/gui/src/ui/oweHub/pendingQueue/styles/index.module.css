@@ -1,8 +1,8 @@
 .pending_card_wrapper {
-  border-radius: 6px;
+  border-radius: 16px;
   background-color: #fff;
   padding: 19px 28px;
-  margin-top: 10px;
+  margin-top: 11px;
   display: grid;
   justify-content: center;
   align-items: center;
@@ -29,7 +29,7 @@
 .pending_card {
   padding: 5px;
   background-color: #f6f6f6;
-  border-radius: 6px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.5s;
 }
@@ -54,7 +54,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-radius: 6px;
+  border-radius: 16px;
   padding: 28px 21px;
   height: 107px;
   transition: all 0.5s;
@@ -65,7 +65,7 @@
   border: 1px solid transparent;
 }
 .pending_card_hover:hover .pending_stats {
-  color: #000 !important;
+  color: var(--input-border-color) !important;
 }
 .pending_stats {
   font-size: 2rem;
@@ -75,12 +75,12 @@
 .pending_card_title {
   font-size: 18px;
   font-weight: 600;
-  color: #263747;
+  color: var(--input-border-color);
 }
 .pending_card_desc {
   font-size: 12px;
   margin-top: 4px;
-  color: #263747;
+  color: var(--input-border-color);
 }
 .active_card {
   background-color: #eba900;
@@ -109,7 +109,7 @@
 
 .outline_card_wrapper {
   box-shadow: 2px 7px 12px rgba(172, 152, 99, 0.17);
-  height: 54px;
+  height: 50px;
   display: flex;
   flex-basis: 152px;
   flex-shrink: 0;
@@ -117,6 +117,7 @@
   border-radius: 5px;
   padding-left: 9px;
   padding-right: 5px;
+  color: var(--input-border-color);
 }
 
 .warning_card {

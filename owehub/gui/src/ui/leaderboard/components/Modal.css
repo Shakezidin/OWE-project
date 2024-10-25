@@ -21,6 +21,8 @@
 
 .leader-modal h2 {
   font-weight: 600;
+  font-size: 18px;
+  color: var(--input-border-color);
 }
 
 .modal-center {
@@ -42,6 +44,7 @@
   background: none;
   padding: 0.4rem 0.5rem;
   border-radius: 0.25rem;
+  color: var(--input-border-color);
   transition:
     transform 0.3s ease,
     background-color 0.3s ease;
@@ -73,6 +76,7 @@
   grid-column: 1 / span 8;
   text-align: center;
   padding: 1rem 0;
+  color: var(--input-border-color);
 }
 
 .leader-modal-colorpicker button {

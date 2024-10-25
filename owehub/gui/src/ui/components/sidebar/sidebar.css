@@ -284,6 +284,10 @@
   color: var(--white-color) !important;
 }
 
+.active-link-bg img {
+  filter: invert(1);
+}
+
 .db-sidebar-icon {
   margin-left: 20px;
   width: 16px;

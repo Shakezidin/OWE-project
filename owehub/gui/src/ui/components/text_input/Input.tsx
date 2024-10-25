@@ -4,16 +4,17 @@ import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.s
 import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
 import { ICONS } from '../../../resources/icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
+import { useRef, useEffect, useState } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
-    | 'text'
-    | 'number'
-    | 'email'
-    | 'password'
-    | 'date'
-    | 'datetime-local'
-    | 'file';
+  | 'text'
+  | 'number'
+  | 'email'
+  | 'password'
+  | 'date'
+  | 'datetime-local'
+  | 'file';
   value: string | number;
   placeholder: string;
   label?: string;
@@ -73,14 +74,42 @@ const Input: FC<InputProps> = ({
     }
   };
 
+  //input handle
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleClickInside = () => {
+    setIsFocused(true); // Set focused state
+    inputRef.current?.focus(); // Focus the input
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      setIsFocused(false); // Remove focused state
+      inputRef.current.blur(); // Remove focus if clicking outside
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for clicks
+    document.addEventListener('click', handleClickOutside);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="input-wrapper">
       {label && (
         <label className={`inputLabel ${labelClassName}`}>{label}</label>
       )}{' '}
-      <div className={`input-inner-view ${innerViewClassName}`}>
+      <div className={`input-inner-view ${isFocused ? 'focused' : ''} ${innerViewClassName || ''}`}
+        onClick={handleClickInside}>
         <input
           type={type}
+          ref={inputRef}
           name={name}
           placeholder={placeholder}
           autoComplete="off"

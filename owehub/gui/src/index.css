@@ -124,6 +124,11 @@
   --orange-color: #ee824d;
   --purpink-color: #c470c7;
   --primary-light-color: #d5e4ff;
+
+  --input-border-color: #292B2E;
+  --grey-text-color: #80848B;
+  --grey-border-color: #BFBFBF;
+  --grey-light-color: #E8E8E8;
 }
 a {
   text-decoration: none;
@@ -178,7 +183,7 @@ h3 {
   font-weight: 600;
   line-height: 30px;
   text-align: left;
-  color: #263747;
+  color: var(--input-border-color);
 }
 /* Firefox */
 input[type='number'] {
