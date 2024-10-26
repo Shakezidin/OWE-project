@@ -16,3 +16,11 @@ const (
 	LeadTimelineLabelLost            LeadTimelineLabel = "Deal Lost"
 	LeadTimelineLabelProposalCreated LeadTimelineLabel = "Proposal Sent"
 )
+
+type LeadEventLabel string
+
+const (
+	LeadEventLabelSubject        LeadEventLabel = "OWE on site visit"
+	LeadEventLabelBody           LeadEventLabel = "Let's discuss about the proposal."
+	LeadEventLabelBodyReschedule LeadEventLabel = "We have rescheduled your meeting."
+)
