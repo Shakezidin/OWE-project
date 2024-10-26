@@ -46,9 +46,20 @@ func (h *LeadsEventHandler) HandleUpdated(eventDetails models.EventDetails, atte
 		log.FuncErrorTrace(0, "Error getting event details: %v", err)
 		return err
 	}
+
+	attendes := []map[string]string{}
+	for _, attendee := range event.GetAttendees() {
+		attendeeMail := *attendee.GetEmailAddress().GetAddress()
+		attendeeStatus := attendee.GetStatus().GetResponse().String()
+		attendes = append(attendes, map[string]string{
+			"mail":   attendeeMail,
+			"status": attendeeStatus,
+		})
+	}
+
 	logData(map[string]interface{}{
 		"details":   eventDetails,
-		"attendees": event.GetAttendees(),
+		"attendees": attendes,
 	})
 	return nil
 }
