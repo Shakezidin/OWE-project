@@ -10,8 +10,6 @@ import (
 
 	leadsService "OWEApp/owehub-leads/common"
 	models "OWEApp/shared/models"
-
-	"github.com/google/uuid"
 )
 
 // ValidateCreateLeadsRequest validates the input data in the CreateLeadsRequest
@@ -37,46 +35,33 @@ func sentAppointmentEmail(id int64, name, email string, appointmentDate *time.Ti
 
 	startTimeStr = appointmentDate.Format(time.RFC3339Nano)
 	endTimeStr = appointmentDate.Add(30 * time.Minute).Format(time.RFC3339Nano)
+
+	subject := "Team Meeting"
+	body := "Let's discuss about the proposal"
+
 	if isReschedule {
-		model = models.OutlookEventRequest{
-			OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
-			Subject:   "Team Meeting",
-			Body:      "Let's discuss about the proposal, we have rescheduled your meeting",
-			StartTime: startTimeStr,
-			EndTime:   endTimeStr,
-			TimeZone:  "Pacific Standard Time",
-			Location:  "Conference Room A",
-			AttendeeEmails: []models.Attendee{
-				{
-					Email: email,
-					Name:  name,
-					Type:  "required",
-				},
-			},
-			AllowNewTimeProposals: true,
-			TransactionID:         uuid.NewString(),
-		}
-	} else {
-		model = models.OutlookEventRequest{
-			OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
-			Subject:   "Team Meeting",
-			Body:      "Let's discuss about the proposal",
-			StartTime: startTimeStr,
-			EndTime:   endTimeStr,
-			TimeZone:  "Pacific Standard Time",
-			Location:  "Conference Room A",
-			AttendeeEmails: []models.Attendee{
-				{
-					Email: email,
-					Name:  name,
-					Type:  "required",
-				},
-			},
-			AllowNewTimeProposals: true,
-			TransactionID:         fmt.Sprintf("OWEHUB-LEADS-%d", id),
-		}
+		subject = "Team Meeting"
+		body = "Let's discuss about the proposal, we have rescheduled your meeting"
 	}
 
+	model = models.OutlookEventRequest{
+		OwnerMail: leadsService.LeadAppCfg.AppointmentSenderEmail,
+		Subject:   subject,
+		Body:      body,
+		StartTime: startTimeStr,
+		EndTime:   endTimeStr,
+		TimeZone:  "UTC",
+		Location:  "Conference Room A",
+		AttendeeEmails: []models.Attendee{
+			{
+				Email: email,
+				Name:  name,
+				Type:  "required",
+			},
+		},
+		AllowNewTimeProposals: true,
+		TransactionID:         fmt.Sprintf("OWEHUB-LEADS-%d", id),
+	}
 	//  OUTLOOK FUNCTION CALL
 	event, eventErr := graphapi.CreateOutlookEvent(model)
 	if eventErr != nil {

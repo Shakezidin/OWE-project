@@ -24,7 +24,11 @@ type LeadsEventHandler struct{}
 func NewLeadsEventHandler() *LeadsEventHandler { return &LeadsEventHandler{} }
 
 func (h *LeadsEventHandler) HandleCreated(eventDetails models.EventDetails) error {
-	logData(eventDetails)
+	logData(map[string]interface{}{
+		"message":   "Event Created",
+		"details":   eventDetails,
+		"attendees": nil,
+	})
 	return nil
 }
 
@@ -58,6 +62,7 @@ func (h *LeadsEventHandler) HandleUpdated(eventDetails models.EventDetails, atte
 	}
 
 	logData(map[string]interface{}{
+		"message":   "Event Updated",
 		"details":   eventDetails,
 		"attendees": attendes,
 	})
@@ -65,7 +70,11 @@ func (h *LeadsEventHandler) HandleUpdated(eventDetails models.EventDetails, atte
 }
 
 func (h *LeadsEventHandler) HandleDeleted(eventDetails models.EventDetails) error {
-	logData(eventDetails)
+	logData(map[string]interface{}{
+		"message":   "Event Deleted",
+		"details":   eventDetails,
+		"attendees": nil,
+	})
 	return nil
 }
 
