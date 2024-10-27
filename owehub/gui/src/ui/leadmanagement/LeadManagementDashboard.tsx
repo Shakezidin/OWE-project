@@ -1722,6 +1722,11 @@ const LeadManagementDashboard = () => {
                         className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
                            ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
                         onClick={() => handleFilterClick(displayStatus)}
+                        style={{
+                          pointerEvents: searchTerm ? 'none' : 'auto',
+                          opacity: searchTerm ? 0.6 : 1,
+                          cursor: searchTerm ? 'not-allowed' : 'pointer',
+                        }}
                       >
                         <p
                           className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
@@ -2088,6 +2093,11 @@ const LeadManagementDashboard = () => {
                     className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
                            ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
                     onClick={() => handleFilterClick(displayStatus)}
+                    style={{
+                      pointerEvents: searchTerm ? 'none' : 'auto',
+                      opacity: searchTerm ? 0.6 : 1,
+                      cursor: searchTerm ? 'not-allowed' : 'pointer',
+                    }}
                   >
                     <p
                       className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
