@@ -216,6 +216,15 @@ var apiRoutes = appserver.ApiRoutes{
 		leadsRoleGroup,
 	},
 
+	// DOCUSIGN
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_create_envelope",
+		apiHandler.HandleDocusignCreateEnvelopeRequest,
+		true,
+		leadsRoleGroup,
+	},
+
 	// WEBHOOKS
 	{
 		strings.ToUpper("GET"),

@@ -38,6 +38,8 @@ type GetLeadsData struct {
 	ProposalStatus         string     `json:"proposal_status"`
 	ProposalLink           string     `json:"proposal_link"`
 	ProposalUpdatedAt      *time.Time `json:"proposal_updated_at"`
+	ProposalPdfLink        string     `json:"proposal_pdf_link"`
+	Zipcode                string     `json:"zipcode"`
 }
 
 // This struct is for deleting Leads
