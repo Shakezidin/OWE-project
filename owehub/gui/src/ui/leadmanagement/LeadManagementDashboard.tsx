@@ -1555,24 +1555,25 @@ const LeadManagementDashboard = () => {
                   </div>
                   )}
                 </div>
-{!isMobileDevice() && 
-                <Tooltip
-                  style={{
-                    zIndex: 20,
-                    background: '#f7f7f7',
-                    color: '#000',
-                    fontSize: 12,
-                    paddingBlock: 4,
+               
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
 
-                    fontWeight: "400"
-                  }}
-                  offset={8}
-                  delayShow={800}
-                  id="downip"
-                  place="bottom"
-                  content={isToggledX ? "Minimize" : "Maximize"}
-                />
-}
+                      fontWeight: "400"
+                    }}
+                    offset={8}
+                    delayShow={800}
+                    id="downip"
+                    place="bottom"
+                    content={isToggledX ? "Minimize" : "Maximize"}
+                    className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                  />
+                
               </div></div>
           </div>
         </div>
@@ -1811,7 +1812,7 @@ const LeadManagementDashboard = () => {
                   <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
 
                 )}
-                {!isMobileDevice() &&
+             
                   <Tooltip
                     style={{
                       zIndex: 20,
@@ -1826,13 +1827,14 @@ const LeadManagementDashboard = () => {
                     id="More Pages"
                     place="bottom"
                     content="More Pages"
+                    className={isMobileDevice() ? 'mobile-tooltip' : ''}
                   />
-                }
+                
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
-                  {!isMobileDevice() && !isTablet &&
+               
                     <Tooltip
                       style={{
                         zIndex: 103,
@@ -1847,8 +1849,9 @@ const LeadManagementDashboard = () => {
                       place="bottom"
                       content="Add New Lead"
                       delayShow={800}
+                      className={isMobileDevice() ? 'mobile-tooltip' : ''}
                     />
-                  }
+                  
 
                   <div
                     className={styles.export_btn}
@@ -1885,7 +1888,7 @@ const LeadManagementDashboard = () => {
                       id="export"
                       place="bottom"
                       content="Export"
-
+                      className={isMobileDevice() ? 'mobile-tooltip' : ''}
                     />
                   }
 
@@ -1977,7 +1980,7 @@ const LeadManagementDashboard = () => {
                   {currentFilter === 'In Progress' && (
                     <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
                   )}
-                  {!isMobileDevice() &&
+                
                     <Tooltip
                       style={{
                         zIndex: 20,
@@ -1992,8 +1995,9 @@ const LeadManagementDashboard = () => {
                       id="More Pages"
                       place="bottom"
                       content="More Pages"
+                      className={isMobileDevice() ? 'mobile-tooltip' : ''}
                     />
-                  }
+                  
                   <div className={styles.filterCallToActionMobile}>
                     <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                       <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
@@ -2013,6 +2017,7 @@ const LeadManagementDashboard = () => {
                         place="bottom"
                         content="Add New Lead"
                         delayShow={800}
+                        className={isMobileDevice() ? 'mobile-tooltip' : ''}
                       />
                     }
 
@@ -2036,7 +2041,7 @@ const LeadManagementDashboard = () => {
                         <LuImport color="white" />
                       )}
                     </div>
-                    {showTooltip && !isMobileDevice() && !isTablet &&
+                    {showTooltip &&
                       <Tooltip
                         style={{
                           zIndex: 20,
@@ -2051,7 +2056,7 @@ const LeadManagementDashboard = () => {
                         id="export"
                         place="bottom"
                         content="Export"
-
+                        className={isMobileDevice() ? 'mobile-tooltip' : ''}
                       />
                     }
                   </div>
