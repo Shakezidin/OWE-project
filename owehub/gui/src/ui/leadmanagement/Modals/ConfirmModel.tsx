@@ -819,7 +819,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       Lead marked as Deal Won!
                     </span>
                     <span className={classes.ctmracquired}>
-                      Moving it to the In Progress section.
+                     {leadData && leadData?.status_id === 3 ? "" : "Moving it to the In Progress section."}
                     </span>
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>
