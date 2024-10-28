@@ -117,7 +117,7 @@ const Profile: React.FC<EditModalProps> = ({
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list_mob_inner}>
-                <div className={classes.customer_wrapper_list}>
+                <div className={`   ${classes.customer_wrapper_list} `}>
                     <div className={classes.btnContainer}>
                         <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
                         <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
@@ -126,7 +126,7 @@ const Profile: React.FC<EditModalProps> = ({
                             <MicroLoader />
                         </div>
                     ) : leadData ? (
-                        <div className={classes.DetailsMcontainer}>
+                        <div className={` scrollbar ${classes.DetailsMcontainer}`}>
                             <div className={classes.Column1Details}>
 
                                 <table>

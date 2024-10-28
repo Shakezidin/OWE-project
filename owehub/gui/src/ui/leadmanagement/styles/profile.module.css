@@ -1,6 +1,7 @@
 .DetailsMcontainer {
   display: grid;
   grid-template-columns: 1fr 1fr !important;
+  overflow: auto;
 }
 
 .customer_wrapper_list {
@@ -9,7 +10,10 @@
   background-color: #fff;
   max-width: 1012px;
   min-height: 572px;
+  max-height: 625px;
   min-width: 612px;
+  display: flex;
+  flex-direction: column;
 }
 
 .Column1Details {
