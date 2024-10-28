@@ -160,7 +160,7 @@ const DashBoardTable = ({
                             setOpen(true);
                           }}
                         >
-                          {el.unique_id}
+                          {el.unique_id || 'N/A'}
                         </span>
                       </div>
                     </td>

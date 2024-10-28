@@ -16,15 +16,15 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   };
 
   const [state, setState] = useState({
-    project_id: data?.unique_id || '',
-    dealer_name: data?.dealer || '',
+    project_id: data?.unique_id || 'N/A',
+    dealer_name: data?.dealer_code || '',
     sale_rep: data?.rep1,
     customer_name: data?.home_owner,
-    amount_prepaid: '',
-    pipeline_remaining: '',
-    current_date: '',
+    amount_prepaid: 0,
+    pipeline_remaining: 0,
+    current_date: 0,
     project_status: data?.current_status || '',
-    state: data?.state || '',
+    state: data?.st || '',
     message: '',
   });
 

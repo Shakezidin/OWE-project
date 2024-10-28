@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, ChangeEvent } from 'react';
 import './dasboard.css';
 import Select from 'react-select';
 import DashboardTotal from './DashboardTotal';
@@ -64,6 +64,7 @@ export const DashboardPage: React.FC = () => {
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [tileData, setTileData] = useState({})
+  const [searchQuery, setSearchQuery] = useState('');
   const [isExportingData, setIsExporting] = useState(false);
   const [loading, setLoading] = useState(false)
   const [data,setData] = useState<any>([]);
@@ -102,7 +103,7 @@ export const DashboardPage: React.FC = () => {
       const month = String(date.getUTCMonth() + 1).padStart(2, '0');
       const day = String(date.getUTCDate()).padStart(2, '0');
       const year = date.getUTCFullYear();
-      const customFormattedDate = `${month}-${day}-${year}`; // Output: "MM-DD-YYYY"
+      const customFormattedDate = `${day}-${month}-${year}`; // Output: "MM-DD-YYYY"
     
       try {
         const partnerNames = selectedDealer.map(dealer => dealer.value); // Extract all values
@@ -111,6 +112,7 @@ export const DashboardPage: React.FC = () => {
           page_number: currentPage,
           page_size: itemsPerPage,
           partner_name: partnerNames, // Send all values
+         
           filters,
           payrole_date: appliedDate ? customFormattedDate : undefined
         });
@@ -137,8 +139,9 @@ export const DashboardPage: React.FC = () => {
     })();
   }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType, selectedDealer]);
   
-  
-  
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
   
   
 
@@ -403,7 +406,13 @@ export const DashboardPage: React.FC = () => {
 
             <div className="dashboard-payroll">
               <div className="line-graph">
-                <input type='text' className='dealer-pay-search' placeholder='Search' />
+              <input
+      type='text'
+      className='dealer-pay-search'
+      placeholder='Search'
+      value={searchQuery}
+      onChange={handleSearchChange}
+    />
                 <div
                   className={`filter-line ${active === 0 ? 'active-filter-line' : ''
                     }`}
