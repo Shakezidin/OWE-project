@@ -142,7 +142,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     setErrors(errors);
 
     const isEmailValid = validateEmail(formData.email_id);
-    const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 9;
+    const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 10;
     const emailError = formData.email_id.trim() === '' || !isEmailValid;
     const addressError = formData.address.trim() === '' || formData.address.length < 12; // Change to 30 characters if needed
     if (
@@ -168,7 +168,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         }
         if (formData.address.trim() === '') {
           newErrors.address = 'Address cannot be empty';
-        } else if (formData.address.length < 12) {
+        } else if (formData.address.length < 2) {
           newErrors.address = 'Address must be valid.';
         } else {
           delete newErrors.address;

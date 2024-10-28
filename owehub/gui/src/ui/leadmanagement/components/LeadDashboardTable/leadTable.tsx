@@ -660,7 +660,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                               ] : lead && lead.proposal_id !== ''
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
-                                                  { label: 'Download', value: 'download' },
+                                                  { label: 'Edit Proposal', value: 'editProposal' },
                                                   { label: 'Refresh Url', value: 'renew_proposal' },
                                                 ]
                                                 : [
