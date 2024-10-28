@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo, ChangeEvent } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  ChangeEvent,
+  useCallback,
+} from 'react';
 import './dasboard.css';
 import Select from 'react-select';
 import DashboardTotal from './DashboardTotal';
@@ -24,10 +31,11 @@ import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
+import { debounce } from '../../../utiles/debounce';
 import { dateFormat } from '../../../utiles/formatDate';
 
 interface Option {
@@ -38,9 +46,9 @@ interface Option {
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  
+
   const dispatch = useAppDispatch();
- 
+
   const handleSelect = (ranges: Date) => {
     setSelectionRange(ranges);
   };
@@ -48,7 +56,6 @@ export const DashboardPage: React.FC = () => {
   const handleResetDates = () => {
     setSelectionRange(new Date());
   };
- 
 
   const itemsPerPage = 25;
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,12 +70,13 @@ export const DashboardPage: React.FC = () => {
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
-  const [tileData, setTileData] = useState({})
+  const [tileData, setTileData] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
   const [isExportingData, setIsExporting] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const [data,setData] = useState<any>([]);
-  const [count, setTotalCount] = useState<number>(0)
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<any>([]);
+  const [count, setTotalCount] = useState<number>(0);
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[comissionValueData.length - 1].value
   );
@@ -94,29 +102,28 @@ export const DashboardPage: React.FC = () => {
   const datePickerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!selectedDealer || selectedDealer.length === 0) return; // Exit early if selectedDealer is empty
-    
+
     (async () => {
-      setLoading(true);  // Start loading before the request
-      
-      // Set the applied date or a default if undefined
+      setLoading(true); // Start loading before the request
+
       const date = appliedDate ? new Date(appliedDate) : new Date();
-      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-      const day = String(date.getUTCDate()).padStart(2, '0');
-      const year = date.getUTCFullYear();
-      const customFormattedDate = `${day}-${month}-${year}`; // Output: "MM-DD-YYYY"
-    
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Use local month
+      const day = String(date.getDate()).padStart(2, '0'); // Use local day
+      const year = date.getFullYear(); // Use local year
+      const customFormattedDate = `${day}-${month}-${year}`; // Output: "DD-MM-YYYY"
+
       try {
-        const partnerNames = selectedDealer.map(dealer => dealer.value); // Extract all values
-  
+        const partnerNames = selectedDealer.map((dealer) => dealer.value); // Extract all values
+
         const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
           partner_name: partnerNames, // Send all values
-         
+          search_input: searchQuery,
           filters,
-          payrole_date: appliedDate ? customFormattedDate : undefined
+          payrole_date: appliedDate ? customFormattedDate : undefined,
         });
-    
+
         if (resp.status > 201) {
           toast.error(resp.message);
           setData([]);
@@ -124,11 +131,10 @@ export const DashboardPage: React.FC = () => {
           setLoading(false);
           return;
         }
-    
+
         setData(resp.data.DealerPayComm);
         setTotalCount(resp.dbRecCount);
         setTileData(resp.data);
-  
       } catch (error) {
         console.error(error);
         setData([]);
@@ -137,16 +143,26 @@ export const DashboardPage: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer, prefferedType, selectedDealer]);
-  
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-  
-  
+  }, [
+    currentPage,
+    selectedOption2,
+    appliedDate,
+    filters,
+    dealer,
+    prefferedType,
+    selectedDealer,
+    searchQuery,
+  ]);
+
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    }, 800),
+    []
+  );
 
   // useEffect(() => {
-   
+
   //     dispatch(
   //       getDealerPay({
   //         page_number: currentPage,
@@ -155,7 +171,7 @@ export const DashboardPage: React.FC = () => {
   //         filters
   //       })
   //     );
-    
+
   // }, [
   //   currentPage,
   //   selectedOption2,
@@ -164,7 +180,6 @@ export const DashboardPage: React.FC = () => {
   //   dealer,
   //   prefferedType,
   // ]);
-
 
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
@@ -187,9 +202,8 @@ export const DashboardPage: React.FC = () => {
     setIsFetched(true);
   };
 
-
   console.log(selectionRange, 'selectrange');
-  
+
   const handleEscapeKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && showDatePicker) {
       setShowDatePicker(false);
@@ -207,9 +221,7 @@ export const DashboardPage: React.FC = () => {
   }, [showDatePicker]);
 
   useEffect(() => {
-    
-      getNewFormData();
-     
+    getNewFormData();
   }, []);
   // useEffect(() => {
   //   (async () => {
@@ -249,27 +261,25 @@ export const DashboardPage: React.FC = () => {
 
   const handleExportOpen = () => {
     exportCsv();
-  }
-
+  };
 
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
-  setIsExporting(true);
-  const exportData = await configPostCaller('get_dealerpaycommissions', {
-    page_number: 1,
-    page_size: count,
-  });
-  if (exportData.status > 201) {
-    toast.error(exportData.message);
-    return;
-  }
-  
-    
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
+    };
+    setIsExporting(true);
+    const exportData = await configPostCaller('get_dealerpaycommissions', {
+      page_number: 1,
+      page_size: count,
+    });
+    if (exportData.status > 201) {
+      toast.error(exportData.message);
+      return;
+    }
+
     const headers = [
       'Unique Id',
       'Home Owner',
@@ -294,11 +304,9 @@ export const DashboardPage: React.FC = () => {
       'EPC',
       'Amount Paid',
       'Balance',
-      'Help'
+      'Help',
     ];
-  
-   
-     
+
     const csvData = exportData?.data.DealerPayComm?.map?.((item: any) => [
       item.unique_id,
       item.home_owner,
@@ -320,16 +328,15 @@ export const DashboardPage: React.FC = () => {
       item.type,
       item.today,
       item.amount,
-      item.epc, 
+      item.epc,
       item.amt_paid,
       item.balance,
-
     ]);
-  
+
     const csvRows = [headers, ...csvData];
-  
+
     const csvString = Papa.unparse(csvRows);
-  
+
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -339,10 +346,8 @@ export const DashboardPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-   
   };
- 
- 
+
   return (
     <>
       <div className="Dashboard-section-container">
@@ -358,29 +363,36 @@ export const DashboardPage: React.FC = () => {
                   setSelectedDealer(val);
                 }}
               />
-              <div
-                ref={datePickerRef}
-                style={{ position: "relative" }}
-              >
+              <div ref={datePickerRef} style={{ position: 'relative' }}>
                 <label
                   className="date-button flex items-center"
                   onClick={handleToggleDatePicker}
-                  style={{ color: '#292929', border: "1px solid #dfd8d8", padding: "8px 17px", gap: "1rem" }}
+                  style={{
+                    color: '#292929',
+                    border: '1px solid #dfd8d8',
+                    padding: '8px 17px',
+                    gap: '1rem',
+                  }}
                 >
                   {appliedDate
                     ? format(appliedDate, 'dd-MM-yyyy')
                     : 'Payroll Date'}
                   <MdOutlineKeyboardArrowDown
                     style={{
-                      width: "1.2rem",
-                      height: "1.2rem",
-                      transform: showDatePicker ? 'rotate(180deg)' : 'rotate(0deg)',
+                      width: '1.2rem',
+                      height: '1.2rem',
+                      transform: showDatePicker
+                        ? 'rotate(180deg)'
+                        : 'rotate(0deg)',
                       transition: 'transform 550ms',
                     }}
                   />
                 </label>
                 {showDatePicker && (
-                  <div className="calender-container dealer-calendar" style={{ marginLeft: 0 }}>
+                  <div
+                    className="calender-container dealer-calendar"
+                    style={{ marginLeft: 0 }}
+                  >
                     <Calendar
                       date={selectionRange || new Date()}
                       onChange={handleSelect}
@@ -406,16 +418,26 @@ export const DashboardPage: React.FC = () => {
 
             <div className="dashboard-payroll">
               <div className="line-graph">
-              <input
-      type='text'
-      className='dealer-pay-search'
-      placeholder='Search'
-      value={searchQuery}
-      onChange={handleSearchChange}
-    />
+                <input
+                  type="text"
+                  className="dealer-pay-search"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+
+                    // Check if input contains valid characters and length is <= 50
+                    if (regex.test(input) && input.length <= 50) {
+                      setSearch(input);
+                      handleSearchChange(e);
+                    }
+                  }}
+                />
                 <div
-                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-line ${
+                    active === 0 ? 'active-filter-line' : ''
+                  }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -425,8 +447,9 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-disable ${
+                    active === 1 ? 'active-filter-line' : ''
+                  }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (
@@ -465,13 +488,22 @@ export const DashboardPage: React.FC = () => {
                   style={{ height: '36px', padding: '8px 12px' }}
                 >
                   <FaUpload size={12} className="mr-1 dealer-exp-svg" />
-                  <span className='dealer-export-mob' onClick={handleExportOpen} >{' Export '}</span>
+                  <span
+                    className="dealer-export-mob"
+                    onClick={handleExportOpen}
+                  >
+                    {' Export '}
+                  </span>
                 </button>
               </div>
             </div>
           </div>
           <div className="">
-            <DashboardTotal setPrefferedType={setPrefferedType} tileData={tileData} loading={loading} />
+            <DashboardTotal
+              setPrefferedType={setPrefferedType}
+              tileData={tileData}
+              loading={loading}
+            />
             {/* <DonutChart /> */}
           </div>
         </div>
