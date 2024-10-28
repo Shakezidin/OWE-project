@@ -29,13 +29,16 @@ import (
  ******************************************************************************/
 func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err            error
-		dataReq        models.DealerPayReportRequest
-		RecordCount    int
-		dlsPayCommResp models.DealerPayCommissions
-		whereEleList   []interface{}
-		query          string
-		filter         string
+		err               error
+		dataReq           models.DealerPayReportRequest
+		RecordCount       int
+		dlsPayCommResp    models.DealerPayCommissions
+		whereEleList      []interface{}
+		query             string
+		filter            string
+		amountPrepaid     float64
+		pipelineRemaining float64
+		currentDue        float64
 	)
 
 	log.EnterFn(0, "HandleGetDealerPayCommissionsRequest")
@@ -77,7 +80,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
-	if err != nil || len(data) <= 0 {
+	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer pay commissions from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get dealer pay commissions from DB", http.StatusBadRequest, nil)
 		return
@@ -166,16 +169,97 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
-	dlsPayCommResp.AmountPrepaid = 200.55
-	dlsPayCommResp.AmountPrepaidPer = 123
-	dlsPayCommResp.Pipeline_Remaining = 356
-	dlsPayCommResp.Pipeline_RemainingPer = 368
-	dlsPayCommResp.Current_Due = 658
-	dlsPayCommResp.Current_Due_Per = 698
+	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
+		// Prepare a string for dealer names
+		dealerNames := strings.Join(dataReq.PartnerName, "', '") // Join with single quotes for SQL
+		dealerNames = "'" + dealerNames + "'"                    // Wrap the result in single quotes for SQL syntax
+
+		// Parse the PayroleDate
+		payroleDate, err := time.Parse("02-01-2006", dataReq.PayroleDate) // Ensure the format matches your input
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing PayroleDate")
+			return
+		}
+
+		// Calculate one month before the PayroleDate
+		oneMonthBefore := payroleDate.AddDate(0, -1, 0) // Subtract one month
+
+		// Format the dates for SQL
+		formattedPayroleDate := payroleDate.Format("2006-01-02 15:04:05")
+		formattedOneMonthBefore := oneMonthBefore.Format("2006-01-02 15:04:05")
+
+		query = fmt.Sprintf(`
+			SELECT
+				(SELECT SUM(amt_paid) 
+				 FROM dealer_pay 
+				 WHERE sys_size IS NULL 
+				   AND dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS amount_prepaid,
+				
+				(SELECT SUM(amount) 
+				 FROM dealer_pay 
+				 WHERE unique_id IS NOT NULL 
+				   AND dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS pipeline_remaining,
+				
+				(SELECT SUM(balance) 
+				 FROM dealer_pay 
+				 WHERE dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS current_due,
+				
+				(SELECT SUM(amt_paid) 
+				 FROM dealer_pay 
+				 WHERE sys_size IS NULL 
+				   AND dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS amount_prepaid_last_month,
+				
+				(SELECT SUM(amount) 
+				 FROM dealer_pay 
+				 WHERE unique_id IS NOT NULL 
+				   AND dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS pipeline_remaining_last_month,
+				
+				(SELECT SUM(balance) 
+				 FROM dealer_pay 
+				 WHERE dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS current_due_last_month`,
+			dealerNames, formattedPayroleDate,
+			dealerNames, formattedPayroleDate,
+			dealerNames, formattedPayroleDate,
+			dealerNames, formattedOneMonthBefore,
+			dealerNames, formattedOneMonthBefore,
+			dealerNames, formattedOneMonthBefore)
+
+		// Execute the query
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get dlrpay tile data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get dlrpay tile data from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) > 0 {
+			amountPrepaid, _ = data[0]["amount_prepaid"].(float64)
+			pipelineRemaining, _ = data[0]["pipeline_remaining"].(float64)
+			currentDue, _ = data[0]["current_due"].(float64)
+
+			amountPrepaidLastMonth, _ := data[0]["amount_prepaid_last_month"].(float64)
+			pipelineRemainingLastMonth, _ := data[0]["pipeline_remaining_last_month"].(float64)
+			currentDueLastMonth, _ := data[0]["current_due_last_month"].(float64)
+
+			// Add last month data to response if needed
+			dlsPayCommResp.AmountPrepaid = amountPrepaid
+			dlsPayCommResp.Pipeline_Remaining = pipelineRemaining
+			dlsPayCommResp.Current_Due = currentDue
+			dlsPayCommResp.AmountPrepaidLastMonth = amountPrepaidLastMonth
+			dlsPayCommResp.PipelineRemainingLastMonth = pipelineRemainingLastMonth
+			dlsPayCommResp.CurrentDueLastMonth = currentDueLastMonth
+		}
+	}
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dealer pay commissions fetched: %v, data: %+v", RecordCount, dlsPayCommResp)
-	appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp.DealerPayComm, int64(RecordCount))
+	appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
 }
 
 func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
@@ -251,6 +335,29 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	if dataFilter.PayroleDate != "" {
+		// Parse dataFilter.PayroleDate to time.Time using the given format
+		date, err := time.Parse("02-01-2006", dataFilter.PayroleDate)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while formatting PayroleDate")
+			return
+		}
+
+		// Format date to the layout required for SQL (e.g., "2006-01-02")
+		formattedDate := date.Format("2006-01-02")
+
+		// Append to where clause with parameterized date format
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date <= $%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, formattedDate)
 	}
 
 	if len(dataFilter.PartnerName) > 0 {

@@ -138,7 +138,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		leadName := firstName + " " + lastName
 
 		//Function call sentAppointmentEmail
-		err = sentAppointmentEmail(dataReq.LeadsId, leadEmail, leadName, &dateTime, isRescheduling)
+		err = sendAppointmentEvent(dataReq.LeadsId, leadName, leadEmail, &dateTime, isRescheduling)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send the email to the lead %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to send the email to the lead", http.StatusInternalServerError, nil, 0)

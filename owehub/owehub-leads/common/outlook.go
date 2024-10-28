@@ -6,6 +6,10 @@
 package common
 
 import (
+	graphapi "OWEApp/shared/graphApi"
+
+	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
+
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"encoding/json"
@@ -20,19 +24,57 @@ type LeadsEventHandler struct{}
 func NewLeadsEventHandler() *LeadsEventHandler { return &LeadsEventHandler{} }
 
 func (h *LeadsEventHandler) HandleCreated(eventDetails models.EventDetails) error {
-	log.FuncInfoTrace(0, "CREATE HANDLER CALLED")
-	logData(eventDetails)
+	logData(map[string]interface{}{
+		"message":   "Event Created",
+		"details":   eventDetails,
+		"attendees": nil,
+	})
 	return nil
 }
 
 func (h *LeadsEventHandler) HandleUpdated(eventDetails models.EventDetails, attendeeResponse string) error {
-	log.FuncInfoTrace(0, "UPDATE HANDLER CALLED")
-	logData(eventDetails)
+	var (
+		err   error
+		event graphmodels.Eventable
+	)
+
+	log.EnterFn(0, "LeadsEventHandler.HandleUpdated")
+	defer func() { log.ExitFn(0, "LeadsEventHandler.HandleUpdated", err) }()
+
+	event, err = graphapi.GetOutlookEvent(models.EventGetRequest{
+		EventId:   eventDetails.EventId,
+		OwnerMail: LeadAppCfg.AppointmentSenderEmail,
+	})
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Error getting event details: %v", err)
+		return err
+	}
+
+	attendes := []map[string]string{}
+	for _, attendee := range event.GetAttendees() {
+		attendeeMail := *attendee.GetEmailAddress().GetAddress()
+		attendeeStatus := attendee.GetStatus().GetResponse().String()
+		attendes = append(attendes, map[string]string{
+			"mail":   attendeeMail,
+			"status": attendeeStatus,
+		})
+	}
+
+	logData(map[string]interface{}{
+		"message":   "Event Updated",
+		"details":   eventDetails,
+		"attendees": attendes,
+	})
 	return nil
 }
 
 func (h *LeadsEventHandler) HandleDeleted(eventDetails models.EventDetails) error {
-	log.FuncInfoTrace(0, "CREATE HANDLER CALLED")
+	logData(map[string]interface{}{
+		"message":   "Event Deleted",
+		"details":   eventDetails,
+		"attendees": nil,
+	})
 	return nil
 }
 
@@ -75,7 +117,7 @@ func logData(data interface{}) {
 		log.FuncErrorTrace(0, "Cannot write to log builder err: %v", err)
 	}
 
-	_, err = logFile.WriteString(logBuilder.String())
+	_, err = logFile.WriteString(logBuilder.String() + "\n\n")
 	if err != nil {
 		log.FuncErrorTrace(0, "Cannot write to user log file err: %v", err)
 	}

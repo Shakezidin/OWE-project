@@ -26,11 +26,6 @@ import (
 	"github.com/ysmood/gson"
 )
 
-type SSERespPayload struct {
-	Data   map[string]interface{} `json:"data"`
-	IsDone bool                   `json:"is_done"`
-}
-
 /******************************************************************************
  * FUNCTION:        HandleAuroraGeneratePdfRequest
  *

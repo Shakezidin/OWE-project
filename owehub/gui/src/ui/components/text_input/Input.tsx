@@ -63,7 +63,7 @@ const Input: FC<InputProps> = ({
     } else {
       if (type === 'text' && !name.includes('email')) {
         e.target.value = e.target.value.replace(
-          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,.'-]| {2,}/g,
           ''
         );
       }

@@ -319,6 +319,10 @@ const LeradManagementHistory = () => {
     refresh,
   ]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [selectedValue, selectedDates])
+
   const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
       setSelectedDates({
@@ -379,7 +383,7 @@ const LeradManagementHistory = () => {
     setIsExporting(true);
     const headers = [
       'Leads ID',
-      'Status ID',
+      // 'Status ID',
       'First Name',
       'Last Name',
       'Phone Number',
@@ -415,7 +419,7 @@ const LeradManagementHistory = () => {
 
       const csvData = response.data?.leads_history_list?.map?.((item: any) => [
         `OWE${item.leads_id}`,
-        item.status_id,
+        // item.status_id,
         item.first_name,
         item.last_name,
         item.phone_number,
@@ -458,6 +462,10 @@ const LeradManagementHistory = () => {
     setIsProfileOpen(false);
 
   };
+
+  useEffect(()=>{
+   setPage(1);
+  },[selectedValue, selectedDates])
 
   
 
@@ -782,14 +790,24 @@ const LeradManagementHistory = () => {
                     </div>
                     {!isMobile && (
                       <>
-                        {!isTablet && (
+                        {
                           <div className={styles.phone_number}>
                             {item.phone_number ? item.phone_number : 'N/A'}
                           </div>
-                        )}
-                        <div className={styles.email}>
-                          <p>{item.email_id ? item.email_id : 'N/A'}</p>
+                        }
+                        <div
+                          
+                         className={styles.email}>
+                          <p
+                           style={{
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word',
+                            width: '210px',
+                            lineHeight: "16px"
+                          }}
+                          >{item.email_id ? item.email_id : 'N/A'}</p>
                         </div>
+
                         <div className={styles.address}
                           style={{
                             whiteSpace: 'pre-wrap',

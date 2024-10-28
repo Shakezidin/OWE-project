@@ -1325,7 +1325,7 @@ input[type='checkbox']:checked {
   }
 
   .legend {
-    padding-left: 16px;
+    padding-left: 32px;
   }
 }
 
