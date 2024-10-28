@@ -202,7 +202,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter First Name"
                           onChange={handleInputChange}
                           name="first_name"
-                          maxLength={30}
+                          maxLength={18}
                         />
                         {errors.first_name && (
                           <span
@@ -224,7 +224,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter Last name"
                           onChange={handleInputChange}
                           name="last_name"
-                          maxLength={30}
+                          maxLength={17}
                         />
                         {errors.last_name && (
                           <span
