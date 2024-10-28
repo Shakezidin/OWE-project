@@ -14,6 +14,7 @@ type DealerPayReportRequest struct {
 	PageSize    int      `json:"page_size"`
 	PartnerName []string `json:"partner_name"`
 	PayroleDate string   `json:"payrole_date"`
+	SearchInput string   `json:"search_input"`
 }
 
 type DealerPayReportResponse struct {

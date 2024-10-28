@@ -192,7 +192,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 			SELECT
 				(SELECT SUM(amt_paid) 
 				 FROM dealer_pay 
-				 WHERE sys_size IS NULL 
+				 WHERE sys_size IS NOT NULL 
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid,
 				
@@ -209,7 +209,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 				
 				(SELECT SUM(amt_paid) 
 				 FROM dealer_pay 
-				 WHERE sys_size IS NULL 
+				 WHERE sys_size IS NOT NULL 
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid_last_month,
 				
@@ -377,6 +377,31 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(", ")
 			}
 		}
+		filtersBuilder.WriteString(")")
+	}
+
+	if len(dataFilter.SearchInput) > 0 {
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		// Open parenthesis for grouping OR conditions
+		filtersBuilder.WriteString("(")
+
+		// Condition to match unique_id with case-insensitive search
+		filtersBuilder.WriteString("LOWER(unique_id) ILIKE ")
+		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, "%"+dataFilter.SearchInput+"%")
+
+		// Add OR condition for home_owner
+		filtersBuilder.WriteString(" OR LOWER(home_owner) ILIKE ")
+		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, "%"+dataFilter.SearchInput+"%")
+
+		// Close the OR group
 		filtersBuilder.WriteString(")")
 	}
 
