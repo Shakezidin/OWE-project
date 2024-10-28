@@ -766,6 +766,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       onChange={handleInputChange}
                       name="reason"
                       maxLength={100}
+                      autoComplete="off"
                     />
                     {reasonError && <p className="error">{reasonError}</p>}
                   </div>
@@ -837,8 +838,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}{' '}
-            {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
-            {/* Display iframe if proposal link exists */}
+           
             {iframeSrc && (
               <iframe
                 src={iframeSrc}

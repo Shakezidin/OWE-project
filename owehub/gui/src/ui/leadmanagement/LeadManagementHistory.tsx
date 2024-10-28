@@ -748,6 +748,7 @@ const LeradManagementHistory = () => {
                 >
                   <div className={styles.history_list_inner}>
                     <div className={styles.hist_checkname}>
+                      
                       <label>
                         <input
                           type="checkbox"

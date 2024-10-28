@@ -443,7 +443,7 @@ const ArchivedPages = () => {
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
                               maxWidth: isMobile ? '100px' : '200px',
-                              lineHeight: "16px"
+                              lineHeight: "19px"
                             }}
                           >
                             <h2>

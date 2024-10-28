@@ -1287,8 +1287,7 @@ input[type='checkbox']:checked {
 
   .lead__datepicker_content {
     position: absolute;
-
-    left: -140px;
+    left: -172px;
     z-index: 100;
     background-color: var(--white-color);
     border-radius: 4px;

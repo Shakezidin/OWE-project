@@ -421,7 +421,7 @@ const LeadManagementDashboard = () => {
   const [designID, setDesignsID] = useState<string>(''); // Change to string
   const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
   const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
-
+  const [side, setSide] = useState<"left"|"right">('left');
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -517,6 +517,7 @@ const LeadManagementDashboard = () => {
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
     setPage(1);
+    setSide("left")
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -1340,18 +1341,19 @@ const LeadManagementDashboard = () => {
   };
   //----------------Aurora API integration END-------------------------//
 
-  console.log(pieData, "hgfsfhfsdhahfg")
+  const [backup, setBackup] = useState('New Leads');
 
   useEffect(() => {
     if (searchTerm !== '') {
+      setBackup(currentFilter);
       setCurrentFilter('');
     } else {
-      setCurrentFilter('New Leads');
+      setCurrentFilter(backup);
     }
   }, [searchTerm]);
 
   const handleCrossIcon = () => {
-    setCurrentFilter('New Leads');
+    setCurrentFilter(backup);
     setSearchTerm('');
     setSearch('');
   }
@@ -2141,6 +2143,8 @@ const LeadManagementDashboard = () => {
               selectedLeads={selectedLeads}
               setSelectedLeads={setSelectedLeads}
               refresh={refresh}
+              side={side}
+              setSide={setSide}
               setRefresh={setRefresh}
               onCreateProposal={handleCreateProposal}
               retrieveWebProposal={retrieveWebProposal}
