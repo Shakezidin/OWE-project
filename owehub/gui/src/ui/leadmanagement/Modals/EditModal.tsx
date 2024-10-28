@@ -144,42 +144,42 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     const isEmailValid = validateEmail(formData.email_id);
     const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 10;
     const emailError = formData.email_id.trim() === '' || !isEmailValid;
-    const addressError = formData.address.trim() === '' || formData.address.length < 12; // Change to 30 characters if needed
+    const addressError = formData.address.trim() === ''; // Address is only checked for being empty
+
     if (
-      Object.keys(errors).length > 0 ||
-      emailError ||
-      mobileNumberError ||
-      addressError
+        Object.keys(errors).length > 0 ||
+        emailError ||
+        mobileNumberError ||
+        addressError
     ) {
-      setErrors((prevErrors) => {
-        const newErrors = { ...prevErrors };
+        setErrors((prevErrors) => {
+            const newErrors = { ...prevErrors };
 
-        if (mobileNumberError) {
-          newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
-        } else {
-          delete newErrors.mobile_number;
-        }
-        if (formData.email_id.trim() === '') {
-          newErrors.email_id = 'Email cannot be empty';
-        } else if (!isEmailValid) {
-          newErrors.email_id = 'Please enter a valid email address.';
-        } else {
-          delete newErrors.email_id;
-        }
-        if (formData.address.trim() === '') {
-          newErrors.address = 'Address cannot be empty';
-        } else if (formData.address.length < 2) {
-          newErrors.address = 'Address must be valid.';
-        } else {
-          delete newErrors.address;
-        }
+            if (mobileNumberError) {
+                newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
+            } else {
+                delete newErrors.mobile_number;
+            }
+            if (formData.email_id.trim() === '') {
+                newErrors.email_id = 'Email cannot be empty';
+            } else if (!isEmailValid) {
+                newErrors.email_id = 'Please enter a valid email address.';
+            } else {
+                delete newErrors.email_id;
+            }
+            if (addressError) {
+                newErrors.address = 'Address cannot be empty';
+            } else {
+                delete newErrors.address;
+            }
 
-        return newErrors;
-      });
+            return newErrors;
+        });
 
-      setLoad(false);
-      return;
+        setLoad(false);
+        return;
     }
+
     try {
       const response = await postCaller(
         'edit_leads',
