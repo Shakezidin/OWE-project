@@ -26,6 +26,7 @@ import useAuth from '../../../hooks/useAuth';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import Input from '../../scheduler/SaleRepCustomerForm/component/Input/Input';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
@@ -76,6 +77,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [error, setError] = useState('');
   const [proposalLink, setProposalLink] = useState<string | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null); // State for iframe source
+  const isMobile = useMatchMedia('(max-width: 600px)');
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -542,10 +544,12 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                           : leadData.street_address
                         : 'N/A'}
                     </span>
-                    <span className={classes.emailStyle}>
-                      {leadData?.email_id}{' '}
-
+                    <span className={isMobile ? classes.emailStyleForMObile : classes.emailStyle}>
+                      {isMobile && leadData?.email_id.length > 39
+                        ? `${leadData.email_id.slice(0, 27)}...`
+                        : leadData.email_id}
                     </span>
+
                     {(visibleDiv === 0 || visibleDiv === 11) && (
                       <div
                         className={classes.edit_modal_open}
@@ -830,7 +834,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
                       }}
                       onClick={handleCloseWon}
-                    
+
                     >
                       {loadWon ? "Wait..." : "Confirm"}
                     </button>
@@ -838,7 +842,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 </div>
               </>
             )}{' '}
-           
+
             {iframeSrc && (
               <iframe
                 src={iframeSrc}
