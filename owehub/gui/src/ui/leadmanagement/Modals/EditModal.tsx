@@ -80,9 +80,6 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         });
       }
 
-
-
-
       const trimmedValue = value.replace(/\s/g, '');
       setFormData((prevData) => ({
         ...prevData,
@@ -136,41 +133,81 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     return errors;
   };
 
-
-
-
-  const handleConfrm = async (e: any) => {
-    setLoad(true);
-    e.preventDefault();
+// **********************************************EDITING IS PROHIBITED ********************************************************************
+const handleConfrm = async (e: any) => {
+  setLoad(true);
+  e.preventDefault();
     const errors = validateForm(formData);
-    setErrors(errors);
-    if (Object.keys(errors).length === 0 && emailError === '') {
-      try {
-        const response = await postCaller(
-          'edit_leads',
-          {
-            leads_id: leadData?.leads_id,
-            email_id: formData.email_id,
-            phone_number: formData.mobile_number,
-            street_address: formData.address,
-          },
-          true
-        );
-        if (response.status === 200) {
-          toast.success('Lead Updated Succesfully');
-          setRefresh((prev) => prev + 1);
-          onClose();
-        } else if (response.status >= 201) {
-          toast.warn(response.message);
-        }
-        setLoad(false);
-      } catch (error) {
-        setLoad(false);
-        console.error('Error submitting form:', error);
+  setErrors(errors);
+  
+  const isEmailValid = validateEmail(formData.email_id);
+  const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 9;
+  const emailError = formData.email_id.trim() === '' || !isEmailValid;
+  const addressError = formData.address.trim() === '' || formData.address.length < 12; // Change to 30 characters if needed
+  if (
+    Object.keys(errors).length > 0 || 
+    emailError || 
+    mobileNumberError || 
+    addressError
+  ) {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      
+      if (mobileNumberError) {
+        newErrors.mobile_number = 'Please enter a valid number, at least 9 digits.';
+      } else {
+        delete newErrors.mobile_number;
       }
+            if (formData.email_id.trim() === '') {
+        newErrors.email_id = 'Email cannot be empty';
+      } else if (!isEmailValid) {
+        newErrors.email_id = 'Please enter a valid email address.';
+      } else {
+        delete newErrors.email_id;
+      }
+            if (formData.address.trim() === '') {
+        newErrors.address = 'Address cannot be empty';
+      } else if (formData.address.length < 12) { 
+        newErrors.address = 'Address must be valid.';
+      } else {
+        delete newErrors.address;
+      }
+
+      return newErrors;
+    });
+
+    setLoad(false);
+    return;
+  }
+  try {
+    const response = await postCaller(
+      'edit_leads',
+      {
+        leads_id: leadData?.leads_id,
+        email_id: formData.email_id,
+        phone_number: formData.mobile_number,
+        street_address: formData.address,
+      },
+      true
+    );
+
+    if (response.status === 200) {
+      toast.success('Lead Updated Successfully');
+      setRefresh((prev) => prev + 1);
+      onClose();
+    } else if (response.status >= 201) {
+      toast.warn(response.message);
     }
     setLoad(false);
-  };
+  } catch (error) {
+    setLoad(false);
+    console.error('Error submitting form:', error);
+  }
+  setLoad(false);
+};
+
+// **********************************************TILL HERE BY RABINDR718 ********************************************************************
+
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleConfrm(e);
@@ -284,30 +321,35 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
               </div>
 
               <div className={classes.inputFields}>
-                <div>
-                  <Input
-                    type="number"
-                    value={formData.mobile_number}
-                    placeholder="+91 8127577509"
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      handleInputChange(e);
-                      if (value.trim() !== '') {
-                        setErrors((prevErrors) => {
-                          const newErrors = { ...prevErrors };
-                          delete newErrors.mobile_number;
-                          return newErrors;
-                        });
-                      }
-                    }}
-                    name="mobile_number"
-                    maxLength={15}
-                  />
-                  {errors.mobile_number && (
-                    <p className="error-message">{errors.mobile_number}</p>
-                  )}
+              <div>
+  <Input
+    type="number"
+    value={formData.mobile_number}
+    placeholder="+91 8127577509"
+    onChange={(e) => {
+      const { value } = e.target;
+      handleInputChange(e);
+      if (value.trim() !== '') {
+        setErrors((prevErrors) => {
+          const newErrors = { ...prevErrors };
+          if (value.length < 9) {
+            newErrors.mobile_number = 'The number must be at least 9 digits long';
+          } else {
+            delete newErrors.mobile_number;
+          }
 
-                </div>
+          return newErrors;
+        });
+      }
+    }}
+    name="mobile_number"
+    maxLength={15}
+  />
+  {errors.mobile_number && (
+    <p className="error-message">{errors.mobile_number}</p>
+  )}
+</div>
+
                 <div>
                   <Input
                     type="email"
