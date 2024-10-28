@@ -166,7 +166,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
 			searchIdStr := dataReq.Search[3:]
 			if _, atoiErr := strconv.Atoi(searchIdStr); atoiErr == nil {
-				whereEleList = append(whereEleList, searchIdStr)
+				whereEleList = append(whereEleList, fmt.Sprintf("%s%%", searchIdStr))
 				whereClause = fmt.Sprintf("%s OR li.leads_id::text ILIKE $%d)", whereClause[0:len(whereClause)-1], len(whereEleList))
 			}
 		}
