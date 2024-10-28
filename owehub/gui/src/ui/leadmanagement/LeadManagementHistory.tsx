@@ -599,8 +599,8 @@ const LeradManagementHistory = () => {
                           backgroundColor: '#fffff',
                           boxShadow: 'none',
                           '@media only screen and (max-width: 767px)': {
-                            width: '80px',
-                            // width: 'fit-content',
+                            // width: '80px',
+                            width: 'fit-content',
                           },
                           '&:focus-within': {
                             borderColor: '#377CF6',
