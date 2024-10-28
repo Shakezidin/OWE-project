@@ -1341,18 +1341,19 @@ const LeadManagementDashboard = () => {
   };
   //----------------Aurora API integration END-------------------------//
 
-  console.log(pieData, "hgfsfhfsdhahfg")
+  const [backup, setBackup] = useState('New Leads');
 
   useEffect(() => {
     if (searchTerm !== '') {
+      setBackup(currentFilter);
       setCurrentFilter('');
     } else {
-      setCurrentFilter('New Leads');
+      setCurrentFilter(backup);
     }
   }, [searchTerm]);
 
   const handleCrossIcon = () => {
-    setCurrentFilter('New Leads');
+    setCurrentFilter(backup);
     setSearchTerm('');
     setSearch('');
   }
