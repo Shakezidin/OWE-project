@@ -1158,7 +1158,7 @@ const LeadManagementDashboard = () => {
         item.first_name,
         item.last_name,
         item.email_id,
-        item.phone_number,
+        `'${item.phone_number}'`,
         item.street_address,
         item.appointment_status_label,
         item.appointment_status_date,
