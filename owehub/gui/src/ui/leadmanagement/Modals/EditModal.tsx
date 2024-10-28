@@ -80,9 +80,6 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         });
       }
 
-
-
-
       const trimmedValue = value.replace(/\s/g, '');
       setFormData((prevData) => ({
         ...prevData,
@@ -136,41 +133,83 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     return errors;
   };
 
-
-
-
+  // **********************************************EDITING IS PROHIBITED ********************************************************************
   const handleConfrm = async (e: any) => {
     setLoad(true);
     e.preventDefault();
+
     const errors = validateForm(formData);
     setErrors(errors);
-    if (Object.keys(errors).length === 0 && emailError === '') {
-      try {
-        const response = await postCaller(
-          'edit_leads',
-          {
-            leads_id: leadData?.leads_id,
-            email_id: formData.email_id,
-            phone_number: formData.mobile_number,
-            street_address: formData.address,
-          },
-          true
-        );
-        if (response.status === 200) {
-          toast.success('Lead Updated Succesfully');
-          setRefresh((prev) => prev + 1);
-          onClose();
-        } else if (response.status >= 201) {
-          toast.warn(response.message);
+
+    const isEmailValid = validateEmail(formData.email_id);
+    const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 10;
+    const emailError = formData.email_id.trim() === '' || !isEmailValid;
+    const addressError = formData.address.trim() === ''; // Change to 30 characters if needed
+    if (
+      Object.keys(errors).length > 0 ||
+      emailError ||
+      mobileNumberError ||
+      addressError
+    ) {
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+
+        if (mobileNumberError) {
+          newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
+          console.log("1")
+        } else {
+          delete newErrors.mobile_number;
         }
-        setLoad(false);
-      } catch (error) {
-        setLoad(false);
-        console.error('Error submitting form:', error);
+        if (formData.email_id.trim() === '') {
+          newErrors.email_id = 'Email cannot be empty';
+          console.log("2")
+        } else if (!isEmailValid) {
+          newErrors.email_id = 'Please enter a valid email address.';
+        } else {
+          delete newErrors.email_id;
+        }
+        if (formData.address.trim() === '') {
+          newErrors.address = 'Address cannot be empty';
+          console.log("3")
+        } else {
+          delete newErrors.address;
+        }
+
+        return newErrors;
+      });
+
+      setLoad(false);
+      return;
+    }
+    try {
+      const response = await postCaller(
+        'edit_leads',
+        {
+          leads_id: leadData?.leads_id,
+          email_id: formData.email_id,
+          phone_number: formData.mobile_number,
+          street_address: formData.address,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Lead Updated Successfully');
+        setRefresh((prev) => prev + 1);
+        onClose();
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
       }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
     }
     setLoad(false);
   };
+
+  // **********************************************TILL HERE BY RABINDR718 ********************************************************************
+
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleConfrm(e);
@@ -184,10 +223,10 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     };
   }, []);
   // const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // const checkZoomLevel = useCallback(() => {
   //   const zoomLevel = Math.round(window.devicePixelRatio * 100);
-    
+
   //   if (containerRef.current) {
   //     if (zoomLevel > 138) {
   //       containerRef.current.style.marginTop = "0";
@@ -217,7 +256,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
 
-          <div  className={classes.customer_wrapper_list_edit}>
+          <div className={classes.customer_wrapper_list_edit}>
             <div className={classes.Edit_DetailsMcontainer}>
               <div className={classes.edit_closeicon} onClick={onClose}>
                 <RiArrowDropDownLine
@@ -247,38 +286,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                   </span>
                   <span className={classes.emailStyle}>
                     {leadData?.email_id}{' '}
-                    {/* <span className={classes.verified}> */}
-                    {/* <svg
-                        className={classes.verifiedMarked}
-                        width="13"
-                        height="13"
-                        viewBox="0 0 13 13"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_6615_16896)">
-                          <path
-                            d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
-                            fill="#20963A"
-                          />
-                          <path
-                            d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
-                            fill="white"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_6615_16896">
-                            <rect
-                              width="12.16"
-                              height="12.16"
-                              fill="white"
-                              transform="translate(0 0.421875)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>{' '} */}
-                    {/* Verified
-                    </span> */}
+                    {/* ///VERIFIED TICK Comment REMOVED */}
                   </span>
                 </div>
               </div>
@@ -295,7 +303,12 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                       if (value.trim() !== '') {
                         setErrors((prevErrors) => {
                           const newErrors = { ...prevErrors };
-                          delete newErrors.mobile_number;
+                          if (value.length < 10) {
+                            newErrors.mobile_number = 'The number must be at least 10 digits long';
+                          } else {
+                            delete newErrors.mobile_number;
+                          }
+
                           return newErrors;
                         });
                       }
@@ -306,8 +319,8 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                   {errors.mobile_number && (
                     <p className="error-message">{errors.mobile_number}</p>
                   )}
-
                 </div>
+
                 <div>
                   <Input
                     type="email"

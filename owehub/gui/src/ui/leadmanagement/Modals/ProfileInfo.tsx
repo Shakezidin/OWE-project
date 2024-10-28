@@ -9,7 +9,7 @@ import MicroLoader from "../../components/loader/MicroLoader";
 import DataNotFound from "../../components/loader/DataNotFound";
 import { format, parseISO } from "date-fns";
 import { Tooltip } from "react-tooltip";
-import { toZonedTime } from "date-fns-tz";
+import {  } from "date-fns-tz";
 
 interface EditModalProps {
     isOpen1: boolean;
@@ -117,7 +117,7 @@ const Profile: React.FC<EditModalProps> = ({
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list_mob_inner}>
-                <div className={classes.customer_wrapper_list}>
+                <div className={`   ${classes.customer_wrapper_list} `}>
                     <div className={classes.btnContainer}>
                         <span className={classes.XR} onClick={RedirectMainDashboard}>Lead Info</span>
                         <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
@@ -126,7 +126,7 @@ const Profile: React.FC<EditModalProps> = ({
                             <MicroLoader />
                         </div>
                     ) : leadData ? (
-                        <div className={classes.DetailsMcontainer}>
+                        <div className={` scrollbar ${classes.DetailsMcontainer}`}>
                             <div className={classes.Column1Details}>
 
                                 <table>
@@ -302,24 +302,24 @@ const Profile: React.FC<EditModalProps> = ({
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Created At</td>
-                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.created_at ? format(toZonedTime(parseISO(leadData.created_at), 'UTC'), 'dd-MM-yyyy')
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.created_at ? format((parseISO(leadData.created_at)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Updated At</td>
-                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.updated_at ? format(toZonedTime(parseISO(leadData.updated_at), 'UTC'), 'dd-MM-yyyy')
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.updated_at ? format((parseISO(leadData.updated_at)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Appointment Scheduled Date</td>
                                             <td className={`${classes.rightAlign} ${classes.specialfont}`}
-                                            >{leadData?.appointment_scheduled_date ? format(toZonedTime(parseISO(leadData.appointment_scheduled_date), 'UTC'), 'dd-MM-yyyy')
+                                            >{leadData?.appointment_scheduled_date ? format((parseISO(leadData.appointment_scheduled_date)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
 
                                         <tr>
                                             <td className={classes.leftAlign}>Appointment Declined Date</td>
-                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_declined_date ? format(toZonedTime(parseISO(leadData.appointment_declined_date), 'UTC'), 'dd-MM-yyyy')
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_declined_date ? format((parseISO(leadData.appointment_declined_date)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
                                         <tr>
@@ -329,7 +329,7 @@ const Profile: React.FC<EditModalProps> = ({
                                             <td className={classes.rightAlign}>
                                                 {leadData?.appointment_accepted_date ? (
                                                     // new Date(leadData.appointment_accepted_date).toISOString()
-                                                    format(toZonedTime(parseISO(leadData.appointment_accepted_date), 'UTC'), 'dd-MM-yyyy')
+                                                    format((parseISO(leadData.appointment_accepted_date)), 'dd-MM-yyyy')
                                                 ) : (
                                                     "....."
                                                 )}
@@ -337,24 +337,24 @@ const Profile: React.FC<EditModalProps> = ({
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Appointment Date</td>
-                                            <td className={classes.rightAlign}>{leadData?.appointment_date ? format(toZonedTime(parseISO(leadData.appointment_date), 'UTC'), 'dd-MM-yyyy')
+                                            <td className={classes.rightAlign}>{leadData?.appointment_date ? format((parseISO(leadData.appointment_date)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Lead Won Date</td>
-                                            <td className={classes.rightAlign}>{leadData?.lead_won_date ? format(toZonedTime(parseISO(leadData.lead_won_date), 'UTC'), 'dd-MM-yyyy')
+                                            <td className={classes.rightAlign}>{leadData?.lead_won_date ? format((parseISO(leadData.lead_won_date)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Lead Lost Date</td>
-                                            <td className={classes.rightAlign}>{leadData?.lead_lost_date ? format(toZonedTime(parseISO(leadData.lead_lost_date), 'UTC'), 'dd-MM-yyyy')
+                                            <td className={classes.rightAlign}>{leadData?.lead_lost_date ? format((parseISO(leadData.lead_lost_date)), 'dd-MM-yyyy')
                                                 : "....."}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Proposal Created Date</td>
                                             <td className={classes.rightAlign}>
                                                 {leadData?.proposal_created_date
-                                                    ? format(toZonedTime(parseISO(leadData.proposal_created_date), 'UTC'), 'dd-MM-yyyy')
+                                                    ? format((parseISO(leadData.proposal_created_date)), 'dd-MM-yyyy')
                                                     : "....."}
                                             </td>
                                         </tr>

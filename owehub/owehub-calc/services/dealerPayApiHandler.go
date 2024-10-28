@@ -1,8 +1,8 @@
 package services
 
 import (
+	log "OWEApp/shared/logger"
 	oweconfig "OWEApp/shared/oweconfig"
-	"log"
 	"regexp"
 	"strconv"
 	"time"
@@ -101,9 +101,6 @@ func CalcAmtPaidByDealer(dealerPayments []oweconfig.DealerPaymentsStruct, dealer
 
 func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, dealer string, uniqueId string) (amtPaid float64) {
 	for _, entry := range dealerPayments {
-		if uniqueId == entry.UniqueId {
-			log.Printf("here it is loading %v unique_id %v", dealer, uniqueId)
-		}
 		if entry.SalesPartner == dealer && entry.UniqueId == uniqueId {
 			// Handle currency prefix if present (e.g., "USD ")
 			paymentAmountStr := entry.PaymentAmount
@@ -114,7 +111,7 @@ func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsSt
 			// Convert cleaned payment amount string to float64
 			paymentAmount, err := strconv.ParseFloat(paymentAmountStr, 64)
 			if err != nil {
-				log.Printf("error while converting string to float with err %v", err)
+				log.FuncErrorTrace(0, "error while converting string to float with err %v", err)
 				continue // Skip this entry if conversion fails
 			}
 			amtPaid += paymentAmount
@@ -144,22 +141,27 @@ func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfi
 			// Convert M1SalesPartnerDrawPercentage from string to float64
 			percentage, err := strconv.ParseFloat(entry.M1SalesPartnerDrawPercentage, 64)
 			if err != nil {
-				log.Printf("Error converting M1SalesPartnerDrawPercentage to float: %v", err)
+				log.FuncErrorTrace(0, "Error converting M1SalesPartnerDrawPercentage to float: %v", err)
 				continue // Skip this entry if there's a conversion error
 			}
 			drawPerc += percentage
 
 			// Convert M1SalesPartnerNotToExceed from string to float64
-			notToExceed, err := strconv.ParseFloat(entry.M1SalesPartnerNotToExceed, 64)
+			M1SalesPartnerNotToExceed := entry.M1SalesPartnerNotToExceed
+			if len(M1SalesPartnerNotToExceed) > 4 && M1SalesPartnerNotToExceed[:4] == "USD " {
+				M1SalesPartnerNotToExceed = M1SalesPartnerNotToExceed[4:] // Remove "USD " prefix
+			}
+
+			notToExceed, err := strconv.ParseFloat(M1SalesPartnerNotToExceed, 64)
 			if err != nil {
-				log.Printf("Error converting M1SalesPartnerNotToExceed to float: %v", err)
+				log.FuncErrorTrace(0, "Error converting M1SalesPartnerNotToExceed to float: %v", err)
 				continue // Skip this entry if there's a conversion error
 			}
 			drawMax += notToExceed
 
 			redLine, err := strconv.ParseFloat(entry.Redline, 64)
 			if err != nil {
-				log.Printf("Error converting redline to float: %v", err)
+				log.FuncErrorTrace(0, "Error converting redline to float: %v", err)
 				continue // Skip this entry if there's a conversion error
 			}
 			redline += redLine

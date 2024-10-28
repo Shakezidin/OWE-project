@@ -160,7 +160,7 @@ const DashBoardTable = ({
                             setOpen(true);
                           }}
                         >
-                          {el.unique_id}
+                          {el.unique_id || 'N/A'}
                         </span>
                       </div>
                     </td>
@@ -185,7 +185,7 @@ const DashBoardTable = ({
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
                       {el.credit ?? 'N/A'}
                     </td>
-                    <td>{el.draw_amt || 'N/A'}</td>
+                    <td>{el.draw_amt || '$0'}</td>
                     <td>{el.rl || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
                     <td>{el.today || 'N/A'}</td>
@@ -197,7 +197,7 @@ const DashBoardTable = ({
                       ${el.amt_paid ?? 'N/A'}
                     </td>
                     <td style={{ color: '#379DE3', fontWeight: '500' }}>
-                      ${el.balance ?? 'N/A'}
+                      {el.balance ? '$' + el.balance : '$0'}
                     </td>
                     <td className="zoom-out-help">
                       <img

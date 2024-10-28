@@ -62,6 +62,12 @@
   gap: 5px;
 }
 
+.dealer-export{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .pipeline-export {
   margin-top: 1px;
   width: 36px;
@@ -1460,6 +1466,11 @@
 }
 
 @media (max-width: 768px) {
+
+  .dealer-export{
+    gap: 0;
+    justify-content: center;
+  }
   
   .project-status-table-title1 {
     justify-content: flex-end;
@@ -1467,6 +1478,11 @@
 
   .pipline-export-btn .performance-exportbtn {
     margin-top: 6.2rem;
+  }
+
+  .performance-exportbtn{
+    padding: 8px;
+    width: 36px;
   }
 
   .proj-status-tab-head {

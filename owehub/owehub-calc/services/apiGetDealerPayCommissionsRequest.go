@@ -170,9 +170,12 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
 	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
-		// Prepare a string for dealer names
-		dealerNames := strings.Join(dataReq.PartnerName, "', '") // Join with single quotes for SQL
-		dealerNames = "'" + dealerNames + "'"                    // Wrap the result in single quotes for SQL syntax
+		// Prepare a string for dealer names, with each name properly escaped
+		escapedPartnerNames := make([]string, len(dataReq.PartnerName))
+		for i, name := range dataReq.PartnerName {
+			escapedPartnerNames[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		dealerNames := strings.Join(escapedPartnerNames, ", ")
 
 		// Parse the PayroleDate
 		payroleDate, err := time.Parse("02-01-2006", dataReq.PayroleDate) // Ensure the format matches your input
@@ -192,7 +195,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 			SELECT
 				(SELECT SUM(amt_paid) 
 				 FROM dealer_pay 
-				 WHERE sys_size IS NULL 
+				 WHERE sys_size IS NOT NULL 
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid,
 				
@@ -209,7 +212,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 				
 				(SELECT SUM(amt_paid) 
 				 FROM dealer_pay 
-				 WHERE sys_size IS NULL 
+				 WHERE sys_size IS NOT NULL 
 				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid_last_month,
 				
@@ -377,6 +380,31 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(", ")
 			}
 		}
+		filtersBuilder.WriteString(")")
+	}
+
+	if len(dataFilter.SearchInput) > 0 {
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		// Open parenthesis for grouping OR conditions
+		filtersBuilder.WriteString("(")
+
+		// Condition to match unique_id with case-insensitive search
+		filtersBuilder.WriteString("LOWER(unique_id) ILIKE ")
+		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, "%"+dataFilter.SearchInput+"%")
+
+		// Add OR condition for home_owner
+		filtersBuilder.WriteString(" OR LOWER(home_owner) ILIKE ")
+		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, "%"+dataFilter.SearchInput+"%")
+
+		// Close the OR group
 		filtersBuilder.WriteString(")")
 	}
 

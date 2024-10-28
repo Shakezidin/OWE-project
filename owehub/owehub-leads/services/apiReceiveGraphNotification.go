@@ -7,7 +7,6 @@
 package services
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
@@ -56,7 +55,7 @@ func HandleReceiveGraphNotificationRequest(resp http.ResponseWriter, req *http.R
 		}
 
 		if subscriptionBody.Value != nil && len(subscriptionBody.Value) > 0 {
-			schedulerHandler := leadsService.NewLeadsEventHandler()
+			schedulerHandler := &LeadsMsgraphEventHandler{}
 			router := graphapi.NewEventRouter(schedulerHandler)
 			err = router.RoutingBasedOnChangeType(subscriptionBody.Value[0].ChangeType, subscriptionBody.Value[0].Resource)
 			if err != nil {

@@ -77,8 +77,8 @@
 }
 
 .history_list_inner > *:nth-child(4) {
-  justify-self: start;
-  /* padding-left: 85px; */
+  justify-self: center;
+  
 }
 
 .email {
