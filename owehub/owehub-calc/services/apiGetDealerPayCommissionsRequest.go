@@ -170,9 +170,12 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
 	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
-		// Prepare a string for dealer names
-		dealerNames := strings.Join(dataReq.PartnerName, "', '") // Join with single quotes for SQL
-		dealerNames = "'" + dealerNames + "'"                    // Wrap the result in single quotes for SQL syntax
+		// Prepare a string for dealer names, with each name properly escaped
+		escapedPartnerNames := make([]string, len(dataReq.PartnerName))
+		for i, name := range dataReq.PartnerName {
+			escapedPartnerNames[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		dealerNames := strings.Join(escapedPartnerNames, ", ")
 
 		// Parse the PayroleDate
 		payroleDate, err := time.Parse("02-01-2006", dataReq.PayroleDate) // Ensure the format matches your input
