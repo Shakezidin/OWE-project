@@ -422,7 +422,7 @@ const LeradManagementHistory = () => {
         // item.status_id,
         item.first_name,
         item.last_name,
-        item.phone_number,
+        `'${item.phone_number}'`,
         item.email_id,
         item.street_address,
         item.zipcode,

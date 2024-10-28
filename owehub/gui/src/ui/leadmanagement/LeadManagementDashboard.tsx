@@ -559,11 +559,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-                ? format(selectedDates.startDate, 'dd-MM-yyyy')
-                : '',
-              end_date: selectedDates.endDate
-                ? format(selectedDates.endDate, 'dd-MM-yyyy')
-                : '',
+              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+              : '',
             },
             true
           );
@@ -620,11 +620,11 @@ const LeadManagementDashboard = () => {
             'get_leads_count_by_status',
             {
               start_date: selectedDates.startDate
-                ? format(selectedDates.startDate, 'dd-MM-yyyy')
-                : '',
-              end_date: selectedDates.endDate
-                ? format(selectedDates.endDate, 'dd-MM-yyyy')
-                : '',
+              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+              : '',
             },
             true
           );
@@ -731,11 +731,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-          ? format(selectedDates.startDate, 'dd-MM-yyyy')
-          : '',
-        end_date: selectedDates.endDate
-          ? format(selectedDates.endDate, 'dd-MM-yyyy')
-          : '',
+        ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+        : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1126,11 +1126,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-        ? format(selectedDates.startDate, 'dd-MM-yyyy')
-        : '',
-      end_date: selectedDates.endDate
-        ? format(selectedDates.endDate, 'dd-MM-yyyy')
-        : '',
+      ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+      : '',
+    end_date: selectedDates.endDate
+      ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+      : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
