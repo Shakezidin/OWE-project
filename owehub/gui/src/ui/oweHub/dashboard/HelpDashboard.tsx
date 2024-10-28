@@ -56,7 +56,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
           <div className="modal-body">
             <div className="help-input-container">
               <div
-                className="create-input-container"
+                className="create-input-container help-mob-input"
                 style={{ width: '1740px' }}
               >
                 <div className="create-input-field" style={{}}>

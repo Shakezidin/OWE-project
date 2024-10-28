@@ -31,12 +31,13 @@ import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
+import { MdDownloading, MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
 import { debounce } from '../../../utiles/debounce';
 import { dateFormat } from '../../../utiles/formatDate';
+import { LuImport } from 'react-icons/lu';
 
 interface Option {
   value: string;
@@ -435,9 +436,8 @@ export const DashboardPage: React.FC = () => {
                   }}
                 />
                 <div
-                  className={`filter-line ${
-                    active === 0 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -447,9 +447,8 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
+                    }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (
@@ -486,14 +485,23 @@ export const DashboardPage: React.FC = () => {
                 <button
                   className={`performance-exportbtn  mt0 `}
                   style={{ height: '36px', padding: '8px 12px' }}
+                  onClick={handleExportOpen}
                 >
-                  <FaUpload size={12} className="mr-1 dealer-exp-svg" />
-                  <span
-                    className="dealer-export-mob"
-                    onClick={handleExportOpen}
-                  >
-                    {' Export '}
-                  </span>
+                  {isExportingData ? (
+                    <div className='dealer-export'>
+                      <MdDownloading
+                        className="downloading-animation dealer-mob-download"
+                        size={20}
+                      />
+                      <span className='dealer-export-mob'>Export</span>
+                    </div>
+                  ) : (
+                    <div className='dealer-export'
+                    >
+                      <FaUpload size={12} className="dealer-mob-upload" />
+                      <span className='dealer-export-mob'>Export</span>
+                    </div>
+                  )}
                 </button>
               </div>
             </div>

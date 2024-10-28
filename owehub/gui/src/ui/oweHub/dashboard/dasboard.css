@@ -114,10 +114,6 @@
 }
 
 .dealer-tot-amt h4 {
-  text-overflow: ellipsis;
-  text-wrap: nowrap;
-  overflow-x: hidden;
-  max-width: 100px;
   font-weight: 500;
 }
 
@@ -195,10 +191,11 @@
   flex-wrap: wrap;
 }
 
-.dealer-calendar .rdrDateDisplayWrapper{
+.dealer-calendar .rdrDateDisplayWrapper {
   display: none;
 }
-.dealer-calendar .rdrMonthAndYearWrapper{
+
+.dealer-calendar .rdrMonthAndYearWrapper {
   padding-top: 0;
 }
 
@@ -369,6 +366,8 @@
   border-bottom: 1px solid var(--border-color);
   background-color: #0493ce;
   overflow-x: hidden;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 }
 
 .dealer-pay-table {
@@ -793,8 +792,6 @@
     border-bottom: 1px solid var(--border-color);
     background-color: #0493ce;
     overflow-x: hidden;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
   }
 
   .dealer-pay-search {
@@ -821,7 +818,11 @@
     right: 65px;
   }
 
-  .dealer-tot-amt h4{
+  .dealer-tot-amt h4 {
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow-x: hidden;
+    max-width: 100px;
     font-size: 14px;
   }
 }
@@ -922,7 +923,23 @@
     font-size: 11px;
   }
 
-  .dealer-tot-amt h4{
+  .dealer-tot-amt h4 {
     max-width: 150px;
+  }
+
+  .help-modal{
+    width: 95%;
+  }
+
+  .help-mob-input{
+    width: unset !important;
+  }
+
+  .dealer-mob-upload{
+    transform: scale(1.2);
+  }
+
+  .dealer-mob-download{
+    transform: scale(1.7) !important;
   }
 }
