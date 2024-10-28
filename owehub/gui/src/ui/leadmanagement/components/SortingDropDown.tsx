@@ -64,6 +64,7 @@ useEscapeKey(toggleDropdown);
         id="Filters"
         place="bottom"
         content="Filters"
+        className="mobile_tooltip"
       />
 
       {isDropdownOpen && (

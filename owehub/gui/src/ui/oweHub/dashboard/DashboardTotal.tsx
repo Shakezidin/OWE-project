@@ -121,7 +121,7 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                     >
                       <div
                         key={el.key}
-                        onClick={() => handleClick(el.key)}
+                        // onClick={() => handleClick(el.key)}
                         className="dealer-tot-amt"
                         style={{ width: '100%', gap: '10px' }}
                       >
@@ -137,10 +137,10 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
                           </div>
                         </div>
                         <h4
-                          style={{
-                            wordBreak:
-                              el?.doller?.length > 5 ? 'break-all' : 'normal',
-                          }}
+                          // style={{
+                          //   wordBreak:
+                          //     el?.doller?.length > 5 ? 'break-all' : 'normal',
+                          // }}
                         >
                           {el?.doller || '$0'}
                         </h4>

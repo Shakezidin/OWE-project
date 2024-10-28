@@ -619,7 +619,7 @@ input[type='checkbox']:checked {
 
   .history_list_inner_Mobile_View {
     display: grid;
-    grid-template-columns: 0.2fr 3fr 0.4fr !important;
+    grid-template-columns: 0.2fr 3fr 0.2fr !important;
     align-items: baseline;
   }
 
@@ -690,7 +690,7 @@ input[type='checkbox']:checked {
   }
 
   .archieveButtonA {
-    color: #929292;
+ 
     border: 1px solid #929292;
     padding: 0px 0px 0px 0px;
     border-radius: 26px;
@@ -1067,22 +1067,6 @@ input[type='checkbox']:checked {
 .indicatorSeparator {
   display: none;
 }
-
-@media only screen and (max-width: 767px) {
-  .monthSelect {
-    width: 80px;
-  }
-}
-
-/* IT WILL BE ALSO USED */
-/* @media only screen and (min-width: 450px) and (max-width: 569px) {
-  .history_list_inner {
-    display: grid;
-    grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr !important;
-    align-items: baseline;
-}
-
-} */
 .infoIcon {
   padding: 5px 5px;
   border-radius: 50%;
@@ -1098,3 +1082,30 @@ input[type='checkbox']:checked {
   background-color: #ddebff;
   transform: scale(1.06);
 }
+
+@media  (max-width: 767px) {
+  .monthSelect {
+    width: 80px;
+  }
+  .infoIcon {
+    padding: 5px 5px 5px 5px ;
+    border-radius: 50%;
+    border: 1px solid #377CF6;
+    color: #377CF6;
+    display: flex;
+    font-size: 19px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+}
+
+/* IT WILL BE ALSO USED */
+/* @media only screen and (min-width: 450px) and (max-width: 569px) {
+  .history_list_inner {
+    display: grid;
+    grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr !important;
+    align-items: baseline;
+}
+
+} */

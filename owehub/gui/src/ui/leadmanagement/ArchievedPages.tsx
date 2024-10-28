@@ -236,7 +236,7 @@ const ArchivedPages = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / itemsPerPage);
+  const totalPage = Math.ceil(totalcount / itemsPerPage);
 
   const handleArcClose = () => {
     setIsArcOpen(false);
@@ -443,7 +443,7 @@ const ArchivedPages = () => {
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
                               maxWidth: isMobile ? '100px' : '200px',
-                              lineHeight: "16px"
+                              lineHeight: "19px"
                             }}
                           >
                             <h2>

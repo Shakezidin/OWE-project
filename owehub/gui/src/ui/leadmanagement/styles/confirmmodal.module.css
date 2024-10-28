@@ -474,8 +474,8 @@
 .crossBtn {
   cursor: pointer;
   /* margin-bottom: -11px; */
-  width: 19.5px;
-  height: 19.5px;
+  width: 30.5px;
+  height: 30.5px;
   transition: all 0.3s ease;
 }
 
@@ -682,10 +682,17 @@
     font-size: 14px;
   }
 
-  .emailStyle {
+  .emailStyleForMObile {
     color: #4e4e4e;
     font-weight: 400;
+    /* background-color: cyan; */
+    display: inline-block; 
+    max-width: 21ch; 
+    word-wrap: break-word;
+    overflow: hidden;
+    white-space: normal;
   }
+  
 
   .verified {
     color: #20963a;
