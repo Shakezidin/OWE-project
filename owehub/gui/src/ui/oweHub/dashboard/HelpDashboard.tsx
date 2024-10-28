@@ -12,9 +12,9 @@ interface ButtonProps {
 }
 const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
- 
 
-  
+
+
   const [selectedFileName, setSelectedFileName] = useState('');
   const [fileSizeError, setFileSizeError] = useState('');
   const [errors, setErrors] = useState("");
@@ -55,8 +55,8 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     }
   };
 
-  
-  
+
+
   const [state, setState] = useState({
     project_id: data?.unique_id || 'N/A',
     dealer_name: data?.dealer_code || '',
@@ -64,14 +64,14 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     customer_name: data?.home_owner || '',
     amount_prepaid: 0,
     pipeline_remaining: 0,
-    current_date: 'N/A' ,
+    current_date: 'N/A',
     project_status: data?.current_status || '',
     state: data?.st || '',
     message: '',
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
- 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setState((prevState) => ({
       ...prevState,
@@ -146,7 +146,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
       }
     }
   };
- 
+
   return (
     <>
       <div className="transparent-model-down">
@@ -268,33 +268,33 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                 </div>
 
                 <div className="create-input-field-help">
-                <label className="inputLabel">
-                  <p>Attach File</p>
-                </label>
-                <div className="file-input-container">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="file-input"
-                    onChange={handleFileInputChange}
-                  />
-                  <div className="custom-button-container">
-                    <span className="file-input-placeholder">
-                      {selectedFileName || '.jpg .jpeg .png'}
-                    </span>
-                    <button
-                      className="custom-button"
-                      onClick={handleButtonClick}
-                    >
-                      Browse
-                    </button>
+                  <label className="inputLabel">
+                    <p>Attach File</p>
+                  </label>
+                  <div className="file-input-container">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="file-input"
+                      onChange={handleFileInputChange}
+                    />
+                    <div className="custom-button-container">
+                      <span className="file-input-placeholder">
+                        {selectedFileName || '.jpg .jpeg .png'}
+                      </span>
+                      <button
+                        className="custom-button"
+                        onClick={handleButtonClick}
+                      >
+                        Browse
+                      </button>
+                    </div>
                   </div>
+                  {fileSizeError && (
+                    <span className="error">{fileSizeError}</span>
+                  )}
                 </div>
-                {fileSizeError && (
-                  <span className="error">{fileSizeError}</span>
-                )}
-              </div>
-                 
+
               </div>
 
               <div className="create-input-field-note" style={{}}>
@@ -303,19 +303,18 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                 </label>
                 <br />
                 <textarea
-                name="message"
-                rows={4}
-                onChange={handleChange}
-                value={state.message}
-                placeholder="Type here..."
-              ></textarea>
+                  name="message"
+                  rows={4}
+                  onChange={handleChange}
+                  value={state.message}
+                  placeholder="Type here..."
+                ></textarea>
               </div>
             </div>
           </div>
           <div className="createUserActionButton" style={{ marginTop: '1rem' }}>
             <ActionButton title={'Cancel'} type="reset" onClick={handleClose} />
-            <ActionButton title={'Submit'} type="submit" onClick={() => {}} />
-              <button onClick={handleSubmit}>Submit</button>
+            <button className='help-submit' onClick={handleSubmit}>Submit</button>
           </div>
         </div>
       </div>

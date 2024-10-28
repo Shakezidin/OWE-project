@@ -519,6 +519,27 @@
   font-weight: 500;
 }
 
+.help-submit {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.962px;
+  cursor: pointer;
+  height: 40px;
+  text-transform: capitalize;
+  width: 150px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.help-submit:hover {
+  background-color: #002970 !important;
+  transform: scale(1.07);
+}
+
 .createUserCrossButtonBreak {
   display: flex;
   align-items: flex-end;
@@ -927,19 +948,19 @@
     max-width: 150px;
   }
 
-  .help-modal{
+  .help-modal {
     width: 95%;
   }
 
-  .help-mob-input{
+  .help-mob-input {
     width: unset !important;
   }
 
-  .dealer-mob-upload{
+  .dealer-mob-upload {
     transform: scale(1.2);
   }
 
-  .dealer-mob-download{
+  .dealer-mob-download {
     transform: scale(1.7) !important;
   }
 }
