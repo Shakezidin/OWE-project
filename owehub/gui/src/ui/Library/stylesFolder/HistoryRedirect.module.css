@@ -102,3 +102,9 @@ border-radius: 0px !important; */
 
   transform: scale(1.04);
 }
+
+@media (max-width:968px) {
+  .mobile_tooltip{
+    display: none !important;
+  }
+}

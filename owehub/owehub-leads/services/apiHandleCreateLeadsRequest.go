@@ -60,11 +60,9 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// validating input recieved in request
-	err = ValidateCreateLeadsRequest(CreateLeadsReq)
-
-	if err != nil {
-		log.FuncErrorTrace(0, "invalid data provided: %v", err)
+	if len(CreateLeadsReq.FirstName) <= 0 || len(CreateLeadsReq.LastName) <= 0 ||
+		len(CreateLeadsReq.EmailId) <= 0 || len(CreateLeadsReq.PhoneNumber) <= 0 {
+		log.FuncErrorTrace(0, "invalid data provided")
 		appserver.FormAndSendHttpResp(resp, "Empty fields are not allowed in Api", http.StatusBadRequest, nil)
 		return
 	}

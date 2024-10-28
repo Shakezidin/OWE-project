@@ -279,11 +279,11 @@ const LeradManagementHistory = () => {
             {
               leads_status: selectedValue,
               start_date: selectedDates.startDate
-                ? format(selectedDates.startDate, 'dd-MM-yyyy')
-                : '',
-              end_date: selectedDates.endDate
-                ? format(selectedDates.endDate, 'dd-MM-yyyy')
-                : '',
+              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+              : '',
               page_size: itemsPerPage,
               page_number: page,
             },
@@ -383,7 +383,7 @@ const LeradManagementHistory = () => {
     setIsExporting(true);
     const headers = [
       'Leads ID',
-      'Status ID',
+      // 'Status ID',
       'First Name',
       'Last Name',
       'Phone Number',
@@ -400,11 +400,11 @@ const LeradManagementHistory = () => {
         {
           leads_status: selectedValue,
           start_date: selectedDates.startDate
-            ? format(selectedDates.startDate, 'dd-MM-yyyy')
-            : '',
-          end_date: selectedDates.endDate
-            ? format(selectedDates.endDate, 'dd-MM-yyyy')
-            : '',
+          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+          : '',
+        end_date: selectedDates.endDate
+          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+          : '',
           page_size: 0,
           page_number: 0,
         },
@@ -419,10 +419,10 @@ const LeradManagementHistory = () => {
 
       const csvData = response.data?.leads_history_list?.map?.((item: any) => [
         `OWE${item.leads_id}`,
-        item.status_id,
+        // item.status_id,
         item.first_name,
         item.last_name,
-        item.phone_number,
+        `'${item.phone_number}'`,
         item.email_id,
         item.street_address,
         item.zipcode,
@@ -462,6 +462,10 @@ const LeradManagementHistory = () => {
     setIsProfileOpen(false);
 
   };
+
+  useEffect(()=>{
+   setPage(1);
+  },[selectedValue, selectedDates])
 
   
 
@@ -595,8 +599,8 @@ const LeradManagementHistory = () => {
                           backgroundColor: '#fffff',
                           boxShadow: 'none',
                           '@media only screen and (max-width: 767px)': {
-                            width: '80px',
-                            // width: 'fit-content',
+                            // width: '80px',
+                            width: 'fit-content',
                           },
                           '&:focus-within': {
                             borderColor: '#377CF6',
@@ -676,7 +680,7 @@ const LeradManagementHistory = () => {
                         <LuImport size={20} color="white" />
                       )}
                     </div>
-                    {showTooltip &&
+                    {showTooltip  &&    !isMobile && !isTablet &&
                       <Tooltip
                         style={{
                           zIndex: 20,
@@ -744,6 +748,7 @@ const LeradManagementHistory = () => {
                 >
                   <div className={styles.history_list_inner}>
                     <div className={styles.hist_checkname}>
+                      
                       <label>
                         <input
                           type="checkbox"
@@ -786,14 +791,24 @@ const LeradManagementHistory = () => {
                     </div>
                     {!isMobile && (
                       <>
-                        {!isTablet && (
+                        {
                           <div className={styles.phone_number}>
                             {item.phone_number ? item.phone_number : 'N/A'}
                           </div>
-                        )}
-                        <div className={styles.email}>
-                          <p>{item.email_id ? item.email_id : 'N/A'}</p>
+                        }
+                        <div
+                          
+                         className={styles.email}>
+                          <p
+                           style={{
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word',
+                            width: '210px',
+                            lineHeight: "16px"
+                          }}
+                          >{item.email_id ? item.email_id : 'N/A'}</p>
                         </div>
+
                         <div className={styles.address}
                           style={{
                             whiteSpace: 'pre-wrap',
@@ -818,6 +833,7 @@ const LeradManagementHistory = () => {
                     >
                       <IoInformationOutline />
                     </div>
+                    {!isMobile && !isTablet &&
                     <Tooltip
                       style={{
                         zIndex: 20,
@@ -832,6 +848,7 @@ const LeradManagementHistory = () => {
                       content="Lead Info"
                       delayShow={800}
                     />
+}
                   </div>
                   {!isMobile && expandedItemIds.includes(item.leads_id) && (
                     <>

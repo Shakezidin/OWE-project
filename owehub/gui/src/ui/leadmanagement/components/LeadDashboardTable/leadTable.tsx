@@ -28,6 +28,8 @@ interface LeadSelectionProps {
   onCreateProposal: (leadId: number) => void;
   retrieveWebProposal: (leadId: number) => void;
   generateWebProposal: (leadId: number) => void;
+  side: "left" | "right";
+  setSide: React.Dispatch<React.SetStateAction<"left" | "right">>;
 }
 
 type SSEPayload =
@@ -53,7 +55,7 @@ type SSEPayload =
     data: null;
   };
 
-const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal }: LeadSelectionProps) => {
+const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
 
 
   const [selectedType, setSelectedType] = useState('');
@@ -67,7 +69,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
   const [leadProposalLink, setLeadPropsalLink] = useState('');
   const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0); // Track download percentage
-
+  const scrollWrapper = useRef<HTMLDivElement>(null);
 
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
@@ -251,21 +253,17 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
   const handleReschedule = () => {
     setSelectedType("app_sched");
   }
-  const [side, setSide] = useState('left');
+
 
 
   const handleMoreClick = () => {
-    const elm = document.getElementById("tes-table") as HTMLDivElement
-    elm.scroll({ left: 1800, behavior: "smooth" })
+    const elm = scrollWrapper.current 
+    if (!elm) return;
     if (side == 'left') {
-      // if (tableContainerRef.current) {
-      //   tableContainerRef.current.scrollLeft += 800;
-      //   setSide('right');
-      // }
-      elm.scroll({ left: 1800, behavior: "smooth" })
+      elm.scroll({ left: elm.scrollWidth, behavior: "smooth" })
       setSide('right');
     } else if (side == 'right') {
-      elm.scroll({ left: -1800, behavior: "smooth" })
+      elm.scroll({ left: 0, behavior: "smooth" })
       setSide('left');
     }
   };
@@ -338,7 +336,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
       <div className={styles.dashTabTop}>
 
-        <div className={styles.TableContainer1} id='tes-table'>
+        <div className={styles.TableContainer1} ref={scrollWrapper} >
           <div
             // style={{ overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px" }}
             // ref={tableContainerRef}
@@ -662,7 +660,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                                               ] : lead && lead.proposal_id !== ''
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
-                                                  { label: 'Download', value: 'download' },
+                                                  { label: 'Edit Proposal', value: 'editProposal' },
                                                   { label: 'Refresh Url', value: 'renew_proposal' },
                                                 ]
                                                 : [

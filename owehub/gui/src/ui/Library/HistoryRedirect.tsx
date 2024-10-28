@@ -85,8 +85,9 @@ const HistoryRedirect = () => {
           color: '#000',
           fontSize: 12,
           paddingBlock: 4,
-          fontWeight:"400"
+          fontWeight: "400"
         }}
+        className={classes.mobile_tooltip}
         offset={8}
         delayShow={800}
         id="More Pages"
