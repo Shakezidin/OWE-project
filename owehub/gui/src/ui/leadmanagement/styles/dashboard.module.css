@@ -1354,6 +1354,9 @@ input[type='checkbox']:checked {
   transform: scale(1.08);
 }
 
-.mobile-tooltip{
-  display: none;
+@media (max-width:968px) {
+  
+  .mobile_tooltip{
+    display: none !important;
+  }
 }

@@ -1571,7 +1571,7 @@ const LeadManagementDashboard = () => {
                     id="downip"
                     place="bottom"
                     content={isToggledX ? "Minimize" : "Maximize"}
-                    className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                    className={'mobile-tooltip' }
                   />
                 
               </div></div>
@@ -1809,7 +1809,7 @@ const LeadManagementDashboard = () => {
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
                 <HistoryRedirect />
                 {currentFilter === 'In Progress' && (
-                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
+                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue}  />
 
                 )}
              
@@ -1827,7 +1827,7 @@ const LeadManagementDashboard = () => {
                     id="More Pages"
                     place="bottom"
                     content="More Pages"
-                    className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                    className={ styles.mobile_tooltip}
                   />
                 
                 <div className={styles.filterCallToAction}>
@@ -1849,7 +1849,7 @@ const LeadManagementDashboard = () => {
                       place="bottom"
                       content="Add New Lead"
                       delayShow={800}
-                      className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                      className={styles.mobile_tooltip }
                     />
                   
 
@@ -1873,7 +1873,7 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
-                  {showTooltip && !isMobileDevice() && !isTablet &&
+                  {showTooltip &&
                     <Tooltip
                       style={{
                         zIndex: 103,
@@ -1888,7 +1888,7 @@ const LeadManagementDashboard = () => {
                       id="export"
                       place="bottom"
                       content="Export"
-                      className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                      className={ 'mobile-tooltip' }
                     />
                   }
 
@@ -1978,25 +1978,10 @@ const LeadManagementDashboard = () => {
                   </div>
                   <HistoryRedirect />
                   {currentFilter === 'In Progress' && (
-                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
+                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue}  />
                   )}
                 
-                    <Tooltip
-                      style={{
-                        zIndex: 20,
-                        background: '#f7f7f7',
-                        color: '#000',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                        fontWeight: "400"
-                      }}
-                      delayShow={800}
-                      offset={8}
-                      id="More Pages"
-                      place="bottom"
-                      content="More Pages"
-                      className={isMobileDevice() ? 'mobile-tooltip' : ''}
-                    />
+                   
                   
                   <div className={styles.filterCallToActionMobile}>
                     <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
@@ -2017,7 +2002,7 @@ const LeadManagementDashboard = () => {
                         place="bottom"
                         content="Add New Lead"
                         delayShow={800}
-                        className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                        className={ 'mobile-tooltip' }
                       />
                     }
 
@@ -2056,7 +2041,7 @@ const LeadManagementDashboard = () => {
                         id="export"
                         place="bottom"
                         content="Export"
-                        className={isMobileDevice() ? 'mobile-tooltip' : ''}
+                        className={ 'mobile-tooltip'}
                       />
                     }
                   </div>
