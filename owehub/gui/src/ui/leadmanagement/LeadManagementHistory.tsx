@@ -279,11 +279,11 @@ const LeradManagementHistory = () => {
             {
               leads_status: selectedValue,
               start_date: selectedDates.startDate
-                ? format(selectedDates.startDate, 'dd-MM-yyyy')
-                : '',
-              end_date: selectedDates.endDate
-                ? format(selectedDates.endDate, 'dd-MM-yyyy')
-                : '',
+              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+              : '',
               page_size: itemsPerPage,
               page_number: page,
             },
@@ -400,11 +400,11 @@ const LeradManagementHistory = () => {
         {
           leads_status: selectedValue,
           start_date: selectedDates.startDate
-            ? format(selectedDates.startDate, 'dd-MM-yyyy')
-            : '',
-          end_date: selectedDates.endDate
-            ? format(selectedDates.endDate, 'dd-MM-yyyy')
-            : '',
+          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+          : '',
+        end_date: selectedDates.endDate
+          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+          : '',
           page_size: 0,
           page_number: 0,
         },

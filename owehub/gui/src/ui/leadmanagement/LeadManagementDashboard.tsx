@@ -1084,7 +1084,7 @@ const LeadManagementDashboard = () => {
     setIsExporting(true);
     const headers = [
       'Lead ID',
-      'Status ID',
+      // 'Status ID',
       'First Name',
       'Last Name',
       'Email',
@@ -1155,7 +1155,7 @@ const LeadManagementDashboard = () => {
 
       const csvData = response.data?.map?.((item: any) => [
         `OWE${item.leads_id}`,
-        item.status_id,
+        // item.status_id,
         item.first_name,
         item.last_name,
         item.email_id,
