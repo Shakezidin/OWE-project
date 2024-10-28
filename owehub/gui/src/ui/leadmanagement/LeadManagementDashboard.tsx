@@ -421,7 +421,7 @@ const LeadManagementDashboard = () => {
   const [designID, setDesignsID] = useState<string>(''); // Change to string
   const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
   const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
-  const [side, setSide] = useState<"left"|"right">('left');
+  const [side, setSide] = useState<"left" | "right">('left');
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -559,11 +559,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-              : '',
-            end_date: selectedDates.endDate
-              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-              : '',
+                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+                : '',
+              end_date: selectedDates.endDate
+                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+                : '',
             },
             true
           );
@@ -620,11 +620,11 @@ const LeadManagementDashboard = () => {
             'get_leads_count_by_status',
             {
               start_date: selectedDates.startDate
-              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-              : '',
-            end_date: selectedDates.endDate
-              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-              : '',
+                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+                : '',
+              end_date: selectedDates.endDate
+                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+                : '',
             },
             true
           );
@@ -731,11 +731,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-        ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-        : '',
-      end_date: selectedDates.endDate
-        ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-        : '',
+          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+          : '',
+        end_date: selectedDates.endDate
+          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+          : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1126,11 +1126,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-      ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-      : '',
-    end_date: selectedDates.endDate
-      ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-      : '',
+        ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
+        : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1803,41 +1803,44 @@ const LeadManagementDashboard = () => {
                   <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
 
                 )}
-                <Tooltip
-                  style={{
-                    zIndex: 20,
-                    background: '#f7f7f7',
-                    color: '#000',
-                    fontSize: 12,
-                    paddingBlock: 4,
-                    fontWeight: "400"
-                  }}
-                  delayShow={800}
-                  offset={8}
-                  id="More Pages"
-                  place="bottom"
-                  content="More Pages"
-                />
-                <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
-                    <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
-                  </div>
-
+                {!isMobile && !isTablet &&
                   <Tooltip
                     style={{
-                      zIndex: 103,
+                      zIndex: 20,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
                       fontWeight: "400"
                     }}
-                    offset={8}
-                    id="NEW"
-                    place="bottom"
-                    content="Add New Lead"
                     delayShow={800}
+                    offset={8}
+                    id="More Pages"
+                    place="bottom"
+                    content="More Pages"
                   />
+                }
+                <div className={styles.filterCallToAction}>
+                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                    <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                  </div>
+                  {!isMobile && !isTablet &&
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      id="NEW"
+                      place="bottom"
+                      content="Add New Lead"
+                      delayShow={800}
+                    />
+                  }
 
                   <div
                     className={styles.export_btn}
@@ -1859,7 +1862,7 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
-                  {showTooltip &&
+                  {showTooltip && !isMobile && !isTablet &&
                     <Tooltip
                       style={{
                         zIndex: 103,
@@ -1966,26 +1969,7 @@ const LeadManagementDashboard = () => {
                   {currentFilter === 'In Progress' && (
                     <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} data-tooltip-id="More Pages" />
                   )}
-                  <Tooltip
-                    style={{
-                      zIndex: 20,
-                      background: '#f7f7f7',
-                      color: '#000',
-                      fontSize: 12,
-                      paddingBlock: 4,
-                      fontWeight: "400"
-                    }}
-                    delayShow={800}
-                    offset={8}
-                    id="More Pages"
-                    place="bottom"
-                    content="More Pages"
-                  />
-                  <div className={styles.filterCallToActionMobile}>
-                    <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
-                      <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
-                    </div>
-
+                  {!isMobile && !isTablet &&
                     <Tooltip
                       style={{
                         zIndex: 20,
@@ -1995,12 +1979,34 @@ const LeadManagementDashboard = () => {
                         paddingBlock: 4,
                         fontWeight: "400"
                       }}
-                      offset={8}
-                      id="NEW"
-                      place="bottom"
-                      content="Add New Lead"
                       delayShow={800}
+                      offset={8}
+                      id="More Pages"
+                      place="bottom"
+                      content="More Pages"
                     />
+                  }
+                  <div className={styles.filterCallToActionMobile}>
+                    <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                      <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                    </div>
+                    {!isMobile && !isTablet &&
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: "400"
+                        }}
+                        offset={8}
+                        id="NEW"
+                        place="bottom"
+                        content="Add New Lead"
+                        delayShow={800}
+                      />
+                    }
 
                     <div
                       className={styles.export_btn}
@@ -2022,7 +2028,7 @@ const LeadManagementDashboard = () => {
                         <LuImport color="white" />
                       )}
                     </div>
-                    {showTooltip &&
+                    {showTooltip && !isMobile && !isTablet &&
                       <Tooltip
                         style={{
                           zIndex: 20,

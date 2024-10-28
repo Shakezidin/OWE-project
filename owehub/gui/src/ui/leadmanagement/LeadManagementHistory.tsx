@@ -680,7 +680,7 @@ const LeradManagementHistory = () => {
                         <LuImport size={20} color="white" />
                       )}
                     </div>
-                    {showTooltip &&
+                    {showTooltip  &&    !isMobile && !isTablet &&
                       <Tooltip
                         style={{
                           zIndex: 20,
@@ -833,6 +833,7 @@ const LeradManagementHistory = () => {
                     >
                       <IoInformationOutline />
                     </div>
+                    {!isMobile && !isTablet &&
                     <Tooltip
                       style={{
                         zIndex: 20,
@@ -847,6 +848,7 @@ const LeradManagementHistory = () => {
                       content="Lead Info"
                       delayShow={800}
                     />
+}
                   </div>
                   {!isMobile && expandedItemIds.includes(item.leads_id) && (
                     <>
