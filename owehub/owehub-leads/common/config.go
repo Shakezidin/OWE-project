@@ -14,6 +14,8 @@ type LeadAppConfig struct {
 	AwsS3Region            string `json:"awsS3Region"`
 	AwsS3AccessKeyId       string `json:"awsS3AccessKeyId"`
 	AwsS3SecretKey         string `json:"awsS3SecretKey"`
+	DocusignApiBaseUrl     string `json:"docusignApiBaseUrl"`
+	DocusignAccountId      string `json:"docusignAccountId"`
 	RodUrl                 string `json:"rodUrl"`
 }
 

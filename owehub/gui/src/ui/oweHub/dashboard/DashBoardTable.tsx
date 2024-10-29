@@ -160,7 +160,7 @@ const DashBoardTable = ({
                             setOpen(true);
                           }}
                         >
-                          {el.unique_id}
+                          {el.unique_id || 'N/A'}
                         </span>
                       </div>
                     </td>
@@ -183,7 +183,8 @@ const DashBoardTable = ({
                       {el.net_epc ? el.net_epc : 'N/A'}
                     </td>
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
-                      {el.credit ?? 'N/A'}
+                    
+                      {el.credit ? '$' + el.credit : '$0'}
                     </td>
                     <td>{el.draw_amt || '$0'}</td>
                     <td>{el.rl || 'N/A'}</td>
