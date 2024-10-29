@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
 import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
-import { toZonedTime } from 'date-fns-tz'
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import Pagination from '../../../components/pagination/Pagination';
 
@@ -471,7 +470,7 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                               {lead.appointment_status_label}
                             </div>
                             <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
-                              {lead.appointment_status_date ? format(toZonedTime(parseISO(lead.appointment_status_date), 'UTC'), 'dd-MM-yyyy') : ""}
+                              {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                             </div>
                           </>
                         ) : (
@@ -489,7 +488,7 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                             </div>
                             {lead.won_lost_date && (
                               <div style={{ marginLeft: '29px' }} className={styles.info}>
-                                {lead.won_lost_date ? format(toZonedTime(parseISO(lead.won_lost_date), 'UTC'), 'dd-MM-yyyy') : ""}
+                                {lead.won_lost_date ? format((parseISO(lead.won_lost_date)), 'dd-MM-yyyy') : ""}
 
                               </div>
                             )}

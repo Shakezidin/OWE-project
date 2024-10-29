@@ -50,7 +50,11 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         address: leadData.street_address || '',
       });
     }
-  }, [leadData]);
+    errors.email_id = '',
+    errors.mobile_number='',
+    setEmailError(''),
+    errors.address=''
+  }, [leadData, onClose]);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
