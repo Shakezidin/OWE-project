@@ -474,6 +474,7 @@
 /* /////////////////////////////////////////////////////// */
 .schedule_page_wrapper {
   transition: filter 0.3s ease-in-out;
+  cursor: default;
 }
 
 .blurred {

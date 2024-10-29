@@ -517,6 +517,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
+    setBackup(filter);
     setPage(1);
     setSide("left")
     setActiveIndex(
@@ -1349,12 +1350,13 @@ const LeadManagementDashboard = () => {
 
   const [backup, setBackup] = useState('New Leads');
 
+  console.log(backup, "backup");
+  console.log(currentFilter, "filter")
+
   useEffect(() => {
-    if (searchTerm !== '') {
-      setBackup(currentFilter);
-      setCurrentFilter('');
-    } else {
+    if (searchTerm === '') {
       setCurrentFilter(backup);
+      setPage(1);
     }
   }, [searchTerm]);
 
@@ -1804,6 +1806,7 @@ const LeadManagementDashboard = () => {
                         );
                         handleSearchChange(e);
                         setSearch(e.target.value);
+                        setCurrentFilter('');
                       }
                     }}
                   />
