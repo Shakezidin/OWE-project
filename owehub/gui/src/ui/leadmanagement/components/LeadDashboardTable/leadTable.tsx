@@ -30,6 +30,8 @@ interface LeadSelectionProps {
   generateWebProposal: (leadId: number) => void;
   side: "left" | "right";
   setSide: React.Dispatch<React.SetStateAction<"left" | "right">>;
+  currentFilter: string;
+  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 type SSEPayload =
@@ -55,7 +57,7 @@ type SSEPayload =
     data: null;
   };
 
-const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
+const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
 
 
   const [selectedType, setSelectedType] = useState('');
@@ -326,6 +328,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
         setReschedule={setReschedule}
         won={won}
         setWon={setWon}
+        currentFilter = {currentFilter}
+        setCurrentFilter={setCurrentFilter}
       />
 
       <Profile
