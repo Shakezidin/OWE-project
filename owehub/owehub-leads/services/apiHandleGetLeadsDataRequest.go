@@ -216,6 +216,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.finance_type,
 				li.finance_company,
 				li.qc_audit,
+				li.appointment_date,
 				li.appointment_scheduled_date,
 				li.appointment_accepted_date,
 				li.appointment_declined_date,
@@ -235,10 +236,6 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ORDER BY li.updated_at DESC
 			%s;
 		`, whereClause, paginationClause)
-
-	// li.aurora_proposal_link,
-	// li.aurora_proposal_updated_at,
-	// li.proposal_pdf_key,
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
@@ -263,6 +260,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			leadWonDatePtr       *time.Time
 			declinedDatePtr      *time.Time
 			proposalUpdatedAtPtr *time.Time
+			appointmentDatePtr   *time.Time
 		)
 
 		leadsId, ok := item["leads_id"].(int64)
@@ -356,6 +354,14 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			scheduledDatePtr = &scheduledDate
 		}
 
+		appointmentDate, ok := item["appointment_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_date from leads info Item: %+v\n", item)
+			appointmentDatePtr = nil
+		} else {
+			appointmentDatePtr = &appointmentDate
+		}
+
 		acceptedDate, ok := item["appointment_accepted_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get appointment_accepted_date from leads info Item: %+v\n", item)
@@ -409,6 +415,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if dataReq.LeadStatus == "ACTION_NEEDED" {
 			aptStatusDate = nil
 			if acceptedDatePtr == nil {
+				aptStatusLabel = "No Response"
+			} else if acceptedDatePtr.Before(*appointmentDatePtr) {
 				aptStatusLabel = "No Response"
 			} else {
 				aptStatusLabel = "Appointment Accepted"
