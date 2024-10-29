@@ -309,6 +309,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
 
                           </div>
                         </div>
+                    {/* ////////////////////////////////Phone Layout//////////////////////////// */}
                       </div>
                     ))
                   ) : (
