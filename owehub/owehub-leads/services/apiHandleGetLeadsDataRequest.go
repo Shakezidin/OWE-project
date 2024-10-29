@@ -8,6 +8,7 @@
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -40,6 +41,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		whereClause      string
 		paginationClause string
 		recordCount      int64
+		proposalPdfLink  string
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -95,15 +97,15 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
-			whereClause = "WHERE (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)"
+			whereClause = "WHERE (li.status_id != 6 AND li.proposal_created_date IS NOT NULL AND li.status_id != 3)"
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause = `
 				WHERE (
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR (li.status_id = 5)
-					OR (li.status_id != 6 AND li.is_appointment_required = FALSE)
-					OR (li.status_id != 6 AND li.proposal_created_date IS NOT NULL)
+					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
+            		OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL)
 				)
 			`
 		}
@@ -150,11 +152,22 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			len(whereEleList),
 		)
 
+		// Check if the search input is purely numeric
+		if _, err := strconv.Atoi(dataReq.Search); err == nil {
+			// If it's numeric, modify the whereClause to search for leads_id equal to that number
+			whereClause = fmt.Sprintf(
+				"%s OR li.leads_id::text ILIKE $%d)",
+				whereClause[0:len(whereClause)-1],
+				len(whereEleList),
+			)
+		}
+
 		// if search starts with owe, search by id as well
 		if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
-			searchId, searchIdErr := strconv.Atoi(dataReq.Search[3:])
-			if searchIdErr == nil {
-				whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
+			searchIdStr := dataReq.Search[3:]
+			if _, atoiErr := strconv.Atoi(searchIdStr); atoiErr == nil || searchIdStr == "" {
+				whereEleList = append(whereEleList, fmt.Sprintf("%s%%", searchIdStr))
+				whereClause = fmt.Sprintf("%s OR li.leads_id::text ILIKE $%d)", whereClause[0:len(whereClause)-1], len(whereEleList))
 			}
 		}
 	}
@@ -213,13 +226,19 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.aurora_proposal_status,
 				li.aurora_proposal_link,
 				li.aurora_proposal_updated_at,
-				li.status_id
+				li.proposal_pdf_key,
+				li.status_id,
+				li.zipcode
 				
 			FROM get_leads_info_hierarchy($1) li
 			%s
 			ORDER BY li.updated_at DESC
 			%s;
 		`, whereClause, paginationClause)
+
+	// li.aurora_proposal_link,
+	// li.aurora_proposal_updated_at,
+	// li.proposal_pdf_key,
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
@@ -401,6 +420,19 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = declinedDatePtr
 		}
 
+		proposalPdfKey, ok := item["proposal_pdf_key"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get proposal pdf key from leads info Item: %+v\n", item)
+		} else {
+			proposalPdfLink = leadsService.S3GetObjectUrl(proposalPdfKey)
+		}
+
+		zipcode, ok := item["zipcode"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get zipcode from leads info Item: %+v\n", item)
+			continue
+		}
+
 		LeadsData := models.GetLeadsData{
 			LeadID:                 leadsId,
 			FirstName:              fName,
@@ -420,6 +452,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ProposalStatus:         proposalStatus,
 			ProposalLink:           proposalLink,
 			ProposalUpdatedAt:      proposalUpdatedAtPtr,
+			ProposalPdfLink:        proposalPdfLink,
+			Zipcode:                zipcode,
 		}
 
 		LeadsDataList = append(LeadsDataList, LeadsData)

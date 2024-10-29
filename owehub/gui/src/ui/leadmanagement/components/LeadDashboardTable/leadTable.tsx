@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
 import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
-import { toZonedTime } from 'date-fns-tz'
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import Pagination from '../../../components/pagination/Pagination';
 
@@ -30,6 +29,8 @@ interface LeadSelectionProps {
   generateWebProposal: (leadId: number) => void;
   side: "left" | "right";
   setSide: React.Dispatch<React.SetStateAction<"left" | "right">>;
+  currentFilter: string;
+  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 type SSEPayload =
@@ -55,7 +56,7 @@ type SSEPayload =
     data: null;
   };
 
-const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
+const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
 
 
   const [selectedType, setSelectedType] = useState('');
@@ -67,6 +68,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
 
   const [leadId, setLeadId] = useState(0);
   const [leadProposalLink, setLeadPropsalLink] = useState('');
+  const [proposalPdfLink, setProposalPdfLink] = useState('');
   const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0); // Track download percentage
   const scrollWrapper = useRef<HTMLDivElement>(null);
@@ -167,8 +169,10 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
     } else if (selectedType === 'viewProposal') {
       retrieveWebProposal(leadId)
       setSelectedType('');
+      // if (proposalPdfLink) {
+      //   window.open(proposalPdfLink, '_blank'); 
+      // }
     } else if (selectedType === 'editProposal') {
-      // Open the proposal link in a new tab
       if (leadProposalLink) {
         window.open(leadProposalLink, '_blank');
       }
@@ -326,6 +330,8 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
         setReschedule={setReschedule}
         won={won}
         setWon={setWon}
+        currentFilter = {currentFilter}
+        setCurrentFilter={setCurrentFilter}
       />
 
       <Profile
@@ -467,7 +473,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                               {lead.appointment_status_label}
                             </div>
                             <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
-                              {lead.appointment_status_date ? format(toZonedTime(parseISO(lead.appointment_status_date), 'UTC'), 'dd-MM-yyyy') : ""}
+                              {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                             </div>
                           </>
                         ) : (
@@ -485,7 +491,7 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             </div>
                             {lead.won_lost_date && (
                               <div style={{ marginLeft: '29px' }} className={styles.info}>
-                                {lead.won_lost_date ? format(toZonedTime(parseISO(lead.won_lost_date), 'UTC'), 'dd-MM-yyyy') : ""}
+                                {lead.won_lost_date ? format((parseISO(lead.won_lost_date)), 'dd-MM-yyyy') : ""}
 
                               </div>
                             )}
@@ -517,7 +523,11 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                       <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
                       {(selectedLeads.length === 0 && isMobile) &&
                         <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
-                          <div className={styles.RowMobile} onClick={() => (setLeadId(lead.leads_id))}>
+                          <div className={styles.RowMobile} 
+                          onClick={() => {(setLeadId(lead.leads_id));
+                            setLeadPropsalLink(lead.proposal_link);
+                            setProposalPdfLink(lead.proposal_pdf_link)
+                          }}>
                             {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                             ) :
@@ -622,7 +632,10 @@ const LeadTable = ({ selectedLeads, setSelectedLeads, refresh, setRefresh, onCre
                             justifyContent: 'center',
                             width: "100%"
                           }}>
-                            <div onClick={() => (setLeadId(lead.leads_id))}>
+                            <div onClick={() => {(setLeadId(lead.leads_id));
+                            setLeadPropsalLink(lead.proposal_link);
+                            setProposalPdfLink(lead.proposal_pdf_link)
+                          }}>
                               {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                                 <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                               ) :

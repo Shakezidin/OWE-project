@@ -386,7 +386,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "70vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
           <table>
             <thead>
@@ -443,8 +443,8 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     </td>
                     <td>{el.finance_type_ref || 'N/A'}</td>
                     <td>{el[" state_3"] || 'N/A'}</td>
-                   <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+                   <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
                    <td>{el[" finance_fee"] || 'N/A'}</td>
                    <td>{el[" finance_type"] || 'N/A'}</td>
                    <td>{el[" finance_type_uid"] || 'N/A'}</td>

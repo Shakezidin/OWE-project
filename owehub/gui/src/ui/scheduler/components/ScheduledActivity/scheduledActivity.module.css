@@ -8,6 +8,10 @@
     cursor: default;
 }
 
+.hide{
+    display: none;
+}
+
 .header{
     display: flex;
     flex-direction: row;
@@ -49,6 +53,13 @@
     padding: 5px;
     margin: 0px 8px;
 
+}
+
+.second_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .date_container{
@@ -138,6 +149,9 @@
     line-height: 17px;
     margin-bottom: 15px;
     margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 .scheduled_date{
     font-family: 'inter' sans-serif;
@@ -147,7 +161,7 @@
     color: #8a8a8a;
 }
 
-.main_container button{
+/* .main_container button{
     border-radius: 6px;
     padding: 6px 12px;
     border: none;
@@ -155,7 +169,7 @@
     font-size: 12px;
     line-height: 15px;
     cursor: pointer;
-}
+} */
 
 .button_container{
     display: flex;
@@ -241,4 +255,146 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+}
+
+.button_cancel{
+    border-radius: 6px;
+    padding: 6px 12px;
+    border: none;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    cursor: pointer;
+    background-color: #e33737;
+    color: #fff;
+}
+
+.button_cancel:hover{
+    background-color: #c82b2b;
+}
+
+.button_edit{
+    border-radius: 6px;
+    padding: 6px 12px;
+    border: none;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #377cf6;
+    border: 1px solid #377cf6;
+}
+
+.button_edit:hover{
+    background-color: #DDE9FF;
+}
+
+@media (max-width: 1210px) {
+.phone_container{
+    font-size: 12px;
+    margin-right: 6px;
+
+}
+
+.button_cancel{
+    padding: 6px 10px;
+}
+
+.mail_container{
+    font-size: 12px;
+}
+
+.dateAndTime{
+    font-size: 13px;
+}
+
+.name{
+    font-size: 13px;
+}
+}
+
+@media (max-width: 600px) {
+.mail_and_number{
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.date{
+    width: max-content;
+}
+
+.time{
+    width: max-content;
+}
+}
+
+@media (max-width: 469px) {
+    .appointment_item{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #fff;
+        margin-bottom: 8px;
+        padding: 15px 25px;
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 6px;
+        align-items: flex-start;
+        gap: 22px;
+    }
+
+    .hide{
+        display: none;
+    }
+
+    .mobile_view{
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-top: 0.2px solid #e0e0e0;
+        width: 100%;
+
+    }
+
+    .viewMobile{
+        display: flex;
+        flex-direction: row;
+        gap: 50px;
+        align-items: center;
+        justify-content: space-between;
+        /* justify-content: center; */
+    }
+    
+    .dateAndTime{
+        font-size: 12px;
+        font-weight: 500;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-left: 5px;
+
+    }
+
+    .scheduled_date{
+        padding: 12px 6px;
+    }
+
+    .name{
+        font-size: 14px;
+    }
+
+    .approved{
+        /* margin-right: 45%; */
+    }
+
+    /* .button_cancel{
+        padding: 2px 10px !important;
+    }
+    .button_edit{
+        padding: 2px 10px !important;
+    } */
+
+
 }

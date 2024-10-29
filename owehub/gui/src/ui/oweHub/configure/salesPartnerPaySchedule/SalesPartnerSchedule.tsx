@@ -310,7 +310,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     const csvData = exportData?.data?.PartnerPayScheduleData?.map?.((item: any) => [
       item.sales_partner,
       item.finance_partner,
-      item.spps_Ref,
+      item.spps_ref,
       item.state,
       item.sug,
       item.rep_pay,
@@ -382,7 +382,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "70vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
           <table>
             <thead>

@@ -317,7 +317,7 @@ const DealerPayments: React.FC = () => {
       item.payment_date,
       item.payment_amount,
       item.payment_method,
-      item.transaction,
+      removeHtmlTags(item.transaction),
       item.notes 
     ]);
   
@@ -381,7 +381,7 @@ const DealerPayments: React.FC = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "70vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
           <table>
             <thead>

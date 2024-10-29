@@ -179,6 +179,7 @@ const CustomersList = () => {
   const isMobile = useMatchMedia('(max-width:450px)');
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isTimeSlotsOpen, setIsTimeSlotsOpen] = useState(false);
   const [calendarData, setCalendarData] = useState<
     IApiResponse['data']['details']
   >([]);
@@ -304,7 +305,6 @@ const CustomersList = () => {
     console.log('Updated CustomersList:', customers);
   }, [customers]);
 
-
   const transformedCalendarData: DayWithProgress[] = calendarData.map(
     (item, index) => ({
       id: index,
@@ -342,7 +342,7 @@ const CustomersList = () => {
   };
 
   useEscapeKey(() => setIsDrawerOpen(false));
-  useEscapeKey(() => setCollapse(-1)); 
+  useEscapeKey(() => setCollapse(-1));
 
   return (
     <div className={`${styles.schedule_page_wrapper}`}>
@@ -546,105 +546,108 @@ const CustomersList = () => {
           } bg-white ${styles.calendar_wrapper}`}
         >
           {!isSurveyScheduled ? (
-            <>
-              <div className="flex items-center justify-between mb3">
-                <h5
-                  style={{ fontWeight: 600, fontSize: 16, marginLeft: '20px' }}
-                  className=" ml2"
-                >
-                  Select Date & Time
-                </h5>
+  <>
+    <div className="flex items-center justify-between mb3">
+      <h5
+        style={{ fontWeight: 600, fontSize: 16, marginLeft: '20px' }}
+        className="ml2"
+      >
+        Select Date & Time
+      </h5>
 
+      <button
+        onClick={() => {
+          setSelectedDate(undefined);
+          setSelectedTime(undefined);
+          setAvailableSlots([]);
+          setSelectedCustomer(-1);
+          setIsCalendarOpen(false);
+          setIsTimeSlotsOpen(false); // Reset time slot visibility
+        }}
+        className={`${styles.calendar_close_btn_mobile} ml2`}
+      >
+        <IoClose size={24} />
+      </button>
+    </div>
+    <div
+      className={`flex items-start ${styles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
+    >
+      <DayPickerCalendar
+        dayCellClassName={styles.day_cell}
+        circleSize={isMobile ? 44 : 50}
+        selectedDate={selectedDate}
+        onClick={(e) => {
+          if (selectedDate && selectedDate.getTime() === e.date.getTime()) {
+            // Toggle the time slot container visibility and reset selected date if closing
+            setIsTimeSlotsOpen(prev => {
+              if (prev) {
+                setSelectedDate(undefined); // Reset selected date
+                return false; // Close the time slots
+              }
+              return true; // Open the time slots if not already open
+            });
+          } else {
+            setSelectedDate(e.date);
+            setIsTimeSlotsOpen(true); // Open time slots on new date
+          }
+        }}
+        dayWithProgress={transformedCalendarData}
+      />
+      {selectedDate && isTimeSlotsOpen && (
+        <div className={`${styles.slotContainer}`} style={{ width: '100%' }}>
+          <h5 className={`mb2 ${styles.time_slot_label}`}>
+            Select time slot
+          </h5>
+          <div className={styles.time_slot_pill_wrapper}>
+            {availableSlots.length > 0 ? (
+              availableSlots.map((slot) => (
                 <button
-                  onClick={() => {
-                    setSelectedDate(undefined);
-                    setSelectedTime(undefined);
-                    setAvailableSlots([]);
-                    setSelectedCustomer(-1);
-                    setIsCalendarOpen(false);
-                  }}
-                  className={`${styles.calendar_close_btn_mobile} ml2`}
+                  onClick={() => setSelectedTime(slot)}
+                  key={slot.uniqueId}
+                  className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot}`}
                 >
-                  <IoClose size={24} />
+                  {slot.time}
                 </button>
-              </div>
-              <div
-                className={`flex items-start ${styles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
-              >
-                <DayPickerCalendar
-                  dayCellClassName={styles.day_cell}
-                  circleSize={isMobile ? 44 : 50}
-                  selectedDate={selectedDate}
-                  onClick={(e) => {
-                    setSelectedDate(e.date);
-                  }}
-                  dayWithProgress={transformedCalendarData}
-                />
-                {selectedDate && (
-                  <div
-                    className={`${styles.slotContainer}`}
-                    style={{ width: '100%' }}
-                  >
-                    <h5 className={`mb2 ${styles.time_slot_label}`}>
-                      Select time slot
-                    </h5>
-                    <div className={styles.time_slot_pill_wrapper}>
-                      {availableSlots.length > 0 ? (
-                        availableSlots.map((slot) => (
-                          <button
-                            onClick={() => setSelectedTime(slot)}
-                            key={slot.uniqueId}
-                            className={`${styles.time_slot_pill} ${
-                              selectedTime?.uniqueId === slot.uniqueId
-                                ? styles.active_time_slot
-                                : styles.inactive_time_slot
-                            }`}
-                          >
-                            {slot.time}
-                          </button>
-                        ))
-                      ) : (
-                        <h5>No Slot Available</h5>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-              {selectedTime && selectedDate && (
-                <div className={styles.schedule_confirmation_wrapper}>
-                  <div className="flex mb2 items-center justify-center">
-                    <h5 className={styles.selected_time}>
-                      {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
-                    </h5>
-                    <IoIosInformationCircle
-                      className="ml1"
-                      color="#1F2937"
-                      size={17}
-                    />
-                  </div>
-                  <button
-                    onClick={() => setIsSurveyScheduled(true)}
-                    className={`mx-auto ${styles.calendar_schedule_btn}`}
-                  >
-                    Submit
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div
-              className="flex items-center flex-column justify-center"
-              style={{ height: 'calc(100vh - 200px)' }}
-            >
-              <h3 className={styles.survey_success_message}>
-                Site survey scheduled 👍
-              </h3>
-              <h5 className={styles.selected_time}>
-                {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
-                {selectedTime?.time}{' '}
-              </h5>
-            </div>
-          )}
+              ))
+            ) : (
+              <h5 style={{display:'flex', alignItems:'center', justifyContent:'center'}}>No Slot Available</h5>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+    {selectedTime && selectedDate && (
+      <div className={styles.schedule_confirmation_wrapper}>
+        <div className="flex mb2 items-center justify-center">
+          <h5 className={styles.selected_time}>
+            {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
+          </h5>
+          <IoIosInformationCircle className="ml1" color="#1F2937" size={17} />
+        </div>
+        <button
+          onClick={() => setIsSurveyScheduled(true)}
+          className={`mx-auto ${styles.calendar_schedule_btn}`}
+        >
+          Submit
+        </button>
+      </div>
+    )}
+  </>
+) : (
+  <div
+    className="flex items-center flex-column justify-center"
+    style={{ height: 'calc(100vh - 200px)' }}
+  >
+    <h3 className={styles.survey_success_message}>
+      Site survey scheduled 👍
+    </h3>
+    <h5 className={styles.selected_time}>
+      {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
+      {selectedTime?.time}{' '}
+    </h5>
+  </div>
+)}
+
         </div>
       </div>
       {isDrawerOpen && (
@@ -653,7 +656,7 @@ const CustomersList = () => {
           onClick={() => setIsDrawerOpen(false)}
         >
           <div
-            className={styles.drawer_content}
+            className={`${styles.drawer_content} ${isSmallScreen ? styles.fullscreen : ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             <ScheduledActivity onClose={() => setIsDrawerOpen(false)} />

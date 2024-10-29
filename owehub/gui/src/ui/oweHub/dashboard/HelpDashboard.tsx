@@ -3,6 +3,8 @@ import './dasboard.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import Input from '../../components/text_input/Input';
 import { ActionButton } from '../../components/button/ActionButton';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 
 interface ButtonProps {
   handleClose: () => void;
@@ -10,35 +12,139 @@ interface ButtonProps {
 }
 const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const handleFileInputChange = (e: any) => {
+
+
+
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [fileSizeError, setFileSizeError] = useState('');
+  const [errors, setErrors] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
+    const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+
+    if (file) {
+      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf', '.doc', '.docx', '.docm', '.xls', '.xlsx'];
+      const fileExtension = file.name
+        .toLowerCase()
+        .substring(file.name.lastIndexOf('.'));
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setSelectedFileName('');
+        setFileSizeError('Only PNG, JPG, pdf, doc files are allowed');
+        setSelectedFile(null);
+        return;
+      }
+
+      if (file.size <= maxSize) {
+        setSelectedFileName(file.name);
+        setFileSizeError('');
+        setSelectedFile(file);
+        console.log(file, 'selected file in tech support');
+      } else {
+        setSelectedFileName('');
+        setFileSizeError('File size exceeds the limit of 10 MB');
+        setSelectedFile(null);
+      }
+    } else {
+      setSelectedFileName('');
+      setFileSizeError('');
+      setSelectedFile(null);
+    }
   };
 
+
+
   const [state, setState] = useState({
-    project_id: data?.unique_id || '',
-    dealer_name: data?.dealer || '',
-    sale_rep: data?.rep1,
-    customer_name: data?.home_owner,
-    amount_prepaid: '',
-    pipeline_remaining: '',
-    current_date: '',
+    project_id: data?.unique_id || 'N/A',
+    dealer_name: data?.dealer_code || '',
+    sale_rep: data?.rep1 || '',
+    customer_name: data?.home_owner || '',
+    amount_prepaid: 0,
+    pipeline_remaining: 0,
+    current_date: 'N/A',
     project_status: data?.current_status || '',
-    state: data?.state || '',
+    state: data?.st || '',
     message: '',
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setState((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
+
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
+  };
+
+  const validateFields = () => {
+    const newErrors: any = {};
+    newErrors.dealer_name = state.dealer_name ? '' : 'Dealer name is required';
+    newErrors.sale_rep = state.sale_rep ? '' : 'Sale rep is required';
+    newErrors.customer_name = state.customer_name ? '' : 'Customer name is required';
+    newErrors.message = state.message ? '' : 'Message is required';
+    return newErrors;
+  };
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newErrors = validateFields();
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).every((err) => !err)) {
+      setIsSubmitting(true);
+
+      // Prepare form data
+      const formData = new FormData();
+      formData.append(
+        'data',
+        JSON.stringify({
+          html_content: `
+          <html>
+          <body>
+            <p>You have received a new support request:</p>
+            <p><strong>Dealer Name:</strong> ${state.dealer_name}</p>
+            <p><strong>Sale Rep:</strong> ${state.sale_rep}</p>
+            <p><strong>Customer Name:</strong> ${state.customer_name}</p>
+            <p><strong>Project ID:</strong> ${state.project_id}</p>
+            <p><strong>Message:</strong> ${state.message}</p>
+          </body>
+          </html>`,
+          subject: 'Technical Support Request',
+          to_mail: 'support@example.com', // Example email, replace with actual recipient
+          phone_number: data?.phoneNumber || '',
+        })
+      );
+
+      if (selectedFile) {
+        formData.append('attachment', selectedFile);
+      }
+
+      try {
+        const response = await postCaller('SendMail_to_IT_from_User', formData);
+        if (response.status === 202) {
+          toast.success('Your form has been submitted!');
+          setIsSubmitting(false);
+          handleClose();
+          setSelectedFile(null);
+        } else {
+          toast.error('Failed to submit the form. Please try again.');
+        }
+      } catch (error) {
+        toast.error('An error occurred. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   return (
@@ -169,23 +275,26 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                     <input
                       type="file"
                       ref={fileInputRef}
-                      onChange={handleFileInputChange}
                       className="file-input"
+                      onChange={handleFileInputChange}
                     />
                     <div className="custom-button-container">
                       <span className="file-input-placeholder">
-                        Select File
+                        {selectedFileName || '.jpg .jpeg .pdf .doc .pdf .xls'}
                       </span>
                       <button
                         className="custom-button"
                         onClick={handleButtonClick}
                       >
-                        {/* <img src={ICONS.browserIcon} alt="" /> */}
                         Browse
                       </button>
                     </div>
                   </div>
+                  {fileSizeError && (
+                    <span className="error">{fileSizeError}</span>
+                  )}
                 </div>
+
               </div>
 
               <div className="create-input-field-note" style={{}}>
@@ -194,11 +303,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                 </label>
                 <br />
                 <textarea
-                  name={''}
-                  id=""
+                  name="message"
                   rows={4}
                   onChange={handleChange}
-                  value={''}
+                  value={state.message}
                   placeholder="Type here..."
                 ></textarea>
               </div>
@@ -206,7 +314,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
           </div>
           <div className="createUserActionButton" style={{ marginTop: '1rem' }}>
             <ActionButton title={'Cancel'} type="reset" onClick={handleClose} />
-            <ActionButton title={'Submit'} type="submit" onClick={() => {}} />
+            <button className='help-submit' onClick={handleSubmit}>Submit</button>
           </div>
         </div>
       </div>
@@ -215,3 +323,4 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
 };
 
 export default HelpDashboard;
+

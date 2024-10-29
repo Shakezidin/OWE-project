@@ -27,6 +27,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import Input from '../../scheduler/SaleRepCustomerForm/component/Input/Input';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { current } from '@reduxjs/toolkit';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
@@ -39,6 +40,8 @@ interface EditModalProps {
 
   won?: boolean;
   setWon: React.Dispatch<React.SetStateAction<boolean>>;
+  currentFilter: string;
+  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 interface LeadData {
   first_name: string;
@@ -62,7 +65,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   refresh,
   setReschedule,
   won,
-  setWon
+  setWon,
+  currentFilter,
+  setCurrentFilter
 }) => {
   console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
@@ -78,7 +83,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [proposalLink, setProposalLink] = useState<string | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null); // State for iframe source
   const isMobile = useMatchMedia('(max-width: 600px)');
-
+  console.log(currentFilter, "In modal opens")
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
   };
@@ -819,7 +824,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       Lead marked as Deal Won!
                     </span>
                     <span className={classes.ctmracquired}>
-                      Moving it to the In Progress section.
+                     {currentFilter && currentFilter === "In Progress" ? "" : "Moving it to the In Progress section."}
                     </span>
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>

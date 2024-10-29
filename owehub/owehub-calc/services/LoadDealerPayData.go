@@ -16,6 +16,11 @@ func ExecDlrPayInitialCalculation() error {
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
+	err = ClearDlrPay()
+	if err != nil {
+		log.FuncInfoTrace(0, "error while clearing dlr_pay with err : %v", err)
+	}
+
 	count := 0
 	dataReq := models.DataRequestBody{}
 	InitailData, err := oweconfig.LoadDlrPayInitialData()
@@ -131,4 +136,13 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	// outData["m1_payment"] = m1Payment
 	// outData["m2payment"] = m2Payment
 	return outData, err
+}
+
+func ClearDlrPay() error {
+	query := `TRUNCATE TABLE dealer_pay`
+	err := db.ExecQueryDB(db.OweHubDbIndex, query)
+	if err != nil {
+		return err
+	}
+	return nil
 }
