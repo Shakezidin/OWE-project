@@ -1,7 +1,7 @@
 .support-cont-section {
   display: flex;
-  margin-top: 1rem;
-  border-radius: 16px;
+  margin-top: 11px;
+  border-radius: 12px;
   background-color: #ffff;
   flex: 1;
 }
@@ -19,7 +19,7 @@
 }
 
 .support-section h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 27px;
   text-align: left;
@@ -66,19 +66,19 @@
   text-align: left;
 }
 .touch-info p {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 27px;
   text-align: left;
 }
-.reset-Update-support {
+/* .reset-Update-support {
   display: flex;
   margin-top: 1rem;
   transition: transform 0.3s ease;
 }
 .reset-Update-support:hover {
   transform: scale(1.03);
-}
+} */
 .reset-Update-support button {
   width: 280px;
   height: 48px;
@@ -94,10 +94,11 @@
   cursor: pointer;
   background-color: var(--primary-color);
   border-radius: 8px;
-  transition: background-color 0.3s ease;
+  transition: transform 0.3s ease;
 }
 .reset-Update-support button:hover {
   background-color: #0644af;
+  transform: scale(1.03);
 }
 
 .file-input-container {
