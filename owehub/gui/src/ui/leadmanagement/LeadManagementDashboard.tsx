@@ -33,6 +33,7 @@ import { toZonedTime } from 'date-fns-tz';
 import {
   endOfWeek,
   format,
+  parseISO,
   startOfMonth,
   startOfWeek,
   startOfYear,
@@ -738,7 +739,7 @@ const LeadManagementDashboard = () => {
           : '',
         "status": statusId,
         is_archived: archive,
-        progress_filter: selectedValue ? selectedValue : "ALL",
+        progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
         search: searchTerm,
         page_size: itemsPerPage,
         page_number: archive ? 1 : page,
@@ -763,6 +764,11 @@ const LeadManagementDashboard = () => {
     refresh,
     ref,
   ]);
+  useEffect(() => {
+    if (currentFilter !== 'In Progress') {
+      setSelectedValue('ALL');
+    }
+  }, [currentFilter])
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -1162,16 +1168,16 @@ const LeadManagementDashboard = () => {
         `'${item.phone_number}'`,
         item.street_address,
         item.appointment_status_label,
-        item.appointment_status_date,
+        item.appointment_status_date ? format(parseISO(item.appointment_status_date), 'dd-MM-yyyy') : '',
         item.won_lost_label,
-        item.won_lost_date,
+        item.won_lost_date ? format(parseISO(item.won_lost_date), 'dd-MM-yyyy') : '',
         item.finance_company,
         item.finance_type,
         item.qc_audit,
         item.proposal_id,
         item.proposal_status,
         item.proposal_link,
-        item.proposal_updated_at,
+        item.proposal_updated_at ? format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy') : '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -1555,25 +1561,25 @@ const LeadManagementDashboard = () => {
                   </div>
                   )}
                 </div>
-               
-                  <Tooltip
-                    style={{
-                      zIndex: 20,
-                      background: '#f7f7f7',
-                      color: '#000',
-                      fontSize: 12,
-                      paddingBlock: 4,
 
-                      fontWeight: "400"
-                    }}
-                    offset={8}
-                    delayShow={800}
-                    id="downip"
-                    place="bottom"
-                    content={isToggledX ? "Minimize" : "Maximize"}
-                    className={'mobile-tooltip' }
-                  />
-                
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+
+                    fontWeight: "400"
+                  }}
+                  offset={8}
+                  delayShow={800}
+                  id="downip"
+                  place="bottom"
+                  content={isToggledX ? "Minimize" : "Maximize"}
+                  className={'mobile-tooltip'}
+                />
+
               </div></div>
           </div>
         </div>
@@ -1809,49 +1815,49 @@ const LeadManagementDashboard = () => {
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
                 <HistoryRedirect />
                 {currentFilter === 'In Progress' && (
-                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue}  />
+                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
 
                 )}
-             
+
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: "400"
+                  }}
+                  delayShow={800}
+                  offset={8}
+                  id="More Pages"
+                  place="bottom"
+                  content="More Pages"
+                  className={styles.mobile_tooltip}
+                />
+
+                <div className={styles.filterCallToAction}>
+                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                    <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                  </div>
+
                   <Tooltip
                     style={{
-                      zIndex: 20,
+                      zIndex: 103,
                       background: '#f7f7f7',
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
                       fontWeight: "400"
                     }}
-                    delayShow={800}
                     offset={8}
-                    id="More Pages"
+                    id="NEW"
                     place="bottom"
-                    content="More Pages"
-                    className={ styles.mobile_tooltip}
+                    content="Add New Lead"
+                    delayShow={800}
+                    className={styles.mobile_tooltip}
                   />
-                
-                <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
-                    <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
-                  </div>
-               
-                    <Tooltip
-                      style={{
-                        zIndex: 103,
-                        background: '#f7f7f7',
-                        color: '#000',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                        fontWeight: "400"
-                      }}
-                      offset={8}
-                      id="NEW"
-                      place="bottom"
-                      content="Add New Lead"
-                      delayShow={800}
-                      className={styles.mobile_tooltip }
-                    />
-                  
+
 
                   <div
                     className={styles.export_btn}
@@ -1888,7 +1894,7 @@ const LeadManagementDashboard = () => {
                       id="export"
                       place="bottom"
                       content="Export"
-                      className={ 'mobile-tooltip' }
+                      className={'mobile-tooltip'}
                     />
                   }
 
@@ -1978,11 +1984,11 @@ const LeadManagementDashboard = () => {
                   </div>
                   <HistoryRedirect />
                   {currentFilter === 'In Progress' && (
-                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue}  />
+                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
                   )}
-                
-                   
-                  
+
+
+
                   <div className={styles.filterCallToActionMobile}>
                     <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                       <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
@@ -2002,7 +2008,7 @@ const LeadManagementDashboard = () => {
                         place="bottom"
                         content="Add New Lead"
                         delayShow={800}
-                        className={ 'mobile-tooltip' }
+                        className={'mobile-tooltip'}
                       />
                     }
 
@@ -2041,7 +2047,7 @@ const LeadManagementDashboard = () => {
                         id="export"
                         place="bottom"
                         content="Export"
-                        className={ 'mobile-tooltip'}
+                        className={'mobile-tooltip'}
                       />
                     }
                   </div>
@@ -2153,6 +2159,8 @@ const LeadManagementDashboard = () => {
               onCreateProposal={handleCreateProposal}
               retrieveWebProposal={retrieveWebProposal}
               generateWebProposal={generateWebProposal}
+              currentFilter={currentFilter}
+              setCurrentFilter={setCurrentFilter}
             />
           )}
           {leadsData.length > 0 && !isLoading && (

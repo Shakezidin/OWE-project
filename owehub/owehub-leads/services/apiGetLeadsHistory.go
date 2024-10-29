@@ -122,7 +122,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
     SELECT
         li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
         ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
-        li.appointment_scheduled_date, li.appointment_accepted_date,
+        li.appointment_scheduled_date, li.appointment_accepted_date, li.zipcode,
         li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
     FROM
         get_leads_info_hierarchy($1) li
@@ -173,6 +173,12 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			streetAddress = ""
 		}
 
+		zipcode, ok := item["zipcode"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get zipcode for Lead: %+v\n", item)
+			zipcode = ""
+		}
+
 		leadWonDate, ok := item["lead_won_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get lead won date from leads info Item: %+v\n", item)
@@ -191,6 +197,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		LeadsHistory := models.GetLeadsHistoryResponse{
 			DealDate:      dealDateStr,
 			DealStatus:    dealStatus,
+			Zipcode:       zipcode,
 			FirstName:     item["first_name"].(string),
 			LastName:      item["last_name"].(string),
 			EmailId:       item["email_id"].(string),

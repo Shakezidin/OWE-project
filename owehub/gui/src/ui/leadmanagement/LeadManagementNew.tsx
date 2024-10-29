@@ -269,7 +269,7 @@ const LeadManagementNew = () => {
                           }}
                         />
                         {(phoneNumberError || errors.mobile_number) && (
-                          <p className="error-message" style={{ color: '#db4437' }}>
+                          <p className="error" >
                             {phoneNumberError || errors.mobile_number}
                           </p>
                         )}
@@ -298,7 +298,7 @@ const LeadManagementNew = () => {
                         />
 
                         {(emailError || errors.email_id) && (
-                          <div className="error-message">
+                          <div className="error">
                             {emailError || errors.email_id}
                           </div>
                         )}
@@ -352,7 +352,7 @@ const LeadManagementNew = () => {
                           name="zip_code"
                         />
                         {(zip_codeError || errors.zip_code) && (
-                          <div className="error-message">
+                          <div className="error">
                             {zip_codeError || errors.zip_code}
                           </div>
                         )}

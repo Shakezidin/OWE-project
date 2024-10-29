@@ -156,39 +156,20 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if _, err := strconv.Atoi(dataReq.Search); err == nil {
 			// If it's numeric, modify the whereClause to search for leads_id equal to that number
 			whereClause = fmt.Sprintf(
-				"%s OR li.leads_id::text ILIKE $%d )",
-				whereClause,
+				"%s OR li.leads_id::text ILIKE $%d)",
+				whereClause[0:len(whereClause)-1],
 				len(whereEleList),
 			)
-		} else {
-			// If it's not purely numeric, treat it as a normal search
-
-			if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
-
-				whereClause = fmt.Sprintf(
-					"%s OR 'owe' || li.leads_id::text  ILIKE $%d )",
-					whereClause,
-					len(whereEleList),
-				)
-			} else {
-
-				whereClause = fmt.Sprintf(
-					"%s OR li.leads_id::text ILIKE $%d )",
-					whereClause,
-					len(whereEleList),
-				)
-
-			}
-
 		}
 
 		// if search starts with owe, search by id as well
-		// if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
-		// 	searchId, searchIdErr := strconv.Atoi(dataReq.Search[3:])
-		// 	if searchIdErr == nil {
-		// 		whereClause = fmt.Sprintf("%s OR li.leads_id = %d)", whereClause[0:len(whereClause)-1], searchId)
-		// 	}
-		// }
+		if strings.HasPrefix(strings.ToLower(dataReq.Search), "owe") {
+			searchIdStr := dataReq.Search[3:]
+			if _, atoiErr := strconv.Atoi(searchIdStr); atoiErr == nil || searchIdStr == "" {
+				whereEleList = append(whereEleList, fmt.Sprintf("%s%%", searchIdStr))
+				whereClause = fmt.Sprintf("%s OR li.leads_id::text ILIKE $%d)", whereClause[0:len(whereClause)-1], len(whereEleList))
+			}
+		}
 	}
 
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {

@@ -648,18 +648,18 @@ const CustomersList = () => {
         </div>
       </div>
       {isDrawerOpen && (
-        <div
-          className={styles.drawer_overlay}
-          onClick={() => setIsDrawerOpen(false)}
-        >
-          <div
-            className={styles.drawer_content}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ScheduledActivity onClose={() => setIsDrawerOpen(false)} />
-          </div>
-        </div>
-      )}
+  <div
+    className={styles.drawer_overlay}
+    onClick={() => setIsDrawerOpen(false)}
+  >
+    <div
+      className={`${styles.drawer_content} ${isSmallScreen ? styles.fullscreen : ''}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <ScheduledActivity onClose={() => setIsDrawerOpen(false)} />
+    </div>
+  </div>
+)}
     </div>
   );
 };
