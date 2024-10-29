@@ -169,8 +169,19 @@ func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn stri
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
+		switch dataFilter.SortBy {
+		case "install":
+			dataFilter.SortBy = "pis.pv_completion_date"
+		case "cancel":
+			dataFilter.SortBy = "ss.cancelled_date"
+		case "ntp":
+			dataFilter.SortBy = "ns.ntp_complete_date"
+		default:
+			dataFilter.SortBy = "cs.sale_date"
+		}
+
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" %v BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", dataFilter.SortBy, len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
