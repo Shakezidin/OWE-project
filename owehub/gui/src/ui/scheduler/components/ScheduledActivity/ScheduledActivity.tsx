@@ -3,10 +3,13 @@ import Styles from './scheduledActivity.module.css';
 import { TbChevronDown } from 'react-icons/tb';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
-import Select, { SelectOption } from '../../SalesRepScheduler/components/Select'; 
+import Select, {
+  SelectOption,
+} from '../../SalesRepScheduler/components/Select';
 import { FaXmark } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import useEscapeKey from '../../../../hooks/useEscape';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 interface Appointment {
   name: string;
@@ -22,20 +25,19 @@ interface AppointmentData {
 }
 
 interface ScheduledActivityProps {
-    onClose: () => void;
-  }
+  onClose: () => void;
+}
 
-  function ScheduledActivity({ onClose }: ScheduledActivityProps) {
-    const [selectedDate, setSelectedDate] = useState<number>(-1);
+function ScheduledActivity({ onClose }: ScheduledActivityProps) {
+  const [selectedDate, setSelectedDate] = useState<number>(-1);
   const [collapse, setCollapse] = useState<number>(-1);
   const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([]);
   const navigate = useNavigate();
-
-
+  const isMobile = useMatchMedia('(max-width:600px)');
 
   const appointmentsData: AppointmentData[] = [
     {
-      date: '21 Oct 2024',
+      date: '28 Oct 2024',
       appointment: [
         {
           name: 'Jacob Martin',
@@ -61,7 +63,7 @@ interface ScheduledActivityProps {
       ],
     },
     {
-      date: '22 Oct 2024',
+      date: '29 Oct 2024',
       appointment: [
         {
           name: 'Jacob Martin',
@@ -80,7 +82,7 @@ interface ScheduledActivityProps {
       ],
     },
     {
-      date: '23 Oct 2024',
+      date: '30 Oct 2024',
       appointment: [
         {
           name: 'Jacob Martin',
@@ -92,7 +94,7 @@ interface ScheduledActivityProps {
       ],
     },
     {
-      date: '24 Oct 2024',
+      date: '31 Oct 2024',
       appointment: [],
     },
   ];
@@ -107,9 +109,7 @@ interface ScheduledActivityProps {
   const handleSelectChange = (options: SelectOption[]) => {
     setSelectedOptions(options);
     console.log(options);
-    
   };
-
 
   const handleEdit = (appointment: Appointment) => {
     console.log('Edit:', appointment);
@@ -123,9 +123,7 @@ interface ScheduledActivityProps {
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
-
-useEscapeKey(() => setCollapse(-1));
-
+  useEscapeKey(() => setCollapse(-1));
 
   return (
     <div className={Styles.main_container}>
@@ -136,15 +134,12 @@ useEscapeKey(() => setCollapse(-1));
             options={stateOptions}
             selectedOptions={selectedOptions}
             onChange={handleSelectChange}
-            placeholder='State'
+            placeholder="State"
           />
           <span onClick={onClose} className={Styles.back_button}>
-            <FaXmark
-              className={Styles.icon}
-       
-            />
-                </span>
-       </div>
+            <FaXmark className={Styles.icon} />
+          </span>
+        </div>
       </div>
       <div className={Styles.appointment_container}>
         {appointmentsData.map((data, index) => {
@@ -166,10 +161,10 @@ useEscapeKey(() => setCollapse(-1));
                 className={`${Styles.date_container} ${selectedDate === index ? Styles.open : ''}`}
               >
                 <div>
-  {data.appointment.length > 0
-    ? `${data.appointment.length} Appointment${data.appointment.length > 1 ? 's' : ''}`
-    : 'No Appointments'}
-</div>
+                  {data.appointment.length > 0
+                    ? `${data.appointment.length} Appointment${data.appointment.length > 1 ? 's' : ''}`
+                    : 'No Appointments'}
+                </div>
 
                 <div className={Styles.date_button}>
                   <div>{dateLabel}</div>
@@ -193,59 +188,134 @@ useEscapeKey(() => setCollapse(-1));
                       <div key={apptIndex} className={Styles.appointment_item}>
                         <div className={Styles.left_container}>
                           <div className={Styles.name_container}>
-                            <span style={{ backgroundColor: '#FFEAEA', borderRadius:'50%' }}>
+                            <span
+                              style={{
+                                backgroundColor: '#FFEAEA',
+                                borderRadius: '50%',
+                              }}
+                            >
                               {appointment.name
                                 .split(' ')
                                 .map((name) => name[0])
                                 .join('')
                                 .toUpperCase()}{' '}
                             </span>
-                            <div className={Styles.name}>{appointment.name}</div>
+                            <div className={Styles.name}>
+                              {appointment.name}
+                            </div>
                           </div>
                           <div className={Styles.mail_and_number}>
                             <div className={Styles.mail_container}>
-                                <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CiMail size={15} /></div>
-                                <div>{appointment.email}</div>
-                              
-                              
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <CiMail size={15} />
+                              </div>
+                              <div>{appointment.email}</div>
                             </div>
                             <div className={Styles.phone_container}>
-                                <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><BiPhone size={15} /></div>
-                                <div>{appointment.contact_number}</div>
-                               
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <BiPhone size={15} />
+                              </div>
+                              <div>{appointment.contact_number}</div>
                             </div>
                           </div>
                         </div>
-                        <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',}}>
-                          <div className={Styles.scheduled_date}>Scheduled Date & Time </div>
-                          <div className={Styles.dateAndTime} style={{display: 'flex', flexDirection:'row', gap:'10px' }}>
+                        <div
+                        className={`${isMobile ? Styles.hide : Styles.second_container}`}
+                        >
+                          <div className={Styles.scheduled_date}>
+                            Scheduled Date & Time{' '}
+                          </div>
+                          <div
+                            className={`${Styles.dateAndTime}`}
+                            
+                          >
+                            {' '}
                             <div>{data.date}</div>
                             <div> {appointment.scheduled_time}</div>
                           </div>
                           <div>
                             {appointment.status === 'Pending' ? (
                               <div className={Styles.button_container}>
-                                <button className={Styles.button} style={{backgroundColor:'#e33737', color:'#fff'}} onClick={() => handleEdit(appointment)}>
+                                <button
+                                  className={Styles.button_cancel}
+                                  onClick={() => handleEdit(appointment)}
+                                >
                                   Cancel site survey
                                 </button>
-                                <button className={Styles.button}
-                                style={{backgroundColor:'#fff', color:'#377cf6', border: '1px solid #377cf6'}}
+                                <button
+                                  className={Styles.button_edit}
                                   onClick={() => handleCancel(appointment)}
                                 >
                                   Edit
                                 </button>
                               </div>
                             ) : (
-                                <div className={Styles.approved}><span >Approved</span></div>
-                              
+                              <div className={Styles.approved}>
+                                <span>Approved</span>
+                              </div>
                             )}
+                          </div>
+                        </div>
+                        {/* ////////////////////////////////Phone Layout//////////////////////////// */}
+
+                        <div className={isMobile ? Styles.mobile_view : Styles.hide} >
+                            <div className={Styles.scheduled_date}>
+                            Scheduled Date & Time{' '}
+                          </div>
+                          <div className={Styles.viewMobile}>
+                          <div
+                            className={`${Styles.dateAndTime}`}
+                            
+                          >
+                            {' '}
+                            <div className={Styles.time}> {appointment.scheduled_time}</div>
+                            <div className={Styles.date}>{data.date}</div>
+                          </div>
+                          <div>
+                            {appointment.status === 'Pending' ? (
+                              <div className={Styles.button_container}>
+                                <button
+                                  className={Styles.button_cancel}
+                                  onClick={() => handleEdit(appointment)}
+                                >
+                                  Cancel site survey
+                                </button>
+                                <button
+                                  className={Styles.button_edit}
+                                  onClick={() => handleCancel(appointment)}
+                                >
+                                  Edit
+                                </button>
+                              </div>
+                            ) : (
+                              <div className={Styles.approved}>
+                                <span>Approved</span>
+                              </div>
+                            )}
+                          </div>
+
+
                           </div>
                         </div>
                       </div>
                     ))
                   ) : (
                     <div className={Styles.appointment_item}>
-                        <div className={Styles.no_appointment}>No Appointments</div>
+                      <div className={Styles.no_appointment}>
+                        No Appointments
+                      </div>
                     </div>
                   )}
                 </div>
