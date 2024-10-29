@@ -425,7 +425,7 @@ const LeradManagementHistory = () => {
         `'${item.phone_number}'`,
         item.email_id,
         item.street_address,
-        item.zipcode,
+        `'${item.zipcode}'`,
         item.deal_date,
         item.deal_status,
       ]);

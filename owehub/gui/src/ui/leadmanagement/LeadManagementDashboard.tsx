@@ -738,7 +738,7 @@ const LeadManagementDashboard = () => {
           : '',
         "status": statusId,
         is_archived: archive,
-        progress_filter: selectedValue ? selectedValue : "ALL",
+        progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
         search: searchTerm,
         page_size: itemsPerPage,
         page_number: archive ? 1 : page,
@@ -763,6 +763,11 @@ const LeadManagementDashboard = () => {
     refresh,
     ref,
   ]);
+  useEffect(() => {
+      if(currentFilter !== 'In Progress'){
+        setSelectedValue('ALL');
+      }
+  }, [currentFilter])
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -2153,6 +2158,8 @@ const LeadManagementDashboard = () => {
               onCreateProposal={handleCreateProposal}
               retrieveWebProposal={retrieveWebProposal}
               generateWebProposal={generateWebProposal}
+              currentFilter = {currentFilter}
+              setCurrentFilter={setCurrentFilter}
             />
           )}
           {leadsData.length > 0 && !isLoading && (
