@@ -517,6 +517,7 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
+    setBackup(filter);
     setPage(1);
     setSide("left")
     setActiveIndex(
@@ -703,6 +704,7 @@ const LeadManagementDashboard = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value);
+     
     }, 800),
     []
   );
@@ -1168,16 +1170,16 @@ const LeadManagementDashboard = () => {
         `'${item.phone_number}'`,
         item.street_address,
         item.appointment_status_label,
-        item.appointment_status_date ? format(parseISO(item.appointment_status_date), 'dd-MM-yyyy') : '',
+        item.appointment_status_date ? `${format(parseISO(item.appointment_status_date), 'dd-MM-yyyy')}` : '',
         item.won_lost_label,
-        item.won_lost_date ? format(parseISO(item.won_lost_date), 'dd-MM-yyyy') : '',
+        item.won_lost_date ? `${format(parseISO(item.won_lost_date), 'dd-MM-yyyy')}` : '',
         item.finance_company,
         item.finance_type,
         item.qc_audit,
         item.proposal_id,
         item.proposal_status,
         item.proposal_link,
-        item.proposal_updated_at ? format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy') : '',
+        item.proposal_updated_at ? `${format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy')}` : '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -1349,12 +1351,13 @@ const LeadManagementDashboard = () => {
 
   const [backup, setBackup] = useState('New Leads');
 
+  console.log(backup, "backup");
+  console.log(currentFilter, "filter")
+
   useEffect(() => {
-    if (searchTerm !== '') {
-      setBackup(currentFilter);
-      setCurrentFilter('');
-    } else {
+    if (searchTerm === '') {
       setCurrentFilter(backup);
+      setPage(1);
     }
   }, [searchTerm]);
 
@@ -1797,13 +1800,17 @@ const LeadManagementDashboard = () => {
                     placeholder="Enter customer name or id"
                     className={styles.searchInput}
                     onChange={(e) => {
+
                       if (e.target.value.length <= 50) {
+                       
                         e.target.value = e.target.value.replace(
                           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
                           ''
                         );
                         handleSearchChange(e);
                         setSearch(e.target.value);
+                        
+                        setCurrentFilter(e.target.value === '' ? backup : '');
                       }
                     }}
                   />
@@ -1978,6 +1985,7 @@ const LeadManagementDashboard = () => {
                           );
                           handleSearchChange(e);
                           setSearch(e.target.value);
+                          setCurrentFilter(e.target.value === '' ? backup : '');
                         }
                       }}
                     />

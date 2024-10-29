@@ -786,7 +786,7 @@ const Table = ({
       'NTP Date',
       'Install Date',
       'Pto Date',
-      'Cancel Date',
+      'Cancel Date',+
       'Primary Sales Rep',
       'Secondary Sales Rep',
     ];
@@ -796,6 +796,7 @@ const Table = ({
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,
+      sort_by:active
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);

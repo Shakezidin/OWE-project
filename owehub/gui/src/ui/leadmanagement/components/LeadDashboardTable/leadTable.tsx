@@ -68,6 +68,7 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
 
   const [leadId, setLeadId] = useState(0);
   const [leadProposalLink, setLeadPropsalLink] = useState('');
+  const [proposalPdfLink, setProposalPdfLink] = useState('');
   const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0); // Track download percentage
   const scrollWrapper = useRef<HTMLDivElement>(null);
@@ -168,8 +169,10 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
     } else if (selectedType === 'viewProposal') {
       retrieveWebProposal(leadId)
       setSelectedType('');
+      // if (proposalPdfLink) {
+      //   window.open(proposalPdfLink, '_blank'); 
+      // }
     } else if (selectedType === 'editProposal') {
-      // Open the proposal link in a new tab
       if (leadProposalLink) {
         window.open(leadProposalLink, '_blank');
       }
@@ -520,7 +523,11 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                       <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
                       {(selectedLeads.length === 0 && isMobile) &&
                         <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
-                          <div className={styles.RowMobile} onClick={() => (setLeadId(lead.leads_id))}>
+                          <div className={styles.RowMobile} 
+                          onClick={() => {(setLeadId(lead.leads_id));
+                            setLeadPropsalLink(lead.proposal_link);
+                            setProposalPdfLink(lead.proposal_pdf_link)
+                          }}>
                             {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                             ) :
@@ -625,7 +632,10 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                             justifyContent: 'center',
                             width: "100%"
                           }}>
-                            <div onClick={() => (setLeadId(lead.leads_id))}>
+                            <div onClick={() => {(setLeadId(lead.leads_id));
+                            setLeadPropsalLink(lead.proposal_link);
+                            setProposalPdfLink(lead.proposal_pdf_link)
+                          }}>
                               {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                                 <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                               ) :
