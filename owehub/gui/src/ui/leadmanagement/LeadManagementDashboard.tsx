@@ -1100,15 +1100,15 @@ const LeadManagementDashboard = () => {
       'Street Address',
       'Appointment Status',
       'Appointment Status Date',
-      'Won/Lost Status',
-      'Won/Lost Date',
+      'Deal Status',
+      'Deal Date',
       'Finance Company',
       'Finance Type',
       'QC Audit',
       'Proposal ID',
       'Proposal Status',
       'Proposal Link',
-      'Proposal Updated At',
+      'Proposal Created Date',
     ];
 
     let statusId;
@@ -1809,7 +1809,7 @@ const LeadManagementDashboard = () => {
                         );
                         handleSearchChange(e);
                         setSearch(e.target.value);
-                        
+                        setPage(1);
                         setCurrentFilter(e.target.value === '' ? backup : '');
                       }
                     }}
