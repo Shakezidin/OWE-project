@@ -231,6 +231,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_create_recipient_view",
+		apiHandler.HandleDocusignCreateRecipientViewRequest,
+		true,
+		leadsRoleGroup,
+	},
 
 	// WEBHOOKS
 	{
