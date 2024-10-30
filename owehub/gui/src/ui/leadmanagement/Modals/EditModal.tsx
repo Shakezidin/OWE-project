@@ -367,7 +367,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                       } else if (!isFirstDigitZero && leadingZeros && leadingZeros[0].length > 8) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
-                          mobile_number: 'Invalid number. If the first digit is a number, only eight leading zeros are allowed.',
+                          mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
                         }));
                       } else if (/^0{5}/.test(numberWithoutCountryCode)) {
                         setErrors((prevErrors) => ({
