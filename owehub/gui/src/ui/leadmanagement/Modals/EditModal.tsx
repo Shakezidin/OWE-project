@@ -300,7 +300,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
               <div className={classes.inputFields}>
                 <div>
 
-
+{/* NUMBER VALIDATION ADDED */}
                   <Input
                     type="number"
                     value={formData.mobile_number}
