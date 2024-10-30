@@ -300,7 +300,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
               <div className={classes.inputFields}>
                 <div>
 
-                  
+
                   <Input
                     type="number"
                     value={formData.mobile_number}
@@ -310,31 +310,15 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                       const phoneNumber = value.toString();
                       const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
 
-                      // Stop entering if the length exceeds 15
                       if (phoneNumber.length > 15) {
-                        return; // Prevent further input
+                        return;
                       }
 
-                      // Check the first digit
-                      const firstDigit = phoneNumber.charAt(0);
-                      const isFirstDigitZero = firstDigit === '0';
                       const leadingZeros = numberWithoutCountryCode.match(/^0+/);
-
-                      // Validate based on the first digit
-                      if (isFirstDigitZero && leadingZeros && leadingZeros[0].length > 4) {
+                      if (leadingZeros && leadingZeros[0].length > 6) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
                           mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
-                        }));
-                      } else if (!isFirstDigitZero && leadingZeros && leadingZeros[0].length > 8) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
-                        }));
-                      } else if (/^0{5}/.test(numberWithoutCountryCode)) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          mobile_number: 'Invalid number. The number cannot consist of consecutive zeros.',
                         }));
                       } else if (value.length > 0 && value.length < 10) {
                         setErrors((prevErrors) => ({
@@ -359,6 +343,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                     name="mobile_number"
                     maxLength={15}
                   />
+
                   {errors.mobile_number && (
                     <p className="error-message">{errors.mobile_number}</p>
                   )}
