@@ -219,8 +219,29 @@ var apiRoutes = appserver.ApiRoutes{
 	// DOCUSIGN
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_oauth",
+		apiHandler.HandleDocusignOauth,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/docusign_create_envelope",
 		apiHandler.HandleDocusignCreateEnvelopeRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_create_recipient_view",
+		apiHandler.HandleDocusignCreateRecipientViewRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_get_document",
+		apiHandler.HandleDocusignGetDocumentRequest,
 		true,
 		leadsRoleGroup,
 	},
