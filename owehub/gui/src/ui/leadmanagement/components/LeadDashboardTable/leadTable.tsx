@@ -16,6 +16,9 @@ import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import Pagination from '../../../components/pagination/Pagination';
+import { getDocuSignUrl } from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
 
@@ -58,6 +61,83 @@ type SSEPayload =
 
 const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
 
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log("Component mounted, checking for query params...");
+    const queryParams = new URLSearchParams(location.search);
+    const code = queryParams.get('code');
+    const state = queryParams.get('state');
+
+    if (code) {
+      console.log("Authorization code found:", code);
+      handleCodeExchange(code); // Call the function to exchange the code for a token
+    }
+  }, [location]);
+
+  const handleCodeExchange = async (code: string) => {
+    console.log("Signing Document...handleCodeExchange");
+
+    const params = {
+      action: "gettoken" as const,
+      authorization_code: code,
+      redirect_uri: "http://localhost:3000/leadmng-dashboard",
+    };
+  
+    try {
+      const response = await dispatch(getDocuSignUrl(params) as any);
+      console.log('Response from getDocuSignUrl:', response); // Log the entire response
+  
+      // Check if the response was successful
+      if (response.error) {
+        console.error('Failed to retrieve token:', response.error);
+        return;
+      }
+  
+      // Store the access token in your application state or context
+      const accessToken = response.data.access_token; // Adjust based on your response structure
+      if (accessToken) {
+        console.log('Access Token:', accessToken);
+        await fetchUserInfo(accessToken); // Call the fetchUserInfo function with the token
+      } else {
+        console.error('Access token not found in response.');
+      }
+  
+    } catch (error) {
+      console.error("Error exchanging authorization code:", error);
+    }
+  };
+  
+
+  const fetchUserInfo = async (accessToken: string) => {
+    console.log("Signing Document...fetchUserInfo");
+
+    const params = {
+      action: "getuserinfo" as const,
+      authorization_code: accessToken, // Include the access token in the params if required by your backend
+    };
+  
+    try {
+      const response = await dispatch(getDocuSignUrl(params) as any);
+      
+      // Check if the response is successful
+      if (response.error) {
+        console.error('Failed to retrieve user info:', response.error);
+        return;
+      }
+  
+      // Process the user info data
+      const userInfo = response.data; // Adjust based on your response structure
+      console.log('User Info:', userInfo);
+      
+      // Store user info in your state or context as needed
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
+  
+  
 
   const [selectedType, setSelectedType] = useState('');
   const [selected, setSelected] = useState(-1)
@@ -143,6 +223,12 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
     };
   };
   const [won, setWon] = useState(false);
+
+  interface DocuSignResponse {
+    url?: string; // Make it optional if it might not be present
+    // Add other properties if needed
+  }
+
   useEffect(() => {
     if (selectedType === 'app_sched') {
       handleOpenModal();
@@ -183,13 +269,41 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
     } else if (selectedType === 'download') {
       downloadProposalWithSSE(leadId);
       setSelectedType('');
+    } else if (selectedType === 'signature') {
+      handleSignDocument(); // Call the function to handle signing
+      setSelectedType('');
     }
+
 
     else if (selectedType === 'Appointment Not Required') {
       handleAppNotReq();
       setSelectedType('');
     }
   }, [selectedType])
+
+const handleSignDocument = async () => {
+  console.log("Signing Document...");
+
+  const params = {
+    action: "geturl" as const, // Ensure action is typed as "geturl"
+    leads_id: leadId,
+    redirect_uri: "http://localhost:3000/leadmng-dashboard" // Update with the actual redirect URI
+  };
+
+  try {
+    const response = await dispatch(getDocuSignUrl(params) as any);
+    const result = response.payload; // Access the payload of the fulfilled action
+
+    if (result && result.url) { // Check for the url property
+      window.location.href = result.url; // Open the URL in the same tab
+    } else {
+      console.log("No URL returned from DocuSign.");
+    }
+  } catch (error) {
+    console.error("Error fetching DocuSign URL:", error);
+  }
+};
+
 
   const [load, setLoad] = useState(false);
   const handleCloseWon = async () => {
@@ -561,11 +675,13 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                               { label: 'View Proposal', value: 'viewProposal' },
                                               { label: 'Refresh Url', value: 'renew_proposal' },
                                               { label: 'Download Proposal', value: 'download' },
+                                              { label: 'Sign Document ', value: 'signature' },
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                             ] : lead && lead.proposal_id !== ''
                                               ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
+                                                { label: 'Sign Document ', value: 'signature' },
                                                 { label: 'Refresh Url', value: 'renew_proposal' },
                                               ]
                                               : [
@@ -669,11 +785,13 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Refresh Url', value: 'renew_proposal' },
                                                 { label: 'Download Proposal', value: 'download' },
+                                                { label: 'Sign Document ', value: 'signature' },
                                                 { label: 'Reschedule Appointment', value: 'app_sched' },
                                               ] : lead && lead.proposal_id !== ''
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
                                                   { label: 'Edit Proposal', value: 'editProposal' },
+                                                  { label: 'Sign Document ', value: 'signature' },
                                                   { label: 'Refresh Url', value: 'renew_proposal' },
                                                 ]
                                                 : [

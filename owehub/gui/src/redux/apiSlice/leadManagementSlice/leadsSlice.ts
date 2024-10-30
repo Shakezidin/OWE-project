@@ -9,7 +9,8 @@ import {
   getProjectByLeadId,
   auroraWebProposal,
   auroraGenerateWebProposal,
-  auroraListModules
+  auroraListModules,
+  getDocuSignUrl
 } from '../../apiActions/leadManagement/LeadManagementAction';
 
 interface IState {
@@ -26,6 +27,7 @@ interface IState {
   webProposalData: any;
   genProposalUrl: any;
   moduleData: any[];
+  docuSignData: any;
 
 }
 
@@ -42,7 +44,8 @@ const initialState: IState = {
   designData: {},
   webProposalData: {},
   genProposalUrl:{},
-  moduleData:[]
+  moduleData:[],
+  docuSignData: {}
 };
 
 const leadManagementSlice = createSlice({
@@ -178,6 +181,20 @@ const leadManagementSlice = createSlice({
         state.moduleData = action.payload.data || [];
       })
       .addCase(auroraListModules.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+      // New cases for DocuSign actions
+      .addCase(getDocuSignUrl.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getDocuSignUrl.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.docuSignData = action.payload.data || {};
+        toast.success('DocuSign URL retrieved successfully!');
+      })
+      .addCase(getDocuSignUrl.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
