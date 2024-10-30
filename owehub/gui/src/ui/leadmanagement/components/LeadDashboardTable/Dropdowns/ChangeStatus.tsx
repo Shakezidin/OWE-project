@@ -108,6 +108,7 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
         id="infoSt"
         place="bottom"
         content="Status Updates"
+        className={classes.mobile_tooltip}
       />
 
       {isVisible && (
