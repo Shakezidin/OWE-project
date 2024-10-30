@@ -139,10 +139,23 @@
     top: 125px;
     right: 5px;
   }
+  .sort_btn {
+    background-color: #4372e9;
+    border: none;
+    height: 30.5px;
+    width: 30.5px;
+    border-radius: 8px;
+    padding: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 }
 @media (max-width:968px) {
   
   .mobile_tooltip{
     display: none !important;
   }
+
+  
 }

@@ -38,6 +38,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import { toZonedTime } from 'date-fns-tz';
 import { MdDownloading } from 'react-icons/md';
+import { dateFormat } from '../../../utiles/formatDate';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -796,6 +797,7 @@ const Table = ({
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,
+      sort_by:active
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -804,17 +806,17 @@ const Table = ({
     const csvData = getAllLeaders?.data?.map?.((item: any) => [
       item.unique_id,
       item.home_owner,
-      item.customer_email,
+      item.email_address,
       item.phone_number,
       item.address,
       item.state,
       removeHtmlTags(item.contract_total), 
       item.contracted_system_size_parent,
-      item.sale_date,
-      item.ntp_complete_date,
-      item.pv_completion_date,      
-      item.pto_date,
-      item.canceled_date,
+      dateFormat(item.sale_date),
+      dateFormat(item.ntp_complete_date),
+      dateFormat(item.pv_completion_date),      
+      dateFormat(item.pto_date),
+      dateFormat(item.cancelled_date),
       item.primary_sales_rep,
       item.secondary_sales_rep,
     ]);

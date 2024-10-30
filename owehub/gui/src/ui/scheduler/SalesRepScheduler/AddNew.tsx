@@ -105,9 +105,11 @@ const AddNew = () => {
     let updatedValue = value;
 
     if (name === 'mobile_number') {
-      // Remove any non-digit characters
+      // Remove non-digit characters and check length
       updatedValue = value.replace(/\D/g, '');
-      if (updatedValue.length > 0) {
+      if (updatedValue.length < 10) {
+        setPhoneNumberError('Phone Number must be at least 10 digits');
+      } else {
         setPhoneNumberError('');
       }
     } else if (name === 'house') {
@@ -264,7 +266,10 @@ const AddNew = () => {
 
     // Validate phone number
     if (!formData.mobile_number.trim()) {
-      setPhoneNumberError('Phone Number is required');
+      newErrors.mobile_number = 'Phone Number is required';
+      isValid = false;
+    } else if (formData.mobile_number.length < 10) {
+      newErrors.mobile_number = 'Phone Number must be at least 10 digits';
       isValid = false;
     }
 
@@ -479,7 +484,7 @@ const AddNew = () => {
                                   value: formData.roof_type,
                                   label: formData.roof_type,
                                 }
-                              : undefined
+                              : null
                           }
                           onChange={handleSelectChange}
                           placeholder="Select Rooftype"

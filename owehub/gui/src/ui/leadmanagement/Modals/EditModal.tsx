@@ -50,7 +50,11 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         address: leadData.street_address || '',
       });
     }
-  }, [leadData]);
+    errors.email_id = '',
+    errors.mobile_number='',
+    setEmailError(''),
+    errors.address=''
+  }, [leadData, onClose]);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -144,15 +148,16 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     const isEmailValid = validateEmail(formData.email_id);
     const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 10;
     const emailError = formData.email_id.trim() === '' || !isEmailValid;
-    const addressError = formData.address.trim() === ''; // Change to 30 characters if needed
+    const addressError = formData.address.trim() === ''; // Address is only checked for being empty
+
     if (
-      Object.keys(errors).length > 0 ||
-      emailError ||
-      mobileNumberError ||
-      addressError
+        Object.keys(errors).length > 0 ||
+        emailError ||
+        mobileNumberError ||
+        addressError
     ) {
-      setErrors((prevErrors) => {
-        const newErrors = { ...prevErrors };
+        setErrors((prevErrors) => {
+            const newErrors = { ...prevErrors };
 
         if (mobileNumberError) {
           newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
@@ -175,12 +180,13 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
           delete newErrors.address;
         }
 
-        return newErrors;
-      });
+            return newErrors;
+        });
 
-      setLoad(false);
-      return;
+        setLoad(false);
+        return;
     }
+
     try {
       const response = await postCaller(
         'edit_leads',

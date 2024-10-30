@@ -20,7 +20,7 @@ export default [
   {
     name: 'dealer_code',
     displayName: 'Dealer Code',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {
@@ -38,7 +38,7 @@ export default [
   {
     name: 'OtherAdders',
     displayName: 'Other Adders',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {

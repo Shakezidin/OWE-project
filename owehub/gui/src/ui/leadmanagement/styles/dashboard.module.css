@@ -324,6 +324,13 @@ table tbody tr:hover {
   width: 369px !important;
   margin-right: 20px;
 }
+.searchBar .searchInput:focus {
+  outline: none;
+}
+
+.searchBar:focus-within {
+  border: 1px solid #007bff !important;
+}
 
 .searchIcon {
   margin-left: 5px;
@@ -342,6 +349,7 @@ table tbody tr:hover {
   padding: 2.5px;
   border-radius: 5px;
 }
+
 
 .filterCallToAction {
   display: flex;
@@ -485,18 +493,18 @@ input[type='checkbox']:checked {
   align-items: center;
 }
 
-.closeIcon img {
+.closeIcon {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.closeIcon img:hover {
+.closeIcon:hover {
   transform: scale(1.09);
 }
 
-.closeIcon:hover {
+/* .closeIcon:hover {
   background: #377cf630;
   border-radius: 5px;
-}
+} */
 
 .removeButton {
   background-color: #ee4747;

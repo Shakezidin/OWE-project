@@ -26,14 +26,14 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
 
     if (file) {
-      const allowedExtensions = ['.png', '.jpg', '.jpeg'];
+      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf', '.doc', '.docx', '.docm', '.xls', '.xlsx'];
       const fileExtension = file.name
         .toLowerCase()
         .substring(file.name.lastIndexOf('.'));
 
       if (!allowedExtensions.includes(fileExtension)) {
         setSelectedFileName('');
-        setFileSizeError('Only PNG, JPG files are allowed');
+        setFileSizeError('Only PNG, JPG, pdf, doc files are allowed');
         setSelectedFile(null);
         return;
       }
@@ -280,7 +280,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                     />
                     <div className="custom-button-container">
                       <span className="file-input-placeholder">
-                        {selectedFileName || '.jpg .jpeg .png'}
+                        {selectedFileName || '.jpg .jpeg .pdf .doc .pdf .xls'}
                       </span>
                       <button
                         className="custom-button"
