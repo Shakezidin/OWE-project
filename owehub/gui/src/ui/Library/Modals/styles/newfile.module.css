@@ -7,9 +7,12 @@
   width: 74px;
   height: 30px;
   border-radius: 8px;
-  border: 1px solid #AFAFAF;
-  color: #3E3E3E;
- background-color: #fff;
+  /* border: 1px solid #AFAFAF; */
+  /* color: #3E3E3E; */
+  border: none;
+  color: #FFFFFF;
+ /* background-color: #fff; */
+ background-color: #377CF6;
   font-size: 14px;
   font-weight: 500;
   line-height: 21px;
@@ -20,8 +23,9 @@
 }
 
 .newfile_botton:hover {
-  color: #fff;
-  background-color: #377cf6;
+  /* color: #fff;
+  background-color: #377cf6; */
+  background-color: #4062CA;
   transform: scale(1.05);
   border: none;
 }
