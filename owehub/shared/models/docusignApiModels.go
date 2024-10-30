@@ -38,3 +38,9 @@ type DocusignCreateRecipientViewRequest struct {
 	AccessToken string `json:"access_token"`
 	BaseUri     string `json:"base_uri"`
 }
+
+type DocusignGetDocumentRequest struct {
+	LeadsId     int64  `json:"leads_id"`
+	AccessToken string `json:"access_token"`
+	BaseUri     string `json:"base_uri"`
+}
