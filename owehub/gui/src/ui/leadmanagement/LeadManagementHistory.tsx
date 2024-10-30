@@ -11,6 +11,7 @@ import Papa from 'papaparse';
 import {
   endOfWeek,
   format,
+  parseISO,
   startOfMonth,
   startOfWeek,
   startOfYear,
@@ -426,7 +427,7 @@ const LeradManagementHistory = () => {
         item.email_id,
         item.street_address,
         `'${item.zipcode}'`,
-        item.deal_date,
+        item.deal_date ? `${format(parseISO(item.deal_date), 'dd-MM-yyyy')}` : '',
         item.deal_status,
       ]);
 
@@ -785,7 +786,7 @@ const LeradManagementHistory = () => {
                           }}
                         >
                           {item.deal_status ? item.deal_status : 'N/A'}:{' '}
-                          {item.deal_date ? item.deal_date : 'N/A'}
+                          {item.deal_date ? format((parseISO(item.deal_date)), 'dd MMM, yyyy') : ""}
                         </p>
                       </div>
                     </div>

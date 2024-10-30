@@ -21,6 +21,9 @@ export const LeadColumn = [
     displayName: 'Proposal Status',
   },
   {
+    displayName: 'Docusign Status',
+  },
+  {
     displayName: 'Finance Type',
   },
   {

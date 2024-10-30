@@ -251,8 +251,9 @@ const LeadManagementNew = () => {
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
                             const numberLength= value.toString();
+                            
                             const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
-                            if (/^0{6}/.test(numberWithoutCountryCode)) {
+                            if (/^0{8}/.test(numberWithoutCountryCode)) {
                               setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
                             } 
                             // if(phoneNumber.charAt(4) && phoneNumber.charAt(1) && phoneNumber.charAt(2) && phoneNumber.charAt(3)){
