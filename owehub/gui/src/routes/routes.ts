@@ -58,6 +58,7 @@ export const ROUTES = {
   CALENDAR: '/calendar',
   LIBRARY: '/library',
   SS_ONBOARDING: '/config/ss-onboarding',
+  TOTAL_COUNT: '/reports',
 
 
   // other routes
