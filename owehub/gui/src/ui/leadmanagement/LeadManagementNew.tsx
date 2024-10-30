@@ -252,9 +252,14 @@ const LeadManagementNew = () => {
                             const phoneNumber = value.toString();
                             const numberLength= value.toString();
                             const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
-                            if (/^0{3}/.test(numberWithoutCountryCode)) {
+                            if (/^0{6}/.test(numberWithoutCountryCode)) {
                               setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
-                            } else if (numberLength.length > 0 && numberLength.length < 11) {
+                            } 
+                            // if(phoneNumber.charAt(4) && phoneNumber.charAt(1) && phoneNumber.charAt(2) && phoneNumber.charAt(3)){
+                            //   setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
+                            // }
+
+                            else if (numberLength.length > 0 && numberLength.length < 11) {
                               setPhoneNumberError("Please enter at least 10 digits.");
                             } else {
                               setPhoneNumberError("");
