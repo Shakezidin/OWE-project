@@ -51,9 +51,9 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       });
     }
     errors.email_id = '',
-    errors.mobile_number='',
-    setEmailError(''),
-    errors.address=''
+      errors.mobile_number = '',
+      setEmailError(''),
+      errors.address = ''
   }, [leadData, onClose]);
 
   const handleInputChange = (e: FormInput) => {
@@ -151,13 +151,13 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     const addressError = formData.address.trim() === ''; // Address is only checked for being empty
 
     if (
-        Object.keys(errors).length > 0 ||
-        emailError ||
-        mobileNumberError ||
-        addressError
+      Object.keys(errors).length > 0 ||
+      emailError ||
+      mobileNumberError ||
+      addressError
     ) {
-        setErrors((prevErrors) => {
-            const newErrors = { ...prevErrors };
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
 
         if (mobileNumberError) {
           newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
@@ -180,11 +180,11 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
           delete newErrors.address;
         }
 
-            return newErrors;
-        });
+        return newErrors;
+      });
 
-        setLoad(false);
-        return;
+      setLoad(false);
+      return;
     }
 
     try {
@@ -299,29 +299,51 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
 
               <div className={classes.inputFields}>
                 <div>
+
+{/* NUMBER VALIDATION ADDED */}
                   <Input
                     type="number"
                     value={formData.mobile_number}
                     placeholder="+91 8127577509"
                     onChange={(e) => {
                       const { value } = e.target;
-                      handleInputChange(e);
-                      if (value.trim() !== '') {
+                      const phoneNumber = value.toString();
+                      const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
+
+                      if (phoneNumber.length > 15) {
+                        return;
+                      }
+
+                      const leadingZeros = numberWithoutCountryCode.match(/^0+/);
+                      if (leadingZeros && leadingZeros[0].length > 6) {
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
+                        }));
+                      } else if (value.length > 0 && value.length < 10) {
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          mobile_number: 'Please enter at least 10 digits.',
+                        }));
+                      } else {
                         setErrors((prevErrors) => {
                           const newErrors = { ...prevErrors };
-                          if (value.length < 10) {
-                            newErrors.mobile_number = 'The number must be at least 10 digits long';
-                          } else {
-                            delete newErrors.mobile_number;
-                          }
-
+                          delete newErrors.mobile_number;
                           return newErrors;
                         });
                       }
+
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        mobile_number: value,
+                      }));
+
+                      handleInputChange(e);
                     }}
                     name="mobile_number"
                     maxLength={15}
                   />
+
                   {errors.mobile_number && (
                     <p className="error-message">{errors.mobile_number}</p>
                   )}

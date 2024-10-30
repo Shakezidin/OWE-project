@@ -18,6 +18,7 @@ import useMatchMedia from '../../../../hooks/useMatchMedia';
 import Pagination from '../../../components/pagination/Pagination';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
+type DocuStatus = "Complete" | "Sent" | "Viewed" | "Declined";
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -56,7 +57,7 @@ type SSEPayload =
     data: null;
   };
 
-const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal,side,setSide }: LeadSelectionProps) => {
+const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal, side, setSide }: LeadSelectionProps) => {
 
 
   const [selectedType, setSelectedType] = useState('');
@@ -261,7 +262,7 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
 
 
   const handleMoreClick = () => {
-    const elm = scrollWrapper.current 
+    const elm = scrollWrapper.current
     if (!elm) return;
     if (side == 'left') {
       elm.scroll({ left: elm.scrollWidth, behavior: "smooth" })
@@ -287,6 +288,26 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
     },
     "Clear selection": {
       backgroundColor: "#808080",
+      color: "#fff"
+    }
+  };
+
+
+  const docusignStyles = {
+    "Complete": {
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
+    "Sent": {
+      backgroundColor: "#EC9311",
+      color: "#fff"
+    },
+    "Viewed": {
+      backgroundColor: "#4999E3",
+      color: "#fff"
+    },
+    "Declined": {
+      backgroundColor: "#D91515",
       color: "#fff"
     }
   };
@@ -330,7 +351,7 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
         setReschedule={setReschedule}
         won={won}
         setWon={setWon}
-        currentFilter = {currentFilter}
+        currentFilter={currentFilter}
         setCurrentFilter={setCurrentFilter}
       />
 
@@ -466,7 +487,9 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                         ? '#EC9311'
                                         : lead.appointment_status_label === 'Appointment Declined'
                                           ? '#D91515'
-                                          : 'inherit',
+                                          : lead.appointment_status_label === 'Appointment Date Passed'
+                                            ? '#3B70A1'
+                                            : 'inherit',
                               }}
                               className={styles.appointment_status}
                             >
@@ -475,6 +498,10 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                             <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
                               {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                             </div>
+                            {((lead.appointment_status_label === 'No Response' && lead.proposal_status !== '') || (lead.appointment_status_label === 'No Response' && lead.won_lost_label !== '')) &&
+                              <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
+                                Update Status!
+                              </div>}
                           </>
                         ) : (
                           <div>____</div>
@@ -495,6 +522,10 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
 
                               </div>
                             )}
+                            {(false) &&
+                              <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
+                                48hrs passed
+                              </div>}
                           </>
                         ) : (
                           <div>______</div>
@@ -510,7 +541,22 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
-                            lead.proposal_status
+                            (lead.proposal_status === "CREATED" ? "Completed" : "")
+                          ) : (
+                            <span style={{ color: "black" }}>_____</span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td>
+                        <div
+                          style={lead.proposal_status in statusStyles
+                            ? docusignStyles[lead.proposal_status as DocuStatus]
+                            : { backgroundColor: "inherit", color: "black" }}
+                          className={styles.appointment_status}
+                        >
+                          {lead.proposal_status ? (
+                            (lead.proposal_status)
                           ) : (
                             <span style={{ color: "black" }}>_____</span>
                           )}
@@ -523,11 +569,12 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                       <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
                       {(selectedLeads.length === 0 && isMobile) &&
                         <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
-                          <div className={styles.RowMobile} 
-                          onClick={() => {(setLeadId(lead.leads_id));
-                            setLeadPropsalLink(lead.proposal_link);
-                            setProposalPdfLink(lead.proposal_pdf_link)
-                          }}>
+                          <div className={styles.RowMobile}
+                            onClick={() => {
+                              (setLeadId(lead.leads_id));
+                              setLeadPropsalLink(lead.proposal_link);
+                              setProposalPdfLink(lead.proposal_pdf_link)
+                            }}>
                             {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                               <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                             ) :
@@ -551,18 +598,19 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                         setSelected(index);
                                       }}
                                       options={
-                                        lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
+                                        (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
                                           ? [
                                             { label: 'Reschedule Appointment', value: 'app_sched' },
                                             { label: 'Create Proposal', value: 'new_proposal' },
                                           ]
-                                          : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                          : lead && lead.proposal_status && lead.proposal_status === 'CREATED' && lead.proposal_id !== ''
                                             ? [
+                                              { label: 'Send Proposal', value: 'sendtocust' },
                                               { label: 'View Proposal', value: 'viewProposal' },
-                                              { label: 'Refresh Url', value: 'renew_proposal' },
+                                              { label: 'Edit Proposal', value: 'editProposal' },
                                               { label: 'Download Proposal', value: 'download' },
-                                              { label: 'Reschedule Appointment', value: 'app_sched' },
-                                            ] : lead && lead.proposal_id !== ''
+                                              { label: 'Refresh Url', value: 'renew_proposal' },
+                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'CREATED'
                                               ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
@@ -590,13 +638,13 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                   setSelected(index)
                                 }}
                                 disabledOptions={
-                                  lead.appointment_status_label !== ''
+                                  (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response')
                                     ? lead.won_lost_label !== ''
-                                      ? ['Appointment Not Required', 'Deal Won']
-                                      : ['Appointment Not Required']
+                                      ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                      : ['Appointment Not Required', 'Complete as Won']
                                     : lead.won_lost_label !== ''
-                                      ? ['Deal Won']
-                                      : []
+                                      ? ['Deal Won', 'Complete as Won']
+                                      : ['Complete as Won']
                                 }
                               />
 
@@ -627,19 +675,20 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                           {/* FIRST ROW FIRST COLUMNS STARTED*/}
                           <div style={{
                             display: 'flex',
-                            gap:"20px",
+                            gap: "20px",
                             alignItems: 'center',
                             justifyContent: 'center',
                             width: "100%"
                           }}>
-                            <div onClick={() => {(setLeadId(lead.leads_id));
-                            setLeadPropsalLink(lead.proposal_link);
-                            setProposalPdfLink(lead.proposal_pdf_link)
-                          }}>
+                            <div onClick={() => {
+                              (setLeadId(lead.leads_id));
+                              setLeadPropsalLink(lead.proposal_link);
+                              setProposalPdfLink(lead.proposal_pdf_link)
+                            }}>
                               {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
                                 <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
                               ) :
-                                ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
+                                ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.appointment_status_label !== 'Appointment Date Passed' && lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
                                   <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
                                 ) : (
                                   <>
@@ -659,18 +708,19 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                           setSelected(index);
                                         }}
                                         options={
-                                          lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === ''
+                                          (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
                                             ? [
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                               { label: 'Create Proposal', value: 'new_proposal' },
                                             ]
-                                            : lead && lead.proposal_status && lead.proposal_status.toLowerCase() === 'completed' && lead.proposal_id !== ''
+                                            : lead && lead.proposal_status && lead.proposal_status === 'CREATED' && lead.proposal_id !== ''
                                               ? [
+                                                { label: 'Send Proposal', value: 'sendtocust' },
                                                 { label: 'View Proposal', value: 'viewProposal' },
-                                                { label: 'Refresh Url', value: 'renew_proposal' },
+                                                { label: 'Edit Proposal', value: 'editProposal' },
                                                 { label: 'Download Proposal', value: 'download' },
-                                                { label: 'Reschedule Appointment', value: 'app_sched' },
-                                              ] : lead && lead.proposal_id !== ''
+                                                { label: 'Refresh Url', value: 'renew_proposal' },
+                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'CREATED'
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
                                                   { label: 'Edit Proposal', value: 'editProposal' },
@@ -699,13 +749,13 @@ const LeadTable = ({ selectedLeads,currentFilter,setCurrentFilter, setSelectedLe
                                   setSelected(index)
                                 }}
                                 disabledOptions={
-                                  lead.appointment_status_label !== ''
+                                  (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response')
                                     ? lead.won_lost_label !== ''
-                                      ? ['Appointment Not Required', 'Deal Won']
-                                      : ['Appointment Not Required']
+                                      ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                      : ['Appointment Not Required', 'Complete as Won']
                                     : lead.won_lost_label !== ''
-                                      ? ['Deal Won']
-                                      : []
+                                      ? ['Deal Won', 'Complete as Won']
+                                      : ['Complete as Won']
                                 }
                               />
 
