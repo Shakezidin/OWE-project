@@ -79,7 +79,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
   const handleCodeExchange = async (code: string) => {
     console.log("Signing Document...handleCodeExchange");
-
+  
     const params = {
       action: "gettoken" as const,
       authorization_code: code,
@@ -88,21 +88,22 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   
     try {
       const response = await dispatch(getDocuSignUrl(params) as any);
-      console.log('Response from getDocuSignUrl:', response); // Log the entire response
-  
-      // Check if the response was successful
-      if (response.error) {
-        console.error('Failed to retrieve token:', response.error);
+      console.log('Full response from getDocuSignUrl:', response); // Log entire response structure
+      
+      // Check if payload is defined in the response
+      const payload = response.payload;
+      if (!payload) {
+        console.error('No payload found in response.');
         return;
       }
   
-      // Store the access token in your application state or context
-      const accessToken = response.data.access_token; // Adjust based on your response structure
+      // Check if the access token is present in payload
+      const accessToken = payload.access_token; // Access token inside response.payload
       if (accessToken) {
         console.log('Access Token:', accessToken);
         await fetchUserInfo(accessToken); // Call the fetchUserInfo function with the token
       } else {
-        console.error('Access token not found in response.');
+        console.error('Access token not found in payload.');
       }
   
     } catch (error) {
