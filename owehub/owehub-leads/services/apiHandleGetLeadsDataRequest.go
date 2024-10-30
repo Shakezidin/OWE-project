@@ -417,7 +417,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			if acceptedDatePtr == nil {
 				aptStatusLabel = "No Response"
 			} else if acceptedDatePtr.Before(*appointmentDatePtr) {
-				aptStatusLabel = "No Response"
+				aptStatusLabel = "Appointment Date Passed"
 			} else {
 				aptStatusLabel = "Appointment Accepted"
 			}
