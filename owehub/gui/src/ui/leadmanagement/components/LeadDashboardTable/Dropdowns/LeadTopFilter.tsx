@@ -71,6 +71,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
         id="Filters"
         place="bottom"
         content="Filters"
+        className={classes.mobile_tooltip}
       />
       {modenIsOpenX && (
         <div id="dropdowninHistoryRedirect" className="pr-dropdown editedinParentLT_FLTR">

@@ -6,18 +6,17 @@
 package docusignclient
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
 	log "OWEApp/shared/logger"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 )
 
-func callApi(method string, apiPath string, reqBody interface{}, respBody interface{}) error {
+func callApi(method string, apiUrl string, accessToken string, reqBody interface{}, respBody interface{}) error {
 	var (
 		err         error
 		reqBodyBuff bytes.Buffer
@@ -34,10 +33,6 @@ func callApi(method string, apiPath string, reqBody interface{}, respBody interf
 		return err
 	}
 
-	// get api url & create the request
-	apiUrl := leadsService.LeadAppCfg.DocusignApiBaseUrl +
-		strings.ReplaceAll(apiPath, "{accountId}", leadsService.LeadAppCfg.DocusignAccountId)
-
 	req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to create request err %v", err)
@@ -46,16 +41,17 @@ func callApi(method string, apiPath string, reqBody interface{}, respBody interf
 
 	// set headers
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 
 	// send the request
-	log.FuncDebugTrace(0, "Calling docusign api %s with data %+v", apiPath, reqBody)
+	log.FuncDebugTrace(0, "Calling docusign api %s with data %+v", apiUrl, reqBody)
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
 	resp, err := client.Do(req)
 
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to call api %s err %v", apiPath, err)
+		log.FuncErrorTrace(0, "Failed to call api %s err %v", apiUrl, err)
 		return err
 	}
 
@@ -67,9 +63,14 @@ func callApi(method string, apiPath string, reqBody interface{}, respBody interf
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode == http.StatusUnauthorized {
+		log.FuncErrorTrace(0, "Unauthorized access to docusign api")
+		return errors.New("unauthorized access to docusign api")
+	}
+
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusAccepted {
 		respString := string(respBytes)
-		err = fmt.Errorf("call to docusign api %s failed with status code %d, response: %+v", apiPath, resp.StatusCode, respString)
+		err = fmt.Errorf("call to docusign api %s failed with status code %d, response: %+v", apiUrl, resp.StatusCode, respString)
 		log.FuncErrorTrace(0, "%v", err)
 		return err
 	}
@@ -80,6 +81,6 @@ func callApi(method string, apiPath string, reqBody interface{}, respBody interf
 		return err
 	}
 
-	log.FuncDebugTrace(0, "Success from docusign api %s with response %+v", apiPath, respBody)
+	log.FuncDebugTrace(0, "Success from docusign api %s with response %+v", apiUrl, respBody)
 	return nil
 }
