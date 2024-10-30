@@ -106,20 +106,23 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 
 	// create docusign envelope
 	createEnvelopeApi := docusignclient.CreateEnvelopeApi{
+		AccessToken:  dataReq.AccessToken,
+		BaseUri:      dataReq.BaseUri,
 		EmailSubject: dataReq.EmailSubject,
 		Documents: []docusignclient.CreateEnvelopeApiDocument{
 			{
+				DocumentId:     1,
 				DocumentBase64: dataReq.DocumentBase64,
-				DocumentId:     dataReq.DocumentId,
 				Name:           dataReq.DocumentName,
-				FileExtension:  dataReq.DocumentFileExtension,
+				FileExtension:  "pdf",
 			},
 		},
 		Recipients: []docusignclient.CreateEnvelopeApiRecipient{
 			{
-				Email:     leadsEmail,
-				FirstName: leadsFirstName,
-				LastName:  leadsLastName,
+				Email:       leadsEmail,
+				FirstName:   leadsFirstName,
+				LastName:    leadsLastName,
+				RecipientId: fmt.Sprintf("%d", dataReq.LeadsId),
 			},
 		},
 		Status: dataReq.Status,
