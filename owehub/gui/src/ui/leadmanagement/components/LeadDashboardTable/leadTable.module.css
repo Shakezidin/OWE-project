@@ -150,6 +150,8 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-left: 10px;
+  height: 29.78px;
+  min-width: 121.33px;
 }
 
 .create_proposal:hover {
