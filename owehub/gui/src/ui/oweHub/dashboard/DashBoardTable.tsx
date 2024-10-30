@@ -169,7 +169,7 @@ const DashBoardTable = ({
                     <td>{el.dealer_code || 'N/A'}</td>
                     <td>{el.sys_size || 'N/A'}</td>
                     <td>{el.contract || 'N/A'}</td>
-                    <td>{el.OtherAdders || 'N/A'}</td>
+                    <td>{el.other_adders || 'N/A'}</td>
                     <td>{el.rep1 || 'N/A'}</td>                    
                     <td>{el.rep2 || 'N/A'}</td> 
                     <td>{el.setter || 'N/A'}</td>
@@ -189,7 +189,7 @@ const DashBoardTable = ({
                     <td>{el.draw_amt || '$0'}</td>
                     <td>{el.rl || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
-                    <td>{el.today || 'N/A'}</td>
+                    <td>{dateFormat(el.today) || 'N/A'}</td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
                       ${el.amount ?? 'N/A'}
                     </td>
@@ -219,7 +219,7 @@ const DashBoardTable = ({
                 ))
               ) : (
                 <tr style={{ border: 0, background: "none"}}>
-                  <td colSpan={8}>
+                  <td colSpan={12}>
                     <DataNotFound />
                   </td>
                 </tr>
