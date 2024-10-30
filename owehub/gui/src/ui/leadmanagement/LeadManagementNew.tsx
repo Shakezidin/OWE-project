@@ -134,9 +134,9 @@ const LeadManagementNew = () => {
     const errors = validateForm(formData);
     setErrors(errors);
     console.log(formData.zip_code);
-   
-    if (Object.keys(errors).length  === 0 && emailError === '' && zip_codeError==='' && phoneNumberError==='') {
- 
+
+    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
+
       setLoad(true);
 
       try {
@@ -239,7 +239,6 @@ const LeadManagementNew = () => {
                       </div>
                     </div>
                     <div className={classes.salrep_input_container}>
-                     
                       <div className={classes.srs_new_create}>
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -251,8 +250,12 @@ const LeadManagementNew = () => {
                           value={formData.mobile_number}
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
-                            if (phoneNumber.length < 11) {
-                              setPhoneNumberError("Please Enter at least 10 Digit");
+                            const numberLength= value.toString();
+                            const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
+                            if (/^0{3}/.test(numberWithoutCountryCode)) {
+                              setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
+                            } else if (numberLength.length > 0 && numberLength.length < 11) {
+                              setPhoneNumberError("Please enter at least 10 digits.");
                             } else {
                               setPhoneNumberError("");
                             }
@@ -269,14 +272,11 @@ const LeadManagementNew = () => {
                           }}
                         />
                         {(phoneNumberError || errors.mobile_number) && (
-                          <p className="error" >
+                          <p className="error">
                             {phoneNumberError || errors.mobile_number}
                           </p>
                         )}
-
                       </div>
-
-
                       <div className={classes.srs_new_create}>
                         <Input
                           type="email"
