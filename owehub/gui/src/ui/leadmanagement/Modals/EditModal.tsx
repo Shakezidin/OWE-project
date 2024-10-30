@@ -300,45 +300,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
               <div className={classes.inputFields}>
                 <div>
 
-                  {/* <Input
-                    type="number"
-                    value={formData.mobile_number}
-                    placeholder="+91 8127577509"
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      const phoneNumber = value.toString();
-                      const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
-                      if (phoneNumber.length > 15) {
-                        return;
-                      }
-                      if (/^0{1}/.test(numberWithoutCountryCode)) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
-                          
-                        }));
-                      } else if (value.length > 0 && value.length < 10) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          mobile_number: 'Please enter at least 10 digits.',
-                        }));
-                      } else {
-                        setErrors((prevErrors) => {
-                          const newErrors = { ...prevErrors };
-                          delete newErrors.mobile_number;
-                          return newErrors;
-                        });
-                      }
-
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        mobile_number: value,
-                      }));
-                      handleInputChange(e);
-                    }}
-                    name="mobile_number"
-                    maxLength={15}
-                  /> */}
+{/* NUMBER VALIDATION ADDED */}
                   <Input
                     type="number"
                     value={formData.mobile_number}
@@ -348,31 +310,15 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                       const phoneNumber = value.toString();
                       const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
 
-                      // Stop entering if the length exceeds 15
                       if (phoneNumber.length > 15) {
-                        return; // Prevent further input
+                        return;
                       }
 
-                      // Check the first digit
-                      const firstDigit = phoneNumber.charAt(0);
-                      const isFirstDigitZero = firstDigit === '0';
                       const leadingZeros = numberWithoutCountryCode.match(/^0+/);
-
-                      // Validate based on the first digit
-                      if (isFirstDigitZero && leadingZeros && leadingZeros[0].length > 4) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          mobile_number: 'Invalid number. If the first digit is zero, only four leading zeros are allowed.',
-                        }));
-                      } else if (!isFirstDigitZero && leadingZeros && leadingZeros[0].length > 8) {
+                      if (leadingZeros && leadingZeros[0].length > 6) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
                           mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
-                        }));
-                      } else if (/^0{5}/.test(numberWithoutCountryCode)) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          mobile_number: 'Invalid number. The number cannot consist of consecutive zeros.',
                         }));
                       } else if (value.length > 0 && value.length < 10) {
                         setErrors((prevErrors) => ({
@@ -397,6 +343,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                     name="mobile_number"
                     maxLength={15}
                   />
+
                   {errors.mobile_number && (
                     <p className="error-message">{errors.mobile_number}</p>
                   )}
