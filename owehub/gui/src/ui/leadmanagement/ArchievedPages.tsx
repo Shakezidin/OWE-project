@@ -461,8 +461,17 @@ const ArchivedPages = () => {
                           >
                             {lead.phone_number}
                           </div>
-                          <div className={styles.email}>
-                            <span>{lead.email_id}</span>
+                          <div
+                           
+                           className={styles.email}>
+                            <span
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: isTablet ? '100px' : '200px',
+                              lineHeight: "16px"
+                            }}
+                            >{lead.email_id}</span>
                           </div>
                           <div
                             style={{
@@ -554,7 +563,14 @@ const ArchivedPages = () => {
                                 lineHeight: "16px"
                               }}
                               className={''}>{lead.phone_number}</div>
-                            <div className={''}>
+                            <div
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              maxWidth: isTablet ? '100px' : '200px',
+                              lineHeight: "16px"
+                            }}
+                             className={''}>
                               <span>{lead.email_id}</span>
                             </div>
                             <div className={''}
