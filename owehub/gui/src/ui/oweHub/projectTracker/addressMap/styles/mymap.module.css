@@ -10,8 +10,8 @@
 .mapWrap {
   padding: 1rem;
   background-color: var(--white-color);
-  border-radius: 14px;
-  margin-top: 10px;
+  border-radius: 16px;
+  margin-top: 11px;
 }
 
 .inputWrap {

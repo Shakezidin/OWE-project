@@ -39,7 +39,7 @@ import { RiMapPinLine } from 'react-icons/ri';
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
   height: '100%',
-  borderRadius: '14px',
+  borderRadius: '16px',
 };
 
 interface LocationInfo {

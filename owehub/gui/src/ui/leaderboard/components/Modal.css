@@ -53,7 +53,7 @@
 .leader-modal-upload:hover {
   transform: scale(1.05) !important;
   background-color: #ddebff;
-  border: 0.03px solid black;
+  border: 1px solid var(--input-border-color);
 }
 
 .leader-modal img {

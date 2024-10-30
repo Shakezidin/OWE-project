@@ -20,7 +20,6 @@ import QCModal from './PopUp';
 import NtpModal from './NtpPopUp';
 import Input from '../../components/text_input/Input';
 import { debounce } from '../../../utiles/debounce';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface ActivePopups {
   [key: number]: number | null;
@@ -610,17 +609,8 @@ const ProjectStatus = () => {
       />
 
       <div className="">
-        <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-          <Breadcrumb
-            head=""
-            linkPara="Project Manager"
-            route={''}
-            linkparaSecond=""
-            marginLeftMobile="12px"
-          />
-        </div>
         <div style={{ padding: '0px' }}>
-          <div className="flex mt1 top-project-cards">
+          <div className="flex top-project-cards" style={{marginTop: "11px"}}>
             <div
               className="px1 project-card-wrapper  bg-white rounded-16"
               style={{ paddingInline: 16, paddingBottom: 16 }}
@@ -755,7 +745,7 @@ const ProjectStatus = () => {
                 ))}
               </div>
             </div>
-            <div className="pl2 flex-auto second-project-card">
+            <div className="flex-auto second-project-card" style={{paddingLeft: "1.2rem"}}>
               <div
                 className="bg-white rounded-16 flex relative"
                 style={{
@@ -772,8 +762,8 @@ const ProjectStatus = () => {
 
           <div className="bg-white rounded-16 project-table-wrapper">
             <div
-              className="project-heading project-status-heading mt2"
-              style={{ padding: '22px' }}
+              className="project-heading project-status-heading"
+              style={{ padding: '22px', marginTop: "1.2rem" }}
             >
               <p className="mob-projhead">Project Stages</p>
 
@@ -784,7 +774,7 @@ const ProjectStatus = () => {
                       className="progress-box"
                       style={{
                         background: '#4191C9',
-                        borderRadius: 0,
+                        borderRadius: 2,
                         width: 12,
                         height: 12,
                       }}
@@ -796,7 +786,7 @@ const ProjectStatus = () => {
                       className="progress-box"
                       style={{
                         background: '#63ACA3',
-                        borderRadius: 0,
+                        borderRadius: 2,
                         width: 12,
                         height: 12,
                       }}
@@ -808,7 +798,7 @@ const ProjectStatus = () => {
                       className="progress-box"
                       style={{
                         background: '#E9E9E9',
-                        borderRadius: 0,
+                        borderRadius: 2,
                         width: 12,
                         height: 12,
                       }}

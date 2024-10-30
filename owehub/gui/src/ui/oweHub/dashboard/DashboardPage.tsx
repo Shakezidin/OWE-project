@@ -369,16 +369,17 @@ export const DashboardPage: React.FC = () => {
                   className="date-button flex items-center"
                   onClick={handleToggleDatePicker}
                   style={{
-                    color: '#292929',
-                    border: '1px solid #dfd8d8',
+                    color: '#292B2E',
+                    border: '1px solid #292B2E',
                     padding: '8px 17px',
                     gap: '1rem',
                   }}
                 >
-                  {appliedDate
+                  <span className='dealer-date-text' style={{transition: "all 300ms ease"}}>{appliedDate
                     ? format(appliedDate, 'dd-MM-yyyy')
-                    : 'Payroll Date'}
+                    : 'Payroll Date'}</span>
                   <MdOutlineKeyboardArrowDown
+                  className='dealer-date-svg'
                     style={{
                       width: '1.2rem',
                       height: '1.2rem',
