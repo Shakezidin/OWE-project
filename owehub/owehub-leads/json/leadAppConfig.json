@@ -7,7 +7,10 @@
   "awsS3Region": "ap-southeast-2",
   "awsS3AccessKeyId": "AKIAZ3MGNJPKYMV53JNU",
   "awsS3SecretKey": "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",
+  "rodUrl": "http://172.30.0.216:7317",
   "docusignApiBaseUrl": "https://demo.docusign.net",
+  "docusignOauthBaseUrl": "https://account-d.docusign.com/oauth",
   "docusignAccountId": "f0f8a80b-eb19-4eba-9c58-fb90d8d7ff99",
-  "rodUrl": "http://172.30.0.216:7317"
+  "docusignIntegrationKey": "dfbd80de-f948-465c-abd6-c8421a6f2793",
+  "docusignSecretKey": "990a5e16-d498-4a51-bd75-9bd4d91828f7"
 }

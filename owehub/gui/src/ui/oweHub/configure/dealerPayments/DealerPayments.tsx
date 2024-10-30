@@ -317,7 +317,7 @@ const DealerPayments: React.FC = () => {
       item.payment_date,
       item.payment_amount,
       item.payment_method,
-      item.transaction,
+      removeHtmlTags(item.transaction),
       item.notes 
     ]);
   

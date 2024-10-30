@@ -96,7 +96,7 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
-  text-align: justify !important;
+  /* text-align: justify !important; */
   width: 120px;
   word-wrap: break-word; /* Ensures long words break into new lines */
   white-space: normal; /* Allows text to wrap to the next line */
@@ -307,5 +307,12 @@
   .verticalDots2:hover {
     background-color: #d6e5ff;
     transform: scale(1.1);
+  }
+}
+
+@media (max-width:968px) {
+  
+  .mobile_tooltip{
+    display: none !important;
   }
 }

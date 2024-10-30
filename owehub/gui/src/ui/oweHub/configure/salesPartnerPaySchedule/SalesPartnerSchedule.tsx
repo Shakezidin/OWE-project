@@ -310,7 +310,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     const csvData = exportData?.data?.PartnerPayScheduleData?.map?.((item: any) => [
       item.sales_partner,
       item.finance_partner,
-      item.spps_Ref,
+      item.spps_ref,
       item.state,
       item.sug,
       item.rep_pay,

@@ -1,25 +1,25 @@
 /* -----------------Rabindra----------------- */
 
 .CrossICONBTNHover1:hover {
-  background-color: #ddebff;
-  cursor: pointer;
-  border-radius: 8px;
+  transform: scale(1.07);
 }
 
 .CrossICONBTNHover1 {
   height: 27px;
   width: 27px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .CrossICONBTNHover:hover {
-  background-color: #ddebff;
-  cursor: pointer;
-  border-radius: 8px;
+  transform: scale(1.07);
 }
 
 .CrossICONBTNHover {
   height: 32px;
   width: 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .dashboard {
