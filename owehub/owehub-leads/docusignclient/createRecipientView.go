@@ -56,7 +56,7 @@ func (api *CreateRecipientViewApi) Call() (*CreateRecipientViewApiResponse, erro
 		return nil, err
 	}
 
-	apiUrl := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes/%s/views/recipient", api.BaseUri, leadsService.LeadAppCfg.DocusignAccountId, api.EnvelopeId)
+	apiUrl := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes/%s/views/recipient", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId, api.EnvelopeId)
 	data := map[string]interface{}{
 		"recipientId":          api.RecipientId,
 		"userName":             api.UserName,
@@ -66,7 +66,7 @@ func (api *CreateRecipientViewApi) Call() (*CreateRecipientViewApiResponse, erro
 		"authenticationMethod": "Password",
 	}
 
-	err = callApi(http.MethodPost, apiUrl, api.AccessToken, data, &respBody)
+	err = callApi(http.MethodPost, apiUrl, data, &respBody)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "unauthorized") {
