@@ -275,7 +275,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
   const statusStyles = {
     "In Progress": {
-      backgroundColor: "#21BC27",
+      backgroundColor: "#B459FC",
       color: "#fff"
     },
     "Send Docs": {
@@ -283,7 +283,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       color: "#fff"
     },
     "CREATED": {
-      backgroundColor: "#B459FC",
+      backgroundColor: "#21BC27",
       color: "#fff"
     },
     "Clear selection": {

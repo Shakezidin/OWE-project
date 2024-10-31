@@ -704,7 +704,7 @@ const LeadManagementDashboard = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value);
-     
+
     }, 800),
     []
   );
@@ -1765,34 +1765,11 @@ const LeadManagementDashboard = () => {
                     Aurora Projects
                   </button> */}
                 </div>
-                {searchTerm !== '' && (
-                  <div
-                    style={{
-                      cursor: "pointer",
-                      marginRight: "15px",
-                      marginTop: "2px",
-                      transition: "transform 0.3s ease-in-out",
-                      display: "inline-block",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.13)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1)";
-                    }}
-                    onClick={handleCrossIcon}
-                  >
-                    <img
-                      src={ICONS.crossIconUser}
-                      alt="cross"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                  </div>
-                )}
+
                 <div className={styles.searchBar}>
                   <div className={styles.searchIcon}>
-                    {/* You can use an SVG or a FontAwesome icon here */}
                     <img src={ICONS.SearchICON001} />
+
                   </div>
                   <input
                     type="text"
@@ -1802,7 +1779,7 @@ const LeadManagementDashboard = () => {
                     onChange={(e) => {
 
                       if (e.target.value.length <= 50) {
-                       
+
                         e.target.value = e.target.value.replace(
                           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
                           ''
@@ -1814,7 +1791,17 @@ const LeadManagementDashboard = () => {
                       }
                     }}
                   />
+                  {searchTerm !== '' && (
+                    <div className={styles.CrossRemoveSearch}
+                      onClick={handleCrossIcon}
+                    >
+                      <img
+                        src={ICONS.crossIconUser}
+                        alt="cross"
 
+                      />
+                    </div>
+                  )}
                 </div>
 
 
@@ -1944,30 +1931,7 @@ const LeadManagementDashboard = () => {
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
                 <>
-                  {searchTerm !== '' && (
-                    <div
-                      style={{
-                        cursor: "pointer",
-                        marginRight: "15px",
-                        marginTop: "2px",
-                        transition: "transform 0.3s ease-in-out",
-                        display: "inline-block",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "scale(1.13)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                      onClick={handleCrossIcon}
-                    >
-                      <img
-                        src={ICONS.crossIconUser}
-                        alt="cross"
-                        style={{ width: "20px", height: "20px" }}
-                      />
-                    </div>
-                  )}
+
                   <div className={styles.searchBarMobile}>
                     <div className={styles.searchIcon}>
                       {/* You can use an SVG or a FontAwesome icon here */}
@@ -1990,6 +1954,11 @@ const LeadManagementDashboard = () => {
                         }
                       }}
                     />
+                    {searchTerm !== '' && (
+                      <div className={styles.CrossRemoveSearch} onClick={handleCrossIcon} >
+                        <img  src={ICONS.crossIconUser} alt="cross" />
+                      </div>
+                    )}
                   </div>
                   <HistoryRedirect />
                   {currentFilter === 'In Progress' && (
