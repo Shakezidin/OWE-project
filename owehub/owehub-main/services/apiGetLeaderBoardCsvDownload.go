@@ -145,6 +145,41 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
+	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
+	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
+
+	endDate = endDate.Add(24*time.Hour - time.Second)
+
+	for _, item := range data {
+		// Check sale_date
+		if saleDate, ok := item["sale_date"].(time.Time); ok {
+			if saleDate.Before(startDate) || saleDate.After(endDate) {
+				item["sale_date"] = nil // Set to null if out of range
+			}
+		}
+
+		// Check cancelled_date
+		if cancelledDate, ok := item["cancelled_date"].(time.Time); ok {
+			if cancelledDate.Before(startDate) || cancelledDate.After(endDate) {
+				item["cancelled_date"] = nil // Set to null if out of range
+			}
+		}
+
+		// Check pv_completion_date
+		if pvCompletionDate, ok := item["pv_completion_date"].(time.Time); ok {
+			if pvCompletionDate.Before(startDate) || pvCompletionDate.After(endDate) {
+				item["pv_completion_date"] = nil // Set to null if out of range
+			}
+		}
+
+		// Check ntp_complete_date
+		if ntpCompleteDate, ok := item["ntp_complete_date"].(time.Time); ok {
+			if ntpCompleteDate.Before(startDate) || ntpCompleteDate.After(endDate) {
+				item["ntp_complete_date"] = nil // Set to null if out of range
+			}
+		}
+	}
+
 	RecordCount = int64(len(data))
 	// data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
@@ -169,19 +204,11 @@ func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn stri
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		switch dataFilter.SortBy {
-		case "install":
-			dataFilter.SortBy = "pis.pv_completion_date"
-		case "cancel":
-			dataFilter.SortBy = "ss.cancelled_date"
-		case "ntp":
-			dataFilter.SortBy = "ns.ntp_complete_date"
-		default:
-			dataFilter.SortBy = "cs.sale_date"
-		}
-
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" %v BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", dataFilter.SortBy, len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" (ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
