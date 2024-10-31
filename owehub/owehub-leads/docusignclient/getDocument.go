@@ -33,16 +33,16 @@ func (api *GetDocumentApi) Call() (*[]byte, error) {
 		err = fmt.Errorf("cannot get document without DocumentId")
 		return nil, err
 	}
-	if api.AccessToken == "" {
-		err = fmt.Errorf("cannot get document without AccessToken")
-		return nil, err
-	}
-	if api.BaseUri == "" {
-		err = fmt.Errorf("cannot get document without BaseUri")
-		return nil, err
-	}
+	// if api.AccessToken == "" {
+	// 	err = fmt.Errorf("cannot get document without AccessToken")
+	// 	return nil, err
+	// }
+	// if api.BaseUri == "" {
+	// 	err = fmt.Errorf("cannot get document without BaseUri")
+	// 	return nil, err
+	// }
 
-	apiUrl := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes/%s/documents/combined", api.BaseUri, leadsService.LeadAppCfg.DocusignAccountId, api.EnvelopeId)
+	apiUrl := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes/%s/documents/combined", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId, api.EnvelopeId)
 	req, err = http.NewRequest(http.MethodGet, apiUrl, nil)
 
 	if err != nil {
@@ -51,10 +51,10 @@ func (api *GetDocumentApi) Call() (*[]byte, error) {
 	}
 
 	// set headers
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.AccessToken))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", docusignAccessToken))
 
 	// send the request
-	log.FuncDebugTrace(0, "Calling docusign get document api with access token %s", api.AccessToken)
+	log.FuncDebugTrace(0, "Calling docusign get document api with access token %s", docusignAccessToken)
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}

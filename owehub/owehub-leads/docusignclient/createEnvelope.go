@@ -15,8 +15,6 @@ import (
 )
 
 type CreateEnvelopeApi struct {
-	AccessToken  string                       `json:"access_token"`
-	BaseUri      string                       `json:"baseUri"`
 	EmailSubject string                       `json:"emailSubject"`
 	Documents    []CreateEnvelopeApiDocument  `json:"documents"`
 	Recipients   []CreateEnvelopeApiRecipient `json:"recipients"`
@@ -45,15 +43,6 @@ func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
 	log.EnterFn(0, "CreateEnvelopeApi.Call")
 	defer log.ExitFn(0, "CreateEnvelopeApi.Call", err)
 
-	// validate required fields
-	if api.AccessToken == "" {
-		err = errors.New("cannot create envelope without AccessToken")
-		return nil, err
-	}
-	if api.BaseUri == "" {
-		err = errors.New("cannot create envelope without BaseUri")
-		return nil, err
-	}
 	if api.EmailSubject == "" {
 		err = errors.New("cannot create envelope without EmailSubject")
 		return nil, err
@@ -74,8 +63,8 @@ func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
 		"status":       "sent",
 	}
 
-	url := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes", api.BaseUri, leadsService.LeadAppCfg.DocusignAccountId)
-	err = callApi(http.MethodPost, url, api.AccessToken, reqBody, &respBody)
+	url := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId)
+	err = callApi(http.MethodPost, url, reqBody, &respBody)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "unauthorized") {
