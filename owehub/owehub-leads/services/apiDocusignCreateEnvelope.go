@@ -31,7 +31,7 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 		query              string
 		data               []map[string]interface{}
 		dataReq            models.DocusignCreateEnvelopeRequest
-		createEnvelopeResp interface{}
+		createEnvelopeResp *map[string]interface{}
 	)
 	log.EnterFn(0, "HandleDocusignCreateEnvelopeRequest")
 	defer func() { log.ExitFn(0, "HandleDocusignCreateEnvelopeRequest", err) }()
@@ -119,18 +119,35 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 		},
 		Recipients: []docusignclient.CreateEnvelopeApiRecipient{
 			{
-				Email:       leadsEmail,
-				FirstName:   leadsFirstName,
-				LastName:    leadsLastName,
-				RecipientId: fmt.Sprintf("%d", dataReq.LeadsId),
+				Email:        leadsEmail,
+				Name:         fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
+				FirstName:    leadsFirstName,
+				LastName:     leadsLastName,
+				RecipientId:  fmt.Sprintf("%d", dataReq.LeadsId),
+				ClientUserId: fmt.Sprintf("OWE%d", dataReq.LeadsId),
 			},
 		},
-		Status: dataReq.Status,
 	}
 
 	createEnvelopeResp, err = createEnvelopeApi.Call()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to create docusign envelope err %v", err)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		return
+	}
+
+	envelopeId, ok := (*createEnvelopeResp)["envelopeId"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get envelope id")
+		appserver.FormAndSendHttpResp(resp, "Failed to get envelope id", http.StatusInternalServerError, nil)
+		return
+	}
+
+	query = "UPDATE leads_info SET docusign_envelope_id = $1 WHERE leads_id = $2"
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId, dataReq.LeadsId})
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update docusign envelope id err %v", err)
 		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 		return
 	}

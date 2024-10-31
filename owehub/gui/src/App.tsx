@@ -47,6 +47,7 @@ import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
 import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
+import TotalCount from './ui/TotalCount/TotalCount';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -128,6 +129,7 @@ function App() {
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
           <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
+          <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
