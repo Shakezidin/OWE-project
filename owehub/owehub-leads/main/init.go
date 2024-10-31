@@ -263,6 +263,14 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{},
 	},
+
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_leads_home_page",
+		apiHandler.HandleGetLeadHomePage,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************

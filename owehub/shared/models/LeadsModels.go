@@ -42,6 +42,23 @@ type GetLeadsData struct {
 	Zipcode                string     `json:"zipcode"`
 }
 
+// combine struct of get leads AND get leads count status API.
+type GetLeadsHomePageRequest struct {
+	LeadStatus     string `json:"status"`
+	Search         string `json:"search"`
+	ProgressFilter string `json:"progress_filter"`
+	IsArchived     bool   `json:"is_archived"`
+	PageNumber     int    `json:"page_number"`
+	PageSize       int    `json:"page_size"`
+	StartDate      string `json:"start_date"`
+	EndDate        string `json:"end_date"`
+}
+
+type GetLeadsHomePageResponse struct {
+	LeadsData    []GetLeadsData          `json:"leads_data"`
+	StatusCounts []GetLeadsCountByStatus `json:"status_counts"`
+}
+
 // This struct is for deleting Leads
 type DeleteLeadsRequest struct {
 	IDs []int64 `json:"ids"`
