@@ -94,7 +94,16 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 	return nil
 }
 
-func InitializeDocusignClient() error {
+/******************************************************************************
+ * FUNCTION:        RegenerateAuthToken
+ *
+ * DESCRIPTION:     This function will be used to regenerate auth token
+ *
+ * INPUT:           N/A
+ *
+ * RETURNS:         error
+ ******************************************************************************/
+func RegenerateAuthToken() error {
 	var (
 		err       error
 		rsaKey    *rsa.PrivateKey
