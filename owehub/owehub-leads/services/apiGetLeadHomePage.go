@@ -407,7 +407,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = nil
 			if acceptedDatePtr == nil {
 				aptStatusLabel = "No Response"
-			} else if acceptedDatePtr.Before(*appointmentDatePtr) {
+			} else if appointmentDatePtr.Before(*acceptedDatePtr) {
 				aptStatusLabel = "Appointment Date Passed"
 			} else {
 				aptStatusLabel = "Appointment Accepted"
@@ -524,7 +524,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
 		)
 	} else {
-		whereEleList = append(whereEleList, time.Now(), time.Time{})
+		whereEleList = append(whereEleList, time.Time{}, time.Now())
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
