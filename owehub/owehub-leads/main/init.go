@@ -9,6 +9,7 @@ package main
 
 import (
 	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/docusignclient"
 	apiHandler "OWEApp/owehub-leads/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/db"
@@ -388,6 +389,14 @@ func init() {
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
 	PrintSvcGlbConfig(types.CommGlbCfg)
+
+	/* Initialize docusign client */
+	err2 := docusignclient.InitializeDocusignClient()
+	if err2 != nil {
+		log.FuncErrorTrace(0, "Failed to initialize docusign client err %v", err2)
+		// log.ConfErrorTrace(0, "Failed to initialize docusign client err %v", err)
+		// return
+	}
 
 	/*Initialize logger package again with new configuraion*/
 	initLogger("OWEHUB-LEADS", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))

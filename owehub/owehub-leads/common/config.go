@@ -19,6 +19,9 @@ type LeadAppConfig struct {
 	DocusignOathBaseUrl    string `json:"docusignOauthBaseUrl"`
 	DocusignAccountId      string `json:"docusignAccountId"`
 	DocusignIntegrationKey string `json:"docusignIntegrationKey"`
+	DocusignUserId         string `json:"docusignUserId"`
+	DocusignRsaPrivateKey  string `json:"docusignRsaPrivateKey"`
+	DocusignRsaPublicKey   string `json:"docusignRsaPublicKey"`
 	DocusignSecretKey      string `json:"docusignSecretKey"`
 }
 

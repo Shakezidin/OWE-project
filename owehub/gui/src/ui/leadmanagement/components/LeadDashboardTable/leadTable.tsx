@@ -390,7 +390,7 @@ const handleSignDocument = async () => {
 
   const statusStyles = {
     "In Progress": {
-      backgroundColor: "#21BC27",
+      backgroundColor: "#B459FC",
       color: "#fff"
     },
     "Send Docs": {
@@ -398,7 +398,7 @@ const handleSignDocument = async () => {
       color: "#fff"
     },
     "CREATED": {
-      backgroundColor: "#B459FC",
+      backgroundColor: "#21BC27",
       color: "#fff"
     },
     "Clear selection": {

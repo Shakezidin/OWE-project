@@ -399,7 +399,7 @@ input[type='checkbox']:checked {
 }
 
 .closeIcon img:hover {
-  transform: scale(1.04);
+  transform: scale(1.06);
 }
 
 .SecondChildContain {
@@ -408,7 +408,7 @@ input[type='checkbox']:checked {
 }
 
 .closeIcon:hover {
-  background: #377cf630;
+  /* background: #377cf630; */
   border-radius: 5px;
 }
 

@@ -632,8 +632,6 @@ const Table = ({
     tableData,
   ]);
 
-
-   
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {
@@ -728,8 +726,6 @@ const Table = ({
       setExportShow(false);
     }
   };
-   
-  
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -767,11 +763,11 @@ const Table = ({
 
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
+    };
 
     setIsExporting(true);
     const headers = [
@@ -797,7 +793,7 @@ const Table = ({
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,
-      sort_by:active
+      sort_by: active,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -810,11 +806,11 @@ const Table = ({
       item.phone_number,
       item.address,
       item.state,
-      removeHtmlTags(item.contract_total), 
+      removeHtmlTags(item.contract_total),
       item.contracted_system_size_parent,
       dateFormat(item.sale_date),
       dateFormat(item.ntp_complete_date),
-      dateFormat(item.pv_completion_date),      
+      dateFormat(item.pv_completion_date),
       dateFormat(item.pto_date),
       dateFormat(item.cancelled_date),
       item.primary_sales_rep,
@@ -866,6 +862,7 @@ const Table = ({
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
+      { groupBy === 'dealer' ? null :
       <div className="relative exportt" ref={wrapperReff}>
         <div
           className="export-trigger overflow-hidden"
@@ -881,31 +878,36 @@ const Table = ({
             {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
           </span>
         </div>
-        {exportShow && (
-          <div className="export-opt">
-            <button
-              className="export-btn"
-              disabled={isExporting || isExportingData}
-              onClick={() => {
-                exportPdf();
-                setExportShow(false);
-              }}
-            >
-              <span>Pdf</span>
-            </button>
-            <button
-              disabled={isExportingData}
-              className="export-btn export-btnn"
-              onClick={() => {
-                exportCsv();
-                setExportShow(false);
-              }}
-            >
-              <span>Csv</span>
-            </button>
-          </div>
-        )}
+      
+       
+            {exportShow && (
+              <div className="export-opt">
+                <button
+                  className="export-btn"
+                  disabled={isExporting || isExportingData}
+                  onClick={() => {
+                    exportPdf();
+                    setExportShow(false);
+                  }}
+                >
+                  <span>Pdf</span>
+                </button>
+                <button
+                  disabled={isExportingData}
+                  className="export-btn export-btnn"
+                  onClick={() => {
+                    exportCsv();
+                    setExportShow(false);
+                  }}
+                >
+                  <span>Csv</span>
+                </button>
+              </div>
+            )}
+        
+      
       </div>
+        }
       {/* <div className="leaderboard-data__export">
         <Select
           options={exportOptions}
