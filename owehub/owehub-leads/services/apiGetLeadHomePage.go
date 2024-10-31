@@ -515,14 +515,16 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				)
 			)
 			AND li.is_archived = FALSE
+			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
     `
 
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
-		query = query + " AND li.updated_at BETWEEN $2 AND $3"
 		whereEleList = append(whereEleList,
 			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
 			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
 		)
+	} else {
+		whereEleList = append(whereEleList, time.Now(), time.Time{})
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
