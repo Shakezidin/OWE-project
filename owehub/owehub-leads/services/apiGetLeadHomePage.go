@@ -73,8 +73,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	userEmail := req.Context().Value("emailid").(string)
 
-	log.FuncDebugTrace(0, "1 %v", userEmail)
-
 	whereEleList = append(whereEleList, userEmail)
 
 	// no condition specified, default to all except leads history records
@@ -86,8 +84,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.LeadStatus == "NEW" {
 		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE AND li.proposal_created_date IS NULL)"
 	}
-
-	log.FuncDebugTrace(0, "2 %v", dataReq.LeadStatus)
 
 	if dataReq.LeadStatus == "PROGRESS" {
 		if dataReq.ProgressFilter == "DEAL_WON" {
@@ -117,8 +113,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	log.FuncDebugTrace(0, "3 %v", dataReq.LeadStatus)
-
 	if dataReq.LeadStatus == "DECLINED" {
 		whereClause = "WHERE (li.status_id = 3 AND li.is_appointment_required = TRUE)"
 	}
@@ -140,8 +134,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Invalid Lead Status", http.StatusBadRequest, nil)
 		return
 	}
-
-	log.FuncDebugTrace(0, "3 %v", dataReq.LeadStatus)
 
 	if dataReq.Search != "" {
 		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
@@ -174,8 +166,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	}
 
-	log.FuncDebugTrace(0, "4 %v", dataReq.LeadStatus)
-
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
 		// validating start date
 		startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
@@ -199,8 +189,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
 		)
 	}
-
-	log.FuncDebugTrace(0, "6 %v", dataReq.LeadStatus)
 
 	// filter in all conditions: is_archived, start_time, end_time
 	whereEleList = append(whereEleList, dataReq.IsArchived)
@@ -250,8 +238,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Failed to fetch data", http.StatusBadRequest, nil)
 		return
 	}
-
-	log.FuncDebugTrace(0, "7 %v", dataReq.LeadStatus)
 
 	for _, item := range data {
 		// appointment label & appointment date
@@ -481,31 +467,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	}
 	recordCount = data[0]["count"].(int64)
 
-	// code for get leads count by status
-	startDate, err := time.Parse("02-01-2006", dataReq.StartDate)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse start date err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to parse start date", http.StatusBadRequest, nil)
-		return
-	}
-	endDate, err := time.Parse("02-01-2006", dataReq.EndDate)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse end date err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to parse end date", http.StatusBadRequest, nil)
-		return
-	}
-
-	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, time.UTC)
-	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 0, time.UTC)
-
-	authenticatedEmail, ok := req.Context().Value("emailid").(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get emailid from context")
-		appserver.FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
-		return
-	}
-
-	whereEleList = []interface{}{authenticatedEmail, startDate, endDate}
+	// code for get leads count by statu
+	whereEleList = []interface{}{userEmail}
 
 	query = `
 		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
@@ -551,9 +514,16 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 					AND li.is_appointment_required = TRUE
 				)
 			)
-			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 			AND li.is_archived = FALSE
     `
+
+	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+		query = query + " AND li.updated_at BETWEEN $2 AND $3"
+		whereEleList = append(whereEleList,
+			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
+			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
+		)
+	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
