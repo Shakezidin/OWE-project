@@ -502,15 +502,14 @@ func InitDocusignClient() error {
 
 	_, err = timerHandler.StartTimer(timerHandler.TimerData{
 		Recurring:    true,
-		TimeToExpire: 10,
+		TimeToExpire: 45 * 60, // 45 minutes
 		FuncHandler: func(timerType int32, data interface{}) {
-			log.FuncBriefTrace(0, "!!!!!!!!!!!!!!!!!!!! TimerHandler: InitDocusignClient")
-			// err := docusignclient.RegenerateAuthToken()
-			// if err != nil {
-			// 	log.FuncDebugTrace(0, "Failed to regenerate Docusign Auth token: %v", err)
-			// 	return
-			// }
-			// log.FuncDebugTrace(0, "Docusign Auth token regenerated")
+			err := docusignclient.RegenerateAuthToken()
+			if err != nil {
+				log.FuncDebugTrace(0, "Failed to regenerate Docusign Auth token: %v", err)
+				return
+			}
+			log.FuncDebugTrace(0, "Docusign Auth token regenerated")
 		},
 	})
 
