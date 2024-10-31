@@ -75,7 +75,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// no condition specified, default to all
 	if dataReq.LeadStatus == "" {
-		whereClause = "WHERE li.leads_id IS NOT NULL"
+		whereClause = "WHERE li.status_id != 6"
 	}
 
 	// build whereclause based on requested status

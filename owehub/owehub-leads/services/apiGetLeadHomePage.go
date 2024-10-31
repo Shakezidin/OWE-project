@@ -77,9 +77,9 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	whereEleList = append(whereEleList, userEmail)
 
-	// no condition specified, default to all
+	// no condition specified, default to all except leads history records
 	if dataReq.LeadStatus == "" {
-		whereClause = "WHERE li.leads_id IS NOT NULL"
+		whereClause = "WHERE li.status_id != 6"
 	}
 
 	// build whereclause based on requested status
@@ -171,12 +171,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				whereClause = fmt.Sprintf("%s OR li.leads_id::text ILIKE $%d)", whereClause[0:len(whereClause)-1], len(whereEleList))
 			}
 		}
-
-		// ignore search for lead won and lost records
-		whereClause = fmt.Sprintf(
-			"%s AND li.status_id NOT IN (5,6))",
-			whereClause,
-		)
 
 	}
 
@@ -428,7 +422,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			if acceptedDatePtr == nil {
 				aptStatusLabel = "No Response"
 			} else if acceptedDatePtr.Before(*appointmentDatePtr) {
-				aptStatusLabel = "No Response"
+				aptStatusLabel = "Appointment Date Passed"
 			} else {
 				aptStatusLabel = "Appointment Accepted"
 			}
