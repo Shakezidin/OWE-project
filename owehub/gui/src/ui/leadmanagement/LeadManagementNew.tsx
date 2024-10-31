@@ -250,16 +250,14 @@ const LeadManagementNew = () => {
                           value={formData.mobile_number}
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
-                            const numberLength= value.toString();
-                            
+                            const numberLength = value.toString();
                             const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
                             if (/^0{8}/.test(numberWithoutCountryCode)) {
                               setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
-                            } 
+                            }
                             // if(phoneNumber.charAt(4) && phoneNumber.charAt(1) && phoneNumber.charAt(2) && phoneNumber.charAt(3)){
                             //   setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
                             // }
-
                             else if (numberLength.length > 0 && numberLength.length < 11) {
                               setPhoneNumberError("Please enter at least 10 digits.");
                             } else {
@@ -342,10 +340,16 @@ const LeadManagementNew = () => {
                             const { value } = e.target;
                             if (value.length <= 10) {
                               handleInputChange(e);
+
                               if (value.trim() === '') {
                                 setErrors((prevErrors) => ({
                                   ...prevErrors,
                                   zip_code: 'Zip Code is required',
+                                }));
+                              } else if (/^0+$/.test(value)) {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  zip_code: 'Invalid ZIP Code, cannot consist of only zeros.',
                                 }));
                               } else {
                                 setErrors((prevErrors) => ({
@@ -357,6 +361,7 @@ const LeadManagementNew = () => {
                           }}
                           name="zip_code"
                         />
+
                         {(zip_codeError || errors.zip_code) && (
                           <div className="error">
                             {zip_codeError || errors.zip_code}
