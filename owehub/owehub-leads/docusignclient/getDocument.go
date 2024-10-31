@@ -51,7 +51,7 @@ func (api *GetDocumentApi) Call() (*[]byte, error) {
 	}
 
 	// set headers
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.AccessToken))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", docusignAccessToken))
 
 	// send the request
 	log.FuncDebugTrace(0, "Calling docusign get document api with access token %s", docusignAccessToken)
