@@ -406,6 +406,13 @@ func init() {
 		return
 	}
 
+	/* Setup outlook webhooks */
+	err = leadsService.SetupOutlookWebhooks()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to setup outlook webhooks err %v", err)
+		return
+	}
+
 	/*Initialize logger package again with new configuraion*/
 	initLogger("OWEHUB-LEADS", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 }
