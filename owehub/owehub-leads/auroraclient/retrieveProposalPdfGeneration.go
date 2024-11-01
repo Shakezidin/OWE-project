@@ -17,13 +17,8 @@ type RetrieveProposalPdfGenerationApi struct {
 	JobId    string `json:"job_id"`
 }
 
-// type RetrieveProposalPdfGenerationApiResponseWebProposal struct {
-// 	URL        *string `json:"url"`
-// 	URLExpired bool    `json:"url_expired"`
-// }
-
 type RetrieveProposalPdfGenerationApiResponse struct {
-	ProposalPdfGenerationJob RetrieveWebProposalApiResponseWebProposal `json:"proposal_pdf_generation_job"`
+	ProposalPdfGenerationJob map[string]interface{} `json:"proposal_pdf_generation_job"`
 }
 
 /******************************************************************************
@@ -42,12 +37,11 @@ func (api *RetrieveProposalPdfGenerationApi) Call() (*RetrieveProposalPdfGenerat
 	log.EnterFn(0, "RetrieveProposalPdfGenerationApi.Call")
 	defer log.ExitFn(0, "RetrieveProposalPdfGenerationApi.Call", err)
 
-	//endPt := fmt.Sprintf("/tenants/{tenant_id}/designs/%s/proposal_pdf_generation/status", api.DesignId)
 	endPt := fmt.Sprintf("/tenants/{tenant_id}/designs/%s/proposal_pdf_generation/status?job_id=%s", api.DesignId, api.JobId)
 
 	err = callApi(http.MethodGet, endPt, nil, &respBody)
 	if err != nil {
-		return nil, errors.New("server side error when retrieving modules")
+		return nil, errors.New("server side error when retrieving proposal pdf generation")
 	}
 
 	return &respBody, nil
