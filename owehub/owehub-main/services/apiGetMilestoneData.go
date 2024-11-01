@@ -202,9 +202,9 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 	milestoneData.TotalSale = totalSaleCount
 
 	// Set the previous period totals for comparison
-	milestoneData.InstallIncreasePercent = int(calculatePercentageIncrease(float64(totalInstallCount), float64(thisPeriodInstallCount)))
-	milestoneData.NtpIncreasePercent = int(calculatePercentageIncrease(float64(totalNtpCount), float64(thisPeriodNtpCount)))
-	milestoneData.SaleIncreasePercent = int(calculatePercentageIncrease(float64(totalSaleCount), float64(thisPeriodSaleCount)))
+	milestoneData.InstallIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodInstallCount), float64(totalInstallCount)))
+	milestoneData.NtpIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodNtpCount), float64(totalNtpCount)))
+	milestoneData.SaleIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodSaleCount), float64(totalSaleCount)))
 
 	RecordCount = int64(len(data))
 	appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, milestoneData, RecordCount)
