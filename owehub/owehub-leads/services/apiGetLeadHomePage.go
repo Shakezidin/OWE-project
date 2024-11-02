@@ -90,10 +90,32 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id = 5)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
-			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
+			whereClause = `
+				WHERE (
+					(li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR
+					(
+						li.status_id = 5 
+						AND li.appointment_scheduled_date IS NOT NULL 
+						AND li.appointment_accepted_date IS NULL
+						AND li.appointment_date > CURRENT_TIMESTAMP
+					)
+				)
+			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
-			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
+			whereClause = `
+				WHERE (
+					(li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR
+					(
+						li.status_id = 5 
+						AND li.appointment_scheduled_date IS NOT NULL 
+						AND li.appointment_accepted_date IS NOT NULL
+						AND li.appointment_date > CURRENT_TIMESTAMP
+					)
+				)
+			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
 			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
@@ -107,7 +129,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR (li.status_id = 5)
 					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-            		OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL)
+            		OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL
+					AND li.appointment_date > CURRENT_TIMESTAMP)
 				)
 			`
 		}
@@ -215,6 +238,10 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				li.appointment_accepted_date,
 				li.appointment_declined_date,
 				li.lead_won_date,
+				li.docusign_envelope_completed_at,
+				li.docusign_envelope_declined_at,
+				li.docusign_envelope_voided_at,
+				li.docusign_envelope_sent_at,
 				li.is_archived,
 				li.aurora_proposal_id,
 				li.is_appointment_required,
@@ -243,8 +270,9 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		// appointment label & appointment date
 		var (
 			aptStatusLabel       string
-			aptStatusDate        *time.Time
 			wonLostLabel         string
+			docusignLabel        string
+			aptStatusDate        *time.Time
 			wonLostDate          *time.Time
 			scheduledDatePtr     *time.Time
 			acceptedDatePtr      *time.Time
@@ -252,6 +280,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			declinedDatePtr      *time.Time
 			proposalUpdatedAtPtr *time.Time
 			appointmentDatePtr   *time.Time
+			docusignDatePtr      *time.Time
 		)
 
 		leadsId, ok := item["leads_id"].(int64)
@@ -385,6 +414,43 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			proposalUpdatedAtPtr = &proposalUpdatedAt
 		}
 
+		//
+		// DOCUSIGN LABEL & DATE
+		//
+		docusignEnvelopeAcceptedDate, ok := item["docusign_envelope_completed_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_completed_at from leads info Item: %+v\n", item)
+		} else {
+			docusignDatePtr = &docusignEnvelopeAcceptedDate
+			docusignLabel = "Accepted"
+		}
+
+		docusignEnvelopeDeclinedDate, ok := item["docusign_envelope_declined_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_declined_at from leads info Item: %+v\n", item)
+		} else {
+			docusignDatePtr = &docusignEnvelopeDeclinedDate
+			docusignLabel = "Declined"
+		}
+
+		docusignEnvelopeVoidedDate, ok := item["docusign_envelope_voided_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_voided_at from leads info Item: %+v\n", item)
+		} else {
+			docusignDatePtr = &docusignEnvelopeVoidedDate
+			docusignLabel = "Voided"
+		}
+
+		docusignEnvelopeSentDate, ok := item["docusign_envelope_sent_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_sent_at from leads info Item: %+v\n", item)
+		} else {
+			docusignDatePtr = &docusignEnvelopeSentDate
+			docusignLabel = "Sent"
+		}
+
+		// --------------------------------------------------------------------------------
+
 		if !isAptRequired {
 			aptStatusLabel = "Not Required"
 		}
@@ -408,9 +474,9 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			if acceptedDatePtr == nil {
 				aptStatusLabel = "No Response"
 			} else if appointmentDatePtr.Before(*acceptedDatePtr) {
-				aptStatusLabel = "Appointment Date Passed"
+				aptStatusLabel = "No Response"
 			} else {
-				aptStatusLabel = "Appointment Accepted"
+				aptStatusLabel = "Appointment Date Passed"
 			}
 		}
 
@@ -452,6 +518,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			ProposalLink:           proposalLink,
 			ProposalUpdatedAt:      proposalUpdatedAtPtr,
 			ProposalPdfLink:        proposalPdfLink,
+			DocusignLabel:          docusignLabel,
+			DocusignDate:           docusignDatePtr,
 			Zipcode:                zipcode,
 		})
 
@@ -487,7 +555,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 				OR (li.status_id = 5)
 				OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-            	OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL)
+            	OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL
+				AND li.appointment_date > CURRENT_TIMESTAMP)
 			)
 				AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 				AND li.is_archived = FALSE

@@ -31,6 +31,8 @@ type GetLeadsData struct {
 	AppointmentStatusDate  *time.Time `json:"appointment_status_date"`
 	WonLostLabel           string     `json:"won_lost_label"`
 	WonLostDate            *time.Time `json:"won_lost_date"`
+	DocusignLabel          string     `json:"docusign_label"`
+	DocusignDate           *time.Time `json:"docusign_date"`
 	FinanceCompany         string     `json:"finance_company"`
 	FinanceType            string     `json:"finance_type"`
 	QCAudit                string     `json:"qc_audit"`
