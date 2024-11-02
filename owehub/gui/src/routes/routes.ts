@@ -58,6 +58,7 @@ export const ROUTES = {
   CALENDAR: '/calendar',
   LIBRARY: '/library',
   SS_ONBOARDING: '/config/ss-onboarding',
+  TOTAL_COUNT: '/reports',
 
 
   // other routes
@@ -94,5 +95,7 @@ export const ROUTES = {
   SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
   FOLDER_DETAIL:"/library/*",
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
-  CALCULATOR:'/calculator'
+  CALCULATOR:'/calculator',
+  SIGN_DOCUMENT:'digital-signature-portal'
+
 };

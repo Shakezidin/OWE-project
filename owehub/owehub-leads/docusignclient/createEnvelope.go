@@ -15,12 +15,9 @@ import (
 )
 
 type CreateEnvelopeApi struct {
-	AccessToken  string                       `json:"access_token"`
-	BaseUri      string                       `json:"baseUri"`
 	EmailSubject string                       `json:"emailSubject"`
 	Documents    []CreateEnvelopeApiDocument  `json:"documents"`
 	Recipients   []CreateEnvelopeApiRecipient `json:"recipients"`
-	Status       string                       `json:"status"`
 }
 type CreateEnvelopeApiDocument struct {
 	DocumentBase64 string `json:"documentBase64"`
@@ -29,30 +26,23 @@ type CreateEnvelopeApiDocument struct {
 	FileExtension  string `json:"fileExtension"`
 }
 type CreateEnvelopeApiRecipient struct {
-	RecipientId string `json:"recipientId"`
-	Email       string `json:"email"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
+	ClientUserId string `json:"clientUserId"`
+	RecipientId  string `json:"recipientId"`
+	Name         string `json:"name"`
+	Email        string `json:"email"`
+	FirstName    string `json:"firstName"`
+	LastName     string `json:"lastName"`
 }
 
-func (api *CreateEnvelopeApi) Call() (interface{}, error) {
+func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
 	var (
 		err      error
-		respBody interface{}
+		respBody map[string]interface{}
 	)
 
 	log.EnterFn(0, "CreateEnvelopeApi.Call")
 	defer log.ExitFn(0, "CreateEnvelopeApi.Call", err)
 
-	// validate required fields
-	if api.AccessToken == "" {
-		err = errors.New("cannot create envelope without AccessToken")
-		return nil, err
-	}
-	if api.BaseUri == "" {
-		err = errors.New("cannot create envelope without BaseUri")
-		return nil, err
-	}
 	if api.EmailSubject == "" {
 		err = errors.New("cannot create envelope without EmailSubject")
 		return nil, err
@@ -65,20 +55,16 @@ func (api *CreateEnvelopeApi) Call() (interface{}, error) {
 		err = errors.New("cannot create envelope without Recipients")
 		return nil, err
 	}
-	if api.Status != "" && api.Status != "sent" && api.Status != "created" {
-		err = errors.New("cannot create envelope without Status")
-		return nil, err
-	}
 
 	reqBody := map[string]interface{}{
 		"emailSubject": api.EmailSubject,
 		"documents":    api.Documents,
 		"recipients":   map[string]interface{}{"signers": api.Recipients},
-		"status":       api.Status,
+		"status":       "sent",
 	}
 
-	url := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes", api.BaseUri, leadsService.LeadAppCfg.DocusignAccountId)
-	err = callApi(http.MethodPost, url, api.AccessToken, reqBody, &respBody)
+	url := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId)
+	err = callApi(http.MethodPost, url, reqBody, &respBody)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "unauthorized") {

@@ -9,11 +9,13 @@ package main
 
 import (
 	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/docusignclient"
 	apiHandler "OWEApp/owehub-leads/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	timerHandler "OWEApp/shared/timer"
 	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
@@ -147,6 +149,15 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_leads_home_page",
+		apiHandler.HandleGetLeadHomePage,
+		true,
+		leadsRoleGroup,
+	},
+
+	// AURORA
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_create_project",
 		apiHandler.HandleAuroraCreateProjectRequest,
 		true,
@@ -231,6 +242,20 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_create_recipient_view",
+		apiHandler.HandleDocusignCreateRecipientViewRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_get_document",
+		apiHandler.HandleDocusignGetDocumentRequest,
+		true,
+		leadsRoleGroup,
+	},
 
 	// WEBHOOKS
 	{
@@ -244,6 +269,13 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/receive_graph_notification",
 		apiHandler.HandleReceiveGraphNotificationRequest,
+		false,
+		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_connect_listener",
+		apiHandler.HandleDocusignConnectListenerRequest,
 		false,
 		[]types.UserGroup{},
 	},
@@ -375,6 +407,20 @@ func init() {
 
 	PrintSvcGlbConfig(types.CommGlbCfg)
 
+	/* Initialize docusign client */
+	err = InitDocusignClient()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to initialize docusign client err %v", err)
+		return
+	}
+
+	/* Setup outlook webhooks */
+	err = leadsService.SetupOutlookWebhooks()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to setup outlook webhooks err %v", err)
+		return
+	}
+
 	/*Initialize logger package again with new configuraion*/
 	initLogger("OWEHUB-LEADS", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 }
@@ -453,6 +499,44 @@ func GenerateGraphApiClient() error {
 	types.CommGlbCfg.ScheduleGraphApiClient = client
 	log.ConfDebugTrace(0, "Graph Client Created: %+v", types.CommGlbCfg.ScheduleGraphApiClient)
 	return nil
+}
+
+/*******************************************************************************
+ * FUNCTION:        InitDocusignClient
+ *
+ * DESCRIPTION:     This function will be used to initialize docusign client
+ *
+ * INPUT:           N/A
+ *
+ * RETURNS:         error
+ *******************************************************************************/
+func InitDocusignClient() error {
+	var err error
+
+	log.EnterFn(0, "InitDocusignClient")
+	defer func() { log.ExitFn(0, "InitDocusignClient", err) }()
+
+	err = docusignclient.RegenerateAuthToken()
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to initialize docusign client err %v", err)
+		return err
+	}
+
+	_, err = timerHandler.StartTimer(timerHandler.TimerData{
+		Recurring:    true,
+		TimeToExpire: 45 * 60, // 45 minutes
+		FuncHandler: func(timerType int32, data interface{}) {
+			err := docusignclient.RegenerateAuthToken()
+			if err != nil {
+				log.FuncDebugTrace(0, "Failed to regenerate Docusign Auth token: %v", err)
+				return
+			}
+			log.FuncDebugTrace(0, "Docusign Auth token regenerated")
+		},
+	})
+
+	return err
 }
 
 /******************************************************************************

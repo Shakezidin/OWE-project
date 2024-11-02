@@ -107,3 +107,9 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- ADD DOCUSIGN RELATED COLUMNS
+ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_id VARCHAR(255);
+ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_completed_at TIMESTAMPTZ;
+ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_declined_at TIMESTAMPTZ;

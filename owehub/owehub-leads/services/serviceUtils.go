@@ -53,12 +53,18 @@ func sendAppointmentEvent(id int64, name, email string, appointmentDate *time.Ti
 			},
 		},
 		AllowNewTimeProposals: true,
-		TransactionID:         fmt.Sprintf("OWEHUB-LEADS-%d", id),
+		//TransactionID:         fmt.Sprintf("OWEHUB-LEADS-%d", id),
+		TransactionID: fmt.Sprintf("OWEHUB-LEADS-%d-%d", id, time.Now().Unix()),
 	}
+
+	// Log the model for debugging
+	log.FuncDebugTrace(0, "Outlook event model: %+v", model)
+
 	//  OUTLOOK FUNCTION CALL
 	event, eventErr := graphapi.CreateOutlookEvent(model)
 	if eventErr != nil {
 		err = eventErr
+		log.FuncErrorTrace(0, "Error creating outlook event: %+v", eventErr)
 		return eventErr
 	}
 	log.FuncDebugTrace(0, "created outlook event %+v", event)
@@ -98,10 +104,20 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 	}
 
 	leadsIdStr := strings.TrimPrefix(*eventDetails.TransactionID, "OWEHUB-LEADS-")
-	leadsId, err = strconv.Atoi(leadsIdStr)
+	// leadsId, err = strconv.Atoi(leadsIdStr)
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to parse leads id err %v", err)
+	// 	return err
+	// }
+
+	// Split the TransactionID to retrieve the lead ID
+	parts := strings.Split(leadsIdStr, "-")
+
+	leadsId, err = strconv.Atoi(parts[0])
+
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse leads id err %v", err)
-		return err
+		log.FuncDebugTrace(0, "Failed to parse lead ID from Transaction ID: %v, err: %v", *eventDetails.TransactionID, err)
+		return nil
 	}
 
 	// fetch attendees from the event
@@ -181,8 +197,19 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		return nil
 	}
 
+	// leadsIdStr := strings.TrimPrefix(*eventDetails.TransactionID, "OWEHUB-LEADS-")
+	// leadsId, err := strconv.Atoi(leadsIdStr)
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to parse leads id err %v", err)
+	// 	return err
+	// }
+
 	leadsIdStr := strings.TrimPrefix(*eventDetails.TransactionID, "OWEHUB-LEADS-")
-	leadsId, err := strconv.Atoi(leadsIdStr)
+
+	// Split the TransactionID to retrieve the lead ID
+	parts := strings.Split(leadsIdStr, "-")
+
+	leadsId, err := strconv.Atoi(parts[0])
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse leads id err %v", err)
 		return err
@@ -204,4 +231,25 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 	}
 
 	return nil
+}
+
+// getLeadPdfFilename returns the filename for the leads proposal pdf
+func getLeadPdfFilename(firstName, lastName string) string {
+	name := ""
+
+	for _, r := range strings.ToLower(firstName) {
+		// only allow alphabets and numbers
+		if r >= 97 && r <= 122 || r >= 48 && r <= 57 {
+			name += string(r)
+		}
+	}
+	name += "_"
+	for _, r := range strings.ToLower(lastName) {
+		// only allow alphabets and numbers
+		if r >= 97 && r <= 122 || r >= 48 && r <= 57 {
+			name += string(r)
+		}
+	}
+
+	return fmt.Sprintf("%s_%d.pdf", name, time.Now().Unix())
 }

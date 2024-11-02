@@ -266,10 +266,20 @@ func notifier(timerId int) {
 	defer func() { log.ExitFn(0, "notifier", err) }()
 	timerData := getTenantMapEntry("XYZ", timerId)
 	if nil != timerData {
-		timerData.timerStateLock.Lock()
 		if timerData.timerState == Started {
 			/*call handler func()*/
 			timerData.funcHandler(timerData.TimerType, timerData.DataContext)
+
+			if timerData.Recurring {
+				afterFuncTimer := time.AfterFunc(time.Second*time.Duration(timerData.TimerDuration),
+					func() {
+						notifier(timerData.timerId)
+					})
+				timerData.timer = afterFuncTimer
+				return
+			}
+
+			timerData.timerStateLock.Lock()
 			timerData.timerState = Expired
 			timerData.timerStateLock.Unlock()
 			/*Delete function will lock the map Entry again, hence calling outside lock*/

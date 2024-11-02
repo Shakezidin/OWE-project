@@ -68,7 +68,7 @@ func callApi(method string, apiPath string, reqBody interface{}, respBody interf
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusAccepted {
 		respString := string(respBytes)
 		err = fmt.Errorf("call to aurora api %s failed with status code %d, response: %+v", apiPath, resp.StatusCode, respString)
 		log.FuncErrorTrace(0, "%v", err)

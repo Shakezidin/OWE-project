@@ -148,6 +148,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		query = `UPDATE leads_info 
 					SET appointment_date = $1, 
 					appointment_scheduled_date = CURRENT_TIMESTAMP,
+					appointment_accepted_date = NULL,
 					status_id = 1,
 					updated_at = CURRENT_TIMESTAMP,
 					last_updated_by = $2 

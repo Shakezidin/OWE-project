@@ -632,8 +632,6 @@ const Table = ({
     tableData,
   ]);
 
-
-
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
   //     (async () => {
@@ -729,8 +727,6 @@ const Table = ({
     }
   };
 
-
-
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -770,7 +766,7 @@ const Table = ({
     // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
-      return str.replace(/<\/?[^>]+(>|$)/g, "");
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
 
     setIsExporting(true);
@@ -797,7 +793,7 @@ const Table = ({
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,
-      sort_by:active
+      sort_by: active,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -814,7 +810,7 @@ const Table = ({
       item.contracted_system_size_parent,
       dateFormat(item.sale_date),
       dateFormat(item.ntp_complete_date),
-      dateFormat(item.pv_completion_date),      
+      dateFormat(item.pv_completion_date),
       dateFormat(item.pto_date),
       dateFormat(item.cancelled_date),
       item.primary_sales_rep,
@@ -865,7 +861,9 @@ const Table = ({
   }, [role, authData, groupBy]);
 
   return (
-    <div className="leaderboard-data" style={{ borderRadius: 16 }}>
+    <div className="leaderboard-data" style={{ borderRadius: 12 }}>
+      {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
+      { groupBy === 'dealer' ? null :
       <div className="relative exportt" ref={wrapperReff}>
         <div className="leaderboard-data__title">
           <img src={award} alt="" />
@@ -887,31 +885,88 @@ const Table = ({
             {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
           </span>
         </div>
-        {exportShow && (
-          <div className="export-opt">
-            <button
-              className="export-btn"
-              disabled={isExporting || isExportingData}
-              onClick={() => {
-                exportPdf();
-                setExportShow(false);
-              }}
-            >
-              <span>Pdf</span>
-            </button>
-            <button
-              disabled={isExportingData}
-              className="export-btn export-btnn"
-              onClick={() => {
-                exportCsv();
-                setExportShow(false);
-              }}
-            >
-              <span>Csv</span>
-            </button>
-          </div>
-        )}
+      
+       
+            {exportShow && (
+              <div className="export-opt">
+                <button
+                  className="export-btn"
+                  disabled={isExporting || isExportingData}
+                  onClick={() => {
+                    exportPdf();
+                    setExportShow(false);
+                  }}
+                >
+                  <span>Pdf</span>
+                </button>
+                <button
+                  disabled={isExportingData}
+                  className="export-btn export-btnn"
+                  onClick={() => {
+                    exportCsv();
+                    setExportShow(false);
+                  }}
+                >
+                  <span>Csv</span>
+                </button>
+              </div>
+            )}
+        
+      
       </div>
+        }
+      {/* <div className="leaderboard-data__export">
+        <Select
+          options={exportOptions}
+          value={exportOption}
+          onChange={(selectedOption) => {
+            setExportOption(selectedOption);
+            // handleExport(selectedOption.value);
+          }}
+          isSearchable={false}
+          placeholder="Export Options"
+          styles={{
+            control: (baseStyles) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              fontWeight: '500',
+              border: 'none',
+              outline: 'none',
+              width: '120px',
+              alignContent: 'center',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              boxShadow: 'none',
+            }),
+            indicatorSeparator: () => ({
+              display: 'none',
+            }),
+            dropdownIndicator: (baseStyles) => ({
+              ...baseStyles,
+              color: '#ee824d',
+            }),
+            option: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              backgroundColor: state.isSelected ? '#ee824d' : '#fff',
+              '&:hover': {
+                backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
+                color: state.isSelected ? '#fff' : '#ee824d',
+              },
+            }),
+            singleValue: (baseStyles) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              color: exportOption ? '#ee824d' : '#222',
+              width: 'fit-content',
+            }),
+            menu: (baseStyles) => ({
+              ...baseStyles,
+              marginTop: '-4px',
+            }),
+          }}
+        />
+      </div> */}
 
       <div>
         <div className="leaderboard-data__filter-row">

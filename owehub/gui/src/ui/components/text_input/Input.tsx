@@ -114,6 +114,7 @@ const Input: FC<InputProps> = ({
           placeholder={placeholder}
           autoComplete="off"
           value={value}
+          
           max={'2050-01-01'}
           onChange={(e) => {
             if (name.includes('password')) {

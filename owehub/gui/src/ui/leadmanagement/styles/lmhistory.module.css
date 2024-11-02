@@ -1,10 +1,12 @@
 .h_screen {
   min-height: 100vh;
+ 
 }
 
 .customer_wrapper_list {
   /* flex-basis: 100%; */
   width: 100%;
+  padding-top: 30px;
   border-radius: 8px;
   background-color: #fff;
   padding-top: 15px;

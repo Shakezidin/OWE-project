@@ -12,7 +12,7 @@ import { PiMapPin } from 'react-icons/pi';
 import { MdOutlinePermMedia } from "react-icons/md";
 import { FaCalculator } from "react-icons/fa";
 import { ICONS } from '../resources/icons/Icons';
-
+import { TbReportSearch } from "react-icons/tb";
 const mob = {
   mob: [
     {
@@ -93,6 +93,13 @@ const mob = {
       sidebarProps: {
         displayText: 'Users',
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.TOTAL_COUNT,
+      sidebarProps: {
+        displayText: 'Reports',
+        icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
       },
     },
     {
