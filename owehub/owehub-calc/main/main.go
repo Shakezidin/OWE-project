@@ -49,6 +49,11 @@ func main() {
 		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
 		return
 	}
+	err = services.ExecAgingReportInitialCalculation()
+	if err != nil {
+		log.FuncErrorTrace(0, "error while loading ExecAgingReportInitialCalculation function")
+		return
+	}
 
 	/* Spawn signal handler routine*/
 	go signalHandler()
