@@ -32,8 +32,8 @@ import (
  * RETURNS:
  ******************************************************************************/
 
-var projectOps = make([]map[string]interface{}, 0)
 var deleteIds []string
+var uniqueIDs = make(map[string]string)
 var mu sync.Mutex
 
 func main() {
@@ -60,7 +60,7 @@ func main() {
 		log.FuncInfoTrace(0, "error while clearing dlr_pay with err : %v", err)
 	}
 
-	err = services.ExecDlrPayInitialCalculation(nil, true)
+	err = services.ExecDlrPayInitialCalculation(nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
 		return
@@ -142,7 +142,7 @@ func kafkaListener() {
 			}
 
 			// Parse project_id and operation_type
-			projectID, operationType, projectData, parseErr := parseKafkaMessage(msg.Value)
+			projectID, operationType, parseErr := parseKafkaMessage(msg.Value)
 			if parseErr != nil {
 				log.FuncDebugTrace(0, "Error parsing message: %s\n", parseErr)
 				continue
@@ -154,7 +154,7 @@ func kafkaListener() {
 			if operationType == "delete" {
 				deleteIds = append(deleteIds, projectID)
 			} else {
-				projectOps = append(projectOps, projectData)
+				uniqueIDs[projectID] = operationType
 			}
 			mu.Unlock()
 
@@ -167,23 +167,23 @@ func kafkaListener() {
 	log.FuncErrorTrace(0, "Exiting Calc-App kafkaListener: reason")
 }
 
-func parseKafkaMessage(message []byte) (string, string, map[string]interface{}, error) {
+func parseKafkaMessage(message []byte) (string, string, error) {
 	var data map[string]interface{}
 	if err := json.Unmarshal(message, &data); err != nil {
-		return "", "", nil, fmt.Errorf("failed to parse Kafka message: %w", err)
+		return "", "", fmt.Errorf("failed to parse Kafka message: %w", err)
 	}
 
 	projectID, ok := data["project_id"].(string)
 	if !ok {
-		return "", "", nil, fmt.Errorf("project_id missing or invalid in Kafka message")
+		return "", "", fmt.Errorf("project_id missing or invalid in Kafka message")
 	}
 
 	operationType, ok := data["operation_type"].(string)
 	if !ok {
-		return "", "", nil, fmt.Errorf("operation_type missing or invalid in Kafka message")
+		return "", "", fmt.Errorf("operation_type missing or invalid in Kafka message")
 	}
 
-	return projectID, operationType, data, nil
+	return projectID, operationType, nil
 }
 
 func batchProcessProjects() {
@@ -200,8 +200,10 @@ func batchProcessProjects() {
 				services.DeleteFromDealerPay(deleteIds) // Call delete function
 				deleteIds = []string{}                  // Clear after processing
 			}
-			services.ExecDlrPayInitialCalculation(projectOps, false) // Process and send project data
-			projectOps = projectOps[:0]                              // Clear projectOps after processing
+			if len(deleteIds) > 0 {
+				services.ExecDlrPayInitialCalculation(uniqueIDs) // Process and send project data
+				uniqueIDs = map[string]string{}
+			} // Clear projectOps after processing
 			mu.Unlock()
 		}
 	}

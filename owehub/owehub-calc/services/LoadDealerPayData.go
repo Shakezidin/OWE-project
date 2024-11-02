@@ -6,32 +6,37 @@ import (
 	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
 	"fmt"
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 )
 
-func ExecDlrPayInitialCalculation(batchData []map[string]interface{}, fetchFromDb bool) error {
+func ExecDlrPayInitialCalculation(uniqueIds map[string]string) error {
 	var (
 		err            error
 		dlrPayDataList []map[string]interface{}
 		InitailData    oweconfig.InitialDataLists
+		operaiton      string
 	)
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
 	count := 0
 	dataReq := models.DataRequestBody{}
-	if fetchFromDb {
-		InitailData, err = oweconfig.LoadDlrPayInitialData()
-		if err != nil {
-			log.FuncErrorTrace(0, "error while loading initial data %v", err)
-			return err
-		}
-	} else {
-		// Use the mapping function to populate InitialDataLists
-		InitailData = mapBatchDataToInitialData(batchData)
+
+	if uniqueIds == nil {
+		uniqueIds = make(map[string]string)
+	}
+
+	// Extracting unique IDs as a slice for loading initial data
+	uidList := make([]string, 0, len(uniqueIds))
+	for key := range uniqueIds {
+		uidList = append(uidList, key)
+	}
+
+	InitailData, err = oweconfig.LoadDlrPayInitialData(uidList)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while loading initial data %v", err)
+		return err
 	}
 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
@@ -41,16 +46,32 @@ func ExecDlrPayInitialCalculation(batchData []map[string]interface{}, fetchFromD
 
 	for _, data := range InitailData.InitialDataList {
 		var dlrPayData map[string]interface{}
+		operaiton = uniqueIds[data.UniqueId]
 		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd, partnerPaySchedule)
 
-		if err != nil || dlrPayData == nil {
-			if len(data.UniqueId) > 0 {
-				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
-			} else {
-				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+		// if err != nil || dlrPayData == nil {
+		// 	if len(data.UniqueId) > 0 {
+		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
+		// 	} else {
+		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+		// 	}
+		// } else if operaiton == "create" {
+		// 	dlrPayDataList = append(dlrPayDataList, dlrPayData)
+		// } else {
+		// 	updateDlrPayData = append(updateDlrPayData, dlrPayData)
+		// }
+
+		if operaiton == "update" {
+			// Build the update query
+			query, _ := buildUpdateQuery("dealer_pay", dlrPayData, "unique_id", data.UniqueId)
+
+			// Execute the update query
+			err = db.ExecQueryDB(db.OweHubDbIndex, query)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to update DLR Pay Data for unique id: %+v err: %+v", data.UniqueId, err)
 			}
-		} else {
-			dlrPayDataList = append(dlrPayDataList, dlrPayData)
+		} else { // Assuming "create" operation
+			dlrPayDataList = append(dlrPayDataList, dlrPayData) // Prepare data for insertion
 		}
 
 		if (count+1)%1000 == 0 && len(dlrPayDataList) > 0 {
@@ -153,107 +174,6 @@ func ClearDlrPay() error {
 	return nil
 }
 
-func mapBatchDataToInitialData(batchData []map[string]interface{}) oweconfig.InitialDataLists {
-	var initialDataLists oweconfig.InitialDataLists
-
-	for _, val := range batchData {
-		// Process as usual for non-delete operations
-		var initialData oweconfig.InitialStruct
-
-		// Safely retrieve unique_id with nil check
-		if uniqueId, ok := val["unique_id"].(string); ok {
-			initialData.UniqueId = uniqueId
-		} else {
-			log.FuncErrorTrace(0, "unique_id not found or not a string in data: %v", val)
-			continue // Skip to the next entry if unique_id is missing or invalid
-		}
-
-		// Assign other fields with nil checks
-		if homeOwner, ok := val["customer_name"].(string); ok {
-			initialData.HomeOwner = homeOwner
-		}
-
-		if projectStatus, ok := val["project_status"].(string); ok {
-			initialData.CurrectStatus = projectStatus
-		}
-
-		if contractedSystemSize, ok := val["contracted_system_size"].(float64); ok {
-			initialData.SystemSize = contractedSystemSize
-		}
-
-		if dealerCode, ok := val["dealer"].(string); ok {
-			initialData.DealerCode = dealerCode
-		}
-
-		if totalSystemCost, ok := val["total_system_cost"].(string); ok {
-			costStr := strings.TrimSpace(totalSystemCost)
-			re := regexp.MustCompile(`<.*?>`)
-			costStr = re.ReplaceAllString(costStr, "")
-			costStr = strings.ReplaceAll(costStr, ",", "")
-			costStr = strings.ReplaceAll(costStr, "$", "")
-			costStr = strings.TrimSpace(costStr)
-
-			if costStr != "" {
-				var err error
-				initialData.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
-				if err != nil {
-					log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
-					initialData.ContractDolDol = 0.0 // Default value on error
-				}
-			}
-		}
-
-		if adderBreakdownandTotalNew, ok := val["adder_breakdown_and_total_new"].(string); ok {
-			initialData.OtherAdders = adderBreakdownandTotalNew
-		}
-
-		if primarySalesRep, ok := val["primary_sales_rep"].(string); ok {
-			initialData.Rep1 = primarySalesRep
-		}
-
-		if secondarySalesRep, ok := val["secondary_sales_rep"].(string); ok {
-			initialData.Rep2 = secondarySalesRep
-		}
-
-		if setter, ok := val["setter"].(string); ok {
-			initialData.Setter = setter
-		}
-
-		if state, ok := val["state"].(string); ok {
-			initialData.ST = state
-		}
-
-		if saleDate, ok := val["sale_date"].(time.Time); ok {
-			initialData.ContractDate = saleDate
-		}
-
-		if netEpc, ok := val["net_epc"].(float64); ok {
-			initialData.NetEpc = netEpc
-		}
-
-		if ntpCompleteDate, ok := val["ntp_complete_date"].(time.Time); ok {
-			initialData.NtpCompleteDate = ntpCompleteDate
-		}
-
-		if pvCompletionDate, ok := val["pv_completion_date"].(time.Time); ok {
-			initialData.PvComplettionDate = pvCompletionDate
-		}
-
-		if financeCompany, ok := val["finance"].(string); ok {
-			initialData.FinanceCompany = financeCompany
-		}
-
-		if financeType, ok := val["finance_type"].(string); ok {
-			initialData.FinanceType = financeType
-		}
-
-		// Append each processed `initialData` to `initialDataLists`
-		initialDataLists.InitialDataList = append(initialDataLists.InitialDataList, initialData)
-	}
-
-	return initialDataLists
-}
-
 func DeleteFromDealerPay(uniqueIDs []string) error {
 	// Ensure there are IDs to delete
 	if len(uniqueIDs) == 0 {
@@ -279,4 +199,38 @@ func DeleteFromDealerPay(uniqueIDs []string) error {
 
 	log.FuncErrorTrace(0, "Deleted %d rows from dealer_pay table.\n", len(uniqueIDs))
 	return nil
+}
+
+// buildUpdateQuery constructs an SQL UPDATE query using the provided parameters.
+// It builds the query by directly embedding the values into the SQL string.
+func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn string, idValue interface{}) (string, error) {
+	sets := []string{}
+
+	for col, val := range row {
+		if col != idColumn {
+			valStr := fmt.Sprintf("%v", val) // Convert value to string
+			if strVal, ok := val.(string); ok {
+				// Escape single quotes in string values
+				valStr = strings.ReplaceAll(strVal, "'", "''") // Escaping single quotes
+				sets = append(sets, fmt.Sprintf("%s = '%s'", col, valStr))
+			} else {
+				sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
+			}
+		}
+	}
+
+	// Escape the idValue to prevent SQL injection
+	var idValueStr string
+	switch v := idValue.(type) {
+	case string:
+		// Escape single quotes in string ID values
+		idValueStr = strings.ReplaceAll(v, "'", "''")
+		idValueStr = fmt.Sprintf("'%s'", idValueStr) // Enclose string ID values in quotes
+	default:
+		idValueStr = fmt.Sprintf("%v", idValue) // Keep numeric and other types as they are
+	}
+
+	// Build the query
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s = %s", tableName, strings.Join(sets, ", "), idColumn, idValueStr)
+	return query, nil
 }

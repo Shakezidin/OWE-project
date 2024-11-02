@@ -43,7 +43,7 @@ type InitialDataLists struct {
 	InitialDataList []InitialStruct
 }
 
-func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
+func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, err error) {
 	var (
 		query    string
 		dataList []map[string]interface{}
@@ -62,6 +62,15 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			 from customers_customers_schema cs
              LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
              LEFT JOIN pv_install_install_subcontracting_schema ps ON ps.customer_unique_id = cs.unique_id`
+
+	if len(uniqueIds) > 0 {
+		// Create a string to hold the unique IDs for the SQL query
+		placeholders := make([]string, len(uniqueIds))
+		for i, id := range uniqueIds {
+			placeholders[i] = fmt.Sprintf("'%s'", id) // Quote each ID for SQL
+		}
+		query += fmt.Sprintf(" WHERE cs.unique_id IN (%s)", strings.Join(placeholders, ","))
+	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
