@@ -42,11 +42,11 @@ type DocusignGetDocumentRequest struct {
 }
 
 type DocusignConnectListenerRequest struct {
-	Event             string                 `json:"event"`
-	Uri               string                 `json:"uri"`
-	RetryCount        string                 `json:"retryCount"`
-	ConfigurationId   string                 `json:"configurationId"`
-	ApiVersion        string                 `json:"apiVersion"`
-	GeneratedDateTime string                 `json:"generatedDateTime"`
-	Data              map[string]interface{} `json:"data"`
+	Event string `json:"event"`
+	// Uri               string                 `json:"uri"`
+	// RetryCount        string                 `json:"retryCount"`
+	// ConfigurationId   string                 `json:"configurationId"`
+	// ApiVersion        string                 `json:"apiVersion"`
+	// GeneratedDateTime string                 `json:"generatedDateTime"`
+	Data map[string]interface{} `json:"data"`
 }
