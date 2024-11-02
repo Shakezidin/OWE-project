@@ -424,20 +424,12 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		//
 		// DOCUSIGN LABEL & DATE
 		//
-		docusignEnvelopeAcceptedDate, ok := item["docusign_envelope_completed_at"].(time.Time)
+		docusignEnvelopeSentDate, ok := item["docusign_envelope_sent_at"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get docusign_envelope_completed_at from leads info Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_sent_at from leads info Item: %+v\n", item)
 		} else {
-			docusignDatePtr = &docusignEnvelopeAcceptedDate
-			docusignLabel = "Accepted"
-		}
-
-		docusignEnvelopeDeclinedDate, ok := item["docusign_envelope_declined_at"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get docusign_envelope_declined_at from leads info Item: %+v\n", item)
-		} else {
-			docusignDatePtr = &docusignEnvelopeDeclinedDate
-			docusignLabel = "Declined"
+			docusignDatePtr = &docusignEnvelopeSentDate
+			docusignLabel = "Sent"
 		}
 
 		docusignEnvelopeVoidedDate, ok := item["docusign_envelope_voided_at"].(time.Time)
@@ -448,12 +440,20 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			docusignLabel = "Voided"
 		}
 
-		docusignEnvelopeSentDate, ok := item["docusign_envelope_sent_at"].(time.Time)
+		docusignEnvelopeCompletedDate, ok := item["docusign_envelope_completed_at"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get docusign_envelope_sent_at from leads info Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_completed_at from leads info Item: %+v\n", item)
 		} else {
-			docusignDatePtr = &docusignEnvelopeSentDate
-			docusignLabel = "Sent"
+			docusignDatePtr = &docusignEnvelopeCompletedDate
+			docusignLabel = "Completed"
+		}
+
+		docusignEnvelopeDeclinedDate, ok := item["docusign_envelope_declined_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get docusign_envelope_declined_at from leads info Item: %+v\n", item)
+		} else {
+			docusignDatePtr = &docusignEnvelopeDeclinedDate
+			docusignLabel = "Declined"
 		}
 
 		// --------------------------------------------------------------------------------
