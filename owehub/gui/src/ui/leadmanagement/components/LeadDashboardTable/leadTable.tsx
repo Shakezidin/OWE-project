@@ -396,6 +396,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       backgroundColor: "#21BC27",
       color: "#fff"
     },
+    "Accepted": {
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
     "Sent": {
       backgroundColor: "#EC9311",
       color: "#fff"
@@ -648,13 +652,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
                       <td>
                         <div
-                          style={lead.proposal_status in statusStyles
-                            ? docusignStyles[lead.proposal_status as DocuStatus]
+                          style={lead.docusign_label in docusignStyles
+                            ? docusignStyles[lead.docusign_label as DocuStatus]
                             : { backgroundColor: "inherit", color: "black" }}
                           className={styles.appointment_status}
                         >
-                          {lead.proposal_status ? (
-                            (lead.proposal_status)
+                          {lead.docusign_label ? (
+                            (lead.docusign_label)
                           ) : (
                             <span style={{ color: "black" }}>_____</span>
                           )}
@@ -794,7 +798,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 ) : (
                                   <>
                                     {downloadingLeadId === lead.leads_id ? (
-                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transform:'scale(0.7)' }}>
                                         <MicroLoader />
                                         <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
                                       </div>
