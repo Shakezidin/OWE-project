@@ -9,7 +9,11 @@ import {
   getProjectByLeadId,
   auroraWebProposal,
   auroraGenerateWebProposal,
-  auroraListModules
+  auroraListModules,
+  getDocuSignUrl,
+  createEnvelope,
+  createDocuSignRecipientView,
+  getDocument
 } from '../../apiActions/leadManagement/LeadManagementAction';
 
 interface IState {
@@ -26,7 +30,10 @@ interface IState {
   webProposalData: any;
   genProposalUrl: any;
   moduleData: any[];
-
+  docuSignData: any;
+  envelopeData: any;
+  recipientViewUrl: string;
+  documentData: any;
 }
 
 const initialState: IState = {
@@ -42,7 +49,11 @@ const initialState: IState = {
   designData: {},
   webProposalData: {},
   genProposalUrl:{},
-  moduleData:[]
+  moduleData:[],
+  docuSignData: {},
+  envelopeData: {},
+  recipientViewUrl: '',
+  documentData: null,
 };
 
 const leadManagementSlice = createSlice({
@@ -181,7 +192,65 @@ const leadManagementSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
+      })
+      // New cases for DocuSign actions
+      .addCase(getDocuSignUrl.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getDocuSignUrl.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.docuSignData = action.payload.data || {};
+        toast.success('DocuSign URL retrieved successfully!');
+      })
+      .addCase(getDocuSignUrl.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+       // New cases for createEnvelope
+       .addCase(createEnvelope.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createEnvelope.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.envelopeData = action.payload.data || {};
+        toast.success('DocuSign envelope created successfully!');
+      })
+      .addCase(createEnvelope.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+       
+      // New cases for createDocuSignRecipientView
+      .addCase(createDocuSignRecipientView.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createDocuSignRecipientView.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.recipientViewUrl = action.payload.data.url; // Update state with the returned URL
+        toast.success('DocuSign recipient view created successfully!');
+      })
+      .addCase(createDocuSignRecipientView.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string; // Type assertion for error
+        toast.error(action.payload as string); // Error notification
+      })
+
+      .addCase(getDocument.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getDocument.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.documentData = action.payload.data || null; // Store the document data
+        toast.success('DocuSign document retrieved successfully!'); // Success notification
+      })
+      .addCase(getDocument.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string; // Handle error
+        toast.error(action.payload as string); // Error notification
       });
+      
       
   },
 });

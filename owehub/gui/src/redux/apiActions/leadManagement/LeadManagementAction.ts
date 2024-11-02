@@ -155,3 +155,99 @@ export const auroraListModules = createAsyncThunk(
     }
   }
 );
+
+export const getDocuSignUrl = createAsyncThunk(
+  'docuSign/get_docuSignUrl',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      // Assuming postCaller is properly set up to handle full URLs
+      const response = await postCaller(`docusign_oauth`, params, true);
+      
+      // Check for a successful response
+      if (response.status > 201) {
+        return rejectWithValue(response.message || 'Failed to retrieve DocuSign URL');
+      }
+      
+      // Assuming the URL will be in response.data.url based on your API design
+      return response.data; // Return the data directly
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign URL');
+    }
+  }
+);
+
+
+export const getDocuSignToken = createAsyncThunk(
+  'docuSign/get_docuSignToken',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('get_docuSignToken', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to retrieve DocuSign token');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign token');
+    }
+  }
+);
+
+export const getDocuSignUserInfo = createAsyncThunk(
+  'docuSign/get_docuSignUserInfo',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('get_docuSignUserInfo', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to retrieve DocuSign user info');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign user info');
+    }
+  }
+);
+
+export const createEnvelope = createAsyncThunk(
+  'docuSign/createEnvelope',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('docusign_create_envelope', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to create DocuSign envelope');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to create DocuSign envelope');
+    }
+  }
+);
+
+export const createDocuSignRecipientView = createAsyncThunk(
+  'docuSign/createRecipientView',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('docusign_create_recipient_view', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to create DocuSign recipient view');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to create DocuSign recipient view');
+    }
+  }
+);
+
+export const getDocument = createAsyncThunk(
+  'docusign/getDocument',
+  async (params: { leads_id: number; base_url: string }, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('docusign_get_document', params, true);
+      if (data.status > 201) {
+        return rejectWithValue(data.message || 'Failed to retrieve DocuSign document');
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign document');
+    }
+  }
+);
