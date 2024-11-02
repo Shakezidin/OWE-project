@@ -17,7 +17,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 )
@@ -213,7 +212,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 	}, false)
 
 	// upload to s3
-	filename := fmt.Sprintf("%s_%s_%d.pdf", url.QueryEscape(firstName), url.QueryEscape(lastName), time.Now().Unix())
+	filename := getLeadPdfFilename(firstName, lastName)
 	filePath := fmt.Sprintf("/leads/proposals/%s", filename)
 	err = leadsService.S3PutObject(filePath, bytes.NewReader(auororaPdfRespBytes))
 
