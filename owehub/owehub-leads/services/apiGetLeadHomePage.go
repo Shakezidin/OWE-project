@@ -93,7 +93,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
-			whereClause = "WHERE (li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)"
+			whereClause = `
+				WHERE (
+				(li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
+				OR
+				(li.status_id = 5 AND li.appointment_scheduled_date IS NOT NULL AND li.appointment_date > CURRENT_TIMESTAMP)
+				)
+			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
 			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
@@ -409,9 +415,9 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			if acceptedDatePtr == nil {
 				aptStatusLabel = "No Response"
 			} else if appointmentDatePtr.Before(*acceptedDatePtr) {
-				aptStatusLabel = "Appointment Date Passed"
+				aptStatusLabel = "No Response"
 			} else {
-				aptStatusLabel = "Appointment Accepted"
+				aptStatusLabel = "Appointment Date Passed"
 			}
 		}
 
