@@ -22,8 +22,6 @@ type CreateRecipientViewApi struct {
 	Email        string `json:"email"`
 	ClientUserId string `json:"clientUserId"`
 	ReturnUrl    string `json:"returnUrl"`
-	AccessToken  string `json:"access_token"`
-	BaseUri      string `json:"baseUri"`
 }
 
 type CreateRecipientViewApiResponse struct {
