@@ -7,11 +7,13 @@
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/owehub-leads/docusignclient"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,6 +34,9 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 		data               []map[string]interface{}
 		dataReq            models.DocusignCreateEnvelopeRequest
 		createEnvelopeResp *map[string]interface{}
+		pdfResp            *http.Response
+		pdfBytes           []byte
+		pdfBase64          string
 	)
 	log.EnterFn(0, "HandleDocusignCreateEnvelopeRequest")
 	defer func() { log.ExitFn(0, "HandleDocusignCreateEnvelopeRequest", err) }()
@@ -63,7 +68,8 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 		SELECT
 			li.email_id,
 			li.first_name,
-			li.last_name
+			li.last_name,
+			li.proposal_pdf_key
 		FROM get_leads_info_hierarchy($1) li
 		WHERE li.leads_id = $2
 	`
@@ -104,15 +110,40 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 		return
 	}
 
+	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	if !ok {
+		err = fmt.Errorf("proposal_pdf_key not found in retrieve web proposal response")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve proposal_pdf_key from retrieve web proposal response", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// download proposal pdf as base64 string
+	pdfResp, err = http.Get(leadsService.S3GetObjectUrl(proposalPdfKey))
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to download proposal pdf as base64 string err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to download proposal pdf", http.StatusInternalServerError, nil)
+		return
+	}
+
+	defer pdfResp.Body.Close()
+
+	pdfBytes, err = io.ReadAll(pdfResp.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read proposal pdf as base64 string err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to read proposal pdf", http.StatusInternalServerError, nil)
+		return
+	}
+
+	pdfBase64 = base64.StdEncoding.EncodeToString(pdfBytes)
+
 	// create docusign envelope
 	createEnvelopeApi := docusignclient.CreateEnvelopeApi{
-		AccessToken:  dataReq.AccessToken,
-		BaseUri:      dataReq.BaseUri,
 		EmailSubject: dataReq.EmailSubject,
 		Documents: []docusignclient.CreateEnvelopeApiDocument{
 			{
 				DocumentId:     1,
-				DocumentBase64: dataReq.DocumentBase64,
+				DocumentBase64: pdfBase64,
 				Name:           dataReq.DocumentName,
 				FileExtension:  "pdf",
 			},

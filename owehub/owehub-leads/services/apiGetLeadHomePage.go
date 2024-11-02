@@ -1,8 +1,9 @@
 /**************************************************************************
-* File                  : apiHandleGetLeadsDataRequest.go
-* DESCRIPTION           : This file contains functions to get leads information
+* File                  : apiGetLeadHomePage.go
+* DESCRIPTION           : This file contains functions to get leads information and get leads count status
+							information
 
-* DATE                  : 11-September-2024
+* DATE                  : 30-october-2024
 **************************************************************************/
 
 package services
@@ -29,12 +30,13 @@ import (
 * RETURNS:    		void
 ******************************************************************************/
 
-func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		startTime        time.Time
 		endTime          time.Time
-		dataReq          models.GetLeadsRequest
+		dataReq          models.GetLeadsHomePageRequest
+		apiResponse      models.GetLeadsHomePageResponse
 		data             []map[string]interface{}
 		query            string
 		whereEleList     []interface{}
@@ -44,9 +46,9 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		proposalPdfLink  string
 	)
 
-	log.EnterFn(0, "HandleGetLeadsDataRequest")
+	log.EnterFn(0, "HandleGetLeadHomePage")
 
-	defer func() { log.ExitFn(0, "HandleGetLeadsDataRequest", err) }()
+	defer func() { log.ExitFn(0, "HandleGetLeadHomePage", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get leads data request")
@@ -73,7 +75,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	whereEleList = append(whereEleList, userEmail)
 
-	// no condition specified, default to all
+	// no condition specified, default to all except leads history records
 	if dataReq.LeadStatus == "" {
 		whereClause = "WHERE li.status_id != 6"
 	}
@@ -133,19 +135,10 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// if dataReq.Search != "" {
-	// 	whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
-	// 	whereClause = fmt.Sprintf(
-	// 		"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d)",
-	// 		whereClause,
-	// 		len(whereEleList),
-	// 		len(whereEleList),
-	// 	)
-
 	if dataReq.Search != "" {
 		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
 		whereClause = fmt.Sprintf(
-			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d OR (li.first_name || ' ' || li.last_name) ILIKE $%d)",
+			"%s AND ((li.first_name ILIKE $%d OR li.last_name ILIKE $%d OR (li.first_name || ' ' || li.last_name) ILIKE $%d)",
 			whereClause,
 			len(whereEleList),
 			len(whereEleList),
@@ -170,6 +163,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				whereClause = fmt.Sprintf("%s OR li.leads_id::text ILIKE $%d)", whereClause[0:len(whereClause)-1], len(whereEleList))
 			}
 		}
+
 	}
 
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
@@ -244,9 +238,6 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Failed to fetch data", http.StatusBadRequest, nil)
 		return
 	}
-
-	// Create datalist
-	LeadsDataList := []models.GetLeadsData{}
 
 	for _, item := range data {
 		// appointment label & appointment date
@@ -441,7 +432,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		LeadsData := models.GetLeadsData{
+		apiResponse.LeadsData = append(apiResponse.LeadsData, models.GetLeadsData{
 			LeadID:                 leadsId,
 			FirstName:              fName,
 			StatusID:               statusId,
@@ -462,12 +453,9 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ProposalUpdatedAt:      proposalUpdatedAtPtr,
 			ProposalPdfLink:        proposalPdfLink,
 			Zipcode:                zipcode,
-		}
-
-		LeadsDataList = append(LeadsDataList, LeadsData)
+		})
 
 	}
-
 	// Count total records from db
 	query = fmt.Sprintf(`SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li %s`, whereClause)
 
@@ -479,5 +467,92 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	recordCount = data[0]["count"].(int64)
 
-	appserver.FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, LeadsDataList, recordCount)
+	// code for get leads count by statu
+	whereEleList = []interface{}{userEmail}
+
+	query = `
+		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
+		WHERE (
+			li.status_id = 0 
+			AND li.is_appointment_required = TRUE 
+			AND li.proposal_created_date IS NULL
+		) 
+			AND li.updated_at BETWEEN $2 AND $3
+		  	AND li.is_archived = FALSE
+
+		UNION ALL
+
+		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
+			WHERE (
+				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
+				OR (li.status_id = 5)
+				OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
+            	OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL)
+			)
+				AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+				AND li.is_archived = FALSE
+
+		UNION ALL
+
+		SELECT 'DECLINED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
+		WHERE (
+			li.status_id = 3 
+			AND li.is_appointment_required = TRUE
+		)
+			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+			AND li.is_archived = FALSE
+
+		UNION ALL
+
+		SELECT 'ACTION_NEEDED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
+		WHERE 
+			(
+				li.status_id = 4
+				OR (
+					li.status_id IN (1, 2)
+					AND li.appointment_date < CURRENT_TIMESTAMP 
+					AND li.is_appointment_required = TRUE
+				)
+			)
+			AND li.is_archived = FALSE
+			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
+    `
+
+	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+		whereEleList = append(whereEleList,
+			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
+			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
+		)
+	} else {
+		whereEleList = append(whereEleList, time.Time{}, time.Now())
+	}
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+
+	if err != nil || len(data) <= 0 {
+		log.FuncErrorTrace(0, "Failed to get leads count by status with err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
+		return
+	}
+
+	for _, item := range data {
+		count, ok := item["count"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert count to int64 type Item: %+v", item)
+			continue
+		}
+		statusName, ok := item["status_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert status_name to string type Item: %+v", item)
+			continue
+		}
+
+		apiResponse.StatusCounts = append(apiResponse.StatusCounts, models.GetLeadsCountByStatus{
+			Count:      count,
+			StatusName: statusName,
+		})
+	}
+
+	appserver.FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, apiResponse, recordCount)
+
 }
