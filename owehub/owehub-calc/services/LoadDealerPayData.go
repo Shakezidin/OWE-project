@@ -5,27 +5,33 @@ import (
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
-func ExecDlrPayInitialCalculation() error {
+func ExecDlrPayInitialCalculation(batchData []map[string]interface{}, fetchFromDb bool) error {
 	var (
 		err            error
 		dlrPayDataList []map[string]interface{}
+		InitailData    oweconfig.InitialDataLists
 	)
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
-	err = ClearDlrPay()
-	if err != nil {
-		log.FuncInfoTrace(0, "error while clearing dlr_pay with err : %v", err)
-	}
-
 	count := 0
 	dataReq := models.DataRequestBody{}
-	InitailData, err := oweconfig.LoadDlrPayInitialData()
-	if err != nil {
-		log.FuncErrorTrace(0, "error while loading initial data %v", err)
+	if fetchFromDb {
+		InitailData, err = oweconfig.LoadDlrPayInitialData()
+		if err != nil {
+			log.FuncErrorTrace(0, "error while loading initial data %v", err)
+			return err
+		}
+	} else {
+		// Use the mapping function to populate InitialDataLists
+		InitailData = mapBatchDataToInitialData(batchData)
 	}
 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
@@ -144,5 +150,133 @@ func ClearDlrPay() error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func mapBatchDataToInitialData(batchData []map[string]interface{}) oweconfig.InitialDataLists {
+	var initialDataLists oweconfig.InitialDataLists
+
+	for _, val := range batchData {
+		// Process as usual for non-delete operations
+		var initialData oweconfig.InitialStruct
+
+		// Safely retrieve unique_id with nil check
+		if uniqueId, ok := val["unique_id"].(string); ok {
+			initialData.UniqueId = uniqueId
+		} else {
+			log.FuncErrorTrace(0, "unique_id not found or not a string in data: %v", val)
+			continue // Skip to the next entry if unique_id is missing or invalid
+		}
+
+		// Assign other fields with nil checks
+		if homeOwner, ok := val["customer_name"].(string); ok {
+			initialData.HomeOwner = homeOwner
+		}
+
+		if projectStatus, ok := val["project_status"].(string); ok {
+			initialData.CurrectStatus = projectStatus
+		}
+
+		if contractedSystemSize, ok := val["contracted_system_size"].(float64); ok {
+			initialData.SystemSize = contractedSystemSize
+		}
+
+		if dealerCode, ok := val["dealer"].(string); ok {
+			initialData.DealerCode = dealerCode
+		}
+
+		if totalSystemCost, ok := val["total_system_cost"].(string); ok {
+			costStr := strings.TrimSpace(totalSystemCost)
+			re := regexp.MustCompile(`<.*?>`)
+			costStr = re.ReplaceAllString(costStr, "")
+			costStr = strings.ReplaceAll(costStr, ",", "")
+			costStr = strings.ReplaceAll(costStr, "$", "")
+			costStr = strings.TrimSpace(costStr)
+
+			if costStr != "" {
+				var err error
+				initialData.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+					initialData.ContractDolDol = 0.0 // Default value on error
+				}
+			}
+		}
+
+		if adderBreakdownandTotalNew, ok := val["adder_breakdown_and_total_new"].(string); ok {
+			initialData.OtherAdders = adderBreakdownandTotalNew
+		}
+
+		if primarySalesRep, ok := val["primary_sales_rep"].(string); ok {
+			initialData.Rep1 = primarySalesRep
+		}
+
+		if secondarySalesRep, ok := val["secondary_sales_rep"].(string); ok {
+			initialData.Rep2 = secondarySalesRep
+		}
+
+		if setter, ok := val["setter"].(string); ok {
+			initialData.Setter = setter
+		}
+
+		if state, ok := val["state"].(string); ok {
+			initialData.ST = state
+		}
+
+		if saleDate, ok := val["sale_date"].(time.Time); ok {
+			initialData.ContractDate = saleDate
+		}
+
+		if netEpc, ok := val["net_epc"].(float64); ok {
+			initialData.NetEpc = netEpc
+		}
+
+		if ntpCompleteDate, ok := val["ntp_complete_date"].(time.Time); ok {
+			initialData.NtpCompleteDate = ntpCompleteDate
+		}
+
+		if pvCompletionDate, ok := val["pv_completion_date"].(time.Time); ok {
+			initialData.PvComplettionDate = pvCompletionDate
+		}
+
+		if financeCompany, ok := val["finance"].(string); ok {
+			initialData.FinanceCompany = financeCompany
+		}
+
+		if financeType, ok := val["finance_type"].(string); ok {
+			initialData.FinanceType = financeType
+		}
+
+		// Append each processed `initialData` to `initialDataLists`
+		initialDataLists.InitialDataList = append(initialDataLists.InitialDataList, initialData)
+	}
+
+	return initialDataLists
+}
+
+func DeleteFromDealerPay(uniqueIDs []string) error {
+	// Ensure there are IDs to delete
+	if len(uniqueIDs) == 0 {
+		log.FuncErrorTrace(0, "No unique IDs provided for deletion.")
+		return nil
+	}
+
+	// Construct a parameterized query with a placeholder for each unique ID
+	placeholders := make([]string, len(uniqueIDs))
+	args := make([]interface{}, len(uniqueIDs))
+	for i, id := range uniqueIDs {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+		args[i] = id
+	}
+
+	query := fmt.Sprintf("DELETE FROM dealer_pay WHERE unique_id IN (%s)", strings.Join(placeholders, ","))
+
+	// Execute the delete query
+	err := db.ExecQueryDB(db.OweHubDbIndex, query)
+	if err != nil {
+		return fmt.Errorf("failed to delete rows from dealer_pay: %w", err)
+	}
+
+	log.FuncErrorTrace(0, "Deleted %d rows from dealer_pay table.\n", len(uniqueIDs))
 	return nil
 }

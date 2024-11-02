@@ -11,9 +11,12 @@ import (
 	"OWEApp/owehub-calc/services"
 	"OWEApp/shared/types"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
+	"time"
 
 	appserver "OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
@@ -28,6 +31,11 @@ import (
  * INPUT:
  * RETURNS:
  ******************************************************************************/
+
+var projectOps = make([]map[string]interface{}, 0)
+var deleteIds []string
+var mu sync.Mutex
+
 func main() {
 	log.EnterFn(0, "main")
 	router := appserver.CreateApiRouter(apiRoutes)
@@ -47,12 +55,22 @@ func main() {
 		}
 	}
 
-	err = services.ExecDlrPayInitialCalculation()
+	err = services.ClearDlrPay()
+	if err != nil {
+		log.FuncInfoTrace(0, "error while clearing dlr_pay with err : %v", err)
+	}
+
+	err = services.ExecDlrPayInitialCalculation(nil, true)
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
 		return
 	}
 
+	// Start Kafka listener
+	go kafkaListener()
+
+	// Start batch processor to run every 10 minutes
+	go batchProcessProjects()
 	/* Spawn signal handler routine*/
 	go signalHandler()
 	/*Execute app inifinetly until it gets exit indication*/
@@ -91,6 +109,7 @@ func kafkaListener() {
 	/*TODO: need to prepare list of topics to be listen*/
 	topic := "postgres_db_latest_1.public.demo_table"
 	partition := 0
+	var deleteIds []string
 
 	// Create a new Kafka reader
 	r := kafka.NewReader(kafka.ReaderConfig{
@@ -122,12 +141,68 @@ func kafkaListener() {
 				continue
 			}
 
-			// Print the message
+			// Parse project_id and operation_type
+			projectID, operationType, projectData, parseErr := parseKafkaMessage(msg.Value)
+			if parseErr != nil {
+				log.FuncDebugTrace(0, "Error parsing message: %s\n", parseErr)
+				continue
+			}
+
+			// Store project data with thread-safe access
+			mu.Lock()
+			// Store entire project data for "create" or "update", only operation for "delete"
+			if operationType == "delete" {
+				deleteIds = append(deleteIds, projectID)
+			} else {
+				projectOps = append(projectOps, projectData)
+			}
+			mu.Unlock()
+
+			// Print the message for debugging
 			log.FuncDebugTrace(0, "Received message: Topic: %s, Partition: %d, Offset: %d, Key: %s, Value: %s\n",
 				msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
 		}
 	}
-
 	log.ExitFn(0, "kafkaListener", nil)
 	log.FuncErrorTrace(0, "Exiting Calc-App kafkaListener: reason")
+}
+
+func parseKafkaMessage(message []byte) (string, string, map[string]interface{}, error) {
+	var data map[string]interface{}
+	if err := json.Unmarshal(message, &data); err != nil {
+		return "", "", nil, fmt.Errorf("failed to parse Kafka message: %w", err)
+	}
+
+	projectID, ok := data["project_id"].(string)
+	if !ok {
+		return "", "", nil, fmt.Errorf("project_id missing or invalid in Kafka message")
+	}
+
+	operationType, ok := data["operation_type"].(string)
+	if !ok {
+		return "", "", nil, fmt.Errorf("operation_type missing or invalid in Kafka message")
+	}
+
+	return projectID, operationType, data, nil
+}
+
+func batchProcessProjects() {
+	// Create a ticker that ticks every 10 minutes
+	ticker := time.NewTicker(10 * time.Minute)
+	defer ticker.Stop() // Ensure ticker is stopped when function exits
+
+	for {
+		select {
+		case <-ticker.C:
+			// Lock the mutex for thread-safe access
+			mu.Lock()
+			if len(deleteIds) > 0 {
+				services.DeleteFromDealerPay(deleteIds) // Call delete function
+				deleteIds = []string{}                  // Clear after processing
+			}
+			services.ExecDlrPayInitialCalculation(projectOps, false) // Process and send project data
+			projectOps = projectOps[:0]                              // Clear projectOps after processing
+			mu.Unlock()
+		}
+	}
 }
