@@ -31,6 +31,7 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
+  addMinutes,
   endOfWeek,
   format,
   parseISO,
@@ -125,7 +126,7 @@ function getUserTimezone() {
 function getCurrentDateInUserTimezone() {
   const now = new Date();
   const userTimezone = getUserTimezone();
-  return toZonedTime(now, userTimezone);
+  return addMinutes(now, now.getTimezoneOffset());
 }
 
 const today = getCurrentDateInUserTimezone();
@@ -561,11 +562,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-                : '',
-              end_date: selectedDates.endDate
-                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-                : '',
+              ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+              : '',
             },
             true
           );
@@ -622,11 +623,11 @@ const LeadManagementDashboard = () => {
             'get_leads_count_by_status',
             {
               start_date: selectedDates.startDate
-                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-                : '',
-              end_date: selectedDates.endDate
-                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-                : '',
+              ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+              : '',
             },
             true
           );
@@ -734,11 +735,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-          : '',
-        end_date: selectedDates.endDate
-          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-          : '',
+        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+        : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
@@ -776,6 +777,9 @@ const LeadManagementDashboard = () => {
       setTotalCount(totalcount);
     }
   }, [leadsData]);
+  useEffect(() => {
+    setPage(1);
+  }, [selectedDates, selectedValue]);
 
   const handleArchiveSelected = async () => {
     setArchived(true);
@@ -1134,11 +1138,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-        ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-        : '',
-      end_date: selectedDates.endDate
-        ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-        : '',
+      ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+      : '',
+    end_date: selectedDates.endDate
+      ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+      : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1350,9 +1354,6 @@ const LeadManagementDashboard = () => {
   //----------------Aurora API integration END-------------------------//
 
   const [backup, setBackup] = useState('New Leads');
-
-  console.log(backup, "backup");
-  console.log(currentFilter, "filter")
 
   useEffect(() => {
     if (searchTerm === '') {
