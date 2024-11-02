@@ -7,14 +7,15 @@
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
+	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 /******************************************************************************
@@ -27,8 +28,7 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 	var (
 		err     error
 		reqBody []byte
-		// query               string
-		// data                []map[string]interface{}
+		query   string
 		dataReq models.DocusignConnectListenerRequest
 	)
 	log.EnterFn(0, "HandleDocusignConnectListenerRequest")
@@ -56,37 +56,58 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Docusign Connect Listener", http.StatusOK, nil)
-	writeToDummyFile(map[string]interface{}{
-		"data":       dataReq,
-		"accountid":  req.Header.Get("x-docusign-accountid"),
-		"accountId":  req.Header.Get("x-docusign-accountId"),
-		"account_id": req.Header.Get("x-docusign-account_id"),
-	})
-}
 
-func writeToDummyFile(data interface{}) {
-	var (
-		err            error
-		logFile        *os.File
-		jsonData       []byte
-		logFileOpenErr error
-	)
-
-	log.EnterFn(0, "writeToDummyFile")
-	defer func() { log.ExitFn(0, "writeToDummyFile", err) }()
-	logFile, logFileOpenErr = os.OpenFile("/var/log/owe/owe-outlook.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-
-	if logFileOpenErr != nil {
-		log.FuncErrorTrace(0, "Failed to open log file err: %v", logFileOpenErr)
+	accountId, ok := dataReq.Data["accountId"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get accountId from connect docusign listener request")
 		return
 	}
-	defer logFile.Close()
 
-	jsonData, err = json.MarshalIndent(data, "", "  ")
-
-	_, err = logFile.Write(jsonData)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to write to dummy file err: %v", err)
+	userId, ok := dataReq.Data["userId"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get userId from connect docusign listener request")
 		return
 	}
+
+	// make sure accountId and userId are valid as per the config
+	if accountId != leadsService.LeadAppCfg.DocusignAccountId ||
+		userId != leadsService.LeadAppCfg.DocusignUserId {
+		log.FuncErrorTrace(0, "Failed to validate accountId and userId from connect docusign listener request")
+		return
+	}
+
+	if dataReq.Event == "envelope-completed" {
+		envelopeId, ok := dataReq.Data["envelopeId"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get envelopeId from connect docusign listener request")
+			return
+		}
+
+		log.FuncDebugTrace(0, "Docusign Envelope completed event received")
+		// update docusign_envelope_completed_at
+		query = "UPDATE leads_info SET docusign_envelope_completed_at = CURRENT_TIMESTAMP WHERE docusign_envelope_id = $1"
+		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update docusign_envelope_completed_at err %v", err)
+			return
+		}
+	}
+
+	if dataReq.Event == "envelope-declined" {
+		envelopeId, ok := dataReq.Data["envelopeId"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get envelopeId from connect docusign listener request")
+			return
+		}
+
+		log.FuncDebugTrace(0, "Docusign Envelope declined event received")
+		// update docusign_envelope_declined_at
+		query = "UPDATE leads_info SET docusign_envelope_declined_at = CURRENT_TIMESTAMP WHERE docusign_envelope_id = $1"
+		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update docusign_envelope_declined_at err %v", err)
+			return
+		}
+	}
+
 }
