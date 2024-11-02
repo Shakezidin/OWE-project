@@ -407,7 +407,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = acceptedDatePtr
 		}
 
-		if statusId == 5 {
+		if leadWonDatePtr != nil {
 			wonLostLabel = "Deal Won"
 			wonLostDate = leadWonDatePtr
 		}
