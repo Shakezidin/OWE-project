@@ -24,12 +24,12 @@ import (
  ******************************************************************************/
 func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                 error
-		reqBody             []byte
-		query               string
-		data                []map[string]interface{}
-		dataReq             models.DocusignConnectListenerRequest
-		connectListenerResp *map[string]interface{}
+		err     error
+		reqBody []byte
+		// query               string
+		// data                []map[string]interface{}
+		dataReq models.DocusignConnectListenerRequest
+		// connectListenerResp *map[string]interface{}
 	)
 	log.EnterFn(0, "HandleDocusignConnectListenerRequest")
 	defer func() { log.ExitFn(0, "HandleDocusignConnectListenerRequest", err) }()
