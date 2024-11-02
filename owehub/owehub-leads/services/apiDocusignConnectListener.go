@@ -140,7 +140,7 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 		// update leads info
 		query = `
 			UPDATE leads_info SET
-				docusign_proposal_pdf_key = $1,
+				proposal_pdf_key = $1,
 				docusign_envelope_completed_at = CURRENT_TIMESTAMP,
 				updated_at = CURRENT_TIMESTAMP
 			WHERE leads_id = $2
@@ -148,7 +148,7 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{filePath, leadsId})
 
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to update docusign_proposal_pdf_key err %v", err)
+			log.FuncErrorTrace(0, "Failed to update proposal_pdf_key err %v", err)
 			return
 		}
 	}
