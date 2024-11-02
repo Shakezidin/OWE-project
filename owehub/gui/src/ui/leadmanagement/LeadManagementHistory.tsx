@@ -467,9 +467,18 @@ const LeradManagementHistory = () => {
   useEffect(()=>{
    setPage(1);
   },[selectedValue, selectedDates])
-
+ 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [historyTable]);
   
+  const divRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (divRef.current) {
+      divRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
 
   return (
     <>
@@ -478,8 +487,9 @@ const LeradManagementHistory = () => {
         onClose1={handleCloseProfileModal}
         leadId={leadId}
       />
-      <div className={`flex justify-between mt-2 ${styles.h_screen}`}>
+      <div ref={divRef} className={`flex justify-between mt-2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
+
           <div className={styles.lm_history_header}>
             {checkedCount == 0 && <h1>Records</h1>}
             {checkedCount != 0 && (

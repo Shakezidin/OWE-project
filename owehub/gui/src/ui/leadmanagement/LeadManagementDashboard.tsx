@@ -1182,7 +1182,7 @@ const LeadManagementDashboard = () => {
 
     try {
       const response = await postCaller(
-        'get_leads',
+        'get_leads_home_page',
         data,
         true
       );
@@ -1195,7 +1195,7 @@ const LeadManagementDashboard = () => {
 
 
 
-      const csvData = response.data?.map?.((item: any) => [
+      const csvData = response.data?.leads_data?.map?.((item: any) => [
         `OWE${item.leads_id}`,
         // item.status_id,
         item.first_name,
