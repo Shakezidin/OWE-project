@@ -478,7 +478,7 @@ const LeradManagementHistory = () => {
         onClose1={handleCloseProfileModal}
         leadId={leadId}
       />
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={`flex justify-between mt-2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.lm_history_header}>
             {checkedCount == 0 && <h1>Records</h1>}
