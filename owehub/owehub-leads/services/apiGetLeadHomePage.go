@@ -90,14 +90,30 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id = 5)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
-			whereClause = "WHERE (li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)"
+			whereClause = `
+				WHERE (
+					(li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR
+					(
+						li.status_id = 5 
+						AND li.appointment_scheduled_date IS NOT NULL 
+						AND li.appointment_accepted_date IS NULL
+						AND li.appointment_date > CURRENT_TIMESTAMP
+					)
+				)
+			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
 			whereClause = `
 				WHERE (
-				(li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
-				OR
-				(li.status_id = 5 AND li.appointment_scheduled_date IS NOT NULL AND li.appointment_date > CURRENT_TIMESTAMP)
+					(li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR
+					(
+						li.status_id = 5 
+						AND li.appointment_scheduled_date IS NOT NULL 
+						AND li.appointment_accepted_date IS NOT NULL
+						AND li.appointment_date > CURRENT_TIMESTAMP
+					)
 				)
 			`
 		}
