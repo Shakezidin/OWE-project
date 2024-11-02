@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
 /******************************************************************************
@@ -29,7 +30,6 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 		// query               string
 		// data                []map[string]interface{}
 		dataReq models.DocusignConnectListenerRequest
-		// connectListenerResp *map[string]interface{}
 	)
 	log.EnterFn(0, "HandleDocusignConnectListenerRequest")
 	defer func() { log.ExitFn(0, "HandleDocusignConnectListenerRequest", err) }()
@@ -52,6 +52,41 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request body to connect docusign listener request err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	appserver.FormAndSendHttpResp(resp, "Docusign Connect Listener", http.StatusOK, nil)
+	writeToDummyFile(map[string]interface{}{
+		"data":       dataReq,
+		"accountid":  req.Header.Get("x-docusign-accountid"),
+		"accountId":  req.Header.Get("x-docusign-accountId"),
+		"account_id": req.Header.Get("x-docusign-account_id"),
+	})
+}
+
+func writeToDummyFile(data interface{}) {
+	var (
+		err            error
+		logFile        *os.File
+		jsonData       []byte
+		logFileOpenErr error
+	)
+
+	log.EnterFn(0, "writeToDummyFile")
+	defer func() { log.ExitFn(0, "writeToDummyFile", err) }()
+	logFile, logFileOpenErr = os.OpenFile("/var/log/owe/owe-outlook.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+
+	if logFileOpenErr != nil {
+		log.FuncErrorTrace(0, "Failed to open log file err: %v", logFileOpenErr)
+		return
+	}
+	defer logFile.Close()
+
+	jsonData, err = json.MarshalIndent(data, "", "  ")
+
+	_, err = logFile.Write(jsonData)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to write to dummy file err: %v", err)
 		return
 	}
 }
