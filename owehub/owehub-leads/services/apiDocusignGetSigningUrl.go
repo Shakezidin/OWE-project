@@ -195,7 +195,7 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 			return
 		}
 
-		query = "UPDATE leads_info SET docusign_envelope_id = $1 WHERE leads_id = $2"
+		query = "UPDATE leads_info SET docusign_envelope_id = $1, docusign_envelope_sent_at = CURRENT_TIMESTAMP WHERE leads_id = $2"
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId, leadId})
 
 		if err != nil {
