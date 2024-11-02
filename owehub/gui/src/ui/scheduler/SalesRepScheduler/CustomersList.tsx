@@ -393,7 +393,7 @@ const CustomersList = () => {
             </div>
           </div>
 
-          <div className={`  ${styles.cust_det_list}`}>
+          <div className={` ${styles.cust_det_list}`}>
             {isPending ? (
               <div className="flex items-center justify-center">
                 <MicroLoader />

@@ -86,9 +86,7 @@ func HandleDocusignGetDocumentRequest(resp http.ResponseWriter, req *http.Reques
 
 	// get docusign document
 	getDocumentApi := docusignclient.GetDocumentApi{
-		AccessToken: dataReq.AccessToken,
-		BaseUri:     dataReq.BaseUri,
-		EnvelopeId:  envelopeId,
+		EnvelopeId: envelopeId,
 	}
 
 	getDocumentResp, err = getDocumentApi.Call()

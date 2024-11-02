@@ -31,6 +31,7 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
+  addMinutes,
   endOfWeek,
   format,
   parseISO,
@@ -125,7 +126,7 @@ function getUserTimezone() {
 function getCurrentDateInUserTimezone() {
   const now = new Date();
   const userTimezone = getUserTimezone();
-  return toZonedTime(now, userTimezone);
+  return addMinutes(now, now.getTimezoneOffset());
 }
 
 const today = getCurrentDateInUserTimezone();
@@ -561,11 +562,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-                : '',
-              end_date: selectedDates.endDate
-                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-                : '',
+              ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+              : '',
             },
             true
           );
@@ -613,62 +614,64 @@ const LeadManagementDashboard = () => {
 
 
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-          const response = await postCaller(
-            'get_leads_count_by_status',
-            {
-              start_date: selectedDates.startDate
-                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-                : '',
-              end_date: selectedDates.endDate
-                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-                : '',
-            },
-            true
-          );
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     const fetchData = async () => {
+  //       try {
+  //         setIsLoading(true);
+  //         const response = await postCaller(
+  //           'get_leads_count_by_status',
+  //           {
+  //             start_date: selectedDates.startDate
+  //             ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+  //             : '',
+  //           end_date: selectedDates.endDate
+  //             ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+  //             : '',
+  //           },
+  //           true
+  //         );
 
-          if (response.status === 200) {
-            const apiData = response.data;
+  //         if (response.status === 200) {
+  //           const apiData = statusData1;
 
-            const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => {
-                const statusName = item.status_name;
-                const defaultDataKey = Object.keys(defaultData).find(
-                  (key) => key === statusName || defaultData[key].name === statusName
-                );
+  //           console.log(apiData, "data check")
 
-                if (defaultDataKey) {
-                  acc[defaultDataKey] = {
-                    ...defaultData[defaultDataKey],
-                    value: item.count,
-                  };
-                }
+  //           const formattedData = apiData.reduce(
+  //             (acc: DefaultData, item: any) => {
+  //               const statusName = item.status_name;
+  //               const defaultDataKey = Object.keys(defaultData).find(
+  //                 (key) => key === statusName || defaultData[key].name === statusName
+  //               );
 
-                return acc;
-              },
-              { ...defaultData }
-            );
+  //               if (defaultDataKey) {
+  //                 acc[defaultDataKey] = {
+  //                   ...defaultData[defaultDataKey],
+  //                   value: item.count,
+  //                 };
+  //               }
 
-            const mergedData = Object.values(formattedData) as StatusData[];
-            setPieData(mergedData);
+  //               return acc;
+  //             },
+  //             { ...defaultData }
+  //           );
 
-          } else if (response.status > 201) {
-            toast.error(response.data.message);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+  //           const mergedData = Object.values(formattedData) as StatusData[];
+  //           setPieData(mergedData);
 
-      fetchData();
-    }
-  }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
+  //         } else if (response.status > 201) {
+  //           toast.error(response.data.message);
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
+
+  //     fetchData();
+  //   }
+  // }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -680,9 +683,37 @@ const LeadManagementDashboard = () => {
   }, [pieData]);
 
   const dispatch = useAppDispatch();
-  const { isLoading, leadsData, totalcount } = useAppSelector(
+  const { isLoading, leadsData,statusData1, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const apiData = statusData1;
+      const formattedData = apiData.reduce(
+        (acc: DefaultData, item: any) => {
+          const statusName = item.status_name;
+          const defaultDataKey = Object.keys(defaultData).find(
+            (key) => key === statusName || defaultData[key].name === statusName
+          );
+
+          if (defaultDataKey) {
+            acc[defaultDataKey] = {
+              ...defaultData[defaultDataKey],
+              value: item.count,
+            };
+          }
+
+          return acc;
+        },
+        { ...defaultData }
+      );
+
+      const mergedData = Object.values(formattedData) as StatusData[];
+      setPieData(mergedData);
+
+    }
+  }, [statusData1])
 
   const getAuroraData = async () => {
     setIsProjectLoading(true); // Start project-specific loader
@@ -734,11 +765,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-          : '',
-        end_date: selectedDates.endDate
-          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-          : '',
+        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+        : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
@@ -776,6 +807,9 @@ const LeadManagementDashboard = () => {
       setTotalCount(totalcount);
     }
   }, [leadsData]);
+  useEffect(() => {
+    setPage(1);
+  }, [selectedDates, selectedValue]);
 
   const handleArchiveSelected = async () => {
     setArchived(true);
@@ -1134,11 +1168,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-        ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-        : '',
-      end_date: selectedDates.endDate
-        ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-        : '',
+      ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+      : '',
+    end_date: selectedDates.endDate
+      ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+      : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1148,7 +1182,7 @@ const LeadManagementDashboard = () => {
 
     try {
       const response = await postCaller(
-        'get_leads',
+        'get_leads_home_page',
         data,
         true
       );
@@ -1161,7 +1195,7 @@ const LeadManagementDashboard = () => {
 
 
 
-      const csvData = response.data?.map?.((item: any) => [
+      const csvData = response.data?.leads_data?.map?.((item: any) => [
         `OWE${item.leads_id}`,
         // item.status_id,
         item.first_name,
@@ -1350,9 +1384,6 @@ const LeadManagementDashboard = () => {
   //----------------Aurora API integration END-------------------------//
 
   const [backup, setBackup] = useState('New Leads');
-
-  console.log(backup, "backup");
-  console.log(currentFilter, "filter")
 
   useEffect(() => {
     if (searchTerm === '') {
