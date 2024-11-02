@@ -121,7 +121,11 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
-			whereClause = "WHERE (li.status_id != 6 AND li.proposal_created_date IS NOT NULL AND li.status_id != 3)"
+			whereClause = `
+				WHERE li.status_id NOT IN (3, 6) 
+					AND li.proposal_created_date IS NOT NULL
+					AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
+			`
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause = `
@@ -129,8 +133,11 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR (li.status_id = 5)
 					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-            		OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL
-					AND li.appointment_date > CURRENT_TIMESTAMP)
+            		OR (
+						li.status_id NOT IN (3, 6) 
+						AND li.proposal_created_date IS NOT NULL
+						AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
+					)
 				)
 			`
 		}
@@ -161,7 +168,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.Search != "" {
 		whereEleList = append(whereEleList, fmt.Sprintf("%s%%", dataReq.Search))
 		whereClause = fmt.Sprintf(
-			"%s AND ((li.first_name ILIKE $%d OR li.last_name ILIKE $%d OR (li.first_name || ' ' || li.last_name) ILIKE $%d)",
+			"%s AND (li.first_name ILIKE $%d OR li.last_name ILIKE $%d OR (li.first_name || ' ' || li.last_name) ILIKE $%d)",
 			whereClause,
 			len(whereEleList),
 			len(whereEleList),
@@ -555,8 +562,11 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 				OR (li.status_id = 5)
 				OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-            	OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL
-				AND li.appointment_date > CURRENT_TIMESTAMP)
+				OR (
+					li.status_id NOT IN (3, 6) 
+					AND li.proposal_created_date IS NOT NULL
+					AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
+				)
 			)
 				AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 				AND li.is_archived = FALSE
