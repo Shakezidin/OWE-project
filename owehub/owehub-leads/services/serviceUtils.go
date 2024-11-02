@@ -162,7 +162,6 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 			UPDATED_AT = CURRENT_TIMESTAMP,
 			APPOINTMENT_ACCEPTED_DATE = NULL,
-			APPOINTMENT_DATE = NULL,
 			STATUS_ID = 3
 			WHERE leads_id = $1
 		`
@@ -220,7 +219,6 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 		UPDATED_AT = CURRENT_TIMESTAMP,
 		APPOINTMENT_ACCEPTED_DATE = NULL,
-		APPOINTMENT_DATE = NULL,
 		STATUS_ID = 3
 		WHERE leads_id = $1
 	`
