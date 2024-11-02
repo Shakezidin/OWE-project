@@ -48,7 +48,7 @@ import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
 import TotalCount from './ui/TotalCount/TotalCount';
-import SignDocument from './ui/leadmanagement/Modals/SignDocument';
+import SignDocument from './ui/leadmanagement/components/SignDocument/SignDocument';
 
 function App() {
   const dispatch = useAppDispatch();

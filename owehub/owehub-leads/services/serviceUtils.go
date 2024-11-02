@@ -232,3 +232,24 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 
 	return nil
 }
+
+// getLeadPdfFilename returns the filename for the leads proposal pdf
+func getLeadPdfFilename(firstName, lastName string) string {
+	name := ""
+
+	for _, r := range strings.ToLower(firstName) {
+		// only allow alphabets and numbers
+		if r >= 97 && r <= 122 || r >= 48 && r <= 57 {
+			name += string(r)
+		}
+	}
+	name += "_"
+	for _, r := range strings.ToLower(lastName) {
+		// only allow alphabets and numbers
+		if r >= 97 && r <= 122 || r >= 48 && r <= 57 {
+			name += string(r)
+		}
+	}
+
+	return fmt.Sprintf("%s_%d.pdf", name, time.Now().Unix())
+}

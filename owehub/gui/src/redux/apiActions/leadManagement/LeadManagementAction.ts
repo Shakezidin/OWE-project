@@ -5,7 +5,7 @@ export const getLeads = createAsyncThunk(
   'fetchLead/get_leads',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('get_leads', params, true);
+      const data = await postCaller('get_leads_home_page', params, true);
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
