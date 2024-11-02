@@ -29,7 +29,7 @@
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
   margin-bottom: 24px;
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
@@ -94,7 +94,7 @@
 }
 .card {
   background-color: white;
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   min-height: 200px;
 }

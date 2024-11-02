@@ -6,14 +6,13 @@
 
 /* Input style */
 .input {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   flex: 1;
   height: 2.27rem;
   color: var(--input-border-color);
   padding: 0px 14px;
   line-height: 14.5px;
-  /* 103.571% */
   border: 0;
   border-radius: 0;
   outline: 0;

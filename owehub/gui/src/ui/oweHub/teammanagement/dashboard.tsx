@@ -17,7 +17,6 @@ import { showAlert } from '../../components/alert/ShowAlert';
 import { resetTeams } from '../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import useAuth from '../../../hooks/useAuth';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface AccordionSection {
   data: any;
@@ -157,16 +156,6 @@ const TeamManagement: React.FC = () => {
         />
       )}
 
-      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-        <Breadcrumb
-          head=""
-          linkPara="Teams"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
-      </div>
-
       <div className="team-container">
         <div className="team-main">
           <div className="team-main-section">
@@ -179,7 +168,7 @@ const TeamManagement: React.FC = () => {
                   // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
                   <div className="teamdash-header">
-                    <h1>Total Teams: {teams?.length}</h1>
+                    <h1 style={{fontSize: "18px"}}>Total Teams: {teams?.length}</h1>
                     <div className="dash-newteam">
                       <div className="remove-section-oncheck">
                         {/* <button className='delete' onClick={handleOpen2}>Remove Team</button> */}

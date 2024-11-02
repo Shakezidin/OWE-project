@@ -19,6 +19,7 @@
   width: 300px;
 }
 
+
 .mapHeaderWrap {
   display: flex;
   align-items: center;
@@ -198,28 +199,48 @@
 
 .inputsearch {
   min-width: 220px !important;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   flex: 1 1;
   height: 2.37rem;
-  color: #000;
+  color: var(--input-border-color);
   padding: 0px 14px;
-  border: 1px solid #cbcbcb;
-  border-radius: 6px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 8px;
   outline: 0;
-  transition: border-color 0.3s ease;
 }
 
 .inputsearch:hover {
   border-color: #377cf6;
-  border-width: 2px;
+  border-width: 1px;
 }
+
 
 .inputsearch:hover,
 .inputsearch:focus,
 .inputsearch:not(:placeholder-shown) {
   border-color: #377cf6;
-  border-width: 2px;
+  border-width: 1px;
+}
+
+.inputsearch::placeholder {
+  color: var(--input-border-color);
+}
+
+.inputMap {
+  fill: var(--input-border-color); 
+}
+
+.inputsearch:focus::placeholder, .inputsearch:hover::placeholder {
+  color: var(--primary-color); 
+}
+
+.inputsearch:hover + .inputMap{
+  fill: var(--primary-color);
+}
+
+.focused + .inputMap, .inputsearch.focused::placeholder {
+  fill: var(--primary-color); 
 }
 
 .dropdownselect {

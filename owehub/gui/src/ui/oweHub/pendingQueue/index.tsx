@@ -210,7 +210,7 @@ const PendingQueue = () => {
       }
 
       <div
-        className="project-container"
+        className="project-container pend-actions-cont"
         style={{ marginTop: '1.2rem', padding: 0 }}
       >
         <div className="performance-table-heading">

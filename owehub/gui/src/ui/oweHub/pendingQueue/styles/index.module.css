@@ -188,16 +188,20 @@
   }
   .pending_queue_table_header {
     position: relative;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
+    padding-inline: 1rem;
   }
   .pendingBoxContainer {
     position: absolute !important;
     top: 62px;
-    left: 20px;
+    left: 5px;
   }
 }
 
 @media screen and (max-width: 768px) {
+  .pend-actions-cont{
+    margin-top: 0 !important;
+  }
   .pending_card_wrapper {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     margin: 10px;

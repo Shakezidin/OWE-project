@@ -143,7 +143,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     cursor: 'pointer',
     transition: 'transform 0.3s ease, background-color 0.3s ease',
     transform: isHovered ? 'scale(1.09)' : 'scale(1)',
-    backgroundColor: isHovered ? '#002970' : '',
+    backgroundColor: isHovered ? '#AD1313' : '',
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -451,7 +451,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   <SelectOption
                     options={userDropdownData}
                     value={selectedOption}
-                    menuStyles={{ width: 'fit-content', left: -30 }}
+                    menuStyles={{ width: 'fit-content', left: -30}}
                     controlStyles={{
                       boxShadow: 'none',
                       border: 'none',
@@ -476,9 +476,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     }}
                     menuWidth="fit-content"
                     menuListStyles={{
-                      width: 'fit-content',
+                      width: 'fit-content'
                     }}
-                    enableHoverEffect={false}
                   />
                 </div>
               </div>

@@ -740,7 +740,7 @@
 .status-cust-name span {
   display: flex;
   margin-top: 1.5rem;
-  color: #9d9d9d;
+  color: var(--grey-text-color);
   font-weight: 500;
   font-size: 14px;
   text-wrap: nowrap;
@@ -748,7 +748,7 @@
 }
 
 .status-cust-name pre {
-  color: #000;
+  color: var(--input-border-color);
   font-weight: 600;
   max-width: 150px;
   text-overflow: ellipsis;

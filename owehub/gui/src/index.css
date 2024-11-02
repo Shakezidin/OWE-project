@@ -184,6 +184,10 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
   --grey-text-color: #80848B;
   --grey-border-color: #BFBFBF;
   --grey-light-color: #E8E8E8;
+  --button-hover-color: #4062CA;
+  --delete-btn-color: #D91515;
+  --delete-btn-hover: #AD1313;
+
 }
 
 a {
@@ -192,7 +196,7 @@ a {
 
 .inputLabel-select {
   position: absolute;
-  color: #000000;
+  color: var(--input-border-color);
   font-size: 12px;
   font-weight: 400;
   line-height: 14.5px;
@@ -526,7 +530,7 @@ input[type='password']::-ms-clear {
 
 .create-input-field-note textarea {
   width: 100%;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--input-border-color);
   outline: none;
   padding: 0.5rem;
   font-size: 13px !important;
@@ -586,7 +590,7 @@ br {
 }
 
 .fildelb-btn img {
-  width: 19px;
+  width: 18px;
   height: 20px;
   transition: all 0.3s ease;
 }

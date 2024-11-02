@@ -635,16 +635,6 @@ const ProjectStatus = () => {
                       }}
                       width="190px"
                     />
-                    {/* <Input
-                      type="text"
-                      placeholder="Search for Unique ID or Name"
-                      value={search}
-                      name="Search for Unique ID or Name"
-                      onChange={(e) => {
-                        handleSearchChange(e);
-                        setSearch(e.target.value);
-                      }}
-                    /> */}
                   </div>
                 </div>
               </div>

@@ -20,7 +20,7 @@
 .upload-notice {
   color: #ff4d4d;
   /* A softer red */
-  font-size: 0.875rem;
+  font-size: 14px;
   /* Makes it a bit larger than the default */
   font-weight: 500;
   /* Adds some weight to the text */

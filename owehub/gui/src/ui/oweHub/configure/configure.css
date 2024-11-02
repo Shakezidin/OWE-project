@@ -39,18 +39,17 @@
 }
 
 .iconsSection2 img {
-  width: 18px;
-  height: 18px;
+  width: 12px !important;
+  height: 12px !important;
 }
 
 .iconsSection2 button {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   background-color: var(--white-color);
-  padding: 0.4rem 1rem 0.4rem 1rem;
-  border: 1px solid var(--button-border-color);
+  padding: 8px 12px;
   font-size: 13px;
   border-radius: 8px;
   font-weight: 500;
@@ -347,7 +346,10 @@ table thead tr th {
   align-items: center;
   gap: 0.3rem;
   cursor: pointer;
-  /* font-weight: 600; */
+}
+
+.table-header p{
+  color: var(--input-border-color);
 }
 
 table tbody tr {
@@ -363,7 +365,7 @@ table tbody tr td {
   padding: 0.8rem 1rem 0.8rem 1rem;
   font-size: 12px;
   width: auto;
-  color: var(--coloumn-text-color);
+  color: var(--input-border-color);
 }
 
 .selected {
