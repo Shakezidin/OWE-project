@@ -18,7 +18,7 @@ import useMatchMedia from '../../../../hooks/useMatchMedia';
 import Pagination from '../../../components/pagination/Pagination';
 import { createDocuSignRecipientView, createEnvelope, getDocument, getDocuSignUrl } from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
 type DocuStatus = "Complete" | "Sent" | "Viewed" | "Declined";
@@ -166,6 +166,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         : [...prev, leadId]
     );
   };
+  const navigate=useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
@@ -272,7 +273,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       downloadProposalWithSSE(leadId);
       setSelectedType('');
     } else if (selectedType === 'signature') {
-      handleSignAndCreateRecipientView(); // Call the combined function
+      OpenSignDocument();
+      // handleSignAndCreateRecipientView(); 
+      //RABINDRA KUMAR SHARMA
       setSelectedType('');
     }
     else if (selectedType === 'Appointment Not Required') {
@@ -290,6 +293,19 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       console.error("Error in signing and creating recipient view:", error);
     }
   };
+
+const SignDocument=async () =>{
+  navigate('/drop-sign-document')
+}
+
+const OpenSignDocument = async () => {
+  try {
+    await SignDocument();
+  }
+  catch (error) {
+    console.error("Error in Data Incoming", error);
+  }
+}
 
 
 const handleSignDocument = async () => {
