@@ -45,7 +45,7 @@ func (api *RetrieveWebProposalApi) Call() (*RetrieveWebProposalApiResponse, erro
 
 	err = callApi(http.MethodGet, endPt, nil, &respBody)
 	if err != nil {
-		return nil, errors.New("server side error when retrieving modules")
+		return nil, errors.New("server side error when retrieving web proposal")
 	}
 
 	return &respBody, nil

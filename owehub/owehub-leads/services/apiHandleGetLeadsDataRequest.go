@@ -407,7 +407,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = acceptedDatePtr
 		}
 
-		if statusId == 5 {
+		if leadWonDatePtr != nil {
 			wonLostLabel = "Deal Won"
 			wonLostDate = leadWonDatePtr
 		}
@@ -416,7 +416,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = nil
 			if acceptedDatePtr == nil {
 				aptStatusLabel = "No Response"
-			} else if acceptedDatePtr.Before(*appointmentDatePtr) {
+			} else if appointmentDatePtr.Before(*acceptedDatePtr) {
 				aptStatusLabel = "Appointment Date Passed"
 			} else {
 				aptStatusLabel = "Appointment Accepted"

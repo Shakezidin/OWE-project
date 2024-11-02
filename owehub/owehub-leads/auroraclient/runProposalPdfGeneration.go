@@ -41,7 +41,7 @@ func (api *RunProposalPdfGenerationApi) Call() (*RunProposalPdfGenerationApiResp
 
 	err = callApi(http.MethodPost, endPt, nil, &respBody)
 	if err != nil {
-		return nil, errors.New("server side error when retrieving modules")
+		return nil, errors.New("server side error when running proposal pdf generation")
 	}
 
 	return &respBody, nil

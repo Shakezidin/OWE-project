@@ -149,6 +149,15 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_leads_home_page",
+		apiHandler.HandleGetLeadHomePage,
+		true,
+		leadsRoleGroup,
+	},
+
+	// AURORA
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_create_project",
 		apiHandler.HandleAuroraCreateProjectRequest,
 		true,
@@ -263,13 +272,12 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{},
 	},
-
 	{
 		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/get_leads_home_page",
-		apiHandler.HandleGetLeadHomePage,
-		true,
-		leadsRoleGroup,
+		"/owe-leads-service/v1/docusign_connect_listener",
+		apiHandler.HandleDocusignConnectListenerRequest,
+		false,
+		[]types.UserGroup{},
 	},
 }
 
@@ -403,6 +411,13 @@ func init() {
 	err = InitDocusignClient()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to initialize docusign client err %v", err)
+		return
+	}
+
+	/* Setup outlook webhooks */
+	err = leadsService.SetupOutlookWebhooks()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to setup outlook webhooks err %v", err)
 		return
 	}
 

@@ -6,8 +6,8 @@
 package common
 
 import (
+	"bytes"
 	"fmt"
-	"io"
 
 	"strings"
 
@@ -57,7 +57,7 @@ func getS3Client() (*s3.S3, error) {
  * INPUT:			object
  * RETURNS:         error
  ******************************************************************************/
-func S3PutObject(path string, object io.Reader) error {
+func S3PutObject(path string, object *bytes.Reader) error {
 	var (
 		err             error
 		svc             *s3.S3

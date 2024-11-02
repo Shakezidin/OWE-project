@@ -438,6 +438,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/get_milestone_data",
+		apiHandler.HandleGetMilestoneDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
