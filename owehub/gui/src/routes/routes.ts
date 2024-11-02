@@ -96,6 +96,6 @@ export const ROUTES = {
   FOLDER_DETAIL:"/library/*",
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
   CALCULATOR:'/calculator',
-  SIGN_DOCUMENT:'drop-sign-document'
+  SIGN_DOCUMENT:'digital-signature-portal'
 
 };
