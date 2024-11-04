@@ -139,7 +139,7 @@ const TotalCount: React.FC = () => {
   });
   const [selectedStateOption, setSelectedStateOption] = useState<Option>({
     label: 'All State',
-    value: '',
+    value: 'All',
   });
 
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
@@ -291,7 +291,7 @@ const TotalCount: React.FC = () => {
             start_date,
             end_date,
             date_by: selectedOption.value,
-            state: selectedStateOption.value,
+            state: selectedStateOption.value === "All" ? "" : selectedStateOption.value === "" ? "" : selectedStateOption.value,
           });
 
           if (response.status > 201) {
@@ -385,7 +385,7 @@ const TotalCount: React.FC = () => {
           <div className="order-mob-2  flex">
             <SelectOption
               options={[
-                { label: 'All State', value: '' }, // Default "All State" option
+                { label: 'All State', value: 'All' }, // Default "All State" option
                 ...(availableStates(newFormData) || []), // Other states
               ]}
               controlStyles={{
@@ -393,23 +393,29 @@ const TotalCount: React.FC = () => {
                 minHeight: 30,
                 '@media (min-width: 768px)': {
                   flex: 1,
-                  width: '100%',
+                   
                 },
               }}
               onChange={handleStateOptionChange}
               value={selectedStateOption}
               menuStyles={{
+                minWidth: 135,
                 flexBasis: 115,
                 '@media (min-width: 768px)': {
                   flex: 1,
-                },
+                }
+                 
               }}
+           
               menuListStyles={{
                 fontWeight: 400,
+                
               }}
+
               singleValueStyles={{
                 fontWeight: 400,
               }}
+              width='130px'
             />
           </div>
 
