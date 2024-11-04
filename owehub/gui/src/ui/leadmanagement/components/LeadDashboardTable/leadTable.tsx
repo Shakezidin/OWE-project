@@ -20,7 +20,7 @@ import { createDocuSignRecipientView, createEnvelope, getDocument, getDocuSignUr
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
+type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection" | "Completed";
 type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
 
 interface LeadSelectionProps {
@@ -376,12 +376,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       backgroundColor: "#B459FC",
       color: "#fff"
     },
+    "Completed": {
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
     "Send Docs": {
       backgroundColor: "#EC9311",
       color: "#fff"
     },
     "CREATED": {
-      backgroundColor: "#21BC27",
+      backgroundColor: "#B459FC",
       color: "#fff"
     },
     "Clear selection": {
@@ -621,7 +625,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
                               </div>
                             )}
-                            {(false) &&
+                            {(lead.can_manually_win) &&
                               <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
                                 48hrs passed
                               </div>}
@@ -640,7 +644,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
-                            (lead.proposal_status === "CREATED" ? "Completed" : "")
+                            (lead.proposal_status)
                           ) : (
                             <span style={{ color: "black" }}>_____</span>
                           )}
@@ -706,16 +710,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                             { label: 'Reschedule Appointment', value: 'app_sched' },
                                             { label: 'Create Proposal', value: 'new_proposal' },
                                           ]
-                                          : lead && lead.proposal_status && lead.proposal_status === 'CREATED' && lead.proposal_id !== ''
+                                          : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                             ? [
-                                              { label: 'Send Proposal', value: 'sendtocust' },
+                                              // { label: 'Send Proposal', value: 'sendtocust' },
                                               { label: 'View Proposal', value: 'viewProposal' },
                                               { label: 'Edit Proposal', value: 'editProposal' },
                                               { label: 'Download Proposal', value: 'download' },
                                               { label: 'Sign Document ', value: 'signature' },
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                               { label: 'Refresh Url', value: 'renew_proposal' },
-                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'CREATED'
+                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
                                               ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
@@ -819,16 +823,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                               { label: 'Create Proposal', value: 'new_proposal' },
                                             ]
-                                            : lead && lead.proposal_status && lead.proposal_status === 'CREATED' && lead.proposal_id !== ''
+                                            : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                               ? [
-                                                { label: 'Send Proposal', value: 'sendtocust' },
+                                                // { label: 'Send Proposal', value: 'sendtocust' },
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
                                                 { label: 'Download Proposal', value: 'download' },
                                                 { label: 'Sign Document ', value: 'signature' },
                                                 { label: 'Reschedule Appointment', value: 'app_sched' },
                                                 { label: 'Refresh Url', value: 'renew_proposal' },
-                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'CREATED'
+                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
                                                   { label: 'Edit Proposal', value: 'editProposal' },
@@ -860,11 +864,19 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 disabledOptions={
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response')
                                     ? lead.won_lost_label !== ''
-                                      ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
-                                      : ['Appointment Not Required', 'Complete as Won']
+                                      ? lead.can_manually_win
+                                        ? ['Appointment Not Required', 'Deal Won']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                      : lead.can_manually_win
+                                        ? ['Appointment Not Required']
+                                        : ['Appointment Not Required', 'Complete as Won']
                                     : lead.won_lost_label !== ''
-                                      ? ['Deal Won', 'Complete as Won']
-                                      : ['Complete as Won']
+                                      ? lead.can_manually_win
+                                        ? ['Deal Won']
+                                        : ['Deal Won', 'Complete as Won']
+                                      : lead.can_manually_win
+                                        ? []
+                                        : ['Complete as Won']
                                 }
                               />
 
