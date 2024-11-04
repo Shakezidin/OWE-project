@@ -19,6 +19,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
@@ -215,9 +216,10 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
  ******************************************************************************/
 func sendLeadWonEmail(leadsId int64) error {
 	var (
-		err   error
-		query string
-		data  []map[string]interface{}
+		err      error
+		query    string
+		data     []map[string]interface{}
+		response *rest.Response
 	)
 
 	log.EnterFn(0, "sendLeadWonEmail")
@@ -292,7 +294,8 @@ func sendLeadWonEmail(leadsId int64) error {
 	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	// prepare the mail
-	from := mail.NewEmail("OWE", leadsService.LeadAppCfg.AppointmentSenderEmail)
+	// from := mail.NewEmail("OWE", leadsService.LeadAppCfg.AppointmentSenderEmail)
+	from := mail.NewEmail("OWE", "it@ourworldenergy.com") // TODO: change this
 	subject := "Lead Won!"
 	to := mail.NewEmail(userName, userEmail)
 
@@ -425,11 +428,13 @@ func sendLeadWonEmail(leadsId int64) error {
 
 	// Send the email
 	client := sendgrid.NewSendClient("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")
-	_, err = client.Send(message)
+	response, err = client.Send(message)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email with err: %v", err)
 		return err
 	}
+
+	log.FuncDebugTrace(0, "Email sent successfully, headers: %+v, body %s, status code: %d", response.Headers, response.Body, response.StatusCode)
 
 	return nil
 }
