@@ -22,7 +22,14 @@ func ExecDlrPayInitialCalculation(uniqueIds string, hookType string) error {
 	count := 0
 	dataReq := models.DataRequestBody{}
 
-	InitailData, err = oweconfig.LoadDlrPayInitialData([]string{uniqueIds})
+	var idList []string
+	if uniqueIds != "" {
+		idList = []string{uniqueIds}
+	} else {
+		idList = []string{}
+	}
+
+	InitailData, err = oweconfig.LoadDlrPayInitialData(idList)
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
 		return err
@@ -189,21 +196,26 @@ func DeleteFromDealerPay(uniqueIDs []string) error {
 	return nil
 }
 
-// buildUpdateQuery constructs an SQL UPDATE query using the provided parameters.
-// It builds the query by directly embedding the values into the SQL string.
 func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn string, idValue interface{}) (string, error) {
 	sets := []string{}
 
 	for col, val := range row {
 		if col != idColumn {
-			valStr := fmt.Sprintf("%v", val) // Convert value to string
-			if strVal, ok := val.(string); ok {
+			var valStr string
+			switch v := val.(type) {
+			case string:
 				// Escape single quotes in string values
-				valStr = strings.ReplaceAll(strVal, "'", "''") // Escaping single quotes
-				sets = append(sets, fmt.Sprintf("%s = '%s'", col, valStr))
-			} else {
-				sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
+				valStr = strings.ReplaceAll(v, "'", "''")
+				valStr = fmt.Sprintf("'%s'", valStr) // Enclose string values in quotes
+
+			case time.Time:
+				// Format time.Time values and enclose in quotes
+				valStr = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+
+			default:
+				valStr = fmt.Sprintf("%v", v) // Keep numeric and other types as they are
 			}
+			sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
 		}
 	}
 
@@ -211,7 +223,6 @@ func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn str
 	var idValueStr string
 	switch v := idValue.(type) {
 	case string:
-		// Escape single quotes in string ID values
 		idValueStr = strings.ReplaceAll(v, "'", "''")
 		idValueStr = fmt.Sprintf("'%s'", idValueStr) // Enclose string ID values in quotes
 	default:
