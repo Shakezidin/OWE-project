@@ -496,6 +496,33 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       console.error('Error submitting form:', error);
     }
   };
+  const [loadCom, setLoadCom] = useState(false);
+  const handleCloseComplete = async () => {
+    setLoadCom(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+          is_manual_win: true
+        },
+        true
+      );
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setRefresh((prev) => prev + 1);
+        setLoadCom(false);
+        HandleModal();
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoadCom(false);
+      console.error('Error submitting form:', error);
+    }
+  };
 
   console.log(finish, "succccccccccccc")
   const MarkedConfirm = () => {
@@ -516,12 +543,37 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   }, [reschedule, action, leadData]);
 
+  const [currentDateTime, setCurrentDateTime] = useState('');
+
+  useEffect(() => {
+    const updateDateTime = () => {
+      const options: Intl.DateTimeFormatOptions = {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      };
+      const formattedDateTime = new Date().toLocaleString('en-US', options);
+      setCurrentDateTime(formattedDateTime);
+    };
+
+    updateDateTime();
+
+    const timer = setInterval(updateDateTime, 1000); // Update every second
+
+    return () => {
+      clearInterval(timer); // Clean up the timer on component unmount
+    };
+  }, []);
+
 
   return (
     <div>
       {isOpen1 && (
         <div className="transparent-model">
-          <div className={classes.customer_wrapper_list}>
+          <div className={classes.customer_wrapper_list} style={{backgroundColor: visibleDiv === 5 ? "#EDFFF0" : "#fff"}}>
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
                 <img
@@ -833,8 +885,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     <span className={classes.ctmracquired}>
                       Lead marked as Deal Won!
                     </span>
-                    <span className={classes.ctmracquired}>
-                      {currentFilter && currentFilter === "In Progress" ? "" : "Moving it to the In Progress section."}
+                    <span className={classes.ctmracquired} style={{ fontWeight: "500" }}>
+                      {currentDateTime}
                     </span>
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>
@@ -852,6 +904,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     >
                       {loadWon ? "Wait..." : "Confirm"}
                     </button>
+
+                    <span style={{ color: "#393D42", fontWeight: "400", fontSize: "12px" }} className={classes.customTextStyle}>
+                      You have 48hrs to complete this lead as Won.
+                    </span>
                   </div>
 
                 </div>
@@ -899,15 +955,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: `${loadingProposal ? '#FFFFFF' : '#377cf6'}`,
                         color: '#FFFFFF',
                         border: 'none',
-                        pointerEvents: (loadWon || !leadId) ? 'none' : 'auto',
-                        opacity: (loadWon || !leadId) ? 0.6 : 1,
-                        cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
+                        pointerEvents: (loadCom || !leadId) ? 'none' : 'auto',
+                        opacity: (loadCom || !leadId) ? 0.6 : 1,
+                        cursor: (loadCom || !leadId) ? 'not-allowed' : 'pointer',
                       }}
 
-                    // onClick={handleCloseWon}
+                    onClick={handleCloseComplete}
 
                     >
-                      {loadWon ? "Wait..." : "Confirm"}
+                      {loadCom ? "Wait..." : "Confirm"}
                     </button>
                   </div>
 
