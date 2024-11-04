@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
-type DocuStatus = "Complete" | "Sent" | "Viewed" | "Declined";
+type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -392,11 +392,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
   const docusignStyles = {
-    "Complete": {
-      backgroundColor: "#21BC27",
-      color: "#fff"
-    },
-    "Accepted": {
+    "Completed": {
       backgroundColor: "#21BC27",
       color: "#fff"
     },
@@ -404,7 +400,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       backgroundColor: "#EC9311",
       color: "#fff"
     },
-    "Viewed": {
+    "Voided": {
       backgroundColor: "#4999E3",
       color: "#fff"
     },
@@ -413,6 +409,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       color: "#fff"
     }
   };
+
 
 
   const [page, setPage] = useState(1);
@@ -663,7 +660,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             <span style={{ color: "black" }}>_____</span>
                           )}
                         </div>
+                        <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
+                          {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
+                        </div>
                       </td>
+
 
 
                       <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
