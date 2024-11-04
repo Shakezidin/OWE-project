@@ -129,6 +129,7 @@ function getCurrentDateInUserTimezone() {
   return addMinutes(now, now.getTimezoneOffset());
 }
 
+
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);

@@ -9,6 +9,7 @@ import { DateRange } from 'react-date-range';
 import { toZonedTime } from 'date-fns-tz';
 import Papa from 'papaparse';
 import {
+  addMinutes,
   endOfWeek,
   format,
   parseISO,
@@ -82,7 +83,7 @@ const LeradManagementHistory = () => {
   function getCurrentDateInUserTimezone() {
     const now = new Date();
     const userTimezone = getUserTimezone();
-    return toZonedTime(now, userTimezone);
+    return addMinutes(now, now.getTimezoneOffset());
   }
   const today = getCurrentDateInUserTimezone();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -280,11 +281,11 @@ const LeradManagementHistory = () => {
             {
               leads_status: selectedValue,
               start_date: selectedDates.startDate
-              ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-              : '',
-            end_date: selectedDates.endDate
-              ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-              : '',
+                ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+                : '',
+              end_date: selectedDates.endDate
+                ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+                : '',
               page_size: itemsPerPage,
               page_number: page,
             },
@@ -401,11 +402,11 @@ const LeradManagementHistory = () => {
         {
           leads_status: selectedValue,
           start_date: selectedDates.startDate
-          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-          : '',
-        end_date: selectedDates.endDate
-          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-          : '',
+            ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+            : '',
+          end_date: selectedDates.endDate
+            ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+            : '',
           page_size: 0,
           page_number: 0,
         },
@@ -464,14 +465,14 @@ const LeradManagementHistory = () => {
 
   };
 
-  useEffect(()=>{
-   setPage(1);
-  },[selectedValue, selectedDates])
- 
+  useEffect(() => {
+    setPage(1);
+  }, [selectedValue, selectedDates])
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [historyTable]);
-  
+
   const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -691,7 +692,7 @@ const LeradManagementHistory = () => {
                         <LuImport size={20} color="white" />
                       )}
                     </div>
-                    {showTooltip  &&    !isMobile && !isTablet &&
+                    {showTooltip && !isMobile && !isTablet &&
                       <Tooltip
                         style={{
                           zIndex: 20,
@@ -759,7 +760,7 @@ const LeradManagementHistory = () => {
                 >
                   <div className={styles.history_list_inner}>
                     <div className={styles.hist_checkname}>
-                      
+
                       <label>
                         <input
                           type="checkbox"
@@ -808,15 +809,15 @@ const LeradManagementHistory = () => {
                           </div>
                         }
                         <div
-                          
-                         className={styles.email}>
+
+                          className={styles.email}>
                           <p
-                           style={{
-                            whiteSpace: 'pre-wrap',
-                            overflowWrap: 'break-word',
-                            width: '210px',
-                            lineHeight: "16px"
-                          }}
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              overflowWrap: 'break-word',
+                              width: '210px',
+                              lineHeight: "16px"
+                            }}
                           >{item.email_id ? item.email_id : 'N/A'}</p>
                         </div>
 
@@ -845,21 +846,21 @@ const LeradManagementHistory = () => {
                       <IoInformationOutline />
                     </div>
                     {!isMobile && !isTablet &&
-                    <Tooltip
-                      style={{
-                        zIndex: 20,
-                        background: '#f7f7f7',
-                        color: '#000',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                      }}
-                      offset={8}
-                      id="info"
-                      place="bottom"
-                      content="Lead Info"
-                      delayShow={800}
-                    />
-}
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                        }}
+                        offset={8}
+                        id="info"
+                        place="bottom"
+                        content="Lead Info"
+                        delayShow={800}
+                      />
+                    }
                   </div>
                   {!isMobile && expandedItemIds.includes(item.leads_id) && (
                     <>
