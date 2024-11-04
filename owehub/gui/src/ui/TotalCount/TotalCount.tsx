@@ -64,7 +64,7 @@ const CustomTooltip: React.FC<{
 }> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="customTooltip">
+      <div className="tooltip_stats">
         <p>{label}</p>
         <p>{`Count: ${payload[0].value}`}</p>
       </div>
@@ -168,7 +168,6 @@ const TotalCount: React.FC = () => {
     getNewFormData();
   }, []);
 
-
   const handleReportOptionChange = (newValue: Option | null) => {
     if (newValue) {
       setSelectedReportOption(newValue);
@@ -248,7 +247,7 @@ const TotalCount: React.FC = () => {
 
   const mappedPeriodOptions: Option[] = periodFilterOptions.map((period) => ({
     label: period.label ?? 'Unknown', // Fallback to "Unknown" if label is undefined
-    value: `${format(period.start,"dd-MM-yyyy")} - ${format(period.end,"dd-MM-yyyy")}`,
+    value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
   }));
 
   // Set the initial value for selectedReportOption to "This Week"
@@ -256,22 +255,24 @@ const TotalCount: React.FC = () => {
     (option) => option.label === 'This Week'
   );
 
-  const [selectedReportOption, setSelectedReportOption] = useState<Option>(mappedPeriodOptions[0]);
+  const [selectedReportOption, setSelectedReportOption] = useState<Option>(
+    mappedPeriodOptions[0]
+  );
 
   useEffect(() => {
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
-  
+
     if (selectedDealer.length && selectedReportOption?.value) {
       (async () => {
         try {
           setIsLoading(true);
-  
+
           const formatDate = (dateString: string): string => {
             if (!dateString) return '';
             const [day, month, year] = dateString.split('-');
             return `${day}-${month}-${year}`; // Return in DD-MM-YYYY format
           };
-  
+
           // Split and validate dates
           const dateRange = selectedReportOption.value.split(' - ');
           if (dateRange.length !== 2) {
@@ -281,10 +282,10 @@ const TotalCount: React.FC = () => {
             );
             return;
           }
-          
+
           const [start_date, end_date] = dateRange.map(formatDate);
-          console.log(start_date, end_date, "start_Date");
-  
+          console.log(start_date, end_date, 'start_Date');
+
           const response = await postCaller('get_milestone_data', {
             dealer_names: partnerNames,
             start_date,
@@ -292,17 +293,17 @@ const TotalCount: React.FC = () => {
             date_by: selectedOption.value,
             state: selectedStateOption.value,
           });
-  
+
           if (response.status > 201) {
             toast.error(response.message);
             setData(''); // Clear data if error
             setGraphs([]); // Clear graphs if error
             return;
           }
-  
+
           setData(response.data);
           const { ntp_data, sale_data, install_data } = response.data;
-  
+
           setGraphs([
             {
               title: 'Sales',
@@ -336,15 +337,15 @@ const TotalCount: React.FC = () => {
     selectedReportOption,
     selectedDealer,
   ]);
-  
-console.log(mappedPeriodOptions,"optionssss")
-console.log(selectedReportOption, "jfg")
+
+  console.log(mappedPeriodOptions, 'optionssss');
+  console.log(selectedReportOption, 'jfg');
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
         <h4 className="reports-title">Reports</h4>
         <div className="report-header-dropdown flex-wrap">
-          <div >
+          <div>
             <SelectOption
               options={[
                 { label: 'Daily', value: 'day' },
@@ -353,68 +354,66 @@ console.log(selectedReportOption, "jfg")
                 { label: 'Yearly', value: 'year' },
               ]}
               onChange={handleWeeklyOption}
-              controlStyles={{ marginTop: 0,minHeight:30 }}
-
+              controlStyles={{ marginTop: 0, minHeight: 30 }}
               value={selectedOption}
-
               menuListStyles={{
                 fontWeight: 400,
-
               }}
               singleValueStyles={{
                 fontWeight: 400,
               }}
-
             />
           </div>
-          <div >
+          <div>
             <SelectOption
               options={mappedPeriodOptions}
               onChange={handleReportOptionChange}
               value={selectedReportOption}
-              controlStyles={{ marginTop: 0, minHeight:30 }}
-
+              controlStyles={{ marginTop: 0, minHeight: 30 }}
               // menuStyles={{
               //   minWidth: 150
               // }}
               menuListStyles={{
                 fontWeight: 400,
-
               }}
               singleValueStyles={{
                 fontWeight: 400,
               }}
-
             />
           </div>
 
-          <div className='order-mob-2  flex'>
+          <div className="order-mob-2  flex">
             <SelectOption
               options={[
                 { label: 'All State', value: '' }, // Default "All State" option
                 ...(availableStates(newFormData) || []), // Other states
               ]}
-              
-              controlStyles={{ marginTop: 0,minHeight:30,'@media (min-width: 768px)': {
-                flex: 1,
-                width:"100%",
-              }  }}
+              controlStyles={{
+                marginTop: 0,
+                minHeight: 30,
+                '@media (min-width: 768px)': {
+                  flex: 1,
+                  width: '100%',
+                },
+              }}
               onChange={handleStateOptionChange}
               value={selectedStateOption}
-              menuStyles={{ flexBasis: 115, '@media (min-width: 768px)': {
-                flex: 1,
-              }, }}
+              menuStyles={{
+                flexBasis: 115,
+                '@media (min-width: 768px)': {
+                  flex: 1,
+                },
+              }}
               menuListStyles={{
                 fontWeight: 400,
               }}
               singleValueStyles={{
                 fontWeight: 400,
               }}
-
             />
           </div>
 
-          <div className='order-mob-3'>
+          <div className="order-mob-3">
             <DropdownCheckBox
               label={selectedDealer.length === 1 ? 'partner' : 'partners'}
               placeholder={'Search partners'}
@@ -449,12 +448,24 @@ console.log(selectedReportOption, "jfg")
             <h5 className="graph-title">{graph.title}</h5>
 
             {isLoading ? (
-              <div className='flex items-center' style={{ justifyContent: 'center' }}> <MicroLoader /> </div>
+              <div
+                className="flex items-center"
+                style={{ justifyContent: 'center' }}
+              >
+                {' '}
+                <MicroLoader />{' '}
+              </div>
             ) : graph.data.length === 0 ? (
-              <div><DataNotFound /></div>
+              <div>
+                <DataNotFound />
+              </div>
             ) : (
               <div style={{ width: '100%', height: '236px' }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer
+                  width="100%"
+                  height="100%"
+                  className={'graph-container'}
+                >
                   <AreaChart data={graph.data}>
                     <defs>
                       <linearGradient
