@@ -27,7 +27,7 @@ func HandleUpdateDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err      error
 		logEntry models.UpdateDataReq
-		dataMap  map[string]interface{}
+		// dataMap  map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateDataRequest")
@@ -57,18 +57,16 @@ func HandleUpdateDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Log the parsed CDVUpdateReq for debugging
 	log.FuncDebugTrace(0, "Parsed DataUpdateReq: HookType %v UniqueId %v Data %v", logEntry.HookType, logEntry.UniqueId, logEntry.Data)
 
-	// Parse the dataString field separately
-	if err := json.Unmarshal([]byte(logEntry.Data), &dataMap); err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal dataString field: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal dataString field", http.StatusBadRequest, nil)
-		return
-	}
+	// // Parse the dataString field separately
+	// if err := json.Unmarshal([]byte(logEntry.Data), &dataMap); err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to unmarshal dataString field: %v", err)
+	// 	appserver.FormAndSendHttpResp(resp, "Failed to unmarshal dataString field", http.StatusBadRequest, nil)
+	// 	return
+	// }
 
 	if logEntry.HookType == "delete" {
 		DeleteFromDealerPay([]string{logEntry.UniqueId})
 	} else {
-		dataMap["unique_id"] = logEntry.UniqueId
-		dataMap["operation"] = logEntry.HookType
-		ExecDlrPayInitialCalculation(dataMap)
+		ExecDlrPayInitialCalculation(logEntry.UniqueId, logEntry.HookType)
 	}
 }
