@@ -179,6 +179,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
+  const [finish, setFinish] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -241,17 +242,20 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     url?: string; // Make it optional if it might not be present
     // Add other properties if needed
   }
+  console.log(selectedType, "how can we do")
 
   useEffect(() => {
     if (selectedType === 'app_sched') {
       handleOpenModal();
       setAction(false);
       setWon(false);
+      setFinish(false);
       setReschedule(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
       setReschedule(false);
+      setFinish(false);
       setWon(false);
       setAction(true);
       setSelectedType('');
@@ -260,7 +264,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       handleOpenModal();
       setAction(false);
       setReschedule(false);
+      setFinish(false);
       setWon(true);
+      setSelectedType('');
+    }else if (selectedType === 'Complete as Won') {
+      // handleCloseWon();
+      handleOpenModal();
+      setAction(false);
+      setReschedule(false);
+      setWon(false);
+      setFinish(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
@@ -506,6 +519,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         setReschedule={setReschedule}
         won={won}
         setWon={setWon}
+        finish={finish}
+        setFinish={setFinish}
         currentFilter={currentFilter}
         setCurrentFilter={setCurrentFilter}
       />
