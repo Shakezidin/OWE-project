@@ -1229,7 +1229,7 @@ const LeadManagementDashboard = () => {
       document.body.removeChild(link);
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while exporting the data.');
+      toast.error('No Data Found');
     } finally {
       setIsExporting(false);
     }
