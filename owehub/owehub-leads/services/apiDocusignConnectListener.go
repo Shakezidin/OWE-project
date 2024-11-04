@@ -146,6 +146,7 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 			UPDATE leads_info SET
 				proposal_pdf_key = $1,
 				docusign_envelope_completed_at = CURRENT_TIMESTAMP,
+				deal_won_date = CASE WHEN deal_won_date IS NULL THEN CURRENT_TIMESTAMP ELSE deal_won_date END,
 				updated_at = CURRENT_TIMESTAMP
 			WHERE leads_id = $2
 		`
