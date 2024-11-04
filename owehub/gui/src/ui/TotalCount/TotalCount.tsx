@@ -252,11 +252,11 @@ const TotalCount: React.FC = () => {
 
   // Set the initial value for selectedReportOption to "This Week"
   const initialReportOption = periodFilterOptions.find(
-    (option) => option.label === 'This Week'
+    (option) => option.label === 'Last Week'
   );
 
   const [selectedReportOption, setSelectedReportOption] = useState<Option>(
-    mappedPeriodOptions[0]
+    mappedPeriodOptions[1]
   );
 
   useEffect(() => {
