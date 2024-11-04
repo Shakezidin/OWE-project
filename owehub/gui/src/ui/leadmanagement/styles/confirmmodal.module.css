@@ -150,7 +150,8 @@
 .customer_wrapper_list {
   flex-basis: calc(100%);
   border-radius: 8px;
-  background-color: #fff;
+  /* background-color: #fff; */
+  background-color: #EDFFF0;
   max-width: 593px;
   height: auto;
   padding-bottom: 14px;
@@ -162,7 +163,6 @@
   background-color: #fff;
   max-width: 593px;
   height: auto;
-  /* height: 468px; */
   margin-bottom: -28px;
   background-color: #edfff0;
   padding-bottom: 33px;
@@ -179,7 +179,6 @@
 .customer_wrapper_list_Edited2 {
   flex-basis: calc(100%);
   border-radius: 8px;
-  background-color: #fff;
   max-width: 593px;
   height: auto;
   background-color: #ffeded;
@@ -375,6 +374,35 @@
   font-size: 18px;
   color: #1f2937;
 }
+
+.ctmracquiredBotton{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  font-weight: 400;
+  font-size: 12px;
+  color: #6D9473;
+  background-color: #EDFFF0;
+  margin-top: 20px;
+  padding-right: 10px;
+  line-height: 6px;
+
+}
+
+.customTextStyle {
+  color: #6D9473; 
+  font-weight: 400;
+  font-size: 12px; 
+  
+}
+.forwardTick{
+  font-weight:600;
+  font-size: 13px;
+  color: #6D9473;
+
+}
+
+
 .ctmracquiredDivLast{
   height: 14px;
 }

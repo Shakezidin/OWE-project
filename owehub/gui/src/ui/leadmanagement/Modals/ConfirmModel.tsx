@@ -28,6 +28,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import Input from '../../scheduler/SaleRepCustomerForm/component/Input/Input';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { current } from '@reduxjs/toolkit';
+import colorConfig from '../../../config/colorConfig';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
@@ -498,7 +499,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
   console.log(finish, "succccccccccccc")
   const MarkedConfirm = () => {
-    setVisibleDiv(14); 
+    setVisibleDiv(14);
   };
 
   useEffect(() => {
@@ -508,14 +509,14 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       setVisibleDiv(67);
     } else if (won === true) {
       setVisibleDiv(5);
-    }else if (finish === true) {
+    } else if (finish === true) {
       MarkedConfirm();
     } else if (leadData) {
       setVisibleDiv(leadData.status_id);
     }
   }, [reschedule, action, leadData]);
 
-  
+
   return (
     <div>
       {isOpen1 && (
@@ -833,7 +834,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       Lead marked as Deal Won!
                     </span>
                     <span className={classes.ctmracquired}>
-                     {currentFilter && currentFilter === "In Progress" ? "" : "Moving it to the In Progress section."}
+                      {currentFilter && currentFilter === "In Progress" ? "" : "Moving it to the In Progress section."}
                     </span>
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>
@@ -852,10 +853,19 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       {loadWon ? "Wait..." : "Confirm"}
                     </button>
                   </div>
+
                 </div>
+                <span className={classes.ctmracquiredBotton}>
+                  {currentFilter && currentFilter === "In Progress" ? "" : (
+                    <span className={classes.customTextStyle}>
+                      Moving to In Progress <span className={classes.forwardTick}>&gt;&gt;</span>
+                    </span>
+                  )}
+                </span>
+
               </>
             )}
-             {visibleDiv === 14 && (
+            {visibleDiv === 14 && (
               <>
                 <div className={classes.customer_wrapper_list_EditedCConfirmation}>
                   <div className={classes.success_not_Edited4Model}>
@@ -870,19 +880,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   </div>
                   <div className={classes.confirmationLetter}>
                     <span className={classes.ConfirmationLastModel}>
-                    Confirm Deal Complete as Won
+                      Confirm Deal Complete as Won
                     </span>
                   </div>
                   <br />
                   <div className={classes.ctmracquiredDivLast}>
                     <span className={classes.ctmracquiredLastModel}>
-                    
-                    <span>This lead will be recorded as Deal Won </span>
-                    <span>without a contract date.</span>
+
+                      <span>This lead will be recorded as Deal Won </span>
+                      <span style={{ color: "#FA2217" }}>without a contract date.</span>
                     </span>
-                    <span className={classes.ctmracquired}>
-                     {currentFilter && currentFilter === "In Progress" ? "" : "Moving it to the In Progress section."}
-                    </span>
+
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>
                     <button
@@ -895,17 +903,18 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         opacity: (loadWon || !leadId) ? 0.6 : 1,
                         cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
                       }}
-                     
-                      // onClick={handleCloseWon}
+
+                    // onClick={handleCloseWon}
 
                     >
                       {loadWon ? "Wait..." : "Confirm"}
                     </button>
                   </div>
+
                 </div>
-                  </>)
-                  
-                  }
+              </>)
+
+            }
 
             {iframeSrc && (
               <iframe
