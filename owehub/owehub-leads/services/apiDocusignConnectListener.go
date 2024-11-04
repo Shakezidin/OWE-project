@@ -225,8 +225,8 @@ func sendLeadWonEmail(leadsId int64) error {
 
 	query = `
 		SELECT
-			ud.email_id,
-			ud.name,
+			ud.email_id as user_email_id,
+			ud.name as user_name,
 			li.first_name,
 			li.last_name,
 			li.email_id,
@@ -247,13 +247,13 @@ func sendLeadWonEmail(leadsId int64) error {
 		return err
 	}
 
-	userEmail, ok := data[0]["email_id"].(string)
+	userEmail, ok := data[0]["user_email_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get email_id from leads info Item: %+v\n", data[0])
 		return nil
 	}
 
-	userName, ok := data[0]["name"].(string)
+	userName, ok := data[0]["user_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get name from leads info Item: %+v\n", data[0])
 		return nil
