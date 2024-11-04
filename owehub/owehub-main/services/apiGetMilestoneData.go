@@ -100,7 +100,7 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 	for _, item := range data {
 		// Check Sale Date
 		saleDate, ok := item["sale_date"].(time.Time)
-		if ok && !saleDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
+		if ok && !saleDate.IsZero() && !saleDate.After(endDate) && !saleDate.Before(startDate) {
 			var key string
 			switch dataReq.DateBy {
 			case "day":
@@ -127,7 +127,7 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 		// Check NTP Completion Date
 		ntpDate, ok := item["ntp_complete_date"].(time.Time)
-		if ok && !ntpDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
+		if ok && !ntpDate.IsZero() && !ntpDate.After(endDate) && !ntpDate.Before(startDate) {
 			var key string
 			switch dataReq.DateBy {
 			case "day":
@@ -154,7 +154,7 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 		// Check Installation Completion Date
 		installDate, ok := item["pv_completion_date"].(time.Time)
-		if ok && !installDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
+		if ok && !installDate.IsZero() && !installDate.After(endDate) && !installDate.Before(startDate) {
 			var key string
 			switch dataReq.DateBy {
 			case "day":
