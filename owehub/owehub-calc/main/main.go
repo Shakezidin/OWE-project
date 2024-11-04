@@ -11,12 +11,10 @@ import (
 	"OWEApp/owehub-calc/services"
 	"OWEApp/shared/types"
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/signal"
 	"sync"
-	"time"
 
 	appserver "OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
@@ -60,17 +58,12 @@ func main() {
 		log.FuncInfoTrace(0, "error while clearing dlr_pay with err : %v", err)
 	}
 
-	err = services.ExecDlrPayInitialCalculation(nil)
+	err = services.ExecDlrPayInitialCalculation("", "")
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
 		return
 	}
 
-	// Start Kafka listener
-	go kafkaListener()
-
-	// Start batch processor to run every 10 minutes
-	go batchProcessProjects()
 	/* Spawn signal handler routine*/
 	go signalHandler()
 	/*Execute app inifinetly until it gets exit indication*/
@@ -109,7 +102,6 @@ func kafkaListener() {
 	/*TODO: need to prepare list of topics to be listen*/
 	topic := "postgres_db_latest_1.public.demo_table"
 	partition := 0
-	var deleteIds []string
 
 	// Create a new Kafka reader
 	r := kafka.NewReader(kafka.ReaderConfig{
@@ -141,22 +133,22 @@ func kafkaListener() {
 				continue
 			}
 
-			// Parse project_id and operation_type
-			projectID, operationType, parseErr := parseKafkaMessage(msg.Value)
-			if parseErr != nil {
-				log.FuncDebugTrace(0, "Error parsing message: %s\n", parseErr)
-				continue
-			}
+			// // Parse project_id and operation_type
+			// projectID, operationType, parseErr := parseKafkaMessage(msg.Value)
+			// if parseErr != nil {
+			// 	log.FuncDebugTrace(0, "Error parsing message: %s\n", parseErr)
+			// 	continue
+			// }
 
-			// Store project data with thread-safe access
-			mu.Lock()
-			// Store entire project data for "create" or "update", only operation for "delete"
-			if operationType == "delete" {
-				deleteIds = append(deleteIds, projectID)
-			} else {
-				uniqueIDs[projectID] = operationType
-			}
-			mu.Unlock()
+			// // Store project data with thread-safe access
+			// mu.Lock()
+			// // Store entire project data for "create" or "update", only operation for "delete"
+			// if operationType == "delete" {
+			// 	deleteIds = append(deleteIds, projectID)
+			// } else {
+			// 	uniqueIDs[projectID] = operationType
+			// }
+			// mu.Unlock()
 
 			// Print the message for debugging
 			log.FuncDebugTrace(0, "Received message: Topic: %s, Partition: %d, Offset: %d, Key: %s, Value: %s\n",
@@ -167,44 +159,44 @@ func kafkaListener() {
 	log.FuncErrorTrace(0, "Exiting Calc-App kafkaListener: reason")
 }
 
-func parseKafkaMessage(message []byte) (string, string, error) {
-	var data map[string]interface{}
-	if err := json.Unmarshal(message, &data); err != nil {
-		return "", "", fmt.Errorf("failed to parse Kafka message: %w", err)
-	}
+// func parseKafkaMessage(message []byte) (string, string, error) {
+// 	var data map[string]interface{}
+// 	if err := json.Unmarshal(message, &data); err != nil {
+// 		return "", "", fmt.Errorf("failed to parse Kafka message: %w", err)
+// 	}
 
-	projectID, ok := data["project_id"].(string)
-	if !ok {
-		return "", "", fmt.Errorf("project_id missing or invalid in Kafka message")
-	}
+// 	projectID, ok := data["project_id"].(string)
+// 	if !ok {
+// 		return "", "", fmt.Errorf("project_id missing or invalid in Kafka message")
+// 	}
 
-	operationType, ok := data["operation_type"].(string)
-	if !ok {
-		return "", "", fmt.Errorf("operation_type missing or invalid in Kafka message")
-	}
+// 	operationType, ok := data["operation_type"].(string)
+// 	if !ok {
+// 		return "", "", fmt.Errorf("operation_type missing or invalid in Kafka message")
+// 	}
 
-	return projectID, operationType, nil
-}
+// 	return projectID, operationType, nil
+// }
 
-func batchProcessProjects() {
-	// Create a ticker that ticks every 10 minutes
-	ticker := time.NewTicker(10 * time.Minute)
-	defer ticker.Stop() // Ensure ticker is stopped when function exits
+// func batchProcessProjects() {
+// 	// Create a ticker that ticks every 10 minutes
+// 	ticker := time.NewTicker(10 * time.Minute)
+// 	defer ticker.Stop() // Ensure ticker is stopped when function exits
 
-	for {
-		select {
-		case <-ticker.C:
-			// Lock the mutex for thread-safe access
-			mu.Lock()
-			if len(deleteIds) > 0 {
-				services.DeleteFromDealerPay(deleteIds) // Call delete function
-				deleteIds = []string{}                  // Clear after processing
-			}
-			if len(deleteIds) > 0 {
-				services.ExecDlrPayInitialCalculation(uniqueIDs) // Process and send project data
-				uniqueIDs = map[string]string{}
-			} // Clear projectOps after processing
-			mu.Unlock()
-		}
-	}
-}
+// 	for {
+// 		select {
+// 		case <-ticker.C:
+// 			// Lock the mutex for thread-safe access
+// 			mu.Lock()
+// 			if len(deleteIds) > 0 {
+// 				services.DeleteFromDealerPay(deleteIds) // Call delete function
+// 				deleteIds = []string{}                  // Clear after processing
+// 			}
+// 			if len(deleteIds) > 0 {
+// 				services.ExecDlrPayInitialCalculation(uniqueIDs) // Process and send project data
+// 				uniqueIDs = map[string]string{}
+// 			} // Clear projectOps after processing
+// 			mu.Unlock()
+// 		}
+// 	}
+// }

@@ -8,8 +8,6 @@ package services
 
 import (
 	"OWEApp/shared/appserver"
-	"OWEApp/shared/db"
-	"OWEApp/shared/inmemory"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 
@@ -20,20 +18,20 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		UpdateData
+ * FUNCTION:		HandleUpdateDataRequest
  * DESCRIPTION:     handler for CDV data update request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func UpdateData(resp http.ResponseWriter, req *http.Request) {
+func HandleUpdateDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err      error
 		logEntry models.UpdateDataReq
 		dataMap  map[string]interface{}
 	)
 
-	log.EnterFn(0, "UpdateData")
-	defer func() { log.ExitFn(0, "UpdateData", err) }()
+	log.EnterFn(0, "HandleUpdateDataRequest")
+	defer func() { log.ExitFn(0, "HandleUpdateDataRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in UpdateData request")
@@ -49,9 +47,6 @@ func UpdateData(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Log the raw request body for debugging
-	log.FuncDebugTrace(0, "CdvUpdate Raw HTTP Request body: %s", string(reqBody))
-
 	err = json.Unmarshal(reqBody, &logEntry)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal CdvUpdate request err: %v", err)
@@ -60,7 +55,7 @@ func UpdateData(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Log the parsed CDVUpdateReq for debugging
-	log.FuncDebugTrace(0, "Parsed CDVUpdateReq: HookType %v UniqueId %v Data %v", logEntry.HookType, logEntry.UniqueId, logEntry.Data)
+	log.FuncDebugTrace(0, "Parsed DataUpdateReq: HookType %v UniqueId %v Data %v", logEntry.HookType, logEntry.UniqueId, logEntry.Data)
 
 	// Parse the dataString field separately
 	if err := json.Unmarshal([]byte(logEntry.Data), &dataMap); err != nil {
@@ -69,16 +64,11 @@ func UpdateData(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Log the parsed dataMap for debugging
-	log.FuncDebugTrace(0, "Parsed Data Map: %v", dataMap)
-
-	// Retrieve database connection
-	sqliteDB, err := db.GetDBConnection(db.InMemDbIndex, "inmemory_db")
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get DB connection with err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get DB connection", http.StatusInternalServerError, nil)
-		return
+	if logEntry.HookType == "delete" {
+		DeleteFromDealerPay([]string{logEntry.UniqueId})
+	} else {
+		dataMap["unique_id"] = logEntry.UniqueId
+		dataMap["operation"] = logEntry.HookType
+		ExecDlrPayInitialCalculation(dataMap)
 	}
-
-	inmemory.ReadFromLogAndWrite(sqliteDB.CtxH, logEntry, dataMap)
 }

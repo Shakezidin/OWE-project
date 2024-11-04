@@ -10,12 +10,11 @@ import (
 	"time"
 )
 
-func ExecDlrPayInitialCalculation(uniqueIds map[string]string) error {
+func ExecDlrPayInitialCalculation(uniqueIds string, hookType string) error {
 	var (
 		err            error
 		dlrPayDataList []map[string]interface{}
 		InitailData    oweconfig.InitialDataLists
-		operaiton      string
 	)
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
@@ -23,17 +22,7 @@ func ExecDlrPayInitialCalculation(uniqueIds map[string]string) error {
 	count := 0
 	dataReq := models.DataRequestBody{}
 
-	if uniqueIds == nil {
-		uniqueIds = make(map[string]string)
-	}
-
-	// Extracting unique IDs as a slice for loading initial data
-	uidList := make([]string, 0, len(uniqueIds))
-	for key := range uniqueIds {
-		uidList = append(uidList, key)
-	}
-
-	InitailData, err = oweconfig.LoadDlrPayInitialData(uidList)
+	InitailData, err = oweconfig.LoadDlrPayInitialData([]string{uniqueIds})
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
 		return err
@@ -46,7 +35,6 @@ func ExecDlrPayInitialCalculation(uniqueIds map[string]string) error {
 
 	for _, data := range InitailData.InitialDataList {
 		var dlrPayData map[string]interface{}
-		operaiton = uniqueIds[data.UniqueId]
 		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd, partnerPaySchedule)
 
 		// if err != nil || dlrPayData == nil {
@@ -61,7 +49,7 @@ func ExecDlrPayInitialCalculation(uniqueIds map[string]string) error {
 		// 	updateDlrPayData = append(updateDlrPayData, dlrPayData)
 		// }
 
-		if operaiton == "update" {
+		if hookType == "update" {
 			// Build the update query
 			query, _ := buildUpdateQuery("dealer_pay", dlrPayData, "unique_id", data.UniqueId)
 
