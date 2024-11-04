@@ -60,10 +60,19 @@ type SSEPayload =
     data: null;
   };
 
+interface DocumentStatus {
+  status: 'signed' | 'viewed' | 'pending' | 'accepted' | null;
+  message: string;
+}
+
 const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal, side, setSide }: LeadSelectionProps) => {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const [documentStatus, setDocumentStatus] = useState<DocumentStatus>({
+    status: null,
+    message: ''
+  });
 
   useEffect(() => {
     console.log("Component mounted, checking for query params...");
@@ -226,6 +235,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     };
   };
   const [won, setWon] = useState(false);
+  const [isLoadingDocument, setIsLoadingDocument] = useState(false);
 
   interface DocuSignResponse {
     url?: string; // Make it optional if it might not be present
@@ -283,10 +293,52 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   }, [selectedType])
 
   const OpenSignDocument = async () => {
-    const selectedLead = leadsData.find((l: any) => l.leads_id === leadId); 
-    if (selectedLead) {
-      localStorage.setItem('selectedLead', JSON.stringify(selectedLead)); 
-      navigate('/digital-signature-portal');
+    setIsLoadingDocument(true);
+    try {
+      const params = new URLSearchParams();
+      params.append("leads_id", leadId.toString() || "");
+      params.append("return_url", "http://localhost:3000/leadmng-dashboard");
+
+      const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
+      const eventSource = new EventSource(eventSourceUrl);
+
+      eventSource.onmessage = (event) => {
+        const payload = JSON.parse(event.data);
+
+        if (payload.is_done) {
+          setIsLoadingDocument(false);
+          if (payload.error === null) {
+            window.open(payload.data.url, '_blank');
+          } else {
+            console.error(`Error during DocuSign URL generation: ${payload.error}`);
+            setDocumentStatus({
+              status: 'pending',
+              message: 'Error generating signing URL. Please try again.'
+            });
+            toast.error('Error generating signing URL. Please try again.');
+          }
+          eventSource.close();
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        console.error('Error with SSE connection', error);
+        setIsLoadingDocument(false);
+        setDocumentStatus({
+          status: 'pending',
+          message: 'Connection error. Please try again.'
+        });
+        toast.error('Connection error. Please try again.');
+        eventSource.close();
+      };
+    } catch (error) {
+      console.error("Error initiating DocuSign signing:", error);
+      setIsLoadingDocument(false);
+      setDocumentStatus({
+        status: 'pending',
+        message: 'Error initiating signing process. Please try again.'
+      });
+      toast.error('Error initiating signing process. Please try again.');
     }
   };
 
@@ -527,7 +579,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                 </tr>
               </thead>
               <tbody>
-                {isLoading ? (
+                {isLoading || isLoadingDocument ? (
                   <tr>
                     <td colSpan={30}>
                       <div
