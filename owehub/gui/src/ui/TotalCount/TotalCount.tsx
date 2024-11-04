@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './totalcount.css';
 import TotalCard from './totalCard';
 import Select from 'react-select';
+import SelectOption from '../components/selectOption/SelectOption';
 import {
   ResponsiveContainer,
   XAxis,
@@ -167,7 +168,7 @@ const TotalCount: React.FC = () => {
     getNewFormData();
   }, []);
 
-  
+
   const handleReportOptionChange = (newValue: Option | null) => {
     if (newValue) {
       setSelectedReportOption(newValue);
@@ -247,7 +248,7 @@ const TotalCount: React.FC = () => {
 
   const mappedPeriodOptions: Option[] = periodFilterOptions.map((period) => ({
     label: period.label ?? 'Unknown', // Fallback to "Unknown" if label is undefined
-    value: `${period.start.toISOString()} - ${period.end.toISOString()}`,
+    value: `${format(period.start,"dd-MM-yyyy")} - ${format(period.end,"dd-MM-yyyy")}`,
   }));
 
   // Set the initial value for selectedReportOption to "This Week"
@@ -255,10 +256,7 @@ const TotalCount: React.FC = () => {
     (option) => option.label === 'This Week'
   );
 
-  const [selectedReportOption, setSelectedReportOption] = useState<Option>({
-    label: initialReportOption?.label ?? 'This Week',
-    value: `${initialReportOption?.start.toISOString()} - ${initialReportOption?.end.toISOString()}`,
-  });
+  const [selectedReportOption, setSelectedReportOption] = useState<Option>(mappedPeriodOptions[0]);
 
   useEffect(() => {
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
@@ -339,14 +337,14 @@ const TotalCount: React.FC = () => {
     selectedReportOption,
     selectedDealer,
   ]);
-
+console.log(mappedPeriodOptions,"optionssss")
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
         <h4 className="reports-title">Reports</h4>
-        <div className="report-header-dropdown">
-          <div style={{ marginTop: '-24px' }}>
-            <ReportsSelectOption
+        <div className="report-header-dropdown flex-wrap">
+          <div >
+            <SelectOption
               options={[
                 { label: 'Daily', value: 'day' },
                 { label: 'Weekly', value: 'week' },
@@ -354,62 +352,68 @@ const TotalCount: React.FC = () => {
                 { label: 'Yearly', value: 'year' },
               ]}
               onChange={handleWeeklyOption}
+              controlStyles={{ marginTop: 0,minHeight:30 }}
+
               value={selectedOption}
-              menuStyles={{
-                width: 400,
-              }}
+
               menuListStyles={{
                 fontWeight: 400,
-                width: 150,
+
               }}
               singleValueStyles={{
                 fontWeight: 400,
               }}
-              width="150px"
+
             />
           </div>
-          <div style={{ marginTop: '-24px' }}>
-            <ReportsSelectOption
+          <div >
+            <SelectOption
               options={mappedPeriodOptions}
               onChange={handleReportOptionChange}
               value={selectedReportOption}
+              controlStyles={{ marginTop: 0, minHeight:30 }}
+
               menuStyles={{
-                width: 400,
+                minWidth: 150
               }}
               menuListStyles={{
                 fontWeight: 400,
-                width: 150,
+
               }}
               singleValueStyles={{
                 fontWeight: 400,
               }}
-              width="150px"
+
             />
           </div>
 
-          <div style={{ marginTop: '-24px' }}>
-            <ReportsSelectOption
+          <div className='order-mob-2  flex'>
+            <SelectOption
               options={[
                 { label: 'All State', value: '' }, // Default "All State" option
                 ...(availableStates(newFormData) || []), // Other states
               ]}
+              
+              controlStyles={{ marginTop: 0,minHeight:30,'@media (min-width: 768px)': {
+                flex: 1,
+                width:"100%",
+              }  }}
               onChange={handleStateOptionChange}
               value={selectedStateOption}
-              menuStyles={{
-                width: 400,
-              }}
+              menuStyles={{ flexBasis: 115, '@media (min-width: 768px)': {
+                flex: 1,
+              }, }}
               menuListStyles={{
                 fontWeight: 400,
-                width: 150,
               }}
               singleValueStyles={{
                 fontWeight: 400,
               }}
-              width="150px"
+
             />
           </div>
 
-          <div>
+          <div className='order-mob-3'>
             <DropdownCheckBox
               label={selectedDealer.length === 1 ? 'partner' : 'partners'}
               placeholder={'Search partners'}
@@ -421,7 +425,7 @@ const TotalCount: React.FC = () => {
             />
           </div>
 
-          <div className="perf-export-btn relative pipline-export-btn">
+          <div className="perf-export-btn order-mob-1 relative pipline-export-btn ">
             <button
               data-tooltip-id="export"
               className={`performance-exportbtn flex items-center justify-center totalcount-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -436,7 +440,7 @@ const TotalCount: React.FC = () => {
         </div>
       </div>
       <div>
-        <TotalCard data={data} isLoading={isLoading}/>
+        <TotalCard data={data} isLoading={isLoading} />
       </div>
       <div className="report-graphs">
         {graphs.map((graph, index) => (
@@ -444,9 +448,9 @@ const TotalCount: React.FC = () => {
             <h5 className="graph-title">{graph.title}</h5>
 
             {isLoading ? (
-             <div className='flex items-center' style={{justifyContent:'center'}}> <MicroLoader /> </div>
+              <div className='flex items-center' style={{ justifyContent: 'center' }}> <MicroLoader /> </div>
             ) : graph.data.length === 0 ? (
-              <div><DataNotFound/></div>
+              <div><DataNotFound /></div>
             ) : (
               <div style={{ width: '100%', height: '236px' }}>
                 <ResponsiveContainer width="100%" height="100%">

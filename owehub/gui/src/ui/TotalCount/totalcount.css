@@ -150,11 +150,34 @@
     .total-main-container {
         padding: 8px;
     }
+    .order-mob-1{
+        order: 1;
+    }
+    .order-mob-2{
+        order: 2;
+        flex-basis: 109px;
+    }
+    .order-mob-2 .select-container{
+        width: 100%;
+    }
+    .order-mob-3{
+        order:3;
+    }
+    .report-header-dropdown {
+   justify-content: flex-end;
+
+    }
+    .headingcount{
+        align-items: flex-start !important;
+    }
+    
 
     .heading-count {
         font-size: 18px;
     }
-
+.pipline-export-btn button.performance-exportbtn{
+    margin-top: 0 !important;
+}
     .graph-title {
         font-size: 16px;
         padding-left: 10px;
