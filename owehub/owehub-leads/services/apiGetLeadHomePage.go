@@ -288,6 +288,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			proposalUpdatedAtPtr *time.Time
 			appointmentDatePtr   *time.Time
 			docusignDatePtr      *time.Time
+			canManuallyWin       bool
 		)
 
 		leadsId, ok := item["leads_id"].(int64)
@@ -446,6 +447,11 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		} else {
 			docusignDatePtr = &docusignEnvelopeCompletedDate
 			docusignLabel = "Completed"
+
+			// can manually win if docusign_envelope_completed_at is null and deal_won_date is before 48 hours
+			if !leadWonDate.IsZero() && time.Now().Sub(docusignEnvelopeCompletedDate).Hours() < 48 {
+				canManuallyWin = true
+			}
 		}
 
 		docusignEnvelopeDeclinedDate, ok := item["docusign_envelope_declined_at"].(time.Time)
@@ -528,6 +534,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			DocusignLabel:          docusignLabel,
 			DocusignDate:           docusignDatePtr,
 			Zipcode:                zipcode,
+			CanManuallyWin:         canManuallyWin,
 		})
 
 	}
