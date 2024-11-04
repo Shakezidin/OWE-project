@@ -170,4 +170,21 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 		}
 	}
 
+	if dataReq.Event == "envelope-voided" {
+		envelopeId, ok := dataReq.Data["envelopeId"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get envelopeId from connect docusign listener request")
+			return
+		}
+
+		log.FuncDebugTrace(0, "Docusign Envelope voided event received")
+		// update docusign_envelope_declined_at
+		query = "UPDATE leads_info SET docusign_envelope_voided_at = CURRENT_TIMESTAMP, UPDATED_AT = CURRENT_TIMESTAMP WHERE docusign_envelope_id = $1"
+		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update docusign_envelope_voided_at err %v", err)
+			return
+		}
+	}
+
 }
