@@ -256,7 +256,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
-
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/docusign_get_signing_url",
+		apiHandler.HandleDocusignGetSigningUrlRequest,
+		false,
+		[]types.UserGroup{},
+	},
 	// WEBHOOKS
 	{
 		strings.ToUpper("GET"),
