@@ -74,10 +74,7 @@
  align-items: center;
 }
 
-.report-graph{
-    padding-top: 42px;
-
-}
+ 
 
 .graph-title{
     padding-top: 42px;
@@ -139,9 +136,12 @@
     /* Stacks the cards on smaller tablets and mobile */
     .total-card-count {
         width: 100%; /* Full width */
-        margin-bottom: 10px;
+        margin-bottom: 16px;
         display: block;
         padding-bottom: 10px;
+    }
+    .report-graph{
+        padding-top: -10px !important;
     }
     .totalcard{
         display: block;
