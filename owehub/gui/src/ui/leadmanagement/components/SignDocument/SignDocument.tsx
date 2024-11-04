@@ -134,7 +134,7 @@ const SignDocument: React.FC = () => {
       toast.error('Error initiating signing process. Please try again.');
     }
   };
-
+console.log(leadData)
   if (!leadData) {
     return <div>No lead data available.</div>;
   }
@@ -165,7 +165,7 @@ const SignDocument: React.FC = () => {
                 <p><strong>Last Name:</strong> {leadData.last_name || 'N/A'}</p>
                 <p><strong>Email:</strong> {leadData.email_id || 'N/A'}</p>
                 <p><strong>Phone Number:</strong> {leadData.phone_number || 'N/A'}</p>
-                <p><strong>Street Address:</strong> {leadData.street_address || 'N/A'}</p>
+                <p className={classes.StreetAddressSign}><strong>Street Address:</strong> {leadData.street_address || 'N/A'}</p>
                 <p><strong>Zip Code:</strong> {leadData.zipcode || 'N/A'}</p>
               </div>
             </div>

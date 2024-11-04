@@ -505,8 +505,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   }, [reschedule, action, leadData]);
 
   console.log(won, "succccccccccccc")
-
-
+  const MarkedConfirm = () => {
+    setVisibleDiv(14); 
+   
+  };
   return (
     <div>
       {isOpen1 && (
@@ -838,7 +840,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         opacity: (loadWon || !leadId) ? 0.6 : 1,
                         cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
                       }}
-                      onClick={handleCloseWon}
+                      onClick={MarkedConfirm}
+                     
 
                     >
                       {loadWon ? "Wait..." : "Confirm"}
@@ -846,7 +849,58 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   </div>
                 </div>
               </>
-            )}{' '}
+            )}
+             {visibleDiv === 14 && (
+              <>
+                <div className={classes.customer_wrapper_list_EditedCConfirmation}>
+                  <div className={classes.success_not_Edited4Model}>
+                    <div>
+                      <img
+                        className={classes.HandShakeLogo}
+                        height="154px"
+                        width="154px"
+                        src={ICONS.SignModelConfirmation}
+                      />{' '}
+                    </div>
+                  </div>
+                  <div className={classes.confirmationLetter}>
+                    <span className={classes.ConfirmationLastModel}>
+                    Confirm Deal Complete as Won
+                    </span>
+                  </div>
+                  <br />
+                  <div className={classes.ctmracquiredDivLast}>
+                    <span className={classes.ctmracquiredLastModel}>
+                    
+                    <span>This lead will be recorded as Deal Won </span>
+                    <span>without a contract date.</span>
+                    </span>
+                    <span className={classes.ctmracquired}>
+                     {currentFilter && currentFilter === "In Progress" ? "" : "Moving it to the In Progress section."}
+                    </span>
+                  </div>
+                  <div className={classes.suceesButtonAfterProposal}>
+                    <button
+                      className={classes.self}
+                      style={{
+                        backgroundColor: `${loadingProposal ? '#FFFFFF' : '#377cf6'}`,
+                        color: '#FFFFFF',
+                        border: 'none',
+                        pointerEvents: (loadWon || !leadId) ? 'none' : 'auto',
+                        opacity: (loadWon || !leadId) ? 0.6 : 1,
+                        cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
+                      }}
+                     
+                      onClick={handleCloseWon}
+
+                    >
+                      {loadWon ? "Wait..." : "Confirm"}
+                    </button>
+                  </div>
+                </div>
+                  </>)
+                  
+                  }
 
             {iframeSrc && (
               <iframe
