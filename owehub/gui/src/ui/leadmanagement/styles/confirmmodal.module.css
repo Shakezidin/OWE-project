@@ -167,7 +167,15 @@
   background-color: #edfff0;
   padding-bottom: 33px;
 }
-
+.customer_wrapper_list_EditedCConfirmation {
+  flex-basis: calc(100%);
+  border-radius: 8px;
+  background-color: #fff;
+  max-width: 593px;
+  height: auto;
+  margin-bottom: -28px;
+  padding-bottom: 33px;
+}
 .customer_wrapper_list_Edited2 {
   flex-basis: calc(100%);
   border-radius: 8px;
@@ -319,6 +327,11 @@
   padding-bottom: 0;
   margin-bottom: 0;
 }
+.confirmationLetter {
+  padding-top: 25px;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
 
 .notAvailableCtmr {
   color: #6f6f6f;
@@ -348,12 +361,34 @@
   padding-top: 7%;
 }
 
+.ConfirmationLastModel {
+  padding-left: 25.5%;
+  font-weight: 600;
+  font-size: 18px;
+  color: #3ac759;
+  padding-top: 7%;
+}
+
 .ctmracquired {
   padding-left: 35.6%;
   font-weight: 500;
   font-size: 18px;
   color: #1f2937;
 }
+.ctmracquiredDivLast{
+  height: 14px;
+}
+.ctmracquiredLastModel {
+  top:0 !important;
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  margin-bottom: 0;
+  flex-direction: column;
+  align-items: center;
+
+}
+
 
 .ctmracquiredDiv {
   margin-top: -20px;
@@ -548,7 +583,6 @@
     display: block;
   }
   .ctmracquiredDiv {
-  
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -558,20 +592,17 @@
     font-size: 12px !important;
   }
   .congratulationLetter {
-   
-   
-  padding-bottom: 0;
-  margin-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
   }
-  
-  
+
   .ctmracquired {
     padding-left: 35.6%;
     font-weight: 450;
     font-size: 14px;
     color: #1f2937;
   }
-  
+
   .crossBtn {
     display: none;
   }
@@ -596,9 +627,7 @@
     font-weight: 600;
     font-size: 18px;
     color: #3ac759;
-   
   }
-  
 
   .btnImageCrossParent {
     display: flex;
@@ -687,13 +716,12 @@
     color: #4e4e4e;
     font-weight: 400;
     /* background-color: cyan; */
-    display: inline-block; 
-    max-width: 21ch; 
+    display: inline-block;
+    max-width: 21ch;
     word-wrap: break-word;
     overflow: hidden;
     white-space: normal;
   }
-  
 
   .verified {
     color: #20963a;
@@ -713,7 +741,6 @@
     border-bottom-right-radius: 0px;
     background-color: #eef5ff;
   }
-
 
   .Edit_DetailsMcontainer {
     display: flex;
