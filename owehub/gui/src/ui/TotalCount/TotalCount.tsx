@@ -138,7 +138,7 @@ const TotalCount: React.FC = () => {
     value: 'day',
   });
   const [selectedStateOption, setSelectedStateOption] = useState<Option>({
-    label: 'All',
+    label: 'All State',
     value: '',
   });
 
@@ -260,21 +260,18 @@ const TotalCount: React.FC = () => {
 
   useEffect(() => {
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
-
+  
     if (selectedDealer.length && selectedReportOption?.value) {
       (async () => {
         try {
           setIsLoading(true);
-
+  
           const formatDate = (dateString: string): string => {
             if (!dateString) return '';
-            const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}-${month}-${year}`;
+            const [day, month, year] = dateString.split('-');
+            return `${day}-${month}-${year}`; // Return in DD-MM-YYYY format
           };
-
+  
           // Split and validate dates
           const dateRange = selectedReportOption.value.split(' - ');
           if (dateRange.length !== 2) {
@@ -284,8 +281,10 @@ const TotalCount: React.FC = () => {
             );
             return;
           }
+          
           const [start_date, end_date] = dateRange.map(formatDate);
-
+          console.log(start_date, end_date, "start_Date");
+  
           const response = await postCaller('get_milestone_data', {
             dealer_names: partnerNames,
             start_date,
@@ -293,17 +292,17 @@ const TotalCount: React.FC = () => {
             date_by: selectedOption.value,
             state: selectedStateOption.value,
           });
-
+  
           if (response.status > 201) {
             toast.error(response.message);
             setData(''); // Clear data if error
             setGraphs([]); // Clear graphs if error
             return;
           }
-
+  
           setData(response.data);
           const { ntp_data, sale_data, install_data } = response.data;
-
+  
           setGraphs([
             {
               title: 'Sales',
@@ -337,7 +336,9 @@ const TotalCount: React.FC = () => {
     selectedReportOption,
     selectedDealer,
   ]);
+  
 console.log(mappedPeriodOptions,"optionssss")
+console.log(selectedReportOption, "jfg")
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
@@ -373,9 +374,9 @@ console.log(mappedPeriodOptions,"optionssss")
               value={selectedReportOption}
               controlStyles={{ marginTop: 0, minHeight:30 }}
 
-              menuStyles={{
-                minWidth: 150
-              }}
+              // menuStyles={{
+              //   minWidth: 150
+              // }}
               menuListStyles={{
                 fontWeight: 400,
 
