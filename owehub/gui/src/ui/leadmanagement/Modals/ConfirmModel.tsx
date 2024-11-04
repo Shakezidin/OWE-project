@@ -37,6 +37,8 @@ interface EditModalProps {
   reschedule?: boolean;
   action?: boolean;
   setReschedule: React.Dispatch<React.SetStateAction<boolean>>;
+  finish?: boolean;
+  setFinish: React.Dispatch<React.SetStateAction<boolean>>;
 
   won?: boolean;
   setWon: React.Dispatch<React.SetStateAction<boolean>>;
@@ -66,6 +68,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   setReschedule,
   won,
   setWon,
+  finish,
+  setFinish,
   currentFilter,
   setCurrentFilter
 }) => {
@@ -492,6 +496,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
+  console.log(finish, "succccccccccccc")
+  const MarkedConfirm = () => {
+    setVisibleDiv(14); 
+  };
+
   useEffect(() => {
     if (reschedule === true) {
       setVisibleDiv(0);
@@ -499,16 +508,14 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       setVisibleDiv(67);
     } else if (won === true) {
       setVisibleDiv(5);
+    }else if (finish === true) {
+      MarkedConfirm();
     } else if (leadData) {
       setVisibleDiv(leadData.status_id);
     }
   }, [reschedule, action, leadData]);
 
-  console.log(won, "succccccccccccc")
-  const MarkedConfirm = () => {
-    setVisibleDiv(14); 
-   
-  };
+  
   return (
     <div>
       {isOpen1 && (
@@ -840,9 +847,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         opacity: (loadWon || !leadId) ? 0.6 : 1,
                         cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
                       }}
-                      onClick={MarkedConfirm}
-                     
-
+                      onClick={handleCloseWon}
                     >
                       {loadWon ? "Wait..." : "Confirm"}
                     </button>
@@ -891,7 +896,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
                       }}
                      
-                      onClick={handleCloseWon}
+                      // onClick={handleCloseWon}
 
                     >
                       {loadWon ? "Wait..." : "Confirm"}
