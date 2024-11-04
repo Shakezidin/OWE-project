@@ -75,23 +75,21 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	whereEleList = append(whereEleList, userEmail)
 
-	// no condition specified, default to all except leads history records
-	if dataReq.LeadStatus == "" {
-		whereClause = "WHERE li.status_id != 6"
-	}
+	// default condition: not in lost or won
+	whereClause = "WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL "
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
-		whereClause = "WHERE (li.status_id = 0 AND li.is_appointment_required = TRUE AND li.proposal_created_date IS NULL)"
+		whereClause += "AND (li.status_id = 0 AND li.is_appointment_required = TRUE AND li.proposal_created_date IS NULL)"
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
 		if dataReq.ProgressFilter == "DEAL_WON" {
-			whereClause = "WHERE (li.status_id = 5)"
+			whereClause += "AND (li.status_id = 5)"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
-			whereClause = `
-				WHERE (
+			whereClause += `
+				AND (
 					(li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR
 					(
@@ -104,8 +102,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
-			whereClause = `
-				WHERE (
+			whereClause += `
+				AND (
 					(li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR
 					(
@@ -118,18 +116,18 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
-			whereClause = "WHERE (li.status_id != 6 AND li.is_appointment_required = FALSE)"
+			whereClause += "AND (li.status_id != 6 AND li.is_appointment_required = FALSE)"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
-			whereClause = `
-				WHERE li.status_id NOT IN (3, 6) 
+			whereClause += `
+				AND li.status_id NOT IN (3, 6) 
 					AND li.proposal_created_date IS NOT NULL
 					AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
 			`
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
-			whereClause = `
-				WHERE (
+			whereClause += `
+				AND (
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR (li.status_id = 5)
 					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
@@ -144,12 +142,12 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.LeadStatus == "DECLINED" {
-		whereClause = "WHERE (li.status_id = 3 AND li.is_appointment_required = TRUE)"
+		whereClause += "AND (li.status_id = 3 AND li.is_appointment_required = TRUE)"
 	}
 
 	if dataReq.LeadStatus == "ACTION_NEEDED" {
-		whereClause = `
-			WHERE (
+		whereClause += `
+			AND (
 				li.status_id = 4
 				OR (
 					li.status_id IN (1, 2) 
@@ -158,11 +156,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				)
 			)
 		`
-	}
-
-	if whereClause == "" {
-		appserver.FormAndSendHttpResp(resp, "Invalid Lead Status", http.StatusBadRequest, nil)
-		return
 	}
 
 	if dataReq.Search != "" {
@@ -554,7 +547,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	query = `
 		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE (
+		WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+		AND (
 			li.status_id = 0 
 			AND li.is_appointment_required = TRUE 
 			AND li.proposal_created_date IS NULL
@@ -565,7 +559,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-			WHERE (
+			WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+			AND (
 				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 				OR (li.status_id = 5)
 				OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
@@ -581,7 +576,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'DECLINED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE (
+		WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+		AND (
 			li.status_id = 3 
 			AND li.is_appointment_required = TRUE
 		)
@@ -591,8 +587,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'ACTION_NEEDED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE 
-			(
+		WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+		AND (
 				li.status_id = 4
 				OR (
 					li.status_id IN (1, 2)
