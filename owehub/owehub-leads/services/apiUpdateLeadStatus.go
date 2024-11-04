@@ -180,6 +180,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 					last_updated_by = $1,
 					lead_lost_date = NULL
 					WHERE leads_id = $2`
+
+		if dataReq.IsManualWin {
+			query = `UPDATE leads_info 
+						SET status_id = 5,
+						updated_at = CURRENT_TIMESTAMP,
+						manual_won_date = CURRENT_TIMESTAMP,
+						last_updated_by = $1,
+						lead_lost_date = NULL
+						WHERE leads_id = $2`
+		}
+
 		whereEleList = []interface{}{authenticatedUserId, dataReq.LeadsId}
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {

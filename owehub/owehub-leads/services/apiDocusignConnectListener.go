@@ -151,6 +151,27 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 			log.FuncErrorTrace(0, "Failed to update proposal_pdf_key err %v", err)
 			return
 		}
+
+		// send email to salerep
+		query = "SELECT email_id FROM user_details INNER JOIN leads_info ON leads_info.created_by = user_details.user_id WHERE leads_info.leads_id = $1"
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to retrieve email_id from database err: %v", err)
+			return
+		}
+		if len(data) <= 0 {
+			err = fmt.Errorf("email_id not found in database")
+			log.FuncErrorTrace(0, "%v", err)
+			return
+		}
+		saleRepEmail, ok := data[0]["email_id"].(string)
+		if !ok {
+			err = fmt.Errorf("email_id not found in database")
+			log.FuncErrorTrace(0, "%v", err)
+			return
+		}
+
+		log.FuncDebugTrace(0, "Sending Email To: %v", saleRepEmail)
 	}
 
 	if dataReq.Event == "envelope-declined" {
@@ -162,7 +183,11 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 
 		log.FuncDebugTrace(0, "Docusign Envelope declined event received")
 		// update docusign_envelope_declined_at
-		query = "UPDATE leads_info SET docusign_envelope_declined_at = CURRENT_TIMESTAMP, UPDATED_AT = CURRENT_TIMESTAMP WHERE docusign_envelope_id = $1"
+		query = `UPDATE leads_info SET 
+					docusign_envelope_declined_at = CURRENT_TIMESTAMP,
+					docusign_envelope_id = NULL,
+					UPDATED_AT = CURRENT_TIMESTAMP 
+				WHERE docusign_envelope_id = $1`
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update docusign_envelope_declined_at err %v", err)
@@ -178,8 +203,12 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 		}
 
 		log.FuncDebugTrace(0, "Docusign Envelope voided event received")
-		// update docusign_envelope_declined_at
-		query = "UPDATE leads_info SET docusign_envelope_voided_at = CURRENT_TIMESTAMP, UPDATED_AT = CURRENT_TIMESTAMP WHERE docusign_envelope_id = $1"
+		// update docusign_envelope_voided_at
+		query = `UPDATE leads_info SET 
+					docusign_envelope_voided_at = CURRENT_TIMESTAMP,
+					docusign_envelope_id = NULL,
+					UPDATED_AT = CURRENT_TIMESTAMP 
+				WHERE docusign_envelope_id = $1`
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update docusign_envelope_voided_at err %v", err)

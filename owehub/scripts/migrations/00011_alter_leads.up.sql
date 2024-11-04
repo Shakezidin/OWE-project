@@ -115,3 +115,5 @@ ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_completed_at T
 ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_declined_at TIMESTAMPTZ;
 ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_voided_at TIMESTAMPTZ;
 ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_sent_at TIMESTAMPTZ;
+
+ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS manual_won_date TIMESTAMPTZ;
