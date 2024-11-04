@@ -76,7 +76,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	whereEleList = append(whereEleList, userEmail)
 
 	// default condition: not in lost or won
-	whereClause = "WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL "
+	whereClause = "WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL "
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
@@ -547,7 +547,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	query = `
 		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+		WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
 		AND (
 			li.status_id = 0 
 			AND li.is_appointment_required = TRUE 
@@ -559,7 +559,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-			WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+			WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
 			AND (
 				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 				OR (li.status_id = 5)
@@ -576,7 +576,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'DECLINED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+		WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
 		AND (
 			li.status_id = 3 
 			AND li.is_appointment_required = TRUE
@@ -587,7 +587,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'ACTION_NEEDED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE li.lead_lost_date IS NULL AND li.docuisgn_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
+		WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
 		AND (
 				li.status_id = 4
 				OR (

@@ -105,13 +105,13 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.LeadsStatus == -1 {
 		whereClause = `
 			WHERE li.lead_lost_date IS NOT NULL 
-				OR li.docuisgn_envelope_completed_at IS NOT NULL 
+				OR li.docusign_envelope_completed_at IS NOT NULL 
 				OR li.manual_won_date IS NOT NULL
 			`
 	}
 
 	if dataReq.LeadsStatus == 5 {
-		whereClause = "WHERE li.docuisgn_envelope_completed_at IS NOT NULL OR li.manual_won_date IS NOT NULL"
+		whereClause = "WHERE li.docusign_envelope_completed_at IS NOT NULL OR li.manual_won_date IS NOT NULL"
 	}
 
 	if dataReq.LeadsStatus == 6 {
