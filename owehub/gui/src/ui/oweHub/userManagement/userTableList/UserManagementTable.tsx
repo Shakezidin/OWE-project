@@ -37,6 +37,8 @@ import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Input from '../../../components/text_input/Input';
 import Swal from 'sweetalert2';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -149,6 +151,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const resetPassword = async(user_emails:string)=>{
+    try {
+      const data = await postCaller("reset_user_passwords",{user_emails:[user_emails]});
+      toast.success(data.message);
+    } catch (error) {
+      toast.error((error as Error).message as string);
+    }
+  }
 
   const handlePasswordReset = async (id?: string) => {
     await Swal.fire({
@@ -163,6 +173,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         actions:"flex-row-reverse"
       }
     })
+    if (id) {
+      resetPassword(id);
+    }
+    
   }
 
   const renderComponent = () => {
