@@ -5,6 +5,8 @@ import (
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -88,7 +90,12 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	ContractDate := dlrPayData.ContractDate
 	NetEpc := dlrPayData.NetEpc
 	financeType := dlrPayData.FinanceType
-	mktFee := 5.0                                                                                                                                               //pemding from Colten sice
+	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
+	mktFeeStr := adderBreakDown["marketing_fee"]
+	mktFee, err := strconv.ParseFloat(mktFeeStr, 64)
+	if err != nil {
+		mktFee = 0.0
+	} //pemding from Colten sice
 	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
@@ -145,4 +152,33 @@ func ClearDlrPay() error {
 		return err
 	}
 	return nil
+}
+
+func cleanAdderBreakDownAndTotal(data string) map[string]string {
+	result := make(map[string]string)
+	if len(data) == 0 {
+		return result
+	}
+	components := strings.Split(data, "\n")
+	var finalComp []string
+
+	if len(components) > 0 && components[0] != "" {
+		finalComp = append(finalComp, components[0])
+	}
+	for _, val := range components[1:] {
+		val = strings.TrimSpace(val)
+		if val != "" {
+			finalComp = append(finalComp, val)
+		}
+	}
+	for _, val := range finalComp {
+		cleanedData := strings.ReplaceAll(val, "**", "")
+		parts := strings.SplitN(cleanedData, ":", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			result[key] = value
+		}
+	}
+	return result
 }
