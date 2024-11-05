@@ -161,7 +161,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   }
 
   const handlePasswordReset = async (id?: string) => {
-    await Swal.fire({
+  const prompt =   await Swal.fire({
       title: 'Confirm Password Reset',
       text: 'Are you sure you want to reset your password? A new password will be generated and sent to your registered email address',
       icon: 'warning',
@@ -173,9 +173,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         actions:"flex-row-reverse"
       }
     })
-    if (id) {
-      resetPassword(id);
+
+
+    if( prompt.isConfirmed){
+      if (id) {
+        resetPassword(id);
+      }
     }
+    
     
   }
 
