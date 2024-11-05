@@ -36,6 +36,9 @@ import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Input from '../../../components/text_input/Input';
+import Swal from 'sweetalert2';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -148,6 +151,33 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const resetPassword = async(user_emails:string)=>{
+    try {
+      const data = await postCaller("reset_user_passwords",{user_emails:[user_emails]});
+      toast.success(data.message);
+    } catch (error) {
+      toast.error((error as Error).message as string);
+    }
+  }
+
+  const handlePasswordReset = async (id?: string) => {
+    await Swal.fire({
+      title: 'Confirm Password Reset',
+      text: 'Are you sure you want to reset your password? A new password will be generated and sent to your registered email address',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#007bff',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm',
+      customClass:{
+        actions:"flex-row-reverse"
+      }
+    })
+    if (id) {
+      resetPassword(id);
+    }
+    
+  }
 
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -166,6 +196,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.ADMIN:
@@ -182,6 +213,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.FINANCE_ADMIN:
@@ -198,6 +230,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.DB_USER:
@@ -214,6 +247,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.SUB_DEALER_OWNER:
@@ -231,6 +265,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.APPOINTMENT_SETTER:
@@ -247,6 +282,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
 
@@ -264,6 +300,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.REGIONAL_MANGER:
@@ -280,6 +317,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.DEALER_OWNER:
@@ -296,6 +334,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.SALES_REPRESENTATIVE:
@@ -312,6 +351,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.SALE_MANAGER:
@@ -328,6 +368,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.ACCOUNT_MANAGER:
@@ -344,22 +385,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
-          />
-        );
-      case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
-        return (
-          <AccountManagerTable
-            data={userRoleBasedList}
-            onClickEdit={(item: UserRoleBasedListModel) => {
-              onClickEdit(item);
-            }}
-            onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item);
-            }}
-            selectedRows={selectedRows}
-            selectAllChecked={selectAllChecked}
-            setSelectedRows={setSelectedRows}
-            setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
@@ -376,6 +402,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       default:

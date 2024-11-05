@@ -18,9 +18,9 @@ type GetMilestoneDataResp struct {
 	TotalSale              int            `json:"total_sale"`
 	TotalNtp               int            `json:"total_ntp"`
 	TotalInstall           int            `json:"total_install"`
-	InstallIncreasePercent int            `json:"install_increase_percent"`
-	NtpIncreasePercent     int            `json:"ntp_increase_percent"`
-	SaleIncreasePercent    int            `json:"sale_increase_percent"`
+	InstallIncreasePercent float64        `json:"install_increase_percent"`
+	NtpIncreasePercent     float64        `json:"ntp_increase_percent"`
+	SaleIncreasePercent    float64        `json:"sale_increase_percent"`
 	NtpData                map[string]int `json:"ntp_data"`
 	SaleData               map[string]int `json:"sale_data"`
 	InstallData            map[string]int `json:"install_data"`

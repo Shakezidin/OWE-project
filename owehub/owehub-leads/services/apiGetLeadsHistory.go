@@ -101,21 +101,30 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	}
 	offset := (pageNumber - 1) * pageSize
 
-	// Construct the query without ORDER BY inside the whereClause
+	// if leads status is -1, show all won or lost
 	if dataReq.LeadsStatus == -1 {
-		whereClause = "WHERE li.status_id IN (5, 6)"
-	} else {
-		// Show data based on a specific status
-		whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadsStatus)
+		whereClause = `
+			WHERE li.lead_lost_date IS NOT NULL 
+				OR li.docusign_envelope_completed_at IS NOT NULL 
+				OR li.manual_won_date IS NOT NULL
+			`
+	}
+
+	if dataReq.LeadsStatus == 5 {
+		whereClause = "WHERE li.docusign_envelope_completed_at IS NOT NULL OR li.manual_won_date IS NOT NULL"
+	}
+
+	if dataReq.LeadsStatus == 6 {
+		whereClause = "WHERE li.lead_lost_date IS NOT NULL"
 	}
 
 	// Add date range and archive conditions to the whereClause
 	whereClause = fmt.Sprintf(`
-    %s
-    AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
-    AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
-    AND li.is_archived = $4
-`, whereClause)
+    	%s
+		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
+		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
+		AND li.is_archived = $4
+		`, whereClause)
 
 	// Construct the final query with pagination and ORDER BY
 	leadsHistoryQuery = fmt.Sprintf(`
@@ -179,6 +188,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			zipcode = ""
 		}
 
+		// deal won if lead_won_date is not null
 		leadWonDate, ok := item["lead_won_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get lead won date from leads info Item: %+v\n", item)

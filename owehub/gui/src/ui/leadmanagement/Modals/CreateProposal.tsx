@@ -40,7 +40,6 @@ const CreateProposal: React.FC<CreateProposalProps> = ({ onClose }) => {
           },
         }
       );
-      console.log('Project created:', projectResponse.data);
       const projectId = projectResponse.data.project.id;
 
       // Create Design
@@ -54,7 +53,6 @@ const CreateProposal: React.FC<CreateProposalProps> = ({ onClose }) => {
           },
         }
       );
-      console.log('Design created:', designResponse.data);
       const designId = designResponse.data.design.id;
 
       // Create Proposal
@@ -62,7 +60,6 @@ const CreateProposal: React.FC<CreateProposalProps> = ({ onClose }) => {
         'http://localhost:5000/api/create-proposal',
         { designId }
       );
-      console.log('Proposal created:', proposalResponse.data);
       setProposalLink(proposalResponse.data.proposal.proposal_link);
       toast.success('Proposal created successfully'); // Notify success
 

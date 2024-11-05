@@ -28,21 +28,22 @@ import (
  ******************************************************************************/
 func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                    error
-		dataReq                models.GetMilestoneDataReq
-		data                   []map[string]interface{}
-		whereEleList           []interface{}
-		filter                 string
-		RecordCount            int64
-		query                  string
-		thisPeriodNtpCount     int
-		thisPeriodSaleCount    int
-		thisPeriodInstallCount int
-		totalSaleCount         int
-		totalNtpCount          int
-		totalInstallCount      int
+		err                  error
+		dataReq              models.GetMilestoneDataReq
+		data                 []map[string]interface{}
+		whereEleList         []interface{}
+		filter               string
+		RecordCount          int64
+		query                string
+		totalSaleCount       int
+		totalNtpCount        int
+		totalInstallCount    int
+		previousSaleCount    int
+		previousNtpCount     int
+		previousInstallCount int
+		currentDate          string
+		prevDate             string
 	)
-
 	log.EnterFn(0, "HandleGetMilestoneDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetMilestoneDataRequest", err) }()
 
@@ -90,124 +91,130 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 	var ntpCountMap = make(map[string]int)
 	var installCountMap = make(map[string]int)
 
-	now := time.Now()
-	currentYear, currentWeek := now.ISOWeek()
 	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
 	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
 
 	endDate = endDate.Add(24*time.Hour - time.Second)
 
+	// var prevEndDate, prevStartDate time.Time
+	// var currentMonthStartDate time.Time
+	// var currentMonthEndDate time.Time
+
+	switch dataReq.DateBy {
+	case "day":
+		currentDate = endDate.Format("2006-01-02")
+		prevDate = endDate.AddDate(0, 0, -1).Format("2006-01-02")
+
+	case "month":
+		// Format the current month as YYYY-MM
+		currentDate = endDate.Format("2006-01")
+
+		// Calculate previous month
+		prevEndDate := endDate.AddDate(0, -1, 0) // Move to the same day in the previous month
+		prevDate = prevEndDate.Format("2006-01") // Format as YYYY-MM
+
+		// Check if prevEndDate is still the same day as endDate
+		// If endDate is the last day of the month, we might need to adjust to the last day of previous month
+		if endDate.Day() == daysInMonth(endDate) {
+			prevEndDate = prevEndDate.AddDate(0, 0, -prevEndDate.Day()) // Go to the last day of the previous month
+		}
+
+		prevDate = prevEndDate.Format("2006-01") // Format again as YYYY-MM
+
+	case "week":
+		year, week := endDate.ISOWeek()
+		currentDate = fmt.Sprintf("%d-W%02d", year, week)         // Current week
+		prevYear, prevWeek := endDate.AddDate(0, 0, -7).ISOWeek() // Previous week
+		prevDate = fmt.Sprintf("%d-W%02d", prevYear, prevWeek)    // Previous week formatted
+
+	default: // "year"
+		currentDate = endDate.Format("2006")                // Current year (YYYY)
+		prevDate = endDate.AddDate(-1, 0, 0).Format("2006") // Previous year (YYYY)
+	}
+
+	// Loop through each item in data to calculate counts for sales, NTPs, and installations
 	for _, item := range data {
-		// Check Sale Date
+		// Track the current and previous period keys for each metric
 		saleDate, ok := item["sale_date"].(time.Time)
-		if ok && !saleDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
-			var key string
+		// Only include sales in the current period
+		if ok && !saleDate.IsZero() && !saleDate.After(endDate) && !saleDate.Before(startDate) {
+			var saleKey string
 			switch dataReq.DateBy {
 			case "day":
-				key = saleDate.Format("2006-01-02") // Format for day
+				saleKey = saleDate.Format("2006-01-02")
 			case "month":
-				key = saleDate.Format("2006-01") // Format for month
+				saleKey = saleDate.Format("2006-01")
 			case "week":
 				year, week := saleDate.ISOWeek()
-				key = fmt.Sprintf("%d-W%02d", year, week) // Format for week (YYYY-WW)
-			default: // year
-				key = saleDate.Format("2006") // Format for year
+				saleKey = fmt.Sprintf("%d-W%02d", year, week)
+			default: // "year"
+				saleKey = saleDate.Format("2006")
 			}
-			saleCountMap[key]++
-
-			// Check if date is within this period
-			saleYear, saleWeek := saleDate.ISOWeek()
-			if (dataReq.DateBy == "year" && saleDate.Year() == now.Year()) ||
-				(dataReq.DateBy == "month" && saleDate.Year() == now.Year() && saleDate.Month() == now.Month()) ||
-				(dataReq.DateBy == "week" && saleDate.Year() == now.Year() && saleYear == currentYear && saleWeek == currentWeek) ||
-				(dataReq.DateBy == "day" && saleDate.Year() == now.Year() && saleDate.YearDay() == now.YearDay()) {
-				thisPeriodSaleCount++
-			}
+			saleCountMap[saleKey]++
 		}
 
-		// Check NTP Completion Date
+		// Parse NTP Completion Date
 		ntpDate, ok := item["ntp_complete_date"].(time.Time)
-		if ok && !ntpDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
-			var key string
+		if ok && !ntpDate.IsZero() && !ntpDate.After(endDate) && !ntpDate.Before(startDate) {
+			var ntpKey string
 			switch dataReq.DateBy {
 			case "day":
-				key = ntpDate.Format("2006-01-02")
+				ntpKey = ntpDate.Format("2006-01-02")
 			case "month":
-				key = ntpDate.Format("2006-01")
+				ntpKey = ntpDate.Format("2006-01")
 			case "week":
 				year, week := ntpDate.ISOWeek()
-				key = fmt.Sprintf("%d-W%02d", year, week)
-			default:
-				key = ntpDate.Format("2006")
+				ntpKey = fmt.Sprintf("%d-W%02d", year, week)
+			default: // "year"
+				ntpKey = ntpDate.Format("2006")
 			}
-			ntpCountMap[key]++
-
-			// Check if date is within this period
-			ntpYear, ntpWeek := ntpDate.ISOWeek()
-			if (dataReq.DateBy == "year" && ntpDate.Year() == now.Year()) ||
-				(dataReq.DateBy == "month" && ntpDate.Year() == now.Year() && ntpDate.Month() == now.Month()) ||
-				(dataReq.DateBy == "week" && ntpDate.Year() == now.Year() && ntpYear == currentYear && ntpWeek == currentWeek) ||
-				(dataReq.DateBy == "day" && ntpDate.Year() == now.Year() && ntpDate.YearDay() == now.YearDay()) {
-				thisPeriodNtpCount++
-			}
+			ntpCountMap[ntpKey]++
 		}
 
-		// Check Installation Completion Date
+		// Parse Installation Completion Date
 		installDate, ok := item["pv_completion_date"].(time.Time)
-		if ok && !installDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
-			var key string
+		if ok && !installDate.IsZero() && !installDate.After(endDate) && !installDate.Before(startDate) {
+			var isntallKey string
 			switch dataReq.DateBy {
 			case "day":
-				key = installDate.Format("2006-01-02")
+				isntallKey = installDate.Format("2006-01-02")
 			case "month":
-				key = installDate.Format("2006-01")
+				isntallKey = installDate.Format("2006-01")
 			case "week":
 				year, week := installDate.ISOWeek()
-				key = fmt.Sprintf("%d-W%02d", year, week)
-			default:
-				key = installDate.Format("2006")
+				isntallKey = fmt.Sprintf("%d-W%02d", year, week)
+			default: // "year"
+				isntallKey = installDate.Format("2006")
 			}
-			installCountMap[key]++
-
-			// Check if date is within this period
-			installYear, installWeek := installDate.ISOWeek()
-			if (dataReq.DateBy == "year" && installDate.Year() == now.Year()) ||
-				(dataReq.DateBy == "month" && installDate.Year() == now.Year() && installDate.Month() == now.Month()) ||
-				(dataReq.DateBy == "week" && installDate.Year() == now.Year() && installYear == currentYear && installWeek == currentWeek) ||
-				(dataReq.DateBy == "day" && installDate.Year() == now.Year() && installDate.YearDay() == now.YearDay()) {
-				thisPeriodInstallCount++
-			}
+			installCountMap[isntallKey]++
 		}
 	}
+	// Calculate total counts
+	totalSaleCount = sumMapValues(saleCountMap)
+	totalNtpCount = sumMapValues(ntpCountMap)
+	totalInstallCount = sumMapValues(installCountMap)
+	previousInstallCount = installCountMap[prevDate]
+	previousNtpCount = ntpCountMap[prevDate]
+	previousSaleCount = saleCountMap[prevDate]
+	currentInstallCount := installCountMap[currentDate]
+	currentNtpCount := ntpCountMap[currentDate]
+	currentSaleCount := saleCountMap[currentDate]
 
-	for _, count := range saleCountMap {
-		totalSaleCount += count
-	}
+	// Calculate the percentage increase based on current vs. previous counts
+	milestoneData.SaleIncreasePercent = calculatePercentageIncrease(currentSaleCount, previousSaleCount)
+	milestoneData.NtpIncreasePercent = calculatePercentageIncrease(currentNtpCount, previousNtpCount)
+	milestoneData.InstallIncreasePercent = calculatePercentageIncrease(currentInstallCount, previousInstallCount)
 
-	for _, count := range ntpCountMap {
-		totalNtpCount += count
-	}
-
-	for _, count := range installCountMap {
-		totalInstallCount += count
-	}
-
+	// Populate response
+	milestoneData.TotalInstall = totalInstallCount
+	milestoneData.TotalNtp = totalNtpCount
+	milestoneData.TotalSale = totalSaleCount
 	milestoneData.InstallData = installCountMap
 	milestoneData.SaleData = saleCountMap
 	milestoneData.NtpData = ntpCountMap
 
-	// Set the totals in the milestoneData response
-	milestoneData.TotalInstall = totalInstallCount
-	milestoneData.TotalNtp = totalNtpCount
-	milestoneData.TotalSale = totalSaleCount
-
-	// Set the previous period totals for comparison
-	milestoneData.InstallIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodInstallCount), float64(totalInstallCount)))
-	milestoneData.NtpIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodNtpCount), float64(totalNtpCount)))
-	milestoneData.SaleIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodSaleCount), float64(totalSaleCount)))
-
-	RecordCount = int64(len(data))
 	appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, milestoneData, RecordCount)
+
 }
 
 /******************************************************************************
@@ -285,10 +292,25 @@ func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters st
 	return filters, whereEleList
 }
 
-func calculatePercentageIncrease(thisPeriod, total float64) float64 {
-	previousTotal := total - thisPeriod
-	if previousTotal == 0 {
-		return 100 // If there were no previous sales, growth is considered 100%
+func calculatePercentageIncrease(currentMonthSales, lastMonthSales int) float64 {
+	if lastMonthSales == 0 {
+		return 0 // To avoid division by zero, return 0% if last month sales are zero.
 	}
-	return (thisPeriod / previousTotal) * 100
+
+	increase := currentMonthSales - lastMonthSales
+	percentageIncrease := (float64(increase) / float64(lastMonthSales)) * 100
+	return percentageIncrease
+}
+
+func sumMapValues(m map[string]int) int {
+	total := 0
+	for _, count := range m {
+		total += count
+	}
+	return total
+}
+
+func daysInMonth(date time.Time) int {
+	nextMonth := date.AddDate(0, 1, 0)                     // Move to next month
+	return nextMonth.AddDate(0, 0, -nextMonth.Day()).Day() // Go to the last day of the previous month
 }
