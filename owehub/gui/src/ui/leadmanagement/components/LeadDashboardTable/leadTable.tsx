@@ -682,7 +682,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                         <div
                           style={lead.proposal_status in statusStyles
                             ? statusStyles[lead.proposal_status as ProposalStatus]
-                            : { backgroundColor: "inherit", color: "black" }}
+                            : { backgroundColor: lead.proposal_status ? "#808080" : "", color: lead.proposal_status ? "#fff" : "black" }}
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
