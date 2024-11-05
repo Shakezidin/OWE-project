@@ -131,7 +131,7 @@
   background-color: #E5EFFF;
   border: 1px solid #4368DC;
   color: #377CF6;
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 /* .buttons:hover {
   color: #eff5ff;
@@ -160,7 +160,7 @@
   background-color: #E5EFFF;
   border: 1px solid #4368DC;
   color: #377CF6;
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
 /* .Folderbuttons:hover {
@@ -338,7 +338,7 @@
 }
 
 .lib_Grid_Header .grid_item {
-  font-size: 16px;
+  font-size: 14px;
   font: poppins;
   font-weight: 500;
   /* border: 1px solid black; */
@@ -648,7 +648,7 @@
   background-color: #E5EFFF;
   border: 1px solid #4368DC;
   color: #377CF6;
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
 .view_btn.active_tile {
@@ -661,7 +661,7 @@
 
 .view_btn.active_tile:hover{
   
-  transform: scale(1.1);
+  transform: scale(1.07);
 }
 .desktop_hide{
   display: none;
