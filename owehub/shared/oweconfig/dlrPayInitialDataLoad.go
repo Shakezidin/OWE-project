@@ -37,13 +37,14 @@ type InitialStruct struct {
 	// DrawMax        float64
 	FinanceType    string
 	FinanceCompany string
+	AdderBreakDown string
 }
 
 type InitialDataLists struct {
 	InitialDataList []InitialStruct
 }
 
-func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
+func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, err error) {
 	var (
 		query    string
 		dataList []map[string]interface{}
@@ -53,7 +54,7 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 	defer func() { log.ExitFn(0, "LoadDlrPayInitialData", err) }()
 
 	// uidList := []string{"OUR21563"} //OUR21190
-	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer,
+	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer, cs.adder_breakdown_and_total_new,
 			 cs.contracted_system_size, cs.total_system_cost,cs.adder_breakdown_and_total_new,
 			 cs.primary_sales_rep,cs.secondary_sales_rep, cs.setter, 
 			 cs.state, cs.sale_date, ns.net_epc, 
@@ -61,7 +62,16 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 			 ns.finance_type, ns.finance
 			 from customers_customers_schema cs
              LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
-             LEFT JOIN pv_install_install_subcontracting_schema ps ON ps.customer_unique_id = cs.unique_id`
+             LEFT JOIN pv_install_install_subcontracting_schema ps ON ps.customer_unique_id = cs.unique_id WHERE cs.unique_id != ''`
+
+	if len(uniqueIds) > 0 {
+		// Create a string to hold the unique IDs for the SQL query
+		placeholders := make([]string, len(uniqueIds))
+		for i, id := range uniqueIds {
+			placeholders[i] = fmt.Sprintf("'%s'", id) // Quote each ID for SQL
+		}
+		query += fmt.Sprintf(" AND cs.unique_id IN (%s)", strings.Join(placeholders, ","))
+	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
@@ -207,6 +217,13 @@ func LoadDlrPayInitialData() (InitialData InitialDataLists, err error) {
 		} else {
 			InitialDataa.FinanceType = ""
 		}
+
+		if AdderBreakDown, ok := data["adder_breakdown_and_total_new"]; (ok) && (AdderBreakDown != nil) {
+			InitialDataa.AdderBreakDown = AdderBreakDown.(string)
+		} else {
+			InitialDataa.AdderBreakDown = ""
+		}
+
 		InitialData.InitialDataList = append(InitialData.InitialDataList, InitialDataa)
 	}
 	return InitialData, err

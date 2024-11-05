@@ -19,6 +19,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
@@ -145,6 +146,7 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 			UPDATE leads_info SET
 				proposal_pdf_key = $1,
 				docusign_envelope_completed_at = CURRENT_TIMESTAMP,
+				lead_won_date = CASE WHEN lead_won_date IS NULL THEN CURRENT_TIMESTAMP ELSE lead_won_date END,
 				updated_at = CURRENT_TIMESTAMP
 			WHERE leads_id = $2
 		`
@@ -215,9 +217,10 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
  ******************************************************************************/
 func sendLeadWonEmail(leadsId int64) error {
 	var (
-		err   error
-		query string
-		data  []map[string]interface{}
+		err      error
+		query    string
+		data     []map[string]interface{}
+		response *rest.Response
 	)
 
 	log.EnterFn(0, "sendLeadWonEmail")
@@ -225,8 +228,8 @@ func sendLeadWonEmail(leadsId int64) error {
 
 	query = `
 		SELECT
-			ud.email_id,
-			ud.name,
+			ud.email_id as user_email_id,
+			ud.name as user_name,
 			li.first_name,
 			li.last_name,
 			li.email_id,
@@ -247,13 +250,13 @@ func sendLeadWonEmail(leadsId int64) error {
 		return err
 	}
 
-	userEmail, ok := data[0]["email_id"].(string)
+	userEmail, ok := data[0]["user_email_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get email_id from leads info Item: %+v\n", data[0])
 		return nil
 	}
 
-	userName, ok := data[0]["name"].(string)
+	userName, ok := data[0]["user_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get name from leads info Item: %+v\n", data[0])
 		return nil
@@ -292,7 +295,8 @@ func sendLeadWonEmail(leadsId int64) error {
 	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	// prepare the mail
-	from := mail.NewEmail("OWE", leadsService.LeadAppCfg.AppointmentSenderEmail)
+	// from := mail.NewEmail("OWE", leadsService.LeadAppCfg.AppointmentSenderEmail)
+	from := mail.NewEmail("OWE", "it@ourworldenergy.com") // TODO: change this
 	subject := "Lead Won!"
 	to := mail.NewEmail(userName, userEmail)
 
@@ -425,11 +429,13 @@ func sendLeadWonEmail(leadsId int64) error {
 
 	// Send the email
 	client := sendgrid.NewSendClient("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")
-	_, err = client.Send(message)
+	response, err = client.Send(message)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email with err: %v", err)
 		return err
 	}
+
+	log.FuncDebugTrace(0, "Email sent successfully, headers: %+v, body %s, status code: %d", response.Headers, response.Body, response.StatusCode)
 
 	return nil
 }

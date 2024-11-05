@@ -75,19 +75,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   });
 
   useEffect(() => {
-    console.log("Component mounted, checking for query params...");
     const queryParams = new URLSearchParams(location.search);
     const code = queryParams.get('code');
     const state = queryParams.get('state');
 
     if (code) {
-      console.log("Authorization code found:", code);
       handleCodeExchange(code); // Call the function to exchange the code for a token
     }
   }, [location]);
 
   const handleCodeExchange = async (code: string) => {
-    console.log("Signing Document...handleCodeExchange");
 
     const params = {
       action: "gettoken" as const,
@@ -97,7 +94,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
     try {
       const response = await dispatch(getDocuSignUrl(params) as any);
-      console.log('Full response from getDocuSignUrl:', response); // Log entire response structure
+      // console.log('Full response from getDocuSignUrl:', response);
 
       // Check if payload is defined in the response
       const payload = response.payload;
@@ -109,7 +106,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // Check if the access token is present in payload
       const accessToken = payload.access_token; // Access token inside response.payload
       if (accessToken) {
-        console.log('Access Token:', accessToken);
         await fetchUserInfo(accessToken); // Call the fetchUserInfo function with the token
       } else {
         console.error('Access token not found in payload.');
@@ -122,7 +118,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
   const fetchUserInfo = async (accessToken: string) => {
-    console.log("Signing Document...fetchUserInfo");
 
     const params = {
       action: "getuserinfo" as const,
@@ -140,7 +135,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
       // Process the user info data
       const userInfo = response.data; // Adjust based on your response structure
-      console.log('User Info:', userInfo);
 
       // Store user info in your state or context as needed
     } catch (error) {
@@ -204,7 +198,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       if (!payload.is_done) {
         const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
         setDownloadProgress(progressPercentage); // Update the progress state
-        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+        // console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
       } else if (payload.is_done) {
         setDownloadingLeadId(null); // Reset downloading state once done
         setDownloadProgress(0); // Reset progress
@@ -242,7 +236,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     url?: string; // Make it optional if it might not be present
     // Add other properties if needed
   }
-  console.log(selectedType, "how can we do")
 
   useEffect(() => {
     if (selectedType === 'app_sched') {
@@ -267,7 +260,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       setFinish(false);
       setWon(true);
       setSelectedType('');
-    }else if (selectedType === 'Complete as Won') {
+    } else if (selectedType === 'Complete as Won') {
       // handleCloseWon();
       handleOpenModal();
       setAction(false);
@@ -481,29 +474,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
 
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(1);
-  const [itemsPerPage, setItemPerPage] = useState(10);
-  const startIndex = (page - 1) * itemsPerPage + 1;
-  const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalcount / itemsPerPage);
 
-  const paginate = (pageNumber: number) => {
-    setPage(pageNumber);
-  };
-
-
-  const goToNextPage = () => {
-    setPage(page + 1);
-  };
-
-  const goToPrevPage = () => {
-    setPage(page - 1);
-  };
-  const handlePerPageChange = (selectedPerPage: number) => {
-    setItemPerPage(selectedPerPage);
-    setPage(1);
-  };
 
 
   return (
@@ -544,8 +515,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
               <thead
               >
                 <tr>
-                  {LeadColumn.map((item, key) => (
-                    <th key={key}>
+                  {LeadColumn.map((item) => (
+                    <th key={item.id}>
                       <div className="flex-check">
                         <div className="table-header">
                           <p>{item.displayName}</p>
@@ -643,6 +614,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           : 'N/A'}</div>
                       </td>
                       <td>
+                      <div className={styles.topofinfo}>
                         {lead.appointment_status_label ? (
                           <>
                             <div
@@ -665,19 +637,21 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             >
                               {lead.appointment_status_label}
                             </div>
-                            <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
+                            <div style={{  marginTop: "4px" }} className={styles.date}>
                               {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                             </div>
                             {((lead.appointment_status_label === 'No Response' && lead.proposal_status !== '') || (lead.appointment_status_label === 'No Response' && lead.won_lost_label !== '')) &&
-                              <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
+                              <div style={{  color: "#D91515" }} className={styles.date}>
                                 Update Status!
                               </div>}
                           </>
                         ) : (
                           <div>____</div>
                         )}
+                        </div>
                       </td>
                       <td>
+                        <div className={styles.topofinfo}>
                         {lead.won_lost_label ? (
                           <>
                             <div
@@ -687,19 +661,20 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               {lead.won_lost_label}
                             </div>
                             {lead.won_lost_date && (
-                              <div style={{ marginLeft: '29px' }} className={styles.info}>
+                              <div className={styles.date}>
                                 {lead.won_lost_date ? format((parseISO(lead.won_lost_date)), 'dd-MM-yyyy') : ""}
 
                               </div>
                             )}
                             {(lead.can_manually_win) &&
-                              <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
+                              <div style={{ color: "#D91515" }} className={styles.date}>
                                 48hrs passed
                               </div>}
                           </>
                         ) : (
                           <div>______</div>
                         )}
+                        </div>
                       </td>
 
 
@@ -707,7 +682,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                         <div
                           style={lead.proposal_status in statusStyles
                             ? statusStyles[lead.proposal_status as ProposalStatus]
-                            : { backgroundColor: "inherit", color: "black" }}
+                            : { backgroundColor: lead.proposal_status ? "#808080" : "", color: lead.proposal_status ? "#fff" : "black" }}
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
@@ -719,28 +694,35 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                       </td>
 
                       <td>
-                        <div
-                          style={lead.docusign_label in docusignStyles
-                            ? docusignStyles[lead.docusign_label as DocuStatus]
-                            : { backgroundColor: "inherit", color: "black" }}
-                          className={styles.appointment_status}
-                        >
-                          {lead.docusign_label ? (
-                            (lead.docusign_label)
-                          ) : (
-                            <span style={{ color: "black" }}>_____</span>
-                          )}
+                        <div className={styles.topofinfo}>
+                          <div
+                            style={lead.docusign_label in docusignStyles
+                              ? docusignStyles[lead.docusign_label as DocuStatus]
+                              : { backgroundColor: "inherit", color: "black" }}
+                            className={styles.appointment_status}
+                          >
+                            {lead.docusign_label ? (
+                              (lead.docusign_label)
+                            ) : (
+                              <span style={{ color: "black" }}>_____</span>
+                            )}
+                          </div>
+                          <div className={styles.date}>
+                            {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
+                          </div>
                         </div>
-                        <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
-                          {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
-                        </div>
+                        {/* style={{ marginLeft: '29px', marginTop: "4px" }} */}
                       </td>
 
 
 
-                      <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
-                      <td>{lead.finance_type ? lead.finance_type : "_____"}</td>
-                      <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
+                      <td>
+                      <div className={styles.topofinfo}>
+                        {lead.finance_company ? lead.finance_company : "_____"}
+                        </div>
+                        </td>
+                      <td><div className={styles.topofinfo}>{lead.finance_type ? lead.finance_type : "_____"}</div></td>
+                      <td><div className={styles.topofinfo}>{lead.qc_audit ? lead.qc_audit : "_____"}</div></td>
                       {(selectedLeads.length === 0 && isMobile) &&
                         <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
                           <div className={styles.RowMobile}
@@ -870,7 +852,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 ) : (
                                   <>
                                     {downloadingLeadId === lead.leads_id ? (
-                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transform:'scale(0.7)' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transform: 'scale(0.7)' }}>
                                         <MicroLoader />
                                         <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
                                       </div>

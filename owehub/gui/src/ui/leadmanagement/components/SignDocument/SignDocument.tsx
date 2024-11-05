@@ -77,7 +77,7 @@ const SignDocument: React.FC = () => {
         base_url: "https://demo.docusign.net"
       }) as any);
 
-      console.log("Document status:", response);
+      // console.log("Document status:", response);
       setDocumentStatus({ status: response.status, message: response.message });
     } catch (error) {
       console.error("Error checking document status:", error);
@@ -134,7 +134,7 @@ const SignDocument: React.FC = () => {
       toast.error('Error initiating signing process. Please try again.');
     }
   };
-console.log(leadData)
+// console.log(leadData)
   if (!leadData) {
     return <div>No lead data available.</div>;
   }
