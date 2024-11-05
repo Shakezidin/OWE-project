@@ -74,7 +74,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   currentFilter,
   setCurrentFilter
 }) => {
-  console.log(refresh, "refresh i want ")
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
@@ -88,7 +87,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [proposalLink, setProposalLink] = useState<string | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null); // State for iframe source
   const isMobile = useMatchMedia('(max-width: 600px)');
-  console.log(currentFilter, "In modal opens")
+
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
   };
@@ -107,7 +106,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  console.log(selectedDate, selectedTime, 'do something new');
 
   // const handleSendAppointment = async () => {
   //   setLoad(true);
@@ -148,8 +146,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     try {
       const date = selectedDate ? new Date(selectedDate) : new Date();
       const time = selectedTime ? new Date(selectedTime) : new Date();
-      console.log(date, "date show");
-      console.log(time, "time show");
+   
 
       // Set the time components from the time object to the date object
       date.setHours(time.getHours());
@@ -158,7 +155,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
       // Format the date and time in the desired format
       const formattedDateTime = date.toISOString();
-      console.log(formattedDateTime, "wht are you bsdvbvs");
 
       const response = await postCaller(
         'update_lead_status',
@@ -364,7 +360,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
           },
         }
       );
-      console.log('Project created:', projectResponse.data);
       const projectId = projectResponse.data.project.id;
 
       // Create Design
@@ -378,7 +373,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
           },
         }
       );
-      console.log('Design created:', designResponse.data);
       const designId = designResponse.data.design.id;
 
       // Create Proposal
@@ -386,7 +380,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         'http://localhost:5000/api/create-proposal',
         { designId }
       );
-      console.log('Proposal created:', proposalResponse.data);
       setProposalLink(proposalResponse.data.proposal.proposal_link);
       toast.success('Proposal created successfully');
 
@@ -524,7 +517,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-  console.log(finish, "succccccccccccc")
   const MarkedConfirm = () => {
     setVisibleDiv(14);
   };

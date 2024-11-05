@@ -75,19 +75,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   });
 
   useEffect(() => {
-    console.log("Component mounted, checking for query params...");
     const queryParams = new URLSearchParams(location.search);
     const code = queryParams.get('code');
     const state = queryParams.get('state');
 
     if (code) {
-      console.log("Authorization code found:", code);
       handleCodeExchange(code); // Call the function to exchange the code for a token
     }
   }, [location]);
 
   const handleCodeExchange = async (code: string) => {
-    console.log("Signing Document...handleCodeExchange");
 
     const params = {
       action: "gettoken" as const,
@@ -97,7 +94,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
     try {
       const response = await dispatch(getDocuSignUrl(params) as any);
-      console.log('Full response from getDocuSignUrl:', response); // Log entire response structure
+      // console.log('Full response from getDocuSignUrl:', response);
 
       // Check if payload is defined in the response
       const payload = response.payload;
@@ -109,7 +106,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // Check if the access token is present in payload
       const accessToken = payload.access_token; // Access token inside response.payload
       if (accessToken) {
-        console.log('Access Token:', accessToken);
         await fetchUserInfo(accessToken); // Call the fetchUserInfo function with the token
       } else {
         console.error('Access token not found in payload.');
@@ -122,7 +118,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
   const fetchUserInfo = async (accessToken: string) => {
-    console.log("Signing Document...fetchUserInfo");
 
     const params = {
       action: "getuserinfo" as const,
@@ -140,7 +135,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
       // Process the user info data
       const userInfo = response.data; // Adjust based on your response structure
-      console.log('User Info:', userInfo);
 
       // Store user info in your state or context as needed
     } catch (error) {
@@ -204,7 +198,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       if (!payload.is_done) {
         const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
         setDownloadProgress(progressPercentage); // Update the progress state
-        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+        // console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
       } else if (payload.is_done) {
         setDownloadingLeadId(null); // Reset downloading state once done
         setDownloadProgress(0); // Reset progress
@@ -242,7 +236,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     url?: string; // Make it optional if it might not be present
     // Add other properties if needed
   }
-  console.log(selectedType, "how can we do")
 
   useEffect(() => {
     if (selectedType === 'app_sched') {
