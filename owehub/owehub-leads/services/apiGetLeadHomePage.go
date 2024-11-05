@@ -85,42 +85,37 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.LeadStatus == "PROGRESS" {
 		if dataReq.ProgressFilter == "DEAL_WON" {
-			whereClause += "AND (li.status_id = 5)"
+			whereClause += "AND li.lead_won_date IS NOT NULL"
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
 			whereClause += `
 				AND (
-					(li.status_id = 1 AND li.appointment_date > CURRENT_TIMESTAMP)
-					OR
-					(
-						li.status_id = 5 
-						AND li.appointment_scheduled_date IS NOT NULL 
-						AND li.appointment_accepted_date IS NULL
-						AND li.appointment_date > CURRENT_TIMESTAMP
-					)
+					li.appointment_scheduled_date IS NOT NULL 
+					AND li.appointment_date > CURRENT_TIMESTAMP
+					AND li.appointment_accepted_date IS NULL
 				)
 			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
 			whereClause += `
 				AND (
-					(li.status_id = 2 AND li.appointment_date > CURRENT_TIMESTAMP)
+					(
+						li.appointment_accepted_date IS NOT NULL
+						AND li.appointment_date > CURRENT_TIMESTAMP
+					)
 					OR
 					(
-						li.status_id = 5 
-						AND li.appointment_scheduled_date IS NOT NULL 
+						li.lead_won_date IS NOT NULL
 						AND li.appointment_accepted_date IS NOT NULL
-						AND li.appointment_date > CURRENT_TIMESTAMP
 					)
 				)
 			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_NOT_REQUIRED" {
-			whereClause += "AND (li.status_id != 6 AND li.is_appointment_required = FALSE)"
+			whereClause += "AND li.is_appointment_required = FALSE"
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
 			whereClause += `
-				AND li.status_id NOT IN (3, 6) 
 					AND li.proposal_created_date IS NOT NULL
 					AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
 			`
