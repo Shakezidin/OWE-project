@@ -12,6 +12,7 @@ type UpdateLeadStatusRequest struct {
 	Reason                string `json:"reason"`
 	AppointmentDateTime   string `json:"appointment_date_time"`
 	IsAppointmentRequired bool   `json:"is_appointment_required"`
+	IsManualWin           bool   `json:"is_manual_win"`
 }
 
 type UpdateLeadStatusResponse struct {

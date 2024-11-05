@@ -6,9 +6,10 @@ import { UserSaleMangerTableColumn } from '../../../../resources/static_data/Use
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import DataNotFound from '../../../components/loader/DataNotFound';
-import { useAppDispatch } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
-
+import { MdOutlineLockReset } from "react-icons/md";
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 interface SaleManagerProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -17,6 +18,7 @@ interface SaleManagerProps {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  handlePasswordReset:(id?:string)=>void;
 }
 
 const SalesManagerTable: React.FC<SaleManagerProps> = ({
@@ -27,10 +29,11 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
   selectedRows,
   setSelectedRows,
   setSelectAllChecked,
+  handlePasswordReset
 }) => {
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-
+  const {role_name} = useAppSelector(state=>state.auth)
   const dispatch = useAppDispatch();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -153,9 +156,9 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                           style={{ marginRight: '15px' }}
                         />
                       </div>
-                      {/* <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div> */}
+                      {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div style={{cursor:"pointer"}} onClick={()=>handlePasswordReset()}>
+                      <MdOutlineLockReset color='#667085' size={24} />
+                    </div>}
                     </div>
                   </td>
                 </tr>

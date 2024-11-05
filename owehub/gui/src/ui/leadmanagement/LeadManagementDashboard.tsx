@@ -129,6 +129,7 @@ function getCurrentDateInUserTimezone() {
   return addMinutes(now, now.getTimezoneOffset());
 }
 
+
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
@@ -720,7 +721,6 @@ const LeadManagementDashboard = () => {
     try {
       const response = await axios.get('http://localhost:5000/api/projects');
       // Handle the response as needed
-      console.log('response.data', response.data);
       setProjects(response.data.projects);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -996,7 +996,6 @@ const LeadManagementDashboard = () => {
       const proposalUrl = response.data.web_proposal.url;
 
       if (!response.data.web_proposal.url_expired) {
-        console.log('Generated Web Proposal URL:', proposalUrl);
         openProposalLink(proposalUrl); // Open the proposal URL in a new tab
       } else {
         console.error('The web proposal URL has expired.');
@@ -1011,7 +1010,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/designs/${designId}/summary`
       );
-      console.log('Retrieved Design Summary:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching design summary:', error);
@@ -1024,7 +1022,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/designs/${designId}/pricing`
       );
-      console.log('Retrieved Design Pricing:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching design pricing:', error);
@@ -1039,7 +1036,6 @@ const LeadManagementDashboard = () => {
       );
       const financings = response.data.financings;
 
-      console.log('Retrieved Financings:', financings);
 
       if (financings && financings.length > 0) {
         // Assuming you want to use the first financing ID
@@ -1063,7 +1059,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/designs/${designId}/financings/${financingId}`
       );
-      console.log('Financing details fetched successfully:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching financing details:', error);
@@ -1076,7 +1071,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}/consumption_profile`
       );
-      console.log('Retrieved Consumption Profile:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching consumption profile:', error);
@@ -1099,7 +1093,6 @@ const LeadManagementDashboard = () => {
           },
         }
       );
-      console.log('Consumption Profile Updated:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error updating consumption profile:', error);
@@ -1228,7 +1221,7 @@ const LeadManagementDashboard = () => {
       document.body.removeChild(link);
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while exporting the data.');
+      toast.error('No Data Found');
     } finally {
       setIsExporting(false);
     }
@@ -1237,8 +1230,7 @@ const LeadManagementDashboard = () => {
 
   //----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
-    console.log("leadId", leadId);
-    console.log("selectedLeads", selectedLeads);
+  
 
     try {
       // Step 1: Fetch preferred solar modules using dispatch

@@ -20,8 +20,8 @@ import { createDocuSignRecipientView, createEnvelope, getDocument, getDocuSignUr
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection";
-type DocuStatus = "Complete" | "Sent" | "Viewed" | "Declined";
+type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection" | "Completed";
+type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -60,25 +60,31 @@ type SSEPayload =
     data: null;
   };
 
+interface DocumentStatus {
+  status: 'signed' | 'viewed' | 'pending' | 'accepted' | null;
+  message: string;
+}
+
 const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal, side, setSide }: LeadSelectionProps) => {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const [documentStatus, setDocumentStatus] = useState<DocumentStatus>({
+    status: null,
+    message: ''
+  });
 
   useEffect(() => {
-    console.log("Component mounted, checking for query params...");
     const queryParams = new URLSearchParams(location.search);
     const code = queryParams.get('code');
     const state = queryParams.get('state');
 
     if (code) {
-      console.log("Authorization code found:", code);
       handleCodeExchange(code); // Call the function to exchange the code for a token
     }
   }, [location]);
 
   const handleCodeExchange = async (code: string) => {
-    console.log("Signing Document...handleCodeExchange");
 
     const params = {
       action: "gettoken" as const,
@@ -88,7 +94,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
     try {
       const response = await dispatch(getDocuSignUrl(params) as any);
-      console.log('Full response from getDocuSignUrl:', response); // Log entire response structure
+      // console.log('Full response from getDocuSignUrl:', response);
 
       // Check if payload is defined in the response
       const payload = response.payload;
@@ -100,7 +106,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // Check if the access token is present in payload
       const accessToken = payload.access_token; // Access token inside response.payload
       if (accessToken) {
-        console.log('Access Token:', accessToken);
         await fetchUserInfo(accessToken); // Call the fetchUserInfo function with the token
       } else {
         console.error('Access token not found in payload.');
@@ -113,7 +118,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
   const fetchUserInfo = async (accessToken: string) => {
-    console.log("Signing Document...fetchUserInfo");
 
     const params = {
       action: "getuserinfo" as const,
@@ -131,7 +135,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
       // Process the user info data
       const userInfo = response.data; // Adjust based on your response structure
-      console.log('User Info:', userInfo);
 
       // Store user info in your state or context as needed
     } catch (error) {
@@ -170,6 +173,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
+  const [finish, setFinish] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -194,7 +198,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       if (!payload.is_done) {
         const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
         setDownloadProgress(progressPercentage); // Update the progress state
-        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+        // console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
       } else if (payload.is_done) {
         setDownloadingLeadId(null); // Reset downloading state once done
         setDownloadProgress(0); // Reset progress
@@ -226,6 +230,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     };
   };
   const [won, setWon] = useState(false);
+  const [isLoadingDocument, setIsLoadingDocument] = useState(false);
 
   interface DocuSignResponse {
     url?: string; // Make it optional if it might not be present
@@ -237,11 +242,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       handleOpenModal();
       setAction(false);
       setWon(false);
+      setFinish(false);
       setReschedule(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
       setReschedule(false);
+      setFinish(false);
       setWon(false);
       setAction(true);
       setSelectedType('');
@@ -250,7 +257,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       handleOpenModal();
       setAction(false);
       setReschedule(false);
+      setFinish(false);
       setWon(true);
+      setSelectedType('');
+    }else if (selectedType === 'Complete as Won') {
+      // handleCloseWon();
+      handleOpenModal();
+      setAction(false);
+      setReschedule(false);
+      setWon(false);
+      setFinish(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
@@ -283,10 +299,52 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   }, [selectedType])
 
   const OpenSignDocument = async () => {
-    const selectedLead = leadsData.find((l: any) => l.leads_id === leadId); 
-    if (selectedLead) {
-      localStorage.setItem('selectedLead', JSON.stringify(selectedLead)); 
-      navigate('/digital-signature-portal');
+    setIsLoadingDocument(true);
+    try {
+      const params = new URLSearchParams();
+      params.append("leads_id", leadId.toString() || "");
+      params.append("return_url", "http://localhost:3000/leadmng-dashboard");
+
+      const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
+      const eventSource = new EventSource(eventSourceUrl);
+
+      eventSource.onmessage = (event) => {
+        const payload = JSON.parse(event.data);
+
+        if (payload.is_done) {
+          setIsLoadingDocument(false);
+          if (payload.error === null) {
+            window.open(payload.data.url, '_blank');
+          } else {
+            console.error(`Error during DocuSign URL generation: ${payload.error}`);
+            setDocumentStatus({
+              status: 'pending',
+              message: 'Error generating signing URL. Please try again.'
+            });
+            toast.error('Error generating signing URL. Please try again.');
+          }
+          eventSource.close();
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        console.error('Error with SSE connection', error);
+        setIsLoadingDocument(false);
+        setDocumentStatus({
+          status: 'pending',
+          message: 'Connection error. Please try again.'
+        });
+        toast.error('Connection error. Please try again.');
+        eventSource.close();
+      };
+    } catch (error) {
+      console.error("Error initiating DocuSign signing:", error);
+      setIsLoadingDocument(false);
+      setDocumentStatus({
+        status: 'pending',
+        message: 'Error initiating signing process. Please try again.'
+      });
+      toast.error('Error initiating signing process. Please try again.');
     }
   };
 
@@ -376,12 +434,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       backgroundColor: "#B459FC",
       color: "#fff"
     },
+    "Completed": {
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
     "Send Docs": {
       backgroundColor: "#EC9311",
       color: "#fff"
     },
     "CREATED": {
-      backgroundColor: "#21BC27",
+      backgroundColor: "#B459FC",
       color: "#fff"
     },
     "Clear selection": {
@@ -392,11 +454,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
   const docusignStyles = {
-    "Complete": {
-      backgroundColor: "#21BC27",
-      color: "#fff"
-    },
-    "Accepted": {
+    "Completed": {
       backgroundColor: "#21BC27",
       color: "#fff"
     },
@@ -404,7 +462,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       backgroundColor: "#EC9311",
       color: "#fff"
     },
-    "Viewed": {
+    "Voided": {
       backgroundColor: "#4999E3",
       color: "#fff"
     },
@@ -413,6 +471,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       color: "#fff"
     }
   };
+
 
 
   const [page, setPage] = useState(1);
@@ -453,6 +512,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         setReschedule={setReschedule}
         won={won}
         setWon={setWon}
+        finish={finish}
+        setFinish={setFinish}
         currentFilter={currentFilter}
         setCurrentFilter={setCurrentFilter}
       />
@@ -526,7 +587,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                 </tr>
               </thead>
               <tbody>
-                {isLoading ? (
+                {isLoading || isLoadingDocument ? (
                   <tr>
                     <td colSpan={30}>
                       <div
@@ -624,7 +685,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
                               </div>
                             )}
-                            {(false) &&
+                            {(lead.can_manually_win) &&
                               <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
                                 48hrs passed
                               </div>}
@@ -643,7 +704,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           className={styles.appointment_status}
                         >
                           {lead.proposal_status ? (
-                            (lead.proposal_status === "CREATED" ? "Completed" : "")
+                            (lead.proposal_status)
                           ) : (
                             <span style={{ color: "black" }}>_____</span>
                           )}
@@ -663,7 +724,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             <span style={{ color: "black" }}>_____</span>
                           )}
                         </div>
+                        <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
+                          {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
+                        </div>
                       </td>
+
 
 
                       <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
@@ -705,16 +770,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                             { label: 'Reschedule Appointment', value: 'app_sched' },
                                             { label: 'Create Proposal', value: 'new_proposal' },
                                           ]
-                                          : lead && lead.proposal_status && lead.proposal_status === 'CREATED' && lead.proposal_id !== ''
+                                          : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                             ? [
-                                              { label: 'Send Proposal', value: 'sendtocust' },
+                                              // { label: 'Send Proposal', value: 'sendtocust' },
                                               { label: 'View Proposal', value: 'viewProposal' },
                                               { label: 'Edit Proposal', value: 'editProposal' },
                                               { label: 'Download Proposal', value: 'download' },
                                               { label: 'Sign Document ', value: 'signature' },
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                               { label: 'Refresh Url', value: 'renew_proposal' },
-                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'CREATED'
+                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
                                               ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
@@ -818,16 +883,16 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                               { label: 'Reschedule Appointment', value: 'app_sched' },
                                               { label: 'Create Proposal', value: 'new_proposal' },
                                             ]
-                                            : lead && lead.proposal_status && lead.proposal_status === 'CREATED' && lead.proposal_id !== ''
+                                            : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                               ? [
-                                                { label: 'Send Proposal', value: 'sendtocust' },
+                                                // { label: 'Send Proposal', value: 'sendtocust' },
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
                                                 { label: 'Download Proposal', value: 'download' },
                                                 { label: 'Sign Document ', value: 'signature' },
                                                 { label: 'Reschedule Appointment', value: 'app_sched' },
                                                 { label: 'Refresh Url', value: 'renew_proposal' },
-                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'CREATED'
+                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
                                                 ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
                                                   { label: 'Edit Proposal', value: 'editProposal' },
@@ -859,11 +924,19 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 disabledOptions={
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response')
                                     ? lead.won_lost_label !== ''
-                                      ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
-                                      : ['Appointment Not Required', 'Complete as Won']
+                                      ? lead.can_manually_win
+                                        ? ['Appointment Not Required', 'Deal Won']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                      : lead.can_manually_win
+                                        ? ['Appointment Not Required']
+                                        : ['Appointment Not Required', 'Complete as Won']
                                     : lead.won_lost_label !== ''
-                                      ? ['Deal Won', 'Complete as Won']
-                                      : ['Complete as Won']
+                                      ? lead.can_manually_win
+                                        ? ['Deal Won']
+                                        : ['Deal Won', 'Complete as Won']
+                                      : lead.can_manually_win
+                                        ? []
+                                        : ['Complete as Won']
                                 }
                               />
 
