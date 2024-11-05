@@ -260,7 +260,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       setFinish(false);
       setWon(true);
       setSelectedType('');
-    }else if (selectedType === 'Complete as Won') {
+    } else if (selectedType === 'Complete as Won') {
       // handleCloseWon();
       handleOpenModal();
       setAction(false);
@@ -474,29 +474,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
 
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(1);
-  const [itemsPerPage, setItemPerPage] = useState(10);
-  const startIndex = (page - 1) * itemsPerPage + 1;
-  const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalcount / itemsPerPage);
 
-  const paginate = (pageNumber: number) => {
-    setPage(pageNumber);
-  };
-
-
-  const goToNextPage = () => {
-    setPage(page + 1);
-  };
-
-  const goToPrevPage = () => {
-    setPage(page - 1);
-  };
-  const handlePerPageChange = (selectedPerPage: number) => {
-    setItemPerPage(selectedPerPage);
-    setPage(1);
-  };
 
 
   return (
@@ -537,8 +515,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
               <thead
               >
                 <tr>
-                  {LeadColumn.map((item, key) => (
-                    <th key={key}>
+                  {LeadColumn.map((item) => (
+                    <th key={item.id}>
                       <div className="flex-check">
                         <div className="table-header">
                           <p>{item.displayName}</p>
@@ -636,6 +614,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           : 'N/A'}</div>
                       </td>
                       <td>
+                      <div className={styles.topofinfo}>
                         {lead.appointment_status_label ? (
                           <>
                             <div
@@ -658,19 +637,21 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             >
                               {lead.appointment_status_label}
                             </div>
-                            <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
+                            <div style={{  marginTop: "4px" }} className={styles.date}>
                               {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                             </div>
                             {((lead.appointment_status_label === 'No Response' && lead.proposal_status !== '') || (lead.appointment_status_label === 'No Response' && lead.won_lost_label !== '')) &&
-                              <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
+                              <div style={{  color: "#D91515" }} className={styles.date}>
                                 Update Status!
                               </div>}
                           </>
                         ) : (
                           <div>____</div>
                         )}
+                        </div>
                       </td>
                       <td>
+                        <div className={styles.topofinfo}>
                         {lead.won_lost_label ? (
                           <>
                             <div
@@ -680,19 +661,20 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               {lead.won_lost_label}
                             </div>
                             {lead.won_lost_date && (
-                              <div style={{ marginLeft: '29px' }} className={styles.info}>
+                              <div className={styles.date}>
                                 {lead.won_lost_date ? format((parseISO(lead.won_lost_date)), 'dd-MM-yyyy') : ""}
 
                               </div>
                             )}
                             {(lead.can_manually_win) &&
-                              <div style={{ marginLeft: '20px', color: "#D91515" }} className={styles.info}>
+                              <div style={{ color: "#D91515" }} className={styles.date}>
                                 48hrs passed
                               </div>}
                           </>
                         ) : (
                           <div>______</div>
                         )}
+                        </div>
                       </td>
 
 
@@ -712,28 +694,35 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                       </td>
 
                       <td>
-                        <div
-                          style={lead.docusign_label in docusignStyles
-                            ? docusignStyles[lead.docusign_label as DocuStatus]
-                            : { backgroundColor: "inherit", color: "black" }}
-                          className={styles.appointment_status}
-                        >
-                          {lead.docusign_label ? (
-                            (lead.docusign_label)
-                          ) : (
-                            <span style={{ color: "black" }}>_____</span>
-                          )}
+                        <div className={styles.topofinfo}>
+                          <div
+                            style={lead.docusign_label in docusignStyles
+                              ? docusignStyles[lead.docusign_label as DocuStatus]
+                              : { backgroundColor: "inherit", color: "black" }}
+                            className={styles.appointment_status}
+                          >
+                            {lead.docusign_label ? (
+                              (lead.docusign_label)
+                            ) : (
+                              <span style={{ color: "black" }}>_____</span>
+                            )}
+                          </div>
+                          <div className={styles.date}>
+                            {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
+                          </div>
                         </div>
-                        <div style={{ marginLeft: '29px', marginTop: "4px" }} className={styles.info}>
-                          {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
-                        </div>
+                        {/* style={{ marginLeft: '29px', marginTop: "4px" }} */}
                       </td>
 
 
 
-                      <td>{lead.finance_company ? lead.finance_company : "_____"}</td>
-                      <td>{lead.finance_type ? lead.finance_type : "_____"}</td>
-                      <td>{lead.qc_audit ? lead.qc_audit : "_____"}</td>
+                      <td>
+                      <div className={styles.topofinfo}>
+                        {lead.finance_company ? lead.finance_company : "_____"}
+                        </div>
+                        </td>
+                      <td><div className={styles.topofinfo}>{lead.finance_type ? lead.finance_type : "_____"}</div></td>
+                      <td><div className={styles.topofinfo}>{lead.qc_audit ? lead.qc_audit : "_____"}</div></td>
                       {(selectedLeads.length === 0 && isMobile) &&
                         <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
                           <div className={styles.RowMobile}
@@ -863,7 +852,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 ) : (
                                   <>
                                     {downloadingLeadId === lead.leads_id ? (
-                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transform:'scale(0.7)' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transform: 'scale(0.7)' }}>
                                         <MicroLoader />
                                         <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
                                       </div>
