@@ -123,11 +123,11 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause += `
 				AND (
-					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-					OR (li.status_id = 5)
-					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
+					(li.appointment_date IS NOT NULL AND li.appointment_date > CURRENT_TIMESTAMP)
+					OR (li.lead_won_date IS NOT NULL)
+					OR (li.appointment_declined_date IS NULL AND li.is_appointment_required = FALSE)
             		OR (
-						li.status_id NOT IN (3, 6) 
+						li.appointment_declined_date IS NULL
 						AND li.proposal_created_date IS NOT NULL
 						AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
 					)
@@ -137,7 +137,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.LeadStatus == "DECLINED" {
-		whereClause += "AND (li.status_id = 3 AND li.is_appointment_required = TRUE)"
+		whereClause += "AND (li.appointment_declined_date IS NOT NULL AND li.is_appointment_required = TRUE)"
 	}
 
 	if dataReq.LeadStatus == "ACTION_NEEDED" {
@@ -145,7 +145,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			AND (
 				li.status_id = 4
 				OR (
-					li.status_id IN (1, 2) 
+					li.appointment_date IS NOT NULL
 					AND li.appointment_date < CURRENT_TIMESTAMP 
 					AND li.is_appointment_required = TRUE
 				)
