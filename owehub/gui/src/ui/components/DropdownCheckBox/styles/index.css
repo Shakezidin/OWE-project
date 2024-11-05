@@ -54,6 +54,6 @@ span.disbaled-label {
 .dropdown-checkbox .dropdown-toggle:not(.disabled-dropdown):hover {
   background-color: #ddebff;
   border-color: #377cf6;
-  transform: scale(1.04);
+  transform: scale(1.07);
   transition: all 0.3s ease;
 }
