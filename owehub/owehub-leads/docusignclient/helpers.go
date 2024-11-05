@@ -53,10 +53,8 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", docusignAccessToken))
 
 	// send the request
-	log.FuncDebugTrace(0, "Calling docusign api %s with data %+v", apiUrl, reqBody)
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
+	log.FuncDebugTrace(0, "Calling docusign api %s", apiUrl)
+	client := &http.Client{}
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -90,7 +88,7 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 		return err
 	}
 
-	log.FuncDebugTrace(0, "Success from docusign api %s with response %+v", apiUrl, respBody)
+	log.FuncDebugTrace(0, "Success from docusign api %s", apiUrl)
 	return nil
 }
 

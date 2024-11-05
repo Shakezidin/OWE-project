@@ -129,6 +129,7 @@ function getCurrentDateInUserTimezone() {
   return addMinutes(now, now.getTimezoneOffset());
 }
 
+
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
@@ -1228,7 +1229,7 @@ const LeadManagementDashboard = () => {
       document.body.removeChild(link);
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while exporting the data.');
+      toast.error('No Data Found');
     } finally {
       setIsExporting(false);
     }

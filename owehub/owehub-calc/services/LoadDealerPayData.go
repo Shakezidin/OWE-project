@@ -5,27 +5,34 @@ import (
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
+	"fmt"
+	"strings"
 	"time"
 )
 
-func ExecDlrPayInitialCalculation() error {
+func ExecDlrPayInitialCalculation(uniqueIds string, hookType string) error {
 	var (
 		err            error
 		dlrPayDataList []map[string]interface{}
+		InitailData    oweconfig.InitialDataLists
 	)
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
-	err = ClearDlrPay()
-	if err != nil {
-		log.FuncInfoTrace(0, "error while clearing dlr_pay with err : %v", err)
-	}
-
 	count := 0
 	dataReq := models.DataRequestBody{}
-	InitailData, err := oweconfig.LoadDlrPayInitialData()
+
+	var idList []string
+	if uniqueIds != "" {
+		idList = []string{uniqueIds}
+	} else {
+		idList = []string{}
+	}
+
+	InitailData, err = oweconfig.LoadDlrPayInitialData(idList)
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
+		return err
 	}
 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
@@ -37,14 +44,29 @@ func ExecDlrPayInitialCalculation() error {
 		var dlrPayData map[string]interface{}
 		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd, partnerPaySchedule)
 
-		if err != nil || dlrPayData == nil {
-			if len(data.UniqueId) > 0 {
-				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
-			} else {
-				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+		// if err != nil || dlrPayData == nil {
+		// 	if len(data.UniqueId) > 0 {
+		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
+		// 	} else {
+		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+		// 	}
+		// } else if operaiton == "create" {
+		// 	dlrPayDataList = append(dlrPayDataList, dlrPayData)
+		// } else {
+		// 	updateDlrPayData = append(updateDlrPayData, dlrPayData)
+		// }
+
+		if hookType == "update" {
+			// Build the update query
+			query, _ := buildUpdateQuery("dealer_pay", dlrPayData, "unique_id", data.UniqueId)
+
+			// Execute the update query
+			err = db.ExecQueryDB(db.OweHubDbIndex, query)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to update DLR Pay Data for unique id: %+v err: %+v", data.UniqueId, err)
 			}
-		} else {
-			dlrPayDataList = append(dlrPayDataList, dlrPayData)
+		} else { // Assuming "create" operation
+			dlrPayDataList = append(dlrPayDataList, dlrPayData) // Prepare data for insertion
 		}
 
 		if (count+1)%1000 == 0 && len(dlrPayDataList) > 0 {
@@ -145,4 +167,69 @@ func ClearDlrPay() error {
 		return err
 	}
 	return nil
+}
+
+func DeleteFromDealerPay(uniqueIDs []string) error {
+	// Ensure there are IDs to delete
+	if len(uniqueIDs) == 0 {
+		log.FuncErrorTrace(0, "No unique IDs provided for deletion.")
+		return nil
+	}
+
+	// Construct a parameterized query with a placeholder for each unique ID
+	placeholders := make([]string, len(uniqueIDs))
+	args := make([]interface{}, len(uniqueIDs))
+	for i, id := range uniqueIDs {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+		args[i] = id
+	}
+
+	query := fmt.Sprintf("DELETE FROM dealer_pay WHERE unique_id IN (%s)", strings.Join(placeholders, ","))
+
+	// Execute the delete query
+	err := db.ExecQueryDB(db.OweHubDbIndex, query)
+	if err != nil {
+		return fmt.Errorf("failed to delete rows from dealer_pay: %w", err)
+	}
+
+	log.FuncErrorTrace(0, "Deleted %d rows from dealer_pay table.\n", len(uniqueIDs))
+	return nil
+}
+
+func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn string, idValue interface{}) (string, error) {
+	sets := []string{}
+
+	for col, val := range row {
+		if col != idColumn {
+			var valStr string
+			switch v := val.(type) {
+			case string:
+				// Escape single quotes in string values
+				valStr = strings.ReplaceAll(v, "'", "''")
+				valStr = fmt.Sprintf("'%s'", valStr) // Enclose string values in quotes
+
+			case time.Time:
+				// Format time.Time values and enclose in quotes
+				valStr = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+
+			default:
+				valStr = fmt.Sprintf("%v", v) // Keep numeric and other types as they are
+			}
+			sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
+		}
+	}
+
+	// Escape the idValue to prevent SQL injection
+	var idValueStr string
+	switch v := idValue.(type) {
+	case string:
+		idValueStr = strings.ReplaceAll(v, "'", "''")
+		idValueStr = fmt.Sprintf("'%s'", idValueStr) // Enclose string ID values in quotes
+	default:
+		idValueStr = fmt.Sprintf("%v", idValue) // Keep numeric and other types as they are
+	}
+
+	// Build the query
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s = %s", tableName, strings.Join(sets, ", "), idColumn, idValueStr)
+	return query, nil
 }
