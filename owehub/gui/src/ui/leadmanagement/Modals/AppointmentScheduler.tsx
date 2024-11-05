@@ -58,7 +58,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     }
   };
 
-  console.log(selectedTime, "comdloeb ")
 
 
 

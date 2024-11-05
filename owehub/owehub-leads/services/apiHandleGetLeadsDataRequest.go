@@ -105,7 +105,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
 					OR (li.status_id = 5)
 					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-            		OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL)
+            		OR (li.status_id NOT IN (3, 6) AND li.proposal_created_date IS NOT NULL 
+					AND li.appointment_date > CURRENT_TIMESTAMP)
 				)
 			`
 		}
@@ -407,7 +408,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = acceptedDatePtr
 		}
 
-		if statusId == 5 {
+		if leadWonDatePtr != nil {
 			wonLostLabel = "Deal Won"
 			wonLostDate = leadWonDatePtr
 		}

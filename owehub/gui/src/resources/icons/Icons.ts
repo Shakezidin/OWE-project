@@ -6,6 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import SignModelConfirmation from "../../resources/assets/SignConfirnationModel.png"
 import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
 import scheduleDoor from '../../resources/assets/schedule_door.png';
 import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
@@ -205,6 +206,7 @@ export const ICONS = {
   groupActiveIcon: groupActive,
   DashboardHideArrow:DashboardHideArrow,
   ChecronUpX:ChecronUpX,
+  SignModelConfirmation:SignModelConfirmation,
   DeleteICONBOX: DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,

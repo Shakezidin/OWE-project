@@ -254,7 +254,26 @@
 }
 
 .cust_det_list::-webkit-scrollbar {
-  width: 2px !important; /* Set the width of the scrollbar */
+  display: initial !important;
+  width: 10px !important;
+  height: auto !important;
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto !important;
+}
+
+.cust_det_list::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.cust_det_list::-webkit-scrollbar-button {
+  display: initial;
+}
+.cust_det_list::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.cust_det_list::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
 
 .head_det {
@@ -284,6 +303,7 @@
   height: 32px;
   display: grid;
   place-items: center;
+  flex-shrink: 0;
   cursor: pointer;
   transition: all 500ms;
   color: #377cf6;

@@ -17,9 +17,7 @@ import (
 )
 
 type GetDocumentApi struct {
-	AccessToken string `json:"access_token"`
-	BaseUri     string `json:"baseUri"`
-	EnvelopeId  string `json:"envelopeId"`
+	EnvelopeId string `json:"envelopeId"`
 }
 
 func (api *GetDocumentApi) Call() (*[]byte, error) {
@@ -33,15 +31,6 @@ func (api *GetDocumentApi) Call() (*[]byte, error) {
 		err = fmt.Errorf("cannot get document without DocumentId")
 		return nil, err
 	}
-	// if api.AccessToken == "" {
-	// 	err = fmt.Errorf("cannot get document without AccessToken")
-	// 	return nil, err
-	// }
-	// if api.BaseUri == "" {
-	// 	err = fmt.Errorf("cannot get document without BaseUri")
-	// 	return nil, err
-	// }
-
 	apiUrl := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes/%s/documents/combined", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId, api.EnvelopeId)
 	req, err = http.NewRequest(http.MethodGet, apiUrl, nil)
 

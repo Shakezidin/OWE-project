@@ -17,6 +17,9 @@
   outline: none;
   border-color: #007bff; /* Change the border color to your desired color */
 }
+.flex-row-reverse{
+  flex-direction: row-reverse;
+}
 
 .userManagementTable__search button {
   padding: 10px;

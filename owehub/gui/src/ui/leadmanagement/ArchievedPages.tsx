@@ -68,7 +68,7 @@ const ArchivedPages = () => {
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [leadId, setLeadId] = useState(0);
-  console.log(leadId, "ka malik")
+ 
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const width = useWindowWidth();
@@ -145,7 +145,6 @@ const ArchivedPages = () => {
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
-  console.log(leadsData)
 
 
 

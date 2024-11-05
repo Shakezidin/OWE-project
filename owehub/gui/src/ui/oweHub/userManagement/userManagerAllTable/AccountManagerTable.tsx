@@ -8,9 +8,9 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import useAuth from '../../../../hooks/useAuth';
-import { useAppDispatch } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
-
+import { MdOutlineLockReset } from "react-icons/md";
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -21,6 +21,7 @@ interface UserTableProps {
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   selectedValue?: string;
+  handlePasswordReset:(id?:string)=>void;
 }
 const AccountManagerTable: React.FC<UserTableProps> = ({
   data,
@@ -31,6 +32,7 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
   setSelectedRows,
   setSelectAllChecked,
   selectedValue,
+  handlePasswordReset
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -39,7 +41,7 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
   const [email, setEmail] = useState('');
   const { authData } = useAuth();
   const dispatch = useAppDispatch();
-
+  const {role_name} = useAppSelector(state=>state.auth)
   const handleSort = (key: string) => {
     const direction =
       sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc';
@@ -187,6 +189,9 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
                         style={{ marginRight: '15px' }}
                       />
                     </div>
+                    {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div style={{cursor:"pointer"}} onClick={()=>handlePasswordReset()}>
+                      <MdOutlineLockReset color='#667085' size={24} />
+                    </div>}
                   </div>
                 </td>
               </tr>

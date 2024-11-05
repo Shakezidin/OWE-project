@@ -129,11 +129,11 @@ const LeadManagementNew = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log('ZIP_CODE');
+   
 
     const errors = validateForm(formData);
     setErrors(errors);
-    console.log(formData.zip_code);
+   
 
     if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
 
@@ -167,7 +167,7 @@ const LeadManagementNew = () => {
       }
     }
 
-    console.log(formData, 'FORM SUCCESSFULLY SUBMITTED ');
+    // console.log('FORM SUCCESSFULLY SUBMITTED ');
   };
 
   const resetFormData = () => {

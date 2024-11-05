@@ -161,13 +161,13 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
 
         if (mobileNumberError) {
           newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
-          console.log("1")
+         
         } else {
           delete newErrors.mobile_number;
         }
         if (formData.email_id.trim() === '') {
           newErrors.email_id = 'Email cannot be empty';
-          console.log("2")
+        
         } else if (!isEmailValid) {
           newErrors.email_id = 'Please enter a valid email address.';
         } else {
@@ -175,7 +175,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         }
         if (formData.address.trim() === '') {
           newErrors.address = 'Address cannot be empty';
-          console.log("3")
+       
         } else {
           delete newErrors.address;
         }
