@@ -37,6 +37,7 @@ type InitialStruct struct {
 	// DrawMax        float64
 	FinanceType    string
 	FinanceCompany string
+	AdderBreakDown string
 }
 
 type InitialDataLists struct {
@@ -53,7 +54,7 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 	defer func() { log.ExitFn(0, "LoadDlrPayInitialData", err) }()
 
 	// uidList := []string{"OUR21563"} //OUR21190
-	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer,
+	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer, cs.adder_breakdown_and_total_new,
 			 cs.contracted_system_size, cs.total_system_cost,cs.adder_breakdown_and_total_new,
 			 cs.primary_sales_rep,cs.secondary_sales_rep, cs.setter, 
 			 cs.state, cs.sale_date, ns.net_epc, 
@@ -216,6 +217,13 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 		} else {
 			InitialDataa.FinanceType = ""
 		}
+
+		if AdderBreakDown, ok := data["adder_breakdown_and_total_new"]; (ok) && (AdderBreakDown != nil) {
+			InitialDataa.AdderBreakDown = AdderBreakDown.(string)
+		} else {
+			InitialDataa.AdderBreakDown = ""
+		}
+
 		InitialData.InitialDataList = append(InitialData.InitialDataList, InitialDataa)
 	}
 	return InitialData, err
