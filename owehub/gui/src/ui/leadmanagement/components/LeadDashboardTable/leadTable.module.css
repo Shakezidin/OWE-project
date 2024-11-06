@@ -142,15 +142,13 @@
 .create_proposal {
   background-color: #377cf6;
   color: #fff;
-  font-weight: 500;
   font-size: 12px;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 8px;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-left: 10px;
-  height: 29.78px;
   min-width: 121.33px;
 }
 
