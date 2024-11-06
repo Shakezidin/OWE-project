@@ -144,7 +144,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                     {el.description ? el.description : 'NA'}
                   </td>
                   <td>
-                    <div className="action-icon">
+                    <div className="action-icon" style={{gap:4}}>
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}
@@ -153,10 +153,9 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                         <img
                           src={ICONS.deleteIcon}
                           alt=""
-                          style={{ marginRight: '15px' }}
                         />
                       </div>
-                      {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div style={{cursor:"pointer"}} onClick={()=>handlePasswordReset(el.email_id)}>
+                      {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div className='reset_hover_btn' style={{cursor:"pointer"}} onClick={()=>handlePasswordReset(el.email_id)}>
                       <MdOutlineLockReset color='#667085' size={24} />
                     </div>}
                     </div>

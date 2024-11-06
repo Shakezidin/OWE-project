@@ -246,7 +246,7 @@ const TechnicalSupport: React.FC = () => {
 
   return (
     <>
-      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+      {/* <div style={{ marginLeft: '6px', marginTop: '6px' }}>
         <Breadcrumb
           head=""
           linkPara="Technical Support"
@@ -254,7 +254,7 @@ const TechnicalSupport: React.FC = () => {
           linkparaSecond=""
           marginLeftMobile="12px"
         />
-      </div>
+      </div> */}
 
       <form ref={form} onSubmit={handleSubmit}>
         <div className="support-cont-section">

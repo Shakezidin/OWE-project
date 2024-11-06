@@ -154,14 +154,18 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const resetPassword = async(user_emails:string)=>{
     try {
       const data = await postCaller("reset_user_passwords",{user_emails:[user_emails]});
-      toast.success(data.message);
+      if(data.status>200){
+        toast.error(data.message);
+        return;
+      }
+      toast.success("Password reset successful! Check your email for the new password");
     } catch (error) {
       toast.error((error as Error).message as string);
     }
   }
 
   const handlePasswordReset = async (id?: string) => {
-    await Swal.fire({
+  const prompt =   await Swal.fire({
       title: 'Confirm Password Reset',
       text: 'Are you sure you want to reset your password? A new password will be generated and sent to your registered email address',
       icon: 'warning',
@@ -173,9 +177,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         actions:"flex-row-reverse"
       }
     })
-    if (id) {
-      resetPassword(id);
+
+
+    if( prompt.isConfirmed){
+      if (id) {
+        resetPassword(id);
+      }
     }
+    
     
   }
 
