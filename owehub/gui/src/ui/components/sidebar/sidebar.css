@@ -226,7 +226,7 @@
   margin-top: 8px;
   cursor: pointer;
   padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .side-icon-container a {
@@ -282,6 +282,10 @@
 
 .active-link-bg svg {
   color: var(--white-color) !important;
+}
+
+.active-link-bg img {
+  filter: invert(1);
 }
 
 .db-sidebar-icon {

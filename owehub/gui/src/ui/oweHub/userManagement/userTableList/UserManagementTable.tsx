@@ -146,7 +146,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     cursor: 'pointer',
     transition: 'transform 0.3s ease, background-color 0.3s ease',
     transform: isHovered ? 'scale(1.09)' : 'scale(1)',
-    backgroundColor: isHovered ? '#002970' : '',
+    backgroundColor: isHovered ? '#AD1313' : '',
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -154,6 +154,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const resetPassword = async(user_emails:string)=>{
     try {
       const data = await postCaller("reset_user_passwords",{user_emails:[user_emails]});
+      if(data.status>200){
+        toast.error(data.message);
+        return;
+      }
       toast.success("Password reset successful! Check your email for the new password");
     } catch (error) {
       toast.error((error as Error).message as string);
@@ -483,7 +487,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   <SelectOption
                     options={userDropdownData}
                     value={selectedOption}
-                    menuStyles={{ width: 'fit-content', left: -30 }}
+                    menuStyles={{ width: 'fit-content', left: -30}}
                     controlStyles={{
                       boxShadow: 'none',
                       border: 'none',
@@ -508,9 +512,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     }}
                     menuWidth="fit-content"
                     menuListStyles={{
-                      width: 'fit-content',
+                      width: 'fit-content'
                     }}
-                    enableHoverEffect={false}
                   />
                 </div>
               </div>

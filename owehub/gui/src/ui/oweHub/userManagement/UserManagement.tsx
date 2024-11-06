@@ -35,7 +35,6 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -382,15 +381,6 @@ const UserManagement: React.FC = () => {
   /** render UI */
   return (
     <>
-      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-        <Breadcrumb
-          head=""
-          linkPara="Users"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
-      </div>
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}

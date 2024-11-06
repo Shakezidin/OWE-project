@@ -30,7 +30,7 @@ export const PartnerPayScheduleColumn: Column[] = [
   {
     name: 'sug',
     displayName: 'Sug',
-    type: 'date',
+    type: 'string',
     isCheckbox: false,
   },
   {

@@ -6,11 +6,16 @@
 
 .userManagementTable__search input {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border-color);
   border-radius: 4px;
   width: 200px;
   height: 36px;
   border-radius: 8px;
+}
+
+.userManagementTable__search input:focus, .userManagementTable__search input:hover{
+  outline: none;
+  border-color: var(--primary-color)
 }
 
 .reset_hover_btn {
@@ -34,11 +39,11 @@
 }
 
 .userManagementTable__search button {
-  padding: 10px;
+  padding: 8px 12px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -98,7 +103,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  margin-top: 20px;
+  margin-top: 1.2rem;
   border-radius: 16px 16px 0px 0px;
   padding: 0rem 1rem 1rem 1rem;
 }
