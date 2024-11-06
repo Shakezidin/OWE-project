@@ -88,30 +88,26 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 		prevDate = endDate.AddDate(0, 0, -1).Format("2006-01-02")
 
 	case "month":
-		// Format the current month as YYYY-MM
+		// Set current date as the formatted year-month of endDate
 		currentDate = endDate.Format("2006-01")
 
-		// Calculate previous month
-		prevEndDate := endDate.AddDate(0, -1, 0) // Move to the same day in the previous month
-		prevDate = prevEndDate.Format("2006-01") // Format as YYYY-MM
+		// Calculate prevEndDate as the last day of the previous month
+		// First, get the first day of the current month and move back one day
+		firstDayOfMonth := time.Date(endDate.Year(), endDate.Month(), 1, 0, 0, 0, 0, endDate.Location())
+		prevEndDate := firstDayOfMonth.AddDate(0, 0, -1) // Last day of previous month
 
-		// Check if prevEndDate is still the same day as endDate
-		// If endDate is the last day of the month, we might need to adjust to the last day of previous month
-		if endDate.Day() == daysInMonth(endDate) {
-			prevEndDate = prevEndDate.AddDate(0, 0, -prevEndDate.Day()) // Go to the last day of the previous month
-		}
-
-		prevDate = prevEndDate.Format("2006-01") // Format again as YYYY-MM
+		// Format prevDate as year-month
+		prevDate = prevEndDate.Format("2006-01")
 
 	case "week":
 		year, week := endDate.ISOWeek()
-		currentDate = fmt.Sprintf("%d-W%02d", year, week)         // Current week
-		prevYear, prevWeek := endDate.AddDate(0, 0, -7).ISOWeek() // Previous week
-		prevDate = fmt.Sprintf("%d-W%02d", prevYear, prevWeek)    // Previous week formatted
+		currentDate = fmt.Sprintf("%d-W%02d", year, week)
+		prevYear, prevWeek := endDate.AddDate(0, 0, -7).ISOWeek()
+		prevDate = fmt.Sprintf("%d-W%02d", prevYear, prevWeek)
 
 	default: // "year"
-		currentDate = endDate.Format("2006")                // Current year (YYYY)
-		prevDate = endDate.AddDate(-1, 0, 0).Format("2006") // Previous year (YYYY)
+		currentDate = endDate.Format("2006")
+		prevDate = endDate.AddDate(-1, 0, 0).Format("2006")
 	}
 
 	csFilter, whereEleList := PrepareMilestoneDataFilters(dataReq, "customer")
@@ -332,8 +328,8 @@ func sumMapValues(m map[string]int) int {
 }
 
 func daysInMonth(date time.Time) int {
-	nextMonth := date.AddDate(0, 1, 0)                     // Move to next month
-	return nextMonth.AddDate(0, 0, -nextMonth.Day()).Day() // Go to the last day of the previous month
+	nextMonth := date.AddDate(0, 1, 0)
+	return nextMonth.AddDate(0, 0, -nextMonth.Day()).Day()
 }
 
 func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq, table string) (csFilters string, whereEleList []interface{}) {
