@@ -349,9 +349,7 @@ const CustomersList = () => {
       <div
         className={`flex items-center justify-between ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
       >
-        {/* <h1 className={styles.schedule_detail}>Schedule</h1> */}
-
-        {isSmallScreen && (
+     {isSmallScreen && (
           <div className={styles.filtericon} onClick={toggleCalendar}>
             <CalendarIcon size={19} />
           </div>
@@ -359,8 +357,8 @@ const CustomersList = () => {
       </div>
 
       <div
-        className={`flex ${isDrawerOpen ? styles.blurred : ''}`}
-        style={{gap:"1.2rem"}}
+      style={{marginTop: "11px"}}
+        className={`flex justify-between ${isDrawerOpen ? styles.blurred : ''} `}
       >
         <div
           className={`${

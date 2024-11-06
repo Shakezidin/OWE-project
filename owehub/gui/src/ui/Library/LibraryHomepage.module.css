@@ -114,32 +114,41 @@
 
 .buttons {
   border-radius: 18px;
-  border: 1px solid #989898;
+  /* border: 1px solid #989898; */
+  border: 1px solid #292B2E;
+
   padding: 2px 32px;
   font-family: poppins;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   color: #3E3E3E;
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
 
 }
-.buttons:hover {
+.buttons:hover{
+  background-color: #E5EFFF;
+  border: 1px solid #4368DC;
+  color: #377CF6;
+  transform: scale(1.07);
+}
+/* .buttons:hover {
   color: #eff5ff;
   background-color: #377cf6;
   border: 1px solid #377cf6;
   transform: scale(1.05);
 
-}
+} */
 
 .Folderbuttons {
   border-radius: 18px;
-  border: 1px solid #989898;
+  /* border: 1px solid #989898; */
+  border: 1px solid #292B2E;
   padding: 2px 32px;
   font-family: poppins;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   color:#3E3E3E;
   background-color: #fff;
   cursor: pointer;
@@ -147,12 +156,19 @@
 
 }
 
-.Folderbuttons:hover {
+.Folderbuttons:hover{
+  background-color: #E5EFFF;
+  border: 1px solid #4368DC;
+  color: #377CF6;
+  transform: scale(1.07);
+}
+
+/* .Folderbuttons:hover {
   color: #eff5ff;
   background-color: #377cf6;
   border: 1px solid #377cf6;
   transform: scale(1.05);
-}
+} */
 
 .filter_button {
   display: flex;
@@ -222,7 +238,8 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid #8C8C8C;
+  /* border: 1px solid #8C8C8C; */
+  border: 1px solid #292B2E;
   border-radius: 8px;
   padding: 5px 10px;
   cursor: pointer;
@@ -321,7 +338,7 @@
 }
 
 .lib_Grid_Header .grid_item {
-  font-size: 16px;
+  font-size: 14px;
   font: poppins;
   font-weight: 500;
   /* border: 1px solid black; */
@@ -604,7 +621,8 @@
 }
 
 .view_btn {
-  border: 1px solid #8C8C8C;
+  /* border: 1px solid #8C8C8C; */
+  border: 1px solid #292B2E;
   display: flex;
   flex-shrink: 0;
   width: 32px;
@@ -622,11 +640,15 @@
 }
 
 .view_btn:not(.active_tile):hover {
-  background-color: #377cf6;
+  /* background-color: #377cf6;
   color: #fff;
   transition: all 500ms;
   border: 1px solid #fff;
-  transform: scale(1.1);
+  transform: scale(1.1); */
+  background-color: #E5EFFF;
+  border: 1px solid #4368DC;
+  color: #377CF6;
+  transform: scale(1.07);
 }
 
 .view_btn.active_tile {
@@ -638,7 +660,8 @@
 
 
 .view_btn.active_tile:hover{
-  transform: scale(1.1);
+  
+  transform: scale(1.07);
 }
 .desktop_hide{
   display: none;

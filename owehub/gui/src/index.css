@@ -6,19 +6,24 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif !important;
 }
+
 .loader {
   display: none !important;
 }
+
 .rcw-picker-btn .rcw-send-icon,
 .rcw-send .rcw-send-icon {
   margin-left: 10px;
 }
+
 .rcw-picker-btn {
   display: none;
 }
+
 .rcw-new-message {
   width: calc(100% - 15px);
 }
+
 /*auto complete */
 
 /* Global CSS to target the Google Maps Autocomplete dropdown */
@@ -27,21 +32,70 @@
 .gm-style .gm-style-iw-c {
   padding: 0 !important;
 }
+
 .gm-style .gm-style-iw-c:focus-visible {
   outline: none !important;
 }
+
 .gm-style-iw-chr {
   display: none !important;
 }
 
+/* Google map css  */
+.gm-control-active.gm-fullscreen-control,
+.gmnoprint.gm-bundled-control.gm-bundled-control-on-bottom button {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+}
+
+.gmnoprint>div[draggable="false"] {
+  border-radius: 8px !important;
+  width: 36px !important;
+}
+
+.gm-style-mtc button,
+.ssQIHO-checkbox-menu-item {
+  font-size: 14px !important;
+}
+
+.gm-style-mtc ul[role*="menu"]{
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+  left: 0 !important;
+}
+
+.gm-style-mtc-bbw .gm-style-mtc:last-of-type>button{
+  border-start-end-radius: 12px !important;
+  border-end-end-radius: 12px !important;
+}
+
+.gm-style-mtc-bbw .gm-style-mtc:first-of-type>button {
+  border-start-start-radius: 12px;
+  border-end-start-radius: 12px;
+}
+
+.gm-control-active.gm-fullscreen-control img,
+.gmnoprint>div[draggable="false"] button img {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0px"][style*="bottom: 0px"] {
+  display: none !important; 
+}
+
 /* calculator css  */
-.rc-slider-track, .rc-slider-tracks{
+.rc-slider-track,
+.rc-slider-tracks {
   background-color: #00C8D0 !important;
 }
-.rc-slider-dot{
+
+.rc-slider-dot {
   display: none !important;
 }
-.rc-slider-handle{
+
+.rc-slider-handle {
   border: solid 5px #00C8D0 !important;
   opacity: 1 !important;
   width: 16px !important;
@@ -50,7 +104,8 @@
 
 /* This styles the container of the dropdown */
 .pac-container {
-  font-family: 'Poppins', sans-serif !important; /* Ensure Poppins is applied */
+  font-family: 'Poppins', sans-serif !important;
+  /* Ensure Poppins is applied */
   font-size: 12px !important;
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
@@ -124,23 +179,36 @@
   --orange-color: #ee824d;
   --purpink-color: #c470c7;
   --primary-light-color: #d5e4ff;
+
+  --input-border-color: #292B2E;
+  --grey-text-color: #80848B;
+  --grey-border-color: #BFBFBF;
+  --grey-light-color: #E8E8E8;
+  --button-hover-color: #4062CA;
+  --delete-btn-color: #D91515;
+  --delete-btn-hover: #AD1313;
+
 }
+
 a {
   text-decoration: none;
 }
+
 .inputLabel-select {
   position: absolute;
-  color: #000000;
+  color: var(--input-border-color);
   font-size: 12px;
   font-weight: 400;
   line-height: 14.5px;
   top: 4px;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 .loader-container {
   display: flex;
   justify-content: center;
@@ -156,11 +224,13 @@ input::-webkit-inner-spin-button {
     transform: translateY(-100%);
     opacity: 1;
   }
+
   to {
     transform: translateY(150%);
     opacity: 0;
   }
 }
+
 .data-not-found {
   display: flex;
   justify-content: center;
@@ -168,18 +238,21 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
   margin-top: 4rem;
 }
+
 .data-not-found h2 {
   font-size: 18px;
   font-weight: 600;
   color: #979797;
 }
+
 h3 {
   font-size: 16px;
   font-weight: 600;
   line-height: 30px;
   text-align: left;
-  color: #263747;
+  color: var(--input-border-color);
 }
+
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
@@ -190,6 +263,7 @@ input[type='password']::-ms-reveal,
 input[type='password']::-ms-clear {
   display: none;
 }
+
 /* image icon srtyle  */
 /* img{
   cursor: pointer;
@@ -203,6 +277,7 @@ input[type='password']::-ms-clear {
   width: 18px !important;
   height: 18px !important;
 }
+
 .children-icon-image {
   width: 16px !important;
   height: 16px !important;
@@ -230,6 +305,7 @@ input[type='password']::-ms-clear {
   background-color: #23b364;
   margin-left: 27px;
 }
+
 .user-btn {
   background-color: #04a5e8;
   outline: none;
@@ -240,6 +316,7 @@ input[type='password']::-ms-clear {
   cursor: pointer;
   border-radius: 0.5rem;
 }
+
 .dashboard-head {
   display: flex;
   justify-content: space-between;
@@ -251,6 +328,7 @@ input[type='password']::-ms-clear {
   border-radius: 1rem;
   padding: 1rem;
 }
+
 .admin-card-container {
   display: flex;
   align-items: center;
@@ -262,6 +340,7 @@ input[type='password']::-ms-clear {
   border-radius: 1.5rem;
   margin-top: 0.5rem;
 }
+
 ::-webkit-scrollbar {
   display: none;
 }
@@ -296,7 +375,8 @@ input[type='password']::-ms-clear {
 }
 
 .modal-body {
-  height: calc(100% - 150px); /* Adjust the height for the body content */
+  height: calc(100% - 150px);
+  /* Adjust the height for the body content */
   overflow-y: auto;
 }
 
@@ -307,6 +387,7 @@ input[type='password']::-ms-clear {
   display: flex;
   justify-content: center;
 }
+
 .sales-modal {
   width: 400px;
   background-color: white;
@@ -331,10 +412,11 @@ input[type='password']::-ms-clear {
 }
 
 .createProfileText {
-  font-size: 24px;
+  font-size: 18px;
   margin-left: 36px;
   font-weight: 600;
 }
+
 .createProfileTextView {
   display: flex;
   flex-direction: column;
@@ -347,6 +429,7 @@ input[type='password']::-ms-clear {
   width: 10px;
   height: 10px;
 }
+
 .modal-body::-webkit-scrollbar {
   display: initial;
 }
@@ -355,13 +438,16 @@ input[type='password']::-ms-clear {
   background-color: rgb(173, 173, 173);
   border-radius: 30px;
 }
+
 .modal-body::-webkit-scrollbar-button {
   display: initial;
 }
+
 .modal-body::-webkit-scrollbar {
   -ms-overflow-style: initial;
   scrollbar-width: thin;
 }
+
 .modal-body::-webkit-scrollbar-corner {
   background-color: transparent;
 }
@@ -369,11 +455,13 @@ input[type='password']::-ms-clear {
 .createProfileInputView {
   margin-top: 1rem;
 }
+
 .create-input-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
+
 .createUserActionButton {
   display: flex;
   justify-content: center;
@@ -388,14 +476,17 @@ input[type='password']::-ms-clear {
   width: 31.5%;
   justify-content: space-between;
 }
+
 .start-input-container {
   display: flex;
   width: 65.5%;
   justify-content: space-between;
 }
+
 .rate-input-field {
   width: 48.5%;
 }
+
 .create-input-field {
   position: relative;
   width: 30%;
@@ -412,6 +503,7 @@ input[type='password']::-ms-clear {
   align-items: center;
   gap: 2rem;
 }
+
 .radio-content {
   display: flex;
   align-items: center;
@@ -419,27 +511,32 @@ input[type='password']::-ms-clear {
   margin-top: 0.3rem;
   /* width: 23%; */
 }
+
 .radio {
   cursor: pointer;
   width: 30px !important;
   height: 30px;
 }
+
 .user-radio {
   height: 18px;
   width: 30px;
   cursor: pointer;
 }
+
 .create-input-field-note {
   width: 100%;
 }
+
 .create-input-field-note textarea {
   width: 100%;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--input-border-color);
   outline: none;
   padding: 0.5rem;
   font-size: 13px !important;
   border-radius: 0.5rem;
 }
+
 .check-box {
   width: 20px !important;
   height: 20px !important;
@@ -455,12 +552,14 @@ input[type='password']::-ms-clear {
 
   /* padding: "1rem 2rem 0rem 2rem"; */
 }
+
 .apply p {
   font-size: 16px;
   font-weight: 600;
   line-height: 14.5px;
   text-align: left;
 }
+
 .cross-btn {
   display: flex;
   align-items: center;
@@ -468,6 +567,7 @@ input[type='password']::-ms-clear {
   margin-top: 1.6rem;
   cursor: pointer;
 }
+
 .cross-btn img {
   width: 24px;
   height: 24px;
@@ -476,6 +576,7 @@ input[type='password']::-ms-clear {
 br {
   margin: 0.5rem 0;
 }
+
 /* FileInputComponent.css */
 /* FileInputComponent.css */
 
@@ -487,14 +588,17 @@ br {
   cursor: pointer;
   align-self: center;
 }
+
 .fildelb-btn img {
-  width: 19px;
+  width: 18px;
   height: 20px;
   transition: all 0.3s ease;
 }
+
 .fildelb-btn img:hover {
   transform: scale(1.09);
 }
+
 .select-type-label {
   position: static !important;
   display: block;
@@ -518,13 +622,16 @@ br {
   background-color: rgb(173, 173, 173);
   border-radius: 30px;
 }
+
 .scrollbar::-webkit-scrollbar-button {
   display: initial;
 }
+
 .scrollbar::-webkit-scrollbar {
   -ms-overflow-style: initial;
   scrollbar-width: thin;
 }
+
 .scrollbar::-webkit-scrollbar-corner {
   background-color: transparent;
 }
@@ -540,6 +647,7 @@ br {
 .bg-secondary {
   background-color: var(--secondary-color);
 }
+
 .d-none {
   display: none;
 }
@@ -548,11 +656,13 @@ br {
   .modal {
     max-width: 750px;
   }
+
   .create-input-container {
     gap: 15px;
     margin-left: 0.5rem !important;
   }
 }
+
 @media (max-width: 767px) {
   .scrollbar::-webkit-scrollbar {
     display: none !important;
@@ -569,19 +679,25 @@ br {
     width: 256px;
     text-align: left;
   }
+
   .modal {
     margin: 10px;
   }
+
   .react-tel-input .country-list * {
     text-align: left;
   }
-  .create-input-container{
+
+  .create-input-container {
     margin-left: 0 !important;
   }
-  .filter-section, .createProfileTextView{
+
+  .filter-section,
+  .createProfileTextView {
     padding: 1rem;
   }
 }
+
 .one-line-text {
   overflow: hidden;
   text-overflow: ellipsis;

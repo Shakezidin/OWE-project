@@ -57,6 +57,8 @@ const PerformanceCards: React.FC<performance> = ({
           height: isAccoOpen ? 70 : 'auto',
           transition: 'all 500ms',
           overflow: 'hidden',
+          marginTop: "1.2rem",
+          borderRadius: "16px"
         }}
       >
         <div className="right-button">

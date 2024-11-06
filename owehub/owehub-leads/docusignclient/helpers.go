@@ -36,16 +36,24 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 	defer log.ExitFn(0, "callApi", err)
 
 	// encode request body into buffer
-	err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
-		return err
-	}
 
-	req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create request err %v", err)
-		return err
+	if reqBody != nil {
+		err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
+			return err
+		}
+		req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
+	} else {
+		req, err = http.NewRequest(method, apiUrl, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
 	}
 
 	// set headers
@@ -111,8 +119,8 @@ func RegenerateAuthToken() error {
 		respBody  map[string]interface{}
 	)
 
-	log.EnterFn(0, "InitializeDocusignClient")
-	defer log.ExitFn(0, "InitializeDocusignClient", err)
+	log.EnterFn(0, "RegenerateAuthToken")
+	defer log.ExitFn(0, "RegenerateAuthToken", err)
 
 	jwtToken := jwt.New(jwt.SigningMethodRS256)
 

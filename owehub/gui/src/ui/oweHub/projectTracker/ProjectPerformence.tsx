@@ -3,7 +3,6 @@ import './projectTracker.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getPerfomanceStatus } from '../../../redux/apiSlice/perfomanceSlice';
 import { Calendar } from './ICONS';
@@ -619,75 +618,61 @@ const ProjectPerformence = () => {
 
   return (
     <div className="">
-      <div
-        className="flex justify-between items-center top-btns-wrapper"
-        style={{ paddingTop: 'calc(1rem - 8px)', paddingBottom: '1rem' }}
-      >
-        <Breadcrumb
-          head=""
-          cssStyles={{ paddingBottom: 0 }}
-          linkPara="Pipeline"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
-
-        <div className="pipeline-header-btns">
-          {showDropdown && (
-            <DropdownCheckbox
-              label={selectedDealer.length === 1 ? 'partner' : 'partners'}
-              placeholder={'Search partners'}
-              selectedOptions={selectedDealer}
-              options={dealerOption}
-              onChange={(val) => {
-                setSelectedDealer(val);
-                setPage(1);
-              }}
-              disabled={loading || isLoading}
-            />
-          )}
-          <button
-            disabled={loading || isLoading}
-            className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-            onClick={() => {
-              handleActiveTab('Active Queue'), setPage(1);
-            }}
-          >
-            Active
-          </button>
-          <button
-            disabled={loading || isLoading}
-            className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-            onClick={() => {
-              handleActiveTab('Active Queue'), setPage(1);
-            }}
-          >
-            Active
-          </button>
-
-          <button
-            disabled={loading || isLoading}
-            className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-            onClick={() => {
-              handleActiveTab('Hold & Jeopardy'), setPage(1);
-            }}
-          >
-            Hold & Jeopardy
-          </button>
-          <button
-            disabled={loading || isLoading}
-            className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-            onClick={() => {
-              handleActiveTab('Hold & Jeopardy'), setPage(1);
-            }}
-          >
-            H&J
-          </button>
-        </div>
-      </div>
       <div className="project-container">
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
+          <div className="pipeline-header-btns">
+            {showDropdown && (
+              <DropdownCheckbox
+                label={selectedDealer.length === 1 ? 'partner' : 'partners'}
+                placeholder={'Search partners'}
+                selectedOptions={selectedDealer}
+                options={dealerOption}
+                onChange={(val) => {
+                  setSelectedDealer(val);
+                  setPage(1);
+                }}
+                disabled={loading || isLoading}
+              />
+            )}
+            <button
+              disabled={loading || isLoading}
+              className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+              onClick={() => {
+                handleActiveTab('Active Queue'), setPage(1);
+              }}
+            >
+              Active
+            </button>
+            <button
+              disabled={loading || isLoading}
+              className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+              onClick={() => {
+                handleActiveTab('Active Queue'), setPage(1);
+              }}
+            >
+              Active
+            </button>
+
+            <button
+              disabled={loading || isLoading}
+              className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+              onClick={() => {
+                handleActiveTab('Hold & Jeopardy'), setPage(1);
+              }}
+            >
+              Hold & Jeopardy
+            </button>
+            <button
+              disabled={loading || isLoading}
+              className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+              onClick={() => {
+                handleActiveTab('Hold & Jeopardy'), setPage(1);
+              }}
+            >
+              H&J
+            </button>
+          </div>
         </div>
         <div className="flex stats-card-wrapper">
           <div
@@ -728,9 +713,8 @@ const ProjectPerformence = () => {
                     >
                       <div
                         key={card.id}
-                        className={`project-card ${
-                          index === topCardsData.length - 1 ? 'last-card' : ''
-                        } ${isActive ? 'active' : ''}`}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
+                          } ${isActive ? 'active' : ''}`}
                         onMouseEnter={() => setIsHovered(index)}
                         onMouseLeave={() => setIsHovered(-1)}
                         style={{
@@ -809,7 +793,7 @@ const ProjectPerformence = () => {
         className="project-container"
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
-        <div className="performance-table-heading">
+        <div className="performance-table-heading" style={{marginTop: "1.2rem"}}>
           <div className="proper-top">
             <div className="performance-project">
               {activeCardId !== null && (
@@ -985,7 +969,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.qc.qc_action_required_count > 0
+                                          project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1011,7 +995,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.ntp.action_required_count > 0
+                                          project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }

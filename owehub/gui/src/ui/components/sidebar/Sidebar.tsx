@@ -50,7 +50,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT)
+            item.path === ROUTES.TOTAL_COUNT ||
+            item.path === ROUTES.LEAD_MANAGEMENT) 
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -64,6 +65,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.TOTAL_COUNT ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT))
         ) {
@@ -79,6 +81,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.TOTAL_COUNT ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
@@ -102,6 +105,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.TOTAL_COUNT ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT))
@@ -124,6 +128,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.TOTAL_COUNT ||
                 item.path === ROUTES.SALES_REP_SCHEDULER||
             item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
@@ -144,6 +149,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.TOTAL_COUNT ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
@@ -169,6 +175,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.TOTAL_COUNT ||
                 item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
@@ -195,6 +202,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.TOTAL_COUNT ||
                 item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
@@ -212,6 +220,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.TOTAL_COUNT ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT)
           ) {

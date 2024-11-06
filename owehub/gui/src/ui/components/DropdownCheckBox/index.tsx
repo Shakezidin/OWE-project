@@ -135,7 +135,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
       <div
-        className={`dropdown-toggle flex items-center ${disabled ? 'disabled-dropdown' : ''}`}
+        className={`dropdown-toggle flex items-center ${disabled ? 'disabled-dropdown' : ''} ${isOpen ? 'open-dropdown' : ''}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span>{` ${selectedOptions.length} ${label}`}</span>
@@ -144,7 +144,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
           size={22}
           style={{
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'all 550ms',
+            transition: 'transform 550ms ease',
           }}
         />
       </div>
@@ -156,7 +156,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
         >
           <input
             type="text"
-            className="input"
+            className="input input-drop-check"
             style={{ paddingInline: 0, paddingLeft: 6 }}
             placeholder={placeholder}
             value={search}
