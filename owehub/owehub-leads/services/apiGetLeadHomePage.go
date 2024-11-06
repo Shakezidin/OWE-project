@@ -572,6 +572,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		if !isAptRequired {
 			aptStatusLabel = "Not Required"
+			aptStatusDate = nil
 		}
 
 		proposalPdfKey, ok := item["proposal_pdf_key"].(string)
