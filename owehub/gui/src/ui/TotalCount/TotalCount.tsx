@@ -13,12 +13,16 @@ import {
   AreaChart,
 } from 'recharts';
 import {
-  endOfMonth,
-  subDays,
-  startOfMonth,
   startOfWeek,
   endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  subDays,
+  startOfQuarter,
+  endOfQuarter,
   startOfYear,
+  endOfYear,
+  subYears,
   format,
 } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
@@ -227,7 +231,7 @@ const TotalCount: React.FC = () => {
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const periodFilterOptions: DateRangeWithLabel[] = [
-    {
+    { 
       label: 'This Week',
       start: startOfWeek(today, { weekStartsOn: 1 }),
       end: today,
@@ -237,27 +241,150 @@ const TotalCount: React.FC = () => {
       start: startOfWeek(subDays(today, 7), { weekStartsOn: 1 }),
       end: endOfWeek(subDays(today, 7), { weekStartsOn: 1 }),
     },
-    { label: 'This Month', start: startOfMonth(today), end: today },
+    {
+      label: 'This Month',
+      start: startOfMonth(today),
+      end: today,
+    },
     {
       label: 'Last Month',
       start: new Date(today.getFullYear(), today.getMonth() - 1, 1),
       end: endOfMonth(new Date(today.getFullYear(), today.getMonth() - 1)),
     },
+
+    {
+      label: 'Current Week',
+      start: startOfWeek(today, { weekStartsOn: 1 }),
+      end: today,
+    },
+    {
+      label: 'Current Month',
+      start: startOfMonth(today),
+      end: endOfMonth(today),
+    },
+    {
+      label: 'This Quarter',
+      start: startOfQuarter(today),
+      end: endOfQuarter(today),
+    },
+    {
+      label: 'Last Quarter',
+      start: startOfQuarter(subDays(today, 90)),
+      end: endOfQuarter(subDays(today, 90)),
+    },
+
+    {
+      label: 'This Year',
+      start: startOfYear(today),
+      end: today,
+    },
+    {
+      label: 'Last Year',
+      start: startOfYear(new Date(today.getFullYear() - 1, 0, 1)),
+      end: endOfYear(new Date(today.getFullYear() - 1, 11, 31)),
+    },
+
+    {
+      label: 'Last 3 Years',
+      start: startOfYear(subYears(today, 3)),
+      end: endOfYear(today),
+    },
+    {
+      label: 'Last 5 Years',
+      start: startOfYear(subYears(today, 5)),
+      end: endOfYear(today),
+    },
+    {
+      label: 'Last 10 Years',
+      start: startOfYear(subYears(today, 10)),
+      end: endOfYear(today),
+    },
   ];
 
-  const mappedPeriodOptions: Option[] = periodFilterOptions.map((period) => ({
-    label: period.label ?? 'Unknown', // Fallback to "Unknown" if label is undefined
-    value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
-  }));
+  const mappedPeriodOptions: Option[] = periodFilterOptions
+    .filter((period) => {
+      const label = period.label ?? '';
+
+      if (selectedOption.value === 'day') {
+        return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(
+          label
+        );
+      }
+      if (selectedOption.value === 'week') {
+        return [
+          'Current Week',
+          'Current Month',
+          'Last Month',
+          'This Quarter',
+          'Last Quarter',
+        ].includes(label);
+      }
+      if (selectedOption.value === 'month') {
+        return [
+          'This Month',
+          'This Quarter',
+          'Last Quarter',
+          'This Year',
+          'Last Year',
+        ].includes(label);
+      }
+      if (selectedOption.value === 'year') {
+        return [
+          'This Year',
+          'Last 3 Years',
+          'Last 5 Years',
+          'Last 10 Years',
+        ].includes(label);
+      }
+      return false; // Exclude options that don’t match the selected period
+    })
+    .map((period) => ({
+      label: period.label ?? 'Unknown', // Fallback to "Unknown" if label is undefined
+      value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
+    }));
 
   // Set the initial value for selectedReportOption to "This Week"
   const initialReportOption = periodFilterOptions.find(
     (option) => option.label === 'Last Week'
   );
-
-  const [selectedReportOption, setSelectedReportOption] = useState<Option>(
-    mappedPeriodOptions[1]
+ 
+  const defaultPeriodOptions = periodFilterOptions.filter((period) => 
+    ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(period.label ?? '')
   );
+  
+const [selectedReportOption, setSelectedReportOption] = useState<Option>({
+  label: defaultPeriodOptions[1]?.label || 'Last Week', // 'Last Week' as default
+  value: `${format(defaultPeriodOptions[1]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[1]?.end, 'dd-MM-yyyy')}`,
+});
+
+useEffect(() => {
+  // Dynamically update period options when selectedOption changes
+  const newMappedOptions = periodFilterOptions
+    .filter((period) => {
+      const label = period.label ?? '';
+
+      if (selectedOption.value === 'day') {
+        return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(label);
+      }
+      if (selectedOption.value === 'week') {
+        return ['Current Week', 'Current Month', 'Last Month', 'This Quarter', 'Last Quarter'].includes(label);
+      }
+      if (selectedOption.value === 'month') {
+        return ['This Month', 'This Quarter', 'Last Quarter', 'This Year', 'Last Year'].includes(label);
+      }
+      if (selectedOption.value === 'year') {
+        return ['This Year', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'].includes(label);
+      }
+      return false;
+    })
+    .map((period) => ({
+      label: period.label ?? 'Unknown',
+      value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
+    }));
+
+  setSelectedReportOption(newMappedOptions[1] || newMappedOptions[0]);
+}, [selectedOption]);
+
 
   useEffect(() => {
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
@@ -291,7 +418,12 @@ const TotalCount: React.FC = () => {
             start_date,
             end_date,
             date_by: selectedOption.value,
-            state: selectedStateOption.value === "All" ? "" : selectedStateOption.value === "" ? "" : selectedStateOption.value,
+            state:
+              selectedStateOption.value === 'All'
+                ? ''
+                : selectedStateOption.value === ''
+                  ? ''
+                  : selectedStateOption.value,
           });
 
           if (response.status > 201) {
@@ -393,7 +525,6 @@ const TotalCount: React.FC = () => {
                 minHeight: 30,
                 '@media (min-width: 768px)': {
                   flex: 1,
-                   
                 },
               }}
               onChange={handleStateOptionChange}
@@ -403,19 +534,15 @@ const TotalCount: React.FC = () => {
                 flexBasis: 115,
                 '@media (min-width: 768px)': {
                   flex: 1,
-                }
-                 
+                },
               }}
-           
               menuListStyles={{
                 fontWeight: 400,
-                
               }}
-
               singleValueStyles={{
                 fontWeight: 400,
               }}
-              width='130px'
+              width="130px"
             />
           </div>
 

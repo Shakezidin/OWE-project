@@ -35,3 +35,8 @@ type CreateUserReq struct {
 	TablesPermissions []TablePermission `json:"tables_permissions"`
 	AddToPodio        bool              `json:"podio_checked"`
 }
+
+type RecoverPasswordReq struct {
+	UserEmails []string `json:"user_emails"` // List of user emails
+}
+

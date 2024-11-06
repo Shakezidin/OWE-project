@@ -58,7 +58,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     }
   };
 
-  console.log(selectedTime, "comdloeb ")
 
 
 
@@ -109,12 +108,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             )}
           />
           <div className={classes.DigitalInput}>
-            {/* <input
-              type="time"
-              id="time-input"
-              value={`${(time.getHours() % 12 || 12).toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`}
-              onChange={handleDigitalTimeChange}
-            /> */}
             <DatePicker
               selected={selectedTime ? new Date(selectedTime) : new Date()}
               onChange={handleTimeChange}
@@ -123,6 +116,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
               timeIntervals={1}
               timeCaption="Time"
               dateFormat="h:mm aa"
+              // readOnly
             />
           </div>
         </div>
