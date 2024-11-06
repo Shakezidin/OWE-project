@@ -350,6 +350,8 @@ table thead tr th {
 
 .table-header p{
   color: var(--input-border-color);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 table tbody tr {

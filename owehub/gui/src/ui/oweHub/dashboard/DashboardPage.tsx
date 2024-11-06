@@ -366,7 +366,7 @@ export const DashboardPage: React.FC = () => {
               />
               <div ref={datePickerRef} style={{ position: 'relative' }}>
                 <label
-                  className="date-button flex items-center"
+                  className={`date-button flex items-center ${showDatePicker ? 'open-calendar' : ''}`}
                   onClick={handleToggleDatePicker}
                   style={{
                     color: '#292B2E',
@@ -375,7 +375,7 @@ export const DashboardPage: React.FC = () => {
                     gap: '1rem',
                   }}
                 >
-                  <span className='dealer-date-text' style={{transition: "all 300ms ease"}}>{appliedDate
+                  <span className='dealer-date-text' style={{transition: "all 100ms ease"}}>{appliedDate
                     ? format(appliedDate, 'dd-MM-yyyy')
                     : 'Payroll Date'}</span>
                   <MdOutlineKeyboardArrowDown

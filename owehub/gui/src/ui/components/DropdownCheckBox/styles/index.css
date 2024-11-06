@@ -12,6 +12,10 @@
   transition: all 0.3s ease;
 }
 
+.input-drop-check::placeholder{
+  color: var(--grey);
+}
+
 .dropdown-checkbox .dropdown-toggle span {
   color: var(--input-border-color);
 }
@@ -51,12 +55,14 @@ span.disbaled-label {
 .dropdown-checkbox .dropdown-menu .input {
   width: 100%;
 }
-.dropdown-checkbox .dropdown-toggle:not(.disabled-dropdown):hover {
+
+.dropdown-checkbox .dropdown-toggle.open-dropdown:not(.disabled-dropdown):hover {
   border-color: var(--primary-color);
   transform: scale(1.04);
   transition: all 0.3s ease;
 }
 
-.dropdown-checkbox .dropdown-toggle:not(.disabled-dropdown):hover span, .dropdown-checkbox .dropdown-toggle:not(.disabled-dropdown):hover svg {
-  color: var(--primary-color); 
+.dropdown-checkbox .dropdown-toggle.open-dropdown:not(.disabled-dropdown):hover span,
+.dropdown-checkbox .dropdown-toggle.open-dropdown:not(.disabled-dropdown):hover svg {
+  color: var(--primary-color);
 }
