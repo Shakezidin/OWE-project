@@ -358,6 +358,7 @@
 .teamdash-header h1 {
   font-weight: 600;
   font-size: 1.3rem;
+  color: var(--input-border-color);
 }
 .dash-newteam .create {
   background-color: #ffffff;

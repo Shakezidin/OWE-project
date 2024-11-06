@@ -120,6 +120,7 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) 
                       fontSize: '12px',
                       fontWeight: '500',
                       marginLeft: '20px',
+                      color: "#292B2E"
                     }}
                   >
                          {timePeriodText()}

@@ -47,6 +47,9 @@
   font-size: 12px;
 }
 
+.team-input-wrap input::placeholder{
+  color: var(--grey-border-color);
+}
 
 .comm-dropdown-menu {
   position: absolute;
@@ -54,39 +57,61 @@
   z-index: 5;
   background-color: white;
   border-radius: 8px;
-  padding: 8px;
+  padding: 5px;
   margin-top: 6px;
   overflow-y: auto;
   width: 180px;
-  height: 200px !important;
+  height: 300px !important;
   box-sizing: border-box;
-  color: #000000;
-  box-shadow: 5px 5px 5px rgba(43, 42, 42, 0.3);
+  color: var(--input-border-color);
+  border: 1px solid var(--input-border-color);
+  box-shadow: 0px 4px 10px rgba(43, 42, 42, 0.3);
+}
+
+.comm-dropdown-toggle:hover, .comm-dropdown-toggle.active, .comm-dropdown-container.active{
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color);
+}
+
+.comm-dropdown-toggle:hover .comm-toggle-text, .comm-dropdown-toggle.active .comm-toggle-text  {
+  color: var(--primary-color);
+}
+
+.comm-dropdown-toggle:hover svg, .comm-dropdown-toggle.active svg  {
+  fill: var(--primary-color);
 }
 
 .comm-dropdown-item {
   display: flex;
   padding: 4px 8px;
   cursor: pointer;
-  color: rgb(0, 0, 0);
+  color: var(--input-border-color);
   font-weight: 500;
   font-size: 12px;
   margin-bottom: 1px;
-  color: #000000;
+  display: flex;
+  align-items: self-start;
+}
+
+.comm-drop-icon p{
+  margin-top: -3px;
 }
 
 .comm-dropdown-item input[type='checkbox'] {
   margin-right: 8px;
   cursor: pointer;
-  width: 18px;
-  height: 18px;
-  border-radius: 6px;
-  border: 1px solid #000000;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid var(--grey-text-color);
   margin-bottom: 7px;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .comm-dropdown-item input[type='checkbox']:checked {
@@ -96,11 +121,10 @@
 .comm-dropdown-item input[type='checkbox']:checked::before {
   content: '';
   display: block;
-  width: 11px;
-  height: 11px;
-  margin: 3px;
+  width: 8px;
+  height: 8px;
   background-color: #377cf6;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .comm-drop-icon {
