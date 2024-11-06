@@ -71,7 +71,7 @@ func HandleResetPasswordRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	for _, email := range recoverPasswordReq.UserEmails {
-		err = SendMailToClient(email, "Your password has been reset to the default.")
+		err = SendPasswordResetSuccessMailToClient(email, "Your password has been reset to the default.")
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to %s with err: %v", email, err)
 		}
