@@ -105,6 +105,7 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
                       fontSize: '12px',
                       fontWeight: '500',
                       marginLeft: '20px',
+                      color: "#292B2E"
                     }}
                   >
                     From the last month

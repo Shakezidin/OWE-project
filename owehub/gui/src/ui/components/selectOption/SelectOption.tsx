@@ -180,8 +180,8 @@ const SelectOption: React.FC<Props> = ({
             ...dropdownIndicatorStyles,
             '& svg': {
               fill: (isHovered || isFocused) ? '#377CF6' : "#292B2E",
-              // transform: isFocused ? 'rotate(180deg)' : 'rotate(0deg)',
-              // transition: "transform 550ms ease"
+              transform: isFocused ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: "transform 550ms ease"
             },
           }),
           placeholder: (base) => ({

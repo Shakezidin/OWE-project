@@ -205,7 +205,7 @@ const UserTable: React.FC<UserTableProps> = ({
                     </div>
 
                     {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div className='reset_hover_btn' style={{cursor:"pointer"}} onClick={()=>handlePasswordReset(el.email_id)}>
-                      <MdOutlineLockReset color='#667085' size={24} />
+                      <MdOutlineLockReset color='#667085' size={24} style={{paddingLeft: "5px"}} />
                     </div>}
                   </div>
 

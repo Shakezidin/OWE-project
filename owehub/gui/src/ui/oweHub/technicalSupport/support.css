@@ -23,6 +23,7 @@
   font-weight: 600;
   line-height: 27px;
   text-align: left;
+  color: var(--input-border-color);
 }
 .supportImage {
   width: 100%;
@@ -194,6 +195,9 @@
   padding: 0.5rem;
   font-size: 12px !important;
   border-radius: 8px;
+}
+.create-input-field-note-support textarea:hover, .create-input-field-note-support textarea:focus {
+  border-color: var(--primary-color);
 }
 
 @media (max-width: 1024px) {
