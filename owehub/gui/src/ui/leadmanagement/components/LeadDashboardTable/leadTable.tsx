@@ -301,52 +301,54 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const OpenSignDocument = async () => {
     setIsLoadingDocument(true);
     try {
-      const params = new URLSearchParams();
-      params.append("leads_id", leadId.toString() || "");
-      params.append("return_url", "http://localhost:3000/leadmng-dashboard");
+        const params = new URLSearchParams();
+        params.append("leads_id", leadId.toString() || "");
+        params.append("return_url", "http://localhost:3000/leadmng-dashboard");
 
-      const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
-      const eventSource = new EventSource(eventSourceUrl);
+        const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
+        const eventSource = new EventSource(eventSourceUrl);
 
-      eventSource.onmessage = (event) => {
-        const payload = JSON.parse(event.data);
+        eventSource.onmessage = (event) => {
+            const payload = JSON.parse(event.data);
 
-        if (payload.is_done) {
-          setIsLoadingDocument(false);
-          if (payload.error === null) {
-            window.open(payload.data.url, '_blank');
-          } else {
-            console.error(`Error during DocuSign URL generation: ${payload.error}`);
+            if (payload.is_done) {
+                setIsLoadingDocument(false);
+                if (payload.error === null) {
+                    window.open(payload.data.url, '_blank');
+                } else {
+                    const errorMessage = payload.error || 'Error generating signing URL. Please try again.';
+                    console.error(`Error during DocuSign URL generation: ${errorMessage}`);
+                    setDocumentStatus({
+                        status: 'pending',
+                        message: errorMessage
+                    });
+                    toast.error(errorMessage);
+                }
+                eventSource.close();
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('Error with SSE connection', error);
+            setIsLoadingDocument(false);
             setDocumentStatus({
-              status: 'pending',
-              message: 'Error generating signing URL. Please try again.'
+                status: 'pending',
+                message: 'Connection error. Please try again.'
             });
-            toast.error('Error generating signing URL. Please try again.');
-          }
-          eventSource.close();
-        }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error('Error with SSE connection', error);
+            toast.error('Connection error. Please try again.');
+            eventSource.close();
+        };
+    } catch (error) {
+        console.error("Error initiating DocuSign signing:", error);
         setIsLoadingDocument(false);
         setDocumentStatus({
-          status: 'pending',
-          message: 'Connection error. Please try again.'
+            status: 'pending',
+            message: 'Error initiating signing process. Please try again.'
         });
-        toast.error('Connection error. Please try again.');
-        eventSource.close();
-      };
-    } catch (error) {
-      console.error("Error initiating DocuSign signing:", error);
-      setIsLoadingDocument(false);
-      setDocumentStatus({
-        status: 'pending',
-        message: 'Error initiating signing process. Please try again.'
-      });
-      toast.error('Error initiating signing process. Please try again.');
+        toast.error('Error initiating signing process. Please try again.');
     }
-  };
+};
+
 
   const [load, setLoad] = useState(false);
   const handleCloseWon = async () => {
@@ -756,29 +758,29 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                       options={
                                         (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
                                           ? [
-                                            { label: 'Reschedule Appointment', value: 'app_sched' },
-                                            { label: 'Create Proposal', value: 'new_proposal' },
-                                          ]
+                                              { label: 'Reschedule Appointment', value: 'app_sched' },
+                                              { label: 'Create Proposal', value: 'new_proposal' },
+                                            ]
                                           : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                             ? [
                                               // { label: 'Send Proposal', value: 'sendtocust' },
-                                              { label: 'View Proposal', value: 'viewProposal' },
-                                              { label: 'Edit Proposal', value: 'editProposal' },
-                                              { label: 'Download Proposal', value: 'download' },
-                                              { label: 'Sign Document ', value: 'signature' },
-                                              { label: 'Reschedule Appointment', value: 'app_sched' },
-                                              { label: 'Refresh Url', value: 'renew_proposal' },
-                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
-                                              ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
-                                                { label: 'Sign Document ', value: 'signature' },
+                                                { label: 'Download Proposal', value: 'download' },
+                                                ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                { label: 'Reschedule Appointment', value: 'app_sched' },
                                                 { label: 'Refresh Url', value: 'renew_proposal' },
-                                              ]
+                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
+                                              ? [
+                                                  { label: 'View Proposal', value: 'viewProposal' },
+                                                  { label: 'Edit Proposal', value: 'editProposal' },
+                                                  ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                  { label: 'Refresh Url', value: 'renew_proposal' },
+                                                ]
                                               : [
-                                                { label: 'Create Proposal', value: 'new_proposal' },
-                                                { label: 'Schedule Appointment', value: 'app_sched' },
-                                              ]
+                                                  { label: 'Create Proposal', value: 'new_proposal' },
+                                                  { label: 'Schedule Appointment', value: 'app_sched' },
+                                                ]
                                       }
                                     />
                                   )}
@@ -869,29 +871,29 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                         options={
                                           (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
                                             ? [
-                                              { label: 'Reschedule Appointment', value: 'app_sched' },
-                                              { label: 'Create Proposal', value: 'new_proposal' },
-                                            ]
+                                                { label: 'Reschedule Appointment', value: 'app_sched' },
+                                                { label: 'Create Proposal', value: 'new_proposal' },
+                                              ]
                                             : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                               ? [
                                                 // { label: 'Send Proposal', value: 'sendtocust' },
-                                                { label: 'View Proposal', value: 'viewProposal' },
-                                                { label: 'Edit Proposal', value: 'editProposal' },
-                                                { label: 'Download Proposal', value: 'download' },
-                                                { label: 'Sign Document ', value: 'signature' },
-                                                { label: 'Reschedule Appointment', value: 'app_sched' },
-                                                { label: 'Refresh Url', value: 'renew_proposal' },
-                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
-                                                ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
                                                   { label: 'Edit Proposal', value: 'editProposal' },
-                                                  { label: 'Sign Document ', value: 'signature' },
+                                                  { label: 'Download Proposal', value: 'download' },
+                                                  ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                  { label: 'Reschedule Appointment', value: 'app_sched' },
                                                   { label: 'Refresh Url', value: 'renew_proposal' },
-                                                ]
+                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
+                                                ? [
+                                                    { label: 'View Proposal', value: 'viewProposal' },
+                                                    { label: 'Edit Proposal', value: 'editProposal' },
+                                                    ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                    { label: 'Refresh Url', value: 'renew_proposal' },
+                                                  ]
                                                 : [
-                                                  { label: 'Create Proposal', value: 'new_proposal' },
-                                                  { label: 'Schedule Appointment', value: 'app_sched' },
-                                                ]
+                                                    { label: 'Create Proposal', value: 'new_proposal' },
+                                                    { label: 'Schedule Appointment', value: 'app_sched' },
+                                                  ]
                                         }
                                       />
                                     )}
