@@ -13,11 +13,23 @@
   border-radius: 8px;
 }
 
+.reset_hover_btn {
+  transition: all 0.3s ease;
+}
+
+.reset_hover_btn:hover {
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+
+}
+
 .userManagementTable__search input:focus {
   outline: none;
-  border-color: #007bff; /* Change the border color to your desired color */
+  border-color: #007bff;
+  /* Change the border color to your desired color */
 }
-.flex-row-reverse{
+
+.flex-row-reverse {
   flex-direction: row-reverse;
 }
 
@@ -38,6 +50,7 @@
   align-items: center;
   margin-bottom: 10px;
 }
+
 .manage-user p {
   font-size: 12px;
   font-weight: 500;
@@ -46,21 +59,26 @@
   text-align: left;
   color: var(--para-color);
 }
+
 .admin-user {
   display: flex;
   gap: 8px;
   margin-top: 1.2rem;
 }
+
 .admin-user img {
   transition: all 0.3s ease;
 }
+
 .admin-user img:hover {
   transform: scale(1.2);
 }
+
 .user-new-button {
   display: flex;
   align-items: center;
 }
+
 .user-new-button button {
   border: none;
   background-color: var(--active-text-color);
@@ -70,9 +88,11 @@
   font-size: 16px;
   margin-bottom: 1rem;
 }
+
 .add {
   font-size: 20px;
 }
+
 .ManagerUser-container {
   display: flex;
   justify-content: space-between;
@@ -106,10 +126,12 @@ opacity: 0px;
 
   /* border: "1px solid #d0d5dd"; */
 }
+
 .iconsSection-delete img {
   width: 17px;
   height: 18px;
 }
+
 /* .iconsSection-delete h4 {
   font-size: 14px;
   font-weight: 500;
@@ -121,6 +143,7 @@ opacity: 0px;
   display: flex;
   align-items: center;
 }
+
 .db-access input {
   width: 24px;
   height: 24px;
@@ -128,6 +151,7 @@ opacity: 0px;
   border: 1px 0px 0px 0px;
   opacity: 0px;
 }
+
 .db-access label {
   margin-top: 1rem;
   padding-left: 0.5rem;
@@ -136,32 +160,38 @@ opacity: 0px;
   line-height: 12px;
   padding-bottom: 1rem;
 }
+
 .selectTable-section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 1rem;
 }
+
 .selectTable-section img {
   cursor: pointer;
 }
+
 .selectTable-section p {
   font-size: 28px;
   font-weight: 600;
   line-height: 14.5px;
   text-align: left;
 }
+
 .access-data {
   align-items: center;
   justify-content: center;
   margin-top: 5px;
 }
+
 .access-data p {
   font-size: 14px;
   font-weight: 500;
   line-height: 14.5px;
   text-align: left;
 }
+
 .dash-select-user {
   background-color: #ececec;
   width: 51px;
@@ -209,6 +239,7 @@ opacity: 0px;
 .Line-container:hover {
   transform: scale(1.09);
 }
+
 .edit-line img {
   transition: border 500ms ease;
 }
@@ -223,14 +254,17 @@ opacity: 0px;
     flex-direction: column;
     margin-top: 1rem;
   }
+
   .delete-icon-container {
     flex-direction: column !important;
     position: relative;
   }
+
   .user_user-type {
     flex-direction: row !important;
     justify-content: space-between;
   }
+
   .userManagementTable__search,
   .userManagementTable__search input {
     width: 100%;
