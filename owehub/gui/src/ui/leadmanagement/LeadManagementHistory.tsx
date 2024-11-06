@@ -150,11 +150,9 @@ const LeradManagementHistory = () => {
     );
 
   const [selectedRanges, setSelectedRanges] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: 'selection',
-    },
+    
+      { startDate: startOfThisWeek, endDate: today, key: 'selection' },
+    
   ]);
 
   const [selectedDates, setSelectedDates] = useState<{
@@ -479,7 +477,7 @@ const LeradManagementHistory = () => {
     if (divRef.current) {
       divRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, []);
+  }, [page]);
 
   return (
     <>
