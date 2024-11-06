@@ -539,9 +539,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		// --------------------------------------------------------------------------------
 
-		if !isAptRequired {
-			aptStatusLabel = "Not Required"
-		}
 		if scheduledDatePtr != nil {
 			aptStatusLabel = "Appointment Sent"
 			aptStatusDate = scheduledDatePtr
@@ -571,6 +568,10 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		if statusId == 3 {
 			aptStatusLabel = "Appointment Declined"
 			aptStatusDate = declinedDatePtr
+		}
+
+		if !isAptRequired {
+			aptStatusLabel = "Not Required"
 		}
 
 		proposalPdfKey, ok := item["proposal_pdf_key"].(string)
