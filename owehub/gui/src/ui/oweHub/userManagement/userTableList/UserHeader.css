@@ -11,7 +11,7 @@
 }
 
 button.trash-btn {
-  background-color: #377cf6;
+  background-color: var(--delete-btn-color);
   width: 36px;
   height: 36px;
 }

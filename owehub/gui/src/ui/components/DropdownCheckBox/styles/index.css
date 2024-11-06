@@ -6,17 +6,21 @@
 .dropdown-checkbox .dropdown-toggle {
   width: 100%;
   padding: 7px 1rem;
-  border: 1px solid #dfd8d8;
-  font-weight: 600;
+  border: 1px solid var(--input-border-color);
+  font-weight: 500;
   height: auto;
   transition: all 0.3s ease;
 }
 
+.input-drop-check::placeholder{
+  color: var(--grey);
+}
+
 .dropdown-checkbox .dropdown-toggle span {
-  color: #377cf6;
+  color: var(--input-border-color);
 }
 .dropdown-checkbox .dropdown-toggle svg {
-  color: #377cf6;
+  color: var(--input-border-color);
 }
 .dropdown-toggle.disabled-dropdown {
   background-color: #eeecec;
@@ -51,9 +55,14 @@ span.disbaled-label {
 .dropdown-checkbox .dropdown-menu .input {
   width: 100%;
 }
-.dropdown-checkbox .dropdown-toggle:not(.disabled-dropdown):hover {
-  background-color: #ddebff;
-  border-color: #377cf6;
+
+.dropdown-checkbox .dropdown-toggle.open-dropdown:not(.disabled-dropdown):hover {
+  border-color: var(--primary-color);
   transform: scale(1.04);
   transition: all 0.3s ease;
+}
+
+.dropdown-checkbox .dropdown-toggle.open-dropdown:not(.disabled-dropdown):hover span,
+.dropdown-checkbox .dropdown-toggle.open-dropdown:not(.disabled-dropdown):hover svg {
+  color: var(--primary-color);
 }

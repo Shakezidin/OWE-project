@@ -329,12 +329,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -859,11 +859,18 @@ const Table = ({
       return 'Partner Name';
     }
   }, [role, authData, groupBy]);
+
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       { groupBy === 'dealer' ? null :
       <div className="relative exportt" ref={wrapperReff}>
+        <div className="leaderboard-data__title">
+          <img src={award} alt="" />
+          <h2 style={{fontSize: "18px", fontWeight: 600, color: "#292B2E" }}>
+            Leaderboard
+          </h2>
+        </div>
         <div
           className="export-trigger overflow-hidden"
           onClick={() => !isExporting && !isExportingData && toggleExportShow()}
@@ -871,7 +878,7 @@ const Table = ({
           {isExporting || isExportingData ? (
             <MdDownloading className="downloading-animation" size={20} />
           ) : (
-            <FaUpload size={12} className="mr1" />
+            <FaUpload size={12} />
           )}
           <span>
             {' '}
@@ -962,12 +969,6 @@ const Table = ({
       </div> */}
 
       <div>
-        <div className="leaderboard-data__title">
-          <img src={award} alt="" />
-          <h2 className="h3" style={{ fontWeight: 600 }}>
-            Leaderboard
-          </h2>
-        </div>
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Rank by:"
@@ -1005,10 +1006,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN ||
-              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-              role === TYPE_OF_USER.ACCOUNT_MANAGER
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

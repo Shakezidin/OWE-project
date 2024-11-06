@@ -9,7 +9,6 @@ import 'react-phone-input-2/lib/style.css';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getUser } from '../../../redux/apiActions/GetUser/getUserAction';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 const TechnicalSupport: React.FC = () => {
   const { userDetail, userUpdate, isFormSubmitting } = useAppSelector(
@@ -246,16 +245,6 @@ const TechnicalSupport: React.FC = () => {
 
   return (
     <>
-      {/* <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-        <Breadcrumb
-          head=""
-          linkPara="Technical Support"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
-      </div> */}
-
       <form ref={form} onSubmit={handleSubmit}>
         <div className="support-cont-section">
           <div className="support-container">
@@ -454,7 +443,7 @@ const TechnicalSupport: React.FC = () => {
               ></textarea>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span
-                  style={{ color: message.length === 300 ? 'red' : 'inherit' }}
+                  style={{ color: message.length === 300 ? 'red' : '#80848B' }}
                 >
                   {message.length}/300 characters
                 </span>
