@@ -148,7 +148,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
                     {el.description ? el.description : 'N/A'}
                   </td>
                   <td>
-                    <div className="action-icon" style={{gap:8}}>
+                    <div className="action-icon" style={{gap:4}}>
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}
