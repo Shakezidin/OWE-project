@@ -31,7 +31,7 @@ export default [
   },
   {
     name: 'contract',
-    displayName: 'Contract $$',
+    displayName: 'Contract $',
     type: 'number',
     isCheckbox: false,
   },
@@ -56,7 +56,7 @@ export default [
   },
   {
     name: 'st',
-    displayName: 'ST',
+    displayName: 'State',
     type: 'string',
     isCheckbox: false,
   },

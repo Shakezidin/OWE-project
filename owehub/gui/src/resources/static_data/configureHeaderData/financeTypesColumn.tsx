@@ -23,13 +23,13 @@ export const FinanceTypesColumn: Column[] = [
   {
     name: 'term_years',
     displayName: 'Terms Years',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'sub_record',
     displayName: 'Sub Record',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 
@@ -61,19 +61,19 @@ export const FinanceTypesColumn: Column[] = [
   {
     name: 'finance_fee',
     displayName: 'Finance Fee',
-    type: 'date',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'finance_type_uid',
     displayName: 'Finance Type uid',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'finance_type_uid_for_import',
     displayName: 'Finance Type uid_for_import',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
@@ -91,13 +91,13 @@ export const FinanceTypesColumn: Column[] = [
   {
     name: 'payment_start_date_days',
     displayName: 'Payment Start Date Days',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'ar_rate',
     displayName: 'Ar Rate',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
@@ -121,13 +121,13 @@ export const FinanceTypesColumn: Column[] = [
   {
     name: 'active_date_start',
     displayName: 'Active Start Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'active_date_end',
     displayName: 'Active End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   

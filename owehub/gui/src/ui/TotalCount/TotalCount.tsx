@@ -387,9 +387,17 @@ useEffect(() => {
 
 
   useEffect(() => {
+
+      // Clear previous graph data to reset the state for fresh data
+  setGraphs([
+    { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
+    { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+    { title: 'Installs', stopColor: '#377CF6', borderColor: '#377CF6', data: [] },
+  ]);
+  
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
 
-    if (selectedDealer.length && selectedReportOption?.value) {
+    if (selectedDealer.length && selectedReportOption?.value && selectedOption.value) {
       (async () => {
         try {
           setIsLoading(true);
@@ -471,7 +479,8 @@ useEffect(() => {
   ]);
 
   console.log(mappedPeriodOptions, 'optionssss');
-  console.log(selectedReportOption, 'jfg');
+  console.log(selectedReportOption, 'dateeeee');
+  console.log(selectedOption, "day month")
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
