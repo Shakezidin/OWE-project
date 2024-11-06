@@ -1,63 +1,60 @@
 package services
 
 import (
-	"OWEApp/shared/db"
-	log "OWEApp/shared/logger"
-	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
 	"time"
 )
 
-func ExecDlrPayInitialCalculation() error {
-	var (
-		err            error
-		dlrPayDataList []map[string]interface{}
-	)
-	log.EnterFn(0, "ExecDlrPayInitialCalculation")
-	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
+// func ExecDlrPayInitialCalculation() error {
+// 	var (
+// 		err            error
+// 		dlrPayDataList []map[string]interface{}
+// 	)
+// 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
+// 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
-	count := 0
-	dataReq := models.DataRequestBody{}
-	InitailData, err := oweconfig.LoadDlrPayInitialData()
-	if err != nil {
-		log.FuncErrorTrace(0, "error while loading initial data %v", err)
-	}
-	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
-	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
-	dealerPayments, err := oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
-	dealerOvrd, err := oweconfig.GetDealerOverrideConfigFromDB(dataReq)
+// 	count := 0
+// 	dataReq := models.DataRequestBody{}
+// 	InitailData, err := oweconfig.LoadDlrPayInitialData()
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
+// 	}
+// 	financeSchedule, err := oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
+// 	dealerCredit, err := oweconfig.GetDealerCreditsConfigFromDB(dataReq)
+// 	dealerPayments, err := oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
+// 	dealerOvrd, err := oweconfig.GetDealerOverrideConfigFromDB(dataReq)
 
-	for _, data := range InitailData.InitialDataList {
-		var dlrPayData map[string]interface{}
-		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd)
+// 	for _, data := range InitailData.InitialDataList {
+// 		var dlrPayData map[string]interface{}
+// 		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd)
 
-		if err != nil || dlrPayData == nil {
-			if len(data.UniqueId) > 0 {
-				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
-			} else {
-				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
-			}
-		} else {
-			dlrPayDataList = append(dlrPayDataList, dlrPayData)
-		}
+// 		if err != nil || dlrPayData == nil {
+// 			if len(data.UniqueId) > 0 {
+// 				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
+// 			} else {
+// 				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+// 			}
+// 		} else {
+// 			dlrPayDataList = append(dlrPayDataList, dlrPayData)
+// 		}
 
-		if (count+1)%1000 == 0 && len(dlrPayDataList) > 0 {
-			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "dealer_pay", dlrPayDataList)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to insert initial dlr pay Data in DB err: %v", err)
-			}
-			dlrPayDataList = nil // Clear the dlrpayDataList
-		}
-		count++
-	}
-	/* Update Calculated and Fetched data PR.Data Table */
-	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "dealer_pay", dlrPayDataList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v", err)
-	}
+// 		if (count+1)%1000 == 0 && len(dlrPayDataList) > 0 {
+// 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "dealer_pay", dlrPayDataList)
+// 			if err != nil {
+// 				log.FuncErrorTrace(0, "Failed to insert initial dlr pay Data in DB err: %v", err)
+// 			}
+// 			dlrPayDataList = nil // Clear the dlrpayDataList
+// 		}
+// 		count++
+// 	}
+// 	/* Update Calculated and Fetched data PR.Data Table */
+// 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "dealer_pay", dlrPayDataList)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v", err)
+// 	}
 
-	return err
-}
+// 	return err
+// }
 
 /******************************************************************************
 * FUNCTION:        CalculateDlrPayProject

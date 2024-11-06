@@ -4,6 +4,7 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -56,7 +57,7 @@ type InitialAgngRPDataLists struct {
 	InitialAgngRpDataList []InitialAgngRpStruct
 }
 
-func LoadAgngRpInitialData() (InitialDataa InitialAgngRPDataLists, err error) {
+func LoadAgngRpInitialData(uniqueIds []string) (InitialDataa InitialAgngRPDataLists, err error) {
 	var (
 		query    string
 		dataList []map[string]interface{}
@@ -134,8 +135,17 @@ LEFT JOIN
     project_mgmt_metrics_schema ON project_mgmt_metrics_schema.unique_id = customers_customers_schema.unique_id
 
 WHERE
-    customers_customers_schema.project_status = 'ACTIVE' AND customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != '';
+    customers_customers_schema.project_status = 'ACTIVE' AND customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
 `
+
+	if len(uniqueIds) > 0 {
+		// Create a string to hold the unique IDs for the SQL query
+		placeholders := make([]string, len(uniqueIds))
+		for i, id := range uniqueIds {
+			placeholders[i] = fmt.Sprintf("'%s'", id) // Quote each ID for SQL
+		}
+		query += fmt.Sprintf(" AND customers_customers_schema.unique_id IN (%s)", strings.Join(placeholders, ","))
+	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
@@ -403,7 +413,7 @@ WHERE
 
 func checkField(value interface{}, fieldName string, targetType string) (interface{}, bool) {
 	if value == nil {
-		log.FuncErrorTrace("Warning: %v is nil", fieldName)
+		log.FuncErrorTrace(0, "Warning: %s is nil", fieldName)
 		return nil, false
 	}
 	switch targetType {
@@ -420,6 +430,6 @@ func checkField(value interface{}, fieldName string, targetType string) (interfa
 			return timeVal, true
 		}
 	}
-	log.FuncErrorTrace("Error: %v is not a %v. Value: %v", fieldName, targetType, value)
+	log.FuncErrorTrace(0, "Error: %s is not a %s. Value: %v", fieldName, targetType, value)
 	return nil, false
 }

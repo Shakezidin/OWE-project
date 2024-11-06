@@ -5,25 +5,27 @@ import (
 	log "OWEApp/shared/logger"
 	oweconfig "OWEApp/shared/oweconfig"
 	"fmt"
+	"strings"
 	"time"
 )
 
-func ExecAgingReportInitialCalculation() error {
+func ExecAgingReportInitialCalculation(uniqueIds string, hookType string) error {
 	var (
 		err                 error
 		agingReportDataList []map[string]interface{}
 		count               = 0
 	)
-	log.EnterFn(0, "ExecDlrPayInitialCalculation")
-	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
+	log.EnterFn(0, "ExecAgingReportInitialCalculation")
+	defer func() { log.ExitFn(0, "ExecAgingReportInitialCalculation", err) }()
 
-	err = ClearAgingRp()
-	if err != nil {
-		log.FuncInfoTrace(0, "error while calling ClearAgingRp func: %v", err)
-		return err
+	var idList []string
+	if uniqueIds != "" {
+		idList = []string{uniqueIds}
+	} else {
+		idList = []string{}
 	}
 
-	InitailData, err := oweconfig.LoadAgngRpInitialData()
+	InitailData, err := oweconfig.LoadAgngRpInitialData(idList)
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
 		return err
@@ -36,6 +38,19 @@ func ExecAgingReportInitialCalculation() error {
 			log.FuncErrorTrace(0, "Failed to calculate Aging Report err : %+v", err)
 			return err
 
+		}
+
+		if hookType == "update" {
+			// Build the update query
+
+			query, _ := buildUpdateQuery("aging_report", agngRpData, "unique_id", data.Unique_ID)
+
+			// Execute the update query
+
+			err = db.ExecQueryDB(db.OweHubDbIndex, query)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to update AgRp Data for unique id: %+v err: %+v", data.Unique_ID, err)
+			}
 		} else {
 			agingReportDataList = append(agingReportDataList, agngRpData)
 		}
@@ -61,6 +76,10 @@ func ExecAgingReportInitialCalculation() error {
 }
 
 func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[string]interface{}, err error) {
+
+	log.EnterFn(0, "CalculateAgngRp")
+	defer func() { log.ExitFn(0, "CalculateAgngRp", err) }()
+
 	outData = make(map[string]interface{})
 
 	outData["unique_id"] = agngRpData.Unique_ID
@@ -120,6 +139,10 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 }
 
 func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
+
+	log.EnterFn(0, "calculateDaysPendingPermit")
+	defer func() { log.ExitFn(0, "calculateDaysPendingPermit", nil) }()
+
 	var daysPendingPermit int
 	today := time.Now()
 
@@ -135,6 +158,10 @@ func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, proje
 }
 
 func calculateDaysPendingInstall(installComplete string, permitApprovedDate string, projectStatus string) int {
+
+	log.EnterFn(0, "calculateDaysPendingInstall")
+	defer func() { log.ExitFn(0, "calculateDaysPendingInstall", nil) }()
+
 	var daysPendingInstall int
 	today := time.Now()
 
@@ -165,6 +192,10 @@ func calculateDaysPendingInstall(installComplete string, permitApprovedDate stri
 }
 
 func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, projectStatus string) int {
+
+	log.EnterFn(0, "calculateDaysPendingPTO")
+	defer func() { log.ExitFn(0, "calculateDaysPendingPTO", nil) }()
+
 	var daysPendingPto int
 	today := time.Now()
 
@@ -180,6 +211,10 @@ func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, proje
 }
 
 func calculateProjectAge(uniqueId string, contractDate string) int {
+
+	log.EnterFn(0, "calculateProjectAge")
+	defer func() { log.ExitFn(0, "calculateProjectAge", nil) }()
+
 	var projectAge int
 	today := time.Now()
 
@@ -203,6 +238,10 @@ func parseTime(dateStr string) *time.Time {
 }
 
 func ClearAgingRp() error {
+
+	log.EnterFn(0, "ClearAgingRp")
+	defer func() { log.ExitFn(0, "ClearAgingRp", nil) }()
+
 	query := `TRUNCATE TABLE aging_report`
 	err := db.ExecQueryDB(db.OweHubDbIndex, query)
 	if err != nil {
@@ -219,4 +258,73 @@ func absDuration(hours float64) float64 {
 		return -hours
 	}
 	return hours
+}
+
+func DeleteFromAgRp(uniqueIDs []string) error {
+
+	log.EnterFn(0, "DeleteFromAgRp")
+	defer func() { log.ExitFn(0, "DeleteFromAgRp", nil) }()
+	// Ensure there are IDs to delete
+	if len(uniqueIDs) == 0 {
+		log.FuncErrorTrace(0, "No unique IDs provided for deletion in DeleteFromAgRp.")
+		return nil
+	}
+
+	quotedIDs := make([]string, len(uniqueIDs))
+	for i, id := range uniqueIDs {
+		quotedIDs[i] = fmt.Sprintf("'%s'", id)
+	}
+
+	// Join the quoted IDs with commas
+	query := fmt.Sprintf("DELETE FROM aging_report WHERE unique_id IN (%s);", strings.Join(quotedIDs, ", "))
+
+	// Execute the delete query
+	err := db.ExecQueryDB(db.OweHubDbIndex, query)
+	if err != nil {
+		return fmt.Errorf("failed to delete rows from aging_report: %w", err)
+	}
+
+	log.FuncErrorTrace(0, "Deleted %d rows from aging_report table  .\n", len(uniqueIDs))
+	return nil
+}
+
+func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn string, idValue interface{}) (string, error) {
+	log.EnterFn(0, "buildUpdateQuery")
+	defer func() { log.ExitFn(0, "buildUpdateQuery", nil) }()
+
+	sets := []string{}
+
+	for col, val := range row {
+		if col != idColumn {
+			var valStr string
+			switch v := val.(type) {
+			case string:
+				// Escape single quotes in string values
+				valStr = strings.ReplaceAll(v, "'", "''")
+				valStr = fmt.Sprintf("'%s'", valStr) // Enclose string values in quotes
+
+			case time.Time:
+				// Format time.Time values and enclose in quotes
+				valStr = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+
+			default:
+				valStr = fmt.Sprintf("%v", v) // Keep numeric and other types as they are
+			}
+			sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
+		}
+	}
+
+	// Escape the idValue to prevent SQL injection
+	var idValueStr string
+	switch v := idValue.(type) {
+	case string:
+		idValueStr = strings.ReplaceAll(v, "'", "''")
+		idValueStr = fmt.Sprintf("'%s'", idValueStr) // Enclose string ID values in quotes
+	default:
+		idValueStr = fmt.Sprintf("%v", idValue) // Keep numeric and other types as they are
+	}
+
+	// Build the query
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s = %s", tableName, strings.Join(sets, ", "), idColumn, idValueStr)
+	return query, nil
 }

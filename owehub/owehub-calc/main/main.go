@@ -44,12 +44,19 @@ func main() {
 		}
 	}
 
-	err = services.ExecDlrPayInitialCalculation()
+	// err = services.ExecDlrPayInitialCalculation()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
+	// 	return
+	// }
+
+	err = services.ClearAgingRp()
 	if err != nil {
-		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
+		log.FuncInfoTrace(0, "error while calling ClearAgingRp func: %v", err)
 		return
 	}
-	err = services.ExecAgingReportInitialCalculation()
+
+	err = services.ExecAgingReportInitialCalculation("", "")
 	if err != nil {
 		log.FuncErrorTrace(0, "error while loading ExecAgingReportInitialCalculation function")
 		return
