@@ -119,6 +119,7 @@ export const DashboardPage: React.FC = () => {
         const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
+          paginate:true,
           partner_name: partnerNames, // Send all values
           search_input: searchQuery,
           filters,
@@ -274,7 +275,7 @@ export const DashboardPage: React.FC = () => {
     setIsExporting(true);
     const exportData = await configPostCaller('get_dealerpaycommissions', {
       page_number: 1,
-      page_size: count,
+      paginate:false
     });
     if (exportData.status > 201) {
       toast.error(exportData.message);
