@@ -134,7 +134,6 @@ const SelectOption: React.FC<Props> = ({
             ...baseStyles,
             fontSize: '12px',
             cursor: 'pointer',
-            margin: "2px",
             background: state.isSelected ? '#377CF6' : '#fff',
             color: labelColor || baseStyles.color,
             '&:hover': {
