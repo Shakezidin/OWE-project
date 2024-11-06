@@ -18,9 +18,10 @@ interface DataType {
 interface TotalCardProps {
   data: any;
   isLoading: boolean;
+  selectOption:any;
 }
 
-const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
+const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) => {
   const data1: DataType[] = [
     {
       name: 'Total Sales',
@@ -56,6 +57,20 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
       arrow: data?.install_increase_percent < 0 ? <IoArrowDown /> : <IoArrowUp />,
     },
   ];
+
+  const timePeriodText = () => {
+    switch (selectOption?.value) {
+      case 'day':
+        return 'From the last day';
+      case 'week':
+        return 'From the last week';
+      case 'month':
+        return 'From the last month';
+      default:
+        return 'From the last period';
+    }
+  };
+
   console.log(data, 'data');
   return (
     <div className="totalcard">
@@ -107,7 +122,7 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
                       marginLeft: '20px',
                     }}
                   >
-                    From the last month
+                         {timePeriodText()}
                   </p>
                 </div>
               </div>

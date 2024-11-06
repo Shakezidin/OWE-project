@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './totalcount.css';
 import TotalCard from './totalCard';
-import Papa from "papaparse"
+import Papa from 'papaparse';
 import SelectOption from '../components/selectOption/SelectOption';
 import {
   ResponsiveContainer,
@@ -158,26 +158,51 @@ const TotalCount: React.FC = () => {
 
   const exportCsv = async () => {
     try {
-      const selectedDate = selectedReportOption.value.split(" - ")
-      const start_date = selectedDate[0]
-      const end_date = selectedDate[1]
-      const headers = ["Unique ID", "Customer Name", "Install Date", "NTP Date", "Sale Date"]
-      setIsExporting(true)
-      console.log(selectedDate, "optionsss slected")
-      const data = await postCaller("get_milestone_data_csv_download", { dealer_names: selectedDealer.map(dealer => dealer.value), start_date, end_date });
+      const selectedDate = selectedReportOption.value.split(' - ');
+      const start_date = selectedDate[0];
+      const end_date = selectedDate[1];
+      const headers = [
+        'Unique ID',
+        'Customer Name',
+        'Install Date',
+        'NTP Date',
+        'Sale Date',
+      ];
+      setIsExporting(true);
+      console.log(selectedDate, 'optionsss slected');
+      const data = await postCaller('get_milestone_data_csv_download', {
+        dealer_names: selectedDealer.map((dealer) => dealer.value),
+        start_date,
+        end_date,
+      });
       if (data.status > 200) {
         toast.error(data.message);
-        setIsExporting(false)
+        setIsExporting(false);
         return;
       }
-      setIsExporting(false)
-      const csvData  = Object.entries(data?.data as Record<string, { install_date?: string; ntp_date?: string; sale_date?: string; customer_name: string }>)
-        .map(([key, value]) => {
-          const installDate = value.install_date ? format(new Date(value.install_date), "dd-MM-yyyy") : '';
-          const ntpDate = value.ntp_date ? format(new Date(value.ntp_date), "dd-MM-yyyy") : '';
-          const saleDate = value.sale_date ? format(new Date(value.sale_date), "dd-MM-yyyy") : '';
-          return [key, value.customer_name, installDate, ntpDate, saleDate];
-        })
+      setIsExporting(false);
+      const csvData = Object.entries(
+        data?.data as Record<
+          string,
+          {
+            install_date?: string;
+            ntp_date?: string;
+            sale_date?: string;
+            customer_name: string;
+          }
+        >
+      ).map(([key, value]) => {
+        const installDate = value.install_date
+          ? format(new Date(value.install_date), 'dd-MM-yyyy')
+          : '';
+        const ntpDate = value.ntp_date
+          ? format(new Date(value.ntp_date), 'dd-MM-yyyy')
+          : '';
+        const saleDate = value.sale_date
+          ? format(new Date(value.sale_date), 'dd-MM-yyyy')
+          : '';
+        return [key, value.customer_name, installDate, ntpDate, saleDate];
+      });
       const csvRows = [headers, ...csvData];
       const csvString = Papa.unparse(csvRows);
       const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -191,7 +216,7 @@ const TotalCount: React.FC = () => {
     } catch (error) {
       toast.error((error as Error).message as string);
     }
-  }
+  };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     if (res.status > 200) {
@@ -221,29 +246,50 @@ const TotalCount: React.FC = () => {
     if (newValue) {
       setSelectedOption(newValue);
       const newMappedOptions = periodFilterOptions
-      .filter((period) => {
-        const label = period.label ?? '';
-        if (newValue.value === 'day') {
-          return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(label);
-        }
-        if (newValue.value === 'week') {
-          return ['Current Week', 'Current Month', 'Last Month', 'This Quarter', 'Last Quarter'].includes(label);
-        }
-        if (newValue.value === 'month') {
-          return ['This Month', 'This Quarter', 'Last Quarter', 'This Year', 'Last Year'].includes(label);
-        }
-        if (newValue.value === 'year') {
-          return ['This Year', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'].includes(label);
-        }
-        return false;
-      })
-      .map((period) => ({
-        label: period.label ?? 'Unknown',
-        value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
-      }));
+        .filter((period) => {
+          const label = period.label ?? '';
+          if (newValue.value === 'day') {
+            return [
+              'This Week',
+              'Last Week',
+              'This Month',
+              'Last Month',
+            ].includes(label);
+          }
+          if (newValue.value === 'week') {
+            return [
+              'Current Week',
+              'Current Month',
+              'Last Month',
+              'This Quarter',
+              'Last Quarter',
+            ].includes(label);
+          }
+          if (newValue.value === 'month') {
+            return [
+              'This Month',
+              'This Quarter',
+              'Last Quarter',
+              'This Year',
+              'Last Year',
+            ].includes(label);
+          }
+          if (newValue.value === 'year') {
+            return [
+              'This Year',
+              'Last 3 Years',
+              'Last 5 Years',
+              'Last 10 Years',
+            ].includes(label);
+          }
+          return false;
+        })
+        .map((period) => ({
+          label: period.label ?? 'Unknown',
+          value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
+        }));
 
-    setSelectedReportOption(newMappedOptions[1] || newMappedOptions[0]);
-    
+      setSelectedReportOption(newMappedOptions[0] || newMappedOptions[0]);
     } else {
       console.log('Report option was cleared or set to null');
     }
@@ -408,29 +454,41 @@ const TotalCount: React.FC = () => {
   );
 
   const defaultPeriodOptions = periodFilterOptions.filter((period) =>
-    ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(period.label ?? '')
+    ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(
+      period.label ?? ''
+    )
   );
 
   const [selectedReportOption, setSelectedReportOption] = useState<Option>({
-    label: defaultPeriodOptions[1]?.label || 'Last Week', // 'Last Week' as default
-    value: `${format(defaultPeriodOptions[1]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[1]?.end, 'dd-MM-yyyy')}`,
+    label: defaultPeriodOptions[0]?.label || 'This Week', // 'Last Week' as default
+    value: `${format(defaultPeriodOptions[0]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[0]?.end, 'dd-MM-yyyy')}`,
   });
 
-
-
-
   useEffect(() => {
-
     // Clear previous graph data to reset the state for fresh data
     setGraphs([
-      { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
+      {
+        title: 'Sales',
+        stopColor: '#0096D3',
+        borderColor: '#0096D3',
+        data: [],
+      },
       { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
-      { title: 'Installs', stopColor: '#377CF6', borderColor: '#377CF6', data: [] },
+      {
+        title: 'Installs',
+        stopColor: '#377CF6',
+        borderColor: '#377CF6',
+        data: [],
+      },
     ]);
 
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
 
-    if (selectedDealer.length && selectedReportOption?.value && selectedOption.value) {
+    if (
+      selectedDealer.length &&
+      selectedReportOption?.value &&
+      selectedOption.value
+    ) {
       (async () => {
         try {
           setIsLoading(true);
@@ -511,9 +569,25 @@ const TotalCount: React.FC = () => {
     selectedDealer,
   ]);
 
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Update `isMobile` when the window is resized
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const stylesGraph = {
+    width: isMobile ? 'auto' : '100%',
+    height: '236px',
+    
+  };
+
   console.log(mappedPeriodOptions, 'optionssss');
   console.log(selectedReportOption, 'dateeeee');
-  console.log(selectedOption, "day month")
+  console.log(selectedOption, 'day month');
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
@@ -590,7 +664,7 @@ const TotalCount: React.FC = () => {
 
           <div className="order-mob-3">
             <DropdownCheckBox
-              label={selectedDealer.length === 1 ? 'partner' : 'partners'}
+              label={selectedDealer.length === 1 ? 'Partner' : 'Partners'}
               placeholder={'Search partners'}
               selectedOptions={selectedDealer}
               options={dealerOption}
@@ -617,7 +691,7 @@ const TotalCount: React.FC = () => {
         </div>
       </div>
       <div>
-        <TotalCard data={data} isLoading={isLoading} />
+        <TotalCard data={data} isLoading={isLoading} selectOption={selectedOption} />
       </div>
       <div className="report-graphs">
         {graphs.map((graph, index) => (
@@ -632,12 +706,8 @@ const TotalCount: React.FC = () => {
                 {' '}
                 <MicroLoader />{' '}
               </div>
-            ) : graph.data.length === 0 ? (
-              <div>
-                <DataNotFound />
-              </div>
             ) : (
-              <div style={{ width: '100%', height: '236px' }}>
+              <div  className='main-graph' style ={stylesGraph} >
                 <ResponsiveContainer
                   width="100%"
                   height="100%"
