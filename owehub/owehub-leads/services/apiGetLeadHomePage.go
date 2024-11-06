@@ -142,7 +142,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
 			whereClause += `
-				OR (
+				AND (
 					li.proposal_created_date IS NOT NULL
 					AND li.appointment_declined_date IS NULL
 					AND NOT (
