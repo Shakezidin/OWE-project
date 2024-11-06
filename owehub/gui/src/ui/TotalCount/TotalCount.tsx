@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './totalcount.css';
 import TotalCard from './totalCard';
-import Select from 'react-select';
+import Papa from "papaparse"
 import SelectOption from '../components/selectOption/SelectOption';
 import {
   ResponsiveContainer,
@@ -156,6 +156,42 @@ const TotalCount: React.FC = () => {
     tableNames: ['available_states', 'dealer_name'],
   };
 
+  const exportCsv = async () => {
+    try {
+      const selectedDate = selectedReportOption.value.split(" - ")
+      const start_date = selectedDate[0]
+      const end_date = selectedDate[1]
+      const headers = ["Unique ID", "Customer Name", "Install Date", "NTP Date", "Sale Date"]
+      setIsExporting(true)
+      console.log(selectedDate, "optionsss slected")
+      const data = await postCaller("get_milestone_data_csv_download", { dealer_names: selectedDealer.map(dealer => dealer.value), start_date, end_date });
+      if (data.status > 200) {
+        toast.error(data.message);
+        setIsExporting(false)
+        return;
+      }
+      setIsExporting(false)
+      const csvData  = Object.entries(data?.data as Record<string, { install_date?: string; ntp_date?: string; sale_date?: string; customer_name: string }>)
+        .map(([key, value]) => {
+          const installDate = value.install_date ? format(new Date(value.install_date), "dd-MM-yyyy") : '';
+          const ntpDate = value.ntp_date ? format(new Date(value.ntp_date), "dd-MM-yyyy") : '';
+          const saleDate = value.sale_date ? format(new Date(value.sale_date), "dd-MM-yyyy") : '';
+          return [key, value.customer_name, installDate, ntpDate, saleDate];
+        })
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'reports.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      toast.error((error as Error).message as string);
+    }
+  }
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     if (res.status > 200) {
@@ -231,7 +267,7 @@ const TotalCount: React.FC = () => {
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const periodFilterOptions: DateRangeWithLabel[] = [
-    { 
+    {
       label: 'This Week',
       start: startOfWeek(today, { weekStartsOn: 1 }),
       end: today,
@@ -347,54 +383,54 @@ const TotalCount: React.FC = () => {
   const initialReportOption = periodFilterOptions.find(
     (option) => option.label === 'Last Week'
   );
- 
-  const defaultPeriodOptions = periodFilterOptions.filter((period) => 
+
+  const defaultPeriodOptions = periodFilterOptions.filter((period) =>
     ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(period.label ?? '')
   );
-  
-const [selectedReportOption, setSelectedReportOption] = useState<Option>({
-  label: defaultPeriodOptions[1]?.label || 'Last Week', // 'Last Week' as default
-  value: `${format(defaultPeriodOptions[1]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[1]?.end, 'dd-MM-yyyy')}`,
-});
 
-useEffect(() => {
-  // Dynamically update period options when selectedOption changes
-  const newMappedOptions = periodFilterOptions
-    .filter((period) => {
-      const label = period.label ?? '';
+  const [selectedReportOption, setSelectedReportOption] = useState<Option>({
+    label: defaultPeriodOptions[1]?.label || 'Last Week', // 'Last Week' as default
+    value: `${format(defaultPeriodOptions[1]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[1]?.end, 'dd-MM-yyyy')}`,
+  });
 
-      if (selectedOption.value === 'day') {
-        return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(label);
-      }
-      if (selectedOption.value === 'week') {
-        return ['Current Week', 'Current Month', 'Last Month', 'This Quarter', 'Last Quarter'].includes(label);
-      }
-      if (selectedOption.value === 'month') {
-        return ['This Month', 'This Quarter', 'Last Quarter', 'This Year', 'Last Year'].includes(label);
-      }
-      if (selectedOption.value === 'year') {
-        return ['This Year', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'].includes(label);
-      }
-      return false;
-    })
-    .map((period) => ({
-      label: period.label ?? 'Unknown',
-      value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
-    }));
+  useEffect(() => {
+    // Dynamically update period options when selectedOption changes
+    const newMappedOptions = periodFilterOptions
+      .filter((period) => {
+        const label = period.label ?? '';
 
-  setSelectedReportOption(newMappedOptions[1] || newMappedOptions[0]);
-}, [selectedOption]);
+        if (selectedOption.value === 'day') {
+          return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(label);
+        }
+        if (selectedOption.value === 'week') {
+          return ['Current Week', 'Current Month', 'Last Month', 'This Quarter', 'Last Quarter'].includes(label);
+        }
+        if (selectedOption.value === 'month') {
+          return ['This Month', 'This Quarter', 'Last Quarter', 'This Year', 'Last Year'].includes(label);
+        }
+        if (selectedOption.value === 'year') {
+          return ['This Year', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'].includes(label);
+        }
+        return false;
+      })
+      .map((period) => ({
+        label: period.label ?? 'Unknown',
+        value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
+      }));
+
+    setSelectedReportOption(newMappedOptions[1] || newMappedOptions[0]);
+  }, [selectedOption]);
 
 
   useEffect(() => {
 
-      // Clear previous graph data to reset the state for fresh data
-  setGraphs([
-    { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
-    { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
-    { title: 'Installs', stopColor: '#377CF6', borderColor: '#377CF6', data: [] },
-  ]);
-  
+    // Clear previous graph data to reset the state for fresh data
+    setGraphs([
+      { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
+      { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+      { title: 'Installs', stopColor: '#377CF6', borderColor: '#377CF6', data: [] },
+    ]);
+
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
 
     if (selectedDealer.length && selectedReportOption?.value && selectedOption.value) {
@@ -570,6 +606,8 @@ useEffect(() => {
           <div className="perf-export-btn order-mob-1 relative pipline-export-btn ">
             <button
               data-tooltip-id="export"
+              onClick={exportCsv}
+              disabled={isExportingData}
               className={`performance-exportbtn flex items-center justify-center totalcount-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
             >
               {isExportingData ? (
