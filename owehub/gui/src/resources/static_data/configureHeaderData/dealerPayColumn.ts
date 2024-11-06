@@ -36,7 +36,7 @@ export default [
     isCheckbox: false,
   },
   {
-    name: 'OtherAdders',
+    name: 'other_adders',
     displayName: 'Other Adders',
     type: 'string',
     isCheckbox: false,
