@@ -190,7 +190,7 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
                         style={{ marginRight: '15px' }}
                       />
                     </div>
-                   {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div style={{cursor:"pointer"}} onClick={()=>handlePasswordReset()}>
+                   {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div style={{cursor:"pointer"}} onClick={()=>handlePasswordReset(el.email_id)}>
                       <MdOutlineLockReset color='#667085' size={24} />
                     </div>}
                   </div>

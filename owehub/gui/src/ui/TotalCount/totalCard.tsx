@@ -11,7 +11,7 @@ interface DataType {
   key: string;
   color: string;
   bgColor: string;
-  percent: string;
+  percent: any;
   arrow: JSX.Element;
 }
 
@@ -30,8 +30,8 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
       key: 'total_sales',
       color: '#0096D3',
       bgColor: '#E3F3FC',
-      percent: data?.sale_increase_percent || 0,
-      arrow: <IoArrowUp />,
+      percent: parseFloat((data?.sale_increase_percent || 0).toFixed(2)),
+      arrow: data?.sale_increase_percent < 0 ? <IoArrowDown /> : <IoArrowUp />,
     },
     {
       name: 'Total NTP',
@@ -41,8 +41,8 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
       key: 'total_ntp',
       color: '#7AA420',
       bgColor: '#EBF4DA',
-      percent: data?.ntp_increase_percent || 0,
-      arrow: <IoArrowUp />,
+      percent: parseFloat((data?.ntp_increase_percent || 0).toFixed(2)),
+      arrow: data?.ntp_increase_percent < 0 ? <IoArrowDown /> : <IoArrowUp />,
     },
     {
       name: 'Total Installs',
@@ -52,8 +52,8 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading }) => {
       key: 'total_installs',
       color: '#2DC278',
       bgColor: '#EAFFF5',
-      percent: data?.install_increase_percent || 0,
-      arrow: <IoArrowUp />,
+      percent: parseFloat((data?.install_increase_percent || 0).toFixed(2)),
+      arrow: data?.install_increase_percent < 0 ? <IoArrowDown /> : <IoArrowUp />,
     },
   ];
   console.log(data, 'data');

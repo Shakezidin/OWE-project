@@ -445,6 +445,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/reset_user_passwords",
+		apiHandler.HandleResetPasswordRequest,
+		true,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
