@@ -387,7 +387,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         true
       );
       if (response.status === 200) {
-        toast.success('Status Updated Successfully');
+        toast.success('Status Updated Successfully\nLead Moved In Progress');
         setRefresh((prev) => prev + 1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
