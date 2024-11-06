@@ -7,18 +7,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #377cf6;
+    background-color: var(--primary-color);
     border: none;
     border-radius: 8px;
     /* padding: 8.5px; */
     color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 30px;
-    height: 30px;  }
+    width: 36px;
+    height: 36px;  }
 
     .sortIcon:hover {
-        background-color: #005eff;
+        background-color: var(--button-hover-color);
+        transform: scale(1.07);
         /* transform: scale(1.04); */
       }
   
@@ -61,16 +62,17 @@
   }
 
   .sortOption {
-    padding: 6px;
+    padding: 10px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin:0px 5px;
+    margin: 0px 5px;
     height: 100%;
+    line-height: 21px;
   }
 
   .sortOption:hover {
@@ -79,9 +81,9 @@
   }
 
   .sortIcon.active {
-    background-color: #005eff;
+    background-color: var(--button-hover-color);
   }
 
   .sortOption.selected { /* New style for selected options */
-    background-color: #377cf6;
+    background-color:var(--primary-color);
     color: #fff;}

@@ -23,6 +23,8 @@
     font-family: 'poppins' sans-serif;
     font-weight: 600;
     font-size: 16px;
+    color: var(--page-heading-color);
+    align-content: center;
 
 }
 
@@ -264,12 +266,13 @@
     font-size: 12px;
     line-height: 15px;
     cursor: pointer;
-    background-color: #e33737;
+    background-color: var(--delete-btn-color);
     color: #fff;
 }
 
 .button_cancel:hover{
-    background-color: #c82b2b;
+    background-color: var(--delete-btn-hover);
+    transform: scale(1.07);
 }
 
 .button_edit{
@@ -287,6 +290,8 @@
 
 .button_edit:hover{
     background-color: #DDE9FF;
+    transform: scale(1.07);
+
 }
 
 @media (max-width: 1210px) {
