@@ -25,7 +25,7 @@
 }
 
 .card-heading{
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 28px
 }
@@ -84,7 +84,7 @@
 .graph-title{
     padding-top: 42px;
     padding-bottom: 39px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     padding-left: 20px;
 }
@@ -93,9 +93,9 @@
  
 
 .totalcount-export{
-    width: 30px;
-    height: 30px;
-    margin-top: 1px;
+    width: 36px;
+    height: 36px;
+    margin-top: -1px;
     overflow: hidden
 }
 

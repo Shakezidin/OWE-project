@@ -489,13 +489,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     value={selectedOption}
                     menuStyles={{ width: 'fit-content', left: -30}}
                     controlStyles={{
-                      boxShadow: 'none',
                       border: 'none',
                       margin: '0',
                       width: 'fit-content',
                       marginTop: '1px',
                     }}
-                    dropdownIndicatorStyles={{ color: '#292929', padding: 0 }}
+                    dropdownIndicatorStyles={{ color: '#292929', padding: 0}}
                     singleValueStyles={{
                       marginBlock: 0,
                       padding: 0,
@@ -512,7 +511,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     }}
                     menuWidth="fit-content"
                     menuListStyles={{
-                      width: 'fit-content'
+                      width: 'fit-content',
                     }}
                   />
                 </div>

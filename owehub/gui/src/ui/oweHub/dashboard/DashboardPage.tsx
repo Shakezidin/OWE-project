@@ -366,7 +366,7 @@ export const DashboardPage: React.FC = () => {
               />
               <div ref={datePickerRef} style={{ position: 'relative' }}>
                 <label
-                  className={`date-button flex items-center ${showDatePicker ? 'open-calendar' : ''}`}
+                  className={`date-button flex items-center ${showDatePicker ? 'active' : ''}`}
                   onClick={handleToggleDatePicker}
                   style={{
                     color: '#292B2E',
@@ -375,11 +375,16 @@ export const DashboardPage: React.FC = () => {
                     gap: '1rem',
                   }}
                 >
-                  <span className='dealer-date-text' style={{transition: "all 100ms ease"}}>{appliedDate
-                    ? format(appliedDate, 'dd-MM-yyyy')
-                    : 'Payroll Date'}</span>
+                  <span
+                    className="dealer-date-text"
+                    style={{ transition: 'all 100ms ease' }}
+                  >
+                    {appliedDate
+                      ? format(appliedDate, 'dd-MM-yyyy')
+                      : 'Payroll Date'}
+                  </span>
                   <MdOutlineKeyboardArrowDown
-                  className='dealer-date-svg'
+                    className="dealer-date-svg"
                     style={{
                       width: '1.2rem',
                       height: '1.2rem',
@@ -390,6 +395,7 @@ export const DashboardPage: React.FC = () => {
                     }}
                   />
                 </label>
+
                 {showDatePicker && (
                   <div
                     className="calender-container dealer-calendar"
@@ -437,8 +443,9 @@ export const DashboardPage: React.FC = () => {
                   }}
                 />
                 <div
-                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-line ${
+                    active === 0 ? 'active-filter-line' : ''
+                  }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -448,8 +455,9 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-disable ${
+                    active === 1 ? 'active-filter-line' : ''
+                  }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (
@@ -489,18 +497,17 @@ export const DashboardPage: React.FC = () => {
                   onClick={handleExportOpen}
                 >
                   {isExportingData ? (
-                    <div className='dealer-export'>
+                    <div className="dealer-export">
                       <MdDownloading
                         className="downloading-animation dealer-mob-download"
                         size={20}
                       />
-                      <span className='dealer-export-mob'>Export</span>
+                      <span className="dealer-export-mob">Export</span>
                     </div>
                   ) : (
-                    <div className='dealer-export'
-                    >
+                    <div className="dealer-export">
                       <FaUpload size={12} className="dealer-mob-upload" />
-                      <span className='dealer-export-mob'>Export</span>
+                      <span className="dealer-export-mob">Export</span>
                     </div>
                   )}
                 </button>

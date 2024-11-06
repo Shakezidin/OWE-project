@@ -537,6 +537,10 @@ input[type='password']::-ms-clear {
   border-radius: 0.5rem;
 }
 
+.create-input-field-note textarea:hover, .create-input-field-note textarea:focus{
+  border-color: var(--primary-color);
+}
+
 .check-box {
   width: 20px !important;
   height: 20px !important;
