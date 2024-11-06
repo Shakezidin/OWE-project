@@ -4,8 +4,8 @@
   /* padding: 24px; */
   background-color: #f3f4f6;
   min-height: 100vh;
+  font-family: 'Poppins', sans-serif ;
 }
-
 .title {
   font-size: 24px;
   font-weight: bold;
