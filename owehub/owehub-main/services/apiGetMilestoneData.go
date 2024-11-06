@@ -32,7 +32,6 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 		dataReq              models.GetMilestoneDataReq
 		data                 []map[string]interface{}
 		whereEleList         []interface{}
-		filter               string
 		RecordCount          int64
 		query                string
 		totalSaleCount       int
@@ -69,23 +68,6 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	milestoneData := models.GetMilestoneDataResp{}
-
-	query = `select cs.sale_date, ns.ntp_complete_date, pis.pv_completion_date
-			FROM customers_customers_schema cs 
-			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id`
-
-	filter, whereEleList = PrepareMilestoneDataFilters(dataReq)
-	if filter != "" {
-		query += filter
-	}
-
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
-		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
-		return
-	}
 
 	var saleCountMap = make(map[string]int)
 	var ntpCountMap = make(map[string]int)
@@ -131,6 +113,45 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 		currentDate = endDate.Format("2006")                // Current year (YYYY)
 		prevDate = endDate.AddDate(-1, 0, 0).Format("2006") // Previous year (YYYY)
 	}
+
+	csFilter, whereEleList := PrepareMilestoneDataFilters(dataReq, "customer")
+
+	query = fmt.Sprintf(`SELECT sale_date FROM customers_customers_schema %s`, csFilter)
+
+	val1, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		return
+	}
+
+	data = append(data, val1...)
+
+	csFilter, whereEleList = PrepareMilestoneDataFilters(dataReq, "ntp")
+
+	query = fmt.Sprintf(`SELECT ntp_complete_date FROM ntp_ntp_schema %s`, csFilter)
+
+	val2, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		return
+	}
+
+	data = append(data, val2...)
+
+	csFilter, whereEleList = PrepareMilestoneDataFilters(dataReq, "pv_install_install_subcontracting_schema")
+
+	query = fmt.Sprintf(`SELECT pv_completion_date FROM pv_install_install_subcontracting_schema %s`, csFilter)
+
+	val3, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		return
+	}
+
+	data = append(data, val3...)
 
 	// Loop through each item in data to calculate counts for sales, NTPs, and installations
 	for _, item := range data {
@@ -224,73 +245,73 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
  * RETURNS:    		void
  ******************************************************************************/
 
-func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareMilestoneDataFilters")
-	defer func() { log.ExitFn(0, "PrepareMilestoneDataFilters", nil) }()
+// func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters string, whereEleList []interface{}) {
+// 	log.EnterFn(0, "PrepareMilestoneDataFilters")
+// 	defer func() { log.ExitFn(0, "PrepareMilestoneDataFilters", nil) }()
 
-	var filtersBuilder strings.Builder
-	var whereAdded bool
+// 	var filtersBuilder strings.Builder
+// 	var whereAdded bool
 
-	if dataReq.StartDate != "" && dataReq.EndDate != "" {
-		startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
-		endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
+// 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+// 		startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
+// 		endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
 
-		endDate = endDate.Add(24*time.Hour - time.Second)
+// 		endDate = endDate.Add(24*time.Hour - time.Second)
 
-		whereEleList = append(whereEleList,
-			startDate.Format("02-01-2006 00:00:00"),
-			endDate.Format("02-01-2006 15:04:05"),
-		)
+// 		whereEleList = append(whereEleList,
+// 			startDate.Format("02-01-2006 00:00:00"),
+// 			endDate.Format("02-01-2006 15:04:05"),
+// 		)
 
-		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
-		whereAdded = true
-	}
+// 		filtersBuilder.WriteString(" WHERE")
+// 		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+// 		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+// 		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
+// 		whereAdded = true
+// 	}
 
-	if len(dataReq.DealerNames) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
+// 	if len(dataReq.DealerNames) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
 
-		// Escape single quotes and format dealer names
-		var dealerNames []string
-		for _, dealer := range dataReq.DealerNames {
-			escapedDealer := strings.ReplaceAll(dealer, "'", "''")
-			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", escapedDealer))
-		}
+// 		// Escape single quotes and format dealer names
+// 		var dealerNames []string
+// 		for _, dealer := range dataReq.DealerNames {
+// 			escapedDealer := strings.ReplaceAll(dealer, "'", "''")
+// 			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", escapedDealer))
+// 		}
 
-		// Join the dealer names for SQL IN clause
-		filtersBuilder.WriteString(fmt.Sprintf("cs.dealer IN (%s)", strings.Join(dealerNames, ", ")))
-		whereAdded = true
-	}
+// 		// Join the dealer names for SQL IN clause
+// 		filtersBuilder.WriteString(fmt.Sprintf("cs.dealer IN (%s)", strings.Join(dealerNames, ", ")))
+// 		whereAdded = true
+// 	}
 
-	if len(dataReq.State) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
+// 	if len(dataReq.State) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
 
-		filtersBuilder.WriteString(fmt.Sprintf("cs.state ILIKE '%%%s%%'", dataReq.State))
-	}
+// 		filtersBuilder.WriteString(fmt.Sprintf("cs.state ILIKE '%%%s%%'", dataReq.State))
+// 	}
 
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
-	}
-	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
+// 	if whereAdded {
+// 		filtersBuilder.WriteString(" AND ")
+// 	} else {
+// 		filtersBuilder.WriteString(" WHERE ")
+// 		whereAdded = true
+// 	}
+// 	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
 
-	filters = filtersBuilder.String()
-	return filters, whereEleList
-}
+// 	filters = filtersBuilder.String()
+// 	return filters, whereEleList
+// }
 
 func calculatePercentageIncrease(currentMonthSales, lastMonthSales int) float64 {
 	if lastMonthSales == 0 {
@@ -313,4 +334,74 @@ func sumMapValues(m map[string]int) int {
 func daysInMonth(date time.Time) int {
 	nextMonth := date.AddDate(0, 1, 0)                     // Move to next month
 	return nextMonth.AddDate(0, 0, -nextMonth.Day()).Day() // Go to the last day of the previous month
+}
+
+func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq, table string) (csFilters string, whereEleList []interface{}) {
+	var csBuilder strings.Builder
+	var whereAdded bool
+
+	// Apply date range filters for each table
+	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+		startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
+		endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
+		endDate = endDate.Add(24*time.Hour - time.Second)
+
+		whereEleList = append(whereEleList,
+			startDate.Format("02-01-2006 00:00:00"),
+			endDate.Format("02-01-2006 15:04:05"),
+		)
+
+		// Select appropriate column based on the table
+		dateColumn := ""
+		switch table {
+		case "customer":
+			dateColumn = "sale_date"
+		case "ntp":
+			dateColumn = "ntp_complete_date"
+		default:
+			dateColumn = "pv_completion_date"
+		}
+
+		csBuilder.WriteString(fmt.Sprintf(" WHERE %s BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", dateColumn, len(whereEleList)-1, len(whereEleList)))
+		whereAdded = true
+	}
+
+	// State filter
+	if len(dataReq.State) > 0 {
+		if whereAdded {
+			csBuilder.WriteString(" AND ")
+		} else {
+			csBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		csBuilder.WriteString(fmt.Sprintf("state ILIKE '%%%s%%'", dataReq.State))
+	}
+
+	// Dealer filter
+	if len(dataReq.DealerNames) > 0 {
+		if whereAdded {
+			csBuilder.WriteString(" AND ")
+		} else {
+			csBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		// Escape single quotes in dealer names
+		var dealerNames []string
+		for _, dealer := range dataReq.DealerNames {
+			escapedDealer := strings.ReplaceAll(dealer, "'", "''")
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", escapedDealer))
+		}
+
+		csBuilder.WriteString(fmt.Sprintf("dealer IN (%s)", strings.Join(dealerNames, ", ")))
+	}
+
+	// Additional static filters based on table
+	if table == "customer" || table == "ntp" {
+		csBuilder.WriteString(" AND project_status != 'DUPLICATE' AND unique_id != ''")
+	} else {
+		csBuilder.WriteString(" AND project_status != 'DUPLICATE' AND customer_unique_id != ''")
+	}
+
+	return csBuilder.String(), whereEleList
 }
