@@ -355,7 +355,7 @@ const LeadManagementDashboard = () => {
       periodFilterOptions.find((option) => option.label === 'This Week') || null
     );
   const [selectedRanges, setSelectedRanges] = useState([
-    { startDate: new Date(), endDate: new Date(), key: 'selection' },
+    { startDate: startOfThisWeek, endDate: today, key: 'selection' },
   ]);
 
   const [selectedDates, setSelectedDates] = useState<{
