@@ -20,7 +20,7 @@ import (
 func callApi(method string, apiPath string, reqBody interface{}, respBody interface{}) error {
 	var (
 		err         error
-		reqBodyBuff *bytes.Buffer
+		reqBodyBuff bytes.Buffer
 		req         *http.Request
 	)
 
@@ -29,28 +29,27 @@ func callApi(method string, apiPath string, reqBody interface{}, respBody interf
 
 	// encode request body into buffer
 
-	if reqBody != nil {
-		err = json.NewEncoder(reqBodyBuff).Encode(reqBody)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
-			return err
-		}
-	}
-
-	err = json.NewEncoder(reqBodyBuff).Encode(reqBody)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
-		return err
-	}
-
 	// get api url & create the request
 	apiUrl := leadsService.LeadAppCfg.AuroraApiBaseUrl +
 		strings.ReplaceAll(apiPath, "{tenant_id}", leadsService.LeadAppCfg.AuroraTenantId)
 
-	req, err = http.NewRequest(method, apiUrl, reqBodyBuff)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create request err %v", err)
-		return err
+	if reqBody != nil {
+		err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
+			return err
+		}
+		req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
+	} else {
+		req, err = http.NewRequest(method, apiUrl, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
 	}
 
 	// set headers
