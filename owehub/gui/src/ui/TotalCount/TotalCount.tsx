@@ -220,7 +220,30 @@ const TotalCount: React.FC = () => {
   const handleWeeklyOption = (newValue: Option | null) => {
     if (newValue) {
       setSelectedOption(newValue);
-      console.log('Selected Report Option:', newValue);
+      const newMappedOptions = periodFilterOptions
+      .filter((period) => {
+        const label = period.label ?? '';
+        if (newValue.value === 'day') {
+          return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(label);
+        }
+        if (newValue.value === 'week') {
+          return ['Current Week', 'Current Month', 'Last Month', 'This Quarter', 'Last Quarter'].includes(label);
+        }
+        if (newValue.value === 'month') {
+          return ['This Month', 'This Quarter', 'Last Quarter', 'This Year', 'Last Year'].includes(label);
+        }
+        if (newValue.value === 'year') {
+          return ['This Year', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'].includes(label);
+        }
+        return false;
+      })
+      .map((period) => ({
+        label: period.label ?? 'Unknown',
+        value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
+      }));
+
+    setSelectedReportOption(newMappedOptions[1] || newMappedOptions[0]);
+    
     } else {
       console.log('Report option was cleared or set to null');
     }
@@ -393,33 +416,7 @@ const TotalCount: React.FC = () => {
     value: `${format(defaultPeriodOptions[1]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[1]?.end, 'dd-MM-yyyy')}`,
   });
 
-  useEffect(() => {
-    // Dynamically update period options when selectedOption changes
-    const newMappedOptions = periodFilterOptions
-      .filter((period) => {
-        const label = period.label ?? '';
 
-        if (selectedOption.value === 'day') {
-          return ['This Week', 'Last Week', 'This Month', 'Last Month'].includes(label);
-        }
-        if (selectedOption.value === 'week') {
-          return ['Current Week', 'Current Month', 'Last Month', 'This Quarter', 'Last Quarter'].includes(label);
-        }
-        if (selectedOption.value === 'month') {
-          return ['This Month', 'This Quarter', 'Last Quarter', 'This Year', 'Last Year'].includes(label);
-        }
-        if (selectedOption.value === 'year') {
-          return ['This Year', 'Last 3 Years', 'Last 5 Years', 'Last 10 Years'].includes(label);
-        }
-        return false;
-      })
-      .map((period) => ({
-        label: period.label ?? 'Unknown',
-        value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
-      }));
-
-    setSelectedReportOption(newMappedOptions[1] || newMappedOptions[0]);
-  }, [selectedOption]);
 
 
   useEffect(() => {
