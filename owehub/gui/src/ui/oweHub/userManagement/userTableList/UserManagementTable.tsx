@@ -154,7 +154,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const resetPassword = async(user_emails:string)=>{
     try {
       const data = await postCaller("reset_user_passwords",{user_emails:[user_emails]});
-      toast.success(data.message);
+      if(data.status>200){
+        toast.error(data.message);
+        return;
+      }
+      toast.success("Password reset successful! Check your email for the new password");
     } catch (error) {
       toast.error((error as Error).message as string);
     }

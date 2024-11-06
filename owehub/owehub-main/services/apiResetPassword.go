@@ -70,10 +70,21 @@ func HandleResetPasswordRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	for _, email := range recoverPasswordReq.UserEmails {
-		err = SendMailToClient(email, "Your password has been reset to the default.")
+	emailList := "'" + strings.Join(recoverPasswordReq.UserEmails, "', '") + "'"
+	query := fmt.Sprintf(`SELECT email_id, name FROM user_details WHERE email_id IN (%s);`, emailList)
+	datas, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB err", http.StatusBadRequest, nil)
+		return
+	}
+
+	for _, data := range datas {
+		userName, _ := data["name"].(string)
+		emailId, _ := data["email_id"].(string)
+		err = SendPasswordResetSuccessMailToClient(emailId, userName)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to send email to %s with err: %v", email, err)
+			log.FuncErrorTrace(0, "Failed to send email to %s with err: %v", emailId, err)
 		}
 	}
 

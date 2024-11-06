@@ -122,7 +122,7 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 	if !ok {
 		err = fmt.Errorf("proposal_pdf_key not found in database")
 		log.FuncErrorTrace(0, "%v", err)
-		handler.SendError("Failed to retrieve proposal_pdf_key from database")
+		handler.SendError("The lead does not have a proposal pdf")
 		return
 	}
 
