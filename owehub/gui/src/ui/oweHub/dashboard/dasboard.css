@@ -749,11 +749,10 @@
 }
 
 .add-arrow-icon {
-  font-size: 12px;
+  stroke-width: 20;
+  font-size: 16px;
   vertical-align: middle;
-  font-weight: 900;
-  margin-top: 2px;
-  margin-left: 5px;
+    margin-left: 3px;
 }
 
 .add-arrow-icon.up {

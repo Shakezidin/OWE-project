@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './dasboard.css';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import { ICONS } from '../../../resources/icons/Icons';
-import { SlArrowDown, SlArrowUp } from 'react-icons/sl';
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 interface ButtonProps {
   editMode: boolean;
@@ -91,12 +91,12 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({ handleClose, data }) => {
                   onClick={() => setToggleOpen(!toggleOpen)}
                   style={{ backgroundColor: '#D5E4FF' }}
                 >
-                  <td style={{ cursor: 'pointer' }}>
+                  <td style={{ cursor: 'pointer',fontSize: "14px", fontWeight: 600 }}>
                     Adder{' '}
                     {toggleOpen ? (
-                      <SlArrowUp className="add-arrow-icon up" />
+                      <IoIosArrowUp className="add-arrow-icon up" />
                     ) : (
-                      <SlArrowDown className="add-arrow-icon down" />
+                      <IoIosArrowDown className="add-arrow-icon down" />
                     )}
                   </td>
 
