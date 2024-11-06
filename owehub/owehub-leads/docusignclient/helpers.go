@@ -28,7 +28,7 @@ var docusignAccessToken string
 func callApi(method string, apiUrl string, reqBody interface{}, respBody interface{}) error {
 	var (
 		err         error
-		reqBodyBuff *bytes.Buffer
+		reqBodyBuff bytes.Buffer
 		req         *http.Request
 	)
 
@@ -38,16 +38,22 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 	// encode request body into buffer
 
 	if reqBody != nil {
-		err = json.NewEncoder(reqBodyBuff).Encode(reqBody)
+		err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
 			return err
 		}
-	}
-	req, err = http.NewRequest(method, apiUrl, reqBodyBuff)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create request err %v", err)
-		return err
+		req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
+	} else {
+		req, err = http.NewRequest(method, apiUrl, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
 	}
 
 	// set headers
