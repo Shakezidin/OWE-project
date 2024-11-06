@@ -356,7 +356,7 @@ export const DashboardPage: React.FC = () => {
           <div className="DashboardPage-container">
             <div className="rep-manage-user">
               <DropdownCheckbox
-                label={selectedDealer.length === 1 ? 'partner' : 'partners'}
+                label={selectedDealer.length === 1 ? 'Partner' : 'Partners'}
                 placeholder={'Search partners'}
                 selectedOptions={selectedDealer}
                 options={dealerOption}

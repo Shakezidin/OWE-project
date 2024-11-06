@@ -35,7 +35,7 @@ export const DealerPaymentsColumn: Column[] = [
   {
     name: 'payment_amount',
     displayName: 'Payment Amount',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
