@@ -145,7 +145,7 @@ var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-calc-service/v1/get_agingreport",
-		apiHandler.HandleGetAgingReport,
+		apiHandler.HandleUpadeAgingReport,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
