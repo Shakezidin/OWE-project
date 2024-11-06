@@ -80,18 +80,45 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
-		whereClause += "AND (li.status_id = 0 AND li.is_appointment_required = TRUE AND li.proposal_created_date IS NULL)"
+		whereClause += `
+			AND (
+				li.appointment_date IS NULL
+				AND li.appointment_declined_date IS NULL
+				AND li.appointment_scheduled_date IS NULL
+				AND li.lead_won_date IS NULL
+				AND li.is_appointment_required = TRUE 
+				AND li.proposal_created_date IS NULL
+			)
+		`
 	}
 
 	if dataReq.LeadStatus == "PROGRESS" {
 		if dataReq.ProgressFilter == "DEAL_WON" {
-			whereClause += "AND li.lead_won_date IS NOT NULL"
+			whereClause += `
+				AND (
+					(
+						li.lead_won_date IS NOT NULL
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP
+							AND li.is_appointment_required = TRUE
+							AND (
+								li.appointment_accepted_date IS NULL
+								OR li.appointment_accepted_date > li.appointment_date
+							)
+						)
+					)
+				)
+				
+			`
 		}
 		if dataReq.ProgressFilter == "APPOINTMENT_SENT" {
 			whereClause += `
 				AND (
-					li.appointment_scheduled_date IS NOT NULL 
-					AND li.appointment_date > CURRENT_TIMESTAMP
+					li.appointment_date > CURRENT_TIMESTAMP
+					AND li.is_appointment_required = TRUE
+					AND li.appointment_declined_date IS NULL
 					AND li.appointment_accepted_date IS NULL
 				)
 			`
@@ -99,14 +126,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		if dataReq.ProgressFilter == "APPOINTMENT_ACCEPTED" {
 			whereClause += `
 				AND (
-					(
-						li.appointment_accepted_date IS NOT NULL
-						AND li.appointment_date > CURRENT_TIMESTAMP
-					)
-					OR
-					(
-						li.lead_won_date IS NOT NULL
-						AND li.appointment_accepted_date IS NOT NULL
+					li.is_appointment_required = TRUE
+					AND li.appointment_declined_date IS NULL
+					AND li.appointment_accepted_date IS NOT NULL
+					AND (
+						(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
+						OR
+						(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
 					)
 				)
 			`
@@ -116,20 +142,70 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		}
 		if dataReq.ProgressFilter == "PROPOSAL_IN_PROGRESS" {
 			whereClause += `
-					AND li.proposal_created_date IS NOT NULL
-					AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
+				OR (
+					li.proposal_created_date IS NOT NULL
+					AND li.appointment_declined_date IS NULL
+					AND NOT (
+						li.appointment_date IS NOT NULL
+						AND li.appointment_declined_date IS NULL
+						AND li.appointment_date < CURRENT_TIMESTAMP
+						AND li.is_appointment_required = TRUE
+						AND (
+							li.appointment_accepted_date IS NULL
+							OR li.appointment_accepted_date > li.appointment_date
+						)
+					)
+				)
 			`
 		}
 		if dataReq.ProgressFilter == "" || dataReq.ProgressFilter == "ALL" {
 			whereClause += `
 				AND (
-					(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-					OR (li.status_id = 5)
-					OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-            		OR (
-						li.status_id NOT IN (3, 6) 
-						AND li.proposal_created_date IS NOT NULL
-						AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
+					(
+						li.lead_won_date IS NOT NULL
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP
+							AND li.is_appointment_required = TRUE
+							AND (
+								li.appointment_accepted_date IS NULL
+								OR li.appointment_accepted_date > li.appointment_date
+							)
+						)
+					)
+					OR (
+						li.appointment_date > CURRENT_TIMESTAMP
+						AND li.is_appointment_required = TRUE
+						AND li.appointment_declined_date IS NULL
+						AND li.appointment_accepted_date IS NULL
+					)
+					OR (
+						li.is_appointment_required = TRUE
+						AND li.appointment_declined_date IS NULL
+						AND li.appointment_accepted_date IS NOT NULL
+						AND (
+							(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
+							OR
+							(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+						)
+					)
+					OR (
+						li.is_appointment_required = FALSE
+					)
+					OR (
+						li.proposal_created_date IS NOT NULL
+						AND li.appointment_declined_date IS NULL
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP
+							AND li.is_appointment_required = TRUE
+							AND (
+								li.appointment_accepted_date IS NULL
+								OR li.appointment_accepted_date > li.appointment_date
+							)
+						)
 					)
 				)
 			`
@@ -137,17 +213,28 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.LeadStatus == "DECLINED" {
-		whereClause += "AND (li.status_id = 3 AND li.is_appointment_required = TRUE)"
+		whereClause += "AND (li.appointment_declined_date IS NOT NULL AND li.is_appointment_required = TRUE)"
 	}
 
 	if dataReq.LeadStatus == "ACTION_NEEDED" {
 		whereClause += `
 			AND (
-				li.status_id = 4
-				OR (
-					li.status_id IN (1, 2) 
+				(
+					li.appointment_date IS NOT NULL
+					AND li.appointment_declined_date IS NULL
+					AND li.lead_won_date IS NULL
 					AND li.appointment_date < CURRENT_TIMESTAMP 
 					AND li.is_appointment_required = TRUE
+				)
+				OR (
+					li.appointment_date IS NOT NULL
+					AND li.appointment_declined_date IS NULL
+					AND li.appointment_date < CURRENT_TIMESTAMP
+					AND li.is_appointment_required = TRUE
+					AND (
+						li.appointment_accepted_date IS NULL
+						OR li.appointment_accepted_date > li.appointment_date
+					)
 				)
 			)
 		`
@@ -543,11 +630,14 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	query = `
 		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 		WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
-		AND (
-			li.status_id = 0 
-			AND li.is_appointment_required = TRUE 
-			AND li.proposal_created_date IS NULL
-		) 
+			AND (
+				li.appointment_date IS NULL
+				AND li.appointment_declined_date IS NULL
+				AND li.appointment_scheduled_date IS NULL
+				AND li.lead_won_date IS NULL
+				AND li.is_appointment_required = TRUE 
+				AND li.proposal_created_date IS NULL
+			)
 			AND li.updated_at BETWEEN $2 AND $3
 		  	AND li.is_archived = FALSE
 
@@ -555,16 +645,54 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 			WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
-			AND (
-				(li.status_id IN (1, 2) AND li.appointment_date > CURRENT_TIMESTAMP)
-				OR (li.status_id = 5)
-				OR (li.status_id NOT IN (3, 6) AND li.is_appointment_required = FALSE)
-				OR (
-					li.status_id NOT IN (3, 6) 
-					AND li.proposal_created_date IS NOT NULL
-					AND (li.appointment_date IS NULL OR li.appointment_date > CURRENT_TIMESTAMP)
+				AND (
+					(
+						li.lead_won_date IS NOT NULL
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP
+							AND li.is_appointment_required = TRUE
+							AND (
+								li.appointment_accepted_date IS NULL
+								OR li.appointment_accepted_date > li.appointment_date
+							)
+						)
+					)
+					OR (
+						li.appointment_date > CURRENT_TIMESTAMP
+						AND li.is_appointment_required = TRUE
+						AND li.appointment_declined_date IS NULL
+						AND li.appointment_accepted_date IS NULL
+					)
+					OR (
+						li.is_appointment_required = TRUE
+						AND li.appointment_declined_date IS NULL
+						AND li.appointment_accepted_date IS NOT NULL
+						AND (
+							(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
+							OR
+							(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+						)
+					)
+					OR (
+						li.is_appointment_required = FALSE
+					)
+					OR (
+						li.proposal_created_date IS NOT NULL
+						AND li.appointment_declined_date IS NULL
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP
+							AND li.is_appointment_required = TRUE
+							AND (
+								li.appointment_accepted_date IS NULL
+								OR li.appointment_accepted_date > li.appointment_date
+							)
+						)
+					)
 				)
-			)
 				AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 				AND li.is_archived = FALSE
 
@@ -572,10 +700,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		SELECT 'DECLINED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 		WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
-		AND (
-			li.status_id = 3 
-			AND li.is_appointment_required = TRUE
-		)
+			AND (li.appointment_declined_date IS NOT NULL AND li.is_appointment_required = TRUE)
 			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 			AND li.is_archived = FALSE
 
@@ -583,12 +708,23 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		SELECT 'ACTION_NEEDED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 		WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
-		AND (
-				li.status_id = 4
-				OR (
-					li.status_id IN (1, 2)
+			AND (
+				(
+					li.appointment_date IS NOT NULL
+					AND li.appointment_declined_date IS NULL
+					AND li.lead_won_date IS NULL
 					AND li.appointment_date < CURRENT_TIMESTAMP 
 					AND li.is_appointment_required = TRUE
+				)
+				OR (
+					li.appointment_date IS NOT NULL
+					AND li.appointment_declined_date IS NULL
+					AND li.appointment_date < CURRENT_TIMESTAMP
+					AND li.is_appointment_required = TRUE
+					AND (
+						li.appointment_accepted_date IS NULL
+						OR li.appointment_accepted_date > li.appointment_date
+					)
 				)
 			)
 			AND li.is_archived = FALSE
