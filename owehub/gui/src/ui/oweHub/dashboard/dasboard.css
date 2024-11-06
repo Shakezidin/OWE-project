@@ -27,7 +27,7 @@
 }
 
 .date-button {
-  border-radius: 0.4rem;
+  border-radius: 0.5rem;
   border: none;
   outline: none;
   background: #ffffff;
@@ -39,6 +39,28 @@
   font-weight: 500;
   user-select: none;
 }
+
+.dealer-pay-search::placeholder{
+  color: var(--input-border-color);
+}
+
+.date-button:hover{
+  border-color: var(--primary-color) !important;
+}
+
+.date-button:hover .dealer-date-text, .date-button:hover .dealer-date-svg{
+  color: var(--primary-color);
+}
+
+.date-button.active {
+  border-color: var(--primary-color) !important;
+}
+
+.date-button.active .dealer-date-text,
+.date-button.active .dealer-date-svg {
+  color: var(--primary-color);
+}
+
 
 .calender-container {
   position: absolute;
@@ -115,6 +137,7 @@
 
 .dealer-tot-amt h4 {
   font-weight: 500;
+  color: var(--input-border-color);
 }
 
 .total-commisstion {
@@ -146,8 +169,9 @@
 }
 
 .total-section-desc p {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
+  color: var(--input-border-color);
 }
 
 .tsd-percent {
@@ -167,6 +191,7 @@
 }
 
 .total-section p {
+  color: var(--input-border-color);
   font-size: 14px;
   font-weight: 500;
   line-height: 1rem;
@@ -203,22 +228,31 @@
   height: 36px;
   width: 200px;
   border-radius: 0.5rem;
-  border: 1px solid #dfd8d8;
+  border: 1px solid var(--input-border-color);
   outline: none;
   padding: 10px;
   transition: all 0.1s ease;
+  font-size: 12px;
 }
 
-.dealer-pay-search:hover {
-  border-color: #377cf6;
-  border-width: 2px;
+.dealer-pay-search:hover::placeholder {
+  color: var(--primary-color);
 }
 
 .dealer-pay-search:hover,
 .dealer-pay-search:focus,
 .dealer-pay-search:not(:placeholder-shown) {
   border-color: #377cf6;
-  border-width: 2px;
+  border-width: 1px;
+}
+
+.dealer-pay-search:focus {
+  border-color: var(--primary-color); 
+  outline: none; 
+}
+
+.dealer-pay-search:focus::placeholder {
+  color: var(--primary-color); 
 }
 
 .payroll-date {
@@ -293,7 +327,7 @@
 .filter-line {
   width: 36px !important;
   height: 36px !important;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   cursor: pointer;
   background-color: white;
   display: flex;
@@ -371,7 +405,7 @@
 }
 
 .dealer-pay-table {
-  margin: 1.2rem 0 0.7rem 0;
+  margin-top: 1.2rem;
 }
 
 .help-section {
@@ -481,11 +515,12 @@
 
 .children-container {
   background-color: var(--children-bg-color);
-  padding: 0.5rem 1.2rem;
+  padding: 1.2rem 1.2rem;
   flex: 1;
   overflow-y: scroll;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 65px);
   scroll-behavior: smooth;
+  padding-bottom: 1.2rem;
 }
 
 .breakdown-table::-webkit-scrollbar {
@@ -736,7 +771,7 @@
   padding-left: 13px;
   padding-right: 13px;
   padding-top: 10px;
-  margin: 10px 0;
+  margin-top: 11px;
   padding-bottom: 10px;
   border-radius: 18px;
 }

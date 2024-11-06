@@ -59,7 +59,8 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
       >
         <BsThreeDotsVertical 
           style={{
-            color: isHovered? 'white':'#3E3E3E',
+            color: isHovered? '#377CF6':'#3E3E3E',
+            
             height: '25px',
             width: '20px',
             

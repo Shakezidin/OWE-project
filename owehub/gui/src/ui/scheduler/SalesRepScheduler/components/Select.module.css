@@ -5,7 +5,7 @@
 }
 
 .selectBox {
-  padding: 5px 8px;
+  padding: 8px 12px;
   border: 1px solid #a5aab2;
   border-radius: 6px;
   cursor: pointer;
@@ -21,14 +21,16 @@
 
 .selectBox:hover {
   border-color: #377cf6;
-  background-color: #377cf6;
-  color: #fff;
+  background-color: #E5EFFF;
+  color: var(--primary-color);
+  transform: scale(1.07);
 }
 
 .selectBox.active {
   border-color: #377cf6;
   background-color: #377cf6;
   color: #fff;
+  transform: scale(1.07);
 }
 
 /* .selectBox span {
@@ -58,14 +60,17 @@
 }
 
 .selectOption {
-  padding: 6px;
+  padding: 10px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
+  /* margin: 0px 5px; */
+  height: 100%;
+  line-height: 21px;
 }
 
 .selectOption:hover {
@@ -78,6 +83,6 @@
   color: #fff;}
 
 .selectBox span {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
 }

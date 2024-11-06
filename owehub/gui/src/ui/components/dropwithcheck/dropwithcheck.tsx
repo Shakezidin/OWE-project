@@ -13,10 +13,14 @@ interface DropWithCheckProps {
   setSelectedOptions: React.Dispatch<SetStateAction<string[]>>;
 }
 
-const DropIcon = () => {
+interface DropIconProps {
+  style?: React.CSSProperties;
+}
+
+const DropIcon: React.FC<DropIconProps> = ({ style }) => {
   return (
     <svg
-      style={{ flexShrink: 0 }}
+      style={{ flexShrink: 0, ...style }} // Apply custom styles passed via props
       height="20"
       width="20"
       viewBox="0 0 20 20"
@@ -36,22 +40,19 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [dropDownOptions, setDropDownOptions] = useState<Option[]>(options); // Set initial options as default
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropDownOptions, setDropDownOptions] = useState<Option[]>([]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
-        setSearch('');
-        setDropDownOptions(options);
+        setSearch(''); // Reset search when closing dropdown
+        setDropDownOptions(options); // Reset dropdown options when closing
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -63,17 +64,21 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
       setDropDownOptions(options);
     }
   };
+
   useEffect(() => {
     setDropDownOptions(options);
   }, [options]);
 
-  useEffect(() => {
-    if (search.trim()) {
-      setDropDownOptions((prev) =>
-        prev.filter((prev) => prev.value !== 'all' && prev.value !== 'All')
-      );
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    if (e.target.value.trim()) {
+      setDropDownOptions(options.filter((item) =>
+        item.value.toLowerCase().includes(e.target.value.toLowerCase().trim())
+      ));
+    } else {
+      setDropDownOptions(options);
     }
-  }, [search]);
+  };
 
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
@@ -85,23 +90,22 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
         }
       } else {
         const updatedOptions = prevSelectedOptions.filter((o) => o !== 'All');
-
         if (updatedOptions.includes(option)) {
           return updatedOptions.filter((o) => o !== option);
         } else {
-          let arr = [...updatedOptions, option];
-          if (arr.length + 1 === options.length && !arr.includes('All')) {
-            arr.push('All');
+          let newSelection = [...updatedOptions, option];
+          if (newSelection.length + 1 === options.length && !newSelection.includes('All')) {
+            newSelection.push('All');
           }
-          return arr;
+          return newSelection;
         }
       }
     });
   };
-  console.log(options.filter((opt) => opt.value.toLowerCase() === 'untd'));
+
   return (
-    <div className="comm-dropdown-container" ref={dropdownRef}>
-      <div className="comm-dropdown-toggle" onClick={toggleDropdown}>
+    <div className={`comm-dropdown-container ${isOpen ? 'active' : ''}`} ref={dropdownRef}>
+      <div className={`comm-dropdown-toggle ${isOpen ? 'active' : ''}`} onClick={toggleDropdown}>
         <span className="comm-toggle-text">
           {selectedOptions.length > 0 ? (
             selectedOptions.includes('All') ? (
@@ -116,30 +120,23 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
             'Select Dealer'
           )}
         </span>
-        <DropIcon />
+        <DropIcon
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 550ms ease',
+          }}
+        />
       </div>
       {isOpen && (
         <div className="scrollbar comm-dropdown-menu">
-          <div className="searchBox">
+          <div className="searchBox team-input-wrap">
             <input
               type="text"
               className="input"
               placeholder="Search Dealers"
               style={{ width: '100%' }}
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                if (e.target.value.trim()) {
-                  const filtered = options.filter((item) =>
-                    item.value
-                      .toLocaleLowerCase()
-                      .includes(e.target.value.toLowerCase().trim())
-                  );
-                  setDropDownOptions([...filtered]);
-                } else {
-                  setDropDownOptions([...options]);
-                }
-              }}
+              onChange={handleSearchChange}
             />
           </div>
           {dropDownOptions.map((option, ind) => (
@@ -150,7 +147,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
                 checked={selectedOptions.includes(option.value)}
                 onChange={() => handleOptionChange(option.value)}
               />
-              {option.label}
+              <p>{option.label}</p>
             </div>
           ))}
         </div>

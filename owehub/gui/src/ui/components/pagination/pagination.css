@@ -75,7 +75,7 @@
 }
 .current-btn {
   background-color: white !important;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--grey-border-color);
   outline: none;
   flex-shrink: 0;
   cursor: pointer;
@@ -85,7 +85,6 @@
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
-  /* text-align: center; */
   border-radius: 0.25rem;
   transition:
     transform 0.3s ease,

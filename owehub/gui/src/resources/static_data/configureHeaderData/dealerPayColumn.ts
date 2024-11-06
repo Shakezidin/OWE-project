@@ -31,12 +31,12 @@ export default [
   },
   {
     name: 'contract',
-    displayName: 'Contract $$',
+    displayName: 'Contract $',
     type: 'number',
     isCheckbox: false,
   },
   {
-    name: 'OtherAdders',
+    name: 'other_adders',
     displayName: 'Other Adders',
     type: 'string',
     isCheckbox: false,
@@ -56,7 +56,7 @@ export default [
   },
   {
     name: 'st',
-    displayName: 'ST',
+    displayName: 'State',
     type: 'string',
     isCheckbox: false,
   },

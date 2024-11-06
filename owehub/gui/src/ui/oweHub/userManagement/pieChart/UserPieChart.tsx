@@ -83,7 +83,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         className="pie-section-1"
         style={{
           background: 'white',
-          borderRadius: '18px',
+          borderRadius: '16px',
           padding: '1.5rem',
           alignItems: 'center',
           justifyContent: 'center',
@@ -209,7 +209,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         className="pie-section-2 flex-auto"
         style={{
           background: 'white',
-          borderRadius: '18px',
+          borderRadius: '16px',
           padding: '1.5rem',
           alignItems: 'center',
           justifyContent: 'center',

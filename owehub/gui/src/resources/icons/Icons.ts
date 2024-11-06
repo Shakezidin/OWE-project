@@ -170,6 +170,8 @@ import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 import LogCalc1 from "../assets/log_calc_1.svg"
 import LogCalc2 from "../assets/log_calc_2.svg"
 import LogCalc3 from "../assets/log_calc_3.svg"
+import MenuDealer from "../assets/SideDealerPay.svg"
+import MenuLead from "../assets/SideLead.svg";
 import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
 
 
@@ -360,5 +362,7 @@ export const ICONS = {
   LogCalc1: LogCalc1,
   LogCalc2: LogCalc1,
   LogCalc3: LogCalc1,
+  MenuDealer: MenuDealer,
+  MenuLead: MenuLead,
   ScheduleRepeat: ScheduleRepeat,
 };

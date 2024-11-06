@@ -11,7 +11,7 @@
 }
 
 button.trash-btn {
-  background-color: #377cf6;
+  background-color: var(--delete-btn-color);
   width: 36px;
   height: 36px;
 }
@@ -26,6 +26,10 @@ button.trash-btn {
   padding: 1px 4px 0;
   transition: all 0.3s ease;
   margin-bottom: -4px;
+}
+
+.no-border-select{
+  border: none !important;
 }
 
 /* .user-dropdown.hover-effect:hover {

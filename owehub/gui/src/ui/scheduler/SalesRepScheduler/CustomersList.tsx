@@ -27,6 +27,8 @@ import Select from './components/Select';
 import { HiSortDescending } from 'react-icons/hi';
 import Sort from './components/Sort';
 import useEscapeKey from '../../../hooks/useEscape';
+import Pagination from '../../components/pagination/Pagination';
+
 
 interface ITimeSlot {
   id: number;
@@ -168,7 +170,15 @@ const CustomersList = () => {
   const [customers, setCustomers] = useState<ISalesRepProject[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(-1);
   const [collapse, setCollapse] = useState(-1);
-  const [isPending, setIsPending] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const PAGE_SIZE = 10; // Fixed page size
+  const startIndex = (currentPage - 1) * PAGE_SIZE + 1;  // Correct start index for pagination.
+  const endIndex = currentPage * PAGE_SIZE; // End index before capping it.
+  const [perPage, setPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState<number>(0); // Store total number of records (dbRecCount)
+  const [isClosing, setIsClosing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
@@ -243,33 +253,65 @@ const CustomersList = () => {
     { label: 'Old to New', value: 'oldToNew' },
   ];
 
-  const getCustomers = async () => {
+  const getCustomers = async (pageNumber: number = 1) => {
     try {
       setIsPending(true);
-      const response = await axios.post<ISalesRepResponse>(
-        'https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep',
-        {
-          sort_order: selectedSort === 'newToOld' ? 'new_to_old' : 'old_to_new',
-        }
-      );
-
+      const response = await axios.post('https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep', {
+        sort_order: selectedSort === 'newToOld' ? 'new_to_old' : 'old_to_new',
+        page_number: pageNumber,
+        page_size: PAGE_SIZE,
+      });
+  
       if (response.data.status === 200) {
-        setCustomers(response.data.data.sale_rep_project);
+        setCustomers(response.data.data.sale_rep_project || []); // Default to empty array if null
+        const totalRecords = response.data.dbRecCount;
+        setTotalRecords(totalRecords);
+        setTotalPages(Math.ceil(totalRecords / PAGE_SIZE));
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to fetch customers'
-      );
+      toast.error(error instanceof Error ? error.message : 'Failed to fetch customers');
+      setCustomers([]); // Ensure customers is always an array, even on error
     } finally {
       setIsPending(false);
     }
   };
 
+
   useEffect(() => {
-    getCustomers();
-  }, [selectedSort]);
+    getCustomers(currentPage);
+  }, [currentPage, selectedSort]);
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const goToPrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+
+const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsDrawerOpen(false);
+      setIsClosing(false);
+    }, 400);
+  };
 
   useEffect(() => {
     fetchCalendarData();
@@ -349,9 +391,7 @@ const CustomersList = () => {
       <div
         className={`flex items-center justify-between ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
       >
-        <h1 className={styles.schedule_detail}>Schedule</h1>
-
-        {isSmallScreen && (
+     {isSmallScreen && (
           <div className={styles.filtericon} onClick={toggleCalendar}>
             <CalendarIcon size={19} />
           </div>
@@ -359,6 +399,7 @@ const CustomersList = () => {
       </div>
 
       <div
+      style={{marginTop: "11px"}}
         className={`flex justify-between ${isDrawerOpen ? styles.blurred : ''} `}
       >
         <div
@@ -536,6 +577,23 @@ const CustomersList = () => {
               ))
             )}
           </div>
+          {customers && customers.length > 0 && !isPending ? (
+  <div className="page-heading-container">
+    <p className="page-heading">
+      Showing {startIndex} - {Math.min(endIndex, totalRecords)} of {totalRecords} items
+    </p>
+    <Pagination
+      currentPage={currentPage}
+      currentPageData={customers}
+      totalPages={totalPages}
+      paginate={(pageNumber) => setCurrentPage(pageNumber)}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      perPage={PAGE_SIZE}
+    />
+  </div>
+) : null}
+
         </div>
 
         <div
@@ -549,7 +607,7 @@ const CustomersList = () => {
   <>
     <div className="flex items-center justify-between mb3">
       <h5
-        style={{ fontWeight: 600, fontSize: 16, marginLeft: '20px' }}
+        style={{ fontWeight: 600, fontSize: 16, marginLeft: '20px', fontFamily:'poppins', paddingTop:'7px' }}
         className="ml2"
       >
         Select Date & Time
@@ -652,17 +710,23 @@ const CustomersList = () => {
       </div>
       {isDrawerOpen && (
         <div
-          className={styles.drawer_overlay}
-          onClick={() => setIsDrawerOpen(false)}
+          className={`${styles.drawer_overlay} ${isClosing ? styles.overlay_closing : ''}`}
+          onClick={handleClose}
         >
           <div
-            className={`${styles.drawer_content} ${isSmallScreen ? styles.fullscreen : ''}`}
+            className={`${styles.drawer_content} ${isSmallScreen ? styles.fullscreen : ''} ${
+              isClosing ? styles.drawer_closing : ''
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <ScheduledActivity onClose={() => setIsDrawerOpen(false)} />
+            <ScheduledActivity 
+              onClose={handleClose} 
+              isOpen={isDrawerOpen} 
+            />
           </div>
         </div>
       )}
+
     </div>
   );
 };

@@ -167,7 +167,9 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	RecordCount = len(dlsPayCommResp.DealerPayComm)
 
-	dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	if dataReq.Paginate {
+		dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	}
 
 	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
 		// Prepare a string for dealer names, with each name properly escaped
