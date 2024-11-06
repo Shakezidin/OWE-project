@@ -186,6 +186,7 @@
 
 .customer_details.open {
   max-height: 700px;
+  /* transition:all 500ms; */
 }
 
 /* .cust_det_top {
@@ -446,6 +447,7 @@
 
 .customer_details_selected.open {
   max-height: 700px;
+  /* background-color: green; */
 }
 .time_slot_label{
   font-size: 14px;

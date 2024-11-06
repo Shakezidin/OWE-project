@@ -226,16 +226,15 @@
     cursor: pointer;
 }
 
-/* .back_button:hover .icon{
-    color: #377cf6;
-    transform: scale(1.04);
+.back_button:hover .icon{
+    
+    transform: scale(1.07);
 
 }
-.icon :hover {
-    color: #377cf6; 
-    transform: scale(1.04);
+/* .icon :hover {
+    transform: scale(1.07);
 
-  } */
+  }  */
 
 
   
