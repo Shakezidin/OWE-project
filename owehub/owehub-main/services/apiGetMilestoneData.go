@@ -327,11 +327,6 @@ func sumMapValues(m map[string]int) int {
 	return total
 }
 
-func daysInMonth(date time.Time) int {
-	nextMonth := date.AddDate(0, 1, 0)
-	return nextMonth.AddDate(0, 0, -nextMonth.Day()).Day()
-}
-
 func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq, table string) (csFilters string, whereEleList []interface{}) {
 	var csBuilder strings.Builder
 	var whereAdded bool
