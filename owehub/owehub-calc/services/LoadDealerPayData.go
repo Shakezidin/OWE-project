@@ -132,6 +132,9 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	balance := totalNetCommission - amt_paid
 	// here i have some doubts
 
+	if len(ST) > 6 {
+		ST = ST[6:]
+	}
 	outData["home_owner"] = HomeOwner
 	outData["current_status"] = CurrectStatus
 	outData["unique_id"] = uniqueID
