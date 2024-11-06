@@ -37,7 +37,7 @@
   transform: scale(1.04);
 }
 
-.sort_btn {
+.sort_btn1 {
   background-color: #4372e9;
   border: none;
   height: 32px;
@@ -48,9 +48,9 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.sort_btn:hover {
+.sort_btn1:hover {
   transform: scale(1.04);
-  background-color: #00298f;
+  background-color: #0b4cbd;
 }
 
 .active_sorting {

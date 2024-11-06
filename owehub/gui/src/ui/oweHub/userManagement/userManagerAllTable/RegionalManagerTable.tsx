@@ -146,7 +146,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                     {el.description ? el.description : 'NA'}
                   </td>
                   <td>
-                    <div className="action-icon"  style={{gap:8}}>
+                    <div className="action-icon"  style={{gap:4}}>
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}
