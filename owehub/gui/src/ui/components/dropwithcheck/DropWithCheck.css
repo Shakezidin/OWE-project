@@ -3,7 +3,7 @@
   border: 1px solid var(--input-border-color);
   border-radius: 8px;
   width: 180px;
-  transition: border 0.3s ease;
+  transition: border 0.1s ease;
 }
 .comm-dropdown-container svg{
   color: var(--input-border-color);

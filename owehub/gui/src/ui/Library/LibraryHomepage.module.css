@@ -64,11 +64,9 @@
   justify-content: space-between;
   align-items: center;
   background-color: #ffffff;
-  padding: 24px;
+  padding: 20px;
   border-top-left-radius: 16px !important;
   border-top-right-radius: 16px !important;
-  height: 63.5px;
-  
 }
 
 .recycle_div {
@@ -100,13 +98,13 @@
   flex-direction: row;
   /* border: 1px solid black; */
   height: 30px;
-  gap: 14px;
+  gap: 0.5rem;
 }
 
 .libSecHeader_right {
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -115,17 +113,19 @@
 .buttons {
   border-radius: 18px;
   /* border: 1px solid #989898; */
-  border: 1px solid #292B2E;
-
-  padding: 2px 32px;
+  border: 1px solid var(--input-border-color);
+  padding: 8px 24px;
   font-family: poppins;
   font-weight: 500;
   font-size: 14px;
-  color: #3E3E3E;
+  color: var(--input-border-color);
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
 }
 .buttons:hover{
   background-color: #E5EFFF;
@@ -144,16 +144,19 @@
 .Folderbuttons {
   border-radius: 18px;
   /* border: 1px solid #989898; */
-  border: 1px solid #292B2E;
-  padding: 2px 32px;
+  border: 1px solid var(--input-border-color);
+  padding: 8px 24px;
   font-family: poppins;
   font-weight: 500;
   font-size: 14px;
-  color:#3E3E3E;
+  color: var(--input-border-color);
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
 }
 
 .Folderbuttons:hover{
@@ -178,10 +181,11 @@
   gap: 14px;
   border-radius: 18px;
   border: 1px solid #377cf6;
-  padding: 2px 20px;
+  padding: 8px 12px;
+  height: 36px;
   font-family: poppins;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   color: #377cf6;
   background-color: #fff;
   cursor: pointer;
@@ -239,15 +243,17 @@
   justify-content: center;
   gap: 5px;
   /* border: 1px solid #8C8C8C; */
-  border: 1px solid #292B2E;
+  border: 1px solid var(--input-border-color);
   border-radius: 8px;
-  padding: 5px 10px;
+  padding: 8px 12px;
   cursor: pointer;
+  width: 180px;
 }
 
 .searchWrapper input {
   border: none;
   width: 100%;
+  color: var(--input-border-color);
 }
 
 .searchWrapper input::placeholder {
@@ -339,8 +345,7 @@
 
 .lib_Grid_Header .grid_item {
   font-size: 14px;
-  font: poppins;
-  font-weight: 500;
+  font-weight: 600;
   /* border: 1px solid black; */
 }
 
@@ -392,6 +397,8 @@
 .libname_heading{
   position: relative;
   left: 10px;
+  font-size: 14px;
+  font-weight: 600;
 }
 .grid_item_dates_upload{
   
@@ -424,7 +431,7 @@
   color: #cbcbcb;
 }
 
-.searchWrapper:hover .search_icon {
+.searchWrapper:hover{
   color: #377cf6;
 }
 
@@ -622,17 +629,17 @@
 
 .view_btn {
   /* border: 1px solid #8C8C8C; */
-  border: 1px solid #292B2E;
+  border: 1px solid var(--input-border-color);
   display: flex;
   flex-shrink: 0;
-  width: 32px;
+  width: 36px;
   cursor: pointer;
   font-size: 16px;
   background-color: #fff;
-  height: 30px;
+  height: 36px;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: all 500ms;
 }
 .sm_hide_upload_date{

@@ -311,6 +311,11 @@ input[type='checkbox'] {
   border-radius: 100px;
   border: 1px solid #797979;
   cursor: pointer;
+  transition: border 0.1s ease;
+}
+
+input[type='checkbox']:hover {
+  border: 1.5px solid var(--primary-color);
 }
 
 input[type='checkbox']:checked {

@@ -340,8 +340,8 @@ table thead tr {
 
 table thead tr th {
   text-align: left;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   padding: 0.8rem 1rem 0.8rem 1rem;
   /* line-height: 18px; */
 }
@@ -395,7 +395,7 @@ table tbody tr td {
 }
 
 .action-icon img {
-  width: 14px;
+  width: 15px;
   height: 16px;
   transition: transform 0.3s ease;
 }
