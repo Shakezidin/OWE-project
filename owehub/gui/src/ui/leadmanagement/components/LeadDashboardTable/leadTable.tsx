@@ -758,29 +758,29 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                       options={
                                         (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
                                           ? [
-                                            { label: 'Reschedule Appointment', value: 'app_sched' },
-                                            { label: 'Create Proposal', value: 'new_proposal' },
-                                          ]
+                                              { label: 'Reschedule Appointment', value: 'app_sched' },
+                                              { label: 'Create Proposal', value: 'new_proposal' },
+                                            ]
                                           : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                             ? [
                                               // { label: 'Send Proposal', value: 'sendtocust' },
-                                              { label: 'View Proposal', value: 'viewProposal' },
-                                              { label: 'Edit Proposal', value: 'editProposal' },
-                                              { label: 'Download Proposal', value: 'download' },
-                                              { label: 'Sign Document ', value: 'signature' },
-                                              { label: 'Reschedule Appointment', value: 'app_sched' },
-                                              { label: 'Refresh Url', value: 'renew_proposal' },
-                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
-                                              ? [
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
-                                                { label: 'Sign Document ', value: 'signature' },
+                                                { label: 'Download Proposal', value: 'download' },
+                                                ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                { label: 'Reschedule Appointment', value: 'app_sched' },
                                                 { label: 'Refresh Url', value: 'renew_proposal' },
-                                              ]
+                                            ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
+                                              ? [
+                                                  { label: 'View Proposal', value: 'viewProposal' },
+                                                  { label: 'Edit Proposal', value: 'editProposal' },
+                                                  ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                  { label: 'Refresh Url', value: 'renew_proposal' },
+                                                ]
                                               : [
-                                                { label: 'Create Proposal', value: 'new_proposal' },
-                                                { label: 'Schedule Appointment', value: 'app_sched' },
-                                              ]
+                                                  { label: 'Create Proposal', value: 'new_proposal' },
+                                                  { label: 'Schedule Appointment', value: 'app_sched' },
+                                                ]
                                       }
                                     />
                                   )}
@@ -871,29 +871,29 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                         options={
                                           (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
                                             ? [
-                                              { label: 'Reschedule Appointment', value: 'app_sched' },
-                                              { label: 'Create Proposal', value: 'new_proposal' },
-                                            ]
+                                                { label: 'Reschedule Appointment', value: 'app_sched' },
+                                                { label: 'Create Proposal', value: 'new_proposal' },
+                                              ]
                                             : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                               ? [
                                                 // { label: 'Send Proposal', value: 'sendtocust' },
-                                                { label: 'View Proposal', value: 'viewProposal' },
-                                                { label: 'Edit Proposal', value: 'editProposal' },
-                                                { label: 'Download Proposal', value: 'download' },
-                                                { label: 'Sign Document ', value: 'signature' },
-                                                { label: 'Reschedule Appointment', value: 'app_sched' },
-                                                { label: 'Refresh Url', value: 'renew_proposal' },
-                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
-                                                ? [
                                                   { label: 'View Proposal', value: 'viewProposal' },
                                                   { label: 'Edit Proposal', value: 'editProposal' },
-                                                  { label: 'Sign Document ', value: 'signature' },
+                                                  { label: 'Download Proposal', value: 'download' },
+                                                  ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                  { label: 'Reschedule Appointment', value: 'app_sched' },
                                                   { label: 'Refresh Url', value: 'renew_proposal' },
-                                                ]
+                                              ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
+                                                ? [
+                                                    { label: 'View Proposal', value: 'viewProposal' },
+                                                    { label: 'Edit Proposal', value: 'editProposal' },
+                                                    ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+                                                    { label: 'Refresh Url', value: 'renew_proposal' },
+                                                  ]
                                                 : [
-                                                  { label: 'Create Proposal', value: 'new_proposal' },
-                                                  { label: 'Schedule Appointment', value: 'app_sched' },
-                                                ]
+                                                    { label: 'Create Proposal', value: 'new_proposal' },
+                                                    { label: 'Schedule Appointment', value: 'app_sched' },
+                                                  ]
                                         }
                                       />
                                     )}
