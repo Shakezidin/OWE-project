@@ -40,13 +40,25 @@
   user-select: none;
 }
 
-.date-button.open-calendar:hover {
+.dealer-pay-search::placeholder{
+  color: var(--input-border-color);
+}
+
+.date-button:hover{
   border-color: var(--primary-color) !important;
 }
 
-.date-button.open-calendar:hover .dealer-date-text,
-.date-button.open-calendar:hover .dealer-date-svg {
-  color: var(--primary-color) !important;
+.date-button:hover .dealer-date-text, .date-button:hover .dealer-date-svg{
+  color: var(--primary-color);
+}
+
+.date-button.active {
+  border-color: var(--primary-color) !important;
+}
+
+.date-button.active .dealer-date-text,
+.date-button.active .dealer-date-svg {
+  color: var(--primary-color);
 }
 
 
@@ -506,7 +518,7 @@
   padding: 1.2rem 1.2rem;
   flex: 1;
   overflow-y: scroll;
-  /* height: calc(100vh - 80px); */
+  height: calc(100vh - 65px);
   scroll-behavior: smooth;
   padding-bottom: 1.2rem;
 }
@@ -737,11 +749,10 @@
 }
 
 .add-arrow-icon {
-  font-size: 12px;
+  stroke-width: 20;
+  font-size: 16px;
   vertical-align: middle;
-  font-weight: 900;
-  margin-top: 2px;
-  margin-left: 5px;
+    margin-left: 3px;
 }
 
 .add-arrow-icon.up {

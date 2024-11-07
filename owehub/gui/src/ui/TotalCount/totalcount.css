@@ -25,7 +25,7 @@
 }
 
 .card-heading{
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 28px
 }
@@ -34,6 +34,7 @@
     font-size: 24px;
     line-height: 28px;
     font-weight: 500;
+    color: var(--input-border-color);
 }
 
 .total-count-desc{
@@ -65,7 +66,7 @@
 .reports-title {
     font-size: 18px;
     font-weight: 600;
-
+    color: var(--input-border-color);
 }
 
 .report-header-dropdown{
@@ -84,18 +85,19 @@
 .graph-title{
     padding-top: 42px;
     padding-bottom: 39px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     padding-left: 20px;
+    color: var(--input-border-color);
 }
 
  
  
 
 .totalcount-export{
-    width: 30px;
-    height: 30px;
-    margin-top: 1px;
+    width: 36px;
+    height: 36px;
+    margin-top: -1px;
     overflow: hidden
 }
 
@@ -128,6 +130,8 @@
     }
 }
 
+
+ 
 @media (max-width: 768px) {
     /* Stacks the cards on smaller tablets and mobile */
     .total-card-count {
@@ -136,6 +140,9 @@
         display: block;
         padding-bottom: 10px;
     }
+   .main-graph{
+    margin-left: -30px;
+   }
     .report-graph{
         padding-top: -10px !important;
     }

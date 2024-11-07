@@ -452,6 +452,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/get_milestone_data_csv_download",
+		apiHandler.HandleGetMilestoneCsvDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{

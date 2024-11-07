@@ -36,18 +36,18 @@ export default [
     isCheckbox: false,
   },
   {
-    name: 'OtherAdders',
+    name: 'other_adders',
     displayName: 'Other Adders',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'rep1',
+    name: 'rep_1',
     displayName: 'Rep 1',
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'rep2', displayName: 'Rep 2', type: 'string', isCheckbox: false },
+  { name: 'rep_2', displayName: 'Rep 2', type: 'string', isCheckbox: false },
   {
     name: 'setter',
     displayName: 'Setter',

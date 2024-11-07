@@ -217,7 +217,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
                 className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
                 onClick={handleOptionClick}
               >
-                + Upload file
+                <span style={{fontSize: "16px"}}>+</span> Upload file
               </li>}
             </>
 
@@ -225,7 +225,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
               className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
               onClick={handleOptionClickFile}
             >
-              + New folder
+            <span style={{fontSize: "16px"}}>+</span> New folder
             </li>}
           </>
         </ul>

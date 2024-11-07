@@ -273,7 +273,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isMobile = true;
   return (
     <div
-      style={{ zIndex: '30' }}
+      style={{ zIndex: '200' }}
       className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div

@@ -13,6 +13,10 @@
   border-radius: 8px;
 }
 
+.userManagementTable__search input::placeholder {
+  color: var(--input-border-color);
+}
+
 .userManagementTable__search input:focus, .userManagementTable__search input:hover{
   outline: none;
   border-color: var(--primary-color)

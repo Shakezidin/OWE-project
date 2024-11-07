@@ -942,7 +942,7 @@ const LibraryHomepage = () => {
           </div>
 
           <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
-            <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
+            {/* <IoMdSearch className={styles.search_icon} onClick={SearchHandler} /> */}
             {/* SEARCHINGGGG */}
             <input
               type="text"
@@ -1187,7 +1187,7 @@ const LibraryHomepage = () => {
       <div className={`${styles.libraryHeader} flex items-center justify-between`}>
         <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
           <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
-            <IoMdSearch className={styles.search_icon} onClick={SearchHandler} />
+            {/* <IoMdSearch className={styles.search_icon} onClick={SearchHandler} /> */}
             <input
               type="text"
               value={searchValue}

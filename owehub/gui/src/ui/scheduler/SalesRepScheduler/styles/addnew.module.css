@@ -1,5 +1,8 @@
 .h_screen {
   min-height: 100vh;
+  display: flex;
+  /* justify-content: center; */
+  /* align-items: center; */
 }
 
 .customer_wrapper_list {
@@ -194,6 +197,7 @@
 .icon:hover {
   transform: scale(1.02);
 }
+
 
 /* @media screen and (max-width: 1055px){
   body {
