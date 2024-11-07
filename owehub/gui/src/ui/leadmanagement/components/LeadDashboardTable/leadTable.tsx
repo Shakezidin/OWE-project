@@ -763,7 +763,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                             ]
                                           : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
                                             ? [
-                                              // { label: 'Send Proposal', value: 'sendtocust' },
                                                 { label: 'View Proposal', value: 'viewProposal' },
                                                 { label: 'Edit Proposal', value: 'editProposal' },
                                                 { label: 'Download Proposal', value: 'download' },

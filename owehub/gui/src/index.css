@@ -119,10 +119,6 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
   width: 16px !important;
   height: 16px !important;
 }
-/* ::selection {
-  color: white;
-  background-color: #308D46; 
-} */
 
 /* This styles the container of the dropdown */
 .pac-container {
