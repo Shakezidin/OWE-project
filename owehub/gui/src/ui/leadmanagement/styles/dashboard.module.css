@@ -31,6 +31,10 @@
   padding: 20px;
 } */
 
+
+.PaginationFont a{
+  font-size: 12px !important;
+}
 .chartGrid {
   display: grid;
   background-color: white;
