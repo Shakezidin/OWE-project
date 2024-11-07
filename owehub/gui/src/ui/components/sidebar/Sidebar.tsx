@@ -196,7 +196,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
-          item.path !== ROUTES.PROJECT_STATUS
+          item.path !== ROUTES.PROJECT_STATUS &&
+          item.path !== ROUTES.LEAD_MANAGEMENT
         ) {
           if (
             (isStaging !== 'staging' &&
