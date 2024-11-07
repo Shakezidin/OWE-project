@@ -387,7 +387,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         true
       );
       if (response.status === 200) {
-        toast.success('Status Updated Successfully');
+        toast.success('Status Updated Successfully\nLead Moved In Progress');
         setRefresh((prev) => prev + 1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
@@ -433,7 +433,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
   const statusStyles = {
     "In Progress": {
-      backgroundColor: "#B459FC",
+      backgroundColor: "#EC9311",
       color: "#fff"
     },
     "Completed": {
@@ -799,13 +799,21 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   setSelected(index)
                                 }}
                                 disabledOptions={
-                                  (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response')
+                                  (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
-                                      ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
-                                      : ['Appointment Not Required', 'Complete as Won']
+                                      ? lead.can_manually_win
+                                        ? ['Appointment Not Required', 'Deal Won']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                      : lead.can_manually_win
+                                        ? ['Appointment Not Required']
+                                        : ['Appointment Not Required', 'Complete as Won']
                                     : lead.won_lost_label !== ''
-                                      ? ['Deal Won', 'Complete as Won']
-                                      : ['Complete as Won']
+                                      ? lead.can_manually_win
+                                        ? ['Deal Won']
+                                        : ['Deal Won', 'Complete as Won']
+                                      : lead.can_manually_win
+                                        ? []
+                                        : ['Complete as Won']
                                 }
                               />
 
@@ -913,7 +921,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   setSelected(index)
                                 }}
                                 disabledOptions={
-                                  (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response')
+                                  (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
                                         ? ['Appointment Not Required', 'Deal Won']

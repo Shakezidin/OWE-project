@@ -34,6 +34,7 @@
   border: none;
   color: #377cf6;
   cursor: pointer;
+  font-size: 14px;
 }
 .disable_day_cell:disabled {
   color: #868686;

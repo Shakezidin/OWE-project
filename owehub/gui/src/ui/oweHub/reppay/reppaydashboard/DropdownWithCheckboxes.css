@@ -4,10 +4,9 @@
 
 .dropdown-toggle {
   cursor: pointer;
-
   font-size: 12px;
   font-weight: 500;
-  border-radius: 0.4rem;
+  border-radius: 0.5rem;
   border: none;
   outline: none;
   width: 2rem;
@@ -31,42 +30,48 @@
   color: #000000; /* Change this to the desired color */
 }
 
+.dropdown-text{
+  color: var(--input-border-color);
+  margin-top: -3px;
+}
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
   left: -32px;
   z-index: 5;
   background-color: white;
-  /* border: 1px solid #000000; */
+  border: 1px solid var(--input-border-color);
   border-radius: 8px;
-  padding: 8px;
+  padding: 5px;
   margin-top: 7px;
   overflow-y: auto;
   width: 150px;
   height: 285px !important;
   box-sizing: border-box;
   color: #0493ce;
-  box-shadow: 3px 3px 5px rgba(43, 42, 42, 0.3); /* Add this line */
+  box-shadow: 0px 4px 10px rgba(43, 42, 42, 0.3); /* Add this line */
 }
 
 .dropdown-item {
   display: flex;
   padding: 4px 8px;
   cursor: pointer;
-  color: rgb(0, 0, 0);
+  color: var(--input-border-color);
   font-weight: 500;
   font-size: 12px;
-  margin-bottom: 1px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .dropdown-item input[type='checkbox'] {
-  margin-right: 8px;
   cursor: pointer;
-  width: 18px;
-  height: 18px;
-  border-radius: 6px;
-  border: 1px solid #000000;
-  margin-bottom: 7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid var(--grey-text-color);
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -75,16 +80,18 @@
 
 .dropdown-item input[type='checkbox']:checked {
   background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dropdown-item input[type='checkbox']:checked::before {
   content: '';
   display: block;
-  width: 11px;
-  height: 11px;
-  margin: 3px;
+  width: 8px;
+  height: 8px;
   background-color: #377cf6;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .drop-icon {

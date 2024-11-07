@@ -445,10 +445,10 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     <td>{el[" state_3"] || 'N/A'}</td>
                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
-                   <td>{el[" finance_fee"] || 'N/A'}</td>
+                   <td>{el[" finance_fee"] || '0'}</td>
                    <td>{el[" finance_type"] || 'N/A'}</td>
                    <td>{el[" finance_type_uid"] || 'N/A'}</td>
-                   <td>{el[" owe_finance_fee"] || 'N/A'}</td>
+                   <td>{el[" owe_finance_fee"] || '0'}</td>
                    <td>{el.commissions_rate}</td>
 
                    

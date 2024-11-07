@@ -26,12 +26,14 @@ interface AppointmentData {
 
 interface ScheduledActivityProps {
   onClose: () => void;
+  isOpen: boolean; // Add this prop to control the animation state
 }
 
 function ScheduledActivity({ onClose }: ScheduledActivityProps) {
   const [selectedDate, setSelectedDate] = useState<number>(-1);
   const [collapse, setCollapse] = useState<number>(-1);
   const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([]);
+  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   const isMobile = useMatchMedia('(max-width:600px)');
 
@@ -119,14 +121,23 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
     console.log('Cancel:', appointment);
   };
 
+  const handleClose = () => {
+    setIsClosing(true);
+    // Wait for animation to complete before calling onClose
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 200); // Match this with CSS animation duration
+  };
+
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
-  useEscapeKey(() => setCollapse(-1));
-
+  useEscapeKey(handleClose);
+  
   return (
-    <div className={Styles.main_container}>
+    <div className={`${Styles.main_container} ${isClosing ? Styles.closing : ''}`}>
       <div className={Styles.header}>
         <div className={Styles.title}>Scheduled Activity</div>
         <div className={Styles.header_right}>
@@ -136,7 +147,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
             onChange={handleSelectChange}
             placeholder="State"
           />
-          <span onClick={onClose} className={Styles.back_button}>
+          <span onClick={handleClose} className={Styles.back_button}>
             <FaXmark className={Styles.icon} />
           </span>
         </div>

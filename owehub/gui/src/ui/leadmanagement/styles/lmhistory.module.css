@@ -51,28 +51,7 @@
   transition: all 0.3s ease;
 }
 
-.sort_drop {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  /* padding: 10.8px 10.8px; */
-  border-radius: 6px;
-  cursor: pointer;
-  /* border-radius: 50%; */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  color: #ffffff;
-  background-color: #377cf6;
-  border: 1px solid #377cf6;
-  font-weight: 500;
-  margin-left: 1px;
-  transition: all 0.3s ease;
-}
 
-.sort_drop:hover {
-  background-color: #002c79;
-  transform: scale(1.07);
-}
 
 .history_list_inner > *:last-child {
   justify-self: center;
@@ -98,8 +77,8 @@
 }
 
 .user_name h2 {
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .user_name p {
@@ -227,8 +206,8 @@
 
 .calender {
   background-color: #377cf6;
-  width: 32px;
-  height: 32px;
+  width: 36.01px;
+  height: 36.01px;
   border-radius: 8px;
   display: flex;
   justify-content: center;
@@ -246,6 +225,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0px 15px;
+  align-items: center;
 }
 
 .filters {
@@ -256,7 +236,7 @@
 }
 
 .lm_history_header h1 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -281,7 +261,7 @@
 .lead_his_remove {
   width: 135px;
   height: 38px;
-  background-color: #ee4747;
+  background-color: #D91515;
   font-weight: 500;
   font-size: 16px;
   color: #fff;
@@ -290,12 +270,12 @@
   justify-content: center;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.55s ease;
 }
 
 .lead_his_remove:hover {
   transform: scale(1.04);
-  background-color: #f21010;
+  background-color: #AD1313;
 }
 
 .hist_checkbox_count {

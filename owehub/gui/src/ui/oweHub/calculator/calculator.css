@@ -1,6 +1,7 @@
 .calc-wrapper{
-    margin: -8px -19px;
     background-color: var(--white-color) !important;
+    border-radius: 16px;
+    margin-top: 11px;
 }
 #calc-header {
     display: flex;
@@ -9,6 +10,8 @@
     color: var(--white-color);
     padding: 1.5rem;
     background: linear-gradient(90deg, #159CBF 30%, #6EC135 70%);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
 
 #calc-header h2 {
@@ -33,6 +36,7 @@
     padding: 1.2rem;
     justify-content: space-between;
     position: relative;
+    margin-top: 3px;
 }
 
 #calculator-main .build-earnout,
@@ -49,7 +53,7 @@
 
 
 .equity-growth {
-    width: 38%;
+    width: 38.5%;
 }
 
 .build-header,
@@ -75,7 +79,8 @@
     color: #1EA0B2;
     border-radius: 100px;
     width: 100px;
-    height: 32px;
+    height: 36px;
+    padding: 8px 12px;
     font-weight: 500;
     transition: all 0.3s ease;
 }
@@ -381,6 +386,7 @@
     #calculator-main {
         flex-direction: column;
         padding: 0;
+        margin-top: 0;
     }
     .equity-growth{box-shadow: unset !important}
 
@@ -432,6 +438,7 @@
     #calc-header {
         padding: 1.1rem;
         gap: 1rem;
+        border-radius: 0;
     }
 
     #calc-header h2{

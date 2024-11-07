@@ -303,10 +303,10 @@ const AddNew = () => {
   };
 
   return (
-    <>
+    <div className={styles.parent_div}>
       <SalesRepSchedulePage isOpen={filterOpen} handleClose={filterClose} />
       <div className={styles.an_top}>Add New Project</div>
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={` mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
@@ -683,7 +683,7 @@ const AddNew = () => {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -61,7 +61,7 @@
 }
 
 .name {
-  color: #101828;
+  color: var(--input-border-color);
   font-weight: 600;
   font-size: 14px;
 }
@@ -69,6 +69,7 @@
 .ids {
   font-size: 12px;
   font-weight: 500;
+  color: var(--input-border-color);
 }
 
 .info {
@@ -118,7 +119,7 @@
   border: 1px solid #377cf6;
   color: #377cf6;
   display: flex;
-  font-size: 19px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -142,20 +143,18 @@
 .create_proposal {
   background-color: #377cf6;
   color: #fff;
-  font-weight: 500;
   font-size: 12px;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 8px;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-left: 10px;
-  height: 29.78px;
   min-width: 121.33px;
 }
 
 .create_proposal:hover {
-  background-color: #043891;
+  background-color: #4062CA;
   transform: scale(1.06);
 }
 
@@ -170,7 +169,7 @@
 }
 
 .slidebutton:hover {
-  color: #377cf6;
+  color: #4062CA;
   text-decoration: underline;
 }
 

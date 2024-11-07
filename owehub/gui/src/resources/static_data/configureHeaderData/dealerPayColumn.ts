@@ -31,23 +31,23 @@ export default [
   },
   {
     name: 'contract',
-    displayName: 'Contract $$',
+    displayName: 'Contract $',
     type: 'number',
     isCheckbox: false,
   },
   {
-    name: 'OtherAdders',
+    name: 'other_adders',
     displayName: 'Other Adders',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'rep1',
+    name: 'rep_1',
     displayName: 'Rep 1',
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'rep2', displayName: 'Rep 2', type: 'string', isCheckbox: false },
+  { name: 'rep_2', displayName: 'Rep 2', type: 'string', isCheckbox: false },
   {
     name: 'setter',
     displayName: 'Setter',
@@ -56,7 +56,7 @@ export default [
   },
   {
     name: 'st',
-    displayName: 'ST',
+    displayName: 'State',
     type: 'string',
     isCheckbox: false,
   },

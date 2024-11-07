@@ -60,11 +60,19 @@
 
 /* HistoryREDIRECT */
 .editedinParent {
-  /* border-radius: 8px !important; */
+  border-radius: 8px !important;
   border: 1px solid #929292 !important;
   width: 152px !important;
   padding: 0 !important;
   margin-right: 14px !important;
+}
+
+div#dropdowninHistoryRedirect ul li:nth-child(1):hover {
+  border-radius: 6px 6px 0 0;
+}
+
+div#dropdowninHistoryRedirect ul li:nth-child(1):hover {
+  border-radius: 0 0 6px 6px;
 }
 
 .editedinParent ul {
