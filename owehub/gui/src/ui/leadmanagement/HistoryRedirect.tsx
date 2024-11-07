@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import classes from './stylesFolder/HistoryRedirect.module.css';
-import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
+import classes from './styles/HistoryRedirect.module.css';
+import ThreeDotsImage from './Modals/Modalimages/ThreeDots.svg';
 import useEscapeKey from '../../hooks/useEscape';
 import { Tooltip } from 'react-tooltip';
 
@@ -24,18 +24,6 @@ const HistoryRedirect = () => {
     // setArchive(true);
     navigate('/leadmng-dashboard/lead-dashboard-archieves');
   };
-
-  /* HERE FOR RESPONSIVESNESS */
-  // const [styles, setStyles] = useState({
-  //   transform: 'scale(1) translate(0, 0)',
-  //   marginRight: '15px',
-  //   marginLeft: '0px',
-  //   marginTop: '0px',
-  //   marginBottom: '0px',
-  //   paddingRight: '36px',
-  //   paddingTop: '0px',
-  //   paddingBottom: '0px',
-  // });
 
   const HistoryButtonCalled = () => {
     setModalOpenClick((prevState) => !prevState);
