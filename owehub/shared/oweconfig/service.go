@@ -76,8 +76,59 @@ func prepareConfigFilters(tableName string, dataFilter models.DataRequestBody, f
 				filtersBuilder.WriteString(" AND ")
 			}
 
-			filtersBuilder.WriteString(fmt.Sprintf("%s %s $%d", column, operator, len(whereEleList)+1))
-			whereEleList = append(whereEleList, value)
+			switch column {
+			case "id":
+				filtersBuilder.WriteString(fmt.Sprintf("id %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "item_id":
+				filtersBuilder.WriteString(fmt.Sprintf("item_id %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "active_date_start":
+				filtersBuilder.WriteString(fmt.Sprintf("active_date_start %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "active_date_end":
+				filtersBuilder.WriteString(fmt.Sprintf("active_date_end %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "term_years":
+				filtersBuilder.WriteString(fmt.Sprintf("term_years %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "ar_rate":
+				filtersBuilder.WriteString(fmt.Sprintf("ar_rate %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "dealer_fee":
+				filtersBuilder.WriteString(fmt.Sprintf("dealer_fee %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "finance_fee":
+				filtersBuilder.WriteString(fmt.Sprintf("finance_fee %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "payment_start_date_days":
+				filtersBuilder.WriteString(fmt.Sprintf("payment_start_date_days %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "commissions_rate":
+				filtersBuilder.WriteString(fmt.Sprintf("commissions_rate %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "owe_finance_fee":
+				filtersBuilder.WriteString(fmt.Sprintf("owe_finance_fee %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "payment_date":
+				filtersBuilder.WriteString(fmt.Sprintf("payment_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "pay_rate":
+				filtersBuilder.WriteString(fmt.Sprintf("pay_rate %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("end_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "credit_date":
+				filtersBuilder.WriteString(fmt.Sprintf("credit_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			default:
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			}
 		}
 	}
 
