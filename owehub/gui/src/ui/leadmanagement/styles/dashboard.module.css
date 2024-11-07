@@ -202,8 +202,8 @@
 }
 
 .button {
-  border: 1px solid #858585 !important;
-  color: #858585;
+  border: 1px solid #292B2E !important;
+  color: #292B2E;
   background-color: #fff;
   padding: 5px;
   border-radius: 26px;
@@ -232,27 +232,30 @@
   /* background: #fff; */
   border-radius: 50%;
   padding: 4px;
-  color: #ffffff;
+  /* color: #292B2E; */
   width: 30px;
   height: 28px;
   border-radius: 50%;
   font-size: 14px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .statusInactive {
   /* background: #dfdfdf !important; */
-  color: #929292 !important;
+  /* color: #929292 !important; */
 }
 
 .buttonActive {
+  font-weight: 500;
   background-color: #3b82f6;
   color: white;
   border: unset !important;
 }
 .buttonActive:hover {
   background-color: #3b82f6;
+
 }
 
 .table {
@@ -292,7 +295,7 @@ table tbody tr:hover {
   transition: all 0.3s ease;
 }
 .filtericon:hover {
-  background-color: #0153e0;
+  background-color: #4062CA;
   transform: scale(1.04);
 }
 .filtericon img {
@@ -467,7 +470,8 @@ input[type='checkbox']:checked {
 }
 .rescheduleButton:hover {
   transform: scale(1.04);
-  background-color: #0153e0;
+  background-color: #4062CA;
+
 }
 
 .archiveButton {
@@ -521,7 +525,7 @@ input[type='checkbox']:checked {
 } */
 
 .removeButton {
-  background-color: #ee4747;
+  background-color: #D91515;
   color: white;
   border: none;
   padding: 0px 20px;
@@ -534,7 +538,7 @@ input[type='checkbox']:checked {
 }
 
 .removeButton:hover {
-  background-color: #ee4747;
+  background-color: #AD1313;
   transform: scale(1.05);
 }
 
@@ -840,7 +844,8 @@ input[type='checkbox']:checked {
 
   .export_btn:hover {
     transform: scale(1.06);
-    background-color: #0b4cbd;
+    background-color: #4062CA;
+
   }
 }
 
@@ -1134,7 +1139,7 @@ input[type='checkbox']:checked {
 
 .calender:hover {
   transform: scale(1.06);
-  background-color: #0b4cbd;
+  background-color: #4062CA;
 }
 
 .export_btn {
@@ -1151,7 +1156,7 @@ input[type='checkbox']:checked {
 
 .export_btn:hover {
   transform: scale(1.06);
-  background-color: #0b4cbd;
+  background-color: #4062CA;
 }
 
 /* @media only screen and (min-width: 1400px)and (max-width: 2561px) {
