@@ -9,12 +9,12 @@
   font-size: 12px;
   font-weight: 400;
   flex: 1;
-  height: 2.27rem;
+  height: 36px;
   color: var(--input-border-color);
   padding: 0px 14px;
   line-height: 14.5px;
   border: 0;
-  border-radius: 0;
+  border-radius: 8px;
   outline: 0;
 }
 

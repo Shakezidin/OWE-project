@@ -97,7 +97,7 @@
   padding-left: 16px;
   padding-right: 25px;
   padding-bottom: 25px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--input-border-color);
 }
 
 .pending {
@@ -111,7 +111,7 @@
 .pending h3 {
   font-weight: 600;
   font-size: 16px;
-  color: var(--page-heading-color);
+  color: var(--input-border-color);
 }
 
 .notification {
@@ -131,7 +131,7 @@
 
 .filter {
   display: flex;
-  gap: 13px;
+  gap: 0.5rem;
   justify-content: center;
   align-items: center;
 }
@@ -195,8 +195,8 @@
   gap: 35px;
 } */
 .name_icon {
-  height: 24px;
-  width: 24px;
+  height: 28px;
+  width: 28px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -220,8 +220,10 @@
   font-size: 14px;
   font-weight: 600;
   display: flex;
+  align-items: center;
   flex-direction: row;
   gap: 11px;
+  /* color: var(--input-border-color); */
 }
 
 .cust_name {
@@ -292,7 +294,8 @@
 }
 
 .head_det span {
-  font-size: 14px;
+  font-size: 12px;
+  /* color: var(--input-border-color); */
   font-weight: 400;
   word-break: break-all;
 }
@@ -301,8 +304,8 @@
   border: none;
   border-radius: 50px;
   background-color: var(--primary-light-color);
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   place-items: center;
   flex-shrink: 0;
@@ -311,6 +314,12 @@
   color: var(--primary-color);
   justify-content: center;
   align-items: center;
+}
+
+.accordian_btn svg{
+  height: 20px;
+  width: 18px;
+  stroke-width: 2.5;
 }
 
 .accordian_btn:focus-within {
@@ -453,7 +462,8 @@
 }
 .time_slot_label{
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--input-border-color);
 }
 
 .slotContainer{
