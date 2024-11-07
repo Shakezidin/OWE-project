@@ -119,6 +119,12 @@ BEGIN
             SELECT leads_info.* FROM leads_info
             INNER JOIN hierarchy ON hierarchy.user_id = leads_info.created_by;
     END IF;
+
+    -- manage access for appointment setter, finance admin, account executive, account manager, db user and partner
+    IF v_user_role IN ('Appointment Setter', 'Finance Admin', 'Account Executive', 'Account Manager', 'DB User', 'Partner') THEN
+        RETURN QUERY
+            SELECT * FROM leads_info WHERE leads_info.created_by = p_user_id;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;
 

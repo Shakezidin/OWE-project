@@ -55,6 +55,7 @@
 .customFont,
 .customLeft {
   font-weight: 600;
+  color: var(--input-border-color);
 }
 .vertical2 {
   display: flex;
@@ -135,7 +136,7 @@
 }
 
 .cardContent {
-  padding: 16px;
+  padding: 16px 0;
 }
 
 .totalLeads {
@@ -166,6 +167,7 @@
 
 .legendText {
   font-size: 10.71px;
+  color: var(--input-border-color);
 }
 
 /* Shams */
@@ -209,13 +211,12 @@
   border: 1px solid #292B2E !important;
   color: #292B2E;
   background-color: #fff;
-  padding: 5px;
+  padding: 8px 12px;
   border-radius: 26px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
   font-weight: 500;
   padding-right: 12px;
   height: 36px;
@@ -337,8 +338,8 @@ table tbody tr:hover {
   padding: 5px;
   height: 36px;
   width: 399px !important;
-  margin-right: 20px;
-  box-shadow:1px solid #007bff ;
+  margin-right: 11px;
+  box-shadow:1px solid #007bff;
 }
 .searchBar:hover{
   border: 2px solid #007bff;

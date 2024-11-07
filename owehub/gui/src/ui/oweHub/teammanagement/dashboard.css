@@ -363,10 +363,10 @@
 .dash-newteam .create {
   background-color: #ffffff;
   color: #377cf6;
-  padding: 6.33px, 8.13px, 6.33px, 8.13px;
   border: 1px solid #377cf6;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 24px;
+  height: 36px;
   cursor: pointer;
   font-size: 12px;
   transition: transform 0.3s ease;

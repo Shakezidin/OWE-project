@@ -942,8 +942,6 @@ const LibraryHomepage = () => {
           </div>
 
           <div className={`${styles.sm_hide} ${styles.searchWrapper}`}>
-            {/* <IoMdSearch className={styles.search_icon} onClick={SearchHandler} /> */}
-            {/* SEARCHINGGGG */}
             <input
               type="text"
               value={searchValue}

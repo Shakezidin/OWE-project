@@ -68,7 +68,7 @@ span.disbaled-label {
 
 .dropdown-checkbox .dropdown-toggle {
   width: 100%;
-  padding: 7px 1rem;
+  padding: 6px 12px !important;
   border: 1px solid var(--input-border-color);
   font-weight: 500;
   height: auto;
