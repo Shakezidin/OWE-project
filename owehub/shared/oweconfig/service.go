@@ -142,18 +142,25 @@ func prepareConfigFilters(tableName string, dataFilter models.DataRequestBody, f
 				whereEleList = append(whereEleList, strings.ToLower(value.(string)))
 			case "transaction":
 				filtersBuilder.WriteString(fmt.Sprintf(
-					"regexp_replace(transaction, '<[^>]*>', '', 'g') %s $%d",
+					"LOWER(regexp_replace(transaction, '<[^>]*>', '', 'g')) %s LOWER($%d)",
 					operator,
 					len(whereEleList)+1,
 				))
 				whereEleList = append(whereEleList, value)
 			case "product_code":
 				filtersBuilder.WriteString(fmt.Sprintf(
-					"regexp_replace(product_code, '<[^>]*>', '', 'g') %s $%d",
+					"LOWER(regexp_replace(product_code, '<[^>]*>', '', 'g')) %s LOWER($%d)",
 					operator,
 					len(whereEleList)+1,
 				))
 				whereEleList = append(whereEleList, value)
+			case "notes":
+				filtersBuilder.WriteString(fmt.Sprintf(
+					"LOWER(regexp_replace(notes, '<[^>]*>', '', 'g')) %s LOWER($%d)",
+					operator,
+					len(whereEleList)+1,
+				))
+				whereEleList = append(whereEleList, strings.ToLower(value.(string)))
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)

@@ -41,6 +41,7 @@ export default [
     type: 'string',
     isCheckbox: false,
   },
+  
   {
     name: 'rep_1',
     displayName: 'Rep 1',
