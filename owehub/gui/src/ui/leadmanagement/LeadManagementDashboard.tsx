@@ -231,7 +231,7 @@ const renderActiveShape = (props: any) => {
             x={cx}
             dy={index ? 15 : 0}
             style={{
-              fontSize: '12.07px',
+              fontSize: '14px',
               wordBreak: 'break-word',
               fontWeight: 550,
             }}
@@ -269,7 +269,7 @@ const renderActiveShape = (props: any) => {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-        style={{ fontSize: '12.07px' }}
+        style={{ fontSize: '14px' }}
       >
         {`${value}`}
       </text>
@@ -279,7 +279,7 @@ const renderActiveShape = (props: any) => {
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
-        style={{ fontSize: '12.07px' }}
+        style={{ fontSize: '14px' }}
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -313,7 +313,7 @@ const CustomTooltip = ({
         <p
           style={{
             margin: '2px 0',
-            color: '#57B93A',
+            color: '#21BC27',
             fontWeight: 'bold',
             fontSize: 11,
           }}
@@ -321,7 +321,7 @@ const CustomTooltip = ({
         <p
           style={{
             margin: '2px 0',
-            color: '#CD4040',
+            color: '#D91515',
             fontWeight: 'bold',
             fontSize: 11,
           }}
@@ -595,10 +595,10 @@ const LeadManagementDashboard = () => {
   }, [isAuthenticated, selectedDates]);
 
   const defaultData: DefaultData = {
-    NEW: { name: 'NEW', value: 0, color: '#52B650' },
-    PROGRESS: { name: 'PROGRESS', value: 0, color: '#81A6E7' },
-    DECLINED: { name: 'DECLINED', value: 0, color: '#CD4040' },
-    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#FF832A' },
+    NEW: { name: 'NEW', value: 0, color: '#21BC27' },
+    PROGRESS: { name: 'PROGRESS', value: 0, color: '#377CF6' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#D91515' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#EC9311' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -1709,14 +1709,14 @@ const LeadManagementDashboard = () => {
                   <Line
                     type="monotone"
                     dataKey="won"
-                    stroke="#57B93A"
+                    stroke="#21BC27"
                     strokeWidth={2}
                     name="won"
                   />
                   <Line
                     type="monotone"
                     dataKey="lost"
-                    stroke="#CD4040"
+                    stroke="#D91515"
                     strokeWidth={2}
                     name="lost"
                   />
