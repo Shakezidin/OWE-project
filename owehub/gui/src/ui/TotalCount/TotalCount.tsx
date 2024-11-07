@@ -670,7 +670,7 @@ const TotalCount: React.FC = () => {
           <div className="order-mob-3">
             <DropdownCheckBox
               label={selectedDealer.length === 1 ? 'Partner' : 'Partners'}
-              placeholder={'Search partners'}
+              placeholder={'Search Partners'}
               selectedOptions={selectedDealer}
               options={dealerOption}
               onChange={(val) => {
