@@ -78,6 +78,10 @@ type PerfomanceResponse struct {
 	Days_Pending_Install     string `json:"days_install,omitempty"`
 	Days_Pending_PTO         string `json:"days_pto,omitempty"`
 	Days_Pending_Project_Age string `json:"days_project_age,omitempty"`
+	Days_Pending_Cad_Design  string `json:"days_cad_design,omitempty"`
+	Days_Pending_Permitting  string `json:"days_permitting,omitempty"`
+	Days_Pending_Roofing     string `json:"days_roofing,omitempty"`
+	Days_Pending_Inspection  string `json:"days_inspection,omitempty"`
 }
 
 type PerfomanceListResponse struct {
