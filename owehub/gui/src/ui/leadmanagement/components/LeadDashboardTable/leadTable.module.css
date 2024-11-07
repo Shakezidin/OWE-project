@@ -61,7 +61,7 @@
 }
 
 .name {
-  color: #101828;
+  color: var(--input-border-color);
   font-weight: 600;
   font-size: 14px;
 }
@@ -69,6 +69,7 @@
 .ids {
   font-size: 12px;
   font-weight: 500;
+  color: var(--input-border-color);
 }
 
 .info {
@@ -118,7 +119,7 @@
   border: 1px solid #377cf6;
   color: #377cf6;
   display: flex;
-  font-size: 19px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
 }

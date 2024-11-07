@@ -163,6 +163,14 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
   color: #263747 !important;
 }
 
+/* scheduler calendar css  */
+.rdp-month_caption{
+  color: var(--input-border-color);
+}
+.styles_day_picker__uFN-L table tbody tr td{
+  font-size: 14px;
+}
+
 /* color config */
 :root {
   --white-color: #fff;

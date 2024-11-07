@@ -372,8 +372,9 @@ export const DashboardPage: React.FC = () => {
                   style={{
                     color: '#292B2E',
                     border: '1px solid #292B2E',
-                    padding: '8px 17px',
+                    padding: '8px 12px',
                     gap: '1rem',
+                    height: "36px"
                   }}
                 >
                   <span

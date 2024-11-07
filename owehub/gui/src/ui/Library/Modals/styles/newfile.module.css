@@ -5,15 +5,15 @@
 
 .newfile_botton {
   /* width: 74px; */
-  /* height: 36px; */
+  height: 36px;
   border-radius: 8px;
   /* border: 1px solid #AFAFAF; */
   /* color: #3E3E3E; */
   border: none;
-  color: #FFFFFF;
- /* background-color: #fff; */
- background-color: #377CF6;
-  font-size: 14px;
+  color: #ffffff;
+  /* background-color: #fff; */
+  background-color: #377cf6;
+  font-size: 12px;
   font-weight: 500;
   line-height: 21px;
   font-family: 'Poppins';
@@ -25,7 +25,7 @@
 .newfile_botton:hover {
   /* color: #fff;
   background-color: #377cf6; */
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.07);
   border: none;
 }
@@ -76,7 +76,7 @@
 .dropdownItem {
   padding: 10px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 21px;
   color: var(--input-border-color);
