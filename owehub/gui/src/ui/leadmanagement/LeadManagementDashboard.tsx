@@ -40,7 +40,7 @@ import {
   startOfYear,
   subDays,
 } from 'date-fns';
-import HistoryRedirect from '../Library/HistoryRedirect';
+import HistoryRedirect from './HistoryRedirect';
 import useAuth from '../../hooks/useAuth';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
