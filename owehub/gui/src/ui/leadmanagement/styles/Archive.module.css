@@ -228,7 +228,7 @@ table tbody tr:hover {
 }
 
 .filtericon:hover {
-  background-color: #005eff;
+  background-color: #4062CA;
   transform: scale(1.04);
 }
 
@@ -306,12 +306,12 @@ table tbody tr:hover {
 }
 
 input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
+  width: 18px !important;
+  height: 18px !important;
   border-radius: 100px;
   border: 1px solid #797979;
   cursor: pointer;
-  transition: border 0.1s ease;
+  transition: border 0.2s ease;
 }
 
 input[type='checkbox']:hover {
@@ -319,8 +319,8 @@ input[type='checkbox']:hover {
 }
 
 input[type='checkbox']:checked {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
+  background-color: #377CF6;
+  border-color: #377CF6;
 }
 
 .cardHeaderFirst {
@@ -354,7 +354,7 @@ input[type='checkbox']:checked {
 }
 
 .rescheduleButton {
-  background-color: #2979ff;
+  background-color: #377CF6;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -365,7 +365,7 @@ input[type='checkbox']:checked {
 }
 
 .rescheduleButton:hover {
-  background-color: #1565c0;
+  background-color: #4062CA;
 }
 
 .archiveButton {
@@ -432,7 +432,7 @@ input[type='checkbox']:checked {
 }
 
 .archieveButtonX {
-  background-color: #ee4747;
+  background-color: #D91515;
   border: 1px solid #929292;
   padding: 0px 0px 0px 0px;
   border-radius: 26px;
@@ -448,11 +448,12 @@ input[type='checkbox']:checked {
 
 .archieveButtonX:hover {
   transform: scale(1.05);
+  background-color: #AD1313;
 }
 
 .archieveButtonA {
   color: #ffffff;
-  background-color: #005eff;
+  background-color: #377CF6;
   border: none;
   padding: 0px 0px 0px 0px;
   border-radius: 26px;
@@ -467,11 +468,11 @@ input[type='checkbox']:checked {
 
 .archieveButtonA:hover {
   transform: scale(1.05);
-  background-color: #013793;
+  background-color: #4062CA;
 }
 
 .archieveButton:hover {
-  background-color: #ee4747;
+  background-color: #AD1313;
   transform: scale(1.09);
 }
 
@@ -491,7 +492,7 @@ input[type='checkbox']:checked {
 }
 
 .UnArchiveButton:hover {
-  background-color: #377cf6;
+  background-color: #4062CA;
   transform: scale(1.05);
 }
 
@@ -714,7 +715,7 @@ input[type='checkbox']:checked {
   }
 
   .archieveButton:hover {
-    background-color: #ee4747;
+    background-color: #AD1313;
     transform: scale(1.05);
   }
 
@@ -734,7 +735,7 @@ input[type='checkbox']:checked {
   }
 
   .UnArchiveButton:hover {
-    background-color: #377cf6;
+    background-color: #4062CA;
     transform: scale(1.05);
   }
 
@@ -792,7 +793,7 @@ input[type='checkbox']:checked {
   }
 
   .UnArchiveButton:hover {
-    background-color: #377cf6;
+    background-color: #4062CA;
     transform: scale(1.05);
   }
 }
@@ -832,7 +833,7 @@ input[type='checkbox']:checked {
   }
 
   .UnArchiveButton:hover {
-    background-color: #377cf6;
+    background-color: #4062CA;
     transform: scale(1.05);
   }
 
@@ -983,7 +984,7 @@ input[type='checkbox']:checked {
 
 .calender:hover {
   transform: scale(1.06);
-  background-color: #0b4cbd;
+  background-color: #4062CA;
 }
 
 .date_calendar {

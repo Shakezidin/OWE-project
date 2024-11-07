@@ -206,8 +206,8 @@
 
 .calender {
   background-color: #377cf6;
-  width: 32px;
-  height: 32px;
+  width: 36.01px;
+  height: 36.01px;
   border-radius: 8px;
   display: flex;
   justify-content: center;
@@ -260,7 +260,7 @@
 .lead_his_remove {
   width: 135px;
   height: 38px;
-  background-color: #ee4747;
+  background-color: #D91515;
   font-weight: 500;
   font-size: 16px;
   color: #fff;
@@ -269,12 +269,12 @@
   justify-content: center;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.55s ease;
 }
 
 .lead_his_remove:hover {
   transform: scale(1.04);
-  background-color: #f21010;
+  background-color: #AD1313;
 }
 
 .hist_checkbox_count {

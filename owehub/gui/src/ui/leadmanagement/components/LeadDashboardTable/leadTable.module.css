@@ -153,7 +153,7 @@
 }
 
 .create_proposal:hover {
-  background-color: #043891;
+  background-color: #4062CA;
   transform: scale(1.06);
 }
 
@@ -168,7 +168,7 @@
 }
 
 .slidebutton:hover {
-  color: #377cf6;
+  color: #4062CA;
   text-decoration: underline;
 }
 

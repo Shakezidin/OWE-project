@@ -27,21 +27,22 @@
   cursor: pointer;
   font-size: 12px;
   padding: 5px 0;
+
   transition:
     color 0.3s ease,
     transform 0.3s ease;
 }
 
 .pr-dropdown li:hover {
-  color: #2b63f1;
+ color: #4062CA;
   transform: scale(1.04);
 }
 
 .sort_btn1 {
-  background-color: #4372e9;
+  background-color: #377cf6;
   border: none;
-  height: 32px;
-  width: 32px;
+  height: 36px;
+  width: 36px;
   border-radius: 8px;
   padding: 5px;
   color: #fff;
@@ -50,7 +51,8 @@
 }
 .sort_btn1:hover {
   transform: scale(1.04);
-  background-color: #0b4cbd;
+  background-color: #4062CA;
+
 }
 
 .active_sorting {
@@ -112,11 +114,12 @@
 }
 .lead-reset-calender:hover {
   transform: scale(1.06);
-  background-color: #1a44ae;
+  background-color: #4062CA;
+
 }
 
 .lead-apply-calender {
-  background-color: #2b63f1;
+  background-color: #377cf6;
   color: #fff;
   font-size: 12px;
   font-weight: 500;
@@ -128,7 +131,8 @@
 }
 .lead-apply-calender:hover {
   transform: scale(1.06);
-  background-color: #1a44ae;
+  background-color: #4062CA;
+
 }
 
 @media screen and (max-width: 767px) {
