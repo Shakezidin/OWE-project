@@ -24,6 +24,14 @@ func getInt64(item map[string]interface{}, key string) int64 {
 
 func getString(item map[string]interface{}, key string) string {
 	if value, ok := item[key].(string); ok {
+		// Check if the key is "state" and if the value contains "::"
+		if key == "state" && strings.Contains(value, "::") {
+			// Split the value by "::" and take the second part
+			parts := strings.SplitN(value, "::", 2)
+			if len(parts) > 1 {
+				return strings.TrimSpace(parts[1])
+			}
+		}
 		return value
 	}
 	return ""
@@ -124,6 +132,27 @@ func prepareConfigFilters(tableName string, dataFilter models.DataRequestBody, f
 				whereEleList = append(whereEleList, value)
 			case "credit_date":
 				filtersBuilder.WriteString(fmt.Sprintf("credit_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf(
+					"LOWER(SUBSTRING(state FROM POSITION('::' IN state) + 2 FOR LENGTH(state))) %s $%d",
+					operator,
+					len(whereEleList)+1,
+				))
+				whereEleList = append(whereEleList, strings.ToLower(value.(string)))
+			case "transaction":
+				filtersBuilder.WriteString(fmt.Sprintf(
+					"regexp_replace(transaction, '<[^>]*>', '', 'g') %s $%d",
+					operator,
+					len(whereEleList)+1,
+				))
+				whereEleList = append(whereEleList, value)
+			case "product_code":
+				filtersBuilder.WriteString(fmt.Sprintf(
+					"regexp_replace(product_code, '<[^>]*>', '', 'g') %s $%d",
+					operator,
+					len(whereEleList)+1,
+				))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
