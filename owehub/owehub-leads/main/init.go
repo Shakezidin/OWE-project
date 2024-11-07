@@ -49,7 +49,7 @@ const (
 	AppVersion = "1.0.0"
 )
 
-var leadsRoleGroup = []types.UserGroup{types.GroupAdminDealer, types.GroupSalesManagement}
+var leadsRoleGroup = []types.UserGroup{types.GroupEveryOne}
 
 var apiRoutes = appserver.ApiRoutes{
 	{

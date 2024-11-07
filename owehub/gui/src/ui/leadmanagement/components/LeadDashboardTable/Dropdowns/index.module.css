@@ -33,6 +33,7 @@
   border-radius: 6px;
   cursor: pointer;
   border-radius: 50%; 
+  transform: rotate(90deg);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: #377cf6;
   background-color: transparent;
@@ -42,7 +43,8 @@
 
 .verticalDots2:hover {
   background-color: #d6e5ff;
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(90deg);
+
 }
 
 .filtericonLead{
@@ -66,7 +68,7 @@
 }
 
 .filtericonLead:hover {
-  background-color: #013ea6;
+  background-color: #4062CA;
   transform: scale(1.1);
 }
 
@@ -189,7 +191,7 @@
   transition: all 0.3s ease;
 }
 .filtericonLead:hover {
-  background-color: #013ea6;
+  background-color: #4062CA;
   transform: scale(1.1);
 }
 
@@ -259,6 +261,8 @@
 
 .DropActionX:hover {
   transition: all 0.3s ease;
+  background-color: #4062CA;
+
   transform: scale(1.1);
 }
 

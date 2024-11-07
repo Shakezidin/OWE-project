@@ -433,7 +433,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
   const statusStyles = {
     "In Progress": {
-      backgroundColor: "#B459FC",
+      backgroundColor: "#EC9311",
       color: "#fff"
     },
     "Completed": {
