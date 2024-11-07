@@ -69,6 +69,12 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	milestoneData := models.GetMilestoneDataResp{}
 
+	if len(dataReq.DealerNames) <= 0 {
+		log.FuncErrorTrace(0, "No dealer name selected")
+		appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, milestoneData, RecordCount)
+		return
+	}
+
 	var saleCountMap = make(map[string]int)
 	var ntpCountMap = make(map[string]int)
 	var installCountMap = make(map[string]int)
