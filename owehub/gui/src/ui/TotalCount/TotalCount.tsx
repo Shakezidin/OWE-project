@@ -170,7 +170,7 @@ const TotalCount: React.FC = () => {
         'Sale Date',
       ];
       setIsExporting(true);
-      console.log(selectedDate, 'optionsss slected');
+      
       const data = await postCaller('get_milestone_data_csv_download', {
         dealer_names: selectedDealer.map((dealer) => dealer.value),
         start_date,
