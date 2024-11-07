@@ -1182,6 +1182,8 @@ input[type='checkbox']:checked {
 }
 .ArrowD {
   position: relative;
+  height: 36px;
+  width: 36px;
 }
 .upKeys_DownKeys {
   color: #2979ff;
