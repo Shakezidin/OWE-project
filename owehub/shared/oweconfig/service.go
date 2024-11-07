@@ -135,7 +135,7 @@ func prepareConfigFilters(tableName string, dataFilter models.DataRequestBody, f
 				whereEleList = append(whereEleList, value)
 			case "state":
 				filtersBuilder.WriteString(fmt.Sprintf(
-					"LOWER(SUBSTRING(state FROM POSITION('::' IN state) + 2 FOR LENGTH(state))) %s $%d",
+					"LOWER(TRIM(SUBSTRING(state FROM POSITION('::' IN state) + 2 FOR LENGTH(state)))) %s $%d",
 					operator,
 					len(whereEleList)+1,
 				))
