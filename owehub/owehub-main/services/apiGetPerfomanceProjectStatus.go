@@ -462,10 +462,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			// continue
 		}
 
-		// agngRpForUserId, _, err := agngRpData(UniqueId)
-		// if err != nil {
-		// 	log.FuncErrorTrace(0, "Failed to get agngRpForUserId for Unique ID: %v err: %v", UniqueId, err)
-		// }
 		surveyColor, SiteSurveyCountT, SiteSurevyDate, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
@@ -503,11 +499,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InspectionsColour: inspectionColor,
 			ActivationColour:  activationColor,
 			NTPdate:           ntpD,
-			// Days_Pending_NTP:         agngRpForUserId.Days_Pending_NTP,
-			// Days_Pending_Permits:     agngRpForUserId.Days_Pending_Permits,
-			// Days_Pending_Install:     agngRpForUserId.Days_Pending_Install,
-			// Days_Pending_PTO:         agngRpForUserId.Days_Pending_PTO,
-			// Days_Pending_Project_Age: agngRpForUserId.Days_Pending_Project_Age,
 		}
 		uniqueIds = append(uniqueIds, UniqueId)
 		switch dataReq.SelectedMilestone {
@@ -547,16 +538,16 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 		}
 	}
-	log.FuncErrorTrace(0, "all unique ids: %s", uniqueIds)
+
 	agngRpForUserId, err := agngRpData(uniqueIds)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get agngRpForUserId for Unique ID: %v err: %v", uniqueIds, err)
 	}
-	// FilteredIds, err := FilterAgRpData(dataReq)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+	FilteredIds, err := FilterAgRpData(dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
 
-	// }
+	}
 
 	for i := range perfomanceList.PerfomanceList {
 		if exists, ok := agngRpForUserId[perfomanceList.PerfomanceList[i].UniqueId]; ok {
@@ -572,21 +563,18 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			perfomanceList.PerfomanceList[i].Days_Pending_Project_Age = exists.Days_Pending_Project_Age
 		}
 	}
-	// var filteredData []models.PerfomanceResponse
+	var filteredData []models.PerfomanceResponse
 
-	// if len(FilteredIds) != 0 {
+	if len(FilteredIds) != 0 {
 
-	// 	for i := range perfomanceList.PerfomanceList {
-	// 		if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
-	// 			filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
-	// 		}
-	// 	}
-	// 	log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
-	// }
+		for i := range perfomanceList.PerfomanceList {
+			if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
+				filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
+			}
+		}
+		log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
+	}
 
-	// if len(filteredData) != 0 {
-	// 	perfomanceList.PerfomanceList = filteredData
-	// }
 	switch dataReq.SelectedMilestone {
 	case "survey":
 		RecordCount = SiteSurveyCount
@@ -605,7 +593,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	case "activation":
 		RecordCount = ActivationCount
 	}
-
+	if len(filteredData) != 0 {
+		perfomanceList.PerfomanceList = filteredData
+		RecordCount = int64(len(perfomanceList.PerfomanceList))
+	}
 	paginatedData := PaginateData(perfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
 
@@ -1372,7 +1363,7 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 
 		if pndngPermits, ok := agRp["days_pending_permits"]; ok {
-			resp1.Days_Pending_Permits = pndngPermits.(string)
+			resp1.Days_Pending_Permits = fmt.Sprintf("%s days pending", pndngPermits.(string))
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngPermits: %v", err)
 		}
@@ -1384,13 +1375,15 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 
 		if pndngPto, ok := agRp["days_pending_pto"]; ok {
-			resp1.Days_Pending_PTO = pndngPto.(string)
+			resp1.Days_Pending_PTO = fmt.Sprintf("%s days pending", pndngPto.(string))
+
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngPto: %v", err)
 		}
 
 		if prjAge, ok := agRp["project_age"]; ok {
-			resp1.Days_Pending_Project_Age = prjAge.(string)
+			resp1.Days_Pending_Project_Age = fmt.Sprintf("%s days pending", prjAge.(string))
+
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
 		}
