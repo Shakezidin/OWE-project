@@ -19,7 +19,7 @@ export const DealerCreditColumn: Column[] = [
   {
     name: 'credit_amount',
     displayName: 'Credit Amt',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {

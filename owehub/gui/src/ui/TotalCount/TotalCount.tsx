@@ -36,6 +36,7 @@ import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -174,6 +175,12 @@ const TotalCount: React.FC = () => {
         dealer_names: selectedDealer.map((dealer) => dealer.value),
         start_date,
         end_date,
+        state:
+        selectedStateOption.value === 'All'
+          ? ''
+          : selectedStateOption.value === ''
+            ? ''
+            : selectedStateOption.value,
       });
       if (data.status > 200) {
         toast.error(data.message);
@@ -485,7 +492,7 @@ const TotalCount: React.FC = () => {
     const partnerNames = selectedDealer.map((dealer) => dealer.value);
 
     if (
-      selectedDealer.length &&
+      
       selectedReportOption?.value &&
       selectedOption.value
     ) {
@@ -569,7 +576,6 @@ const TotalCount: React.FC = () => {
     selectedDealer,
   ]);
 
-
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Update `isMobile` when the window is resized
@@ -582,7 +588,6 @@ const TotalCount: React.FC = () => {
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
     height: '236px',
-    
   };
 
   console.log(mappedPeriodOptions, 'optionssss');
@@ -676,7 +681,8 @@ const TotalCount: React.FC = () => {
 
           <div className="perf-export-btn order-mob-1 relative pipline-export-btn ">
             <button
-              data-tooltip-id="export"
+              data-tooltip-id="export-tooltip" // Match with ReactTooltip's id
+              data-tooltip-content="Export" // Add content directly here
               onClick={exportCsv}
               disabled={isExportingData}
               className={`performance-exportbtn flex items-center justify-center totalcount-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -687,11 +693,27 @@ const TotalCount: React.FC = () => {
                 <LuImport size={20} />
               )}
             </button>
+            <ReactTooltip
+              id="export-tooltip" // Make sure this id matches the button's data-tooltip-id
+              place="bottom"
+              style={{
+                zIndex: 20,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+              }}
+              offset={8}
+            />
           </div>
         </div>
       </div>
       <div>
-        <TotalCard data={data} isLoading={isLoading} selectOption={selectedOption} />
+        <TotalCard
+          data={data}
+          isLoading={isLoading}
+          selectOption={selectedOption}
+        />
       </div>
       <div className="report-graphs">
         {graphs.map((graph, index) => (
@@ -707,7 +729,7 @@ const TotalCount: React.FC = () => {
                 <MicroLoader />{' '}
               </div>
             ) : (
-              <div  className='main-graph' style ={stylesGraph} >
+              <div className="main-graph" style={stylesGraph}>
                 <ResponsiveContainer
                   width="100%"
                   height="100%"
