@@ -354,17 +354,41 @@ table tbody tr:hover {
   margin-right: 5px;
   display: flex;
   align-items: center;
-  color: #000000;
+  color: #292B2E;
   height: 12px !important;
   width: 12px !important;
 }
+.searchBar:hover .searchInput::placeholder,
+.searchBar:focus-within .searchInput::placeholder {
+  color: #377CF6 !important;
+}
+
+.searchBar:hover .searchIcon img,
+.searchBar:focus-within .searchIcon img {
+  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(100%);
+}
+
+
 
 .searchInput {
   border: none;
   outline: none;
   width: 100%;
+  color: #292B2E;
   padding: 2.5px;
+  font-weight: 500;
   border-radius: 5px;
+}
+.searchInput::placeholder {
+  color: gray;
+  transition: color 0.3s ease;
+}
+
+
+.searchInput:focus::placeholder,
+.searchInput:hover::placeholder {
+  color: #377CF6;
+  font-weight: 500;
 }
 
 
