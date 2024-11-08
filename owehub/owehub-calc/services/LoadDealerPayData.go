@@ -112,7 +112,11 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	NetEpc := dlrPayData.NetEpc
 	financeType := dlrPayData.FinanceType
 	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
-	mktFeeStr := adderBreakDown["marketing_fee"]
+
+	mktFeeStr := getString(adderBreakDown, "marketing_fee")
+	Referral := getString(adderBreakDown, "referral")
+	Rebate := getString(adderBreakDown, "rebate")
+
 	mktFee, err := strconv.ParseFloat(mktFeeStr, 64)
 	if err != nil {
 		mktFee = 0.0
@@ -159,13 +163,10 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["contract_date"] = ContractDate
 	outData["finance_type"] = financeType
 	outData["ntp_date"] = NtpCompleteDate
+	outData["marketing_fee"] = mktFee
+	outData["referral"] = Referral
+	outData["rebate"] = Rebate
 
-	// outData["ntp_complete_date"] = NtpCompleteDate
-	// outData["pv_complete_date"] = PvComplettionDate
-	// outData["total_gross_commission"] = totalGrossCommission
-	// outData["total_net_commission"] = totalNetCommission
-	// outData["m1_payment"] = m1Payment
-	// outData["m2payment"] = m2Payment
 	return outData, err
 }
 
@@ -270,4 +271,11 @@ func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn str
 	// Build the query
 	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s = %s", tableName, strings.Join(sets, ", "), idColumn, idValueStr)
 	return query, nil
+}
+
+func getString(item map[string]string, key string) string {
+	if value, ok := item[key]; ok {
+		return value
+	}
+	return ""
 }

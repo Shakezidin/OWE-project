@@ -332,6 +332,7 @@ const FilterModal: React.FC<TableProps> = ({
                           type={type}
                           label="Data"
                           name="Data"
+                         
                           onKeyUp={(e) => {
                             if (e.key === 'Enter') {
                               applyFilter();

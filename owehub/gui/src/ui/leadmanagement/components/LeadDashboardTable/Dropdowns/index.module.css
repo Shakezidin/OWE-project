@@ -100,7 +100,7 @@
   padding: 7px 10px;
   cursor: pointer;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: normal;
   /* text-align: justify !important; */
   width: 120px;
   word-wrap: break-word; /* Ensures long words break into new lines */

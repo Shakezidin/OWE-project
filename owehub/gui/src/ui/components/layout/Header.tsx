@@ -231,7 +231,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {openIcon ? (
                       <img src={ICONS.upperIcon} alt="" />
                     ) : (
-                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
+                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem', color: "#292B2E" }} />
                     )}
                   </div>
                 </div>

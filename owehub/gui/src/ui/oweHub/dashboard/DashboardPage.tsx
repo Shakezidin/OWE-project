@@ -75,7 +75,7 @@ export const DashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [search, setSearch] = useState('');
   const [isExportingData, setIsExporting] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const [count, setTotalCount] = useState<number>(0);
   const [selectedOption2, setSelectedOption2] = useState<string>(
