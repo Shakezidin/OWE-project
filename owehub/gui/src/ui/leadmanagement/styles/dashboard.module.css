@@ -225,11 +225,11 @@
 
 .button:hover {
   background-color: #ddebff;
-  border-color: var(--primary-color) !important;
+  /* border-color: var(--primary-color) !important; */
 }
 
 .button:hover p, .button:hover span{
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
 }
 
 /* .displayStatus{
@@ -306,7 +306,7 @@ table tbody tr:hover {
 }
 .filtericon:hover {
   background-color: #4062CA;
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 .filtericon img {
   height: 17px;
@@ -503,7 +503,7 @@ input[type='checkbox']:checked {
   transition: all 0.3s ease;
 }
 .rescheduleButton:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
   background-color: #4062CA;
 
 }
@@ -877,7 +877,7 @@ input[type='checkbox']:checked {
   }
 
   .export_btn:hover {
-    transform: scale(1.06);
+    transform: scale(1.05);
     background-color: #4062CA;
 
   }
@@ -1144,7 +1144,7 @@ input[type='checkbox']:checked {
 }
 
 .monthSelect option:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .monthSelect {
@@ -1172,7 +1172,7 @@ input[type='checkbox']:checked {
 }
 
 .calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1189,7 +1189,7 @@ input[type='checkbox']:checked {
 }
 
 .export_btn:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1244,7 +1244,7 @@ input[type='checkbox']:checked {
   transition: all 500ms ease;
 }
 .ButtonAbovearrov:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #e5e5e5;
   border: none;
 }
