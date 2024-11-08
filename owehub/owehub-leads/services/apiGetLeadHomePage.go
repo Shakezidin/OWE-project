@@ -502,12 +502,10 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		salesRepName, ok := item["sales_rep_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get sales rep name from leads info Item: %+v\n", item)
-			continue
 		}
 		leadSource, ok := item["lead_source"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get lead source from leads info Item: %+v\n", item)
-			continue
 		}
 
 		//
