@@ -13,6 +13,7 @@ import (
 	apiHandler "OWEApp/owehub-leads/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/db"
+	emailClient "OWEApp/shared/email"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	timerHandler "OWEApp/shared/timer"
@@ -39,6 +40,7 @@ type CfgFilePaths struct {
 	DbConfJsonPath      string
 	LeadAppConfJsonPath string
 	OutlookApiConfig    string
+	EmailConfJsonPath   string
 }
 
 var (
@@ -49,7 +51,7 @@ const (
 	AppVersion = "1.0.0"
 )
 
-var leadsRoleGroup = []types.UserGroup{types.GroupAdminDealer, types.GroupSalesManagement}
+var leadsRoleGroup = []types.UserGroup{types.GroupEveryOne}
 
 var apiRoutes = appserver.ApiRoutes{
 	{
@@ -256,7 +258,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
-
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/docusign_get_signing_url",
+		apiHandler.HandleDocusignGetSigningUrlRequest,
+		false,
+		[]types.UserGroup{},
+	},
 	// WEBHOOKS
 	{
 		strings.ToUpper("GET"),
@@ -418,6 +426,13 @@ func init() {
 	err = leadsService.SetupOutlookWebhooks()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to setup outlook webhooks err %v", err)
+		return
+	}
+
+	/* Initialize email client */
+	err = emailClient.FetchEmailCfg(gCfgFilePaths.EmailConfJsonPath)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to initialize email client err %v", err)
 		return
 	}
 
@@ -626,6 +641,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
 	gCfgFilePaths.LeadAppConfJsonPath = gCfgFilePaths.CfgJsonDir + "leadAppConfig.json"
 	gCfgFilePaths.OutlookApiConfig = gCfgFilePaths.CfgJsonDir + "outlookGraphConfig.json"
+	gCfgFilePaths.EmailConfJsonPath = gCfgFilePaths.CfgJsonDir + "emailConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }

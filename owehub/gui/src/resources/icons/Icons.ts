@@ -6,6 +6,10 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import Searchbar1 from "../assets/search-bar-01.png"
+import searchbar2 from "../assets/images (1).png"
+import searchbar3 from "../assets/images.png"
+import SignModelConfirmation from "../../resources/assets/SignConfirnationModel.png"
 import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
 import scheduleDoor from '../../resources/assets/schedule_door.png';
 import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
@@ -169,6 +173,8 @@ import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
 import LogCalc1 from "../assets/log_calc_1.svg"
 import LogCalc2 from "../assets/log_calc_2.svg"
 import LogCalc3 from "../assets/log_calc_3.svg"
+import MenuDealer from "../assets/SideDealerPay.svg"
+import MenuLead from "../assets/SideLead.svg";
 import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
 
 
@@ -187,6 +193,9 @@ export const ICONS = {
   FILTERACTIVE: filterActive,
   ARCHIVE: archive,
   editIcon: edit,
+  Searchbar1:Searchbar1,
+  searchbar2:searchbar2,
+  searchbar3:searchbar3,
   APPICON: require('../../resources/assets/appicon.png'),
   USER_IMAGE: require('../../resources/assets/user.png'),
   NOTIFICATION: require('../../resources/assets/notification.png'),
@@ -205,6 +214,7 @@ export const ICONS = {
   groupActiveIcon: groupActive,
   DashboardHideArrow:DashboardHideArrow,
   ChecronUpX:ChecronUpX,
+  SignModelConfirmation:SignModelConfirmation,
   DeleteICONBOX: DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,
@@ -358,5 +368,7 @@ export const ICONS = {
   LogCalc1: LogCalc1,
   LogCalc2: LogCalc1,
   LogCalc3: LogCalc1,
+  MenuDealer: MenuDealer,
+  MenuLead: MenuLead,
   ScheduleRepeat: ScheduleRepeat,
 };

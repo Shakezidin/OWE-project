@@ -390,9 +390,9 @@ const Banner: React.FC<BannerProps> = ({
               <div className="searchBox">
                 <input
                   type="text"
-                  className="input"
+                  className="input leaderboard-input"
                   placeholder="Search Partners"
-                  style={{ width: '100%' }}
+                  style={{ width: '100%'}}
                   value={search}
                   disabled={isLoading}
                   onChange={(e) => {
@@ -441,7 +441,7 @@ const Banner: React.FC<BannerProps> = ({
                     )}
                     onChange={() => handleChange(option)}
                   />
-                  {option.label}
+                  <span className='dropdown-text'>{option.label}</span>
                 </div>
               ))}
             </div>

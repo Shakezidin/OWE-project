@@ -68,7 +68,7 @@ const ArchivedPages = () => {
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [leadId, setLeadId] = useState(0);
-  console.log(leadId, "ka malik")
+ 
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const width = useWindowWidth();
@@ -145,7 +145,6 @@ const ArchivedPages = () => {
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
-  console.log(leadsData)
 
 
 
@@ -319,7 +318,7 @@ const ArchivedPages = () => {
                     />
                   )}
                 </span>
-                <span>
+                <span >
                   {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
                   Archived
                 </span>
@@ -639,7 +638,8 @@ const ArchivedPages = () => {
                   {startIndex} -
                   {endIndex > totalcount! ? totalcount : endIndex} of{' '}
                   {totalcount} item
-                </p>           
+                </p>  
+                <div className={styles.PaginationFont}>         
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -650,6 +650,7 @@ const ArchivedPages = () => {
                   perPage={itemsPerPage}
                   onPerPageChange={handlePerPageChange}
                 />
+                </div>
             </div>
           )}
         </div>

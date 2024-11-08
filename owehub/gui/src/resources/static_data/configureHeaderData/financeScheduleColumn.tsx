@@ -29,13 +29,13 @@ export const FinanceScheduleColumn: Column[] = [
   {
     name: 'active_end_date',
     displayName: 'Active End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'finance_fee',
     displayName: 'Finance Fee',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
@@ -53,7 +53,7 @@ export const FinanceScheduleColumn: Column[] = [
   {
     name: 'owe_finance_fee',
     displayName: 'Owe Finance Fee',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {

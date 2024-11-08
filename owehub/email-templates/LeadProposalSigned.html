@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <title>Lead Won!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+  </head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <div
+      style="
+        background-color: #ffffff;
+        margin: 50px auto;
+        padding: 20px;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <img src="https://i.ibb.co/FJcyHcX/image-10-1.png" width="200" />
+
+      <div style="font-size: 16px; color: #555555; line-height: 1.6">
+        <h4 style="margin-bottom: -16px">Hi {{.UserName}},</h4>
+        <p>Congratulations! You just won a lead on the OWEHUB platform!</p>
+        <p>
+          Your lead {{.LeadFirstName}} {{.LeadLastName}} (OWE{{.LeadId}}) has
+          signed the proposal and is now moved to records section on the
+          platform.
+        </p>
+
+        <div
+          style="
+            margin-bottom: 24px;
+            font-size: 16px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            position: relative;
+          "
+        >
+          <p
+            style="
+              position: absolute;
+              top: -25%;
+              right: 8px;
+              background-color: #fff;
+              padding: 0 4px;
+              font-style: italic;
+              color: #ccc;
+            "
+          >
+            On Platform Details
+          </p>
+          <table style="border-spacing: 12px 0; color: #555">
+            <tr>
+              <th style="text-align: left; color: #888">Lead ID</th>
+              <td>OWE{{.LeadId}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; color: #888">First Name</th>
+              <td>{{.LeadFirstName}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; color: #888">Last Name</th>
+              <td>{{.LeadLastName}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; color: #888">Email</th>
+              <td>{{.LeadEmailId}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; color: #888">Phone Number</th>
+              <td>{{.LeadPhoneNumber}}</td>
+            </tr>
+          </table>
+        </div>
+        <p>
+          <a
+            clicktracking="off"
+            href="{{.ProposalPdfUrl}}"
+            style="color: #007bff; border-radius: 5px"
+            >Download Signed Proposal</a
+          >
+        </p>
+
+        <p>
+          If you have any questions or need assistance, feel free to reach out
+          to our IT team at
+          <a
+            clicktracking="off"
+            href="mailto:it@ourworldenergy.com"
+            style="color: #007bff; text-decoration: none"
+            >it@ourworldenergy.com</a
+          >
+        </p>
+      </div>
+      <div
+        style="
+          margin-top: 30px;
+          text-align: center;
+          font-size: 12px;
+          color: #888888;
+        "
+      >
+        <p>&copy; 2024 Our World Energy. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

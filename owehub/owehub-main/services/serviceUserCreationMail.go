@@ -149,6 +149,110 @@ func SendMailToClient(email string, username string) (err error) {
 }
 
 /******************************************************************************
+ * FUNCTION:		SendPasswordResetSuccessMailToClient
+ * DESCRIPTION:     Function to send a password reset confirmation email to the client
+ * INPUT:			email, username
+ * RETURNS:    		error
+ ******************************************************************************/
+ func SendPasswordResetSuccessMailToClient(email string, username string) (err error) {
+
+	log.EnterFn(0, "SendPasswordResetSuccessMailToClient")
+	defer func() { log.ExitFn(0, "SendPasswordResetSuccessMailToClient", nil) }()
+
+	from := mail.NewEmail("OWE", "it@ourworldenergy.com")
+	subject := "Password Reset Successful - Our World Energy"
+	to := mail.NewEmail("", email)
+
+	plainTextContent := ""
+
+	htmlContent := fmt.Sprintf(`
+	<html>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <div
+      style="
+        background-color: #ffffff;
+        margin: 50px auto;
+        padding: 20px;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <div style="text-align: center; padding-bottom: 20px">
+        <img
+          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
+          width="300"
+        />
+        <h1 style="font-size: 24px; color: #333333; margin: 0">
+          Password Reset Successful
+        </h1>
+      </div>
+      <div style="font-size: 16px; color: #555555; line-height: 1.6">
+        <p>Dear %s,</p>
+        <p>
+          Your password has been successfully reset. You can now log in with your new password.
+        </p>
+        <p><strong>Email:</strong> %s</p>
+        <p><strong>New Password:</strong> Welcome@123</p>
+        <p>
+          Please remember to change your password after logging in to keep your account secure.
+        </p>
+        <p>
+          If you have any questions or need further assistance, feel free to contact our IT team at
+          <a 
+            clicktracking="off"
+            href="mailto:it@ourworldenergy.com"
+            style="color: #007bff; text-decoration: none"
+            >it@ourworldenergy.com</a
+          >.
+        </p>
+        <p style="margin-top: 30px">Best regards,</p>
+        <p>OWE IT Team</p>
+      </div>
+      <div
+        style="
+          margin-top: 30px;
+          text-align: center;
+          font-size: 12px;
+          color: #888888;
+        "
+      >
+        <p>&copy; 2024 Our World Energy. All rights reserved.</p>
+        <img
+          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
+          width="300"
+        />
+      </div>
+    </div>
+  </body>
+</html>
+   `,
+		username, email,
+	)
+
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	client := sendgrid.NewSendClient("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")
+	response, err := client.Send(message)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(response.StatusCode)
+		fmt.Println(response.Body)
+		fmt.Println(response.Headers)
+	}
+
+	return nil
+}
+
+
+/******************************************************************************
  * FUNCTION:		SendMailToUserFromUI
  * DESCRIPTION:     function to send the mail
  * INPUT:			email

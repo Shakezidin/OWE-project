@@ -169,7 +169,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             src={ICONS.sidebarLogo}
             alt=""
             style={{
-              height: 45,
+              height: 36,
               alignSelf: 'center',
               display: isTablet ? 'flex' : 'none',
               alignItems: 'center',

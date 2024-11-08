@@ -67,8 +67,8 @@ func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
 	err = callApi(http.MethodPost, url, reqBody, &respBody)
 
 	if err != nil {
-		if strings.Contains(err.Error(), "unauthorized") {
-			return nil, err
+		if strings.Contains(err.Error(), "INVALID_EMAIL_ADDRESS_FOR_RECIPIENT") {
+			return nil, errors.New("invalid email address for docusign recipient")
 		}
 
 		return nil, errors.New("server side error when creating envelope")

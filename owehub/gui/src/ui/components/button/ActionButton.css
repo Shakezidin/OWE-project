@@ -3,13 +3,11 @@
   flex-shrink: 0;
   background-color: var(--primary-color);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   color: #fff;
-  font-size: 13px;
   font-style: normal;
   font-weight: 500;
   line-height: 11.962px;
-  /* 85.446% */
   cursor: pointer;
   height: 40px;
   text-transform: capitalize;
@@ -26,7 +24,7 @@
 
 .cancel {
   border: 1px solid var(--primary-color);
-  color: #000000;
+  color: var(--input-border-color);
   background-color: transparent !important;
   transition: transform 0.3s ease;
 }
@@ -68,7 +66,7 @@
 .iconsSection2 button {
   background: var(--primary-color);
   color: white;
-  border: 1px solid var(--primary-color);
+  border: none !important;
   transition:
     transform 0.3s ease,
     background-color 0.3s ease,

@@ -312,7 +312,7 @@ const Index = () => {
   };
 
   return (
-    <div className="px1" ref={leaderboard}>
+    <div ref={leaderboard}>
       <div ref={topCards} style={{ background: '#f3f3f3' }}>
         <Banner
           selectDealer={selectDealer}

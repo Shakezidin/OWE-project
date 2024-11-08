@@ -35,30 +35,6 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
       <div className="pm-doc-heading">Resources</div>
 
       <div className="pc-links">
-        {/* Podio Link */}
-        {/* <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
-          <div className="link-head">
-            <h3>Podio</h3>
-            <span>Go to Podio Document for more info</span>
-          </div>
-          <div className="link-url">
-            <div  className={`link-tab ${!projectDetail?.podio_link ? 'disable-btn' : ''}`} onClick={() => !isDisabled && handleCopyLink(projectDetail?.podio_link)}>
-              <FiLink />
-            </div>
-            <div  className={`link-tab ${!projectDetail?.podio_link ? 'disable-btn' : ''}`}>
-              <a
-                href={projectDetail?.podio_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => handleClick(e, projectDetail?.podio_link)}
-              >
-                <RiExternalLinkLine />
-              </a>
-            </div>
-          </div>
-          {copied === projectDetail?.podio_link && <span className="copy-message"> Copied!</span>}
-        </div> */}
-
         {/* CAD Link */}
         <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
           <div className="link-head">
@@ -138,7 +114,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 !isDisabled && handleCopyLink(projectDetail?.includeContractUrl)
               }
             >
-              <FiLink />
+              <FiLink style={{color: "#377cf6"}} />
             </div>
             <div
               className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`}
@@ -151,7 +127,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                   handleClick(e, projectDetail?.includeContractUrl)
                 }
               >
-                <RiExternalLinkLine />
+                <RiExternalLinkLine style={{color: "#377cf6"}} />
               </a>
             </div>
           </div>

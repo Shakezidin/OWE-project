@@ -8,15 +8,17 @@ import { UserPatternTableColumn } from '../../../../resources/static_data/UserMa
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import DataNotFound from '../../../components/loader/DataNotFound';
-import { useAppDispatch } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
-
+import { MdOutlineLockReset } from "react-icons/md";
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 interface PartnerProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
   selectAllChecked: boolean;
   selectedRows: Set<number>;
+  handlePasswordReset:(id?:string)=>void;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -29,13 +31,14 @@ const PartnerTable: React.FC<PartnerProps> = ({
   selectedRows,
   setSelectedRows,
   setSelectAllChecked,
+  handlePasswordReset
 }) => {
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const dispatch = useAppDispatch();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-
+  const {role_name} = useAppSelector(state=>state.auth)
   const handleSort = (key: string) => {
     const direction =
       sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc';
@@ -145,7 +148,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
                     {el.description ? el.description : 'N/A'}
                   </td>
                   <td>
-                    <div className="action-icon">
+                    <div className="action-icon" style={{gap:4}}>
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}
@@ -154,12 +157,12 @@ const PartnerTable: React.FC<PartnerProps> = ({
                         <img
                           src={ICONS.deleteIcon}
                           alt=""
-                          style={{ marginRight: '15px' }}
+             
                         />
                       </div>
-                      {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div> */}
+                      {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div className='reset_hover_btn' style={{cursor:"pointer"}} onClick={()=>handlePasswordReset(el.email_id)}>
+                      <MdOutlineLockReset color='#667085' size={24} />
+                    </div>}
                     </div>
                   </td>
                 </tr>

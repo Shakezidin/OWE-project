@@ -36,16 +36,24 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 	defer log.ExitFn(0, "callApi", err)
 
 	// encode request body into buffer
-	err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
-		return err
-	}
 
-	req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create request err %v", err)
-		return err
+	if reqBody != nil {
+		err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to encode request body err %v", err)
+			return err
+		}
+		req, err = http.NewRequest(method, apiUrl, &reqBodyBuff)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
+	} else {
+		req, err = http.NewRequest(method, apiUrl, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request err %v", err)
+			return err
+		}
 	}
 
 	// set headers
@@ -53,10 +61,8 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", docusignAccessToken))
 
 	// send the request
-	log.FuncDebugTrace(0, "Calling docusign api %s with data %+v", apiUrl, reqBody)
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
+	log.FuncDebugTrace(0, "Calling docusign api %s", apiUrl)
+	client := &http.Client{}
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -90,7 +96,7 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 		return err
 	}
 
-	log.FuncDebugTrace(0, "Success from docusign api %s with response %+v", apiUrl, respBody)
+	log.FuncDebugTrace(0, "Success from docusign api %s", apiUrl)
 	return nil
 }
 
@@ -113,8 +119,8 @@ func RegenerateAuthToken() error {
 		respBody  map[string]interface{}
 	)
 
-	log.EnterFn(0, "InitializeDocusignClient")
-	defer log.ExitFn(0, "InitializeDocusignClient", err)
+	log.EnterFn(0, "RegenerateAuthToken")
+	defer log.ExitFn(0, "RegenerateAuthToken", err)
 
 	jwtToken := jwt.New(jwt.SigningMethodRS256)
 

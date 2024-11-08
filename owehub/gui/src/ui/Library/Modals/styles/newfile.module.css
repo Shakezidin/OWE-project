@@ -4,25 +4,29 @@
 }
 
 .newfile_botton {
-  width: 74px;
-  height: 30px;
+  /* width: 74px; */
+  height: 36px;
   border-radius: 8px;
-  border: 1px solid #AFAFAF;
-  color: #3E3E3E;
- background-color: #fff;
-  font-size: 14px;
+  /* border: 1px solid #AFAFAF; */
+  /* color: #3E3E3E; */
+  border: none;
+  color: #ffffff;
+  /* background-color: #fff; */
+  background-color: #377cf6;
+  font-size: 12px;
   font-weight: 500;
   line-height: 21px;
   font-family: 'Poppins';
   cursor: pointer;
-  
+  padding: 8px 12px;
   transition: all 0.3s ease;
 }
 
 .newfile_botton:hover {
-  color: #fff;
-  background-color: #377cf6;
-  transform: scale(1.05);
+  /* color: #fff;
+  background-color: #377cf6; */
+  background-color: #4062ca;
+  transform: scale(1.07);
   border: none;
 }
 .newfilelibrary_uploadbutton_container {
@@ -72,9 +76,12 @@
 .dropdownItem {
   padding: 10px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 21px;
+  color: var(--input-border-color);
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(43, 42, 42, 0.3);
 }
 
 .dropdownItem:hover {

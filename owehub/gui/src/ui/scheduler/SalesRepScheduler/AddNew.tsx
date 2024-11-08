@@ -303,10 +303,10 @@ const AddNew = () => {
   };
 
   return (
-    <>
+    <div className={styles.parent_div}>
       <SalesRepSchedulePage isOpen={filterOpen} handleClose={filterClose} />
       <div className={styles.an_top}>Add New Project</div>
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={` mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
@@ -476,83 +476,88 @@ const AddNew = () => {
                           Roof Type
                           {/* {' '} */}
                         </label>
-                        <Select
-                          options={options1}
-                          value={
-                            formData.roof_type
-                              ? {
-                                  value: formData.roof_type,
-                                  label: formData.roof_type,
-                                }
-                              : null
-                          }
-                          onChange={handleSelectChange}
-                          placeholder="Select Rooftype"
-                          styles={{
-                            control: (baseStyles) => ({
-                              ...baseStyles,
-                              backgroundColor: '#F3F3F3',
-                              border: 'none',
-                              width: '85%',
-                              minHeight: '36px',
-                              borderRadius: '8px',
-                              fontSize: '12px',
-                              '@media only screen and (max-width: 600px)': {
-                                width: '240%',
-                              },
-                              '@media only screen and (min-width: 600px) and (max-width: 820px)':
-                                {
-                                  width: '100%',
-                                },
-                              boxShadow: 'none',
-                              cursor: 'pointer',
-                              marginTop: '19px',
-                            }),
-                            singleValue: (baseStyles) => ({
-                              ...baseStyles,
-                              color: '#292929',
-                              fontWeight: '500',
-                            }),
-                            placeholder: (baseStyles) => ({
-                              ...baseStyles,
-                              color: '#777777',
-                              fontSize: '12px',
-                              padding: '5px',
-                            }),
-                            dropdownIndicator: (baseStyles) => ({
-                              ...baseStyles,
-                              color: '#777777',
-                              '&:hover': {
-                                color: '#292929',
-                              },
-                            }),
-                            indicatorSeparator: () => ({
-                              display: 'none',
-                            }),
-                            option: (baseStyles, state) => ({
-                              ...baseStyles,
-                              fontSize: '13px',
-                              color: state.isSelected ? '#ffffff' : '#000000',
-                              backgroundColor: state.isSelected
-                                ? '#377CF6'
-                                : '#ffffff',
-                              '&:hover': {
-                                backgroundColor: state.isSelected
-                                  ? '#0493CE'
-                                  : '#DDEBFF',
-                              },
-                              cursor: 'pointer',
-                            }),
-                            menu: (baseStyles) => ({
-                              ...baseStyles,
-                              width: '85%',
-                            }),
-                            menuList: (baseStyles) => ({
-                              ...baseStyles,
-                              maxHeight: '150px',
-                            }),
-                          }}
-                        />
+                        
+<Select
+  classNamePrefix="select"
+  options={options1}
+  value={
+    formData.roof_type
+      ? {
+          value: formData.roof_type,
+          label: formData.roof_type,
+        }
+      : null
+  }
+  onChange={handleSelectChange}
+  placeholder="Select Rooftype"
+  styles={{
+    control: (baseStyles) => ({
+      ...baseStyles,
+      backgroundColor: '#F3F3F3',
+      border: 'none',
+      width: '85%',
+      minHeight: '36px',
+      borderRadius: '8px',
+      fontSize: '12px',
+      '@media only screen and (max-width: 600px)': {
+        width: '240%',
+      },
+      '@media only screen and (min-width: 600px) and (max-width: 820px)': {
+        width: '100%',
+      },
+      boxShadow: 'none',
+      cursor: 'pointer',
+      marginTop: '19px',
+    }),
+    singleValue: (baseStyles) => ({
+      ...baseStyles,
+      color: '#292929',
+      fontWeight: '500',
+    }),
+    placeholder: (baseStyles, { hasValue }) => ({
+      ...baseStyles,
+      color: '#777777',
+      fontSize: '12px',
+      padding: '5px',
+      transition: 'color 0.2s ease',
+      [`&:hover, .select__control:hover &`]: {
+        color: '#377CF6'
+      }
+    }),
+    dropdownIndicator: (baseStyles) => ({
+      ...baseStyles,
+      color: '#777777',
+      '&:hover': {
+        color: '#292929',
+      },
+    }),
+    indicatorSeparator: () => ({
+      display: 'none',
+    }),
+    option: (baseStyles, state) => ({
+      ...baseStyles,
+      fontSize: '13px',
+      color: state.isSelected ? '#ffffff' : '#000000',
+      backgroundColor: state.isSelected
+        ? '#377CF6'
+        : '#ffffff',
+      '&:hover': {
+        backgroundColor: state.isSelected
+          ? '#0493CE'
+          : '#DDEBFF',
+      },
+      cursor: 'pointer',
+    }),
+    menu: (baseStyles) => ({
+      ...baseStyles,
+      width: '85%',
+    }),
+    menuList: (baseStyles) => ({
+      ...baseStyles,
+      maxHeight: '150px',
+    }),
+  }}
+/>
                       </div>
                     </div>
 
@@ -683,7 +688,7 @@ const AddNew = () => {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

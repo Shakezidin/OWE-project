@@ -6,63 +6,53 @@
 
 /* Input style */
 .input {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   flex: 1;
-  height: 2.27rem;
-  color: #000;
+  height: 36px;
+  color: var(--input-border-color);
   padding: 0px 14px;
   line-height: 14.5px;
-  /* 103.571% */
   border: 0;
-  border-radius: 0;
+  border-radius: 8px;
   outline: 0;
+}
+
+.input::placeholder {
+  color: var(--input-border-color);
 }
 
 .input-inner-view {
   display: flex;
   flex: 1;
   align-items: center;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--input-border-color);
   margin-top: 5.5px;
   border-radius: 8px;
   overflow: hidden;
   background: white !important;
 }
 
-input::placeholder {
-  color: #777777;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 14.5px;
+.input-inner-view:hover,
+.input-inner-view:focus,
+.input-inner-view.focused,
+.input-inner-view:has(input:not(:placeholder-shown)) {
+  border-color: var(--primary-color);
+}
 
-  /* 103.571% */
+.input-inner-view:hover input::placeholder, .input-inner-view:focus input::placeholder, .input-inner-view.focused input::placeholder {
+  color: var(--primary-color);
 }
 
 .inputLabel {
-  color: #000000;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 14.5px;
-  /* text-align: left; */
+  color: var(--input-border-color);
 }
 
-/* .eyeIcon{
-  background: #e8f0fe;
-    padding-top: -62px;
-    border: 34px 10px 10px 10px;
-    height: 36px;
-    width: 22px;
-    padding-right: 8px;
-} */
 .eyeIcon:hover {
   cursor: pointer;
 }
 
 /* Input field focus */
-input :focus {
-}
 
 .error {
   color: #db4437;
@@ -70,6 +60,7 @@ input :focus {
   margin-top: 4px;
   font-weight: 400;
 }
+
 input::placeholder {
   color: #8b8484;
 }
