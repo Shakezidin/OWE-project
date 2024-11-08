@@ -59,6 +59,7 @@ import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
+import { scale } from 'pdf-lib';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -1537,6 +1538,8 @@ const LeadManagementDashboard = () => {
                     }),
                     dropdownIndicator: (baseStyles, state) => ({
                       ...baseStyles,
+                      transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.3s ease',
                       color: '#3E3E3E',
                       '&:hover': {
                         color: '#3E3E3E',
