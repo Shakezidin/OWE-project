@@ -83,7 +83,7 @@
 }
 
 .main_head img:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .an_head {
   /* margin-left: 33px; Heading Fill the Form */
@@ -113,7 +113,7 @@
 }
 
 .submitbut:hover {
-  background-color: #0053e3;
+  background-color: var(--button-hover-color);
   transform: scale(1.05);
 }
 

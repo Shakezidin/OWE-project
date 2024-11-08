@@ -441,7 +441,7 @@
   transition: all 0.3s ease;
 }
 
-.pipeline-header-btns .active {
+.pipeline-header-btns .desktop-btn.active, .pipeline-header-btns .mobile-btn.active {
   background: #377cf6;
   color: #fff;
 }
@@ -1704,6 +1704,7 @@
 
   .project-container {
     margin: 10px;
+    margin-top: 10px !important;
     padding: 10px;
   }
 

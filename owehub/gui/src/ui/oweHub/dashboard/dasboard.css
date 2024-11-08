@@ -891,11 +891,6 @@
 }
 
 /*Responsive*/
-@media screen and (max-width: 1024px) {
-  .children-container {
-    padding: 0.5rem 1rem;
-  }
-}
 
 @media screen and (max-width: 768px) {
   .children-container {
