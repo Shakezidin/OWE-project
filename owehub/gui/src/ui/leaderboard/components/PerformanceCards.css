@@ -156,7 +156,7 @@
   overflow: hidden;
 }
 
-.card-title h2{
+.card-title h2 {
   font-size: 14px;
 }
 
@@ -215,6 +215,7 @@
     column-gap: 3rem;
   }
 
+
   .performance-cards .upper-section,
   .performance-cards .below-section {
     padding-left: 0;
@@ -250,8 +251,8 @@
   }
   .collapse-btn {
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     background-color: #f99602;
     display: grid;
     place-items: center;
@@ -267,7 +268,15 @@
 }
 @media screen and (max-width: 767px) {
   .performance-cards {
-    margin-top: calc(1.5rem + 10px);
+    margin-top: 10px !important;
+  }
+
+  .right-button {
+    margin-bottom: 10px;
+  }
+
+  .banner-heading p {
+    font-size: 12px;
   }
 
   .performance-cards .cards {

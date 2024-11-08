@@ -1704,6 +1704,7 @@
 
   .project-container {
     margin: 10px;
+    margin-top: 10px !important;
     padding: 10px;
   }
 
