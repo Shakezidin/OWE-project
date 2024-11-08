@@ -47,7 +47,7 @@ import { LuImport } from 'react-icons/lu';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
-
+import Slider from 'rc-slider';
 interface Option {
   value: string;
   label: string;
@@ -133,6 +133,43 @@ const ProjectPerformence = () => {
     set_minValue(e.minValue);
     set_maxValue(e.maxValue);
   };
+  const handleSliderChange = (values: number | number[]) => {
+    if (Array.isArray(values)) {
+      set_minValue(values[0]);
+      set_maxValue(values[1]);
+    } else {
+      set_minValue(values);
+    }
+  };
+
+  const filterRef = useRef<HTMLDivElement>(null);
+  const handleClickOutsidee = (event: MouseEvent) => {
+    if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+      setOpenFilter(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutsidee);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
+  const [checkedStates, setCheckedStates] = useState(
+    Array(5).fill(false) // Initialize an array of 5 false values
+  );
+  const [checkedOptions,setCheckedOptions]=useState([]);
+  const handleCheckboxChange = (index:number) => {
+    setCheckedStates((prevState) => {
+      const updatedStates = [...prevState]; // Create a copy of the array
+      updatedStates[index] = !updatedStates[index]; // Toggle the state at the given index
+      return updatedStates;
+    });
+  };
+
+
   const [selectionRange, setSelectionRange] = useState({
     startDate: subMonths(new Date(), 3),
     endDate: subDays(new Date(), 1),
@@ -937,8 +974,8 @@ const ProjectPerformence = () => {
                 place="bottom"
                 content="Filter"
               />}
-              {openFilter && <div className='dropDownFilter'>
-                <div className='filterOptions'>
+              {openFilter && <div ref={filterRef} className='dropDownFilter'>
+                {/* <div className='filterOptions'>
   <div className='eachOption'>
     <input type='checkbox'/>
     <p className='options'>Project Age</p>
@@ -959,7 +996,27 @@ const ProjectPerformence = () => {
     <input type='checkbox' />
     <p className='options'>PTO</p>
   </div>
-</div>
+</div> */}
+
+<div className='filterOptions'>
+      {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
+        (option, index) => (
+          <div className="eachOption" key={index}>
+            <input
+              type="checkbox"
+              checked={checkedStates[index]}
+              onChange={() => handleCheckboxChange(index)}
+            />
+            <p
+              className="options"
+              style={{ color: checkedStates[index] ? '#377CF6' : 'black' }}
+            >
+              {option}
+            </p>
+          </div>
+        )
+      )}
+    </div>
 
 
                 <div className='breakLine'>
@@ -974,11 +1031,11 @@ const ProjectPerformence = () => {
                        <div className='mThen'>
                        <p className='moreThen'>More then</p>
                         </div>
-                        <div className='dayBox'> 30 days</div>
+                        <div className='dayBox'>{minValue} days</div>
                         </div>
                       <div className='endDay'>
                         <div className='lThen'><p className='lessThen'>Less then</p> </div>
-                        <div className='dayBox'> 90 days</div>
+                        <div className='dayBox'>{maxValue} days</div>
                         </div>
                       </div>
 
@@ -995,7 +1052,7 @@ const ProjectPerformence = () => {
 {/* <div className='progress'></div>
       
                         </div> */}
-                        <MultiRangeSlider
+                        {/* <MultiRangeSlider
 			min={1}
 			max={180}
 			step={5}
@@ -1014,7 +1071,34 @@ const ProjectPerformence = () => {
         position: 'relative',
       }}
       
-		/>
+		/> */}
+    <Slider
+  range
+  min={1}
+  max={180}
+  defaultValue={[minValue, maxValue]}
+  onChange={handleSliderChange}
+  className="custom-slider"
+  styles={{
+    rail: {
+      backgroundColor: '#E5E7EB',
+      height: 2,  
+    },
+    track: {
+      backgroundColor: '#3B82F6',
+      height: 2,  
+    },
+    handle: {
+      borderColor: '#3B82F6',
+      backgroundColor: '#3B82F6',
+      opacity: 1,
+      width: 12,   
+      height: 12,  
+      marginTop: -4,  
+      boxShadow: '0 0 0 2px white',
+    }
+  }}
+/>
                         <div className='rangeOfDays'>
         <p className='rangeOption'>1</p> 
         <p className='rangeOption'>30</p> 
@@ -1028,8 +1112,8 @@ const ProjectPerformence = () => {
 
                         <div className='filterButtons'> 
 
-                          <div className='cancelButton'> Cancel </div>
-                          <div className='applyButton'> Apply </div>
+                          <div className='cancelButton' onClick={()=>setOpenFilter(false)} style={{cursor:"pointer"}}> Cancel </div>
+                          <div className='applyButton' style={{cursor:"pointer"}}> Apply </div>
                           </div>
 </div>
 
@@ -1099,9 +1183,10 @@ const ProjectPerformence = () => {
                                   </div>
                                 </Link>
                                 { <div className='projectAge'>
-                                     <p>Project age : 
+                                     <p>Project age : 344 days pending
                                       {
                                          project.days_project_age
+                                         
                                       }
                                      </p>
                                     
@@ -1159,9 +1244,16 @@ const ProjectPerformence = () => {
                                     ) && project.qc.qc_action_required_count > 0
                                       ? project.ntp.action_required_count
                                       : ''}
+                                      {
+                                        // project.days_ntp ?? 
+                                      project.ntp.action_required_count > 0 && 
+                                      <div className='ntpActionRequired'>
+                                        <p>{project.days_ntp}</p>
+                                        </div>
+                                    }
                                   </div>
                                   {
-                                    project.days_ntp ?? <p>{project.days_ntp}</p>
+                                    
                                   }
                                  
                                   {project.co_status !== 'CO Complete' &&
@@ -1173,6 +1265,7 @@ const ProjectPerformence = () => {
                                         C/O
                                       </div>
                                     )}
+                                    
                                 </div>
                               </div>
 
@@ -1206,8 +1299,9 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.site_survey_scheduled==='#f6377c' && <div className="pendingDayDiv">
+    {<div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
   </div>
 
@@ -1238,8 +1332,9 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.cad_design_colour==='#f6377c' && <div className="pendingDayDiv">
+    { <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
   </div>
 
@@ -1272,6 +1367,7 @@ const ProjectPerformence = () => {
     {/* Days Remaining */}
     {project.permitting_scheduled==='#f6377c' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
   </div>
 
@@ -1305,6 +1401,7 @@ const ProjectPerformence = () => {
       {/* Days Remaining */}
       {project.roofing_colour==='#f6377c' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
     </div>
   )}
@@ -1338,6 +1435,7 @@ const ProjectPerformence = () => {
     {/* Days Remaining */}
     {project.install_colour==='#f6377c' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
   </div>
 
@@ -1371,6 +1469,7 @@ const ProjectPerformence = () => {
       {/* Days Remaining */}
       {project.electrical_colour==='#f6377c' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
     </div>
   )}
@@ -1404,6 +1503,7 @@ const ProjectPerformence = () => {
     {/* Days Remaining */}
     {project.inspectionsColour==='#f6377c' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
   </div>
 
@@ -1436,6 +1536,7 @@ const ProjectPerformence = () => {
     {/* Days Remaining */}
     {project.activation_colour==='#f6377c' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
+      <div className='simpleLine'> </div>
     </div>}
   </div>
 </div>

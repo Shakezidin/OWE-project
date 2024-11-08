@@ -1993,18 +1993,18 @@
   position: absolute;
   top:48px;
   right: 45px;
-  border: 1.4px solid #377CF6;
+  /* border: 1.4px solid #377CF6; */
   border-radius: 11.2px;
-  /* box-shadow: 1px 4px 20px rgba(36, 35, 35, 0.562); */
+  box-shadow: -2px 4px 12px 0px #00000024;
 }
 
-.filterOptions{
-  padding: 10px 4px ;
-  height: fit-content;
+.filterOptions {
+  padding: 10px 4px;
+  height: 234px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 203px;
-
 }
 .eachOption{
   display: flex;
@@ -2016,20 +2016,25 @@
   height:28px;
   width:81px;
   left:29.4px;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 14px;
   line-height: 28px;
   position: relative;
   left: 9.4px;
 }
 
-.breakLine{
-  border-top: 2px dashed #80808033;
-  width: 95%;
+.breakLine {
+  width: 90%;
+  height: 1px;
+  /* background-color: #DBDBDB; */
+  content: '';
+  display: block;
+  /* margin-bottom: 10px; */
+  background-image: repeating-linear-gradient(to right, transparent, transparent 4px, #DBDBDB 5px, #DBDBDB 9px); /* Adjust spacing here */
 }
 
 .secondHalfFilter{
-  padding: 10px 4px 10px 4px;
+  padding: 10px 0px 10px 0px;
   height: fit-content;
   display: flex;
   flex-direction: column;
@@ -2096,20 +2101,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 20px;
 }
 
-.cancelButton{
-  padding:10px 4px;
-  border:2px solid rgb(0, 162, 255);
-  border-radius: 16px;
-  color:rgb(0, 162, 255);
+.cancelButton {
+  padding: 10px 4px;
+  border: 1px solid #377CF6;
+  border-radius: 5.6px;
+  /* color: rgb(0, 162, 255); */
+  width: 97px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: #377CF6;
 }
 .applyButton{
   padding:10px 4px;
-  border:2px solid rgb(0, 68, 255);
-  background-color: rgb(0, 68, 255);
+  border:1px solid #377CF6;
+  background-color: #377CF6;
   color:white;
-  border-radius: 16px;
+  border-radius: 5.6px;
+  width: 97px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 
@@ -2123,7 +2143,15 @@
 }
 .daysRemaining{
   text-align: center;
-  color: rgb(245, 170, 8);
+  color: #EBA900;
+  font-size: 10px;
+  font-weight: 600;
+}
+.simpleLine{
+  height: 1px;
+  width: 74%;
+  margin:0 20px;
+  background-color: #EBA900;
 }
 
 .rangeOption{
@@ -2176,4 +2204,90 @@
 }
 .multi-range-slider .bar-right {
   margin-left: -1px !important;
+}
+
+.projectAge p{
+  font-size: 12px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.ntpActionRequired{
+
+  height: 100%;
+  width: 47px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  border: 1.4px solid #007bff !important; /* Blue border */
+  border-radius: 5.6px !important; /* Rounded corners */
+  background-color: white !important; /* White background */
+  cursor: pointer !important;
+}
+
+input[type="checkbox"]:checked {
+  background-color: white !important; /* Blue fill when checked */
+  color:#007bff !important;
+}
+
+input[type="checkbox"]:checked::before {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  content: "✔" !important; /* Use the Unicode checkmark character */
+  display: block !important;
+  font-size: 14px !important;
+  color: #007bff !important; /* Set the checkmark color */
+  line-height: 20px !important;
+  text-align: center !important;
+}
+
+
+.rc-slider-handle {
+  box-shadow: none !important;
+}
+ 
+.rc-slider-handle:hover {
+  box-shadow: none !important;
+}
+ 
+.rc-slider-handle:active {
+  box-shadow: none !important;
+}
+ 
+.rc-slider-handle-dragging {
+  box-shadow: none !important;
+}
+ 
+ 
+.custom-slider .rc-slider-rail {
+  background-color: #8C8C8C !important;
+  height: 2px !important;
+}
+ 
+.custom-slider .rc-slider-track {
+  background-color: #3B82F6 !important;
+  height: 2px !important;  
+}
+ 
+.custom-slider .rc-slider-handle {
+  border-color: #3B82F6 !important;
+  background-color: #3B82F6 !important;
+  opacity: 1 !important;
+  width: 12px !important;  
+  height: 12px !important;
+  margin-top: -4px !important;  
+  box-shadow: 0 0 0 2px white !important;
 }

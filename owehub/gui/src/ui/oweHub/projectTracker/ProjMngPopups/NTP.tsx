@@ -92,10 +92,12 @@ const NtpPopUp: React.FC<TableProps> = ({
       <div className="transparent-model">
         <div className="ntp-modal">
           <div className="qchead-section">
-            <h3 className="createProfileText" style={{ margin: 0 }}>
+           <div style={{display:"flex", gap:"30px", alignItems:"center"}}>
+           <h3 className="createProfileText" style={{ margin: 0 }}>
               NTP
             </h3>
-
+            <p style={{fontSize:'12px', fontWeight:'500', color:'#EBA900'}}>27 Days Pending</p>
+           </div>
             <div
               className="createUserCrossButton"
               onClick={handleCloseModal}
