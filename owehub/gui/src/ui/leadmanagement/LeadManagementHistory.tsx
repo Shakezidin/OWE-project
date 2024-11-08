@@ -417,6 +417,11 @@ const LeradManagementHistory = () => {
         return;
       }
 
+      if (response.status === 200 && response.data?.leads_history_list?.length === 0) {
+        toast.error('No Data Found');
+        return;
+      }
+
       const csvData = response.data?.leads_history_list?.map?.((item: any) => [
         `OWE${item.leads_id}`,
         // item.status_id,
@@ -650,7 +655,7 @@ const LeradManagementHistory = () => {
                         }),
                         singleValue: (baseStyles, state) => ({
                           ...baseStyles,
-                          color: '#3E3E3E',
+                          color: '#377CF6',
                         }),
                         menu: (baseStyles) => ({
                           ...baseStyles,

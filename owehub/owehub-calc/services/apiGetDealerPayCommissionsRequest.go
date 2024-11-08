@@ -93,115 +93,161 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		homeOwnerVal, homeOwnerOk := item["home_owner"].(string)
 		if homeOwnerVal == "" || !homeOwnerOk {
 			dlrPay.Home_Owner = homeOwnerVal
+		} else {
+			dlrPay.Home_Owner = homeOwnerVal
 		}
 
 		currentStatusVal, currentStatusOk := item["current_status"].(string)
 		if currentStatusVal == "" || !currentStatusOk {
+			dlrPay.Current_Status = currentStatusVal
+		} else {
 			dlrPay.Current_Status = currentStatusVal
 		}
 
 		uniqueIDVal, uniqueIDOk := item["unique_id"].(string)
 		if uniqueIDVal == "" || !uniqueIDOk {
 			dlrPay.Unique_ID = uniqueIDVal
+		} else {
+			dlrPay.Unique_ID = uniqueIDVal
 		}
 
 		dealerCodeVal, dealerCodeOk := item["dealer_code"].(string)
 		if dealerCodeVal == "" || !dealerCodeOk {
+			dlrPay.Dealer_Code = dealerCodeVal
+		} else {
 			dlrPay.Dealer_Code = dealerCodeVal
 		}
 
 		todayVal, todayOk := item["today"].(time.Time)
 		if todayVal.IsZero() || !todayOk {
 			dlrPay.Today = todayVal
+		} else {
+			dlrPay.Today = todayVal
 		}
 
 		amountVal, amountOk := item["amount"].(float64)
 		if amountVal == 0.0 || !amountOk {
+			dlrPay.Amount = amountVal
+		} else {
 			dlrPay.Amount = amountVal
 		}
 
 		sysSizeVal, sysSizeOk := item["sys_size"].(float64)
 		if sysSizeVal == 0.0 || !sysSizeOk {
 			dlrPay.Sys_Size = sysSizeVal
+		} else {
+			dlrPay.Sys_Size = sysSizeVal
 		}
 
 		rlVal, rlOk := item["rl"].(float64)
 		if rlVal == 0.0 || !rlOk {
+			dlrPay.RL = rlVal
+		} else {
 			dlrPay.RL = rlVal
 		}
 
 		contractVal, contractOk := item["contract_dol_dol"].(float64)
 		if contractVal == 0.0 || !contractOk {
 			dlrPay.Contract = contractVal
+		} else {
+			dlrPay.Contract = contractVal
 		}
 
 		loanFeeVal, loanFeeOk := item["loan_fee"].(float64)
 		if loanFeeVal == 0.0 || !loanFeeOk {
+			dlrPay.Loan_Fee = loanFeeVal
+		} else {
 			dlrPay.Loan_Fee = loanFeeVal
 		}
 
 		epcVal, epcOk := item["epc"].(float64)
 		if epcVal == 0.0 || !epcOk {
 			dlrPay.EPC = epcVal
+		} else {
+			dlrPay.EPC = epcVal
 		}
 
 		netEpcVal, netEpcOk := item["net_epc"].(float64)
 		if netEpcVal == 0.0 || !netEpcOk {
+			dlrPay.Net_EPC = netEpcVal
+		} else {
 			dlrPay.Net_EPC = netEpcVal
 		}
 
 		otherAddersVal, otherAddersOk := item["other_adders"].(string)
 		if otherAddersVal == "" || !otherAddersOk {
 			dlrPay.Other_Adders = otherAddersVal
+		} else {
+			dlrPay.Other_Adders = otherAddersVal
 		}
 
 		creditVal, creditOk := item["credit"].(string)
 		if creditVal == "" || !creditOk {
+			dlrPay.Credit = creditVal
+		} else {
 			dlrPay.Credit = creditVal
 		}
 
 		rep1Val, rep1Ok := item["rep_1"].(string)
 		if rep1Val == "" || !rep1Ok {
 			dlrPay.Rep1 = rep1Val
+		} else {
+			dlrPay.Rep1 = rep1Val
 		}
 
 		rep2Val, rep2Ok := item["rep_2"].(string)
 		if rep2Val == "" || !rep2Ok {
+			dlrPay.Rep2 = rep2Val
+		} else {
 			dlrPay.Rep2 = rep2Val
 		}
 
 		setterVal, setterOk := item["setter"].(string)
 		if setterVal == "" || !setterOk {
 			dlrPay.Setter = setterVal
+		} else {
+			dlrPay.Setter = setterVal
 		}
 
 		drawAmtVal, drawAmtOk := item["draw_amt"].(float64)
 		if drawAmtVal == 0.0 || !drawAmtOk {
+			dlrPay.Draw_Amt = drawAmtVal
+		} else {
 			dlrPay.Draw_Amt = drawAmtVal
 		}
 
 		amtPaidVal, amtPaidOk := item["amt_paid"].(float64)
 		if amtPaidVal == 0.0 || !amtPaidOk {
 			dlrPay.Amt_Paid = amtPaidVal
+		} else {
+			dlrPay.Amt_Paid = amtPaidVal
 		}
 
 		balanceVal, balanceOk := item["balance"].(float64)
 		if balanceVal == 0.0 || !balanceOk {
+			dlrPay.Balance = balanceVal
+		} else {
 			dlrPay.Balance = balanceVal
 		}
 
 		stVal, stOk := item["st"].(string)
 		if stVal == "" || !stOk {
 			dlrPay.ST = stVal
+		} else {
+			dlrPay.ST = stVal
 		}
 
 		contractDateVal, contractDateOk := item["contract_date"].(time.Time)
 		if contractDateVal.IsZero() || !contractDateOk {
 			dlrPay.Contract_Date = contractDateVal
+		} else {
+			dlrPay.Contract_Date = contractDateVal
 		}
 
 		financeTypeVal, financeTypeOk := item["finance_type"].(string)
 		if financeTypeVal == "" || !financeTypeOk {
+			dlrPay.Type = financeTypeVal
+		} else {
 			dlrPay.Type = financeTypeVal
 		}
 
