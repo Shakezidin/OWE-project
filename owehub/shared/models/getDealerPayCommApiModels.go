@@ -32,24 +32,24 @@ type DealerPayReportResponse struct {
 	Unique_ID      string    `json:"unique_id"`
 	Dealer_Code    string    `json:"dealer_code"`
 	Sys_Size       float64   `json:"sys_size"`
-	Contract       string    `json:"contract"`
+	Contract       float64   `json:"contract"`
 	Other_Adders   string    `json:"other_adders"`
 	Rep1           string    `json:"rep1"`
 	Rep2           string    `json:"rep2"`
 	Setter         string    `json:"setter"`
 	ST             string    `json:"st"`
 	Contract_Date  time.Time `json:"contract_date"`
-	Loan_Fee       string    `json:"loan_fee"`
-	Net_EPC        string    `json:"net_epc"`
+	Loan_Fee       float64   `json:"loan_fee"`
+	Net_EPC        float64   `json:"net_epc"`
 	Credit         string    `json:"credit"`
 	Draw_Amt       float64   `json:"draw_amt"`
-	RL             string    `json:"rl"`
+	RL             float64   `json:"rl"`
 	Type           string    `json:"finance_type"`
 	Today          time.Time `json:"today"`
 	Amount         float64   `json:"amount"`
-	EPC            string    `json:"epc"`
+	EPC            float64   `json:"epc"`
 	Amt_Paid       float64   `json:"amt_paid"`
-	Balance        string    `json:"balance"`
+	Balance        float64   `json:"balance"`
 	Adder          Adder     `json:"adder"`
 	Watt           float64   `json:"watt"`
 	Commissions    float64   `json:"commissions"`
