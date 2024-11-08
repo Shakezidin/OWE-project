@@ -561,14 +561,14 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			perfomanceList.PerfomanceList[i].Days_Pending_PTO = exists.Days_Pending_PTO
 
 			perfomanceList.PerfomanceList[i].Days_Pending_Project_Age = exists.Days_Pending_Project_Age
-      
-			perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design=exists.Days_Pending_Cad_Design
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Permitting=exists.Days_Pending_Permitting
+			perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design = exists.Days_Pending_Cad_Design
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Roofing=exists.Days_Pending_Roofing
+			perfomanceList.PerfomanceList[i].Days_Pending_Permitting = exists.Days_Pending_Permitting
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Inspection=exists.Days_Pending_Inspection
+			perfomanceList.PerfomanceList[i].Days_Pending_Roofing = exists.Days_Pending_Roofing
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Inspection = exists.Days_Pending_Inspection
 
 		}
 	}
@@ -1397,10 +1397,10 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
 		}
 
-		resp1.Days_Pending_Cad_Design = fmt.Sprintf("%d days pending", 9)
-		resp1.Days_Pending_Permitting = fmt.Sprintf("%d days pending", 9)
-		resp1.Days_Pending_Roofing = fmt.Sprintf("%d days pending", 9)
-		resp1.Days_Pending_Inspection = fmt.Sprintf("%d days pending", 9)
+		resp1.Days_Pending_Cad_Design = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Permitting = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Roofing = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Inspection = fmt.Sprintf("%d days pending", 0)
 
 		// if prjAge, ok := agRp["days_cad_design"]; ok {
 
