@@ -175,7 +175,7 @@ const LeadManagementNew = () => {
             zipcode: formData.zip_code,
             notes: formData.notes,
             lead_source:formData.lead_source,
-            sales_Rep:formData.sales_rep,
+            sales_rep_name:formData.sales_rep,
           },
           true
         );
@@ -403,7 +403,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter Sales Rep Name"
                           onChange={handleInputChange}
                           name="sales_rep"
-                          maxLength={40}
+                          maxLength={30}
                         />
                         {errors.sales_rep && (
                           <span
@@ -425,7 +425,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter About Lead Source"
                           onChange={handleInputChange}
                           name="lead_source"
-                          maxLength={40}
+                          maxLength={30}
                         />
                         {errors.lead_source && (
                           <span
