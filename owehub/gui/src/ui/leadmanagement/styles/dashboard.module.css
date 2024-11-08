@@ -269,8 +269,8 @@
 .buttonActive:hover {
   background-color: #3b82f6;
   color: #ffffff;
-  font-weight: 500;
-
+  font-weight: 500; 
+  border: none !important;
 }
 
 .table {
