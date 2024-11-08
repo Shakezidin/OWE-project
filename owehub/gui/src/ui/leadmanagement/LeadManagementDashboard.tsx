@@ -1553,6 +1553,7 @@ const LeadManagementDashboard = () => {
                           : '#ddebff',
                       },
                       cursor: 'pointer',
+                      fontWeight:"400"
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
