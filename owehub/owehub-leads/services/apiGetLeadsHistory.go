@@ -104,14 +104,14 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	// if leads status is -1, show all won or lost
 	if dataReq.LeadsStatus == -1 {
 		whereClause = `
-			WHERE li.lead_lost_date IS NOT NULL 
+			WHERE (li.lead_lost_date IS NOT NULL 
 				OR li.docusign_envelope_completed_at IS NOT NULL 
-				OR li.manual_won_date IS NOT NULL
+				OR li.manual_won_date IS NOT NULL)
 			`
 	}
 
 	if dataReq.LeadsStatus == 5 {
-		whereClause = "WHERE li.docusign_envelope_completed_at IS NOT NULL OR li.manual_won_date IS NOT NULL"
+		whereClause = "WHERE (li.docusign_envelope_completed_at IS NOT NULL OR li.manual_won_date IS NOT NULL)"
 	}
 
 	if dataReq.LeadsStatus == 6 {
@@ -122,7 +122,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	whereClause = fmt.Sprintf(`
     	%s
 		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
-		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
+		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')
 		AND li.is_archived = $4
 		`, whereClause)
 
@@ -135,8 +135,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
         li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
     FROM
         get_leads_info_hierarchy($1) li
-    JOIN
-        leads_status ls ON li.status_id = ls.status_id
     %s
     ORDER BY li.updated_at DESC
 `, whereClause)
@@ -224,8 +222,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	// Count total records from db
 	leadsHistoryCountQuery = fmt.Sprintf(`
         SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
-        JOIN
-            leads_status ls ON li.status_id = ls.status_id
         %s
         `, whereClause)
 
