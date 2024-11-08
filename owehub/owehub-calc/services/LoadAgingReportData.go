@@ -30,7 +30,6 @@ func ExecAgingReportInitialCalculation(uniqueIds string, hookType string) error 
 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
 		return err
 	}
-
 	for _, data := range InitailData.InitialAgngRpDataList {
 		agngRpData, err := CalculateAgngRp(data)
 
@@ -115,6 +114,7 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["fin_pass_date"] = agngRpData.FIN_Pass_Date
 	outData["install_scheduled_date"] = agngRpData.Install_Scheduled
 	outData["install_eta_date"] = agngRpData.Install_ETA
+	outData["install_complete"] = agngRpData.Install_Complete
 	outData["primary_sales_rep"] = agngRpData.Primary_Sales_Rep
 	outData["pre_post_install"] = agngRpData.Pre_Post_Install
 	outData["tier_one_status"] = agngRpData.Tier_One_Status
@@ -123,13 +123,11 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["how_tier_one"] = agngRpData.How_Tier_One
 	outData["project_age_days"] = agngRpData.Project_Age_Days
 	outData["solar_journey"] = agngRpData.Solar_Journey
-	outData["days_pending_ntp"] = "-"
+	outData["days_pending_ntp"] = ""
 
 	outData["days_pending_permits"] = calculateDaysPendingPermit(formatDate(agngRpData.Permit_Approved_Date), formatDate(agngRpData.NTP_Date), agngRpData.Project_Status)
 
-	// outData["days_pending_install"] = calculateDaysPendingInstall(formatDate(agngRpData.Install_Complete), formatDate(agngRpData.Permit_Approved_Date), agngRpData.Project_Status)
-
-	outData["days_pending_install"] = "-"
+	outData["days_pending_install"] = calculateDaysPendingInstall(formatDate(agngRpData.Install_Complete), formatDate(agngRpData.Permit_Approved_Date), agngRpData.Project_Status)
 
 	outData["days_pending_pto"] = calculateDaysPendingPTO(formatDate(agngRpData.PTO_Date), formatDate(agngRpData.PV_Install_Completed_Date), agngRpData.Project_Status)
 
@@ -187,7 +185,6 @@ func calculateDaysPendingInstall(installComplete string, permitApprovedDate stri
 	} else {
 		daysPendingInstall = 0
 	}
-
 	return daysPendingInstall
 }
 

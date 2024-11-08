@@ -564,8 +564,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 			perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design = exists.Days_Pending_Cad_Design
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Permitting = exists.Days_Pending_Permitting
-
 			perfomanceList.PerfomanceList[i].Days_Pending_Roofing = exists.Days_Pending_Roofing
 
 			perfomanceList.PerfomanceList[i].Days_Pending_Inspection = exists.Days_Pending_Inspection
@@ -1378,7 +1376,7 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 
 		if pndngInstall, ok := agRp["days_pending_install"]; ok {
-			resp1.Days_Pending_Install = pndngInstall.(string)
+			resp1.Days_Pending_Install = fmt.Sprintf("%s days pending", pndngInstall.(string))
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngInstall: %v", err)
 		}
@@ -1398,7 +1396,6 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 
 		resp1.Days_Pending_Cad_Design = fmt.Sprintf("%d days pending", 0)
-		resp1.Days_Pending_Permitting = fmt.Sprintf("%d days pending", 0)
 		resp1.Days_Pending_Roofing = fmt.Sprintf("%d days pending", 0)
 		resp1.Days_Pending_Inspection = fmt.Sprintf("%d days pending", 0)
 
