@@ -23,6 +23,10 @@ type LeadAppConfig struct {
 	DocusignRsaPublicKey         string   `json:"docusignRsaPublicKey"`
 	DocusignSecretKey            string   `json:"docusignSecretKey"`
 	OutlookSubscriptionEndpoints []string `json:"outlookSubscriptionEndpoints"`
+	TwilioAccountSid             string   `json:"twilioAccountSid"`
+	TwilioAuthToken              string   `json:"twilioAuthToken"`
+	TwilioFromPhone              string   `json:"twilioFromPhone"`
+	TwilioApiUrl                 string   `json:"twilioApiUrl"`
 }
 
 var LeadAppCfg LeadAppConfig

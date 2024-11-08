@@ -43,7 +43,7 @@
   border: none;
   background: none;
   padding: 0.4rem 0.5rem;
-  border-radius: 0.25rem;
+  border-radius: 4px;
   color: var(--input-border-color);
   transition:
     transform 0.3s ease,
@@ -95,7 +95,7 @@
 }
 
 .leader-modal-colorpicker button:hover {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .leader-modal-colorpicker input[type='color'] {
@@ -110,14 +110,14 @@
 .leader-buttons {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
   margin: 2rem 0 1rem 0;
 }
 
 .leader-buttons button {
   height: 40px;
   width: 150px;
-  border-radius: 0.8rem;
+  border-radius: 8px;
   cursor: pointer;
 }
 
@@ -132,7 +132,7 @@
 }
 
 .cancel-button:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #ee824d;
   color: white;
 }
@@ -148,7 +148,7 @@
 }
 
 .update-button:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #e84d00;
 }
 

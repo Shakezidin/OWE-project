@@ -469,7 +469,7 @@ input[type='password']::-ms-clear {
 }
 
 .createUserCrossButton svg:hover {
-  transform: scale(1.4);
+  transform: scale(1.05);
 }
 
 .createProfileText {
@@ -662,7 +662,7 @@ br {
 }
 
 .fildelb-btn img:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 
 .select-type-label {
