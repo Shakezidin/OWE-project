@@ -167,12 +167,6 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["referral"] = Referral
 	outData["rebate"] = Rebate
 
-	// outData["ntp_complete_date"] = NtpCompleteDate
-	// outData["pv_complete_date"] = PvComplettionDate
-	// outData["total_gross_commission"] = totalGrossCommission
-	// outData["total_net_commission"] = totalNetCommission
-	// outData["m1_payment"] = m1Payment
-	// outData["m2payment"] = m2Payment
 	return outData, err
 }
 
