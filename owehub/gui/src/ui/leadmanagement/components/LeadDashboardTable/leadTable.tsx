@@ -20,9 +20,13 @@ import Pagination from '../../../components/pagination/Pagination';
 import { createDocuSignRecipientView, createEnvelope, getDocument, getDocuSignUrl } from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection" | "Completed";
 type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
+interface VisibilityState {
+  [key: string]: boolean;
+}
 
 interface LeadSelectionProps {
   selectedLeads: number[];
@@ -69,7 +73,7 @@ interface DocumentStatus {
 const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal, side, setSide }: LeadSelectionProps) => {
 
   const dispatch = useDispatch();
-  const [isCheckboxVisible, setIsCheckboxVisible] = useState(false);
+
   const location = useLocation();
   const [documentStatus, setDocumentStatus] = useState<DocumentStatus>({
     status: null,
@@ -514,8 +518,26 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     ];
   };
 
-  const toggleCheckboxVisibility = () => {
-    setIsCheckboxVisible(!isCheckboxVisible);
+  const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
+
+  const toggleCheckboxVisibility = (id: string) => {
+    setVisibilityState((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
+
+
+  const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
+  const handleInputChange = (event: any, leadId: string) => {
+    const { value } = event.target;
+    const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
+    
+    setSalesRep(prevState => ({
+      ...prevState,
+      [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
+    }));
   };
 
 
@@ -657,21 +679,36 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           : 'N/A'}</div>
                       </td>
                       <td>
-                        <div className={styles.info}>
-                          Rabindra Kumar
+                        <div className={styles.topdived}>
+                          {!visibilityState[lead.leads_id] && (
+                            <p>Test Sales Rep</p>
+                          )}
+                          {visibilityState[lead.leads_id] && (
+                            <div className={styles.dropdownContainerModal}>
+                              <input
+                                type="text"
+                                value={salesrep[lead.leads_id] || ''}
+                                placeholder=""
+                                onChange={(event) => handleInputChange(event, lead.leads_id)}
+                                name="salesrep"
+                                maxLength={40}
+                              />
+                            </div>
+                          )}
                           <span>
-                            {!isCheckboxVisible ? (
-                              <span className={styles.EditPenIcon} onClick={toggleCheckboxVisibility}>
+                            {!visibilityState[lead.leads_id] ? (
+                              <span
+                                className={styles.EditPenIcon}
+                                onClick={() => toggleCheckboxVisibility(lead.leads_id)}
+                              >
                                 <img src={ICONS.EditPenNew} alt="Edit" />
                               </span>
                             ) : (
-                              <span className={styles.SignEditBottonX} onClick={toggleCheckboxVisibility}>
-                                <img src={ICONS.SignEditBotton}/>
-                                {/* <span className={styles.EditPenIcon} onClick={toggleCheckboxVisibility}> */}
-                                {/* <label>
-                                  <input type="checkbox" className={styles.LargeCheckbox} />
-                                </label>
-                                <span/> */}
+                              <span
+                                className={styles.SignEditBottonX}
+                                onClick={() => toggleCheckboxVisibility(lead.leads_id)}
+                              >
+                                <img src={ICONS.SignEditBotton} />
                               </span>
                             )}
                           </span>
