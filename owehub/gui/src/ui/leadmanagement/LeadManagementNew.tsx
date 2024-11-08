@@ -403,7 +403,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter Sales Rep Name"
                           onChange={handleInputChange}
                           name="sales_rep"
-                          maxLength={18}
+                          maxLength={40}
                         />
                         {errors.sales_rep && (
                           <span
@@ -425,7 +425,7 @@ const LeadManagementNew = () => {
                           placeholder="Enter About Lead Source"
                           onChange={handleInputChange}
                           name="lead_source"
-                          maxLength={17}
+                          maxLength={40}
                         />
                         {errors.lead_source && (
                           <span
