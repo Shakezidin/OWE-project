@@ -1,7 +1,6 @@
 .calc-wrapper{
     background-color: var(--white-color) !important;
     border-radius: 16px;
-    margin-top: 11px;
 }
 #calc-header {
     display: flex;

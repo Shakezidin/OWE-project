@@ -15,16 +15,6 @@
   /* justify-content: space-between; */
 }
 
-.libraryHeader {
-  padding-top: 4px;
-  padding-bottom: 6px;
-  padding-left: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 30px;
-  text-align: left;
-  color: #263747;
-}
 .parentDiv {
   display: flex;
   justify-content: space-between;
