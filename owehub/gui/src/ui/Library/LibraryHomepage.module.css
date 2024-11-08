@@ -117,7 +117,7 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 /* .buttons:hover {
   color: #eff5ff;
@@ -150,7 +150,7 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 /* .Folderbuttons:hover {
@@ -641,7 +641,7 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .view_btn.active_tile {

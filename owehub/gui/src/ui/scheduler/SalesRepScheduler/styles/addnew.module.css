@@ -86,8 +86,8 @@
 }
 
 .submitbut:hover {
-  background-color: #0053e3;
-  transform: scale(1.07);
+  background-color: #4062CA;
+  transform: scale(1.05);
   
 }
 
@@ -97,7 +97,7 @@
   height: 34px;
   border-radius: 8px;
   background-color: #f3f3f3;
-  border: none;
+  border: 1px solid var(--input-border-color);
   margin-top: 22px;
   font-size: 12px;
   font-weight: 400;
@@ -196,7 +196,7 @@
 }
 
 .icon:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
 }
 
 

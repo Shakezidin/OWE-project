@@ -27,7 +27,7 @@
 #calc-header svg:hover {
     cursor: pointer;
     transition: all 0.3s ease;
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
 #calculator-main {
@@ -279,11 +279,6 @@
 .calc-btn-earn,
 .calc-btn-growth{
     transition: all 0.3s ease;
-}
-
-.calc-btn-earn:hover,
-.calc-btn-growth:hover{
-    transform: scale(1.05);
 }
 
 .slider-container {
