@@ -3,13 +3,14 @@
   border: 1px solid var(--input-border-color);
   border-radius: 8px;
   width: 180px;
-  transition: border 0.1s ease;
+  transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1);
 }
 .comm-dropdown-container svg{
-  color: var(--input-border-color);
+  color: var(--input-border-color);  
 }
 .comm-dropdown-container:hover {
   border: 1px solid #377cf6;
+  transform: scale(1.05);
 }
 
 .comm-dropdown-toggle {
