@@ -224,7 +224,10 @@
 }
 
 .button:hover {
+  color:#377cf6 ;
   background-color: #ddebff;
+  border: 1px solid #377cf6 !important;
+
   /* border-color: var(--primary-color) !important; */
 }
 
@@ -265,6 +268,8 @@
 }
 .buttonActive:hover {
   background-color: #3b82f6;
+  color: #ffffff;
+  font-weight: 500;
 
 }
 
