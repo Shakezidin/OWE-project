@@ -4,7 +4,11 @@ import (
 	"OWEApp/shared/db"
 	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
+	"bytes"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -250,4 +254,55 @@ func getLeadPdfFilename(firstName, lastName string) string {
 	}
 
 	return fmt.Sprintf("%s_%d.pdf", name, time.Now().Unix())
+}
+
+// function to send SMS to the Client/sales rep
+func sendSms(phoneNumber string, message string) error {
+	var (
+		err error
+		req *http.Request
+	)
+	log.EnterFn(0, "sendSms")
+	defer log.ExitFn(0, "sendSms", err)
+	// encode request body into buffer
+	// get api url & create the request
+	apiUrl := leadsService.LeadAppCfg.TwilioApiUrl
+	apiUrl = strings.ReplaceAll(apiUrl, "{accounts_id}", leadsService.LeadAppCfg.TwilioAccountSid)
+	// Form data
+	data := url.Values{}
+	data.Set("From", leadsService.LeadAppCfg.TwilioFromPhone)
+	data.Set("To", phoneNumber)
+	data.Set("Body", message)
+	// Create the request
+	req, err = http.NewRequest("POST", apiUrl, bytes.NewBufferString(data.Encode()))
+	if err != nil {
+		return err
+	}
+	// set headers
+	req.SetBasicAuth(leadsService.LeadAppCfg.TwilioAccountSid, leadsService.LeadAppCfg.TwilioAuthToken)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	// send the request
+	log.FuncDebugTrace(0, "Calling twilio api %s", apiUrl)
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to call api %s err %v", apiUrl, err)
+		return err
+	}
+	defer resp.Body.Close()
+	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read response body from aurora api err %v", err)
+		return err
+	}
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusAccepted {
+		respString := string(respBytes)
+		err = fmt.Errorf("call to twilio api %s failed with status code %d, response: %+v", apiUrl, resp.StatusCode, respString)
+		log.FuncErrorTrace(0, "%v", err)
+		return err
+	}
+	log.FuncDebugTrace(0, "Message sent successfully: %s with response %+v", apiUrl)
+	return nil
 }
