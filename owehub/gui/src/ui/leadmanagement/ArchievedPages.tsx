@@ -318,10 +318,10 @@ const ArchivedPages = () => {
                     />
                   )}
                 </span>
-                <span >
+                <h4>
                   {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
                   Archived
-                </span>
+                </h4>
               </div>
 
               {/* HERE CONDITIONAL BUTTONS AFTER 2 ITEMS SELECTED */}

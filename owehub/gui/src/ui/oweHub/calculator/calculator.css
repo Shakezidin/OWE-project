@@ -85,7 +85,7 @@
 }
 
 .build-head-btn button:hover {
-    transform: scale(1.07);
+    transform: scale(1.05);
     cursor: pointer;
     color: var(--white-color);
     background: #1EA0B2;
@@ -272,8 +272,18 @@
 
 #calculator-main .footer-value:hover {
     cursor: pointer;
-    transform: scale(1.07);
+    transform: scale(1.05);
     text-shadow: 1px 1px 6px #b9b8b8;
+}
+
+.calc-btn-earn,
+.calc-btn-growth{
+    transition: all 0.3s ease;
+}
+
+.calc-btn-earn:hover,
+.calc-btn-growth:hover{
+    transform: scale(1.05);
 }
 
 .slider-container {

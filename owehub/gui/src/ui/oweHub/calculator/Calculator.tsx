@@ -512,7 +512,7 @@ const Calculator: React.FC = () => {
             <div
               className={`build-footer hide-mob ${!isEquity ? 'selected-tab' : ''}`}
             >
-              <button>
+              <button className='calc-btn-earn'>
                 <span>Earnout Amount</span>${calculateEarnout()}
               </button>
               <p className="footer-value" onClick={handleResetValues}>
@@ -576,7 +576,7 @@ const Calculator: React.FC = () => {
               ))}
             </div>
             <div className="equity-footer">
-              <button>
+              <button className='calc-btn-growth'>
                 <span>Equity Growth</span>$
                 {calculateEquityGrowth(calculateEarnout())}
               </button>
