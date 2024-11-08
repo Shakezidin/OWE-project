@@ -621,10 +621,22 @@ const LeradManagementHistory = () => {
                             borderColor: '#377CF6',
                             boxShadow: '0 0 0 1px #377CF6',
                             caretColor: '#3E3E3E',
+                            '& .css-kofgz1-singleValue': {
+                              color: '#377CF6',
+                            },
+                            '& .css-tj5bde-Svg': {
+                              color: '#377CF6',
+                            },
                           },
                           '&:hover': {
                             borderColor: '#377CF6',
                             boxShadow: '0 0 0 1px #377CF6',
+                            '& .css-kofgz1-singleValue': {
+                              color: '#377CF6',
+                            },
+                            '& .css-tj5bde-Svg': {
+                              color: '#377CF6',
+                            },
                           },
                         }),
                         placeholder: (baseStyles) => ({
@@ -655,7 +667,7 @@ const LeradManagementHistory = () => {
                         }),
                         singleValue: (baseStyles, state) => ({
                           ...baseStyles,
-                          color: '#377CF6',
+                          color: '#3E3E3E',
                         }),
                         menu: (baseStyles) => ({
                           ...baseStyles,
