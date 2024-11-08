@@ -160,7 +160,21 @@ const ProjectPerformence = () => {
   const [checkedStates, setCheckedStates] = useState(
     Array(5).fill(false) // Initialize an array of 5 false values
   );
-  const [checkedOptions,setCheckedOptions]=useState([]);
+  const [checkedOptions,setCheckedOptions]=useState<string[]>([]);
+  const [myObj,setMyObj]=useState<object>({});
+  const createObject=()=>{
+    setMyObj({checkedOptions,minValue,maxValue});
+    setOpenFilter(false);
+    console.log(myObj, "  This is my Object");
+  }
+  // const [fields,setField]=useState<string[]>([]);
+  // const [pending_start_date, setPendingStartDate]=useState<number>(minValue);
+  // const [pending_end_date, setPendingEndDate]=useState<number>(maxValue);
+  // useEffect(()=>{
+  //   setField(checkedOptions);
+  //   setPendingStartDate(minValue);
+  //   setPendingEndDate(maxValue);
+  // },[checkedOptions,minValue,maxValue])
   const handleCheckboxChange = (index:number) => {
     setCheckedStates((prevState) => {
       const updatedStates = [...prevState]; // Create a copy of the array
@@ -442,6 +456,8 @@ const ProjectPerformence = () => {
     if (isFetched) {
       dispatch(
         getPerfomanceStatus({
+
+
           page,
           perPage,
           startDate: '',
@@ -451,7 +467,11 @@ const ProjectPerformence = () => {
           project_status:
             activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
           dealer_names: selectedDealer.map((item) => item.value),
+         
+          
+
         })
+        
       );
     }
   }, [
@@ -1000,12 +1020,27 @@ const ProjectPerformence = () => {
 
 <div className='filterOptions'>
       {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
-        (option, index) => (
+        (option: string, index) => (
           <div className="eachOption" key={index}>
             <input
               type="checkbox"
               checked={checkedStates[index]}
-              onChange={() => handleCheckboxChange(index)}
+              onChange={() => {
+                // Toggle the checkbox state
+                const newCheckedStates = [...checkedStates];
+                newCheckedStates[index] = !newCheckedStates[index];
+            
+                setCheckedStates(newCheckedStates);
+            
+                // Update the checkedOptions based on the new state
+                if (newCheckedStates[index]) {
+                  // Add the option if checked
+                  setCheckedOptions((prev) => [...prev, option]);
+                } else {
+                  // Remove the option if unchecked
+                  setCheckedOptions((prev) => prev.filter((opt) => opt !== option));
+                }
+              }}
             />
             <p
               className="options"
@@ -1013,6 +1048,9 @@ const ProjectPerformence = () => {
             >
               {option}
             </p>
+            {
+              
+            }
           </div>
         )
       )}
@@ -1113,7 +1151,7 @@ const ProjectPerformence = () => {
                         <div className='filterButtons'> 
 
                           <div className='cancelButton' onClick={()=>setOpenFilter(false)} style={{cursor:"pointer"}}> Cancel </div>
-                          <div className='applyButton' style={{cursor:"pointer"}}> Apply </div>
+                          <div className='applyButton' style={{cursor:"pointer"}} onClick={createObject}> Apply </div>
                           </div>
 </div>
 
@@ -1183,9 +1221,9 @@ const ProjectPerformence = () => {
                                   </div>
                                 </Link>
                                 { <div className='projectAge'>
-                                     <p>Project age : 344 days pending
+                                     <p>Project age : 
                                       {
-                                         project.days_project_age
+                                          project.days_project_age.split(" ")[0] + " days"
                                          
                                       }
                                      </p>
@@ -1245,8 +1283,8 @@ const ProjectPerformence = () => {
                                       ? project.ntp.action_required_count
                                       : ''}
                                       {
-                                        // project.days_ntp ?? 
-                                      project.ntp.action_required_count > 0 && 
+                                        project.days_ntp !== '-' && project.days_ntp !== '0 days pending' &&  
+                                      
                                       <div className='ntpActionRequired'>
                                         <p>{project.days_ntp}</p>
                                         </div>
@@ -1299,10 +1337,10 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {<div className="pendingDayDiv">
+    {/* {project.<div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
       <div className='simpleLine'> </div>
-    </div>}
+    </div>} */}
   </div>
 
   {/* CAD Design */}
@@ -1332,8 +1370,8 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    { <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+    { project.days_cad_design && project.days_cad_design !== '0 days pending' && project.days_cad_design !== '-' &&<div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_cad_design}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1365,8 +1403,8 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.permitting_scheduled==='#f6377c' && <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+    {project.days_permints && project.days_permints !== '0 days pending' && project.days_permints !== '-' &&<div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_permints}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1399,8 +1437,8 @@ const ProjectPerformence = () => {
         </div>
       </div>
       {/* Days Remaining */}
-      {project.roofing_colour==='#f6377c' && <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+      {project.days_roofing && project.days_roofing !== '-' && project.days_roofing !== '0 days pending' && <div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_roofing}</p>
       <div className='simpleLine'> </div>
     </div>}
     </div>
@@ -1433,8 +1471,8 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.install_colour==='#f6377c' && <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+    {project.days_install && project.days_install !== '0' && project.days_install !== '-' &&<div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_install}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1501,7 +1539,7 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.inspectionsColour==='#f6377c' && <div className="pendingDayDiv">
+    {project.days_inspection && project.days_inspection !=='0 days pending' && project.days_inspection !=='-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
       <div className='simpleLine'> </div>
     </div>}
