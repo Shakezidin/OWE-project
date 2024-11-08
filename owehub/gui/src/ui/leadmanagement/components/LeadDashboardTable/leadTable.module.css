@@ -140,7 +140,7 @@
 
 .infoIcon:hover {
   background-color: #ddebff;
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 .EditPenIcon {
   margin-left: 20px;
@@ -177,10 +177,10 @@
   transition: all 0,3s ease;
 }
 .SignEditBottonX img:hover{
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 .EditPenIcon img:hover{
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 
 /* .CheckboxContainer { 
@@ -222,7 +222,7 @@
 
 .create_proposal:hover {
   background-color: #4062CA;
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .slidebutton {

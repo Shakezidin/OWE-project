@@ -217,7 +217,7 @@
 }
 
 .calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #0b4cbd;
 }
 
@@ -274,7 +274,7 @@
 }
 
 .lead_his_remove:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
   background-color: #AD1313;
 }
 
@@ -337,7 +337,7 @@
 }
 
 .monthSelect option:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 @media screen and (max-width: 767px) {

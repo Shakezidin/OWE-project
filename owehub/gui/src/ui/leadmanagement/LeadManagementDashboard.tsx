@@ -1508,7 +1508,7 @@ const LeadManagementDashboard = () => {
                       },
                       '&:focus-within': {
                         borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
+                        boxShadow: '0 0 0 0.3px #377CF6',
                         caretColor: '#3E3E3E',
                         '& .css-kofgz1-singleValue': {
                           color: '#377CF6',
@@ -1519,7 +1519,7 @@ const LeadManagementDashboard = () => {
                       },
                       '&:hover': {
                         borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
+                        boxShadow: '0 0 0 0.3px #377CF6',
                         '& .css-kofgz1-singleValue': {
                           color: '#377CF6',
                         },
