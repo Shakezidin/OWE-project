@@ -457,7 +457,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-main-service/v1/get_milestone_data_csv_download",
 		apiHandler.HandleGetMilestoneCsvDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 
 	/************ Battery Backup Calculator API *******************/

@@ -18,7 +18,6 @@
   cursor: pointer;
 }
 .team-main {
-  margin-top: 11px;
   height: 100vh;
   background: var(--white-color);
   padding: 20px;

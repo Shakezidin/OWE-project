@@ -610,7 +610,7 @@ const ProjectStatus = () => {
 
       <div className="">
         <div style={{ padding: '0px' }}>
-          <div className="flex top-project-cards" style={{marginTop: "11px"}}>
+          <div className="flex top-project-cards">
             <div
               className="px1 project-card-wrapper  bg-white rounded-16"
               style={{ paddingInline: 16, paddingBottom: 16 }}

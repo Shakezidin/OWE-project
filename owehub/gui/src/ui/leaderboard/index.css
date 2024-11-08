@@ -44,6 +44,8 @@
   cursor: pointer;
   transition: transform 0.3s ease;
   z-index: 11;
+  height: 36px;
+  width: 36px;
 }
 
 .calender-wrapper svg:hover {
@@ -136,7 +138,7 @@
   background: none;
   border: none;
   border: 1px solid var(--orange-color);
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: 12px;
   border-radius: 8px;
   color: var(--orange-color);
