@@ -229,6 +229,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	RecordCount = int64(len(data))
 	perfomanceList := models.PerfomanceListResponse{}
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
+	var uniqueIds []string
 
 	for _, item := range data {
 		// if no unique id is present we skip that project
@@ -460,6 +461,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get roofing status Item: %+v\n", item)
 			// continue
 		}
+
 		surveyColor, SiteSurveyCountT, SiteSurevyDate, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
@@ -498,6 +500,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			ActivationColour:  activationColor,
 			NTPdate:           ntpD,
 		}
+		uniqueIds = append(uniqueIds, UniqueId)
 		switch dataReq.SelectedMilestone {
 		case "survey":
 			if SiteSurveyCountT == 1 {
@@ -536,6 +539,51 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
+	agngRpForUserId, err := agngRpData(uniqueIds)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get agngRpForUserId for Unique ID: %v err: %v", uniqueIds, err)
+	}
+	FilteredIds, err := FilterAgRpData(dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+
+	}
+
+	for i := range perfomanceList.PerfomanceList {
+		if exists, ok := agngRpForUserId[perfomanceList.PerfomanceList[i].UniqueId]; ok {
+
+			perfomanceList.PerfomanceList[i].Days_Pending_NTP = exists.Days_Pending_NTP
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Permits = exists.Days_Pending_Permits
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Install = exists.Days_Pending_Install
+
+			perfomanceList.PerfomanceList[i].Days_Pending_PTO = exists.Days_Pending_PTO
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Project_Age = exists.Days_Pending_Project_Age
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design = exists.Days_Pending_Cad_Design
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Permitting = exists.Days_Pending_Permitting
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Roofing = exists.Days_Pending_Roofing
+
+			perfomanceList.PerfomanceList[i].Days_Pending_Inspection = exists.Days_Pending_Inspection
+
+		}
+	}
+	var filteredData []models.PerfomanceResponse
+
+	if len(FilteredIds) != 0 {
+
+		for i := range perfomanceList.PerfomanceList {
+			if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
+				filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
+			}
+		}
+		log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
+	}
+
 	switch dataReq.SelectedMilestone {
 	case "survey":
 		RecordCount = SiteSurveyCount
@@ -554,10 +602,14 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	case "activation":
 		RecordCount = ActivationCount
 	}
+	if len(filteredData) != 0 {
+		perfomanceList.PerfomanceList = filteredData
+		RecordCount = int64(len(perfomanceList.PerfomanceList))
+	}
 	paginatedData := PaginateData(perfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
 
-	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
+	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", len(perfomanceList.PerfomanceList), perfomanceList)
 	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
@@ -1266,4 +1318,167 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 	}
 
 	return grey, 1, ""
+}
+
+func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error) {
+	var (
+		err     error
+		resp    = make(map[string]models.PerfomanceResponse)
+		resp1   models.PerfomanceResponse
+		filters string
+	)
+	log.EnterFn(0, "HandleGetAgingReport")
+	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
+
+	query := `select unique_id,days_pending_ntp,days_pending_permits,days_pending_install,days_pending_pto,project_age from aging_report `
+
+	if len(uniqueId) > 0 {
+		var filtersBuilder strings.Builder
+
+		// Escape single quotes and format dealer names
+		var allUniqueId []string
+		for _, uid := range uniqueId {
+			escapedDealer := strings.ReplaceAll(uid, "'", "''")
+			allUniqueId = append(allUniqueId, fmt.Sprintf("'%s'", escapedDealer))
+		}
+
+		// Join the dealer names for SQL IN clause
+		filtersBuilder.WriteString(fmt.Sprintf("where unique_id IN (%s)", strings.Join(allUniqueId, ", ")))
+		filters = filtersBuilder.String()
+	}
+
+	if filters != "" {
+
+		query += filters
+	}
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get AgingReport data from db err: %v", err)
+		return resp, err
+	}
+
+	for _, agRp := range data {
+
+		if uniqueId, ok := agRp["unique_id"]; ok {
+			resp1.UniqueId = uniqueId.(string)
+		} else {
+			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for uniqueId: %v", err)
+		}
+
+		if pndngNtp, ok := agRp["days_pending_ntp"]; ok {
+			resp1.Days_Pending_NTP = pndngNtp.(string)
+		} else {
+			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngNtp: %v", err)
+		}
+
+		if pndngPermits, ok := agRp["days_pending_permits"]; ok {
+			resp1.Days_Pending_Permits = fmt.Sprintf("%s days pending", pndngPermits.(string))
+		} else {
+			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngPermits: %v", err)
+		}
+
+		if pndngInstall, ok := agRp["days_pending_install"]; ok {
+			resp1.Days_Pending_Install = pndngInstall.(string)
+		} else {
+			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngInstall: %v", err)
+		}
+
+		if pndngPto, ok := agRp["days_pending_pto"]; ok {
+			resp1.Days_Pending_PTO = fmt.Sprintf("%s days pending", pndngPto.(string))
+
+		} else {
+			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngPto: %v", err)
+		}
+
+		if prjAge, ok := agRp["project_age"]; ok {
+			resp1.Days_Pending_Project_Age = fmt.Sprintf("%s days pending", prjAge.(string))
+
+		} else {
+			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
+		}
+
+		resp1.Days_Pending_Cad_Design = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Permitting = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Roofing = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Inspection = fmt.Sprintf("%d days pending", 0)
+
+		// if prjAge, ok := agRp["days_cad_design"]; ok {
+
+		// } else {
+		// 	log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
+		// }
+
+		// if prjAge, ok := agRp["days_permitting"]; ok {
+
+		// } else {
+		// 	log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
+		// }
+
+		// if prjAge, ok := agRp["days_roofing"]; ok {
+
+		// } else {
+		// 	log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
+		// }
+
+		// if prjAge, ok := agRp["days_inspection"]; ok {
+
+		// } else {
+		// 	log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
+		// }
+
+		if _, ok := resp[resp1.UniqueId]; !ok {
+
+			resp[resp1.UniqueId] = resp1
+		}
+	}
+
+	log.FuncInfoTrace(0, "Aging Report fetched:  %v and count is : %d", resp, len(resp))
+	return resp, nil
+}
+func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error) {
+
+	var (
+		conditions []string
+		uniqueIds  = make(map[string]struct{})
+		err        error
+	)
+
+	log.EnterFn(0, "FilterAgRpData")
+
+	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
+
+	if req.Fields == nil {
+		return uniqueIds, err
+	}
+
+	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
+	for _, value := range req.Fields {
+		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.Project_Pending_StartDate, req.Project_Pending_EndDate))
+	}
+	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
+	query := fmt.Sprintf(baseQuery, conditionsStr)
+
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
+		return uniqueIds, err
+	}
+	for _, value := range data {
+
+		if id, ok := value["unique_id"]; ok {
+
+			if strID, ok := id.(string); ok {
+				uniqueIds[strID] = struct{}{}
+			} else {
+				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
+			}
+
+		} else {
+			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
+		}
+	}
+
+	log.FuncInfoTrace(0, "FilterAgRpData fetched:  %v and count is : %d", uniqueIds, len(uniqueIds))
+	return uniqueIds, err
+
 }
