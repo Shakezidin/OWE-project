@@ -225,6 +225,8 @@
 
 .button:hover {
   background-color: #ddebff;
+  border: 1px solid #377cf6 !important;
+
   /* border-color: var(--primary-color) !important; */
 }
 
