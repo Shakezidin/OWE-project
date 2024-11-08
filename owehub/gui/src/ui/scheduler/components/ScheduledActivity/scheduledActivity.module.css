@@ -2,7 +2,7 @@
     /* background-color: skyblue; */
     width: 100%;
     min-height: 100vh;
-    background-color: #fff;
+    background-color: var(--white-color);
     border-radius: 8px;
     /* overflow: scroll; */
     cursor: default;
@@ -105,7 +105,7 @@
     padding: 2px;
     justify-content: center;
     align-items: center;
-    color: #f55b5b;
+    color:var(--project-icon-color-4);
 }
 
 .chevron_button{
@@ -184,7 +184,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: #fff;
+    background-color: var(--white-color);
     margin-bottom: 8px;
     padding: 10px 25px;
     margin-left: 10px;
@@ -267,7 +267,8 @@
     line-height: 15px;
     cursor: pointer;
     background-color: var(--delete-btn-color);
-    color: #fff;
+    color: var(--white-color);
+    transition: transform 0.3s ease;
 }
 
 .button_cancel:hover{
@@ -283,9 +284,10 @@
     font-size: 12px;
     line-height: 15px;
     cursor: pointer;
-    background-color: #fff;
-    color: #377cf6;
-    border: 1px solid #377cf6;
+    background-color: var(--white-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    transition: transform 0.3s ease;
 }
 
 .button_edit:hover{
@@ -339,7 +341,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background-color: #fff;
+        background-color: var(--white-color);
         margin-bottom: 8px;
         padding: 15px 25px;
         margin-left: 10px;
