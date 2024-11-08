@@ -133,8 +133,9 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
         ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
         li.appointment_scheduled_date, li.appointment_accepted_date, li.zipcode,
         li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
-    FROM
+		FROM
         get_leads_info_hierarchy($1) li
+	INNER JOIN leads_status ls ON ls.status_id = li.status_id
     %s
     ORDER BY li.updated_at DESC
 `, whereClause)
