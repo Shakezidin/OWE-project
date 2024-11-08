@@ -76,7 +76,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	whereEleList = append(whereEleList, userEmail)
 
 	// default condition: not in lost or won
-	whereClause = "WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL "
+	whereClause = "WHERE (li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL) "
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {

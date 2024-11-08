@@ -44,6 +44,7 @@ RUN rm go$GOLANG_VERSION.linux-amd64.tar.gz
 
 ADD owehub-leads/bin /app/bin
 ADD owehub-leads/json /app/bin/json
+ADD email-templates /app/bin/email-templates
 WORKDIR /app/bin/
 RUN cd /app/bin/
 RUN chmod +x /app/bin/owehub-leads.bin
