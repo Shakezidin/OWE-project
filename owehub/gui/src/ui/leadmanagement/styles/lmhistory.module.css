@@ -77,8 +77,8 @@
 }
 
 .user_name h2 {
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .user_name p {
@@ -225,6 +225,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0px 15px;
+  align-items: center;
 }
 
 .filters {
@@ -235,7 +236,7 @@
 }
 
 .lm_history_header h1 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 
