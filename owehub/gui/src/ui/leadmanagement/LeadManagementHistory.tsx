@@ -655,7 +655,7 @@ const LeradManagementHistory = () => {
                         }),
                         singleValue: (baseStyles, state) => ({
                           ...baseStyles,
-                          color: '#3E3E3E',
+                          color: '#377CF6',
                         }),
                         menu: (baseStyles) => ({
                           ...baseStyles,
