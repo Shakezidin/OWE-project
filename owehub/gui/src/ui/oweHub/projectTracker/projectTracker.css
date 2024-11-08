@@ -76,8 +76,8 @@
 }
 
 .performance-exportbtn:hover {
-  background-color: #005eff !important;
-  transform: scale(1.07);
+  background-color: #4062CA !important;
+  transform: scale(1.05);
 }
 
 .milestone-status {
@@ -441,7 +441,7 @@
   transition: all 0.3s ease;
 }
 
-.pipeline-header-btns .active {
+.pipeline-header-btns .desktop-btn.active, .pipeline-header-btns .mobile-btn.active {
   background: #377cf6;
   color: #fff;
 }
@@ -554,12 +554,12 @@
 
 .rounded-8 {
   position: relative;
-  transition: transform 0.3s ease;
+  transition: transform 550ms ease;
 }
 
 .rounded-8:hover {
   transform: scale(1.02);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
   z-index: 9;
 }
 
@@ -1704,6 +1704,7 @@
 
   .project-container {
     margin: 10px;
+    margin-top: 10px !important;
     padding: 10px;
   }
 

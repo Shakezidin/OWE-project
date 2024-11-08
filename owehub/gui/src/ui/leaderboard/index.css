@@ -44,6 +44,9 @@
   cursor: pointer;
   transition: transform 0.3s ease;
   z-index: 11;
+}
+
+.leaderboard-data__datepicker-wrapper svg {
   height: 36px;
   width: 36px;
 }
@@ -113,7 +116,7 @@
   align-items: center;
   padding-left: 1rem;
   background-color: var(--children-bg-color);
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .leaderboard-data__select-filter--mobile label {
@@ -145,6 +148,7 @@
   margin-right: 0.5rem;
   margin-top: 0.5rem;
   cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 .leaderboard-data__btn:not([disabled]):hover,
@@ -152,6 +156,10 @@
   background-color: var(--orange-color);
   color: var(--white-color);
   transition: all 500ms ease;
+}
+
+.leaderboard-data__btn:not([disabled]):hover{
+  transform: scale(1.05);
 }
 
 .leaderboard-data__btn--active:not([disabled]):hover {
@@ -276,7 +284,7 @@
   grid-template-columns: repeat(2, 1fr);
   width: 128px;
   border: 1px solid var(--orange-color);
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .leaderbord-tab-container .tab {
@@ -288,14 +296,8 @@
   color: var(--orange-color);
 }
 
-.leaderbord-tab-container .tab:first-child {
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-.leaderbord-tab-container .tab:last-child {
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
+.leaderbord-tab-container .tab:first-child, .leaderbord-tab-container .tab:last-child {
+  border-radius: 8px;
 }
 
 .leaderbord-tab-container .tab.activehead {
@@ -454,7 +456,7 @@
 }
 
 .export-trigger:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
   background-color: #ec9d76;
   color: #fff;
 }
@@ -580,8 +582,12 @@
 }
 
 @media screen and (max-width: 767px) {
-  .leaderboard-table-wrapper {
-    display: none;
+  .leaderborder_filter-slect-wrapper .css-b62m3t-container .css-c0ggs4-control{
+    height: 36px !important;
+  }
+
+  .leaderboard-main{
+    margin: 10px;
   }
 
   .children-container {

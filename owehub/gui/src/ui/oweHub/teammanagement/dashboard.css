@@ -387,7 +387,7 @@
 
 .dash-newteam .create:hover,
 .dash-newteam .delete:hover {
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .dash-newteam {

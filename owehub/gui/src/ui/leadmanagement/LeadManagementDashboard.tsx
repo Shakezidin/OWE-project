@@ -59,6 +59,7 @@ import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
+import { scale } from 'pdf-lib';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -1502,14 +1503,30 @@ const LeadManagementDashboard = () => {
                       alignContent: 'center',
                       backgroundColor: '#fffff',
                       boxShadow: 'none',
+                      '@media only screen and (max-width: 767px)': {
+                        // width: '80px',
+                        width: 'fit-content',
+                      },
                       '&:focus-within': {
                         borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
+                        boxShadow: '0 0 0 0.3px #377CF6',
                         caretColor: '#3E3E3E',
+                        '& .css-kofgz1-singleValue': {
+                          color: '#377CF6',
+                        },
+                        '& .css-tj5bde-Svg': {
+                          color: '#377CF6',
+                        },
                       },
                       '&:hover': {
                         borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
+                        boxShadow: '0 0 0 0.3px #377CF6',
+                        '& .css-kofgz1-singleValue': {
+                          color: '#377CF6',
+                        },
+                        '& .css-tj5bde-Svg': {
+                          color: '#377CF6',
+                        },
                       },
                     }),
                     placeholder: (baseStyles) => ({
@@ -1521,6 +1538,8 @@ const LeadManagementDashboard = () => {
                     }),
                     dropdownIndicator: (baseStyles, state) => ({
                       ...baseStyles,
+                      transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.3s ease',
                       color: '#3E3E3E',
                       '&:hover': {
                         color: '#3E3E3E',
@@ -1529,23 +1548,24 @@ const LeadManagementDashboard = () => {
                     option: (baseStyles, state) => ({
                       ...baseStyles,
                       fontSize: '13px',
-                      fontWeight: '400',
                       color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
                       backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                       '&:hover': {
-                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                        backgroundColor: state.isSelected
+                          ? '#ddebff'
+                          : '#ddebff',
                       },
                       cursor: 'pointer',
+                      fontWeight:"400"
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: '#377CF6',
+                      color: '#3E3E3E',
                     }),
                     menu: (baseStyles) => ({
                       ...baseStyles,
                       width: '140px',
                       marginTop: '0px',
-                      zIndex: "100"
                     }),
                   }}
                 />}
