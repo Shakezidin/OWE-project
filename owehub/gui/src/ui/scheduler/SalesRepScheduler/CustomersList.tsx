@@ -399,7 +399,6 @@ const handleClose = () => {
       </div>
 
       <div
-      style={{marginTop: "11px"}}
         className={`flex justify-between ${isDrawerOpen ? styles.blurred : ''} `}
       >
         <div
