@@ -50,6 +50,18 @@ func main() {
 		return
 	}
 
+	err = services.ClearAgingRp()
+	if err != nil {
+		log.FuncInfoTrace(0, "error while calling ClearAgingRp func: %v", err)
+		return
+	}
+
+	err = services.ExecAgingReportInitialCalculation("", "")
+	if err != nil {
+		log.FuncErrorTrace(0, "error while loading ExecAgingReportInitialCalculation function")
+		return
+	}
+
 	/* Spawn signal handler routine*/
 	go signalHandler()
 	/*Execute app inifinetly until it gets exit indication*/

@@ -142,6 +142,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/update_data",
+		apiHandler.HandleUpdateAgRpDataRequest,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************
