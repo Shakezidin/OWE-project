@@ -112,6 +112,15 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		updateFields = append(updateFields, fmt.Sprintf("street_address = $%d", len(whereEleList)))
 	}
 
+	if len(dataReq.SalesRepName) > 0 {
+		whereEleList = append(whereEleList, dataReq.SalesRepName)
+		updateFields = append(updateFields, fmt.Sprintf("sales_rep_name = $%d", len(whereEleList)))
+	}
+	if len(dataReq.LeadSource) > 0 {
+		whereEleList = append(whereEleList, dataReq.LeadSource)
+		updateFields = append(updateFields, fmt.Sprintf("lead_source = $%d", len(whereEleList)))
+	}
+
 	if len(updateFields) == 0 {
 		err = fmt.Errorf("no fields provided to update")
 		log.FuncErrorTrace(0, "%v", err)

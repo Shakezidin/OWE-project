@@ -43,6 +43,8 @@ type GetLeadsData struct {
 	ProposalPdfLink        string     `json:"proposal_pdf_link"`
 	Zipcode                string     `json:"zipcode"`
 	CanManuallyWin         bool       `json:"can_manually_win"`
+	SalesRepName           string     `json:"sales_rep_name"`
+	LeadSource             string     `json:"lead_source"`
 }
 
 // combine struct of get leads AND get leads count status API.
