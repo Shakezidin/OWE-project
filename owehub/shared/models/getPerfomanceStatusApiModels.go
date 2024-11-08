@@ -9,18 +9,21 @@ package models
 type EmptyReq struct{}
 
 type PerfomanceStatusReq struct {
-	PageNumber        int    `json:"page_number"`
-	PageSize          int    `json:"page_size"`
-	SelectedMilestone string `json:"selected_milestone"`
-	Email             string
-	UniqueIds         []string `json:"unique_ids"`
-	ProjectLimit      int
-	DealerNames       []string `json:"dealer_names"`
-	IntervalDays      string
-	ItemLastSeen      int64    `json:"item_last_seen"`
-	StartDate         string   `json:"start_date"`
-	EndDate           string   `json:"end_date"`
-	ProjectStatus     []string `json:"project_status"`
+	PageNumber                int    `json:"page_number"`
+	PageSize                  int    `json:"page_size"`
+	SelectedMilestone         string `json:"selected_milestone"`
+	Email                     string
+	UniqueIds                 []string `json:"unique_ids"`
+	ProjectLimit              int
+	DealerNames               []string `json:"dealer_names"`
+	IntervalDays              string
+	ItemLastSeen              int64    `json:"item_last_seen"`
+	StartDate                 string   `json:"start_date"`
+	EndDate                   string   `json:"end_date"`
+	ProjectStatus             []string `json:"project_status"`
+	Fields                    []string `json:"fields,omitempty"`
+	Project_Pending_StartDate int64    `json:"pending_start_date,omitempty"`
+	Project_Pending_EndDate   int64    `json:"pending_end_date,omitempty"`
 }
 
 type PerfomanceTileDataReq struct {
@@ -70,6 +73,16 @@ type PerfomanceResponse struct {
 	Ntp               NTP    `json:"ntp"`
 	Qc                QC     `json:"qc"`
 	NTPdate           string `json:"ntp_date"`
+	// Aging Report
+	Days_Pending_NTP         string `json:"days_ntp,omitempty"`
+	Days_Pending_Permits     string `json:"days_permints,omitempty"`
+	Days_Pending_Install     string `json:"days_install,omitempty"`
+	Days_Pending_PTO         string `json:"days_pto,omitempty"`
+	Days_Pending_Project_Age string `json:"days_project_age,omitempty"`
+	Days_Pending_Cad_Design  string `json:"days_cad_design,omitempty"`
+	Days_Pending_Permitting  string `json:"days_permitting,omitempty"`
+	Days_Pending_Roofing     string `json:"days_roofing,omitempty"`
+	Days_Pending_Inspection  string `json:"days_inspection,omitempty"`
 }
 
 type PerfomanceListResponse struct {
