@@ -332,6 +332,7 @@ const FilterModal: React.FC<TableProps> = ({
                           type={type}
                           label="Data"
                           name="Data"
+                          customRegex={`.*`}
                           onKeyUp={(e) => {
                             if (e.key === 'Enter') {
                               applyFilter();
