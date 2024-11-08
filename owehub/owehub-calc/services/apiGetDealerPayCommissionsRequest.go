@@ -167,7 +167,9 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	RecordCount = len(dlsPayCommResp.DealerPayComm)
 
-	dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	if dataReq.Paginate {
+		dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	}
 
 	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
 		// Prepare a string for dealer names, with each name properly escaped
@@ -186,10 +188,12 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 		// Calculate one month before the PayroleDate
 		oneMonthBefore := payroleDate.AddDate(0, -1, 0) // Subtract one month
+		twoMonthBefore := payroleDate.AddDate(0, -2, 0)
 
 		// Format the dates for SQL
 		formattedPayroleDate := payroleDate.Format("2006-01-02 15:04:05")
 		formattedOneMonthBefore := oneMonthBefore.Format("2006-01-02 15:04:05")
+		formattedTwoMonthBefore := twoMonthBefore.Format("2006-01-02 15:04:05")
 
 		query = fmt.Sprintf(`
 			SELECT
@@ -214,6 +218,23 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 				 FROM dealer_pay 
 				 WHERE sys_size IS NOT NULL 
 				   AND dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS amount_prepaid_this_month,
+				
+				(SELECT SUM(amount) 
+				 FROM dealer_pay 
+				 WHERE unique_id IS NOT NULL 
+				   AND dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS pipeline_remaining_this_month,
+				
+				(SELECT SUM(balance) 
+				 FROM dealer_pay 
+				 WHERE dealer_code IN (%s)
+				   AND ntp_date <= '%s') AS current_due_this_month,
+				   
+				(SELECT SUM(amt_paid) 
+				 FROM dealer_pay 
+				 WHERE sys_size IS NOT NULL 
+				   AND dealer_code IN (%s)
 				   AND ntp_date <= '%s') AS amount_prepaid_last_month,
 				
 				(SELECT SUM(amount) 
@@ -231,7 +252,10 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 			dealerNames, formattedPayroleDate,
 			dealerNames, formattedOneMonthBefore,
 			dealerNames, formattedOneMonthBefore,
-			dealerNames, formattedOneMonthBefore)
+			dealerNames, formattedOneMonthBefore,
+			dealerNames, formattedTwoMonthBefore,
+			dealerNames, formattedTwoMonthBefore,
+			dealerNames, formattedTwoMonthBefore)
 
 		// Execute the query
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -246,17 +270,32 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 			pipelineRemaining, _ = data[0]["pipeline_remaining"].(float64)
 			currentDue, _ = data[0]["current_due"].(float64)
 
+			amountPrepaidThisMonth, _ := data[0]["amount_prepaid_this_month"].(float64)
+			pipelineRemainingThisMonth, _ := data[0]["pipeline_remaining_this_month"].(float64)
+			currentDueThisMonth, _ := data[0]["current_due_this_month"].(float64)
+
 			amountPrepaidLastMonth, _ := data[0]["amount_prepaid_last_month"].(float64)
 			pipelineRemainingLastMonth, _ := data[0]["pipeline_remaining_last_month"].(float64)
 			currentDueLastMonth, _ := data[0]["current_due_last_month"].(float64)
+
+			amountPrepaidThisMonth = amountPrepaid - amountPrepaidThisMonth          // This month’s value only
+			amountPrepaidLastMonth = amountPrepaidThisMonth - amountPrepaidLastMonth // Last month’s value only
+
+			pipelineRemainingThisMonth = pipelineRemaining - pipelineRemainingThisMonth
+			pipelineRemainingLastMonth = pipelineRemainingThisMonth - pipelineRemainingLastMonth
+
+			currentDueThisMonth = currentDue - currentDueThisMonth
+			currentDueLastMonth = currentDueThisMonth - currentDueLastMonth
 
 			// Add last month data to response if needed
 			dlsPayCommResp.AmountPrepaid = amountPrepaid
 			dlsPayCommResp.Pipeline_Remaining = pipelineRemaining
 			dlsPayCommResp.Current_Due = currentDue
-			dlsPayCommResp.AmountPrepaidLastMonth = amountPrepaidLastMonth
-			dlsPayCommResp.PipelineRemainingLastMonth = pipelineRemainingLastMonth
-			dlsPayCommResp.CurrentDueLastMonth = currentDueLastMonth
+			// Revised percentage calculation
+			dlsPayCommResp.AmountPrepaidPerc = calculatePercentageIncrease(amountPrepaidThisMonth, amountPrepaidLastMonth)
+			dlsPayCommResp.PipelineRemainingPerc = calculatePercentageIncrease(pipelineRemainingThisMonth, pipelineRemainingLastMonth)
+			dlsPayCommResp.CurrentDuePerc = calculatePercentageIncrease(currentDueThisMonth, currentDueLastMonth)
+
 		}
 	}
 
@@ -412,4 +451,17 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func calculatePercentageIncrease(currentMonthValue, lastMonthValue float64) float64 {
+	if lastMonthValue == 0 {
+		if currentMonthValue > 0 {
+			return 100 // To indicate a full increase from zero
+		}
+		return 0 // No change if both are zero
+	}
+
+	increase := currentMonthValue - lastMonthValue
+	percentageIncrease := (increase / lastMonthValue) * 100
+	return percentageIncrease
 }

@@ -1,5 +1,8 @@
 .h_screen {
   min-height: 100vh;
+  display: flex;
+  /* justify-content: center; */
+  /* align-items: center; */
 }
 
 .customer_wrapper_list {
@@ -82,7 +85,8 @@
 
 .submitbut:hover {
   background-color: #0053e3;
-  transform: scale(1.04);
+  transform: scale(1.07);
+  
 }
 
 .tenst_inp {
@@ -193,6 +197,7 @@
 .icon:hover {
   transform: scale(1.02);
 }
+
 
 /* @media screen and (max-width: 1055px){
   body {

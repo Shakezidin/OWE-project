@@ -158,6 +158,7 @@ const DashBoardTable = ({
                           className="zoom-out-td"
                           onClick={() => {
                             setOpen(true);
+                            setEditData(el);
                           }}
                         >
                           {el.unique_id || 'N/A'}
@@ -249,6 +250,7 @@ const DashBoardTable = ({
         <ProjectBreakdown
           commission={editedCommission}
           editMode={editMode}
+          data={editData}
           handleClose={() => {
             setOpen(false);
           }}

@@ -39,18 +39,22 @@
 }
 
 .iconsSection2 img {
-  width: 18px;
-  height: 18px;
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.iconsSection2 button svg{
+  width: 14px;
+  height: 16px;
 }
 
 .iconsSection2 button {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   background-color: var(--white-color);
-  padding: 0.4rem 1rem 0.4rem 1rem;
-  border: 1px solid var(--button-border-color);
+  padding: 8px 12px;
   font-size: 13px;
   border-radius: 8px;
   font-weight: 500;
@@ -90,7 +94,7 @@
   align-items: center;
   gap: 0.5rem;
   background-color: var(--primary-color);
-  padding: 0.4rem 1rem 0.4rem 1rem;
+  padding: 8px 12px;
   border: 1px solid var(--button-border-color);
   font-size: 13px;
   border-radius: 8px;
@@ -128,7 +132,7 @@
   align-items: center;
   gap: 0.5rem;
   background-color: var(--primary-color);
-  padding: 0.4rem 1rem 0.4rem 1rem;
+  padding: 8px 12px;
   border: none;
   font-size: 13px;
   border-radius: 8px;
@@ -163,8 +167,8 @@
   gap: 0.5rem;
   border: none;
   background-color: var(--primary-color);
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   font-weight: 500;
   color: var(--btn-text-color);
@@ -336,8 +340,8 @@ table thead tr {
 
 table thead tr th {
   text-align: left;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   padding: 0.8rem 1rem 0.8rem 1rem;
   /* line-height: 18px; */
 }
@@ -347,7 +351,12 @@ table thead tr th {
   align-items: center;
   gap: 0.3rem;
   cursor: pointer;
-  /* font-weight: 600; */
+}
+
+.table-header p{
+  color: var(--input-border-color);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 table tbody tr {
@@ -363,7 +372,7 @@ table tbody tr td {
   padding: 0.8rem 1rem 0.8rem 1rem;
   font-size: 12px;
   width: auto;
-  color: var(--coloumn-text-color);
+  color: var(--input-border-color);
 }
 
 .selected {
@@ -386,7 +395,7 @@ table tbody tr td {
 }
 
 .action-icon img {
-  width: 14px;
+  width: 15px;
   height: 16px;
   transition: transform 0.3s ease;
 }
@@ -408,7 +417,7 @@ table tbody tr td {
 }
 
 .page-heading {
-  color: var(--heading-color);
+  color: var(--input-border-color);
   font-size: 14px;
 }
 

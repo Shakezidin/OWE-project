@@ -21,6 +21,8 @@
 
 .leader-modal h2 {
   font-weight: 600;
+  font-size: 18px;
+  color: var(--input-border-color);
 }
 
 .modal-center {
@@ -37,11 +39,12 @@
   gap: 0.3rem;
   margin-top: 1rem;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 14px;
   border: none;
   background: none;
   padding: 0.4rem 0.5rem;
   border-radius: 0.25rem;
+  color: var(--input-border-color);
   transition:
     transform 0.3s ease,
     background-color 0.3s ease;
@@ -50,7 +53,6 @@
 .leader-modal-upload:hover {
   transform: scale(1.05) !important;
   background-color: #ddebff;
-  border: 0.03px solid black;
 }
 
 .leader-modal img {
@@ -73,6 +75,7 @@
   grid-column: 1 / span 8;
   text-align: center;
   padding: 1rem 0;
+  color: var(--input-border-color);
 }
 
 .leader-modal-colorpicker button {
@@ -112,7 +115,8 @@
 }
 
 .leader-buttons button {
-  padding: 0.8rem 4rem;
+  height: 40px;
+  width: 150px;
   border-radius: 0.8rem;
   cursor: pointer;
 }

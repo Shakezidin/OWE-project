@@ -469,7 +469,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     <td>{el.term_years || 'N/A'}</td>
                     <td>{el.sub_record || 'N/A'}</td>
                     <td>{el.finance_company || 'N/A'}</td>
-                    <td>{el[" finance_type_name"]}</td>  
+                    <td>{el["  finance_type_name"] || 'N/A'}</td> 
                     <td>{el.finance_company_for_search || 'N/A'}</td>
                     <td>{el.finance_type_slug_portion_h || 'N/A'}</td>
                     <td>{el.finance_fee || 'N/A'}</td>
@@ -481,7 +481,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     <td>{el.ar_rate || 'N/A'}</td>
                     <td>{el.dealer_fee || 'N/A'}</td>
                     <td>{el.f_type || 'N/A'}</td>
-                    <td>{el[" status"] || 'N/A'}</td>
+                    <td>{el["  status   "] || 'N/A'}</td>
                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
                   </tr>

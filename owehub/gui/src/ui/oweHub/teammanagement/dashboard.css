@@ -18,7 +18,7 @@
   cursor: pointer;
 }
 .team-main {
-  margin-top: 10px;
+  margin-top: 11px;
   height: 100vh;
   background: var(--white-color);
   padding: 20px;
@@ -358,15 +358,17 @@
 .teamdash-header h1 {
   font-weight: 600;
   font-size: 1.3rem;
+  color: var(--input-border-color);
 }
 .dash-newteam .create {
   background-color: #ffffff;
   color: #377cf6;
-  padding: 6.33px, 8.13px, 6.33px, 8.13px;
   border: 1px solid #377cf6;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 24px;
+  height: 36px;
   cursor: pointer;
+  font-size: 12px;
   transition: transform 0.3s ease;
 }
 

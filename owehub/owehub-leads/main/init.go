@@ -49,7 +49,7 @@ const (
 	AppVersion = "1.0.0"
 )
 
-var leadsRoleGroup = []types.UserGroup{types.GroupAdminDealer, types.GroupSalesManagement}
+var leadsRoleGroup = []types.UserGroup{types.GroupEveryOne}
 
 var apiRoutes = appserver.ApiRoutes{
 	{
@@ -256,7 +256,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
-
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/docusign_get_signing_url",
+		apiHandler.HandleDocusignGetSigningUrlRequest,
+		false,
+		[]types.UserGroup{},
+	},
 	// WEBHOOKS
 	{
 		strings.ToUpper("GET"),

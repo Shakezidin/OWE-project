@@ -29,16 +29,12 @@ type DocusignCreateEnvelopeRequest struct {
 }
 
 type DocusignCreateRecipientViewRequest struct {
-	LeadsId     int64  `json:"leads_id"`
-	ReturnUrl   string `json:"return_url"`
-	AccessToken string `json:"access_token"`
-	BaseUri     string `json:"base_uri"`
+	LeadsId   int64  `json:"leads_id"`
+	ReturnUrl string `json:"return_url"`
 }
 
 type DocusignGetDocumentRequest struct {
-	LeadsId     int64  `json:"leads_id"`
-	AccessToken string `json:"access_token"`
-	BaseUri     string `json:"base_uri"`
+	LeadsId int64 `json:"leads_id"`
 }
 
 type DocusignConnectListenerRequest struct {

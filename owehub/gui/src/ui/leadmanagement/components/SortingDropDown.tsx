@@ -45,7 +45,7 @@ useEscapeKey(toggleDropdown);
       <button
         onClick={toggleDropdown}
         ref={dropdownRef}
-        className={`flex items-center justify-center  sort_btn`}
+        className={`flex items-center justify-center  sort_btn1`}
         data-tooltip-id="Filters"
       >
         <FaFilter size={14} fontWeight={600} />

@@ -115,8 +115,6 @@ func HandleDocusignCreateRecipientViewRequest(resp http.ResponseWriter, req *htt
 		Email:        leadsEmail,
 		ClientUserId: fmt.Sprintf("OWE%d", dataReq.LeadsId),
 		ReturnUrl:    dataReq.ReturnUrl,
-		AccessToken:  dataReq.AccessToken,
-		BaseUri:      dataReq.BaseUri,
 	}
 
 	createRecipientViewResp, err = createRecipientViewApi.Call()

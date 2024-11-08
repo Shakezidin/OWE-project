@@ -31,6 +31,7 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
+  addMinutes,
   endOfWeek,
   format,
   parseISO,
@@ -39,7 +40,7 @@ import {
   startOfYear,
   subDays,
 } from 'date-fns';
-import HistoryRedirect from '../Library/HistoryRedirect';
+import HistoryRedirect from './HistoryRedirect';
 import useAuth from '../../hooks/useAuth';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
@@ -125,8 +126,9 @@ function getUserTimezone() {
 function getCurrentDateInUserTimezone() {
   const now = new Date();
   const userTimezone = getUserTimezone();
-  return toZonedTime(now, userTimezone);
+  return addMinutes(now, now.getTimezoneOffset());
 }
+
 
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
@@ -353,7 +355,7 @@ const LeadManagementDashboard = () => {
       periodFilterOptions.find((option) => option.label === 'This Week') || null
     );
   const [selectedRanges, setSelectedRanges] = useState([
-    { startDate: new Date(), endDate: new Date(), key: 'selection' },
+    { startDate: startOfThisWeek, endDate: today, key: 'selection' },
   ]);
 
   const [selectedDates, setSelectedDates] = useState<{
@@ -561,11 +563,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-                : '',
-              end_date: selectedDates.endDate
-                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-                : '',
+              ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+              : '',
+            end_date: selectedDates.endDate
+              ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+              : '',
             },
             true
           );
@@ -613,62 +615,64 @@ const LeadManagementDashboard = () => {
 
 
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-          const response = await postCaller(
-            'get_leads_count_by_status',
-            {
-              start_date: selectedDates.startDate
-                ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-                : '',
-              end_date: selectedDates.endDate
-                ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-                : '',
-            },
-            true
-          );
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     const fetchData = async () => {
+  //       try {
+  //         setIsLoading(true);
+  //         const response = await postCaller(
+  //           'get_leads_count_by_status',
+  //           {
+  //             start_date: selectedDates.startDate
+  //             ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+  //             : '',
+  //           end_date: selectedDates.endDate
+  //             ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+  //             : '',
+  //           },
+  //           true
+  //         );
 
-          if (response.status === 200) {
-            const apiData = response.data;
+  //         if (response.status === 200) {
+  //           const apiData = statusData1;
 
-            const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => {
-                const statusName = item.status_name;
-                const defaultDataKey = Object.keys(defaultData).find(
-                  (key) => key === statusName || defaultData[key].name === statusName
-                );
+  //           console.log(apiData, "data check")
 
-                if (defaultDataKey) {
-                  acc[defaultDataKey] = {
-                    ...defaultData[defaultDataKey],
-                    value: item.count,
-                  };
-                }
+  //           const formattedData = apiData.reduce(
+  //             (acc: DefaultData, item: any) => {
+  //               const statusName = item.status_name;
+  //               const defaultDataKey = Object.keys(defaultData).find(
+  //                 (key) => key === statusName || defaultData[key].name === statusName
+  //               );
 
-                return acc;
-              },
-              { ...defaultData }
-            );
+  //               if (defaultDataKey) {
+  //                 acc[defaultDataKey] = {
+  //                   ...defaultData[defaultDataKey],
+  //                   value: item.count,
+  //                 };
+  //               }
 
-            const mergedData = Object.values(formattedData) as StatusData[];
-            setPieData(mergedData);
+  //               return acc;
+  //             },
+  //             { ...defaultData }
+  //           );
 
-          } else if (response.status > 201) {
-            toast.error(response.data.message);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+  //           const mergedData = Object.values(formattedData) as StatusData[];
+  //           setPieData(mergedData);
 
-      fetchData();
-    }
-  }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
+  //         } else if (response.status > 201) {
+  //           toast.error(response.data.message);
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
+
+  //     fetchData();
+  //   }
+  // }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -680,16 +684,43 @@ const LeadManagementDashboard = () => {
   }, [pieData]);
 
   const dispatch = useAppDispatch();
-  const { isLoading, leadsData, totalcount } = useAppSelector(
+  const { isLoading, leadsData,statusData1, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const apiData = statusData1;
+      const formattedData = apiData.reduce(
+        (acc: DefaultData, item: any) => {
+          const statusName = item.status_name;
+          const defaultDataKey = Object.keys(defaultData).find(
+            (key) => key === statusName || defaultData[key].name === statusName
+          );
+
+          if (defaultDataKey) {
+            acc[defaultDataKey] = {
+              ...defaultData[defaultDataKey],
+              value: item.count,
+            };
+          }
+
+          return acc;
+        },
+        { ...defaultData }
+      );
+
+      const mergedData = Object.values(formattedData) as StatusData[];
+      setPieData(mergedData);
+
+    }
+  }, [statusData1])
 
   const getAuroraData = async () => {
     setIsProjectLoading(true); // Start project-specific loader
     try {
       const response = await axios.get('http://localhost:5000/api/projects');
       // Handle the response as needed
-      console.log('response.data', response.data);
       setProjects(response.data.projects);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -734,11 +765,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-          ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-          : '',
-        end_date: selectedDates.endDate
-          ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-          : '',
+        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+        : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
@@ -776,6 +807,9 @@ const LeadManagementDashboard = () => {
       setTotalCount(totalcount);
     }
   }, [leadsData]);
+  useEffect(() => {
+    setPage(1);
+  }, [selectedDates, selectedValue]);
 
   const handleArchiveSelected = async () => {
     setArchived(true);
@@ -962,7 +996,6 @@ const LeadManagementDashboard = () => {
       const proposalUrl = response.data.web_proposal.url;
 
       if (!response.data.web_proposal.url_expired) {
-        console.log('Generated Web Proposal URL:', proposalUrl);
         openProposalLink(proposalUrl); // Open the proposal URL in a new tab
       } else {
         console.error('The web proposal URL has expired.');
@@ -977,7 +1010,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/designs/${designId}/summary`
       );
-      console.log('Retrieved Design Summary:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching design summary:', error);
@@ -990,7 +1022,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/designs/${designId}/pricing`
       );
-      console.log('Retrieved Design Pricing:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching design pricing:', error);
@@ -1005,7 +1036,6 @@ const LeadManagementDashboard = () => {
       );
       const financings = response.data.financings;
 
-      console.log('Retrieved Financings:', financings);
 
       if (financings && financings.length > 0) {
         // Assuming you want to use the first financing ID
@@ -1029,7 +1059,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/designs/${designId}/financings/${financingId}`
       );
-      console.log('Financing details fetched successfully:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching financing details:', error);
@@ -1042,7 +1071,6 @@ const LeadManagementDashboard = () => {
       const response = await axios.get(
         `http://localhost:5000/api/projects/${projectId}/consumption_profile`
       );
-      console.log('Retrieved Consumption Profile:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching consumption profile:', error);
@@ -1065,7 +1093,6 @@ const LeadManagementDashboard = () => {
           },
         }
       );
-      console.log('Consumption Profile Updated:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error updating consumption profile:', error);
@@ -1134,11 +1161,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-        ? `${selectedDates.startDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.startDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.startDate.getUTCFullYear()}`
-        : '',
-      end_date: selectedDates.endDate
-        ? `${selectedDates.endDate.getUTCDate().toString().padStart(2, '0')}-${(selectedDates.endDate.getUTCMonth() + 1).toString().padStart(2, '0')}-${selectedDates.endDate.getUTCFullYear()}`
-        : '',
+      ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+      : '',
+    end_date: selectedDates.endDate
+      ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+      : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1148,7 +1175,7 @@ const LeadManagementDashboard = () => {
 
     try {
       const response = await postCaller(
-        'get_leads',
+        'get_leads_home_page',
         data,
         true
       );
@@ -1161,7 +1188,7 @@ const LeadManagementDashboard = () => {
 
 
 
-      const csvData = response.data?.map?.((item: any) => [
+      const csvData = response.data?.leads_data?.map?.((item: any) => [
         `OWE${item.leads_id}`,
         // item.status_id,
         item.first_name,
@@ -1194,7 +1221,7 @@ const LeadManagementDashboard = () => {
       document.body.removeChild(link);
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while exporting the data.');
+      toast.error('No Data Found');
     } finally {
       setIsExporting(false);
     }
@@ -1203,8 +1230,7 @@ const LeadManagementDashboard = () => {
 
   //----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
-    console.log("leadId", leadId);
-    console.log("selectedLeads", selectedLeads);
+  
 
     try {
       // Step 1: Fetch preferred solar modules using dispatch
@@ -1350,9 +1376,6 @@ const LeadManagementDashboard = () => {
   //----------------Aurora API integration END-------------------------//
 
   const [backup, setBackup] = useState('New Leads');
-
-  console.log(backup, "backup");
-  console.log(currentFilter, "filter")
 
   useEffect(() => {
     if (searchTerm === '') {
@@ -2143,11 +2166,11 @@ const LeadManagementDashboard = () => {
           )}
           {leadsData.length > 0 && !isLoading && (
             <div className="page-heading-container">
-
               <p className="page-heading">
                 {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
               </p>
-              <Pagination
+              <div className={styles.PaginationFont}>
+              <Pagination 
                 currentPage={page}
                 totalPages={totalPage}
                 paginate={paginate}
@@ -2157,6 +2180,7 @@ const LeadManagementDashboard = () => {
                 perPage={itemsPerPage}
                 onPerPageChange={handlePerPageChange}
               />
+              </div>
             </div>
 
           )}

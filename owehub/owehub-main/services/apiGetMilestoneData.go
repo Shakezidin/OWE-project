@@ -28,21 +28,21 @@ import (
  ******************************************************************************/
 func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                    error
-		dataReq                models.GetMilestoneDataReq
-		data                   []map[string]interface{}
-		whereEleList           []interface{}
-		filter                 string
-		RecordCount            int64
-		query                  string
-		thisPeriodNtpCount     int
-		thisPeriodSaleCount    int
-		thisPeriodInstallCount int
-		totalSaleCount         int
-		totalNtpCount          int
-		totalInstallCount      int
+		err                  error
+		dataReq              models.GetMilestoneDataReq
+		data                 []map[string]interface{}
+		whereEleList         []interface{}
+		RecordCount          int64
+		query                string
+		totalSaleCount       int
+		totalNtpCount        int
+		totalInstallCount    int
+		previousSaleCount    int
+		previousNtpCount     int
+		previousInstallCount int
+		currentDate          string
+		prevDate             string
 	)
-
 	log.EnterFn(0, "HandleGetMilestoneDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetMilestoneDataRequest", err) }()
 
@@ -69,20 +69,9 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	milestoneData := models.GetMilestoneDataResp{}
 
-	query = `select cs.sale_date, ns.ntp_complete_date, pis.pv_completion_date
-			FROM customers_customers_schema cs 
-			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id`
-
-	filter, whereEleList = PrepareMilestoneDataFilters(dataReq)
-	if filter != "" {
-		query += filter
-	}
-
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
-		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+	if len(dataReq.DealerNames) <= 0 {
+		log.FuncErrorTrace(0, "No dealer name selected")
+		appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, milestoneData, RecordCount)
 		return
 	}
 
@@ -90,124 +79,165 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 	var ntpCountMap = make(map[string]int)
 	var installCountMap = make(map[string]int)
 
-	now := time.Now()
-	currentYear, currentWeek := now.ISOWeek()
 	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
 	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
 
 	endDate = endDate.Add(24*time.Hour - time.Second)
 
+	// var prevEndDate, prevStartDate time.Time
+	// var currentMonthStartDate time.Time
+	// var currentMonthEndDate time.Time
+
+	switch dataReq.DateBy {
+	case "day":
+		currentDate = endDate.Format("2006-01-02")
+		prevDate = endDate.AddDate(0, 0, -1).Format("2006-01-02")
+
+	case "month":
+		// Set current date as the formatted year-month of endDate
+		currentDate = endDate.Format("2006-01")
+
+		// Calculate prevEndDate as the last day of the previous month
+		// First, get the first day of the current month and move back one day
+		firstDayOfMonth := time.Date(endDate.Year(), endDate.Month(), 1, 0, 0, 0, 0, endDate.Location())
+		prevEndDate := firstDayOfMonth.AddDate(0, 0, -1) // Last day of previous month
+
+		// Format prevDate as year-month
+		prevDate = prevEndDate.Format("2006-01")
+
+	case "week":
+		year, week := endDate.ISOWeek()
+		currentDate = fmt.Sprintf("%d-W%02d", year, week)
+		prevYear, prevWeek := endDate.AddDate(0, 0, -7).ISOWeek()
+		prevDate = fmt.Sprintf("%d-W%02d", prevYear, prevWeek)
+
+	default: // "year"
+		currentDate = endDate.Format("2006")
+		prevDate = endDate.AddDate(-1, 0, 0).Format("2006")
+	}
+
+	csFilter, whereEleList := PrepareMilestoneDataFilters(dataReq, "customer")
+
+	query = fmt.Sprintf(`SELECT sale_date FROM customers_customers_schema %s`, csFilter)
+
+	val1, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		return
+	}
+
+	data = append(data, val1...)
+
+	csFilter, whereEleList = PrepareMilestoneDataFilters(dataReq, "ntp")
+
+	query = fmt.Sprintf(`SELECT ntp_complete_date FROM ntp_ntp_schema %s`, csFilter)
+
+	val2, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		return
+	}
+
+	data = append(data, val2...)
+
+	csFilter, whereEleList = PrepareMilestoneDataFilters(dataReq, "pv_install_install_subcontracting_schema")
+
+	query = fmt.Sprintf(`SELECT pv_completion_date FROM pv_install_install_subcontracting_schema %s`, csFilter)
+
+	val3, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		return
+	}
+
+	data = append(data, val3...)
+
+	// Loop through each item in data to calculate counts for sales, NTPs, and installations
 	for _, item := range data {
-		// Check Sale Date
+		// Track the current and previous period keys for each metric
 		saleDate, ok := item["sale_date"].(time.Time)
-		if ok && !saleDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
-			var key string
+		// Only include sales in the current period
+		if ok && !saleDate.IsZero() && !saleDate.After(endDate) && !saleDate.Before(startDate) {
+			var saleKey string
 			switch dataReq.DateBy {
 			case "day":
-				key = saleDate.Format("2006-01-02") // Format for day
+				saleKey = saleDate.Format("2006-01-02")
 			case "month":
-				key = saleDate.Format("2006-01") // Format for month
+				saleKey = saleDate.Format("2006-01")
 			case "week":
 				year, week := saleDate.ISOWeek()
-				key = fmt.Sprintf("%d-W%02d", year, week) // Format for week (YYYY-WW)
-			default: // year
-				key = saleDate.Format("2006") // Format for year
+				saleKey = fmt.Sprintf("%d-W%02d", year, week)
+			default: // "year"
+				saleKey = saleDate.Format("2006")
 			}
-			saleCountMap[key]++
-
-			// Check if date is within this period
-			saleYear, saleWeek := saleDate.ISOWeek()
-			if (dataReq.DateBy == "year" && saleDate.Year() == now.Year()) ||
-				(dataReq.DateBy == "month" && saleDate.Year() == now.Year() && saleDate.Month() == now.Month()) ||
-				(dataReq.DateBy == "week" && saleDate.Year() == now.Year() && saleYear == currentYear && saleWeek == currentWeek) ||
-				(dataReq.DateBy == "day" && saleDate.Year() == now.Year() && saleDate.YearDay() == now.YearDay()) {
-				thisPeriodSaleCount++
-			}
+			saleCountMap[saleKey]++
 		}
 
-		// Check NTP Completion Date
+		// Parse NTP Completion Date
 		ntpDate, ok := item["ntp_complete_date"].(time.Time)
-		if ok && !ntpDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
-			var key string
+		if ok && !ntpDate.IsZero() && !ntpDate.After(endDate) && !ntpDate.Before(startDate) {
+			var ntpKey string
 			switch dataReq.DateBy {
 			case "day":
-				key = ntpDate.Format("2006-01-02")
+				ntpKey = ntpDate.Format("2006-01-02")
 			case "month":
-				key = ntpDate.Format("2006-01")
+				ntpKey = ntpDate.Format("2006-01")
 			case "week":
 				year, week := ntpDate.ISOWeek()
-				key = fmt.Sprintf("%d-W%02d", year, week)
-			default:
-				key = ntpDate.Format("2006")
+				ntpKey = fmt.Sprintf("%d-W%02d", year, week)
+			default: // "year"
+				ntpKey = ntpDate.Format("2006")
 			}
-			ntpCountMap[key]++
-
-			// Check if date is within this period
-			ntpYear, ntpWeek := ntpDate.ISOWeek()
-			if (dataReq.DateBy == "year" && ntpDate.Year() == now.Year()) ||
-				(dataReq.DateBy == "month" && ntpDate.Year() == now.Year() && ntpDate.Month() == now.Month()) ||
-				(dataReq.DateBy == "week" && ntpDate.Year() == now.Year() && ntpYear == currentYear && ntpWeek == currentWeek) ||
-				(dataReq.DateBy == "day" && ntpDate.Year() == now.Year() && ntpDate.YearDay() == now.YearDay()) {
-				thisPeriodNtpCount++
-			}
+			ntpCountMap[ntpKey]++
 		}
 
-		// Check Installation Completion Date
+		// Parse Installation Completion Date
 		installDate, ok := item["pv_completion_date"].(time.Time)
-		if ok && !installDate.IsZero() && saleDate.After(startDate) && saleDate.Before(endDate) {
-			var key string
+		if ok && !installDate.IsZero() && !installDate.After(endDate) && !installDate.Before(startDate) {
+			var isntallKey string
 			switch dataReq.DateBy {
 			case "day":
-				key = installDate.Format("2006-01-02")
+				isntallKey = installDate.Format("2006-01-02")
 			case "month":
-				key = installDate.Format("2006-01")
+				isntallKey = installDate.Format("2006-01")
 			case "week":
 				year, week := installDate.ISOWeek()
-				key = fmt.Sprintf("%d-W%02d", year, week)
-			default:
-				key = installDate.Format("2006")
+				isntallKey = fmt.Sprintf("%d-W%02d", year, week)
+			default: // "year"
+				isntallKey = installDate.Format("2006")
 			}
-			installCountMap[key]++
-
-			// Check if date is within this period
-			installYear, installWeek := installDate.ISOWeek()
-			if (dataReq.DateBy == "year" && installDate.Year() == now.Year()) ||
-				(dataReq.DateBy == "month" && installDate.Year() == now.Year() && installDate.Month() == now.Month()) ||
-				(dataReq.DateBy == "week" && installDate.Year() == now.Year() && installYear == currentYear && installWeek == currentWeek) ||
-				(dataReq.DateBy == "day" && installDate.Year() == now.Year() && installDate.YearDay() == now.YearDay()) {
-				thisPeriodInstallCount++
-			}
+			installCountMap[isntallKey]++
 		}
 	}
+	// Calculate total counts
+	totalSaleCount = sumMapValues(saleCountMap)
+	totalNtpCount = sumMapValues(ntpCountMap)
+	totalInstallCount = sumMapValues(installCountMap)
+	previousInstallCount = installCountMap[prevDate]
+	previousNtpCount = ntpCountMap[prevDate]
+	previousSaleCount = saleCountMap[prevDate]
+	currentInstallCount := installCountMap[currentDate]
+	currentNtpCount := ntpCountMap[currentDate]
+	currentSaleCount := saleCountMap[currentDate]
 
-	for _, count := range saleCountMap {
-		totalSaleCount += count
-	}
+	// Calculate the percentage increase based on current vs. previous counts
+	milestoneData.SaleIncreasePercent = calculatePercentageIncrease(currentSaleCount, previousSaleCount)
+	milestoneData.NtpIncreasePercent = calculatePercentageIncrease(currentNtpCount, previousNtpCount)
+	milestoneData.InstallIncreasePercent = calculatePercentageIncrease(currentInstallCount, previousInstallCount)
 
-	for _, count := range ntpCountMap {
-		totalNtpCount += count
-	}
-
-	for _, count := range installCountMap {
-		totalInstallCount += count
-	}
-
+	// Populate response
+	milestoneData.TotalInstall = totalInstallCount
+	milestoneData.TotalNtp = totalNtpCount
+	milestoneData.TotalSale = totalSaleCount
 	milestoneData.InstallData = installCountMap
 	milestoneData.SaleData = saleCountMap
 	milestoneData.NtpData = ntpCountMap
 
-	// Set the totals in the milestoneData response
-	milestoneData.TotalInstall = totalInstallCount
-	milestoneData.TotalNtp = totalNtpCount
-	milestoneData.TotalSale = totalSaleCount
-
-	// Set the previous period totals for comparison
-	milestoneData.InstallIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodInstallCount), float64(totalInstallCount)))
-	milestoneData.NtpIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodNtpCount), float64(totalNtpCount)))
-	milestoneData.SaleIncreasePercent = int(calculatePercentageIncrease(float64(thisPeriodSaleCount), float64(totalSaleCount)))
-
-	RecordCount = int64(len(data))
 	appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, milestoneData, RecordCount)
+
 }
 
 /******************************************************************************
@@ -217,17 +247,100 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
  * RETURNS:    		void
  ******************************************************************************/
 
-func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareMilestoneDataFilters")
-	defer func() { log.ExitFn(0, "PrepareMilestoneDataFilters", nil) }()
+// func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters string, whereEleList []interface{}) {
+// 	log.EnterFn(0, "PrepareMilestoneDataFilters")
+// 	defer func() { log.ExitFn(0, "PrepareMilestoneDataFilters", nil) }()
 
-	var filtersBuilder strings.Builder
+// 	var filtersBuilder strings.Builder
+// 	var whereAdded bool
+
+// 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
+// 		startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
+// 		endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
+
+// 		endDate = endDate.Add(24*time.Hour - time.Second)
+
+// 		whereEleList = append(whereEleList,
+// 			startDate.Format("02-01-2006 00:00:00"),
+// 			endDate.Format("02-01-2006 15:04:05"),
+// 		)
+
+// 		filtersBuilder.WriteString(" WHERE")
+// 		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+// 		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+// 		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
+// 		whereAdded = true
+// 	}
+
+// 	if len(dataReq.DealerNames) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
+
+// 		// Escape single quotes and format dealer names
+// 		var dealerNames []string
+// 		for _, dealer := range dataReq.DealerNames {
+// 			escapedDealer := strings.ReplaceAll(dealer, "'", "''")
+// 			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", escapedDealer))
+// 		}
+
+// 		// Join the dealer names for SQL IN clause
+// 		filtersBuilder.WriteString(fmt.Sprintf("cs.dealer IN (%s)", strings.Join(dealerNames, ", ")))
+// 		whereAdded = true
+// 	}
+
+// 	if len(dataReq.State) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
+
+// 		filtersBuilder.WriteString(fmt.Sprintf("cs.state ILIKE '%%%s%%'", dataReq.State))
+// 	}
+
+// 	if whereAdded {
+// 		filtersBuilder.WriteString(" AND ")
+// 	} else {
+// 		filtersBuilder.WriteString(" WHERE ")
+// 		whereAdded = true
+// 	}
+// 	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
+
+// 	filters = filtersBuilder.String()
+// 	return filters, whereEleList
+// }
+
+func calculatePercentageIncrease(currentMonthSales, lastMonthSales int) float64 {
+	if lastMonthSales == 0 {
+		return 0 // To avoid division by zero, return 0% if last month sales are zero.
+	}
+
+	increase := currentMonthSales - lastMonthSales
+	percentageIncrease := (float64(increase) / float64(lastMonthSales)) * 100
+	return percentageIncrease
+}
+
+func sumMapValues(m map[string]int) int {
+	total := 0
+	for _, count := range m {
+		total += count
+	}
+	return total
+}
+
+func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq, table string) (csFilters string, whereEleList []interface{}) {
+	var csBuilder strings.Builder
 	var whereAdded bool
 
+	// Apply date range filters for each table
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
 		startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
 		endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
-
 		endDate = endDate.Add(24*time.Hour - time.Second)
 
 		whereEleList = append(whereEleList,
@@ -235,60 +348,57 @@ func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters st
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
+		// Select appropriate column based on the table
+		dateColumn := ""
+		switch table {
+		case "customer":
+			dateColumn = "sale_date"
+		case "ntp":
+			dateColumn = "ntp_complete_date"
+		default:
+			dateColumn = "pv_completion_date"
+		}
+
+		csBuilder.WriteString(fmt.Sprintf(" WHERE %s BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", dateColumn, len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
+	// State filter
+	if len(dataReq.State) > 0 {
+		if whereAdded {
+			csBuilder.WriteString(" AND ")
+		} else {
+			csBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		csBuilder.WriteString(fmt.Sprintf("state ILIKE '%%%s%%'", dataReq.State))
+	}
+
+	// Dealer filter
 	if len(dataReq.DealerNames) > 0 {
 		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
+			csBuilder.WriteString(" AND ")
 		} else {
-			filtersBuilder.WriteString(" WHERE ")
+			csBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
 
-		// Escape single quotes and format dealer names
+		// Escape single quotes in dealer names
 		var dealerNames []string
 		for _, dealer := range dataReq.DealerNames {
 			escapedDealer := strings.ReplaceAll(dealer, "'", "''")
 			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", escapedDealer))
 		}
 
-		// Join the dealer names for SQL IN clause
-		filtersBuilder.WriteString(fmt.Sprintf("cs.dealer IN (%s)", strings.Join(dealerNames, ", ")))
-		whereAdded = true
+		csBuilder.WriteString(fmt.Sprintf("dealer IN (%s)", strings.Join(dealerNames, ", ")))
 	}
 
-	if len(dataReq.State) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(fmt.Sprintf("cs.state ILIKE '%%%s%%'", dataReq.State))
-	}
-
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
+	// Additional static filters based on table
+	if table == "customer" || table == "ntp" {
+		csBuilder.WriteString(" AND project_status != 'DUPLICATE' AND unique_id != ''")
 	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+		csBuilder.WriteString(" AND project_status != 'DUPLICATE' AND customer_unique_id != ''")
 	}
-	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
 
-	filters = filtersBuilder.String()
-	return filters, whereEleList
-}
-
-func calculatePercentageIncrease(thisPeriod, total float64) float64 {
-	previousTotal := total - thisPeriod
-	if previousTotal == 0 {
-		return 100 // If there were no previous sales, growth is considered 100%
-	}
-	return (thisPeriod / previousTotal) * 100
+	return csBuilder.String(), whereEleList
 }

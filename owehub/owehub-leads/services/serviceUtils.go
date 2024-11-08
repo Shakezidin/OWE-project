@@ -162,7 +162,6 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 			UPDATED_AT = CURRENT_TIMESTAMP,
 			APPOINTMENT_ACCEPTED_DATE = NULL,
-			APPOINTMENT_DATE = NULL,
 			STATUS_ID = 3
 			WHERE leads_id = $1
 		`
@@ -220,7 +219,6 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 		UPDATED_AT = CURRENT_TIMESTAMP,
 		APPOINTMENT_ACCEPTED_DATE = NULL,
-		APPOINTMENT_DATE = NULL,
 		STATUS_ID = 3
 		WHERE leads_id = $1
 	`
@@ -231,4 +229,25 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 	}
 
 	return nil
+}
+
+// getLeadPdfFilename returns the filename for the leads proposal pdf
+func getLeadPdfFilename(firstName, lastName string) string {
+	name := ""
+
+	for _, r := range strings.ToLower(firstName) {
+		// only allow alphabets and numbers
+		if r >= 97 && r <= 122 || r >= 48 && r <= 57 {
+			name += string(r)
+		}
+	}
+	name += "_"
+	for _, r := range strings.ToLower(lastName) {
+		// only allow alphabets and numbers
+		if r >= 97 && r <= 122 || r >= 48 && r <= 57 {
+			name += string(r)
+		}
+	}
+
+	return fmt.Sprintf("%s_%d.pdf", name, time.Now().Unix())
 }

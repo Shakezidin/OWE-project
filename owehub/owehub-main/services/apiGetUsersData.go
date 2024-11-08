@@ -391,6 +391,8 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, true, false)
 		if filter != "" {
 			queryForAlldata = query + filter
+		} else {
+			queryForAlldata = query
 		}
 
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
@@ -534,7 +536,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.db_username, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, pd.partner_logo, pd.bg_colour, sp.sales_partner_name, pd.partner_code")
 	} else if nameSearch {
 	} else if SalesRepStatus {
 	} else {

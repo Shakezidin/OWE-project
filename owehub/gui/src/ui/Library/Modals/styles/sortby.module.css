@@ -8,12 +8,14 @@
 }
 
 .logo_sortby_botton {
-  width: 115px;
-  height: 30px;
-  border-radius: 6px;
+  /* width: 115px; */
+  /* width: 130px; */
+  /* height: 30px; */
+  border-radius: 8px;
   background-color: #fff;
-  border: 1px solid #8C8C8C;
-  color:black;
+  /* border: 1px solid #8C8C8C; */
+  border: 1px solid var(--input-border-color);
+  color: var(--input-border-color);
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
@@ -24,11 +26,12 @@
   gap: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 8px 12px;
 }
 .logo_sortby_botton:hover {
  border: 1px solid #377CF6;
  color: #377CF6;
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 .sortlibrary_inner_div {
   list-style: none;
@@ -75,11 +78,11 @@
   top: 45px;
   right: 0;
   background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--input-border-color);
+  box-shadow: 0px 4px 10px rgba(43, 42, 42, 0.3);
   z-index: 100;
   width: 150px;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .dropdownItem {
