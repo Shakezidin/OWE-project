@@ -13,6 +13,7 @@ import (
 	apiHandler "OWEApp/owehub-leads/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/db"
+	emailClient "OWEApp/shared/email"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	timerHandler "OWEApp/shared/timer"
@@ -39,6 +40,7 @@ type CfgFilePaths struct {
 	DbConfJsonPath      string
 	LeadAppConfJsonPath string
 	OutlookApiConfig    string
+	EmailConfJsonPath   string
 }
 
 var (
@@ -427,6 +429,13 @@ func init() {
 		return
 	}
 
+	/* Initialize email client */
+	err = emailClient.FetchEmailCfg(gCfgFilePaths.EmailConfJsonPath)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to initialize email client err %v", err)
+		return
+	}
+
 	/*Initialize logger package again with new configuraion*/
 	initLogger("OWEHUB-LEADS", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 }
@@ -632,6 +641,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
 	gCfgFilePaths.LeadAppConfJsonPath = gCfgFilePaths.CfgJsonDir + "leadAppConfig.json"
 	gCfgFilePaths.OutlookApiConfig = gCfgFilePaths.CfgJsonDir + "outlookGraphConfig.json"
+	gCfgFilePaths.EmailConfJsonPath = gCfgFilePaths.CfgJsonDir + "emailConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
