@@ -93,7 +93,7 @@
 }
 
 .approved {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     color: #21BC27;
     margin-bottom: 5px;
@@ -101,6 +101,8 @@
 
 .name_container span {
     font-size: 12px;
+    height: 28px;
+    width: 28px;
     font-weight: 600;
     display: flex;
     padding: 2px;
@@ -248,11 +250,11 @@
     height: 20px;
     width: 27px;
     font-weight: 600;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
 }
 
 .icon:hover {
-    transform: scale(1.04);
+    transform: scale(1.05);
 }
 
 .header_right {
@@ -265,7 +267,7 @@
 
 .button_cancel {
     border-radius: 6px;
-    padding: 6px 12px;
+    padding: 8px 12px;
     border: none;
     font-weight: 500;
     font-size: 12px;
@@ -278,12 +280,12 @@
 
 .button_cancel:hover {
     background-color: var(--delete-btn-hover);
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
 .button_edit {
     border-radius: 6px;
-    padding: 6px 12px;
+    padding: 8px 12px;
     border: none;
     font-weight: 500;
     font-size: 12px;
@@ -297,7 +299,7 @@
 
 .button_edit:hover {
     background-color: #DDE9FF;
-    transform: scale(1.07);
+    transform: scale(1.05);
 
 }
 

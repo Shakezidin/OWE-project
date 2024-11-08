@@ -423,7 +423,7 @@ input[type='password']::-ms-clear {
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  z-index: 102;
+  z-index: 400;
 }
 
 .modal {

@@ -28,10 +28,10 @@
   transition: all 0.3s ease;
   padding: 8px 12px;
 }
-.logo_sortby_botton:hover {
+.logo_sortby_botton:hover, .logo_sortby_botton:focus {
  border: 1px solid #377CF6;
  color: #377CF6;
-  transform: scale(1.07);
+  /* transform: scale(1.07); */
 }
 .sortlibrary_inner_div {
   list-style: none;
