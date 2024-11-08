@@ -653,6 +653,12 @@ const getLeadOptions = (lead:any) => {
                           : 'N/A'}</div>
                       </td>
                       <td>
+                        <div className={styles.info}>Sales Rep</div>
+                      </td>
+                      <td>
+                        <div className={styles.info}>Lead Source</div>
+                      </td>
+                      <td>
                       <div className={styles.topofinfo}>
                         {lead.appointment_status_label ? (
                           <>
@@ -918,33 +924,6 @@ const getLeadOptions = (lead:any) => {
                                           setSelected(index);
                                         }}
                                         options={getLeadOptions(lead)}
-                                        // options={
-                                        //   (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
-                                        //     ? [
-                                        //         { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        //         { label: 'Create Proposal', value: 'new_proposal' },
-                                        //       ]
-                                        //     : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
-                                        //       ? [
-                                        //         // { label: 'Send Proposal', value: 'sendtocust' },
-                                        //           { label: 'View Proposal', value: 'viewProposal' },
-                                        //           { label: 'Edit Proposal', value: 'editProposal' },
-                                        //           { label: 'Download Proposal', value: 'download' },
-                                        //           ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
-                                        //           { label: 'Reschedule Appointment', value: 'app_sched' },
-                                        //           { label: 'Refresh Url', value: 'renew_proposal' },
-                                        //       ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
-                                        //         ? [
-                                        //             { label: 'View Proposal', value: 'viewProposal' },
-                                        //             { label: 'Edit Proposal', value: 'editProposal' },
-                                        //             ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
-                                        //             { label: 'Refresh Url', value: 'renew_proposal' },
-                                        //           ]
-                                        //         : [
-                                        //             { label: 'Create Proposal', value: 'new_proposal' },
-                                        //             { label: 'Schedule Appointment', value: 'app_sched' },
-                                        //           ]
-                                        // }
                                       />
                                     )}
                                   </>
