@@ -47,7 +47,7 @@ const BreakdownAccordion: React.FC<BreakdownAccordionProps> = ({ el }) => {
 const ProjectBreakdown: React.FC<ButtonProps> = ({ handleClose, data }) => {
   const [toggleOpen, setToggleOpen] = useState(false);
 
-  console.log(data, 'dataaaaaaaaaaaaaaaaaaaaaaaa');
+ 
   return (
     <div className="transparent-model-down">
       <form action="" className="modal-down-break">

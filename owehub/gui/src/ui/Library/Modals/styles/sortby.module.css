@@ -16,7 +16,7 @@
   /* border: 1px solid #8C8C8C; */
   border: 1px solid var(--input-border-color);
   color: var(--input-border-color);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 18px;
   font-family: 'Poppins';

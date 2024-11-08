@@ -607,7 +607,7 @@ const handleClose = () => {
   <>
     <div className="flex items-center justify-between mb3">
       <h5
-        style={{ fontWeight: 600, fontSize: 16, marginLeft: '20px', fontFamily:'poppins', paddingTop:'7px' }}
+        style={{ color: "#292B2E", fontWeight: 600, fontSize: 16, marginLeft: '20px', paddingTop:'7px' }}
         className="ml2"
       >
         Select Date & Time
@@ -668,7 +668,7 @@ const handleClose = () => {
                 </button>
               ))
             ) : (
-              <h5 style={{display:'flex', alignItems:'center', justifyContent:'center'}}>No Slot Available</h5>
+              <h5 style={{display:'flex', alignItems:'center', justifyContent:'center', fontWeight: 600, color: "#292B2E"}}>No Slot Available</h5>
             )}
           </div>
         </div>

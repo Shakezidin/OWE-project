@@ -2166,11 +2166,11 @@ const LeadManagementDashboard = () => {
           )}
           {leadsData.length > 0 && !isLoading && (
             <div className="page-heading-container">
-
               <p className="page-heading">
                 {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
               </p>
-              <Pagination
+              <div className={styles.PaginationFont}>
+              <Pagination 
                 currentPage={page}
                 totalPages={totalPage}
                 paginate={paginate}
@@ -2180,6 +2180,7 @@ const LeadManagementDashboard = () => {
                 perPage={itemsPerPage}
                 onPerPageChange={handlePerPageChange}
               />
+              </div>
             </div>
 
           )}
