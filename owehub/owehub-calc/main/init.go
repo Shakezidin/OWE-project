@@ -144,7 +144,7 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-calc-service/v1/update_data",
+		"/owe-calc-service/v1/update_agrp_data",
 		apiHandler.HandleUpdateAgRpDataRequest,
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
