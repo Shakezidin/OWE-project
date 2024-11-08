@@ -25,6 +25,13 @@ button.trash-btn {
   z-index: 100;
   transition: all 0.3s ease;
   margin-bottom: -4px;
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown.hover-effect .user-icon svg{
+  height: 36px;
+  width: 36px;
 }
 
 .no-border-select{
