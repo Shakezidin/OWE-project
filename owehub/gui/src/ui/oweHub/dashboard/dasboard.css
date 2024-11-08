@@ -339,8 +339,9 @@
 }
 
 .filter-line:hover {
-  transform: scale(1.07);
+  transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  background-color: #4062CA !important;
 }
 
 .filter-disable {
@@ -357,6 +358,9 @@
 
 .active-filter-line {
   background-color: #377cf6;
+}
+.active-filter-line:hover {
+  background-color: #4062CA;
 }
 
 .active-filter-line img {
@@ -417,7 +421,7 @@
 }
 
 .help-section h3 {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
   /* line-height: 44px; */
   text-align: left;
@@ -432,6 +436,11 @@
 .help-icon {
   padding: 0.5rem;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.help-icon:hover {
+  transform: scale(1.05);
 }
 
 .rep-manage-user {
@@ -501,7 +510,7 @@
 }
 
 .close-popup-btn:hover {
-  transform: scale(1.2);
+  transform: scale(1.05);
   transition: all 500ms;
 }
 
@@ -571,8 +580,8 @@
 }
 
 .help-submit:hover {
-  background-color: #002970 !important;
-  transform: scale(1.07);
+  background-color: #4062CA !important;
+  transform: scale(1.05);
 }
 
 .createUserCrossButtonBreak {
@@ -770,7 +779,6 @@
   padding-left: 13px;
   padding-right: 13px;
   padding-top: 10px;
-  margin-top: 11px;
   padding-bottom: 10px;
   border-radius: 18px;
 }

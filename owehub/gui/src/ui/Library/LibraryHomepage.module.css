@@ -15,16 +15,6 @@
   /* justify-content: space-between; */
 }
 
-.libraryHeader {
-  padding-top: 4px;
-  padding-bottom: 6px;
-  padding-left: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 30px;
-  text-align: left;
-  color: #263747;
-}
 .parentDiv {
   display: flex;
   justify-content: space-between;
@@ -127,7 +117,7 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 /* .buttons:hover {
   color: #eff5ff;
@@ -160,7 +150,7 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 /* .Folderbuttons:hover {
@@ -651,7 +641,7 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .view_btn.active_tile {

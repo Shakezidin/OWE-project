@@ -563,11 +563,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-              ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-              : '',
-            end_date: selectedDates.endDate
-              ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-              : '',
+                ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+                : '',
+              end_date: selectedDates.endDate
+                ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+                : '',
             },
             true
           );
@@ -684,7 +684,7 @@ const LeadManagementDashboard = () => {
   }, [pieData]);
 
   const dispatch = useAppDispatch();
-  const { isLoading, leadsData,statusData1, totalcount } = useAppSelector(
+  const { isLoading, leadsData, statusData1, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
 
@@ -765,11 +765,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-        : '',
-      end_date: selectedDates.endDate
-        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-        : '',
+          ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+          : '',
+        end_date: selectedDates.endDate
+          ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+          : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
@@ -1161,11 +1161,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-      ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-      : '',
-    end_date: selectedDates.endDate
-      ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-      : '',
+        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+        : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1230,7 +1230,7 @@ const LeadManagementDashboard = () => {
 
   //----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
-  
+
 
     try {
       // Step 1: Fetch preferred solar modules using dispatch
@@ -1402,27 +1402,6 @@ const LeadManagementDashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      <div style={{ marginLeft: 6, marginTop: 6 }}>
-        <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
-          <div className="bread-link">
-            <div className="" style={{ cursor: 'pointer' }}>
-            </div>
-            <div className="">
-              <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* <ConfirmModel
-        isOpen1={isModalOpen}
-        onClose1={handleCloseModal}
-        leadId={leadId}
-        refresh={refresh}
-        setRefresh={setRefresh}
-        reschedule={reschedule}
-        action={action}
-        setReschedule={setReschedule}
-      /> */}
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
 
@@ -1523,14 +1502,30 @@ const LeadManagementDashboard = () => {
                       alignContent: 'center',
                       backgroundColor: '#fffff',
                       boxShadow: 'none',
+                      '@media only screen and (max-width: 767px)': {
+                        // width: '80px',
+                        width: 'fit-content',
+                      },
                       '&:focus-within': {
                         borderColor: '#377CF6',
                         boxShadow: '0 0 0 1px #377CF6',
                         caretColor: '#3E3E3E',
+                        '& .css-kofgz1-singleValue': {
+                          color: '#377CF6',
+                        },
+                        '& .css-tj5bde-Svg': {
+                          color: '#377CF6',
+                        },
                       },
                       '&:hover': {
                         borderColor: '#377CF6',
                         boxShadow: '0 0 0 1px #377CF6',
+                        '& .css-kofgz1-singleValue': {
+                          color: '#377CF6',
+                        },
+                        '& .css-tj5bde-Svg': {
+                          color: '#377CF6',
+                        },
                       },
                     }),
                     placeholder: (baseStyles) => ({
@@ -1550,13 +1545,15 @@ const LeadManagementDashboard = () => {
                     option: (baseStyles, state) => ({
                       ...baseStyles,
                       fontSize: '13px',
-                      fontWeight: '400',
                       color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
                       backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                       '&:hover': {
-                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                        backgroundColor: state.isSelected
+                          ? '#ddebff'
+                          : '#ddebff',
                       },
                       cursor: 'pointer',
+                      fontWeight:"400"
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
@@ -1566,7 +1563,6 @@ const LeadManagementDashboard = () => {
                       ...baseStyles,
                       width: '140px',
                       marginTop: '0px',
-                      zIndex: "100"
                     }),
                   }}
                 />}
@@ -1790,10 +1786,10 @@ const LeadManagementDashboard = () => {
                 </div>
 
                 <div className={styles.searchBar}>
-                  <div className={styles.searchIcon}>
+                  {/* <div className={styles.searchIcon}>
                     <img src={ICONS.SearchICON001} />
 
-                  </div>
+                  </div> */}
                   <input
                     type="text"
                     value={search}
@@ -1979,7 +1975,7 @@ const LeadManagementDashboard = () => {
                     />
                     {searchTerm !== '' && (
                       <div className={styles.CrossRemoveSearch} onClick={handleCrossIcon} >
-                        <img  src={ICONS.crossIconUser} alt="cross" />
+                        <img src={ICONS.crossIconUser} alt="cross" />
                       </div>
                     )}
                   </div>
@@ -2166,20 +2162,21 @@ const LeadManagementDashboard = () => {
           )}
           {leadsData.length > 0 && !isLoading && (
             <div className="page-heading-container">
-
               <p className="page-heading">
                 {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
               </p>
-              <Pagination
-                currentPage={page}
-                totalPages={totalPage}
-                paginate={paginate}
-                currentPageData={[]}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-                onPerPageChange={handlePerPageChange}
-              />
+              <div className={styles.PaginationFont}>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPage}
+                  paginate={paginate}
+                  currentPageData={[]}
+                  goToNextPage={goToNextPage}
+                  goToPrevPage={goToPrevPage}
+                  perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
+                />
+              </div>
             </div>
 
           )}

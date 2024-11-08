@@ -11,6 +11,7 @@ import (
 	"OWEApp/owehub-leads/docusignclient"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
+	emailClient "OWEApp/shared/email"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"bytes"
@@ -18,10 +19,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/sendgrid/rest"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 /******************************************************************************
@@ -217,10 +214,9 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
  ******************************************************************************/
 func sendLeadWonEmail(leadsId int64) error {
 	var (
-		err      error
-		query    string
-		data     []map[string]interface{}
-		response *rest.Response
+		err   error
+		query string
+		data  []map[string]interface{}
 	)
 
 	log.EnterFn(0, "sendLeadWonEmail")
@@ -294,148 +290,24 @@ func sendLeadWonEmail(leadsId int64) error {
 
 	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
-	// prepare the mail
-	// from := mail.NewEmail("OWE", leadsService.LeadAppCfg.AppointmentSenderEmail)
-	from := mail.NewEmail("OWE", "it@ourworldenergy.com") // TODO: change this
-	subject := "Lead Won!"
-	to := mail.NewEmail(userName, userEmail)
+	err = emailClient.SendEmail(emailClient.SendEmailRequest{
+		ToName:  userName,
+		ToEmail: userEmail,
+		Subject: "Lead Won!",
+		TemplateData: emailClient.TemplateDataLeadProposalSigned{
+			LeadFirstName:   firstName,
+			LeadLastName:    lastName,
+			LeadId:          leadsId,
+			ProposalPdfUrl:  proposalPdfUrl,
+			LeadEmailId:     email,
+			LeadPhoneNumber: phoneNo,
+			UserName:        userName,
+		},
+	})
 
-	plainTextContent := fmt.Sprintf(`
-		Congratulations %s! Your lead %s %s (OWE%d) has signed the proposal and is now moved to records section on the platform.
-		Download Signed Proposal: %s`, userName, firstName, lastName, leadsId, proposalPdfUrl)
-
-	htmlContent := fmt.Sprintf(`
-<html>
-  <body
-    style="
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    "
-  >
-    <div
-      style="
-        background-color: #ffffff;
-        margin: 50px auto;
-        padding: 20px;
-        max-width: 600px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      "
-    >
-      <img src="https://i.ibb.co/FJcyHcX/image-10-1.png" width="200" />
-
-      <div style="font-size: 16px; color: #555555; line-height: 1.6">
-        <h4 style="margin-bottom: -16px">Hi %s,</h4>
-        <p>Congratulations! You just won a lead on the OWEHUB platform!</p>
-        <p>
-          Your lead %s %s (OWE%d) has signed the proposal and is now
-          moved to records section on the platform.
-        </p>
-
-        <div
-          style="
-            margin-bottom: 24px;
-            font-size: 16px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            position: relative;
-          "
-        >
-          <p
-            style="
-              position: absolute;
-              top: -25%%;
-              right: 8px;
-              background-color: #fff;
-              padding: 0 4px;
-              font-style: italic;
-              color: #ccc;
-            "
-          >
-            On Platform Details
-          </p>
-          <table style="border-spacing: 12px 0; color: #555">
-            <tr>
-              <th style="text-align: left; color: #888">Lead ID</th>
-              <td>OWE%d</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; color: #888">First Name</th>
-              <td>%s</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; color: #888">Last Name</th>
-              <td>%s</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; color: #888">Email</th>
-              <td>%s</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; color: #888">Phone Number</th>
-              <td>%s</td>
-            </tr>
-          </table>
-        </div>
-        <p>
-          <a
-            clicktracking="off"
-            href="%s"
-            style="color: #007bff; border-radius: 5px"
-            >Download Signed Proposal</a
-          >
-        </p>
-
-        <p>
-          If you have any questions or need assistance, feel free to reach out
-          to our IT team at
-          <a
-            clicktracking="off"
-            href="mailto:it@ourworldenergy.com"
-            style="color: #007bff; text-decoration: none"
-            >it@ourworldenergy.com</a
-          >
-        </p>
-      </div>
-      <div
-        style="
-          margin-top: 30px;
-          text-align: center;
-          font-size: 12px;
-          color: #888888;
-        "
-      >
-        <p>&copy; 2024 Our World Energy. All rights reserved.</p>
-      </div>
-    </div>
-  </body>
-</html>`,
-		userName,
-		firstName,
-		lastName,
-		leadsId,
-		leadsId,
-		firstName,
-		lastName,
-		email,
-		phoneNo,
-		proposalPdfUrl,
-	)
-
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-
-	// Send the email
-	client := sendgrid.NewSendClient("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")
-	response, err = client.Send(message)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to send email with err: %v", err)
 		return err
 	}
-
-	log.FuncDebugTrace(0, "Email sent successfully, headers: %+v, body %s, status code: %d", response.Headers, response.Body, response.StatusCode)
 
 	return nil
 }

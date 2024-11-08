@@ -39,6 +39,8 @@ CREATE TABLE if NOT EXISTS leads_info (
     status_id INT DEFAULT 0,
     created_by INT NOT NULL,
     last_updated_by INT,
+    sales_rep_name VARCHAR(255),
+    lead_source VARCHAR(255)
     FOREIGN KEY (created_by) REFERENCES user_details(user_id),
     FOREIGN KEY (last_updated_by) REFERENCES user_details(user_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
@@ -54,10 +56,10 @@ CREATE OR REPLACE FUNCTION get_leads_info_hierarchy(p_email VARCHAR(255))
 DECLARE
     v_user_id INT;
     v_user_role VARCHAR;
-    v_dealer_id INT;
+    v_dealer_id VARCHAR;
 BEGIN
     SELECT 
-        user_details.user_id, user_details.dealer_id, user_roles.role_name 
+        user_details.user_id, user_details.partner_id, user_roles.role_name 
         INTO v_user_id, v_dealer_id, v_user_role
     FROM user_details
     INNER JOIN user_roles ON user_details.role_id = user_roles.role_id
@@ -72,11 +74,11 @@ BEGIN
         RETURN QUERY
             SELECT * FROM leads_info;
 
-    -- leads by dealer owner: users with that dealer_id except other dealer owners
+    -- leads by dealer owner: users with that partner_id except other dealer owners
     ELSIF v_user_role = 'Dealer Owner' THEN
         RETURN QUERY
             SELECT leads_info.* FROM leads_info
-            INNER JOIN user_details ON user_details.dealer_id = v_dealer_id
+            INNER JOIN user_details ON user_details.partner_id = v_dealer_id
             INNER JOIN user_roles ON user_details.role_id = user_roles.role_id
             WHERE
                 leads_info.created_by = user_details.user_id AND
@@ -123,7 +125,7 @@ BEGIN
     -- manage access for appointment setter, finance admin, account executive, account manager, db user and partner
     IF v_user_role IN ('Appointment Setter', 'Finance Admin', 'Account Executive', 'Account Manager', 'DB User', 'Partner') THEN
         RETURN QUERY
-            SELECT * FROM leads_info WHERE leads_info.created_by = p_user_id;
+            SELECT * FROM leads_info WHERE leads_info.created_by = v_user_id;
     END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -138,7 +140,9 @@ CREATE OR REPLACE FUNCTION create_lead(
     p_phone_number VARCHAR,
     p_street_address VARCHAR, 
     p_zipcode VARCHAR, 
-    p_notes VARCHAR
+    p_notes VARCHAR,
+    p_sales_rep_name VARCHAR,
+    p_lead_source VARCHAR
 ) RETURNS INT AS $$
 DECLARE
     v_lead_id INT;
@@ -178,7 +182,9 @@ BEGIN
         phone_number,
         street_address,
         zipcode,
-        notes
+        notes,
+        sales_rep_name,
+        lead_source
     ) VALUES (
         v_creator_user_id,
         p_first_name,
@@ -187,7 +193,9 @@ BEGIN
         p_phone_number,
         p_street_address,
         v_zipcode_id, 
-        p_notes
+        p_notes,
+        p_sales_rep_name,
+        p_lead_source
     ) RETURNING leads_id INTO v_lead_id;
 
     -- Return the inserted lead's ID

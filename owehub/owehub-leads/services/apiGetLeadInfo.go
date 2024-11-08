@@ -96,6 +96,8 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.proposal_created_date,
 					li.status_id,
 					li.aurora_design_id,
+					li.sales_rep_name,
+					li.lead_source,
 					ud.name as created_by_name
 				FROM
 					get_leads_info_hierarchy($1) li
@@ -224,6 +226,15 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	statusId, ok := leadData["status_id"].(int64)
 	if ok {
 		apiResponse.StatusID = statusId
+	}
+
+	salesRepName, ok := leadData["sales_rep_name"].(string)
+	if ok {
+		apiResponse.SalesRepName = salesRepName
+	}
+	leadSource, ok := leadData["lead_source"].(string)
+	if ok {
+		apiResponse.LeadSource = leadSource
 	}
 
 	// if aurora_design_id is present in the db, then get & update the finance type and company

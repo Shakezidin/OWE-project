@@ -16,7 +16,7 @@ import Select from 'react-select';
 import useEscapeKey from '../../../hooks/useEscape';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 
 const AddNew = () => {
   const [formData, setFormData] = useState({
@@ -142,7 +142,7 @@ const AddNew = () => {
           ...prev,
           [name]: `${name === 'first_name' ? 'First' : 'Last'} Name can only contain letters`,
         }));
-        return; 
+        return;
       }
     }
 
@@ -223,7 +223,7 @@ const AddNew = () => {
         console.error('Error submitting form:', error.response.data);
         toast.error(
           error.response.data.message ||
-            'Error submitting the form. Please try again.'
+          'Error submitting the form. Please try again.'
         );
       } else {
         console.error('Unexpected error:', error);
@@ -236,7 +236,7 @@ const AddNew = () => {
     navigate(-1);
   };
 
-  useEscapeKey(() => navigate(-1)); 
+  useEscapeKey(() => navigate(-1));
 
 
   const validateForm = () => {
@@ -476,23 +476,25 @@ const AddNew = () => {
                           Roof Type
                           {/* {' '} */}
                         </label>
+
                         <Select
+                          classNamePrefix="select"
                           options={options1}
                           value={
                             formData.roof_type
                               ? {
-                                  value: formData.roof_type,
-                                  label: formData.roof_type,
-                                }
+                                value: formData.roof_type,
+                                label: formData.roof_type,
+                              }
                               : null
                           }
                           onChange={handleSelectChange}
                           placeholder="Select Rooftype"
                           styles={{
-                            control: (baseStyles) => ({
+                            control: (baseStyles, { isFocused }) => ({
                               ...baseStyles,
                               backgroundColor: '#F3F3F3',
-                              border: 'none',
+                              border: `1px solid ${isFocused ? '#377CF6' : '#292B2E'}`,
                               width: '85%',
                               minHeight: '36px',
                               borderRadius: '8px',
@@ -500,30 +502,36 @@ const AddNew = () => {
                               '@media only screen and (max-width: 600px)': {
                                 width: '240%',
                               },
-                              '@media only screen and (min-width: 600px) and (max-width: 820px)':
-                                {
-                                  width: '100%',
-                                },
+                              '@media only screen and (min-width: 600px) and (max-width: 820px)': {
+                                width: '100%',
+                              },
                               boxShadow: 'none',
                               cursor: 'pointer',
                               marginTop: '19px',
+                              '&:hover': {
+                                border: '1px solid #377CF6', // Change border color to blue on hover
+                              },
                             }),
                             singleValue: (baseStyles) => ({
                               ...baseStyles,
                               color: '#292929',
-                              fontWeight: '500',
+                              fontWeight: '400',
                             }),
-                            placeholder: (baseStyles) => ({
+                            placeholder: (baseStyles, { hasValue }) => ({
                               ...baseStyles,
                               color: '#777777',
                               fontSize: '12px',
                               padding: '5px',
+                              transition: 'color 0.2s ease',
+                              [`&:hover, .select__control:hover &`]: {
+                                color: '#377CF6', // Change placeholder color on hover
+                              },
                             }),
-                            dropdownIndicator: (baseStyles) => ({
+                            dropdownIndicator: (baseStyles, { isFocused }) => ({
                               ...baseStyles,
-                              color: '#777777',
+                              color: isFocused ? '#377CF6' : '#777777', // Change SVG icon color on hover and focus
                               '&:hover': {
-                                color: '#292929',
+                                color: '#377CF6', // Change color on hover
                               },
                             }),
                             indicatorSeparator: () => ({

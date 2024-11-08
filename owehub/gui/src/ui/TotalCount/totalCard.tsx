@@ -67,7 +67,7 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) 
       case 'month':
         return 'From the last month';
       default:
-        return 'From the last period';
+        return 'From the last year';
     }
   };
 
