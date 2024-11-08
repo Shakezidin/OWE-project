@@ -66,8 +66,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	tableName := "dealer_pay"
-	// Calculate pagination
-	query = `SELECT home_owner, current_status, unique_id, dealer_code, 
+	query = `SELECT home_owner, current_status, unique_id, dealer_code, marketing_fee, referral, rebate,
 				today, amount, sys_size, rl, contract_dol_dol, loan_fee, 
 				epc, net_epc, other_adders, credit, rep_1, rep_2, 
 				setter, draw_amt, amt_paid, balance, st, contract_date,finance_type 
@@ -88,6 +87,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	for _, item := range data {
 		var dlrPay models.DealerPayReportResponse
+		var adder models.Adder
 
 		// Populate the DealerPayReportResponse struct with values from the database safely
 		if val, ok := item["home_owner"].(string); ok {
@@ -108,22 +108,22 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		if val, ok := item["amount"].(float64); ok {
 			dlrPay.Amount = val
 		}
-		if val, ok := item["sys_size"].(string); ok {
+		if val, ok := item["sys_size"].(float64); ok {
 			dlrPay.Sys_Size = val
 		}
-		if val, ok := item["rl"].(string); ok {
+		if val, ok := item["rl"].(float64); ok {
 			dlrPay.RL = val
 		}
-		if val, ok := item["contract_dol_dol"].(string); ok {
+		if val, ok := item["contract_dol_dol"].(float64); ok {
 			dlrPay.Contract = val
 		}
-		if val, ok := item["loan_fee"].(string); ok {
+		if val, ok := item["loan_fee"].(float64); ok {
 			dlrPay.Loan_Fee = val
 		}
-		if val, ok := item["epc"].(string); ok {
+		if val, ok := item["epc"].(float64); ok {
 			dlrPay.EPC = val
 		}
-		if val, ok := item["net_epc"].(string); ok {
+		if val, ok := item["net_epc"].(float64); ok {
 			dlrPay.Net_EPC = val
 		}
 		if val, ok := item["other_adders"].(string); ok {
@@ -147,7 +147,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		if val, ok := item["amt_paid"].(float64); ok {
 			dlrPay.Amt_Paid = val
 		}
-		if val, ok := item["balance"].(string); ok {
+		if val, ok := item["balance"].(float64); ok {
 			dlrPay.Balance = val
 		}
 		if val, ok := item["st"].(string); ok {
@@ -160,6 +160,20 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		if val, ok := item["finance_type"].(string); ok {
 			dlrPay.Type = val
 		}
+
+		if val, ok := item["marketing_fee"].(float64); ok {
+			adder.Marketing = val
+		}
+		if val, ok := item["referral"].(string); ok {
+			adder.Referral = val
+		}
+		if val, ok := item["rebate"].(string); ok {
+			adder.Rebate = val
+		}
+
+		adder.SmallSystemSize = dlrPay.Sys_Size
+		adder.Credit = dlrPay.Credit
+		dlrPay.Adder = adder
 
 		// Append the populated struct to the response
 		dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
@@ -371,6 +385,27 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				whereEleList = append(whereEleList, value)
 			case "contract_date":
 				filtersBuilder.WriteString(fmt.Sprintf("contract_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "sys_size":
+				filtersBuilder.WriteString(fmt.Sprintf("sys_size %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "rl":
+				filtersBuilder.WriteString(fmt.Sprintf("rl %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "contract_dol_dol":
+				filtersBuilder.WriteString(fmt.Sprintf("contract_dol_dol %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "loan_fee":
+				filtersBuilder.WriteString(fmt.Sprintf("loan_fee %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "epc":
+				filtersBuilder.WriteString(fmt.Sprintf("epc %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "net_epc":
+				filtersBuilder.WriteString(fmt.Sprintf("net_epc %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "balance":
+				filtersBuilder.WriteString(fmt.Sprintf("balance %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

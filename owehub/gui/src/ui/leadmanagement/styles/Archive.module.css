@@ -306,8 +306,8 @@ table tbody tr:hover {
 }
 
 input[type='checkbox'] {
-  width: 18px !important;
-  height: 18px !important;
+  /* width: 18px !important; */
+  /* height: 18px !important; */
   border-radius: 100px;
   border: 1px solid #797979;
   cursor: pointer;
@@ -542,6 +542,9 @@ input[type='checkbox']:checked {
   justify-content: center;
   align-items: center;
   border-radius: 5px;
+}
+.PaginationFont a{
+  font-size: 12px !important;
 }
 
 .date_parent {
@@ -934,11 +937,9 @@ input[type='checkbox']:checked {
   font-size: 14px;
   color: #377cf6;
 }
-
+/* 
 .monthSelect {
-  /* background-color: #3b82f6; */
   color: white;
-  /* border-radius: 20px; */
   padding: 4px 8px;
   border: none;
   font-size: 12px;
@@ -968,7 +969,7 @@ input[type='checkbox']:checked {
   background-position: right 10px center;
   padding-right: 32px;
   padding-left: 15px;
-}
+} */
 
 .calender {
   background-color: #377cf6;

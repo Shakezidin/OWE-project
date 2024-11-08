@@ -128,7 +128,46 @@
   background-color: #ddebff;
   transform: scale(1.06);
 }
+.EditPenIcon {
+  margin-left: 20px;
+  padding: 8px; 
+  width: 14px; 
+  height: 14px; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #D7E5FD;
+  box-sizing: content-box; 
+  border-radius: 6px;
+  cursor: pointer;
+}
+.SignEditBottonX {
+  margin-left: 20px;
+  padding: 8px; 
+  width: 14px; 
+  height: 14px; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #377CF6;
+  box-sizing: content-box; 
+  border-radius: 6px;
+  cursor: pointer;
+}
 
+/* .CheckboxContainer { 
+  margin-left: 20px;
+ 
+}
+.CheckboxContainer input[type='checkbox'] {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 100px;
+  border: 1px solid #797979;
+  cursor: pointer;
+  transition: border 0.2s ease
+ 
+} */
 .prop_send {
   display: flex;
   flex-direction: row;

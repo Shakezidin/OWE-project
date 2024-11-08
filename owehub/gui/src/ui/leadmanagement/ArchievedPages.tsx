@@ -638,7 +638,8 @@ const ArchivedPages = () => {
                   {startIndex} -
                   {endIndex > totalcount! ? totalcount : endIndex} of{' '}
                   {totalcount} item
-                </p>           
+                </p>  
+                <div className={styles.PaginationFont}>         
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -649,6 +650,7 @@ const ArchivedPages = () => {
                   perPage={itemsPerPage}
                   onPerPageChange={handlePerPageChange}
                 />
+                </div>
             </div>
           )}
         </div>

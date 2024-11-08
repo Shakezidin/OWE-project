@@ -69,6 +69,11 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	milestoneData := models.GetMilestoneDataResp{}
 
+	if len(dataReq.DealerNames) <= 0 {
+		log.FuncErrorTrace(0, "No dealer name selected")
+		appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, milestoneData, RecordCount)
+		return
+	}
 	var saleCountMap = make(map[string]int)
 	var ntpCountMap = make(map[string]int)
 	var installCountMap = make(map[string]int)
@@ -78,9 +83,13 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	endDate = endDate.Add(24*time.Hour - time.Second)
 
-	// var prevEndDate, prevStartDate time.Time
-	// var currentMonthStartDate time.Time
-	// var currentMonthEndDate time.Time
+	dateKeys := generateDateKeys(startDate, endDate, dataReq.DateBy)
+
+	for _, key := range dateKeys {
+		saleCountMap[key] = 0
+		ntpCountMap[key] = 0
+		installCountMap[key] = 0
+	}
 
 	switch dataReq.DateBy {
 	case "day":
@@ -234,81 +243,6 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 }
 
-/******************************************************************************
- * FUNCTION:		PrepareLeaderDateFilters
- * DESCRIPTION:     handler for prepare primary filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
-
-// func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq) (filters string, whereEleList []interface{}) {
-// 	log.EnterFn(0, "PrepareMilestoneDataFilters")
-// 	defer func() { log.ExitFn(0, "PrepareMilestoneDataFilters", nil) }()
-
-// 	var filtersBuilder strings.Builder
-// 	var whereAdded bool
-
-// 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
-// 		startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
-// 		endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
-
-// 		endDate = endDate.Add(24*time.Hour - time.Second)
-
-// 		whereEleList = append(whereEleList,
-// 			startDate.Format("02-01-2006 00:00:00"),
-// 			endDate.Format("02-01-2006 15:04:05"),
-// 		)
-
-// 		filtersBuilder.WriteString(" WHERE")
-// 		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-// 		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-// 		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
-// 		whereAdded = true
-// 	}
-
-// 	if len(dataReq.DealerNames) > 0 {
-// 		if whereAdded {
-// 			filtersBuilder.WriteString(" AND ")
-// 		} else {
-// 			filtersBuilder.WriteString(" WHERE ")
-// 			whereAdded = true
-// 		}
-
-// 		// Escape single quotes and format dealer names
-// 		var dealerNames []string
-// 		for _, dealer := range dataReq.DealerNames {
-// 			escapedDealer := strings.ReplaceAll(dealer, "'", "''")
-// 			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", escapedDealer))
-// 		}
-
-// 		// Join the dealer names for SQL IN clause
-// 		filtersBuilder.WriteString(fmt.Sprintf("cs.dealer IN (%s)", strings.Join(dealerNames, ", ")))
-// 		whereAdded = true
-// 	}
-
-// 	if len(dataReq.State) > 0 {
-// 		if whereAdded {
-// 			filtersBuilder.WriteString(" AND ")
-// 		} else {
-// 			filtersBuilder.WriteString(" WHERE ")
-// 			whereAdded = true
-// 		}
-
-// 		filtersBuilder.WriteString(fmt.Sprintf("cs.state ILIKE '%%%s%%'", dataReq.State))
-// 	}
-
-// 	if whereAdded {
-// 		filtersBuilder.WriteString(" AND ")
-// 	} else {
-// 		filtersBuilder.WriteString(" WHERE ")
-// 		whereAdded = true
-// 	}
-// 	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
-
-// 	filters = filtersBuilder.String()
-// 	return filters, whereEleList
-// }
-
 func calculatePercentageIncrease(currentMonthSales, lastMonthSales int) float64 {
 	if lastMonthSales == 0 {
 		return 0 // To avoid division by zero, return 0% if last month sales are zero.
@@ -395,4 +329,30 @@ func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq, table strin
 	}
 
 	return csBuilder.String(), whereEleList
+}
+
+func generateDateKeys(startDate, endDate time.Time, dateBy string) []string {
+	var keys []string
+	current := startDate
+
+	for !current.After(endDate) {
+		var key string
+		switch dateBy {
+		case "day":
+			key = current.Format("2006-01-02")
+			current = current.AddDate(0, 0, 1) // Move to the next day
+		case "month":
+			key = current.Format("2006-01")
+			current = current.AddDate(0, 1, 0) // Move to the next month
+		case "week":
+			year, week := current.ISOWeek()
+			key = fmt.Sprintf("%d-W%02d", year, week)
+			current = current.AddDate(0, 0, 7) // Move to the next week
+		default: // "year"
+			key = current.Format("2006")
+			current = current.AddDate(1, 0, 0) // Move to the next year
+		}
+		keys = append(keys, key)
+	}
+	return keys
 }

@@ -430,7 +430,8 @@ const DealerOverRides: React.FC = () => {
                     <td>{el.pay_rate || 'N/A'}</td>
                     <td>{el.state?.trim?.() || 'N/A'}</td>
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
-                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
+                    <td>{!el.end_date || new Date(el.end_date).getFullYear() === 1 ? 'N/A' : dateFormat(el.end_date)}</td>
+
 
 
                   </tr>

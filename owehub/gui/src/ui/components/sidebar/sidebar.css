@@ -168,7 +168,7 @@
 }
 
 .icon-shape svg {
-  color: #000 !important;
+  color: var(--input-border-color) !important;
 }
 
 .icon-shape:hover svg{
@@ -185,7 +185,7 @@
 }
 
 .tablinkk {
-  color: var(--coloumn-text-color);
+  color: var(--input-border-color);
   font-weight: normal;
   font-size: 13px !important;
   text-transform: capitalize;
@@ -311,11 +311,11 @@
 }
 
 .sidebaricon {
-  color: var(--coloumn-text-color);
+  color: var(--input-border-color);
 }
 
 .sidebariconn {
-  color: var(--coloumn-text-color);
+  color: var(--input-border-color);
 }
 
 @media (max-width: 1024px) {

@@ -41,6 +41,7 @@ export default [
     type: 'string',
     isCheckbox: false,
   },
+  
   {
     name: 'rep_1',
     displayName: 'Rep 1',
@@ -78,7 +79,7 @@ export default [
     type: 'number',
     isCheckbox: false,
   },
-  { name: 'credit', displayName: 'Credit', type: 'number', isCheckbox: false },
+  { name: 'credit', displayName: 'Credit', type: 'string', isCheckbox: false },
   {
     name: 'draw_amt',
     displayName: 'Draw Amt',
@@ -95,7 +96,7 @@ export default [
   {
     name: 'today',
     displayName: 'Today',
-    type: 'number',
+    type: 'date',
     isCheckbox: false,
   },
   { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },

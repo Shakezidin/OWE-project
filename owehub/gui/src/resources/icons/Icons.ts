@@ -8,6 +8,8 @@
 import crossIcon from '../../resources/assets/cross.svg';
 import Searchbar1 from "../assets/search-bar-01.png"
 import searchbar2 from "../assets/images (1).png"
+import SignEditBotton from "../assets/SignEditBotton.png"
+import EditPenNew from "../assets/EditPenNew.png"
 import searchbar3 from "../assets/images.png"
 import SignModelConfirmation from "../../resources/assets/SignConfirnationModel.png"
 import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
@@ -192,9 +194,11 @@ export const ICONS = {
   Ellipse: ellipse,
   FILTERACTIVE: filterActive,
   ARCHIVE: archive,
+  EditPenNew:EditPenNew,
   editIcon: edit,
   Searchbar1:Searchbar1,
   searchbar2:searchbar2,
+  
   searchbar3:searchbar3,
   APPICON: require('../../resources/assets/appicon.png'),
   USER_IMAGE: require('../../resources/assets/user.png'),
@@ -232,6 +236,7 @@ export const ICONS = {
   logoutIcon: logoutIcon,
   trackerIcon: trackerIcon,
   activityIcon: activityIcon,
+  SignEditBotton:SignEditBotton,
   menuIcon: menu,
   leftArrow: leftArrow,
   editIconUser: editIconUser,

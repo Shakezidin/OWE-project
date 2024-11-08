@@ -22,5 +22,8 @@ CREATE TABLE IF NOT EXISTS dealer_pay(
     st TEXT,
     contract_date TIMESTAMP,
     finance_type TEXT,
-    ntp_date TIMESTAMP
+    ntp_date TIMESTAMP,
+    marketing_fee float,
+    referral TEXT,
+    rebate TEXT
 )
