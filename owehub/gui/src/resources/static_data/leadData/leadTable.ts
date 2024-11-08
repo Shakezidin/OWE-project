@@ -13,6 +13,14 @@ export const LeadColumn = [
     displayName: 'Address',
   },
   {
+    id: 'sales_rep',
+    displayName: 'Sales Rep',
+  },
+  {
+    id: 'lead_source',
+    displayName: 'Lead Source',
+  },
+  {
     id: 'appointment_status',
     displayName: 'Appointment Status',
   },

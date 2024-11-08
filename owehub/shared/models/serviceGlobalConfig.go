@@ -38,6 +38,7 @@ type SvcConfig struct {
 	SelfInstanceId         string
 	SelfAddr               string
 	HTTPTimerCallBackPath  string
+	EmailCfg               EmailCfg
 	HTTPCfg                HTTPConfig
 	LogCfg                 LoggingCfg
 	DbConfList             DBConfigList

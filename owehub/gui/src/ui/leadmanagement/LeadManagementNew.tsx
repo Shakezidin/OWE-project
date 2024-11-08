@@ -21,6 +21,8 @@ const LeadManagementNew = () => {
     address: '',
     zip_code: '',
     notes: '',
+    sales_rep:'',
+    lead_source:'',
   });
   // console.log(formData, 'form data consoling ');
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
@@ -28,6 +30,9 @@ const LeadManagementNew = () => {
   const [emailError, setEmailError] = useState('');
   const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
+  const [salesRepError, setSalesRepError]=useState('');
+  const [leadSourceError, setLeadSourceError]=useState('');
+
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -74,6 +79,17 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: CorrectValue,
       }));
+    }
+    if (name === 'sales_rep' || name === 'lead_source') {
+      if (value === '' || lettersAndSpacesPattern.test(value)) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+        const err = { ...errors };
+        delete err[name];
+        setErrors(err);
+      }
     } else if (name === 'notes') {
       const sanitizedValue = value.replace(/\s+/g, ' ');
       setFormData((prevData) => ({
@@ -99,6 +115,8 @@ const LeadManagementNew = () => {
     address: '',
     zip_code: '',
     notes: '',
+    sales_rep:'',
+    lead_source:'',
   };
 
   const validateForm = (formData: any) => {
@@ -122,6 +140,12 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
+    if (formData.sales_rep.trim() === '') {
+      errors.sales_rep = 'Sales Rep is required';
+    }
+    if (formData.lead_source.trim() === '') {
+      errors.lead_source = 'Lead Source is required';
+    }
 
 
     return errors;
@@ -135,7 +159,7 @@ const LeadManagementNew = () => {
     setErrors(errors);
    
 
-    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
+    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '' ) {
 
       setLoad(true);
 
@@ -150,11 +174,14 @@ const LeadManagementNew = () => {
             street_address: formData.address,
             zipcode: formData.zip_code,
             notes: formData.notes,
+            lead_source:formData.lead_source,
+            sales_Rep:formData.sales_rep,
           },
           true
         );
         if (response.status === 200) {
           toast.success('Lead Created Succesfully');
+          console.log("***************   SUCCESSFULLY SUBMITTED  ******************")
           resetFormData();
           navigate('/leadmng-dashboard');
         } else if (response.status >= 201) {
@@ -167,7 +194,6 @@ const LeadManagementNew = () => {
       }
     }
 
-    // console.log('FORM SUCCESSFULLY SUBMITTED ');
   };
 
   const resetFormData = () => {
@@ -368,7 +394,50 @@ const LeadManagementNew = () => {
                           </div>
                         )}
                       </div>
+                      </div>
+                      <div className={classes.salrep_input_container}> <div className={classes.srs_new_create}>
+                        <Input
+                          type="text"
+                          label="Sales Rep Name"
+                          value={formData.sales_rep}
+                          placeholder="Enter Sales Rep Name"
+                          onChange={handleInputChange}
+                          name="sales_rep"
+                          maxLength={18}
+                        />
+                        {errors.sales_rep && (
+                          <span
+                            style={{
+                              display: 'block',
+                            }}
+                            className="error"
+                          >
+                            {errors.sales_rep}
+                          </span>
+                        )}
+                      </div>
 
+                      <div className={classes.srs_new_create}>
+                        <Input
+                          type="text"
+                          label="Lead Source"
+                          value={formData.lead_source}
+                          placeholder="Enter About Lead Source"
+                          onChange={handleInputChange}
+                          name="lead_source"
+                          maxLength={17}
+                        />
+                        {errors.lead_source && (
+                          <span
+                            style={{
+                              display: 'block',
+                            }}
+                            className="error"
+                          >
+                            {errors.lead_source}
+                          </span>
+                        )}
+                      </div>
                       <div className={classes.create_input_field_note}>
                         <label htmlFor="" className="inputLabel">
                           Notes
@@ -391,8 +460,7 @@ const LeadManagementNew = () => {
                         >
                           {formData.notes.trim().length}/300 characters
                         </p>
-                      </div>
-                    </div>
+                      </div></div>
                   </div>
                 </div>
               </div>
