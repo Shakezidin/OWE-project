@@ -58,7 +58,6 @@ span.disbaled-label {
 
 .dropdown-checkbox .dropdown-toggle:not(.disabled-dropdown):hover {
   border-color: var(--primary-color) !important;
-  transform: scale(1.04);
   transition: all 0.3s ease;
 }
 
@@ -77,7 +76,7 @@ span.disbaled-label {
 
 .dropdown-checkbox .dropdown-toggle.active {
   border-color: var(--primary-color);
-  transform: scale(1.04); 
+  /* transform: scale(1.04);  */
   transition: all 0.3s ease;
 }
 

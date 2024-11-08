@@ -17,5 +17,9 @@
   "docusignRsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu1MZlczCYb0r0QTya50f\ns0DAYItANi3NULcuQZOfATis3GGp0jRiwCx7U+6hFE6gWnDNT1X27cmTTAWQQOCz\nW3kr3TkZlO8FcGmVhC0cweWWKcuGLgLAMCh81r8+bkud4Bkmgez9LNAHTHKJNWLB\n0R7BYgmjZLdv5wb4nhkZpD/EPot0l0Q0nOSH4mWCSciIIoSB1jbDxlCaWyWseSoS\nrxDR9XITS3RcxZidap+mLC4j15qGnEt3uSUgxxb6tHPQ+rdCiz4ysuClOCRswH2i\naKIVPKAd/T3hrsOAV+MEzftwYMfBP9IR2bT1oZawPZAuf11qYQyTAu+txZkdFh7c\nmQIDAQAB\n-----END PUBLIC KEY-----",
   "outlookSubscriptionEndpoints": [
     "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification"
-  ]
+  ],
+  "twilioAccountSid": "AC6dd9eb2e703b9503c20f6cde82336e9a",
+  "twilioAuthToken": "41fcd2c05e28333d2af19caadb9a79bd",
+  "twilioFromPhone": "+15005550006",
+  "twilioApiUrl": "https://api.twilio.com/2010-04-01/Accounts/{accounts_id}/Messages.json"
 }

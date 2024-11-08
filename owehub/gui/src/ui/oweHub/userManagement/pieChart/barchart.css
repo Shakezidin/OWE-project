@@ -23,7 +23,7 @@
   width: 100%;
 }
 .text-dark {
-  color: var(--page-heading-color);
+  color: var(--input-border-color);
 }
 
 .chart-view {
