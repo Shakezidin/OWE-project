@@ -89,86 +89,136 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		var dlrPay models.DealerPayReportResponse
 		var adder models.Adder
 
-		// Populate the DealerPayReportResponse struct with values from the database safely
-		if val, ok := item["home_owner"].(string); ok {
-			dlrPay.Home_Owner = val
-		}
-		if val, ok := item["current_status"].(string); ok {
-			dlrPay.Current_Status = val
-		}
-		if val, ok := item["unique_id"].(string); ok {
-			dlrPay.Unique_ID = val
-		}
-		if val, ok := item["dealer_code"].(string); ok {
-			dlrPay.Dealer_Code = val
-		}
-		if val, ok := item["today"].(time.Time); ok {
-			dlrPay.Today = val
-		}
-		if val, ok := item["amount"].(float64); ok {
-			dlrPay.Amount = val
-		}
-		if val, ok := item["sys_size"].(float64); ok {
-			dlrPay.Sys_Size = val
-		}
-		if val, ok := item["rl"].(float64); ok {
-			dlrPay.RL = val
-		}
-		if val, ok := item["contract_dol_dol"].(float64); ok {
-			dlrPay.Contract = val
-		}
-		if val, ok := item["loan_fee"].(float64); ok {
-			dlrPay.Loan_Fee = val
-		}
-		if val, ok := item["epc"].(float64); ok {
-			dlrPay.EPC = val
-		}
-		if val, ok := item["net_epc"].(float64); ok {
-			dlrPay.Net_EPC = val
-		}
-		if val, ok := item["other_adders"].(string); ok {
-			dlrPay.Other_Adders = val
-		}
-		if val, ok := item["credit"].(string); ok {
-			dlrPay.Credit = val
-		}
-		if val, ok := item["rep_1"].(string); ok {
-			dlrPay.Rep1 = val
-		}
-		if val, ok := item["rep_2"].(string); ok {
-			dlrPay.Rep2 = val
-		}
-		if val, ok := item["setter"].(string); ok {
-			dlrPay.Setter = val
-		}
-		if val, ok := item["draw_amt"].(float64); ok {
-			dlrPay.Draw_Amt = val
-		}
-		if val, ok := item["amt_paid"].(float64); ok {
-			dlrPay.Amt_Paid = val
-		}
-		if val, ok := item["balance"].(float64); ok {
-			dlrPay.Balance = val
-		}
-		if val, ok := item["st"].(string); ok {
-			dlrPay.ST = val
-		}
-		if val, ok := item["contract_date"].(time.Time); ok {
-			dlrPay.Contract_Date = val
+		// Check and assign values based on conditions
+		homeOwnerVal, homeOwnerOk := item["home_owner"].(string)
+		if homeOwnerVal == "" || !homeOwnerOk {
+			dlrPay.Home_Owner = homeOwnerVal
 		}
 
-		if val, ok := item["finance_type"].(string); ok {
-			dlrPay.Type = val
+		currentStatusVal, currentStatusOk := item["current_status"].(string)
+		if currentStatusVal == "" || !currentStatusOk {
+			dlrPay.Current_Status = currentStatusVal
 		}
 
-		if val, ok := item["marketing_fee"].(float64); ok {
-			adder.Marketing = val
+		uniqueIDVal, uniqueIDOk := item["unique_id"].(string)
+		if uniqueIDVal == "" || !uniqueIDOk {
+			dlrPay.Unique_ID = uniqueIDVal
 		}
-		if val, ok := item["referral"].(string); ok {
-			adder.Referral = val
+
+		dealerCodeVal, dealerCodeOk := item["dealer_code"].(string)
+		if dealerCodeVal == "" || !dealerCodeOk {
+			dlrPay.Dealer_Code = dealerCodeVal
 		}
-		if val, ok := item["rebate"].(string); ok {
-			adder.Rebate = val
+
+		todayVal, todayOk := item["today"].(time.Time)
+		if todayVal.IsZero() || !todayOk {
+			dlrPay.Today = todayVal
+		}
+
+		amountVal, amountOk := item["amount"].(float64)
+		if amountVal == 0.0 || !amountOk {
+			dlrPay.Amount = amountVal
+		}
+
+		sysSizeVal, sysSizeOk := item["sys_size"].(float64)
+		if sysSizeVal == 0.0 || !sysSizeOk {
+			dlrPay.Sys_Size = sysSizeVal
+		}
+
+		rlVal, rlOk := item["rl"].(float64)
+		if rlVal == 0.0 || !rlOk {
+			dlrPay.RL = rlVal
+		}
+
+		contractVal, contractOk := item["contract_dol_dol"].(float64)
+		if contractVal == 0.0 || !contractOk {
+			dlrPay.Contract = contractVal
+		}
+
+		loanFeeVal, loanFeeOk := item["loan_fee"].(float64)
+		if loanFeeVal == 0.0 || !loanFeeOk {
+			dlrPay.Loan_Fee = loanFeeVal
+		}
+
+		epcVal, epcOk := item["epc"].(float64)
+		if epcVal == 0.0 || !epcOk {
+			dlrPay.EPC = epcVal
+		}
+
+		netEpcVal, netEpcOk := item["net_epc"].(float64)
+		if netEpcVal == 0.0 || !netEpcOk {
+			dlrPay.Net_EPC = netEpcVal
+		}
+
+		otherAddersVal, otherAddersOk := item["other_adders"].(string)
+		if otherAddersVal == "" || !otherAddersOk {
+			dlrPay.Other_Adders = otherAddersVal
+		}
+
+		creditVal, creditOk := item["credit"].(string)
+		if creditVal == "" || !creditOk {
+			dlrPay.Credit = creditVal
+		}
+
+		rep1Val, rep1Ok := item["rep_1"].(string)
+		if rep1Val == "" || !rep1Ok {
+			dlrPay.Rep1 = rep1Val
+		}
+
+		rep2Val, rep2Ok := item["rep_2"].(string)
+		if rep2Val == "" || !rep2Ok {
+			dlrPay.Rep2 = rep2Val
+		}
+
+		setterVal, setterOk := item["setter"].(string)
+		if setterVal == "" || !setterOk {
+			dlrPay.Setter = setterVal
+		}
+
+		drawAmtVal, drawAmtOk := item["draw_amt"].(float64)
+		if drawAmtVal == 0.0 || !drawAmtOk {
+			dlrPay.Draw_Amt = drawAmtVal
+		}
+
+		amtPaidVal, amtPaidOk := item["amt_paid"].(float64)
+		if amtPaidVal == 0.0 || !amtPaidOk {
+			dlrPay.Amt_Paid = amtPaidVal
+		}
+
+		balanceVal, balanceOk := item["balance"].(float64)
+		if balanceVal == 0.0 || !balanceOk {
+			dlrPay.Balance = balanceVal
+		}
+
+		stVal, stOk := item["st"].(string)
+		if stVal == "" || !stOk {
+			dlrPay.ST = stVal
+		}
+
+		contractDateVal, contractDateOk := item["contract_date"].(time.Time)
+		if contractDateVal.IsZero() || !contractDateOk {
+			dlrPay.Contract_Date = contractDateVal
+		}
+
+		financeTypeVal, financeTypeOk := item["finance_type"].(string)
+		if financeTypeVal == "" || !financeTypeOk {
+			dlrPay.Type = financeTypeVal
+		}
+
+		// Same approach for adder fields
+		marketVal, marketOk := item["marketing_fee"].(float64)
+		if marketVal == 0.0 || !marketOk {
+			adder.Marketing = marketVal
+		}
+
+		refVal, referralOk := item["referral"].(string)
+		if refVal == "" || !referralOk {
+			adder.Referral = refVal
+		}
+
+		rebateVal, rebateOk := item["rebate"].(string)
+		if rebateVal == "" || !rebateOk {
+			adder.Rebate = rebateVal
 		}
 
 		adder.SmallSystemSize = dlrPay.Sys_Size
@@ -314,7 +364,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealer pay commissions fetched: %v, data: %+v", RecordCount, dlsPayCommResp)
+	// log.FuncInfoTrace(0, "Number of dealer pay commissions fetched: %v, data: %+v", RecordCount, dlsPayCommResp)
 	appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
 }
 
