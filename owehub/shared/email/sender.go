@@ -122,7 +122,7 @@ func SendEmail(request SendEmailRequest) error {
 		return err
 	}
 
-	log.FuncDebugTrace(0, "Email sent successfully with response %+v", resp.Body)
+	log.FuncDebugTrace(0, "Email sent to %s with response %+v, status code %d", request.ToEmail, resp, resp.StatusCode)
 
 	return nil
 }

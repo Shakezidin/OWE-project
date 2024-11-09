@@ -500,6 +500,6 @@ func sendSms(phoneNumber string, message string) error {
 		log.FuncErrorTrace(0, "%v", err)
 		return err
 	}
-	log.FuncDebugTrace(0, "Message sent successfully: %s with response %+v", apiUrl)
+	log.FuncDebugTrace(0, "Message sent successfully: %s with response %+v", apiUrl, resp.StatusCode)
 	return nil
 }
