@@ -31,14 +31,13 @@ func ExecAgingReportInitialCalculation(uniqueIds string, hookType string) error 
 		return err
 	}
 	for _, data := range InitailData.InitialAgngRpDataList {
-		agngRpData, err := CalculateAgngRp(data)
 
+		agngRpData, err := CalculateAgngRp(data)
 		if err != nil || agngRpData == nil {
 			log.FuncErrorTrace(0, "Failed to calculate Aging Report err : %+v", err)
 			return err
 
 		}
-
 		if hookType == "update" {
 			// Build the update query
 
@@ -123,7 +122,8 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["how_tier_one"] = agngRpData.How_Tier_One
 	outData["project_age_days"] = agngRpData.Project_Age_Days
 	outData["solar_journey"] = agngRpData.Solar_Journey
-	outData["days_pending_ntp"] = ""
+
+	outData["days_pending_ntp"] = calculateDaysPendingNTP()
 
 	outData["days_pending_permits"] = calculateDaysPendingPermit(formatDate(agngRpData.Permit_Approved_Date), formatDate(agngRpData.NTP_Date), agngRpData.Project_Status)
 
@@ -136,10 +136,12 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	return outData, err
 }
 
-func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
+func calculateDaysPendingNTP() int {
 
-	log.EnterFn(0, "calculateDaysPendingPermit")
-	defer func() { log.ExitFn(0, "calculateDaysPendingPermit", nil) }()
+	return 0
+}
+
+func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
 
 	var daysPendingPermit int
 	today := time.Now()
@@ -156,9 +158,6 @@ func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, proje
 }
 
 func calculateDaysPendingInstall(installComplete string, permitApprovedDate string, projectStatus string) int {
-
-	log.EnterFn(0, "calculateDaysPendingInstall")
-	defer func() { log.ExitFn(0, "calculateDaysPendingInstall", nil) }()
 
 	var daysPendingInstall int
 	today := time.Now()
@@ -190,9 +189,6 @@ func calculateDaysPendingInstall(installComplete string, permitApprovedDate stri
 
 func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, projectStatus string) int {
 
-	log.EnterFn(0, "calculateDaysPendingPTO")
-	defer func() { log.ExitFn(0, "calculateDaysPendingPTO", nil) }()
-
 	var daysPendingPto int
 	today := time.Now()
 
@@ -208,9 +204,6 @@ func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, proje
 }
 
 func calculateProjectAge(uniqueId string, contractDate string) int {
-
-	log.EnterFn(0, "calculateProjectAge")
-	defer func() { log.ExitFn(0, "calculateProjectAge", nil) }()
 
 	var projectAge int
 	today := time.Now()
@@ -283,45 +276,4 @@ func DeleteFromAgRp(uniqueIDs []string) error {
 
 	log.FuncErrorTrace(0, "Deleted %d rows from aging_report table  .\n", len(uniqueIDs))
 	return nil
-}
-
-func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn string, idValue interface{}) (string, error) {
-	log.EnterFn(0, "buildUpdateQuery")
-	defer func() { log.ExitFn(0, "buildUpdateQuery", nil) }()
-
-	sets := []string{}
-
-	for col, val := range row {
-		if col != idColumn {
-			var valStr string
-			switch v := val.(type) {
-			case string:
-				// Escape single quotes in string values
-				valStr = strings.ReplaceAll(v, "'", "''")
-				valStr = fmt.Sprintf("'%s'", valStr) // Enclose string values in quotes
-
-			case time.Time:
-				// Format time.Time values and enclose in quotes
-				valStr = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
-
-			default:
-				valStr = fmt.Sprintf("%v", v) // Keep numeric and other types as they are
-			}
-			sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
-		}
-	}
-
-	// Escape the idValue to prevent SQL injection
-	var idValueStr string
-	switch v := idValue.(type) {
-	case string:
-		idValueStr = strings.ReplaceAll(v, "'", "''")
-		idValueStr = fmt.Sprintf("'%s'", idValueStr) // Enclose string ID values in quotes
-	default:
-		idValueStr = fmt.Sprintf("%v", idValue) // Keep numeric and other types as they are
-	}
-
-	// Build the query
-	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s = %s", tableName, strings.Join(sets, ", "), idColumn, idValueStr)
-	return query, nil
 }
