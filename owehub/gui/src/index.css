@@ -166,6 +166,41 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
 .styles_day_picker__uFN-L table tbody tr td{
   font-size: 14px;
 }
+.rdp-weekdays{
+  position: static !important;
+}
+
+/* phone number Input color  */
+.react-tel-input .form-control, .react-tel-input .flag-dropdown{
+  border-color: var(--input-border-color);
+  border-radius: 8px;
+}
+.react-tel-input .form-control{
+  margin-top: -2px !important;
+  height: 36px !important;
+}
+.react-tel-input .flag-dropdown{
+  background-color: unset;
+  border-radius: 8px 0 0 8px;
+  top: -2px !important;
+}
+.react-tel-input .country-list .search-box{
+  border-radius: 8px;
+  height: 36px;
+  font-size: 12px;
+  width: 240px;
+  font-weight: 300;
+}
+.react-tel-input .country-list .search-emoji{
+  font-size: 16px;
+}
+.react-tel-input .country-list .country{
+  padding-left: 16px;
+  font-size: 12px;
+}
+.react-tel-input .country-list{
+  border-radius: 8px;
+}
 
 /* color config */
 :root {
@@ -388,7 +423,7 @@ input[type='password']::-ms-clear {
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  z-index: 102;
+  z-index: 400;
 }
 
 .modal {
@@ -434,7 +469,7 @@ input[type='password']::-ms-clear {
 }
 
 .createUserCrossButton svg:hover {
-  transform: scale(1.4);
+  transform: scale(1.05);
 }
 
 .createProfileText {
@@ -627,7 +662,7 @@ br {
 }
 
 .fildelb-btn img:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 
 .select-type-label {

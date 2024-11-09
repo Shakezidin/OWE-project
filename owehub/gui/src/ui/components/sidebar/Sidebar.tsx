@@ -50,7 +50,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.TOTAL_COUNT ||
+           
             item.path === ROUTES.LEAD_MANAGEMENT) 
         ) {
         } else {
@@ -65,7 +65,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-              item.path === ROUTES.TOTAL_COUNT ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT))
         ) {
@@ -81,7 +81,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
-            item.path === ROUTES.TOTAL_COUNT ||
+           
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
@@ -105,7 +105,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-              item.path === ROUTES.TOTAL_COUNT ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT))
@@ -128,7 +128,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
-                item.path === ROUTES.TOTAL_COUNT ||
+               
                 item.path === ROUTES.SALES_REP_SCHEDULER||
             item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
@@ -149,7 +149,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-              item.path === ROUTES.TOTAL_COUNT ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
@@ -175,7 +175,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
-                item.path === ROUTES.TOTAL_COUNT ||
+               
                 item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
@@ -203,7 +203,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
-                item.path === ROUTES.TOTAL_COUNT ||
+               
                 item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
@@ -221,7 +221,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-              item.path === ROUTES.TOTAL_COUNT ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
@@ -367,7 +367,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         borderBottomRightRadius: '4px',
                         borderTopRightRadius: '4px',
                         borderLeft: '1px solid #D9D9D9',
-                        color: 'black',
+                        color: '#292B2E',
                       }}
                     >
                       <span
@@ -402,7 +402,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               fontSize: '12px',
               textAlign: 'center',
               fontWeight: 500,
-              color: '#afadad',
+              color: '#80848B',
             }}
           >
             © 2024 by Our World Energy.
@@ -412,7 +412,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               fontSize: '10px',
               textAlign: 'center',
               fontWeight: 500,
-              color: '#afadad',
+              color: '#80848B',
             }}
           >
             All rights reserved. eOS: v1.5

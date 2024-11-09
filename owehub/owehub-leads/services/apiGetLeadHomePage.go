@@ -132,7 +132,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 					AND (
 						(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
 						OR
-						(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+						(li.lead_won_date IS NOT NULL AND li.appointment_accepted_date < li.appointment_date)
 					)
 				)
 			`
@@ -187,7 +187,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 						AND (
 							(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
 							OR
-							(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+							(li.lead_won_date IS NOT NULL AND li.appointment_accepted_date < li.appointment_date)
 						)
 					)
 					OR (
@@ -332,7 +332,9 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				li.aurora_proposal_updated_at,
 				li.proposal_pdf_key,
 				li.status_id,
-				li.zipcode
+				li.zipcode,
+				li.sales_rep_name,
+				li.lead_source
 				
 			FROM get_leads_info_hierarchy($1) li
 			%s
@@ -497,6 +499,15 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			proposalUpdatedAtPtr = &proposalUpdatedAt
 		}
 
+		salesRepName, ok := item["sales_rep_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get sales rep name from leads info Item: %+v\n", item)
+		}
+		leadSource, ok := item["lead_source"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get lead source from leads info Item: %+v\n", item)
+		}
+
 		//
 		// DOCUSIGN LABEL & DATE
 		//
@@ -612,6 +623,8 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			DocusignDate:           docusignDatePtr,
 			Zipcode:                zipcode,
 			CanManuallyWin:         canManuallyWin,
+			SalesRepName:           salesRepName,
+			LeadSource:             leadSource,
 		})
 
 	}
@@ -674,7 +687,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 						AND (
 							(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
 							OR
-							(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+							(li.lead_won_date IS NOT NULL AND li.appointment_accepted_date < li.appointment_date)
 						)
 					)
 					OR (

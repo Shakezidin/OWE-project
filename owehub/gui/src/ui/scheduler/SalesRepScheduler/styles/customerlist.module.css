@@ -162,7 +162,7 @@
 
 .filtericon:hover {
   background-color: var(--button-hover-color);
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .filtericon img {
@@ -331,7 +331,7 @@
   background-color: var(--white-color);
   transition: all 500ms;
   color: var(--primary-color);
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .map_wrapper {

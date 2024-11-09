@@ -18,7 +18,6 @@
   cursor: pointer;
 }
 .team-main {
-  margin-top: 11px;
   height: 100vh;
   background: var(--white-color);
   padding: 20px;
@@ -388,7 +387,7 @@
 
 .dash-newteam .create:hover,
 .dash-newteam .delete:hover {
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .dash-newteam {

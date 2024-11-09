@@ -37,4 +37,6 @@ type GetLeadInfoRes struct {
 	StatusID                   int64      `json:"status_id"`
 	CreatedByName              string     `json:"created_by"`
 	ProposalType               string     `json:"proposal_type"`
+	SalesRepName               string     `json:"sales_rep_name"`
+	LeadSource                 string     `json:"lead_source"`
 }

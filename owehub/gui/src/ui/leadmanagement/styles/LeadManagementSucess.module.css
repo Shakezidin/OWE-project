@@ -62,7 +62,7 @@
 }
 .self:hover {
   background-color: #377cf6;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .other {
@@ -73,7 +73,7 @@
 }
 .other:hover {
   background-color: #fff;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .createUserCrossButton {

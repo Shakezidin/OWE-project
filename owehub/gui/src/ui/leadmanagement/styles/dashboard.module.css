@@ -40,7 +40,6 @@
   background-color: white;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
-  margin-bottom: 24px;
   border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -110,6 +109,7 @@
   border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   min-height: 200px;
+  margin-top: 1.2rem;
 }
 .cardHeaderFirst {
   padding: 18px 16px 16px 16px;
@@ -166,7 +166,7 @@
 }
 
 .legendText {
-  font-size: 10.71px;
+  font-size: 12px;
   color: var(--input-border-color);
 }
 
@@ -217,14 +217,22 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-weight: 500;
+  font-weight: 400;
   padding-right: 12px;
   height: 36px;
-  transition: all 500ms;
+  transition: all 100ms;
 }
 
 .button:hover {
+  color:#377cf6 ;
   background-color: #ddebff;
+  border: 1px solid #377cf6 !important;
+
+  /* border-color: var(--primary-color) !important; */
+}
+
+.button:hover p, .button:hover span{
+  /* color: var(--primary-color); */
 }
 
 /* .displayStatus{
@@ -260,7 +268,9 @@
 }
 .buttonActive:hover {
   background-color: #3b82f6;
-
+  color: #ffffff;
+  font-weight: 500; 
+  border: none !important;
 }
 
 .table {
@@ -301,7 +311,7 @@ table tbody tr:hover {
 }
 .filtericon:hover {
   background-color: #4062CA;
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 .filtericon img {
   height: 17px;
@@ -333,17 +343,17 @@ table tbody tr:hover {
 .searchBar {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border-color);
   border-radius: 8px;
-  padding: 5px;
+  padding: 0 14px;
   height: 36px;
   width: 399px !important;
   margin-right: 11px;
-  box-shadow:1px solid #007bff;
+  box-shadow:1px solid var(--primary-color);
 }
+
 .searchBar:hover{
-  border: 2px solid #007bff;
-  
+  border: 1px solid var(--primary-color);
   
 }
 .searchBar .searchInput:focus {
@@ -351,7 +361,7 @@ table tbody tr:hover {
 }
 
 .searchBar:focus-within {
-  border: 2px solid #007bff !important;
+  border: 1px solid var(--primary-color) !important;
 }
 
 .searchIcon {
@@ -381,11 +391,11 @@ table tbody tr:hover {
   width: 100%;
   color: #292B2E;
   padding: 2.5px;
-  font-weight: 500;
+  font-weight: 400;
   border-radius: 5px;
 }
 .searchInput::placeholder {
-  color: gray;
+  color: var(--input-border-color);
   transition: color 0.3s ease;
 }
 
@@ -393,7 +403,7 @@ table tbody tr:hover {
 .searchInput:focus::placeholder,
 .searchInput:hover::placeholder {
   color: #377CF6;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 
@@ -498,7 +508,7 @@ input[type='checkbox']:checked {
   transition: all 0.3s ease;
 }
 .rescheduleButton:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
   background-color: #4062CA;
 
 }
@@ -872,7 +882,7 @@ input[type='checkbox']:checked {
   }
 
   .export_btn:hover {
-    transform: scale(1.06);
+    transform: scale(1.05);
     background-color: #4062CA;
 
   }
@@ -1088,7 +1098,7 @@ input[type='checkbox']:checked {
 }
 .lead__datepicker_content {
   position: absolute;
-  left: 46px;
+  left: 36px;
   z-index: 100;
   background-color: var(--white-color);
   border-radius: 4px;
@@ -1139,7 +1149,7 @@ input[type='checkbox']:checked {
 }
 
 .monthSelect option:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .monthSelect {
@@ -1167,7 +1177,7 @@ input[type='checkbox']:checked {
 }
 
 .calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1184,7 +1194,7 @@ input[type='checkbox']:checked {
 }
 
 .export_btn:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1239,7 +1249,7 @@ input[type='checkbox']:checked {
   transition: all 500ms ease;
 }
 .ButtonAbovearrov:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #e5e5e5;
   border: none;
 }

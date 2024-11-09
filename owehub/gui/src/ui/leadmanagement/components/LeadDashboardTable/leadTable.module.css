@@ -80,6 +80,20 @@
   word-wrap: break-word;
   white-space: normal;
 }
+.topdived p{
+  font-size: 12px;
+  font-weight: 400;
+  color: #3e3e3e;
+  width: 160px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+.topdived{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 .TableContainer1 table tbody tr:hover {
   background-color: transparent !important;
 }
@@ -126,9 +140,62 @@
 
 .infoIcon:hover {
   background-color: #ddebff;
-  transform: scale(1.06);
+  transform: scale(1.05);
+}
+.EditPenIcon {
+  margin-left: 20px;
+  padding: 8px; 
+  width: 14px; 
+  height: 14px; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #D7E5FD;
+  box-sizing: content-box; 
+  border-radius: 6px;
+  cursor: pointer;
+}
+.SignEditBottonX {
+  margin-left: 20px;
+  padding: 8px; 
+  width: 14px; 
+  height: 14px; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #377CF6;
+  box-sizing: content-box; 
+  border-radius: 6px;
+  cursor: pointer;
 }
 
+.EditPenIcon img{
+  transition: all 0.3s ease;
+}
+
+.SignEditBottonX img{
+  transition: all 0,3s ease;
+}
+.SignEditBottonX img:hover{
+  transform: scale(1.05);
+}
+.EditPenIcon img:hover{
+  transform: scale(1.05);
+}
+
+/* .CheckboxContainer { 
+  margin-left: 20px;
+ 
+}
+.CheckboxContainer input[type='checkbox'] {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 100px;
+  border: 1px solid #797979;
+  cursor: pointer;
+  transition: border 0.2s ease
+ 
+} */
 .prop_send {
   display: flex;
   flex-direction: row;
@@ -155,7 +222,7 @@
 
 .create_proposal:hover {
   background-color: #4062CA;
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .slidebutton {
@@ -249,4 +316,16 @@
   font-size: 12px;
   font-weight: 400;
   color: #3e3e3e;
+}
+
+.dropdownContainerModal input {
+  width: 160px;
+  height: 30px;
+  text-align: left;
+  padding-left: 6px;
+  border: none;
+  border-bottom: 1px solid #404040;
+}
+.dropdownContainerModal input:focus {
+  outline: none;
 }

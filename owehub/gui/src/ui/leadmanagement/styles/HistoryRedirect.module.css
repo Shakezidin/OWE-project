@@ -101,7 +101,7 @@ border-radius: 0px !important; */
 
 .prdropdownX li:hover {
 
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 @media (max-width:968px) {

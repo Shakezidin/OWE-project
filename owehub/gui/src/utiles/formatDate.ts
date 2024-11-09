@@ -56,7 +56,7 @@ export const dateFormat = (date: string) => {
   }
   const isValid = new Date(date);
   if (isValid) {
-    return format(new Date(date), 'MM-dd-yyyy');
+    return format(new Date(date), 'dd-MM-yyyy');
   } else {
     return '';
   }
