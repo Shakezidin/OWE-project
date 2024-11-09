@@ -1529,6 +1529,7 @@
 
   .pro-status-dropdown {
     min-width: unset;
+    margin-top: -9px;
   }
 
   .project-status-heading {
