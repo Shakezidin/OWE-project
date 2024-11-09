@@ -1,12 +1,10 @@
 .customer_wrapper_list {
-
-  border-radius: 8px;
+  border-radius: 16px;
   background-color: #fff;
   max-width: 620px;
   width: 100%;
   margin-inline: 24px;
   height: 289px;
-  border: 1px solid #377cf6;
 }
 
 .success_header {
@@ -14,71 +12,84 @@
   gap: 340px;
   /* align-items: baseline; */
   /* line-height: 32px; */
-  margin-top: 28px;
+  margin-top: 20px;
 }
 .success_heading {
   font-family: 'Inter';
   font-weight: 600;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 32px;
-  color: #101828;
+  color: var(--input-border-color);
   margin-left: 33px;
+}
+.success_crossing{
+  transition: transform 0.3s ease;
 }
 .success_crossing:hover {
   cursor: pointer;
+  transform: scale(1.05);
 }
 .success_hrline {
-  border: 1px solid #000000;
+  border: 1px solid var(--input-border-color);
   width: 620px;
   opacity: 10%;
-  margin-top: 26px;
+  margin-top: 20px;
 }
 .succicon {
   display: flex;
   justify-content: center;
 }
 .succicon_input_box {
-  height: 54px;
+  /* height: 54px; */
   width: 548px;
-  margin-top: 5%;
+  margin-top: 40px;
   border-radius: 8px;
   /* padding: 3px, 18px; */
-  color: #989898;
-  border: 1px solid #989898;
+  color: var(--input-border-color);
+  border: 1px solid var(--input-border-color);
   font-family: 'Poppins';
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: 400;
+  font-size: 14px;
   outline: none;
-  color: #000000;
+  color: var(--input-border-color);
   line-height: 24px;
   padding: 10px 22px;
 }
 
-.succicon_input_box ::placeholder {
-  font-size: 16px;
+.succicon_input_box::placeholder {
+  color: var(--input-border-color);
+}
+.succicon_input_box:focus::placeholder,
+.succicon_input_box:hover::placeholder {
+  color: var(--primary-color);
+}
+.succicon_input_box:focus, .succicon_input_box:hover {
+  border-color: var(--primary-color);
 }
 .survey_button {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .other {
-  width: 136px;
-  height: 36px;
+  width: 150px;
+  height: 40px;
   color: white;
   transition: all 0.3s ease;
   background-color: #377cf6;
-  border: 1px solid rgba(125, 125, 125, 1);
-  border-radius: 6px;
+  border: none;
+  border-radius: 8px;
   font-family: 'Poppins';
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
 }
 .other:hover {
-  background-color: #377cf6;
-  transform: scale(1.03);
+  background-color: #4062CA;
+  transform: scale(1.05);
   font-family: 'Poppins';
   cursor: pointer;
 }
