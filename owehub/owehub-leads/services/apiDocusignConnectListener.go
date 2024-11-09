@@ -155,7 +155,7 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 		}
 
 		// send email to salerep
-		err = sendLeadWonEmail(leadsId)
+		err = sendProposalSignedNotification(leadsId)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send lead won email err %v", err)
 			return
@@ -207,12 +207,12 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 }
 
 /******************************************************************************
- * FUNCTION:		sendLeadWonEmail
- * DESCRIPTION:     function to send the lead won email
+ * FUNCTION:		sendProposalSignedNotification
+ * DESCRIPTION:     function to send the lead won email and sms
  * INPUT:			leadsId
  * RETURNS:    		error
  ******************************************************************************/
-func sendLeadWonEmail(leadsId int64) error {
+func sendProposalSignedNotification(leadsId int64) error {
 	var (
 		err   error
 		query string
@@ -226,6 +226,7 @@ func sendLeadWonEmail(leadsId int64) error {
 		SELECT
 			ud.email_id as user_email_id,
 			ud.name as user_name,
+			ud.mobile_number as user_phone,
 			li.first_name,
 			li.last_name,
 			li.email_id,
@@ -288,6 +289,12 @@ func sendLeadWonEmail(leadsId int64) error {
 		return nil
 	}
 
+	userPhone, ok := data[0]["user_phone"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get user_phone from leads info Item: %+v\n", data[0])
+		return nil
+	}
+
 	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	err = emailClient.SendEmail(emailClient.SendEmailRequest{
@@ -307,6 +314,19 @@ func sendLeadWonEmail(leadsId int64) error {
 
 	if err != nil {
 		return err
+	}
+
+	// send sms
+	smsBody := leadsService.SmsLeadWon.WithData(leadsService.SmsDataLeadWon{
+		LeadId:        leadsId,
+		LeadFirstName: firstName,
+		LeadLastName:  lastName,
+		UserName:      userName,
+	})
+
+	err = sendSms(userPhone, smsBody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 	}
 
 	return nil

@@ -41,7 +41,7 @@ type TemplateDataLeadStatusChanged struct {
 	LeadLastName    string
 	LeadEmailId     string
 	LeadPhoneNumber string
-	DealUrl         string
+	ViewUrl         string
 	UserName        string
 
 	// NewStatus is the new status of the lead
