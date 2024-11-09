@@ -58,6 +58,7 @@
   color: var(--input-border-color);
   margin-top: 4px;
   line-height: 24px;
+  overflow-y: hidden;
 }
 
 .an_top {

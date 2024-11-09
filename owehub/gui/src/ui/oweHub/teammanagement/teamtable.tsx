@@ -8,7 +8,6 @@ import { ICONS } from '../../../resources/icons/Icons';
 import './dashboard.css';
 import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
 import { useParams, useLocation, Routes } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
@@ -199,15 +198,6 @@ const TeamTable: React.FC = () => {
   return (
     <>
       <div className="comm">
-        <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-          <Breadcrumb
-            head=""
-            linkPara="Teams"
-            route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
-            linkparaSecond=""
-            marginLeftMobile="12px"
-          />
-        </div>
         {role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
         team?.logged_in_member_role === 'manager' ? (
@@ -232,7 +222,7 @@ const TeamTable: React.FC = () => {
             setRefetch={setRefetch}
           />
         )}
-        <div className="dashBoard-container" style={{ marginTop: '10px' }}>
+        <div className="dashBoard-container">
           <div className="team-table-top">
             <div className="team-members-top">
               <div className="team-members">
@@ -258,7 +248,7 @@ const TeamTable: React.FC = () => {
                     <h4
                       style={{
                         fontSize: isMobile ? '1.2rem' : '1.5rem',
-                        color: '#263747',
+                        color: '#292B2E',
                         fontWeight: 600,
                       }}
                     >
@@ -529,8 +519,8 @@ const TeamTable: React.FC = () => {
                           <img
                             src={ICONS.deleteIcon}
                             style={{
-                              height: '18px',
-                              width: '16px',
+                              height: '16px',
+                              width: '15px',
                               stroke: '0.2',
                               pointerEvents:
                                 role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&

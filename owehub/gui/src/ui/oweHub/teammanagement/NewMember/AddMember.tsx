@@ -285,11 +285,10 @@ const AddMember: React.FC<createUserProps> = ({
             onClick={() => {}}
             type={'submit'}
             style={{
-              background: '#0493CE',
-              padding: '18px 100px',
-              width: 'unset',
+              background: '#377CF6',
+              width: '150px',
               textTransform: 'none',
-              height: 'unset',
+              height: '40px',
             }}
             disabled={loadingSubmit} // Disable button when loading
           />
