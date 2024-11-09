@@ -468,7 +468,7 @@ func sendSms(phoneNumber string, message string) error {
 	// Form data
 	data := url.Values{}
 	data.Set("From", leadsService.LeadAppCfg.TwilioFromPhone)
-	data.Set("To", phoneNumber)
+	data.Set("To", "+"+phoneNumber)
 	data.Set("Body", message)
 	// Create the request
 	req, err = http.NewRequest("POST", apiUrl, bytes.NewBufferString(data.Encode()))

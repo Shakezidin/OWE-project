@@ -15,6 +15,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
@@ -97,6 +98,7 @@ func SendEmail(request SendEmailRequest) error {
 	var (
 		err       error
 		emailHtml string
+		resp      *rest.Response
 	)
 
 	log.EnterFn(0, "SendEmail")
@@ -113,12 +115,14 @@ func SendEmail(request SendEmailRequest) error {
 	to := mail.NewEmail(request.ToName, request.ToEmail)
 	message := mail.NewSingleEmail(from, request.Subject, to, "", emailHtml)
 	client := sendgrid.NewSendClient(types.CommGlbCfg.EmailCfg.SendgridKey)
-	_, err = client.Send(message)
+	resp, err = client.Send(message)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email err: %v", err)
 		return err
 	}
+
+	log.FuncDebugTrace(0, "Email sent successfully with response %+v", resp.Body)
 
 	return nil
 }
