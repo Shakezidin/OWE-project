@@ -1364,7 +1364,7 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 
 		if pndngNtp, ok := agRp["days_pending_ntp"]; ok {
-			resp1.Days_Pending_NTP = pndngNtp.(string)
+			resp1.Days_Pending_NTP = fmt.Sprintf("%s days pending", pndngNtp.(string))
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngNtp: %v", err)
 		}
