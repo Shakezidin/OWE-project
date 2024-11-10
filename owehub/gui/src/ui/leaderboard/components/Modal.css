@@ -155,7 +155,9 @@
 @media screen and (max-width: 767px) {
   .leader-modal {
     width: 400px;
-    padding: 0.5rem 1rem;
+  }
+  .leader-buttons button{
+    width: 100px;
   }
 }
 @media screen and (max-width: 440px) {

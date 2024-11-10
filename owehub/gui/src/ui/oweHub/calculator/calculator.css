@@ -336,9 +336,6 @@
     #calculator-main{
         padding: 10px 12px;
     }
-    .calc-wrapper{
-        margin: -8px -16px;
-    }
     .build-earnout, .equity-growth{
         height: 88vh !important;
     }
@@ -359,7 +356,7 @@
         font-size: 13px;
     }
     .build-head-btn button{
-        height: 30px;
+        height: 34px;
     }
     .build-earnout{
         width: 54%;
@@ -451,7 +448,7 @@
     }
 
     .build-earnout h2{
-        font-size: 1rem;
+        font-size: 14px;
     }
 
     .build-earnout,
