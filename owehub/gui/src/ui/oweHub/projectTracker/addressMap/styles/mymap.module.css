@@ -34,7 +34,7 @@
 .headerDropDowns {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .headerLeft {

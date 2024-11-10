@@ -284,7 +284,7 @@
   grid-template-columns: repeat(2, 1fr);
   width: 128px;
   border: 1px solid var(--orange-color);
-  border-radius: 8px;
+  border-radius: 9px;
 }
 
 .leaderbord-tab-container .tab {
@@ -713,11 +713,5 @@
 
   .leaderboard-table-container::-webkit-scrollbar-corner {
     background-color: transparent;
-  }
-}
-
-@media (max-width: 400px) {
-  .leaderboard-data__datepicker-content {
-    right: -20px;
   }
 }

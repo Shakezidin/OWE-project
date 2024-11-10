@@ -9,10 +9,9 @@
 
 .success_header {
   display: flex;
-  gap: 340px;
-  /* align-items: baseline; */
-  /* line-height: 32px; */
+  justify-content: space-between;
   margin-top: 20px;
+  padding: 0 1.5rem;
 }
 .success_heading {
   font-family: 'Inter';
@@ -20,9 +19,8 @@
   font-size: 18px;
   line-height: 32px;
   color: var(--input-border-color);
-  margin-left: 33px;
 }
-.success_crossing{
+.success_crossing {
   transition: transform 0.3s ease;
 }
 .success_crossing:hover {
@@ -63,7 +61,8 @@
 .succicon_input_box:hover::placeholder {
   color: var(--primary-color);
 }
-.succicon_input_box:focus, .succicon_input_box:hover {
+.succicon_input_box:focus,
+.succicon_input_box:hover {
   border-color: var(--primary-color);
 }
 .survey_button {
@@ -88,7 +87,7 @@
   font-weight: 500;
 }
 .other:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.05);
   font-family: 'Poppins';
   cursor: pointer;
@@ -161,48 +160,18 @@
 
 @media (max-width: 450px) {
   .customer_wrapper_list {
-    border-radius: 8px;
-  background-color: #fff;
-  /* max-width: 620px; */
-  width: 93%;
-  margin-inline: 24px;
-  height: 230px;
-  border: 1px solid #377cf6;
-  
-  }
-
-  .success_header {
-    display: flex;
-    gap: 140px;
- align-items: center;
-    margin-top: 20px;
-  }
-
-  .success_heading {
-    font-family: 'Inter';
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 20px;
-    color: #101828;
-    margin-left: 10px;
-   
+    height: 250px;
   }
 
   .success_hrline {
-    border: 1px solid #000000;
-    width: 347.7px;
-    /* width: 100%; */
-    opacity: 10%;
-    margin-top: 26px;
-  }
- .succicon {
-    display: flex;
-   
+    overflow-x: hidden;
     width: 100%;
- 
-    
-  } 
- 
+  }
+  .succicon {
+    display: flex;
+
+    width: 100%;
+  }
 
   .succicon_input_box {
     height: 36px;
@@ -240,30 +209,32 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 0px; 
-   
+    margin-top: 0px;
   }
-  
-  .other {
-    width: 136px;
-    height: 36px;
-    color: white;
-    transition: all 0.3s ease;
-    background-color: #377cf6;
-    border: 1px solid rgba(125, 125, 125, 1);
-    border-radius: 6px;
-    font-family: 'Poppins';
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-  }
- .error{
+
+  .error {
     margin-left: 15px;
   }
   /* .success_crossing{
     height: 26px;
   
   } */
- 
+}
+
+@media (max-width: 768px) {
+  .customer_wrapper_list {
+    width: 95%;
+  }
+  .succicon_input_box {
+    width: 90%;
+  }
+  .other {
+    width: 100px;
+  }
+  .success_heading {
+    font-size: 16px;
+  }
+  .succicon_input_box {
+    padding: 8px 22px;
+  }
 }

@@ -667,13 +667,9 @@
     font-size: 12px;
   }
   .desktop_hide {
-    width: 100%;
-    max-width: 98.5%;
     display: flex;
     justify-content: space-between;
-  }
-  .libraryContainer {
-    padding-inline: 9px;
+    margin-bottom: 1.2rem;
   }
   .sm_hide {
     display: none;
@@ -717,17 +713,12 @@
   .filter_button {
     display: none;
   }
-  .desktop_hide {
-    width: 100%;
-    max-width: 724px;
-    display: flex;
-    justify-content: space-between;
-    /* margin-top: 7px;
-    margin-bottom: 7px; */
+
+  .libraryContainer{
+    margin: 10px;
   }
-  .searchWrapper {
-    flex-basis: 230px;
-    flex-shrink: 2;
+  .desktop_hide{
+    margin-bottom: 10px;
   }
 }
 
@@ -783,13 +774,6 @@
   .libSecHeader_left {
     gap: 8px;
   }
-  .desktop_hide {
-    width: 100%;
-    max-width: 402px;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
-  }
 }
 @media (max-width: 378px) {
   .sort_container {
@@ -829,13 +813,6 @@
   .libSecHeader_left {
     /* justify-content: space-between; */
     gap: 5px;
-  }
-  .desktop_hide {
-    width: 100%;
-    max-width: 356px;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
   }
   .searchWrapper {
     flex-basis: 170px;
