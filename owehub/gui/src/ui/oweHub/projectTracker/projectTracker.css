@@ -2540,7 +2540,7 @@ input[type="checkbox"]:checked::before {
   margin-top: 20px;
 }
 
-.multi-range-slider .label {
+/* .multi-range-slider .label {
   display:none !important;
 }
 .multi-range-slider{
@@ -2554,36 +2554,36 @@ input[type="checkbox"]:checked::before {
   height: 10px !important;
   border: solid 1.5px #377cf6 !important;
   /* box-shadow: 0px 0px 3px black, inset 0px 0px 5px gray !important; */
-  box-shadow: none !important;
+  /* box-shadow: none !important;
   border-radius: 50% !important;
   z-index: 1 !important;
   margin: -8px -12px !important;
   /* margin:none !important; */
-  cursor: pointer !important;
-  background-color: #377CF6 !important;
-}
-.multi-range-slider .bar-right{
+  /* cursor: pointer !important;
+  background-color: #377CF6 !important; */ */
+/* } */ */
+/* .multi-range-slider .bar-right{
   /* width: 25% !important; */
-  background-color: #f0f0f0 !important;
+  /* background-color: #f0f0f0 !important;
   border-radius: 0px 10px 10px 0px !important;
   box-shadow: inset 0px 0px 5px black !important;
   height: 1px  !important;
-}
-.multi-range-slider .ruler .ruler-rule {
+} */
+/* .multi-range-slider .ruler .ruler-rule {
   border-left: solid 1px;
   border-bottom: solid 1px;
   display: none !important;
   flex-grow: 1;
   flex-shrink: 1;
   padding: 5px 0px;
-}
+} */ */
 
-.multi-range-slider .bar-left { 
+/* .multi-range-slider .bar-left { 
   margin-right: -1px !important; 
 }
 .multi-range-slider .bar-right {
   margin-left: -1px !important;
-}
+} */
 
 .projectAge p{
   font-size: 12px;

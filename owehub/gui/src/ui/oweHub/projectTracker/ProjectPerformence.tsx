@@ -12,7 +12,6 @@ import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
 import { MdDownloading } from 'react-icons/md';
 import 'react-tooltip/dist/react-tooltip.css';
-import MultiRangeSlider from "multi-range-slider-react";
 import {
   format,
   subDays,
@@ -1056,7 +1055,6 @@ const ProjectPerformence = () => {
               type="checkbox"
               checked={checkedStates[index]}
               onChange={() => {
-                // Toggle the checkbox state
                 const newCheckedStates = [...checkedStates];
                 newCheckedStates[index] = !newCheckedStates[index];
             
@@ -1232,7 +1230,11 @@ const ProjectPerformence = () => {
 
                         <div className='filterButtons'> 
 
-                          <div className='cancelButton' onClick={()=>{setOpenFilter(false); setFilterFlag(false)}} style={{cursor:"pointer"}}> Cancel </div>
+                          <div className='cancelButton' onClick={()=>{setFieldData([]); const resetStates = new Array(5).fill(false);  // Assuming you have 5 options
+  setCheckedStates(resetStates);
+
+  // Also clear the checkedOptions array
+  setCheckedOptions([]);setOpenFilter(false); setFilterFlag(false);  }} style={{cursor:"pointer"}}> Cancel </div>
                           <div className='applyButton' style={{cursor:"pointer"}} onClick={()=>{
                             setFiltered(prev=>!prev);
                             setOpenFilter(false);
