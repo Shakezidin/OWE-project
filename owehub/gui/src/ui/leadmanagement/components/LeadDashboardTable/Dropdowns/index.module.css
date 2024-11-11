@@ -20,7 +20,7 @@
 
 .verticalDots:hover {
   transition: all 0.3s ease;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .verticalDots2 {
@@ -43,7 +43,7 @@
 
 .verticalDots2:hover {
   background-color: #d6e5ff;
-  transform: scale(1.1) rotate(90deg);
+  transform: scale(1.05) rotate(90deg);
 
 }
 
@@ -69,7 +69,7 @@
 
 .filtericonLead:hover {
   background-color: #4062CA;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .dropdownMenu {
@@ -192,7 +192,7 @@
 }
 .filtericonLead:hover {
   background-color: #4062CA;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 }
@@ -249,6 +249,7 @@
   border: none;
   margin-left: 7px;
   padding: 8px;
+  height: 36px;
   min-width: 121.33px;
   border-radius: 8px;
   cursor: pointer;
@@ -263,7 +264,7 @@
   transition: all 0.3s ease;
   background-color: #4062CA;
 
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 @media (max-width: 600px) {
@@ -290,7 +291,7 @@
   
   .DropActionX:hover {
     transition: all 0.3s ease;
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   .verticalDots2 {
@@ -312,7 +313,7 @@
   
   .verticalDots2:hover {
     background-color: #d6e5ff;
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 }
 

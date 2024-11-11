@@ -423,7 +423,7 @@ input[type='password']::-ms-clear {
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  z-index: 102;
+  z-index: 400;
 }
 
 .modal {
@@ -469,7 +469,7 @@ input[type='password']::-ms-clear {
 }
 
 .createUserCrossButton svg:hover {
-  transform: scale(1.4);
+  transform: scale(1.05);
 }
 
 .createProfileText {
@@ -662,7 +662,7 @@ br {
 }
 
 .fildelb-btn img:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 
 .select-type-label {
@@ -732,6 +732,9 @@ br {
 @media (max-width: 767px) {
   .scrollbar::-webkit-scrollbar {
     display: none !important;
+  }
+  .createProfileText{
+    margin-left: 18px;
   }
 }
 

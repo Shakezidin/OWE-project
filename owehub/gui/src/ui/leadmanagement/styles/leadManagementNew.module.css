@@ -83,7 +83,7 @@
 }
 
 .main_head img:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .an_head {
   /* margin-left: 33px; Heading Fill the Form */
@@ -105,7 +105,7 @@
   background-color: #377cf6;
   border-radius: 8px;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -113,8 +113,8 @@
 }
 
 .submitbut:hover {
-  background-color: #0053e3;
-  transform: scale(1.04);
+  background-color: var(--button-hover-color);
+  transform: scale(1.05);
 }
 
 .tenst_inp {

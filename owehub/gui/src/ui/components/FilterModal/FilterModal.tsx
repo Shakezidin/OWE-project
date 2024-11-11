@@ -372,7 +372,7 @@ const FilterModal: React.FC<TableProps> = ({
             </div>
           </div>
         </div>
-        <div className="createUserActionButton">
+        <div className="createUserActionButton" style={{paddingTop: "22px"}}>
           <div className="" style={{ gap: '0.6rem', display: 'flex' }}>
             <ActionButton
               title={'Cancel'}

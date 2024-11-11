@@ -27,7 +27,7 @@
 #calc-header svg:hover {
     cursor: pointer;
     transition: all 0.3s ease;
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
 #calculator-main {
@@ -81,6 +81,7 @@
     height: 36px;
     padding: 8px 12px;
     font-weight: 500;
+    font-size: 12px;
     transition: all 0.3s ease;
 }
 
@@ -281,11 +282,6 @@
     transition: all 0.3s ease;
 }
 
-.calc-btn-earn:hover,
-.calc-btn-growth:hover{
-    transform: scale(1.05);
-}
-
 .slider-container {
     width: 80%;
     margin: 20px auto;
@@ -340,9 +336,6 @@
     #calculator-main{
         padding: 10px 12px;
     }
-    .calc-wrapper{
-        margin: -8px -16px;
-    }
     .build-earnout, .equity-growth{
         height: 88vh !important;
     }
@@ -363,7 +356,7 @@
         font-size: 13px;
     }
     .build-head-btn button{
-        height: 30px;
+        height: 34px;
     }
     .build-earnout{
         width: 54%;
@@ -455,7 +448,7 @@
     }
 
     .build-earnout h2{
-        font-size: 1rem;
+        font-size: 14px;
     }
 
     .build-earnout,

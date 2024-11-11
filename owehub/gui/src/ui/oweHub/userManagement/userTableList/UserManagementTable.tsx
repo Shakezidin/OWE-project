@@ -145,7 +145,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const buttonStyle = {
     cursor: 'pointer',
     transition: 'transform 0.3s ease, background-color 0.3s ease',
-    transform: isHovered ? 'scale(1.09)' : 'scale(1)',
+    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
     backgroundColor: isHovered ? '#AD1313' : '',
   };
 
@@ -471,11 +471,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}
               >
-                <div className="mr1">
+                <div className="mr1 user-icon">
                   <UserIcon />
                 </div>
 
-                <div className="relative">
+                <div className="relative user-table-dropdown">
                   <span
                     className="select-caret"
                     style={{ fontSize: 10 }}
@@ -492,14 +492,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                       border: 'none',
                       margin: '0',
                       width: 'fit-content',
-                      marginTop: '1px',
+                      marginTop: '-6px !important',
+                      minHeight: "36px !important"
                     }}
-                    dropdownIndicatorStyles={{ color: '#292929', padding: 0}}
+                    dropdownIndicatorStyles={{ color: '#292B2E', padding: 0, marginTop: "7px", marginRight: "2px"}}
                     singleValueStyles={{
                       marginBlock: 0,
-                      padding: 0,
-                      color: '#292929',
+                      padding: "0 5px",
+                      color: '#292B2E',
                       fontWeight: '500',
+                      marginTop: "7px",
+                      className: "dropdownText"
                     }}
                     valueContainerStyles={{ paddingInline: 0, marginInline: 0 }}
                     onChange={(data: any) => {

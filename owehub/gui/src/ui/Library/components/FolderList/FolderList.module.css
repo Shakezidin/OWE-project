@@ -3,13 +3,12 @@
     height: 18px;
     width: 18px;
     /* color: #667085; */
-    color:#101828;
+    color: var(--input-border-color);
     transition: all 0.3s ease;
 }
 
 .Deleteicons:hover{
-    color: #377CF6;
-    transform: scale(1.09);
+    transform: scale(1.05);
 }
  .img_folder_view{
    margin-left: 8px;

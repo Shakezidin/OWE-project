@@ -373,11 +373,6 @@
   .straight-line {
     display: none;
   }
-
-  .banner-main {
-    margin-top: 10px;
-  }
-
   .banner-wrap {
     flex-direction: column;
     gap: 1rem;

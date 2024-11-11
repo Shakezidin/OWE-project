@@ -132,7 +132,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 					AND (
 						(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
 						OR
-						(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+						(li.lead_won_date IS NOT NULL AND li.appointment_accepted_date < li.appointment_date)
 					)
 				)
 			`
@@ -187,7 +187,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 						AND (
 							(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
 							OR
-							(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+							(li.lead_won_date IS NOT NULL AND li.appointment_accepted_date < li.appointment_date)
 						)
 					)
 					OR (
@@ -687,7 +687,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 						AND (
 							(li.lead_won_date IS NULL AND li.appointment_date > CURRENT_TIMESTAMP)
 							OR
-							(li.lead_won_date IS NOT NULL AND li.appointment_date IS NOT NULL)
+							(li.lead_won_date IS NOT NULL AND li.appointment_accepted_date < li.appointment_date)
 						)
 					)
 					OR (

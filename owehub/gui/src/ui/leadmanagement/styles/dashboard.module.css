@@ -224,12 +224,15 @@
 }
 
 .button:hover {
+  color:#377cf6 ;
   background-color: #ddebff;
-  border-color: var(--primary-color) !important;
+  border: 1px solid #377cf6 !important;
+
+  /* border-color: var(--primary-color) !important; */
 }
 
 .button:hover p, .button:hover span{
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
 }
 
 /* .displayStatus{
@@ -265,7 +268,9 @@
 }
 .buttonActive:hover {
   background-color: #3b82f6;
-
+  color: #ffffff;
+  font-weight: 500; 
+  border: none !important;
 }
 
 .table {
@@ -306,7 +311,7 @@ table tbody tr:hover {
 }
 .filtericon:hover {
   background-color: #4062CA;
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 .filtericon img {
   height: 17px;
@@ -503,7 +508,7 @@ input[type='checkbox']:checked {
   transition: all 0.3s ease;
 }
 .rescheduleButton:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
   background-color: #4062CA;
 
 }
@@ -877,7 +882,7 @@ input[type='checkbox']:checked {
   }
 
   .export_btn:hover {
-    transform: scale(1.06);
+    transform: scale(1.05);
     background-color: #4062CA;
 
   }
@@ -1093,7 +1098,7 @@ input[type='checkbox']:checked {
 }
 .lead__datepicker_content {
   position: absolute;
-  left: 46px;
+  left: 36px;
   z-index: 100;
   background-color: var(--white-color);
   border-radius: 4px;
@@ -1144,7 +1149,7 @@ input[type='checkbox']:checked {
 }
 
 .monthSelect option:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .monthSelect {
@@ -1172,7 +1177,7 @@ input[type='checkbox']:checked {
 }
 
 .calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1189,7 +1194,7 @@ input[type='checkbox']:checked {
 }
 
 .export_btn:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1244,7 +1249,7 @@ input[type='checkbox']:checked {
   transition: all 500ms ease;
 }
 .ButtonAbovearrov:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #e5e5e5;
   border: none;
 }

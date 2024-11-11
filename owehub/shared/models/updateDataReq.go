@@ -1,7 +1,7 @@
 package models
 
 type UpdateDataReq struct {
-	HookType string `json:"hookType"`
-	UniqueId string `json:"uniqueId"`
-	Data     string `json:"dataString"`
+	HookType string `json:"hookType,omitempty"`
+	UniqueId string `json:"uniqueId,omitempty"`
+	Data     string `json:"dataString,omitempty"`
 }

@@ -126,7 +126,7 @@ tr {
 }
 
 .crossIconImg:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 .SignDocumentPage{
   display: flex;
