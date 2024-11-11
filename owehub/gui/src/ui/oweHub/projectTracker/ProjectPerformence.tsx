@@ -1371,10 +1371,10 @@ const ProjectPerformence = () => {
                                       ? project.ntp.action_required_count
                                       : ''}
                                       {
-                                        project.days_ntp && project.days_ntp !== '-' && project.days_ntp !== '0 days pending' &&  
+                                        project.days_ntp && project.days_ntp !== '-' && project.days_ntp !== '0 day pending' &&  
                                       
                                       <div className='ntpActionRequired'>
-                                        <p>{project.days_ntp}</p>
+                                        <p>{project.days_ntp.split(" ")[0] + project.days_ntp.split(" ")[0]==='1'? 'day' : 'days'}</p>
                                         </div>
                                     }
                                   </div>
