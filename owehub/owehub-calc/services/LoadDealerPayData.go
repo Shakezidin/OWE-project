@@ -116,14 +116,10 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	Referral := getString(adderBreakDown, "referral")
 	Rebate := getString(adderBreakDown, "rebate")
 
-	mktFee, err := strconv.ParseFloat(mktFeeStr, 64)
-	if err != nil {
-		mktFee = 0.0
-	}
-	OtherAdder, err := strconv.ParseFloat(OtherAdderStr, 64)
-	if err != nil {
-		OtherAdder = 0.0
-	}
+	log.FuncErrorTrace(0, "data = %v", adderBreakDown)
+
+	mktFee := parseDollarStringToFloat(mktFeeStr)
+	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
 	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
@@ -281,4 +277,17 @@ func getString(item map[string]string, key string) string {
 		return value
 	}
 	return ""
+}
+
+func parseDollarStringToFloat(dollarStr string) float64 {
+	// Remove any "$" symbols and whitespace
+	cleanStr := strings.ReplaceAll(dollarStr, "$", "")
+	cleanStr = strings.TrimSpace(cleanStr)
+
+	// Parse to float
+	val, err := strconv.ParseFloat(cleanStr, 64)
+	if err != nil {
+		return 0.0
+	}
+	return val
 }
