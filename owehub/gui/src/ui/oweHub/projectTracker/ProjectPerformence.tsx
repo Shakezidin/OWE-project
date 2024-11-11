@@ -1170,100 +1170,53 @@ const ProjectPerformence = () => {
 /> */}
 
 <Slider
-
-                      range
-
-                      min={1}
-
-                      max={180}
-
-                      value={[minValue, maxValue]}
-
-                      onChange={handleSliderChange}
-
-                      marks={{
-
-                        1: {
-
-                          label: <span style={{ color: 'black',}}>1</span>,
-
-                        },
-
-                        30: {
-
-                          label: <span style={{ color: 'black' }}>30</span>,
-
-                        },
-
-                        60: {
-
-                          label: <span style={{ color: 'black' }}>60</span>,
-
-                        },
-
-                        90: {
-
-                          label: <span style={{ color: 'black' }}>90</span>,
-
-                        },
-
-                        120: {
-
-                          label: <span style={{ color: 'black' }}>120</span>,
-
-                        },
-
-                        150: {
-
-                          label: <span style={{ color: 'black' }}>150</span>,
-
-                        },
-
-                        180: {
-
-                          label: <span style={{ color: 'black' }}>180</span>,
-
-                        },
-
-                      }}
-
-                      className="custom-slider"
-
-                      railStyle={{
-
-                        backgroundColor: '#E5E7EB',
-
-                        height: 2,
-
-                      }}
-
-                      trackStyle={{
-
-                        backgroundColor: '#3B82F6',
-
-                        height: 2,
-
-                      }}
-
-                      handleStyle={{
-
-                        borderColor: '#3B82F6',
-
-                        backgroundColor: '#3B82F6',
-
-                        opacity: 1,
-
-                        width: 12,
-
-                        height: 12,
-
-                        marginTop: -4,
-
-                        boxShadow: '0 0 0 2px white',
-
-                      }}
-
-                    />
+        range
+        min={1}
+        max={180}
+        value={[minValue, maxValue]}
+        onChange={handleSliderChange}
+        marks={{
+          1: {
+            label: <span style={{ color: 'black' }}>1</span>,
+          },
+          30: {
+            label: <span style={{ color: 'black' }}>30</span>,
+          },
+          60: {
+            label: <span style={{ color: 'black' }}>60</span>,
+          },
+          90: {
+            label: <span style={{ color: 'black' }}>90</span>,
+          },
+          120: {
+            label: <span style={{ color: 'black' }}>120</span>,
+          },
+          150: {
+            label: <span style={{ color: 'black' }}>150</span>,
+          },
+          180: {
+            label: <span style={{ color: 'black' }}>180</span>,
+          },
+        }}
+        className="custom-slider" // Custom class applied to the slider
+        railStyle={{
+          backgroundColor: '#E5E7EB',
+          height: 2,
+        }}
+        trackStyle={{
+          backgroundColor: '#3B82F6',
+          height: 2,
+        }}
+        handleStyle={{
+          borderColor: '#3B82F6',
+          backgroundColor: '#3B82F6',
+          opacity: 1,
+          width: 12,
+          height: 12,
+          marginTop: -4,
+          boxShadow: '0 0 0 2px white',
+        }}
+      />
 
  
                         {/* <div className='rangeOfDays'>
@@ -1279,10 +1232,11 @@ const ProjectPerformence = () => {
 
                         <div className='filterButtons'> 
 
-                          <div className='cancelButton' onClick={()=>setOpenFilter(false)} style={{cursor:"pointer"}}> Cancel </div>
+                          <div className='cancelButton' onClick={()=>{setOpenFilter(false); setFilterFlag(false)}} style={{cursor:"pointer"}}> Cancel </div>
                           <div className='applyButton' style={{cursor:"pointer"}} onClick={()=>{
                             setFiltered(prev=>!prev);
-                            setOpenFilter(false); }}> Apply </div>
+                            setOpenFilter(false);
+                            setFilterFlag(false) }}> Apply </div>
                           </div>
 </div>
 
