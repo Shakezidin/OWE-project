@@ -20,7 +20,10 @@
     .sortIcon:hover {
         background-color: var(--button-hover-color);
         transform: scale(1.05);
+<<<<<<< HEAD
         /* transform: scale(1.04); */
+=======
+>>>>>>> 352614f0953477b5e1c2fa1b7c694f9385756a2e
       }
   
   .sortDropdown {
