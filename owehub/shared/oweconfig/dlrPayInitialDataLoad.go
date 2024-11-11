@@ -24,7 +24,6 @@ type InitialStruct struct {
 	DealerCode        string
 	SystemSize        float64
 	ContractDolDol    float64
-	OtherAdders       string
 	Rep1              string
 	Rep2              string
 	Setter            string
@@ -54,7 +53,7 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 	defer func() { log.ExitFn(0, "LoadDlrPayInitialData", err) }()
 
 	// uidList := []string{"OUR21563"} //OUR21190
-	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer, cs.adder_breakdown_and_total_new,
+	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer, 
 			 cs.contracted_system_size, cs.total_system_cost,cs.adder_breakdown_and_total_new,
 			 cs.primary_sales_rep,cs.secondary_sales_rep, cs.setter, 
 			 cs.state, cs.sale_date, ns.net_epc, 
@@ -146,12 +145,6 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 			InitialDataa.ContractDolDol = 0.0
 		}
 
-		if adderBreakdownandTotalNew, ok := data["adder_breakdown_and_total_new"]; (ok) && (adderBreakdownandTotalNew != nil) {
-			InitialDataa.OtherAdders = adderBreakdownandTotalNew.(string)
-		} else {
-			InitialDataa.OtherAdders = ""
-		}
-
 		if primarySalesRep, ok := data["primary_sales_rep"]; (ok) && (primarySalesRep != nil) {
 			InitialDataa.Rep1 = primarySalesRep.(string)
 		} else {
@@ -199,12 +192,6 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 		} else {
 			InitialDataa.PvComplettionDate = time.Time{}
 		}
-
-		// if m1SalesPartnerNottoExceed, ok := data["m1_sales_partner_not_to_exceed"]; (ok) && (m1SalesPartnerNottoExceed != nil) {
-		// 	InitialDataa.DrawMax = m1SalesPartnerNottoExceed.(float64)
-		// } else {
-		// 	InitialDataa.DrawMax = 0.0
-		// }
 
 		if FinanceCompany, ok := data["finance"]; (ok) && (FinanceCompany != nil) {
 			InitialDataa.FinanceCompany = FinanceCompany.(string)
