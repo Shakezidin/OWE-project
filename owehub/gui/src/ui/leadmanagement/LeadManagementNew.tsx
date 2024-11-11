@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classes from './styles/leadManagementNew.module.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,14 @@ import axios from 'axios';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
+import useAuth from '../../hooks/useAuth';
+import Select, { SingleValue, ActionMeta } from 'react-select';
+
+interface SaleData {
+  id: number;
+  name: string;
+  role: string;
+}
 
 interface FormInput
   extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
@@ -21,8 +29,8 @@ const LeadManagementNew = () => {
     address: '',
     zip_code: '',
     notes: '',
-    sales_rep:'',
-    lead_source:'',
+    sales_rep: '',
+    lead_source: '',
   });
   // console.log(formData, 'form data consoling ');
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
@@ -30,6 +38,8 @@ const LeadManagementNew = () => {
   const [emailError, setEmailError] = useState('');
   const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
+  const [saleData, setSaleData] = useState<SaleData[]>([]);
+  const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -77,7 +87,7 @@ const LeadManagementNew = () => {
         [name]: CorrectValue,
       }));
     }
-    if (name === 'sales_rep' || name === 'lead_source') {
+    if ( name === 'lead_source') {
       if (value === '' || lettersAndSpacesPattern.test(value)) {
         setFormData((prevData) => ({
           ...prevData,
@@ -112,8 +122,8 @@ const LeadManagementNew = () => {
     address: '',
     zip_code: '',
     notes: '',
-    sales_rep:'',
-    lead_source:'',
+    sales_rep: '',
+    lead_source: '',
   };
 
   const validateForm = (formData: any) => {
@@ -137,7 +147,7 @@ const LeadManagementNew = () => {
     if (formData.zip_code.trim() === '') {
       errors.zip_code = 'Zip Code is required';
     }
-    if (formData.sales_rep.trim() === '') {
+    if (!selectedSale) {
       errors.sales_rep = 'Sales Rep is required';
     }
     if (formData.lead_source.trim() === '') {
@@ -150,13 +160,13 @@ const LeadManagementNew = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-   
+
 
     const errors = validateForm(formData);
     setErrors(errors);
-   
 
-    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '' ) {
+
+    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
 
       setLoad(true);
 
@@ -171,14 +181,13 @@ const LeadManagementNew = () => {
             street_address: formData.address,
             zipcode: formData.zip_code,
             notes: formData.notes,
-            lead_source:formData.lead_source,
-            sales_rep_name:formData.sales_rep,
+            lead_source: formData.lead_source,
+            salerep_id: selectedSale?.id,
           },
           true
         );
         if (response.status === 200) {
           toast.success('Lead Created Succesfully');
-          console.log("***************   SUCCESSFULLY SUBMITTED  ******************")
           resetFormData();
           navigate('/leadmng-dashboard');
         } else if (response.status >= 201) {
@@ -201,6 +210,60 @@ const LeadManagementNew = () => {
   const handleBack = () => {
     navigate('/leadmng-dashboard');
   };
+
+
+
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  const [loading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  
+  
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller(
+            'get_sales_reps',
+            {
+
+            },
+            true
+          );
+
+          if (response.status === 200) {
+            setSaleData(response.data)
+          } else if (response.status > 201) {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated]);
+
+  const options1 = saleData.map(data => ({
+    value: data.id,
+    label: data.name
+  }));
+
+  const handleSaleChange = (selectedOption: SaleData | null) => {
+    setSelectedSale(selectedOption);
+  };
+
+  console.log(selectedSale, "sdaghfgfhdsa")
 
   return (
     <div className={classes.ScrollableDivRemove}>
@@ -391,16 +454,112 @@ const LeadManagementNew = () => {
                           </div>
                         )}
                       </div>
-                      </div>
-                      <div className={classes.salrep_input_container}> <div className={classes.srs_new_create}>
-                        <Input
-                          type="text"
-                          label="Sales Rep Name"
-                          value={formData.sales_rep}
-                          placeholder="Enter Sales Rep Name"
-                          onChange={handleInputChange}
-                          name="sales_rep"
-                          maxLength={30}
+                    </div>
+                    <div className={classes.salrep_input_container}>
+                      <div className={classes.srs_new_create} style={{gap:"6px"}}>
+                       <div className={classes.custom_label_newlead}>Sales Rep</div>
+                        <Select
+                         value={selectedSale}
+                         onChange={handleSaleChange}
+                         getOptionLabel={(option) => option.name} 
+                         getOptionValue={(option) => option.id.toString()}
+                         placeholder={"Select Sales Rep"}
+                         options={saleData} 
+                          styles={{
+                            control: (baseStyles, state) => ({
+                              ...baseStyles,
+                              marginTop: 'px',
+                              borderRadius: '8px',
+                              outline: 'none',
+                              color: '#3E3E3E',
+                              width: '200px',
+                              height: '36px',
+                              fontSize: '12px',
+                              border: '1px solid #000000',
+                              fontWeight: '500',
+                              cursor: 'pointer',
+                              alignContent: 'center',
+                              backgroundColor: '#fffff',
+                              boxShadow: 'none',
+                              '@media only screen and (max-width: 767px)': {
+                                // width: '80px',
+                                width: 'fit-content',
+                              },
+                              '&:focus-within': {
+                                borderColor: '#377CF6',
+                                boxShadow: '0 0 0 0.3px #377CF6',
+                                caretColor: '#3E3E3E',
+                                '& .css-kofgz1-singleValue': {
+                                  color: '#377CF6',
+                                },
+                                '& .css-tj5bde-Svg': {
+                                  color: '#377CF6',
+                                },
+                              },
+                              '&:hover': {
+                                borderColor: '#377CF6',
+                                boxShadow: '0 0 0 0.3px #377CF6',
+                                '& .css-kofgz1-singleValue': {
+                                  color: '#377CF6',
+                                },
+                                '& .css-tj5bde-Svg': {
+                                  color: '#377CF6',
+                                },
+                              },
+                            }),
+                            placeholder: (baseStyles) => ({
+                              ...baseStyles,
+                              color: '#3E3E3E',
+                            }),
+                            indicatorSeparator: () => ({
+                              display: 'none',
+                            }),
+                            dropdownIndicator: (baseStyles, state) => ({
+                              ...baseStyles,
+                              transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                              transition: 'transform 0.3s ease',
+                              color: '#3E3E3E',
+                              '&:hover': {
+                                color: '#3E3E3E',
+                              },
+                            }),
+                            option: (baseStyles, state) => ({
+                              ...baseStyles,
+                              fontSize: '12px',
+                              cursor: 'pointer',
+                              background: state.isSelected ? '#377CF6' : '#fff',
+                              color: baseStyles.color,
+                              '&:hover': {
+                                background: state.isSelected ? '#377CF6' : '#DDEBFF',
+                              },
+                             
+                            }),
+                            singleValue: (baseStyles, state) => ({
+                              ...baseStyles,
+                              color: '#3E3E3E',
+                            }),
+                            menu: (baseStyles) => ({
+                              ...baseStyles,
+                              width: '200px',
+                              marginTop: '3px',
+                              border: '1px solid #000000',
+                              
+                            }),
+                            menuList: (base) => ({
+                              ...base,
+                              '&::-webkit-scrollbar': {
+                                scrollbarWidth: 'thin',
+                                scrollBehavior: 'smooth',
+                                display: 'block',
+                                scrollbarColor: 'rgb(173, 173, 173) #fff',
+                                width: 8,
+                              },
+                              '&::-webkit-scrollbar-thumb': {
+                                background: 'rgb(173, 173, 173)',
+                                borderRadius: '30px',
+                              },
+                            }),
+                          }}
                         />
                         {errors.sales_rep && (
                           <span
