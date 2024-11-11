@@ -214,7 +214,7 @@
 
   .configure-main,
   .commissionContainer {
-    margin: 1rem;
+    margin: 10px;
   }
 
   .pay-card,
@@ -237,9 +237,5 @@
     position: absolute;
     left: 1.5rem;
     top: 4.2rem;
-  }
-
-  .config-add button{
-    padding: 5px 10px;
   }
 }

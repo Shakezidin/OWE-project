@@ -898,6 +898,18 @@
     overflow-x: hidden;
   }
 
+  .date-button{
+    gap: 1.5rem !important;
+  }
+
+  .help-proj-input{
+    width: 16.2% !important;
+  }
+
+  .help-submit{
+    width: 100px;
+  }
+
   .white-back {
     margin: 10px;
     position: relative;
@@ -920,6 +932,7 @@
   .rep-manage-user {
     flex-direction: column;
     gap: 14px !important;
+    align-items: flex-start !important;
   }
 
   .DashboardPage-container {

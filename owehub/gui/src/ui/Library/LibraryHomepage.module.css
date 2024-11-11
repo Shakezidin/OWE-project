@@ -25,7 +25,7 @@
 .libGridItem {
   display: grid;
   grid-template-columns: calc(50% - 30px) calc(50% - 30px) auto;
-  padding: 25px;
+  padding: 16px;
   background-color: #ffffff;
   align-items: center;
 }
@@ -525,12 +525,12 @@
 }
 
 .undoButton:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 
 .selectedCount {
   font-family: 'poppins' sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -542,10 +542,10 @@
   border-radius: 8px;
   border: none;
   color: #ffffff;
-  background-color: #ff0000;
+  background-color: #D91515;
   cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
-  height: 31.5px;
+  height: 36px;
 }
 .DeleteButtonForFile {
   font-family: 'poppins' sans-serif;
@@ -567,7 +567,7 @@
 
 .DeleteButton:not([disabled]):hover {
   color: #ffffff;
-  background-color: #ff0000;
+  background-color: #AD1313;
   transform: scale(1.05);
 }
 
@@ -667,13 +667,9 @@
     font-size: 12px;
   }
   .desktop_hide {
-    width: 100%;
-    max-width: 98.5%;
     display: flex;
     justify-content: space-between;
-  }
-  .libraryContainer {
-    padding-inline: 9px;
+    margin-bottom: 1.2rem;
   }
   .sm_hide {
     display: none;
@@ -717,17 +713,12 @@
   .filter_button {
     display: none;
   }
-  .desktop_hide {
-    width: 100%;
-    max-width: 724px;
-    display: flex;
-    justify-content: space-between;
-    /* margin-top: 7px;
-    margin-bottom: 7px; */
+
+  .libraryContainer{
+    margin: 10px;
   }
-  .searchWrapper {
-    flex-basis: 230px;
-    flex-shrink: 2;
+  .desktop_hide{
+    margin-bottom: 10px;
   }
 }
 
@@ -783,13 +774,6 @@
   .libSecHeader_left {
     gap: 8px;
   }
-  .desktop_hide {
-    width: 100%;
-    max-width: 402px;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
-  }
 }
 @media (max-width: 378px) {
   .sort_container {
@@ -829,13 +813,6 @@
   .libSecHeader_left {
     /* justify-content: space-between; */
     gap: 5px;
-  }
-  .desktop_hide {
-    width: 100%;
-    max-width: 356px;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
   }
   .searchWrapper {
     flex-basis: 170px;

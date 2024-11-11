@@ -284,7 +284,7 @@
   grid-template-columns: repeat(2, 1fr);
   width: 128px;
   border: 1px solid var(--orange-color);
-  border-radius: 8px;
+  border-radius: 9px;
 }
 
 .leaderbord-tab-container .tab {
@@ -453,6 +453,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  height: 36px;
 }
 
 .export-trigger:hover {
@@ -535,6 +536,10 @@
     display: none;
   }
 
+  .leaderborder_filter-slect-wrapper .css-c0ggs4-control, .leaderborder_filter-slect-wrapper .css-78cu09-control, .leaderborder_filter-slect-wrapper .css-vdyxa5-control{
+    height: 36px !important;
+  }
+
   .leaderboard-table thead tr th {
     padding-left: 12px;
   }
@@ -582,9 +587,6 @@
 }
 
 @media screen and (max-width: 767px) {
-  .leaderborder_filter-slect-wrapper .css-b62m3t-container .css-c0ggs4-control{
-    height: 36px !important;
-  }
 
   .leaderboard-main{
     margin: 10px;
@@ -711,11 +713,5 @@
 
   .leaderboard-table-container::-webkit-scrollbar-corner {
     background-color: transparent;
-  }
-}
-
-@media (max-width: 400px) {
-  .leaderboard-data__datepicker-content {
-    right: -20px;
   }
 }

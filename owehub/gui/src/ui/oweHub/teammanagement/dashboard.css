@@ -81,7 +81,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   width: 210px;
   min-height: 104px;
   border: none;
@@ -89,15 +88,14 @@
   padding: 14px;
   cursor: pointer;
   background: rgb(216, 216, 216);
-  transition: all 0.4s ease;
+  transition: transform 550ms ease;
 }
 
 .team-pay-card:hover .card-heading {
   color: #fff !important;
 }
 .team-pay-card:hover {
-  transform: scale(1.08);
-  transition: all 0.4s ease;
+  transform: scale(1.05);
 }
 .team-pay-card .view-text {
   font-size: 12px;
@@ -230,12 +228,12 @@
 .team-button-sec button {
   background-color: #377cf6;
   color: white;
-  padding: 6.33px, 8.13px, 6.33px, 8.13px;
   border: none;
-  border-radius: 4px;
-  height: 38px;
+  border-radius: 8px;
+  height: 40px;
   width: 150px;
   margin-top: 14px;
+  font-size: 12px;
   margin-right: 12px;
   cursor: pointer;
   transition:
@@ -243,7 +241,7 @@
     background-color 0.3s ease;
 }
 .team-button-sec button:hover {
-  transform: scale(1.07);
+  transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -295,7 +293,7 @@
 .team-members p {
   font-size: 13px;
   font-weight: 500;
-  color: #263747;
+  color: var(--input-border-color);
   margin-top: 7px;
 }
 
@@ -514,15 +512,14 @@
     margin-left: -20px;
   }
   .team-button-sec button {
-    width: 40px;
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 300;
   }
   .team-button-sec button span {
     display: none;
   }
   .dash-newteam .create {
-    width: 40px;
+    padding: 0 12px;
   }
   .create-add-btn {
     font-size: 1.5rem;
