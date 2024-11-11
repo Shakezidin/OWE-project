@@ -305,12 +305,15 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     }
   }, [selectedType])
 
+  // Dynamically get the base URL using window.location.origin
+  const BASE_URL = window.location.origin;
+
   const OpenSignDocument = async () => {
     setIsLoadingDocument(true);
     try {
       const params = new URLSearchParams();
       params.append("leads_id", leadId.toString() || "");
-      params.append("return_url", "http://localhost:3000/leadmng-dashboard");
+      params.append("return_url", `${BASE_URL}/leadmng-dashboard`);
 
       const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
       const eventSource = new EventSource(eventSourceUrl);
@@ -516,7 +519,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       return [
         { label: 'View Proposal', value: 'viewProposal' },
         { label: 'Edit Proposal', value: 'editProposal' },
-        ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
         { label: 'Refresh Url', value: 'renew_proposal' },
       ];
     }
@@ -539,15 +541,49 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
   const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
+  const [loadEdit, setLoadEdit] = useState<number | null>(null);
   const handleInputChange = (event: any, leadId: string) => {
     const { value } = event.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
+    const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ');
     
     setSalesRep(prevState => ({
       ...prevState,
       [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
     }));
   };
+  const handleConfrm = async (e: any, leadId: any) => {
+    setLoadEdit(leadId);
+    e.preventDefault();
+    if (salesrep[leadId]) {
+      try {
+        const response = await postCaller(
+          'edit_leads',
+          {
+            leads_id: leadId,
+            sales_rep_name: salesrep[leadId]
+          },
+          true
+        );
+
+        if (response.status === 200) {
+          toast.success('Lead Updated Successfully');
+          setRefresh((prev) => prev + 1);
+        } else if (response.status >= 201) {
+          toast.warn(response.message);
+        }
+        setLoadEdit(null);
+      } catch (error) {
+        setLoadEdit(null);
+        console.error('Error submitting form:', error);
+      }
+    }
+    setLoadEdit(null);
+  };
+  const handleClick = (e: any, leadsId: any) => {
+    toggleCheckboxVisibility(leadsId);
+    handleConfrm(e, leadsId);
+  };
+
 
 
 
@@ -687,48 +723,72 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             : lead.street_address
                           : 'N/A'}</div>
                       </td>
+
+
+
                       <td>
-                        <div className={styles.topdived}>
-                          {!visibilityState[lead.leads_id] && (
-                            <p>Test Sales Rep</p>
-                          )}
-                          {visibilityState[lead.leads_id] && (
-                            <div className={styles.dropdownContainerModal}>
-                              <input
-                                type="text"
-                                value={salesrep[lead.leads_id] || ''}
-                                placeholder=""
-                                onChange={(event) => handleInputChange(event, lead.leads_id)}
-                                name="salesrep"
-                                maxLength={40}
-                              />
-                            </div>
-                          )}
-                          <span>
-                            {!visibilityState[lead.leads_id] ? (
-                              <span
-                                className={styles.EditPenIcon}
-                                onClick={() => toggleCheckboxVisibility(lead.leads_id)}
-                              >
-                                <img src={ICONS.EditPenNew} alt="Edit" />
-                              </span>
-                            ) : (
-                              <span
-                                className={styles.SignEditBottonX}
-                                onClick={() => toggleCheckboxVisibility(lead.leads_id)}
-                              >
-                                <img src={ICONS.SignEditBotton} />
-                              </span>
+                        {loadEdit === lead.leads_id ?
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><MicroLoader /></div>
+                          :
+                          <div className={styles.topdived}>
+                            {!visibilityState[lead.leads_id] && (
+                              <p>{lead.sales_rep_name || '__________'}</p>
                             )}
-                          </span>
-                        </div>
+                            {visibilityState[lead.leads_id] && (
+                              <div className={styles.dropdownContainerModal}>
+                                <input
+                                  type="text"
+                                  value={salesrep[lead.leads_id] !== undefined ? salesrep[lead.leads_id] : lead.sales_rep_name || ''}
+                                  placeholder=""
+                                  onChange={(event) => handleInputChange(event, lead.leads_id)}
+                                  name="salesrep"
+                                  maxLength={40}
+                                />
+                              </div>
+                            )}
+                            <span>
+                              {!visibilityState[lead.leads_id] ? (
+                                <span
+                                  className={styles.EditPenIcon}
+                                  onClick={() => toggleCheckboxVisibility(lead.leads_id)}
+                                >
+                                  <img src={ICONS.EditPenNew} alt="Edit" />
+                                </span>
+                              ) : (
+                                <span
+                                  className={styles.SignEditBottonX}
+                                  onClick={(e) => handleClick(e, lead.leads_id)}
+                                >
+                                  <img src={ICONS.SignEditBotton} />
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        }
                       </td>
+
 
 
 
                       <td>
-                        <div className={styles.info}>Lead Source</div>
+                        {lead.lead_source ? (
+                          <>
+                            <div
+                              className={styles.topdived}
+                            >
+
+                              <p>{lead.lead_source}</p>
+                            </div>
+
+                          </>
+                        ) : (
+                          <div>______</div>
+                        )}
                       </td>
+
+
+
+
                       <td>
                         <div className={styles.topofinfo}>
                           {lead.appointment_status_label ? (
@@ -870,36 +930,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                         setSelected(index);
                                       }}
                                       options={getLeadOptions(lead)}
-                                    // options={
-                                    //   (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') || (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
-                                    //     ? [
-                                    //         { label: 'Reschedule Appointment', value: 'app_sched' },
-                                    //         { label: 'Create Proposal', value: 'new_proposal' },
-                                    //       ]
-                                    //     : lead && lead.proposal_status && lead.proposal_status === 'Completed' && lead.proposal_id !== ''
-                                    //       ? [
-                                    //         // { label: 'Send Proposal', value: 'sendtocust' },
-                                    //           { label: 'View Proposal', value: 'viewProposal' },
-                                    //           { label: 'Edit Proposal', value: 'editProposal' },
-                                    //           { label: 'Download Proposal', value: 'download' },
-                                    //           ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
-                                    //           { label: 'Reschedule Appointment', value: 'app_sched' },
-                                    //           { label: 'Refresh Url', value: 'renew_proposal' },
-                                    //       ] : lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed'
-                                    //         ? [
-                                    //             { label: 'View Proposal', value: 'viewProposal' },
-                                    //             { label: 'Edit Proposal', value: 'editProposal' },
-                                    //             ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
-                                    //             { label: 'Refresh Url', value: 'renew_proposal' },
-                                    //           ]
-                                    //         : [
-                                    //             { label: 'Create Proposal', value: 'new_proposal' },
-                                    //             { label: 'Schedule Appointment', value: 'app_sched' },
-                                    //           ]
-                                    // }
-
-
-
                                     />
                                   )}
                                 </>
@@ -1000,8 +1030,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   </>
                                 )}
                             </div>
-                            {/* FIRST ROW FIRST COLUMNS ENDED */}
-                            {/* SECOND ROW FIRST COLUMNS STARTED */}
+
                             <div onClick={() => (setLeadId(lead.leads_id))}>
                               <ChangeStatus
                                 selectedType={selectedType}

@@ -311,7 +311,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
                                 </button>
                               </div>
                             ) : (
-                              <div className={Styles.approved}>
+                              <div style={{marginRight:'20px'}} className={Styles.approved}>
                                 <span>Approved</span>
                               </div>
                             )}

@@ -159,6 +159,9 @@
   color: grey !important;
   cursor: not-allowed !important;
 }
+.disabled:hover{
+  background-color: #fff;
+}
 /* HERE FOR RESPONSIVESNESS */
 
 @media screen and (max-width: 1200px) {

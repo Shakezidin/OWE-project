@@ -100,7 +100,7 @@ func LoadAgngRpInitialData(uniqueIds []string) (InitialDataa InitialAgngRPDataLi
     fin_permits_fin_schema.approved_date AS fin_pass_date,
     system_customers_schema.install_scheduled_date,
     customers_customers_schema.install_eta_date,
-    -- Install Complete (to be included if required)
+    pv_install_install_subcontracting_schema.pv_completion_date as install_complete,
     customers_customers_schema.primary_sales_rep,
     customers_customers_schema.pre_post_install,
     customers_customers_schema.tier_one_status,
@@ -354,6 +354,12 @@ WHERE
 			InitialData.Install_ETA = val.(time.Time)
 		} else {
 			InitialData.Install_ETA = time.Time{}
+		}
+
+		if val, ok := checkField(data["install_complete"], "install_complete", "time.Time"); ok {
+			InitialData.Install_Complete = val.(time.Time)
+		} else {
+			InitialData.Install_Complete = time.Time{}
 		}
 
 		if val, ok := checkField(data["primary_sales_rep"], "primary_sales_rep", "string"); ok {
