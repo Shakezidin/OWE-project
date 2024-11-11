@@ -1603,7 +1603,7 @@ const LeadManagementDashboard = () => {
                   id="downip"
                   place="bottom"
                   content={isToggledX ? "Minimize" : "Maximize"}
-                  className={'mobile-tooltip'}
+                  className={styles.mobile_tooltip}
                 />
 
               </div>
@@ -1914,9 +1914,10 @@ const LeadManagementDashboard = () => {
                       id="export"
                       place="bottom"
                       content="Export"
-                      className={'mobile-tooltip'}
+                      className={styles.mobile_tooltip}
                     />
                   }
+
 
 
 
@@ -2011,7 +2012,7 @@ const LeadManagementDashboard = () => {
                         place="bottom"
                         content="Add New Lead"
                         delayShow={800}
-                        className={'mobile-tooltip'}
+                        className={styles.mobile_tooltip}
                       />
                     }
 
@@ -2050,7 +2051,7 @@ const LeadManagementDashboard = () => {
                         id="export"
                         place="bottom"
                         content="Export"
-                        className={'mobile-tooltip'}
+                        className={styles.mobile_tooltip}
                       />
                     }
                   </div>

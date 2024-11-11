@@ -17,6 +17,7 @@
   padding: 0px 15px 18px 15px;
   height: 100%;
 }
+
 .createProfileInputView {
   margin-top: 1rem;
 }
@@ -34,7 +35,8 @@
   border-radius: 0.5rem;
 }
 
-.create_input_field_note textarea:hover, .create_input_field_note textarea:focus {
+.create_input_field_note textarea:hover,
+.create_input_field_note textarea:focus {
   border-color: var(--primary-color);
 }
 
@@ -85,6 +87,7 @@
 .main_head img:hover {
   transform: scale(1.05);
 }
+
 .an_head {
   /* margin-left: 33px; Heading Fill the Form */
   margin-left: 15px;
@@ -126,6 +129,7 @@
   border: none;
   margin-top: 22px;
 }
+
 .tenst_inp:focus {
   outline: none;
 }
@@ -152,6 +156,7 @@
   pointer-events: auto;
   transition: transform 0.3s ease;
 }
+
 .tentaclesicons img:hover {
   transform: scale(1.2);
   /* Apply scale transformation on hover */
@@ -176,6 +181,7 @@
   color: #4e4e4e;
   font-weight: 400;
 }
+
 .emailStyle {
   color: #4e4e4e;
   font-weight: 400;
@@ -194,6 +200,7 @@
   .customer_wrapper_list {
     height: auto;
   }
+
   .form_header {
     margin-top: 10px;
   }
@@ -214,4 +221,12 @@
   .create_input_field_note textarea {
     width: 100%;
   }
+}
+
+.custom_label_newlead {
+  color: #000000;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 4px;
 }

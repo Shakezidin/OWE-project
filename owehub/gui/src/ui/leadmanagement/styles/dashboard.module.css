@@ -725,7 +725,8 @@ input[type='checkbox']:checked {
     margin: 0 auto;
     padding-top: 15px;
     padding-bottom: 7.5px;
-    width: 378px;
+    /* width: 378px; */
+    width: calc(97vw - 10px);
     box-shadow: unset;
     scrollbar-width: thin;
     scrollbar-color: #ccc transparent;
