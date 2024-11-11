@@ -227,17 +227,17 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		}
 
 		if len(data) > 0 {
-			amountPrepaid, _ = data[0]["amount_prepaid"].(float64)
-			pipelineRemaining, _ = data[0]["pipeline_remaining"].(float64)
-			currentDue, _ = data[0]["current_due"].(float64)
+			amountPrepaid = getFloat(data[0], "amount_prepaid")
+			pipelineRemaining = getFloat(data[0], "pipeline_remaining")
+			currentDue = getFloat(data[0], "current_due")
 
-			amountPrepaidThisMonth, _ := data[0]["amount_prepaid_this_month"].(float64)
-			pipelineRemainingThisMonth, _ := data[0]["pipeline_remaining_this_month"].(float64)
-			currentDueThisMonth, _ := data[0]["current_due_this_month"].(float64)
+			amountPrepaidThisMonth := getFloat(data[0], "amount_prepaid_this_month")
+			pipelineRemainingThisMonth := getFloat(data[0], "pipeline_remaining_this_month")
+			currentDueThisMonth := getFloat(data[0], "current_due_this_month")
 
-			amountPrepaidLastMonth, _ := data[0]["amount_prepaid_last_month"].(float64)
-			pipelineRemainingLastMonth, _ := data[0]["pipeline_remaining_last_month"].(float64)
-			currentDueLastMonth, _ := data[0]["current_due_last_month"].(float64)
+			amountPrepaidLastMonth := getFloat(data[0], "amount_prepaid_last_month")
+			pipelineRemainingLastMonth := getFloat(data[0], "pipeline_remaining_last_month")
+			currentDueLastMonth := getFloat(data[0], "current_due_last_month")
 
 			amountPrepaidThisMonth = amountPrepaid - amountPrepaidThisMonth          // This month’s value only
 			amountPrepaidLastMonth = amountPrepaidThisMonth - amountPrepaidLastMonth // Last month’s value only

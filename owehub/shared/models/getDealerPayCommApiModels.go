@@ -57,8 +57,7 @@ type DealerPayReportResponse struct {
 }
 
 type DealerPayCommissions struct {
-	DealerPayComm []DealerPayReportResponse
-
+	DealerPayComm         []DealerPayReportResponse
 	AmountPrepaid         float64 `json:"amount_prepaid"`
 	AmountPrepaidPerc     float64 `json:"amount_prepaid_per"`
 	Pipeline_Remaining    float64 `json:"pipeline_remaining"`
