@@ -103,7 +103,6 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	DealerCode := dlrPayData.DealerCode
 	SystemSize := dlrPayData.SystemSize
 	ContractDolDol := dlrPayData.ContractDolDol
-	OtherAdders := dlrPayData.OtherAdders
 	Rep1 := dlrPayData.Rep1
 	Rep2 := dlrPayData.Rep2
 	Setter := dlrPayData.Setter
@@ -112,15 +111,13 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	NetEpc := dlrPayData.NetEpc
 	financeType := dlrPayData.FinanceType
 	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
-
+	OtherAdderStr := getString(adderBreakDown, "Total")
 	mktFeeStr := getString(adderBreakDown, "marketing_fee")
 	Referral := getString(adderBreakDown, "referral")
 	Rebate := getString(adderBreakDown, "rebate")
 
-	mktFee, err := strconv.ParseFloat(mktFeeStr, 64)
-	if err != nil {
-		mktFee = 0.0
-	} //pemding from Colten sice
+	mktFee := parseDollarStringToFloat(mktFeeStr)
+	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
 	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
@@ -151,7 +148,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["loan_fee"] = LoanFee
 	outData["epc"] = ContractDolDol / (SystemSize * 1000)
 	outData["net_epc"] = NetEpc
-	outData["other_adders"] = OtherAdders
+	outData["other_adders"] = OtherAdder
 	outData["credit"] = credit
 	outData["rep_1"] = Rep1
 	outData["rep_2"] = Rep2
@@ -278,4 +275,17 @@ func getString(item map[string]string, key string) string {
 		return value
 	}
 	return ""
+}
+
+func parseDollarStringToFloat(dollarStr string) float64 {
+	// Remove any "$" symbols and whitespace
+	cleanStr := strings.ReplaceAll(dollarStr, "$", "")
+	cleanStr = strings.TrimSpace(cleanStr)
+
+	// Parse to float
+	val, err := strconv.ParseFloat(cleanStr, 64)
+	if err != nil {
+		return 0.0
+	}
+	return val
 }
