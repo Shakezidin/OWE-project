@@ -510,7 +510,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       return [
         { label: 'View Proposal', value: 'viewProposal' },
         { label: 'Edit Proposal', value: 'editProposal' },
-        ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
         { label: 'Refresh Url', value: 'renew_proposal' },
       ];
     }
