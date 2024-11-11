@@ -1504,7 +1504,11 @@
   .perf-export-btn {
     text-align: end;
   }
-
+ .filter-line{
+  position: absolute;
+  right: 50px;
+  bottom:0px;
+ }
   .mob-projSt {
     font-size: 16px;
     font-weight: 600;
@@ -1948,7 +1952,7 @@
 
 /* ajay chaudhary code */
 .filterButtonAddition{
-  width:100%;
+  /* width:100%; */
   display: flex;
   justify-content: center;
   gap:0.5rem;
