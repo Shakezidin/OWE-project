@@ -59,6 +59,7 @@ import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
+import { scale } from 'pdf-lib';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -231,7 +232,7 @@ const renderActiveShape = (props: any) => {
             x={cx}
             dy={index ? 15 : 0}
             style={{
-              fontSize: '12.07px',
+              fontSize: '14px',
               wordBreak: 'break-word',
               fontWeight: 550,
             }}
@@ -269,7 +270,7 @@ const renderActiveShape = (props: any) => {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-        style={{ fontSize: '12.07px' }}
+        style={{ fontSize: '14px' }}
       >
         {`${value}`}
       </text>
@@ -279,7 +280,7 @@ const renderActiveShape = (props: any) => {
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
-        style={{ fontSize: '12.07px' }}
+        style={{ fontSize: '14px' }}
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -313,7 +314,7 @@ const CustomTooltip = ({
         <p
           style={{
             margin: '2px 0',
-            color: '#57B93A',
+            color: '#21BC27',
             fontWeight: 'bold',
             fontSize: 11,
           }}
@@ -321,7 +322,7 @@ const CustomTooltip = ({
         <p
           style={{
             margin: '2px 0',
-            color: '#CD4040',
+            color: '#D91515',
             fontWeight: 'bold',
             fontSize: 11,
           }}
@@ -563,11 +564,11 @@ const LeadManagementDashboard = () => {
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-              ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-              : '',
-            end_date: selectedDates.endDate
-              ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-              : '',
+                ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+                : '',
+              end_date: selectedDates.endDate
+                ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+                : '',
             },
             true
           );
@@ -595,10 +596,10 @@ const LeadManagementDashboard = () => {
   }, [isAuthenticated, selectedDates]);
 
   const defaultData: DefaultData = {
-    NEW: { name: 'NEW', value: 0, color: '#52B650' },
-    PROGRESS: { name: 'PROGRESS', value: 0, color: '#81A6E7' },
-    DECLINED: { name: 'DECLINED', value: 0, color: '#CD4040' },
-    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#FF832A' },
+    NEW: { name: 'NEW', value: 0, color: '#21BC27' },
+    PROGRESS: { name: 'PROGRESS', value: 0, color: '#377CF6' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#D91515' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#EC9311' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -684,7 +685,7 @@ const LeadManagementDashboard = () => {
   }, [pieData]);
 
   const dispatch = useAppDispatch();
-  const { isLoading, leadsData,statusData1, totalcount } = useAppSelector(
+  const { isLoading, leadsData, statusData1, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
 
@@ -765,11 +766,11 @@ const LeadManagementDashboard = () => {
 
       const data = {
         start_date: selectedDates.startDate
-        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-        : '',
-      end_date: selectedDates.endDate
-        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-        : '',
+          ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+          : '',
+        end_date: selectedDates.endDate
+          ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+          : '',
         "status": statusId,
         is_archived: archive,
         progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
@@ -1161,11 +1162,11 @@ const LeadManagementDashboard = () => {
 
     const data = {
       start_date: selectedDates.startDate
-      ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-      : '',
-    end_date: selectedDates.endDate
-      ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-      : '',
+        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+        : '',
       "status": statusId,
       is_archived: archive,
       progress_filter: selectedValue ? selectedValue : "ALL",
@@ -1230,7 +1231,7 @@ const LeadManagementDashboard = () => {
 
   //----------------Aurora API integration START-----------------------//
   const handleCreateProposal = async (leadId: number) => {
-  
+
 
     try {
       // Step 1: Fetch preferred solar modules using dispatch
@@ -1402,27 +1403,6 @@ const LeadManagementDashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      <div style={{ marginLeft: 6, marginTop: 6 }}>
-        <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
-          <div className="bread-link">
-            <div className="" style={{ cursor: 'pointer' }}>
-            </div>
-            <div className="">
-              <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* <ConfirmModel
-        isOpen1={isModalOpen}
-        onClose1={handleCloseModal}
-        leadId={leadId}
-        refresh={refresh}
-        setRefresh={setRefresh}
-        reschedule={reschedule}
-        action={action}
-        setReschedule={setReschedule}
-      /> */}
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
 
@@ -1523,14 +1503,30 @@ const LeadManagementDashboard = () => {
                       alignContent: 'center',
                       backgroundColor: '#fffff',
                       boxShadow: 'none',
+                      '@media only screen and (max-width: 767px)': {
+                        // width: '80px',
+                        width: 'fit-content',
+                      },
                       '&:focus-within': {
                         borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
+                        boxShadow: '0 0 0 0.3px #377CF6',
                         caretColor: '#3E3E3E',
+                        '& .css-kofgz1-singleValue': {
+                          color: '#377CF6',
+                        },
+                        '& .css-tj5bde-Svg': {
+                          color: '#377CF6',
+                        },
                       },
                       '&:hover': {
                         borderColor: '#377CF6',
-                        boxShadow: '0 0 0 1px #377CF6',
+                        boxShadow: '0 0 0 0.3px #377CF6',
+                        '& .css-kofgz1-singleValue': {
+                          color: '#377CF6',
+                        },
+                        '& .css-tj5bde-Svg': {
+                          color: '#377CF6',
+                        },
                       },
                     }),
                     placeholder: (baseStyles) => ({
@@ -1542,6 +1538,8 @@ const LeadManagementDashboard = () => {
                     }),
                     dropdownIndicator: (baseStyles, state) => ({
                       ...baseStyles,
+                      transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.3s ease',
                       color: '#3E3E3E',
                       '&:hover': {
                         color: '#3E3E3E',
@@ -1550,13 +1548,15 @@ const LeadManagementDashboard = () => {
                     option: (baseStyles, state) => ({
                       ...baseStyles,
                       fontSize: '13px',
-                      fontWeight: '400',
                       color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
                       backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                       '&:hover': {
-                        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                        backgroundColor: state.isSelected
+                          ? '#ddebff'
+                          : '#ddebff',
                       },
                       cursor: 'pointer',
+                      fontWeight:"400"
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
@@ -1566,7 +1566,6 @@ const LeadManagementDashboard = () => {
                       ...baseStyles,
                       width: '140px',
                       marginTop: '0px',
-                      zIndex: "100"
                     }),
                   }}
                 />}
@@ -1709,14 +1708,14 @@ const LeadManagementDashboard = () => {
                   <Line
                     type="monotone"
                     dataKey="won"
-                    stroke="#57B93A"
+                    stroke="#21BC27"
                     strokeWidth={2}
                     name="won"
                   />
                   <Line
                     type="monotone"
                     dataKey="lost"
-                    stroke="#CD4040"
+                    stroke="#D91515"
                     strokeWidth={2}
                     name="lost"
                   />
@@ -1790,10 +1789,10 @@ const LeadManagementDashboard = () => {
                 </div>
 
                 <div className={styles.searchBar}>
-                  <div className={styles.searchIcon}>
+                  {/* <div className={styles.searchIcon}>
                     <img src={ICONS.SearchICON001} />
 
-                  </div>
+                  </div> */}
                   <input
                     type="text"
                     value={search}
@@ -1979,7 +1978,7 @@ const LeadManagementDashboard = () => {
                     />
                     {searchTerm !== '' && (
                       <div className={styles.CrossRemoveSearch} onClick={handleCrossIcon} >
-                        <img  src={ICONS.crossIconUser} alt="cross" />
+                        <img src={ICONS.crossIconUser} alt="cross" />
                       </div>
                     )}
                   </div>
@@ -2170,16 +2169,16 @@ const LeadManagementDashboard = () => {
                 {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
               </p>
               <div className={styles.PaginationFont}>
-              <Pagination 
-                currentPage={page}
-                totalPages={totalPage}
-                paginate={paginate}
-                currentPageData={[]}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-                onPerPageChange={handlePerPageChange}
-              />
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPage}
+                  paginate={paginate}
+                  currentPageData={[]}
+                  goToNextPage={goToNextPage}
+                  goToPrevPage={goToPrevPage}
+                  perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
+                />
               </div>
             </div>
 

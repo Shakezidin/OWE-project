@@ -231,7 +231,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #363636;
+  background-color: var(--input-border-color);
   color: #fff;
 }
 
@@ -248,6 +248,7 @@
   text-wrap: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  color: var(--input-border-color);
 }
 
 .admin-p {

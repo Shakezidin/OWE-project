@@ -1,4 +1,4 @@
-.main_container{
+.main_container {
     /* background-color: skyblue; */
     width: 100%;
     min-height: 100vh;
@@ -8,27 +8,27 @@
     cursor: default;
 }
 
-.hide{
+.hide {
     display: none;
 }
 
-.header{
+.header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 23px 25px;
 }
 
-.title{
+.title {
     font-family: 'poppins' sans-serif;
     font-weight: 600;
     font-size: 16px;
-    color: var(--page-heading-color);
+    color: var(--input-border-color);
     align-content: center;
 
 }
 
-.header_div{
+.header_div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -36,86 +36,89 @@
     gap: 7px;
 }
 
-.date_container{
+.date_container {
     /* background-color: #ebf3ff; */
     margin-bottom: 10px;
     cursor: pointer;
 }
 
-.appointment_container{
-        /* background-color: #ebf3ff; */
-        font-family: 'inter' sans-serif;
-        height: 90vh;
-        overflow-y: scroll;
+.appointment_container {
+    /* background-color: #ebf3ff; */
+    font-family: 'inter' sans-serif;
+    height: 90vh;
+    overflow-y: scroll;
 
 }
 
-.appointments_list{
+.appointments_list {
     background-color: #ebf3ff;
     padding: 5px;
     margin: 0px 8px;
 
 }
 
-.second_container{
+.second_container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.date_container{
+.date_container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     background-color: #ebf3ff;
     margin-bottom: 0px;
-    padding: 8px 25px;
+    padding: 14px;
     font-size: 14px;
     font-weight: 500;
     line-height: 17px;
+    border-radius: 0px;
     margin-top: 8px;
     margin-left: 8px;
-    margin-right: 8px
+    margin-right: 8px;
 }
 
-.name_container{
+.name_container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.name{
+.name {
     font-size: 14px;
     font-weight: 600;
     line-height: 17px;
 }
 
-.approved{
-    font-size: 14px;
+.approved {
+    font-size: 12px;
     font-weight: 500;
     color: #21BC27;
     margin-bottom: 5px;
 }
 
-.name_container span{
+.name_container span {
     font-size: 12px;
+    height: 28px;
+    width: 28px;
     font-weight: 600;
     display: flex;
     padding: 2px;
     justify-content: center;
     align-items: center;
-    color:var(--project-icon-color-4);
+    color: var(--project-icon-color-4);
 }
 
-.chevron_button{
+.chevron_button {
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
 }
 
-.date_button{
+.date_button {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -123,12 +126,13 @@
     gap: 10px;
 }
 
-.name_container{
+.name_container {
     display: flex;
     flex-direction: row;
     gap: 5px;
 }
-.mail_and_number{
+
+.mail_and_number {
     display: flex;
     flex-direction: row;
     gap: 15px;
@@ -140,14 +144,14 @@
 
 } */
 
-.no_appointment{
+.no_appointment {
     font-size: 14px;
     font-weight: 500;
 }
 
-.dateAndTime{
+.dateAndTime {
     font-weight: 500;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 17px;
     margin-bottom: 15px;
     margin-top: 8px;
@@ -155,9 +159,10 @@
     flex-direction: row;
     gap: 10px;
 }
-.scheduled_date{
+
+.scheduled_date {
     font-family: 'inter' sans-serif;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 15px;
     color: #8a8a8a;
@@ -173,14 +178,14 @@
     cursor: pointer;
 } */
 
-.button_container{
+.button_container {
     display: flex;
     flex-direction: row;
-    gap: 13px;
+    gap: 0.5rem;
     margin-bottom: 10px;
 }
 
-.appointment_item{
+.appointment_item {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -189,11 +194,11 @@
     padding: 10px 25px;
     margin-left: 10px;
     margin-right: 10px;
-    border-radius: 6px;
-    
+    border-radius: 4px;
+
 }
 
-.left_container{
+.left_container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -201,56 +206,58 @@
     gap: 13px;
 }
 
-.mail_container{
+.mail_container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
 }
 
-.phone_container{
+.phone_container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
 }
 
-.back_button{
+.back_button {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
 }
 
-.back_button:hover .icon{
-    
+.back_button:hover .icon {
+
     transform: scale(1.07);
 
 }
+
 /* .icon :hover {
     transform: scale(1.07);
 
   }  */
 
 
-  
-  .icon {
+
+.icon {
     height: 20px;
     width: 27px;
     font-weight: 600;
-    transition: transform 0.2s ease;
-  }
-  
-  .icon:hover {
-    transform: scale(1.04);  }
+    transition: transform 0.3s ease;
+}
 
-.header_right{
+.icon:hover {
+    transform: scale(1.05);
+}
+
+.header_right {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -258,9 +265,9 @@
     gap: 10px;
 }
 
-.button_cancel{
+.button_cancel {
     border-radius: 6px;
-    padding: 6px 12px;
+    padding: 8px 12px;
     border: none;
     font-weight: 500;
     font-size: 12px;
@@ -271,14 +278,14 @@
     transition: transform 0.3s ease;
 }
 
-.button_cancel:hover{
+.button_cancel:hover {
     background-color: var(--delete-btn-hover);
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
-.button_edit{
+.button_edit {
     border-radius: 6px;
-    padding: 6px 12px;
+    padding: 8px 12px;
     border: none;
     font-weight: 500;
     font-size: 12px;
@@ -290,60 +297,73 @@
     transition: transform 0.3s ease;
 }
 
-.button_edit:hover{
+.button_edit:hover {
     background-color: #DDE9FF;
-    transform: scale(1.07);
+    transform: scale(1.05);
 
 }
 
 @media (max-width: 1210px) {
-.phone_container{
-    font-size: 12px;
-    margin-right: 6px;
+    .phone_container {
+        font-size: 12px;
+        margin-right: 6px;
 
+    }
+
+    .button_cancel {
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mail_container {
+        font-size: 12px;
+    }
+
+    .dateAndTime {
+        font-size: 13px;
+    }
+
+    .name {
+        font-size: 13px;
+    }
 }
 
-.button_cancel{
-    padding: 6px 10px;
-}
-
-.mail_container{
-    font-size: 12px;
-}
-
-.dateAndTime{
-    font-size: 13px;
-}
-
-.name{
-    font-size: 13px;
-}
+@media (max-width: 768px){
+    .appointment_item{
+        padding: 10px;
+        gap: 0.5rem;
+    }
+    .header{
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 600px) {
-.mail_and_number{
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-}
+    .mail_and_number {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
 
-.date{
-    width: max-content;
-}
+    .date {
+        width: max-content;
+    }
 
-.time{
-    width: max-content;
-}
+    .time {
+        width: max-content;
+    }
 }
 
 @media (max-width: 469px) {
-    .appointment_item{
+    .appointment_item {
         display: flex;
         flex-direction: column;
         justify-content: center;
         background-color: var(--white-color);
         margin-bottom: 8px;
-        padding: 15px 25px;
+        padding: 15px;
         margin-left: 10px;
         margin-right: 10px;
         border-radius: 6px;
@@ -351,11 +371,11 @@
         gap: 22px;
     }
 
-    .hide{
+    .hide {
         display: none;
     }
 
-    .mobile_view{
+    .mobile_view {
         display: flex;
         flex-direction: column;
         gap: 6px;
@@ -364,16 +384,16 @@
 
     }
 
-    .viewMobile{
+    .viewMobile {
         display: flex;
         flex-direction: row;
-        gap: 50px;
+        gap: 20px;
         align-items: center;
         justify-content: space-between;
         /* justify-content: center; */
     }
-    
-    .dateAndTime{
+
+    .dateAndTime {
         font-size: 12px;
         font-weight: 500;
         display: flex;
@@ -383,15 +403,15 @@
 
     }
 
-    .scheduled_date{
+    .scheduled_date {
         padding: 12px 6px;
     }
 
-    .name{
+    .name {
         font-size: 14px;
     }
 
-    .approved{
+    .approved {
         /* margin-right: 45%; */
     }
 

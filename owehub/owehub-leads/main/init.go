@@ -112,7 +112,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-leads-service/v1/delete_lead",
 		apiHandler.HandleDeleteRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		leadsRoleGroup,
 	},
 	{
 		strings.ToUpper("POST"),
@@ -133,7 +133,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-leads-service/v1/status_won",
 		apiHandler.HandleWonRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		leadsRoleGroup,
 	},
 	{
 		strings.ToUpper("POST"),

@@ -1,6 +1,6 @@
 .customer_wrapper_list {
   flex-basis: calc(100%);
-  border-radius: 8px;
+  border-radius: 16px;
   background-color: #fff;
   padding-top: 15px;
   padding-inline: 20px;
@@ -27,11 +27,15 @@
 
 .create_input_field_note textarea {
   width: 100%;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--input-border-color);
   outline: none;
   padding: 0.5rem;
-  font-size: 13px !important;
+  font-size: 12px !important;
   border-radius: 0.5rem;
+}
+
+.create_input_field_note textarea:hover, .create_input_field_note textarea:focus {
+  border-color: var(--primary-color);
 }
 
 .customer_wrapper_list::-webkit-scrollbar {
@@ -65,8 +69,8 @@
 
 .main_head {
   font-weight: 600;
-  color: #000000;
-  font-size: 20px;
+  color: var(--input-border-color);
+  font-size: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -79,14 +83,14 @@
 }
 
 .main_head img:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .an_head {
   /* margin-left: 33px; Heading Fill the Form */
   margin-left: 15px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  color: #333333;
+  color: var(--input-border-color);
   margin-top: 4px;
 }
 
@@ -96,12 +100,12 @@
 }
 
 .submitbut {
-  width: 230px;
-  height: 48px;
+  width: 150px;
+  height: 40px;
   background-color: #377cf6;
   border-radius: 8px;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -109,8 +113,8 @@
 }
 
 .submitbut:hover {
-  background-color: #0053e3;
-  transform: scale(1.04);
+  background-color: var(--button-hover-color);
+  transform: scale(1.05);
 }
 
 .tenst_inp {

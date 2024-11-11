@@ -155,7 +155,7 @@
   
   .backButton:hover {
     background-color: #013ea6;
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   /* Responsive Design */

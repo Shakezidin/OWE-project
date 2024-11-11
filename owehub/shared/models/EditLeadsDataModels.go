@@ -11,6 +11,8 @@ type EditLeadsDataReq struct {
 	EmailId       string `json:"email_id"`
 	PhoneNumber   string `json:"phone_number"`
 	StreetAddress string `json:"street_address"`
+	SalesRepName  string `json:"sales_rep_name"`
+	LeadSource    string `json:"lead_source"`
 }
 
 type EditLeadsDataRes struct {

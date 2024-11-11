@@ -78,7 +78,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
 
   const isTablet = useMatchMedia('(max-width: 1024px)');
   return (
-    <div className="chart-view" style={{ marginTop: 12 }}>
+    <div className="chart-view">
       <div
         className="pie-section-1"
         style={{

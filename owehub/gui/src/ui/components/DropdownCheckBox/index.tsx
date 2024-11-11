@@ -40,10 +40,11 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   }, [options]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent|TouchEvent) => {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement)!.closest('.react-select')
       ) {
         setIsOpen(false);
         setSearch('');
@@ -52,7 +53,11 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside);
+    };
   }, [options]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

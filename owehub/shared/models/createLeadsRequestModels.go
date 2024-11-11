@@ -14,7 +14,9 @@ type CreateLeadsReq struct {
 	StreetAddress string `json:"street_address"`
 	// State         string `json:"state"`
 	// City          string `json:"city"`
-	Zipcode       string `json:"zipcode"`
+	Zipcode string `json:"zipcode"`
 	// Country       string `json:"country"`
-	Notes         string `json:"notes"`
+	Notes        string `json:"notes"`
+	SalesRepName string `json:"sales_rep_name"`
+	LeadSource   string `json:"lead_source"`
 }

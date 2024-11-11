@@ -19,7 +19,7 @@
 
     .sortIcon:hover {
         background-color: var(--button-hover-color);
-        transform: scale(1.07);
+        transform: scale(1.05);
         /* transform: scale(1.04); */
       }
   

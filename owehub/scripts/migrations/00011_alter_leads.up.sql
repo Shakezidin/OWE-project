@@ -12,7 +12,9 @@ CREATE OR REPLACE FUNCTION create_lead(
     p_phone_number VARCHAR,
     p_street_address VARCHAR, 
     p_zipcode VARCHAR, 
-    p_notes VARCHAR
+    p_notes VARCHAR,
+    p_sales_rep_name VARCHAR,
+    p_lead_source VARCHAR
 ) RETURNS INT AS $$
 DECLARE
     v_lead_id INT;
@@ -38,7 +40,9 @@ BEGIN
         phone_number,
         street_address,
         zipcode,
-        notes
+        notes,
+        sales_rep_name,
+        lead_source
     ) VALUES (
         v_creator_user_id,
         p_first_name,
@@ -47,7 +51,9 @@ BEGIN
         p_phone_number,
         p_street_address,
         p_zipcode, 
-        p_notes
+        p_notes,
+        p_sales_rep_name,
+        p_lead_source
     ) RETURNING leads_id INTO v_lead_id;
 
     -- Return the inserted lead's ID

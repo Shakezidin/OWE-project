@@ -1182,7 +1182,6 @@ const LibraryHomepage = () => {
 
   return (
     <div className={styles.libraryContainer}>
-      <div className={`${styles.libraryHeader} flex items-center justify-between`}>
         <div className={` items-center ${styles.desktop_hide}`} style={{ gap: 8 }}>
           <div className={`${styles.sm_search} ${styles.searchWrapper} bg-white`}>
             {/* <IoMdSearch className={styles.search_icon} onClick={SearchHandler} /> */}
@@ -1217,7 +1216,6 @@ const LibraryHomepage = () => {
             </button>
           </div>
         </div>
-      </div>
 
       {isRecycleBinView ? (
         <RecycleBinView />

@@ -35,7 +35,7 @@
 
 .pr-dropdown li:hover {
  color: #4062CA;
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 .sort_btn1 {
@@ -50,7 +50,7 @@
   transition: all 0.3s ease;
 }
 .sort_btn1:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
   background-color: #4062CA;
 
 }
@@ -113,7 +113,7 @@
   transition: all 0.3s ease;
 }
 .lead-reset-calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 
 }
@@ -130,7 +130,7 @@
   transition: all 0.3s ease;
 }
 .lead-apply-calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 
 }

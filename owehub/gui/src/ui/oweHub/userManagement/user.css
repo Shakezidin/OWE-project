@@ -11,15 +11,21 @@
   width: 200px;
   height: 36px;
   border-radius: 8px;
+  font-size: 12px;
 }
 
 .userManagementTable__search input::placeholder {
   color: var(--input-border-color);
 }
 
-.userManagementTable__search input:focus, .userManagementTable__search input:hover{
+.userManagementTable__search input:focus,
+.userManagementTable__search input:hover {
   outline: none;
   border-color: var(--primary-color)
+}
+
+.userManagementTable__search input:hover::placeholder, .userManagementTable__search input:focus::placeholder {
+  color: var(--primary-color);
 }
 
 .reset_hover_btn {
@@ -27,7 +33,7 @@
 }
 
 .reset_hover_btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   transition: all 0.3s ease;
 
 }
@@ -51,6 +57,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  height: 36px;
 }
 
 .management-section {
@@ -234,10 +241,14 @@ opacity: 0px;
 .select-caret {
   font-size: 10px;
   position: absolute;
-  top: -1px;
+  top: -4px;
   z-index: 1;
   display: block;
-  left: 1px;
+  left: 7px;
+}
+
+.user-table-dropdown:hover .select-caret, .user-table-dropdown:hover .dropdownText{
+  color: var(--primary-color) !important;
 }
 
 .Line-container {
@@ -261,7 +272,7 @@ opacity: 0px;
 @media screen and (max-width: 767px) {
   .ManagerUser-container {
     flex-direction: column;
-    margin-top: 1rem;
+    margin-top: 10px;
   }
 
   .delete-icon-container {

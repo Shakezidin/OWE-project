@@ -22,9 +22,9 @@ const DashBoardTable = ({
   count,
   loading
 }: {
-  data:any,
-  count:number,
-  loading:any,
+  data: any,
+  count: number,
+  loading: any,
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
 }) => {
@@ -57,7 +57,7 @@ const DashBoardTable = ({
     setCurrentPage(currentPage + 1);
   };
 
-  const goToPrevPage : any = () => {
+  const goToPrevPage: any = () => {
     setCurrentPage(currentPage - 1);
   };
 
@@ -100,133 +100,126 @@ const DashBoardTable = ({
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
-          <table>
-            <thead>
-              <tr>
-                {dealerPayColumn?.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={data}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
+          {loading ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height:"100%" }}>
+            <MicroLoader />
+          </div> : (currentPageData.length === 0 && !loading) ? <div className="flex items-center justify-center" style={{height:"100%"}}>
+            <DataNotFound />
+          </div>
+
+            : <table>
+              <thead>
                 <tr>
-                  <td colSpan={8}>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
+                  {dealerPayColumn?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={data}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
                 </tr>
-              ) : currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, index: any) => (
-                  <tr key={index}>
-                    <td style={{ fontWeight: '500' }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(index)}
-                          onChange={() => {
-                            if (currentPageData?.length === 1) {
-                              setSelectAllChecked(true);
-                              setSelectedRows(new Set([0]));
-                            } else {
-                              toggleRowSelection(
-                                index,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              );
-                            }
+              </thead>
+              <tbody>
+                {
+                  currentPageData?.map((el: any, index: any) => (
+                    <tr key={index}>
+                      <td style={{ fontWeight: '500' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(index)}
+                            onChange={() => {
+                              if (currentPageData?.length === 1) {
+                                setSelectAllChecked(true);
+                                setSelectedRows(new Set([0]));
+                              } else {
+                                toggleRowSelection(
+                                  index,
+                                  selectedRows,
+                                  setSelectedRows,
+                                  setSelectAllChecked
+                                );
+                              }
+                            }}
+                          />
+                          <span
+                            className="zoom-out-td"
+                            onClick={() => {
+                              setOpen(true);
+                              setEditData(el);
+                            }}
+                          >
+                            {el.unique_id || 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td style={{ color: '#101828' }}>{el.home_owner || 'N/A'}</td>
+                      <td>{el.current_status || 'N/A'}</td>
+                      <td>{el.dealer_code || 'N/A'}</td>
+                      <td>{el.sys_size || 'N/A'}</td>
+                      <td>{el.contract || 'N/A'}</td>
+                      <td>{el.other_adders || 'N/A'}</td>
+                      <td>{el.rep1 || 'N/A'}</td>
+                      <td>{el.rep2 || 'N/A'}</td>
+                      <td>{el.setter || 'N/A'}</td>
+                      <td>{el.st || 'N/A'}</td>
+                      <td style={{ color: '#101828' }}>
+                        {(el.contract_date && dateFormat(el.contract_date)) ||
+                          'N/A'}
+                      </td>
+                      <td>{el.loan_fee || 'N/A'}</td>
+                      <td>
+                        {el.net_epc ? el.net_epc : 'N/A'}
+                      </td>
+                      <td style={{ color: '#15C31B', fontWeight: '500' }}>
+
+                        {el.credit ? '$' + el.credit : '$0'}
+                      </td>
+                      <td>{el.draw_amt || '$0'}</td>
+                      <td>{el.rl || 'N/A'}</td>
+                      <td>{el.type || 'N/A'}</td>
+                      <td>{dateFormat(el.today) || 'N/A'}</td>
+                      <td style={{ color: '#63BC51', fontWeight: '500' }}>
+                        ${el.amount ?? 'N/A'}
+                      </td>
+                      <td>{el.epc ? el.epc : 'N/A'}</td>
+                      <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
+                        ${el.amt_paid ?? 'N/A'}
+                      </td>
+                      <td style={{ color: '#379DE3', fontWeight: '500' }}>
+                        {el.balance ? '$' + el.balance : '$0'}
+                      </td>
+                      <td className="zoom-out-help">
+                        <img
+                          src={ICONS.online}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            stroke: '0.2',
+                          }}
+                          alt=""
+                          onClick={() => {
+                            setEditData(el);
+                            handleIconOpen();
                           }}
                         />
-                        <span
-                          className="zoom-out-td"
-                          onClick={() => {
-                            setOpen(true);
-                            setEditData(el);
-                          }}
-                        >
-                          {el.unique_id || 'N/A'}
-                        </span>
-                      </div>
-                    </td>
-                    <td style={{ color: '#101828' }}>{el.home_owner || 'N/A'}</td>
-                    <td>{el.current_status || 'N/A'}</td>
-                    <td>{el.dealer_code || 'N/A'}</td>
-                    <td>{el.sys_size || 'N/A'}</td>
-                    <td>{el.contract || 'N/A'}</td>
-                    <td>{el.other_adders || 'N/A'}</td>
-                    <td>{el.rep1 || 'N/A'}</td>                    
-                    <td>{el.rep2 || 'N/A'}</td> 
-                    <td>{el.setter || 'N/A'}</td>
-                    <td>{el.st || 'N/A'}</td>
-                    <td style={{ color: '#101828' }}>
-                      {(el.contract_date && dateFormat(el.contract_date)) ||
-                        'N/A'}
-                    </td>
-                    <td>{el.loan_fee || 'N/A'}</td>
-                    <td>
-                      {el.net_epc ? el.net_epc : 'N/A'}
-                    </td>
-                    <td style={{ color: '#15C31B', fontWeight: '500' }}>
-                    
-                      {el.credit ? '$' + el.credit : '$0'}
-                    </td>
-                    <td>{el.draw_amt || '$0'}</td>
-                    <td>{el.rl || 'N/A'}</td>
-                    <td>{el.type || 'N/A'}</td>
-                    <td>{dateFormat(el.today) || 'N/A'}</td>
-                    <td style={{ color: '#63BC51', fontWeight: '500' }}>
-                      ${el.amount ?? 'N/A'}
-                    </td>
-                    <td>{el.epc ? el.epc : 'N/A'}</td>
-                    <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
-                      ${el.amt_paid ?? 'N/A'}
-                    </td>
-                    <td style={{ color: '#379DE3', fontWeight: '500' }}>
-                      {el.balance ? '$' + el.balance : '$0'}
-                    </td>
-                    <td className="zoom-out-help">
-                      <img
-                        src={ICONS.online}
-                        style={{
-                          height: '18px',
-                          width: '18px',
-                          stroke: '0.2',
-                        }}
-                        alt=""
-                        onClick={() => {
-                          setEditData(el);
-                          handleIconOpen();
-                        }}
-                      />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr style={{ border: 0, background: "none"}}>
-                  <td colSpan={12}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          }
         </div>
         {currentPageData?.length > 0 ? (
           <div className="page-heading-container">

@@ -1,7 +1,6 @@
 .calc-wrapper{
     background-color: var(--white-color) !important;
     border-radius: 16px;
-    margin-top: 11px;
 }
 #calc-header {
     display: flex;
@@ -28,7 +27,7 @@
 #calc-header svg:hover {
     cursor: pointer;
     transition: all 0.3s ease;
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
 #calculator-main {
@@ -82,11 +81,12 @@
     height: 36px;
     padding: 8px 12px;
     font-weight: 500;
+    font-size: 12px;
     transition: all 0.3s ease;
 }
 
 .build-head-btn button:hover {
-    transform: scale(1.07);
+    transform: scale(1.05);
     cursor: pointer;
     color: var(--white-color);
     background: #1EA0B2;
@@ -273,8 +273,13 @@
 
 #calculator-main .footer-value:hover {
     cursor: pointer;
-    transform: scale(1.07);
+    transform: scale(1.05);
     text-shadow: 1px 1px 6px #b9b8b8;
+}
+
+.calc-btn-earn,
+.calc-btn-growth{
+    transition: all 0.3s ease;
 }
 
 .slider-container {
@@ -331,9 +336,6 @@
     #calculator-main{
         padding: 10px 12px;
     }
-    .calc-wrapper{
-        margin: -8px -16px;
-    }
     .build-earnout, .equity-growth{
         height: 88vh !important;
     }
@@ -354,7 +356,7 @@
         font-size: 13px;
     }
     .build-head-btn button{
-        height: 30px;
+        height: 34px;
     }
     .build-earnout{
         width: 54%;
@@ -446,7 +448,7 @@
     }
 
     .build-earnout h2{
-        font-size: 1rem;
+        font-size: 14px;
     }
 
     .build-earnout,

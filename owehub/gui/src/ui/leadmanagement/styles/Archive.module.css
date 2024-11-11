@@ -229,11 +229,11 @@ table tbody tr:hover {
 
 .filtericon:hover {
   background-color: #4062CA;
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 .filtericonHistory {
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 .filtericon img {
@@ -306,8 +306,8 @@ table tbody tr:hover {
 }
 
 input[type='checkbox'] {
-  width: 18px !important;
-  height: 18px !important;
+  /* width: 18px !important; */
+  /* height: 18px !important; */
   border-radius: 100px;
   border: 1px solid #797979;
   cursor: pointer;
@@ -473,7 +473,7 @@ input[type='checkbox']:checked {
 
 .archieveButton:hover {
   background-color: #AD1313;
-  transform: scale(1.09);
+  transform: scale(1.05);
 }
 
 .UnArchiveButton {
@@ -512,7 +512,7 @@ input[type='checkbox']:checked {
 }
 
 .removeButton:hover {
-  transform: scale(1.09);
+  transform: scale(1.05);
   background-color: #757575;
   color: white;
 }
@@ -984,7 +984,7 @@ input[type='checkbox']:checked {
 }
 
 .calender:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   background-color: #4062CA;
 }
 
@@ -1087,7 +1087,7 @@ input[type='checkbox']:checked {
 
 .infoIcon:hover {
   background-color: #ddebff;
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 @media  (max-width: 767px) {
