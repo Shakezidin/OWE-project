@@ -30,9 +30,6 @@ const LeadManagementNew = () => {
   const [emailError, setEmailError] = useState('');
   const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
-  const [salesRepError, setSalesRepError]=useState('');
-  const [leadSourceError, setLeadSourceError]=useState('');
-
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -340,7 +337,7 @@ const LeadManagementNew = () => {
                           type="text"
                           label="Address"
                           value={formData.address}
-                          placeholder="Address"
+                          placeholder="Enter Address"
                           onChange={handleInputChange}
                           name="address"
                           maxLength={80}
@@ -361,7 +358,7 @@ const LeadManagementNew = () => {
                           type="number"
                           label="Zip Code"
                           value={formData.zip_code}
-                          placeholder="Zip Code"
+                          placeholder="Enter Zip Code"
                           onChange={(e) => {
                             const { value } = e.target;
                             if (value.length <= 10) {

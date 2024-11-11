@@ -389,7 +389,7 @@ const handleClose = () => {
   return (
     <div className={`${styles.schedule_page_wrapper}`}>
       <div
-        className={`flex items-center justify-between ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
+        className={`flex items-center justify-end ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
       >
      {isSmallScreen && (
           <div className={styles.filtericon} onClick={toggleCalendar}>
@@ -606,7 +606,7 @@ const handleClose = () => {
   <>
     <div className="flex items-center justify-between mb3">
       <h5
-        style={{ color: "#292B2E", fontWeight: 600, fontSize: 16, marginLeft: '20px', paddingTop:'7px' }}
+        style={{ color: "#292B2E", fontWeight: 600, fontSize: 16, marginLeft: '20px', paddingTop:'7px', cursor:'default' }}
         className="ml2"
       >
         Select Date & Time
@@ -651,7 +651,7 @@ const handleClose = () => {
         dayWithProgress={transformedCalendarData}
       />
       {selectedDate && isTimeSlotsOpen && (
-        <div className={`${styles.slotContainer}`} style={{ width: '100%' }}>
+        <div className={`${styles.slotContainer}`} style={{ width: '100%', cursor:'default' }}>
           <h5 className={`mb2 ${styles.time_slot_label}`}>
             Select time slot
           </h5>
