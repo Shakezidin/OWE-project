@@ -1496,15 +1496,16 @@ const LeadManagementDashboard = () => {
                       width: '140px',
                       height: '36px',
                       fontSize: '12px',
-                      border: '1.4px solid black',
+                      border: '1.2px solid black',
                       fontWeight: '500',
                       cursor: 'pointer',
                       alignContent: 'center',
                       backgroundColor: '#fffff',
                       boxShadow: 'none',
                       '@media only screen and (max-width: 767px)': {
-                        // width: '80px',
+                       height:'30px !important',
                         width: 'fit-content',
+                        border:'1px solid '
                       },
                       '&:focus-within': {
                         borderColor: '#377CF6',
