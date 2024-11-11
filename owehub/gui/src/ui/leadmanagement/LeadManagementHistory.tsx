@@ -197,7 +197,7 @@ const LeradManagementHistory = () => {
     setCheckedCount(0);
   };
 
-  const handlesee = (itemId: number) => {
+  const handleView = (itemId: number) => {
     console.log("RABINDRA ")
     setLeadId(itemId);
     setIsProfileOpen(true);
@@ -484,6 +484,15 @@ const LeradManagementHistory = () => {
     }
   }, [page]);
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const viewId = queryParams.get("view");
+ 
+    if (viewId) {
+      handleView(Number(viewId));
+    }
+  }, [location.search]);
+
   return (
     <>
       <Profile
@@ -607,7 +616,7 @@ const LeradManagementHistory = () => {
                           width: '140px',
                           height: '36px',
                           fontSize: '12px',
-                          border: '1px solid #d0d5dd',
+                          border: '1.4px solid black',
                           fontWeight: '500',
                           cursor: 'pointer',
                           alignContent: 'center',
@@ -672,7 +681,8 @@ const LeradManagementHistory = () => {
                         menu: (baseStyles) => ({
                           ...baseStyles,
                           width: '140px',
-                          marginTop: '0px',
+                          marginTop: '3px',
+                          border: '1.4px solid black',
                         }),
                       }}
                     />
@@ -856,7 +866,7 @@ const LeradManagementHistory = () => {
 
                     <div
                       className={styles.see_moreHistory}
-                      onClick={() => handlesee(item.leads_id)}
+                      onClick={() => handleView(item.leads_id)}
                       data-tooltip-id="info"
                     >
                       <IoInformationOutline />
