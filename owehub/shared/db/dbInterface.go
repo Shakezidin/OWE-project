@@ -78,6 +78,7 @@ const (
 	TableName_Leads_Info          string = "leads_info"
 	CreateLeadFunction            string = "create_lead"
 	UpdateLeadAddProposalFunction string = "update_lead_add_proposal"
+	GetSalesRepsUnderFunction     string = "get_salesreps_under"
 
 	/* Scheduling Tables and Procedures */
 	TableName_SchedulingProjects    string = "scheduling_projects"
