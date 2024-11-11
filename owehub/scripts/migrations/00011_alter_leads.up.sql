@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION create_lead(
     p_street_address VARCHAR, 
     p_zipcode VARCHAR, 
     p_notes VARCHAR,
-    p_sales_rep_name VARCHAR,
+    p_salerep_id INT,
     p_lead_source VARCHAR
 ) RETURNS INT AS $$
 DECLARE
@@ -41,7 +41,7 @@ BEGIN
         street_address,
         zipcode,
         notes,
-        sales_rep_name,
+        salerep_id,
         lead_source
     ) VALUES (
         v_creator_user_id,
@@ -52,7 +52,7 @@ BEGIN
         p_street_address,
         p_zipcode, 
         p_notes,
-        p_sales_rep_name,
+        p_salerep_id,
         p_lead_source
     ) RETURNING leads_id INTO v_lead_id;
 
@@ -124,6 +124,10 @@ ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS docusign_envelope_sent_at TIMEST
 
 ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS manual_won_date TIMESTAMPTZ;
 
+ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS salerep_id INT;
+ALTER TABLE leads_info ADD CONSTRAINT leads_info_salerep_id_fkey
+    FOREIGN KEY (salerep_id)
+    REFERENCES user_details(user_id) ON DELETE SET NULL;
 
 -- GET SALES REPS UNDER AUTHENTICATED USER
 CREATE OR REPLACE FUNCTION get_salesreps_under(p_email_id VARCHAR)

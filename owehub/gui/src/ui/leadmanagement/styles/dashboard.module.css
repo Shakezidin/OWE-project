@@ -623,7 +623,6 @@ input[type='checkbox']:checked {
   .chartGrid {
     display: flex;
     flex-direction: column;
-    width: 94% !important;
     align-items: center !important;
     margin: 0 auto;
   }
@@ -897,6 +896,14 @@ input[type='checkbox']:checked {
 /* *********************************************** RABINDRA ********************************************************************* */
 
 /* For tablets and larger screens */
+@media (max-width: 768px) {
+  .dashboard {
+    margin: 10px;
+  }
+  .card{
+    margin-top: 0;
+  }
+}
 @media (min-width: 768px) {
   .tabs_setting {
     padding: 10px 15px;

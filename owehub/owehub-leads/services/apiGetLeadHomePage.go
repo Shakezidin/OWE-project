@@ -333,10 +333,11 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				li.proposal_pdf_key,
 				li.status_id,
 				li.zipcode,
-				li.sales_rep_name,
-				li.lead_source
+				li.lead_source,
+				ud.name as salerep_name
 				
 			FROM get_leads_info_hierarchy($1) li
+			LEFT JOIN user_details ud ON ud.user_id = li.salerep_id
 			%s
 			ORDER BY li.updated_at DESC
 			%s;
@@ -499,7 +500,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			proposalUpdatedAtPtr = &proposalUpdatedAt
 		}
 
-		salesRepName, ok := item["sales_rep_name"].(string)
+		salesRepName, ok := item["salerep_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get sales rep name from leads info Item: %+v\n", item)
 		}
