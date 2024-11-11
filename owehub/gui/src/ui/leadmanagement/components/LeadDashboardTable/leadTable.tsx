@@ -536,8 +536,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [loadEdit, setLoadEdit] = useState<number | null>(null);
   const handleInputChange = (event: any, leadId: string) => {
     const { value } = event.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
-
+    const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ');
+    
     setSalesRep(prevState => ({
       ...prevState,
       [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
@@ -546,26 +546,28 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const handleConfrm = async (e: any, leadId: any) => {
     setLoadEdit(leadId);
     e.preventDefault();
-    try {
-      const response = await postCaller(
-        'edit_leads',
-        {
-          leads_id: leadId,
-          sales_rep_name: salesrep[leadId]
-        },
-        true
-      );
+    if (salesrep[leadId]) {
+      try {
+        const response = await postCaller(
+          'edit_leads',
+          {
+            leads_id: leadId,
+            sales_rep_name: salesrep[leadId]
+          },
+          true
+        );
 
-      if (response.status === 200) {
-        toast.success('Lead Updated Successfully');
-        setRefresh((prev) => prev + 1);
-      } else if (response.status >= 201) {
-        toast.warn(response.message);
+        if (response.status === 200) {
+          toast.success('Lead Updated Successfully');
+          setRefresh((prev) => prev + 1);
+        } else if (response.status >= 201) {
+          toast.warn(response.message);
+        }
+        setLoadEdit(null);
+      } catch (error) {
+        setLoadEdit(null);
+        console.error('Error submitting form:', error);
       }
-      setLoadEdit(null);
-    } catch (error) {
-      setLoadEdit(null);
-      console.error('Error submitting form:', error);
     }
     setLoadEdit(null);
   };
@@ -718,7 +720,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
                       <td>
                         {loadEdit === lead.leads_id ?
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}><MicroLoader /></div>
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><MicroLoader /></div>
                           :
                           <div className={styles.topdived}>
                             {!visibilityState[lead.leads_id] && (

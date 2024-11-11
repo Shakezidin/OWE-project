@@ -73,8 +73,8 @@ const leadManagementSlice = createSlice({
       })
       .addCase(getLeads.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.leadsData = action.payload.data.leads_data || [];
-        state.statusData1 = action.payload.data.status_counts || [];
+        state.leadsData = action.payload.data?.leads_data || [];
+        state.statusData1 = action.payload.data?.status_counts || [];
         state.totalcount = action.payload.dbRecCount || 0;
       })
       .addCase(getLeads.rejected, (state, action) => {
