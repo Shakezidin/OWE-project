@@ -1410,7 +1410,7 @@ const LeadManagementDashboard = () => {
             {/* HERE FOR TOGGLE VIEW WHEN HIDE OTHER BOTTONS */}
 
             {isToggledX && (
-              <div className={styles.customLeft}>
+              <div className={styles.customLeftRRR}>
                 Overview
               </div>
             )}
@@ -1428,7 +1428,7 @@ const LeadManagementDashboard = () => {
             }
             {/* CARD DESIGNING STRTED */}
             <div>
-              {isToggledX && <div className={styles.customLeft}
+              {isToggledX && <div className={styles.customLeftRRR}
               >Total Won Lost</div>}
             </div>
             <div className={`${styles.customRight} ${styles.customFont}`}>
@@ -1478,12 +1478,11 @@ const LeadManagementDashboard = () => {
                         }) +
                         ' ' +
                         selectedDates.endDate.getFullYear()}
-                    </span>}
+                    </span>
+                    }
                   </div>
                 )}
-
-
-                {isToggledX && <Select
+        {isToggledX && <Select
                   value={selectedPeriod}
                   onChange={handlePeriodChange}
                   options={periodFilterOptions}
@@ -1497,7 +1496,7 @@ const LeadManagementDashboard = () => {
                       width: '140px',
                       height: '36px',
                       fontSize: '12px',
-                      border: '1px solid #d0d5dd',
+                      border: '1.4px solid black',
                       fontWeight: '500',
                       cursor: 'pointer',
                       alignContent: 'center',
@@ -1565,7 +1564,8 @@ const LeadManagementDashboard = () => {
                     menu: (baseStyles) => ({
                       ...baseStyles,
                       width: '140px',
-                      marginTop: '0px',
+                      border: '1.4px solid black',
+                      marginTop: '3px',
                     }),
                   }}
                 />}
@@ -1605,7 +1605,9 @@ const LeadManagementDashboard = () => {
                   className={'mobile-tooltip'}
                 />
 
-              </div></div>
+              </div>
+              
+              </div>
           </div>
         </div>
         {/* //HORIZONTAL ENDED */}
@@ -1889,7 +1891,7 @@ const LeadManagementDashboard = () => {
                     {exporting ? (
                       <MdDownloading
                         className="downloading-animation"
-                        size={20}
+                        size={26}
                         color="white"
                       />
                     ) : (
@@ -2029,7 +2031,7 @@ const LeadManagementDashboard = () => {
                           color="white"
                         />
                       ) : (
-                        <LuImport color="white" />
+                        <LuImport size={20} color="white" />
                       )}
                     </div>
                     {showTooltip &&

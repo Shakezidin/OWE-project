@@ -153,6 +153,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [selectedType, setSelectedType] = useState('');
   const [selected, setSelected] = useState(-1)
   const isMobile = useMatchMedia('(max-width: 767px)');
+  const isMobileXR = useMatchMedia('(max-width: 600px)');
   const [activeSection, setActiveSection] = useState<
     'Deal Won' | 'Deal Loss' | 'Appointment Not Required' | null
   >('Deal Won');
@@ -406,6 +407,14 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   };
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const viewId = queryParams.get("view");
+ 
+    if (viewId) {
+      handleOpenProfileModal(Number(viewId)); 
+    }
+  }, [location.search]);
 
   const handleOpenProfileModal = (leadsId: number) => {
     setIsProfileOpen(true);
@@ -644,7 +653,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                   leadsData.map((lead: any, index: number) => (
                     <tr>
 
-                      <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center" }}>
+                      <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin:'7px'}}>
                         <label>
                           <input
                             type="checkbox"
@@ -667,7 +676,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           <div className={styles.ids}>OWE{lead.leads_id}</div>
                         </div>
                       </td>
-                      <td>
+                      <td >
                         <div className={styles.info}>{lead.email_id}</div>
                         <div className={styles.info}>{lead.phone_number}</div>
                       </td>
