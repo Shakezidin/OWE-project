@@ -97,7 +97,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.status_id,
 					li.aurora_design_id,
 					li.lead_source,
-					ud_creator.name as created_by_name
+					ud_creator.name as created_by_name,
 					salerep.name as salerep_name
 				FROM
 					get_leads_info_hierarchy($1) li
