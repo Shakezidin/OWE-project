@@ -2252,7 +2252,7 @@
   margin-right: 6px;
 }
 
-input[type="checkbox"] {
+.pipeline-agingReport-filter input[type="checkbox"] {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
@@ -2264,12 +2264,12 @@ input[type="checkbox"] {
   cursor: pointer !important;
 }
 
-input[type="checkbox"]:checked {
+.pipeline-agingReport-filter input[type="checkbox"]:checked {
   background-color: white !important; /* Blue fill when checked */
   color:#007bff !important;
 }
 
-input[type="checkbox"]:checked::before {
+.pipeline-agingReport-filter input[type="checkbox"]:checked::before {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2607,35 +2607,8 @@ input[type="checkbox"]:checked::before {
   margin-right: 6px;
 }
 
-input[type="checkbox"] {
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
-  width: 20px !important;
-  height: 20px !important;
-  border: 1.4px solid #007bff !important; /* Blue border */
-  border-radius: 5.6px !important; /* Rounded corners */
-  background-color: white !important; /* White background */
-  cursor: pointer !important;
-}
 
-input[type="checkbox"]:checked {
-  background-color: white !important; /* Blue fill when checked */
-  color:#007bff !important;
-}
 
-input[type="checkbox"]:checked::before {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  content: "✔" !important; /* Use the Unicode checkmark character */
-  display: block !important;
-  font-size: 14px !important;
-  color: #007bff !important; /* Set the checkmark color */
-  line-height: 20px !important;
-  text-align: center !important;
-}
 
 
 .rc-slider-handle {

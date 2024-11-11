@@ -893,7 +893,7 @@ const ProjectPerformence = () => {
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
         <div className="performance-table-heading" style={{marginTop: "1.2rem"}}>
-          <div className="proper-top">
+          <div className="proper-top pipeline-agingReport-filter">
             <div className="performance-project">
               {activeCardId !== null && (
                 <div className="active-queue">
