@@ -122,7 +122,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	}
 	OtherAdder, err := strconv.ParseFloat(OtherAdderStr, 64)
 	if err != nil {
-		mktFee = 0.0
+		OtherAdder = 0.0
 	}
 	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
