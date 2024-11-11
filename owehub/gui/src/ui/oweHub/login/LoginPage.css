@@ -363,8 +363,8 @@ input:checked+.slider:before {
 }
 
 .login-input .input-inner-view .input {
-  color: #1a1a1a;
-  font-size: 1rem;
+  color: var(--input-border-color);
+  font-size: 14px;
   font-weight: 300;
 }
 

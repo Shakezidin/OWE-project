@@ -53,8 +53,7 @@
   cursor: pointer;
   margin-left: auto;
   margin-top: 7px;
-  height: 40px;
-  width: 40px;
+  height: 36px;
   transition: all 0.3s ease;
   width: fit-content;
   display: flex;

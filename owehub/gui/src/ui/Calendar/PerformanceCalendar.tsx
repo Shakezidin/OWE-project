@@ -325,6 +325,7 @@ const PerformanceCalendar: React.FC = () => {
                   display: 'block',
                   width: '180px',
                   textAlign: 'center',
+                  color: "##292b2e"
                 }}
               >
                 {isDefaultDate
