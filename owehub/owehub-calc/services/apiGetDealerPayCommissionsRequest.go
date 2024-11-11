@@ -86,8 +86,6 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
-	log.FuncErrorTrace(0, "dataaa = %v", data[:20])
-
 	for _, item := range data {
 		var dlrPay models.DealerPayReportResponse
 		var adder models.Adder
