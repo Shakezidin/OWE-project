@@ -1559,7 +1559,7 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.days_install && project.days_install !== '0' && project.days_install !== '-' &&<div className="pendingDayDiv">
+    {project.days_install && project.days_install !== '0 days pending' && project.days_install !== '-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">{project.days_install}</p>
       <div className='simpleLine'> </div>
     </div>}
