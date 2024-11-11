@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
+	"fmt"
 
 	"net/http"
 )
@@ -23,8 +24,10 @@ import (
  ******************************************************************************/
 func HandleGetSalesRepsRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err  error
-		data []interface{}
+		err          error
+		query        string
+		whereEleList []interface{}
+		data         []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleGetSalesRepsRequest")
@@ -32,7 +35,10 @@ func HandleGetSalesRepsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	authenticatedEmailId := req.Context().Value("emailid").(string)
 
-	data, err = db.CallDBFunction(db.OweHubDbIndex, db.GetSalesRepsUnderFunction, []interface{}{authenticatedEmailId})
+	query = fmt.Sprintf("SELECT * FROM %s($1)", db.GetSalesRepsUnderFunction)
+	whereEleList = []interface{}{authenticatedEmailId}
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sales reps under %v err: %v", authenticatedEmailId, err)
@@ -43,23 +49,18 @@ func HandleGetSalesRepsRequest(resp http.ResponseWriter, req *http.Request) {
 	apiResp := []models.GetSaleRepsResponseItem{}
 
 	for _, item := range data {
-		record, ok := item.(map[string]interface{})
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to assert record under %v, item: %v", authenticatedEmailId, item)
-			continue
-		}
 
-		userId, ok := record["user_id"].(int64)
+		userId, ok := item["user_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to assert user id under %v, item: %v", authenticatedEmailId, record)
+			log.FuncErrorTrace(0, "Failed to assert user id under %v, item: %v", authenticatedEmailId, item)
 		}
-		name, ok := record["name"].(string)
+		name, ok := item["name"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to assert name under %v, item: %v", authenticatedEmailId, record)
+			log.FuncErrorTrace(0, "Failed to assert name under %v, item: %v", authenticatedEmailId, item)
 		}
-		roleName, ok := record["role_name"].(string)
+		roleName, ok := item["role_name"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to assert role name under %v, item: %v", authenticatedEmailId, record)
+			log.FuncErrorTrace(0, "Failed to assert role name under %v, item: %v", authenticatedEmailId, item)
 		}
 
 		apiResp = append(apiResp, models.GetSaleRepsResponseItem{
