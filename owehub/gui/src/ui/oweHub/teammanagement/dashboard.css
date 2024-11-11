@@ -230,7 +230,7 @@
   color: white;
   border: none;
   border-radius: 8px;
-  height: 36px;
+  height: 40px;
   width: 150px;
   margin-top: 14px;
   font-size: 12px;
@@ -512,15 +512,14 @@
     margin-left: -20px;
   }
   .team-button-sec button {
-    width: 40px;
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 300;
   }
   .team-button-sec button span {
     display: none;
   }
   .dash-newteam .create {
-    width: 40px;
+    padding: 0 12px;
   }
   .create-add-btn {
     font-size: 1.5rem;

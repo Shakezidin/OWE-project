@@ -11,6 +11,7 @@ import {
 } from '../../../redux/apiSlice/filterSlice/filterSlice';
 import { useLocation } from 'react-router-dom';
 import { showAlert } from '../alert/ShowAlert';
+import { dateFormat } from '../../../utiles/formatDate';
 
 interface Column {
   name: string;
@@ -30,6 +31,7 @@ interface FilterModel {
   Column: string;
   Operation: string;
   Data: string;
+  type?: string
 }
 interface Option {
   value: string;
@@ -151,7 +153,7 @@ const FilterModal: React.FC<TableProps> = ({
     newRules[index].Data = '';
     setFilters(newRules);
   };
-  const handleDataChange = (index: number, value: string) => {
+  const handleDataChange = (index: number, value: string, type: "number" | "date" | "boolean" | "text") => {
     const newFilters = [...filters];
     // Convert ".1" to "0.1" if the column is "rate" or "rate list"
     if (
@@ -161,6 +163,7 @@ const FilterModal: React.FC<TableProps> = ({
       value = value.replace(/^(\.)(\d+)/, '0$1$2');
     }
     newFilters[index].Data = value;
+    newFilters[index].type = type;
     setFilters(newFilters);
   };
   const getInputType = (columnName: string) => {
@@ -198,7 +201,7 @@ const FilterModal: React.FC<TableProps> = ({
       const formattedFilters = filters.map((filter) => ({
         Column: filter.Column,
         Operation: filter.Operation,
-        Data: filter.Data,
+        Data: filter.type === "date" ? dateFormat(filter.Data) : filter.Data,
       }));
       const req = {
         page_number: page_number,
@@ -312,14 +315,14 @@ const FilterModal: React.FC<TableProps> = ({
                       {type === 'boolean' ? (
                         <SelectOption
                           onChange={(newValue) =>
-                            handleDataChange(index, newValue?.value!)
+                            handleDataChange(index, newValue?.value!, type)
                           }
                           value={
                             filter.Data
                               ? {
-                                  value: filter.Data,
-                                  label: filter.Data === 'yes' ? 'Yes' : 'No',
-                                }
+                                value: filter.Data,
+                                label: filter.Data === 'yes' ? 'Yes' : 'No',
+                              }
                               : undefined
                           }
                           options={[
@@ -332,7 +335,7 @@ const FilterModal: React.FC<TableProps> = ({
                           type={type}
                           label="Data"
                           name="Data"
-                         
+
                           onKeyUp={(e) => {
                             if (e.key === 'Enter') {
                               applyFilter();
@@ -340,7 +343,7 @@ const FilterModal: React.FC<TableProps> = ({
                           }}
                           value={filter.Data}
                           onChange={(e: any) => {
-                            handleDataChange(index, e.target.value);
+                            handleDataChange(index, e.target.value, type);
                             setErrors({ ...errors, [`data${index}`]: '' });
                           }}
                           placeholder={'Enter'}
@@ -372,7 +375,7 @@ const FilterModal: React.FC<TableProps> = ({
             </div>
           </div>
         </div>
-        <div className="createUserActionButton">
+        <div className="createUserActionButton" style={{ paddingTop: "22px" }}>
           <div className="" style={{ gap: '0.6rem', display: 'flex' }}>
             <ActionButton
               title={'Cancel'}

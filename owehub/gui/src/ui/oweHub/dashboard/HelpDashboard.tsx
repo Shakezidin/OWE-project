@@ -165,7 +165,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                 className="create-input-container"
                 style={{ width: '1740px' }}
               >
-                <div className="create-input-field" style={{}}>
+                <div className="create-input-field help-proj-input" style={{}}>
                   <Input
                     type={'text'}
                     label="Project ID"
@@ -312,7 +312,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
               </div>
             </div>
           </div>
-          <div className="createUserActionButton" style={{ marginTop: '1rem' }}>
+          <div className="createUserActionButton" style={{ marginTop: '1rem', paddingTop: "1rem" }}>
             <ActionButton title={'Cancel'} type="reset" onClick={handleClose} />
             <button className='help-submit' onClick={handleSubmit}>Submit</button>
           </div>

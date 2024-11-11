@@ -30,16 +30,14 @@ func ExecAgingReportInitialCalculation(uniqueIds string, hookType string) error 
 		log.FuncErrorTrace(0, "error while loading initial data %v", err)
 		return err
 	}
-
 	for _, data := range InitailData.InitialAgngRpDataList {
-		agngRpData, err := CalculateAgngRp(data)
 
+		agngRpData, err := CalculateAgngRp(data)
 		if err != nil || agngRpData == nil {
 			log.FuncErrorTrace(0, "Failed to calculate Aging Report err : %+v", err)
 			return err
 
 		}
-
 		if hookType == "update" {
 			// Build the update query
 
@@ -115,6 +113,7 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["fin_pass_date"] = agngRpData.FIN_Pass_Date
 	outData["install_scheduled_date"] = agngRpData.Install_Scheduled
 	outData["install_eta_date"] = agngRpData.Install_ETA
+	outData["install_complete"] = agngRpData.Install_Complete
 	outData["primary_sales_rep"] = agngRpData.Primary_Sales_Rep
 	outData["pre_post_install"] = agngRpData.Pre_Post_Install
 	outData["tier_one_status"] = agngRpData.Tier_One_Status
@@ -123,13 +122,12 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["how_tier_one"] = agngRpData.How_Tier_One
 	outData["project_age_days"] = agngRpData.Project_Age_Days
 	outData["solar_journey"] = agngRpData.Solar_Journey
-	outData["days_pending_ntp"] = "-"
+
+	outData["days_pending_ntp"] = calculateDaysPendingNTP()
 
 	outData["days_pending_permits"] = calculateDaysPendingPermit(formatDate(agngRpData.Permit_Approved_Date), formatDate(agngRpData.NTP_Date), agngRpData.Project_Status)
 
-	// outData["days_pending_install"] = calculateDaysPendingInstall(formatDate(agngRpData.Install_Complete), formatDate(agngRpData.Permit_Approved_Date), agngRpData.Project_Status)
-
-	outData["days_pending_install"] = "-"
+	outData["days_pending_install"] = calculateDaysPendingInstall(formatDate(agngRpData.Install_Complete), formatDate(agngRpData.Permit_Approved_Date), agngRpData.Project_Status)
 
 	outData["days_pending_pto"] = calculateDaysPendingPTO(formatDate(agngRpData.PTO_Date), formatDate(agngRpData.PV_Install_Completed_Date), agngRpData.Project_Status)
 
@@ -138,10 +136,12 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	return outData, err
 }
 
-func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
+func calculateDaysPendingNTP() int {
 
-	log.EnterFn(0, "calculateDaysPendingPermit")
-	defer func() { log.ExitFn(0, "calculateDaysPendingPermit", nil) }()
+	return 0
+}
+
+func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
 
 	var daysPendingPermit int
 	today := time.Now()
@@ -158,9 +158,6 @@ func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, proje
 }
 
 func calculateDaysPendingInstall(installComplete string, permitApprovedDate string, projectStatus string) int {
-
-	log.EnterFn(0, "calculateDaysPendingInstall")
-	defer func() { log.ExitFn(0, "calculateDaysPendingInstall", nil) }()
 
 	var daysPendingInstall int
 	today := time.Now()
@@ -187,14 +184,10 @@ func calculateDaysPendingInstall(installComplete string, permitApprovedDate stri
 	} else {
 		daysPendingInstall = 0
 	}
-
 	return daysPendingInstall
 }
 
 func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, projectStatus string) int {
-
-	log.EnterFn(0, "calculateDaysPendingPTO")
-	defer func() { log.ExitFn(0, "calculateDaysPendingPTO", nil) }()
 
 	var daysPendingPto int
 	today := time.Now()
@@ -211,9 +204,6 @@ func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, proje
 }
 
 func calculateProjectAge(uniqueId string, contractDate string) int {
-
-	log.EnterFn(0, "calculateProjectAge")
-	defer func() { log.ExitFn(0, "calculateProjectAge", nil) }()
 
 	var projectAge int
 	today := time.Now()

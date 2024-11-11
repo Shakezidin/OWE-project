@@ -733,6 +733,9 @@ br {
   .scrollbar::-webkit-scrollbar {
     display: none !important;
   }
+  .createProfileText{
+    margin-left: 18px;
+  }
 }
 
 .main-container {

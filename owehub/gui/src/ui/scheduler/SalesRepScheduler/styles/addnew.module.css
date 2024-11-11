@@ -13,8 +13,6 @@
   padding-inline: 20px;
   max-width: 950px;
   height: max-content;
-  margin-left: 35px;
-  margin-right: 35px;
   border: 1px solid #d8d8d8;
 }
 
@@ -63,11 +61,9 @@
 
 .an_top {
   font-size: 18px;
-  padding-left: 38px;
+  padding-left: 6px;
   padding-right: 38px;
-  padding-top: 15px;
   color: var(--input-border-color);
-  /* padding-bottom: 2px; */
   font-weight: 600;
 }
 
@@ -77,7 +73,7 @@
   background-color: #377cf6;
   border-radius: 8px;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   padding: 8px 12px;
   border: none;
@@ -87,7 +83,7 @@
 }
 
 .submitbut:hover {
-  background-color: #4062CA;
+  background-color: #0053e3;
   transform: scale(1.05);
   
 }
@@ -216,11 +212,6 @@
 }
 } */
 
-/* @media screen and (max-width: 1024px){
-  body {
-    overflow-y: hidden; 
-    overflow-x: hidden; 
-  } */
 
 /* .an_top {
 
@@ -266,6 +257,15 @@
   .salrep_input_container.reverse_col {
     flex-direction: column-reverse !important;
   }
+  .an_head p{
+    padding-top: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+
+  .an_head{
+    margin-left: 0;
+  }
 
   .salrep_input_container {
     display: flex;
@@ -273,18 +273,6 @@
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
-  }
-
-  .an_top {
-    padding-left: 20px;
-  }
-  .customer_wrapper_list {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .an_head p {
-    padding-left: 0px !important;
-    margin-left: -33px;
   }
   .scroll_user {
     padding-left: 0px;
@@ -334,5 +322,14 @@ top: 71%;
   body {
     overflow-y: hidden;
     overflow-x: hidden;
+  }
+}
+
+@media (max-width: 768px){
+  .h_screen, .an_top{
+    margin: 10px;
+  }
+  .an_top{
+    font-size: 16px;
   }
 }

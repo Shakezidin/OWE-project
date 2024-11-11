@@ -151,3 +151,9 @@
   margin-bottom: 3.7%;
   margin-top: -15px;
 }
+
+@media (max-width: 768px){
+  .survey_button button{
+    width: 100px;
+  }
+}
