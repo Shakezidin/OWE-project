@@ -25,22 +25,14 @@
   border-color: var(--primary-color);
   background-color: #E5EFFF;
   color: var(--primary-color);
-<<<<<<< HEAD
-  /* transform: scale(1.05); */
-=======
   transform: scale(1.05);
->>>>>>> 352614f0953477b5e1c2fa1b7c694f9385756a2e
 }
 
 .selectBox.active {
   border-color:var(--primary-color);
   background-color: var(--primary-color);
   color: var(--white-color);
-<<<<<<< HEAD
-  /* transform: scale(1.05); */
-=======
   transform: scale(1.05);
->>>>>>> 352614f0953477b5e1c2fa1b7c694f9385756a2e
 }
 
 /* .selectBox span {

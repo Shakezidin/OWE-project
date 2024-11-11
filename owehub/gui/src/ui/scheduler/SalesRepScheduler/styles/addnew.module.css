@@ -83,11 +83,7 @@
 }
 
 .submitbut:hover {
-<<<<<<< HEAD
-  background-color: #4062CA;
-=======
   background-color: #0053e3;
->>>>>>> 352614f0953477b5e1c2fa1b7c694f9385756a2e
   transform: scale(1.05);
   
 }
