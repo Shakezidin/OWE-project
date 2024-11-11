@@ -74,7 +74,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 			ud.email_id as creator_email_id,
 			ud.mobile_number as creator_phone_number
 		FROM get_leads_info_hierarchy($1) li
-		INNER JOIN user_details ud ON ud.user_id = li.created_by
+		INNER JOIN user_details ud ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $2
 	`
 

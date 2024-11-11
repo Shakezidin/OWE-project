@@ -233,7 +233,7 @@ func sendProposalSignedNotification(leadsId int64) error {
 			li.phone_number,
 			li.proposal_pdf_key
 		FROM user_details ud
-		JOIN leads_info li ON ud.user_id = li.created_by
+		JOIN leads_info li ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $1
 	`
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadsId})
