@@ -177,13 +177,11 @@
 
 .filtericonLead{
   display: flex;
-  width: 27px !important;
-  height: 27px !important;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
-  border-radius: 8px; 
+  border-radius: 6px; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: #ffffff;
   background-color: #377cf6;
@@ -340,4 +338,15 @@
   height: 36px !important;
 
 }
+}
+@media only screen and (min-width: 340px) and (max-width: 539px) {
+  .filtericonLead{
+    width: 30px !important;
+    height: 30px !important;
+  
+  }
+  .export_btn {
+    width: 40px !important;
+    height: 40px !important;
+  }
 }

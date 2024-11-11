@@ -1322,7 +1322,11 @@ input[type='checkbox']:checked {
     width: 30px;
     height: 30px;
   }
-
+  .ArrowDX {
+    position: relative;
+    height: 30px;
+    width: 30px;
+  }
   .ArrowD {
     position: relative;
     height: 30px;
@@ -1462,5 +1466,15 @@ input[type='checkbox']:checked {
   .export_btn {
     width: 46px !important;
     height: 46px !important;
+  }
+}
+@media only screen and (min-width: 340px) and (max-width: 539px) {
+  .filtericon {
+    height: 40px;
+    width: 40px;
+  }
+  .export_btn {
+    width: 40px !important;
+    height: 40px !important;
   }
 }
