@@ -177,14 +177,13 @@
 
 .filtericonLead{
   display: flex;
-  width: 31.88px !important;
-  height: 31.88px !important;
+  width: 27px !important;
+  height: 27px !important;
   align-items: center;
   justify-content: center;
   border: none;
-  padding: 10.8px 10.8px 10.8px 10.8px;
   cursor: pointer;
-  border-radius: 50%; 
+  border-radius: 8px; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: #ffffff;
   background-color: #377cf6;
@@ -325,4 +324,20 @@
   .mobile_tooltip{
     display: none !important;
   }
+}
+@media only screen and (min-width: 767px) and (max-width: 1025px) {
+  .filtericonLead{
+    height: 36px !important;
+    width: 36px !important;
+    border-radius: 8px !important;
+    margin-left: 11px;
+  }
+}
+@media only screen and (min-width: 540px) and (max-width: 555px) {
+  
+.filtericonLead{
+  width: 36px !important;
+  height: 36px !important;
+
+}
 }

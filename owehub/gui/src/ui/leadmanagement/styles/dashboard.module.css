@@ -51,7 +51,7 @@
   width: 100%;
 }
 .customFont,
-.customLeft {
+.customLeftRRR {
   font-weight: 600;
   color: var(--input-border-color);
 }
@@ -325,15 +325,6 @@ table tbody tr:hover {
   width: 35%;
 }
 
-/* .customLeft {
-  flex: 1;
-  text-align: left; 
-} */
-
-/* .customRight {
-  flex: 1; 
-  text-align: right; 
-} */
 .SecondColHead {
   display: flex;
   justify-content: space-between;
@@ -774,6 +765,25 @@ input[type='checkbox']:checked {
     font-size: 11.8px;
   }
 }
+@media (min-width: 401px) and (max-width: 560px) {
+  .date_calendar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 270px;
+  }
+
+  .date_calendar > .hist_date {
+    order: -1;
+    text-align: right;
+    font-size: 12px !important;
+    margin-bottom: 1px;
+    font-weight: 550;
+    min-width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
 
 @media (min-width: 601px) and (max-width: 900px) {
   .cardHeader {
@@ -828,6 +838,7 @@ input[type='checkbox']:checked {
   }
 
   .filterCallToActionMobile {
+    margin-top: 5px;
     display: flex;
     transform: scale(0.75);
     position: inherit;
@@ -866,12 +877,13 @@ input[type='checkbox']:checked {
   }
 
   .filtericon {
-    padding: 21.25px;
+    width: 48px;
+    height: 48px;
   }
 
   .export_btn {
-    width: 42.5px !important;
-    height: 42.5px !important;
+    width: 47px !important;
+    height: 47px !important;
     margin-bottom: 5px;
   }
 
@@ -934,19 +946,19 @@ input[type='checkbox']:checked {
 }
 @media screen and (min-width: 336px) and (max-width: 436px) {
   .date_calendar {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    justify-content: right !important;
-    gap: 4px !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: right;
+    gap: 4px;
   }
 }
 
 @media screen and (max-width: 767px) {
   .date_calendar {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 4px !important;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
     /* padding: 17px 16px 17px 35px !important;
     margin: 17px 16px 17px 35px !important; */
   }
@@ -991,9 +1003,7 @@ input[type='checkbox']:checked {
     transform: scale(0.8);
     margin-right: -15px;
   }
-  /* .date_calendar {
-    gap: unset !important;
-  } */
+
   .user_name {
     transform: translate(5px, -5px);
   }
@@ -1012,23 +1022,13 @@ input[type='checkbox']:checked {
 
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
-  /* Styles for small desktops */
-  /* .history_list_inner_declined {
-    display: grid;
-    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    align-items: center;
-
-  } */
   .chartGrid {
-    grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
+    grid-template-columns: 45% 55%;
   }
   .lineChart_div {
     position: relative;
-    /* top: 50px; */
     align-items: center;
     justify-content: center;
-    /* margin-top: 30px;
-      margin-right: 40px; */
     right: 30px;
   }
 
@@ -1040,24 +1040,6 @@ input[type='checkbox']:checked {
     font-weight: 500 !important;
     font-size: 12px !important;
   }
-
-  .date_display {
-    position: relative;
-  }
-
-  .date_calendar {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: right !important;
-    gap: 10px;
-  }
-
-  .date_parent {
-    display: flex;
-    gap: 10px;
-  }
-
   .history_list_inner {
     display: grid;
     grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
@@ -1075,13 +1057,8 @@ input[type='checkbox']:checked {
 
   .leftitem,
   .rightitem {
-    align-items: flex-start; /* Optional: vertically center the items */
+    align-items: flex-start;
   }
-}
-
-/* Large desktops and monitors */
-@media only screen and (min-width: 1025px) and (max-width: 1200px) {
-  /* Styles for large desktops */
 }
 
 /* Extra large desktops */
@@ -1089,7 +1066,6 @@ input[type='checkbox']:checked {
   /* Styles for extra-large screens */
 }
 
-/*---------------- Shams Start-------------------- */
 .lead__datepicker_wrapper {
   position: relative;
   line-height: 0;
@@ -1199,19 +1175,6 @@ input[type='checkbox']:checked {
   background-color: #4062ca;
 }
 
-/* @media only screen and (min-width: 1400px)and (max-width: 2561px) {
-  .ButtonAbovearrov {
-    margin-left: unset;
-    margin-left: -252px !important
-  }
-} */
-/* @media only screen and (min-width: 1400px)and (max-width: 250px) {
-  .ButtonAbovearrov {
-    margin-left: -168px !important
-  }
-} */
-/* margin-left: -105px !important */
-
 .upKeys_DownKeysX {
   transform: rotate(180deg);
   display: flex !important;
@@ -1224,6 +1187,8 @@ input[type='checkbox']:checked {
 
 .ArrowDX {
   position: relative;
+  height: 36px;
+  width: 36px;
 }
 .ArrowD {
   position: relative;
@@ -1346,6 +1311,23 @@ input[type='checkbox']:checked {
 }
 
 @media only screen and (max-width: 767px) {
+  .ButtonAbovearrov {
+    width: 30px;
+    border-radius: 8px;
+    height: 30px;
+  }
+
+  .calender {
+    background-color: #377cf6;
+    width: 30px;
+    height: 30px;
+  }
+
+  .ArrowD {
+    position: relative;
+    height: 30px;
+    width: 30px;
+  }
   .cardHeaderSecond span {
     font-size: 14px;
     text-align: left;
@@ -1426,5 +1408,59 @@ input[type='checkbox']:checked {
 @media (max-width: 968px) {
   .mobile_tooltip {
     display: none !important;
+  }
+}
+@media only screen and (min-width: 767px) and (max-width: 1025px) {
+  .date_calendar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 270px;
+    z-index: 1;
+  }
+
+  .date_calendar > .hist_date {
+    order: -1;
+    text-align: left;
+    font-size: 12px !important;
+    margin-bottom: 1px;
+    font-weight: 550;
+    margin-left: 10px !important;
+    min-width: 214px;
+    z-index: 1;
+  }
+
+  .lead__datepicker_wrapper {
+    position: inherit;
+    line-height: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 11; 
+  }
+
+  .lead__datepicker_content {
+  margin-top: 120px;
+  margin-left: 300px;
+   
+  }
+  .mobile_tooltip {
+    display: none !important;
+  }
+
+  .customLeftRRR {
+    font-weight: 600;
+    color: var(--input-border-color);
+  }
+}
+
+@media only screen and (min-width: 540px) and (max-width: 555px) {
+  .filtericon {
+    height: 46px;
+    width: 46px;
+    border-radius: 8px;
+  }
+  .export_btn {
+    width: 46px !important;
+    height: 46px !important;
   }
 }

@@ -257,18 +257,16 @@
 @media (max-width: 600px) {
   .FixedColumnMobile {
     position: sticky;
-    right: 0;
+   right: 0;
     background-color: var(--white-color);
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    display: flex;
+    gap: 1px;
     width: 130px;
     flex-direction: column;
     padding: 0 !important;
-    border-left: 1px solid #d5d5d7;
+    border-left: 1px solid #d5d5d7; 
   }
   .RowMobile {
     display: flex;

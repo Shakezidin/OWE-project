@@ -32,11 +32,11 @@
   .filtericonHistory {
     display: flex;
     align-items: center;
-    height: 28.5px;
-    width: 28.5px;
-    margin-top: 1px !important;
+    height: 27px;
+    width: 27px;
+    margin-top: 0.3px !important;
     margin-left: 23px;
-    border-radius: 50%;
+    border-radius: 8px;
     border: 1.2px solid #377cf6;
     cursor: pointer;
 
@@ -56,11 +56,11 @@
   .filtericonHistory {
     display: flex;
     align-items: center;
-    height: 31.88px;
-    width: 31.88px;
+    height: 36px;
+    width: 36px;
     margin-top: 1px !important;
     margin-left: 69px !important;
-    border-radius: 50%;
+    border-radius: 8px;
     border: 1.2px solid #377cf6 !important;
     cursor: pointer;
   }
