@@ -442,8 +442,8 @@ table tbody tr td {
 
 .zoom-out-help {
   transition:
-    transform 0.4s ease,
-    color 0.4s ease;
+    transform 0.3s ease,
+    color 0.3s ease;
   height: 14px;
   width: 14px;
   stroke: 0.2;
@@ -451,7 +451,7 @@ table tbody tr td {
 }
 
 .zoom-out-help:hover {
-  transform: scale(1.0999);
+  transform: scale(1.05);
   color: #0493ce;
   cursor: pointer;
 }

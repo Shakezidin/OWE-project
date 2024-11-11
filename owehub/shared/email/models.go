@@ -34,3 +34,19 @@ type TemplateDataLeadProposalSigned struct {
 	ProposalPdfUrl  string
 	UserName        string
 }
+
+type TemplateDataLeadStatusChanged struct {
+	LeadId          int64
+	LeadFirstName   string
+	LeadLastName    string
+	LeadEmailId     string
+	LeadPhoneNumber string
+	ViewUrl         string
+	UserName        string
+
+	// NewStatus is the new status of the lead
+	// it can be one of the following:
+	// APT_SENT | APT_RESCHEDULED | APT_ACCEPTED | APT_DECLINED | APT_NOT_REQUIRED
+	// DEAL_WON | DEAL_LOST | DEAL_WON_MANUAL | PROPOSAL_CREATED
+	NewStatus string
+}

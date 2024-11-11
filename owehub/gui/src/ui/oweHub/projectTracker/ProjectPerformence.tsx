@@ -617,7 +617,7 @@ const ProjectPerformence = () => {
   }, []);
 
   return (
-    <div className="">
+    <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
@@ -864,7 +864,7 @@ const ProjectPerformence = () => {
                   disabled={isExportingData}
                   onClick={ExportCsv}
                   data-tooltip-id="export"
-                  className={`performance-exportbtn flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                  className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
                 >
                   {isExportingData ? (
                     <MdDownloading
