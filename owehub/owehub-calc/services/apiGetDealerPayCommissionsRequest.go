@@ -102,7 +102,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		dlrPay.Loan_Fee = getFloat(item, "loan_fee")
 		dlrPay.EPC = getFloat(item, "epc")
 		dlrPay.Net_EPC = getFloat(item, "net_epc")
-		dlrPay.Other_Adders = getStringVal(item, "other_adders")
+		dlrPay.Other_Adders = getFloat(item, "other_adders")
 		dlrPay.Credit = getStringVal(item, "credit")
 		dlrPay.Rep1 = getStringVal(item, "rep_1")
 		dlrPay.Rep2 = getStringVal(item, "rep_2")

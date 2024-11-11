@@ -116,8 +116,6 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	Referral := getString(adderBreakDown, "referral")
 	Rebate := getString(adderBreakDown, "rebate")
 
-	log.FuncErrorTrace(0, "data = %v", adderBreakDown)
-
 	mktFee := parseDollarStringToFloat(mktFeeStr)
 	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
 	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
