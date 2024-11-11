@@ -295,7 +295,7 @@ func parseDollarStringToFloat(dollarStr string) float64 {
 }
 
 func CheckFloat(value float64) float64 {
-	if math.IsInf(value, 1) || math.IsInf(value, -1) {
+	if math.IsInf(value, 1) || math.IsInf(value, -1) || math.IsNaN(value) {
 		return 0
 	}
 	return value
