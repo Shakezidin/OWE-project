@@ -45,6 +45,8 @@ interface LeadData {
     status_id: number;
     updated_at: string;
     proposal_created_date: string | null;
+    sales_rep_name:string | null;
+    lead_source:string | null;
 }
 
 const Profile: React.FC<EditModalProps> = ({
@@ -246,6 +248,20 @@ const Profile: React.FC<EditModalProps> = ({
                                             <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition}</td>
                                         </tr>
 
+                                        <tr>
+                                            <td className={classes.leftAlign}
+                                                
+                                            >Lead Source</td>
+                                            <td style={{
+                                                    lineHeight: "16px",
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '150px',
+                                                }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.lead_source}</td>
+                                        </tr>
+
+
 
 
                                     </tbody>
@@ -374,6 +390,18 @@ const Profile: React.FC<EditModalProps> = ({
                                                 }}
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
                                             >{leadData?.created_by || '.....'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Sales Rep</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            >{leadData?.sales_rep_name || '.....'}</td>
                                         </tr>
 
                                     </tbody>
