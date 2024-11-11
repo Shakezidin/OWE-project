@@ -127,7 +127,7 @@ ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS manual_won_date TIMESTAMPTZ;
 ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS salerep_id INT;
 ALTER TABLE leads_info ADD CONSTRAINT leads_info_salerep_id_fkey
     FOREIGN KEY (salerep_id)
-    REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
+    REFERENCES user_details(user_id) ON DELETE SET NULL;
 
 -- GET SALES REPS UNDER AUTHENTICATED USER
 CREATE OR REPLACE FUNCTION get_salesreps_under(p_email_id VARCHAR)
