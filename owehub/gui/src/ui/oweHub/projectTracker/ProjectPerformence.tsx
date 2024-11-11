@@ -962,7 +962,7 @@ const ProjectPerformence = () => {
                 <div className='filterButtonAddition'>
                 
                   <div
-                  className="filter-line relative"
+                  className="filter-line"
                   style={{ backgroundColor: '#377CF6' }}
                   data-tooltip-id='filter'
                   onClick={HandleFilterClick}
@@ -1371,10 +1371,10 @@ const ProjectPerformence = () => {
                                       ? project.ntp.action_required_count
                                       : ''}
                                       {
-                                        project.days_ntp !== '-' && project.days_ntp !== '0 days pending' &&  
+                                        project.days_ntp && project.days_ntp !== '-' && project.days_ntp !== '0 day pending' &&  
                                       
                                       <div className='ntpActionRequired'>
-                                        <p>{project.days_ntp}</p>
+                                        <p>{project.days_ntp.split(" ")[0] + project.days_ntp.split(" ")[0]==='1'? 'day' : 'days'}</p>
                                         </div>
                                     }
                                   </div>
@@ -1425,10 +1425,10 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {/* {project.<div className="pendingDayDiv">
+    {project.days_site_survey && project.days_site_survey !== '0 day pending' && project.days_site_survey !== '-' && <div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
       <div className='simpleLine'> </div>
-    </div>} */}
+    </div>}
   </div>
 
   {/* CAD Design */}
@@ -1458,7 +1458,7 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    { project.days_cad_design && project.days_cad_design !== '0 days pending' && project.days_cad_design !== '-' &&<div className="pendingDayDiv">
+    { project.days_cad_design && project.days_cad_design !== '0 day pending' && project.days_cad_design !== '-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">{project.days_cad_design}</p>
       <div className='simpleLine'> </div>
     </div>}
@@ -1491,7 +1491,7 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.days_permits && project.days_permits !== '0 days pending' && project.days_permits !== '-' &&<div className="pendingDayDiv">
+    {project.days_permits && project.days_permits !== '0 day pending' && project.days_permits !== '-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">{project.days_permits}</p>
       <div className='simpleLine'> </div>
     </div>}
@@ -1525,7 +1525,7 @@ const ProjectPerformence = () => {
         </div>
       </div>
       {/* Days Remaining */}
-      {project.days_roofing && project.days_roofing !== '-' && project.days_roofing !== '0 days pending' && <div className="pendingDayDiv">
+      {project.days_roofing && project.days_roofing !== '-' && project.days_roofing !== '0 day pending' && <div className="pendingDayDiv">
       <p className="daysRemaining">{project.days_roofing}</p>
       <div className='simpleLine'> </div>
     </div>}
@@ -1559,7 +1559,7 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.days_install && project.days_install !== '0' && project.days_install !== '-' &&<div className="pendingDayDiv">
+    {project.days_install && project.days_install !== '0 day pending' && project.days_install !== '-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">{project.days_install}</p>
       <div className='simpleLine'> </div>
     </div>}
@@ -1593,7 +1593,7 @@ const ProjectPerformence = () => {
         </div>
       </div>
       {/* Days Remaining */}
-      {project.electrical_colour==='#f6377c' && <div className="pendingDayDiv">
+      {project.days_electrical &&  project.days_electrical !== '0 day pending' && project.days_electrical !=='-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">54 days remaining</p>
       <div className='simpleLine'> </div>
     </div>}
@@ -1627,8 +1627,8 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.days_inspection && project.days_inspection !=='0 days pending' && project.days_inspection !=='-' &&<div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+    {project.days_inspection && project.days_inspection !=='0 day pending' && project.days_inspection !=='-' &&<div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_inspection}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1660,8 +1660,8 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.activation_colour==='#f6377c' && <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+    {project.days_activation && project.days_activation !== '0 day pending' && project.days_activation !=='-' &&<div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_activation}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>

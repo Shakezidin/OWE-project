@@ -33,7 +33,7 @@ type DealerPayReportResponse struct {
 	Dealer_Code    string    `json:"dealer_code"`
 	Sys_Size       float64   `json:"sys_size"`
 	Contract       float64   `json:"contract"`
-	Other_Adders   string    `json:"other_adders"`
+	Other_Adders   float64   `json:"other_adders"`
 	Rep1           string    `json:"rep1"`
 	Rep2           string    `json:"rep2"`
 	Setter         string    `json:"setter"`

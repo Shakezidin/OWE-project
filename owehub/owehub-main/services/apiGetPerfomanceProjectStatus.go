@@ -1364,40 +1364,40 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 
 		if pndngNtp, ok := agRp["days_pending_ntp"]; ok {
-			resp1.Days_Pending_NTP = fmt.Sprintf("%s days pending", pndngNtp.(string))
+			resp1.Days_Pending_NTP = Text( pndngNtp.(string))
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngNtp: %v", err)
 		}
 
 		if pndngPermits, ok := agRp["days_pending_permits"]; ok {
-			resp1.Days_Pending_Permits = fmt.Sprintf("%s days pending", pndngPermits.(string))
+			resp1.Days_Pending_Permits = Text( pndngPermits.(string))
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngPermits: %v", err)
 		}
 
 		if pndngInstall, ok := agRp["days_pending_install"]; ok {
-			resp1.Days_Pending_Install = fmt.Sprintf("%s days pending", pndngInstall.(string))
+			resp1.Days_Pending_Install = Text(pndngInstall.(string))
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngInstall: %v", err)
 		}
 
 		if pndngPto, ok := agRp["days_pending_pto"]; ok {
-			resp1.Days_Pending_PTO = fmt.Sprintf("%s days pending", pndngPto.(string))
+			resp1.Days_Pending_PTO = Text( pndngPto.(string))
 
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for pndngPto: %v", err)
 		}
 
 		if prjAge, ok := agRp["project_age"]; ok {
-			resp1.Days_Pending_Project_Age = fmt.Sprintf("%s days pending", prjAge.(string))
+			resp1.Days_Pending_Project_Age = Text( prjAge.(string))
 
 		} else {
 			log.FuncErrorTrace(0, "[agngRpData] error while fethcing data for prjAge: %v", err)
 		}
 
-		resp1.Days_Pending_Cad_Design = fmt.Sprintf("%d days pending", 0)
-		resp1.Days_Pending_Roofing = fmt.Sprintf("%d days pending", 0)
-		resp1.Days_Pending_Inspection = fmt.Sprintf("%d days pending", 0)
+		resp1.Days_Pending_Cad_Design = Text("0")
+		resp1.Days_Pending_Roofing = Text("0")
+		resp1.Days_Pending_Inspection = Text("0")
 
 		// if prjAge, ok := agRp["days_cad_design"]; ok {
 
@@ -1429,7 +1429,7 @@ func agngRpData(uniqueId []string) (map[string]models.PerfomanceResponse, error)
 		}
 	}
 
-	log.FuncInfoTrace(0, "Aging Report fetched:  %v and count is : %d", resp, len(resp))
+	log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
 	return resp, nil
 }
 func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error) {
@@ -1478,4 +1478,11 @@ func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error)
 	log.FuncInfoTrace(0, "FilterAgRpData fetched:  %v and count is : %d", uniqueIds, len(uniqueIds))
 	return uniqueIds, err
 
+}
+
+func Text(s string) string {
+	if s <= "1" {
+		return fmt.Sprintf("%s day pending", s)
+	}
+	return fmt.Sprintf("%s days pending", s)
 }
