@@ -4,20 +4,20 @@
   /* padding: 24px; */
   background-color: #f3f4f6;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif ;
+  font-family: 'Poppins', sans-serif;
 }
 .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 24px;
 }
-.CrossRemoveSearch{
+.CrossRemoveSearch {
   right: 0;
   padding-right: 5px;
   transition: all 0.3s ease;
   cursor: pointer;
 }
-.CrossRemoveSearch:hover{
+.CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
 /* .chartGrid {
@@ -31,8 +31,7 @@
   padding: 20px;
 } */
 
-
-.PaginationFont a{
+.PaginationFont a {
   font-size: 12px !important;
 }
 .chartGrid {
@@ -208,8 +207,8 @@
 }
 
 .button {
-  border: 1px solid #292B2E !important;
-  color: #292B2E;
+  border: 1px solid #292b2e !important;
+  color: #292b2e;
   background-color: #fff;
   padding: 8px 12px;
   border-radius: 26px;
@@ -224,14 +223,15 @@
 }
 
 .button:hover {
-  color:#377cf6 ;
+  color: #377cf6;
   background-color: #ddebff;
   border: 1px solid #377cf6 !important;
 
   /* border-color: var(--primary-color) !important; */
 }
 
-.button:hover p, .button:hover span{
+.button:hover p,
+.button:hover span {
   /* color: var(--primary-color); */
 }
 
@@ -269,7 +269,7 @@
 .buttonActive:hover {
   background-color: #3b82f6;
   color: #ffffff;
-  font-weight: 500; 
+  font-weight: 500;
   border: none !important;
 }
 
@@ -310,7 +310,7 @@ table tbody tr:hover {
   transition: all 0.3s ease;
 }
 .filtericon:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.05);
 }
 .filtericon img {
@@ -349,12 +349,11 @@ table tbody tr:hover {
   height: 36px;
   width: 399px !important;
   margin-right: 11px;
-  box-shadow:1px solid var(--primary-color);
+  box-shadow: 1px solid var(--primary-color);
 }
 
-.searchBar:hover{
+.searchBar:hover {
   border: 1px solid var(--primary-color);
-  
 }
 .searchBar .searchInput:focus {
   outline: none;
@@ -369,27 +368,26 @@ table tbody tr:hover {
   margin-right: 5px;
   display: flex;
   align-items: center;
-  color: #292B2E;
+  color: #292b2e;
   height: 12px !important;
   width: 12px !important;
 }
 .searchBar:hover .searchInput::placeholder,
 .searchBar:focus-within .searchInput::placeholder {
-  color: #377CF6 !important;
+  color: #377cf6 !important;
 }
 
 .searchBar:hover .searchIcon img,
 .searchBar:focus-within .searchIcon img {
-  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(100%);
+  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg)
+    brightness(100%) contrast(100%);
 }
-
-
 
 .searchInput {
   border: none;
   outline: none;
   width: 100%;
-  color: #292B2E;
+  color: #292b2e;
   padding: 2.5px;
   font-weight: 400;
   border-radius: 5px;
@@ -399,13 +397,11 @@ table tbody tr:hover {
   transition: color 0.3s ease;
 }
 
-
 .searchInput:focus::placeholder,
 .searchInput:hover::placeholder {
-  color: #377CF6;
+  color: #377cf6;
   font-weight: 400;
 }
-
 
 .filterCallToAction {
   display: flex;
@@ -509,8 +505,7 @@ input[type='checkbox']:checked {
 }
 .rescheduleButton:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
-
+  background-color: #4062ca;
 }
 
 .archiveButton {
@@ -564,7 +559,7 @@ input[type='checkbox']:checked {
 } */
 
 .removeButton {
-  background-color: #D91515;
+  background-color: #d91515;
   color: white;
   border: none;
   padding: 0px 20px;
@@ -577,7 +572,7 @@ input[type='checkbox']:checked {
 }
 
 .removeButton:hover {
-  background-color: #AD1313;
+  background-color: #ad1313;
   transform: scale(1.05);
 }
 
@@ -637,7 +632,6 @@ input[type='checkbox']:checked {
   .chartGrid {
     display: flex;
     flex-direction: column;
-    width: 94% !important;
     align-items: center !important;
     margin: 0 auto;
   }
@@ -883,14 +877,21 @@ input[type='checkbox']:checked {
 
   .export_btn:hover {
     transform: scale(1.05);
-    background-color: #4062CA;
-
+    background-color: #4062ca;
   }
 }
 
 /* *********************************************** RABINDRA ********************************************************************* */
 
 /* For tablets and larger screens */
+@media (max-width: 768px) {
+  .dashboard {
+    margin: 10px;
+  }
+  .card{
+    margin-top: 0;
+  }
+}
 @media (min-width: 768px) {
   .tabs_setting {
     padding: 10px 15px;
@@ -1178,7 +1179,7 @@ input[type='checkbox']:checked {
 
 .calender:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 .export_btn {
@@ -1195,7 +1196,7 @@ input[type='checkbox']:checked {
 
 .export_btn:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 /* @media only screen and (min-width: 1400px)and (max-width: 2561px) {
@@ -1415,16 +1416,15 @@ input[type='checkbox']:checked {
   gap: 16px;
 }
 
-.ichove{
+.ichove {
   transition: all 0.3s ease;
 }
-.ichove:hover{
+.ichove:hover {
   transform: scale(1.08);
 }
 
-@media (max-width:968px) {
-  
-  .mobile_tooltip{
+@media (max-width: 968px) {
+  .mobile_tooltip {
     display: none !important;
   }
 }
