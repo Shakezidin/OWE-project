@@ -304,59 +304,59 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     }
   }, [selectedType])
 
-// Dynamically get the base URL using window.location.origin
-const BASE_URL = window.location.origin;
+  // Dynamically get the base URL using window.location.origin
+  const BASE_URL = window.location.origin;
 
-const OpenSignDocument = async () => {
-  setIsLoadingDocument(true);
-  try {
-    const params = new URLSearchParams();
-    params.append("leads_id", leadId.toString() || "");
-    params.append("return_url", `${BASE_URL}/leadmng-dashboard`);
+  const OpenSignDocument = async () => {
+    setIsLoadingDocument(true);
+    try {
+      const params = new URLSearchParams();
+      params.append("leads_id", leadId.toString() || "");
+      params.append("return_url", `${BASE_URL}/leadmng-dashboard`);
 
-    const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
-    const eventSource = new EventSource(eventSourceUrl);
+      const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
+      const eventSource = new EventSource(eventSourceUrl);
 
-    eventSource.onmessage = (event) => {
-      const payload = JSON.parse(event.data);
+      eventSource.onmessage = (event) => {
+        const payload = JSON.parse(event.data);
 
-      if (payload.is_done) {
-        setIsLoadingDocument(false);
-        if (payload.error === null) {
-          window.open(payload.data.url, '_blank');
-        } else {
-          const errorMessage = payload.error || 'Error generating signing URL. Please try again.';
-          console.error(`Error during DocuSign URL generation: ${errorMessage}`);
-          setDocumentStatus({
-            status: 'pending',
-            message: errorMessage
-          });
-          toast.error(errorMessage);
+        if (payload.is_done) {
+          setIsLoadingDocument(false);
+          if (payload.error === null) {
+            window.open(payload.data.url, '_blank');
+          } else {
+            const errorMessage = payload.error || 'Error generating signing URL. Please try again.';
+            console.error(`Error during DocuSign URL generation: ${errorMessage}`);
+            setDocumentStatus({
+              status: 'pending',
+              message: errorMessage
+            });
+            toast.error(errorMessage);
+          }
+          eventSource.close();
         }
-        eventSource.close();
-      }
-    };
+      };
 
-    eventSource.onerror = (error) => {
-      console.error('Error with SSE connection', error);
+      eventSource.onerror = (error) => {
+        console.error('Error with SSE connection', error);
+        setIsLoadingDocument(false);
+        setDocumentStatus({
+          status: 'pending',
+          message: 'Connection error. Please try again.'
+        });
+        toast.error('Connection error. Please try again.');
+        eventSource.close();
+      };
+    } catch (error) {
+      console.error("Error initiating DocuSign signing:", error);
       setIsLoadingDocument(false);
       setDocumentStatus({
         status: 'pending',
-        message: 'Connection error. Please try again.'
+        message: 'Error initiating signing process. Please try again.'
       });
-      toast.error('Connection error. Please try again.');
-      eventSource.close();
-    };
-  } catch (error) {
-    console.error("Error initiating DocuSign signing:", error);
-    setIsLoadingDocument(false);
-    setDocumentStatus({
-      status: 'pending',
-      message: 'Error initiating signing process. Please try again.'
-    });
-    toast.error('Error initiating signing process. Please try again.');
-  }
-};
+      toast.error('Error initiating signing process. Please try again.');
+    }
+  };
 
 
   const [load, setLoad] = useState(false);
@@ -533,7 +533,7 @@ const OpenSignDocument = async () => {
 
 
   const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
-  const [loadEdit, setLoadEdit] = useState(false);
+  const [loadEdit, setLoadEdit] = useState<number | null>(null);
   const handleInputChange = (event: any, leadId: string) => {
     const { value } = event.target;
     const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
@@ -544,7 +544,7 @@ const OpenSignDocument = async () => {
     }));
   };
   const handleConfrm = async (e: any, leadId: any) => {
-    setLoadEdit(true);
+    setLoadEdit(leadId);
     e.preventDefault();
     try {
       const response = await postCaller(
@@ -562,12 +562,12 @@ const OpenSignDocument = async () => {
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
-      setLoadEdit(false);
+      setLoadEdit(null);
     } catch (error) {
-      setLoadEdit(false);
+      setLoadEdit(null);
       console.error('Error submitting form:', error);
     }
-    setLoadEdit(false);
+    setLoadEdit(null);
   };
   const handleClick = (e: any, leadsId: any) => {
     toggleCheckboxVisibility(leadsId);
@@ -717,43 +717,43 @@ const OpenSignDocument = async () => {
 
 
                       <td>
-                        {loadEdit === false ? 
-                        <div className={styles.topdived}>
-                          {!visibilityState[lead.leads_id] && (
-                            <p>{lead.sales_rep_name || '__________'}</p>
-                          )}
-                          {visibilityState[lead.leads_id] && (
-                            <div className={styles.dropdownContainerModal}>
-                              <input
-                                type="text"
-                                value={salesrep[lead.leads_id] !== undefined ? salesrep[lead.leads_id] : lead.sales_rep_name || ''}
-                                placeholder=""
-                                onChange={(event) => handleInputChange(event, lead.leads_id)}
-                                name="salesrep"
-                                maxLength={40}
-                              />
-                            </div>
-                          )}
-                          <span>
-                            {!visibilityState[lead.leads_id] ? (
-                              <span
-                                className={styles.EditPenIcon}
-                                onClick={() => toggleCheckboxVisibility(lead.leads_id)}
-                              >
-                                <img src={ICONS.EditPenNew} alt="Edit" />
-                              </span>
-                            ) : (
-                              <span
-                                className={styles.SignEditBottonX}
-                                onClick={(e) => handleClick(e, lead.leads_id)}
-                              >
-                                <img src={ICONS.SignEditBotton} />
-                              </span>
+                        {loadEdit === lead.leads_id ?
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}><MicroLoader /></div>
+                          :
+                          <div className={styles.topdived}>
+                            {!visibilityState[lead.leads_id] && (
+                              <p>{lead.sales_rep_name || '__________'}</p>
                             )}
-                          </span>
-                        </div>
-                        : 
-                        <div><MicroLoader/></div>
+                            {visibilityState[lead.leads_id] && (
+                              <div className={styles.dropdownContainerModal}>
+                                <input
+                                  type="text"
+                                  value={salesrep[lead.leads_id] !== undefined ? salesrep[lead.leads_id] : lead.sales_rep_name || ''}
+                                  placeholder=""
+                                  onChange={(event) => handleInputChange(event, lead.leads_id)}
+                                  name="salesrep"
+                                  maxLength={40}
+                                />
+                              </div>
+                            )}
+                            <span>
+                              {!visibilityState[lead.leads_id] ? (
+                                <span
+                                  className={styles.EditPenIcon}
+                                  onClick={() => toggleCheckboxVisibility(lead.leads_id)}
+                                >
+                                  <img src={ICONS.EditPenNew} alt="Edit" />
+                                </span>
+                              ) : (
+                                <span
+                                  className={styles.SignEditBottonX}
+                                  onClick={(e) => handleClick(e, lead.leads_id)}
+                                >
+                                  <img src={ICONS.SignEditBotton} />
+                                </span>
+                              )}
+                            </span>
+                          </div>
                         }
                       </td>
 
@@ -1020,7 +1020,7 @@ const OpenSignDocument = async () => {
                                   </>
                                 )}
                             </div>
-                           
+
                             <div onClick={() => (setLeadId(lead.leads_id))}>
                               <ChangeStatus
                                 selectedType={selectedType}
