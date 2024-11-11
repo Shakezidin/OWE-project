@@ -73,3 +73,9 @@ type DeleteLeadsRequest struct {
 type StatusWinRequest struct {
 	LeadsId int `json:"leads_id"`
 }
+
+type GetSaleRepsResponseItem struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+	Role string `json:"role"`
+}
