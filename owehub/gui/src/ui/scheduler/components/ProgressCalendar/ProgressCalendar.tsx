@@ -131,7 +131,7 @@ const DayPickerCalendar = ({
   return (
     <div style={{marginLeft:'20px'}}>
       <h5
-        style={{ fontWeight: 600, fontSize:'14px', justifyContent:'center' }}
+        style={{ fontWeight: 600, fontSize:'14px', justifyContent:'center', cursor:'default' }}
         className={`mb2 ${defaultClassNames.month_caption} ${!selected ? 'flex justify-center' : 'ml2'}`}
       >
         {format(
