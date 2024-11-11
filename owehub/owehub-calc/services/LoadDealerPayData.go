@@ -6,6 +6,7 @@ import (
 	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -136,31 +137,34 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	if len(ST) > 6 {
 		ST = ST[6:]
 	}
+
+	epc := ContractDolDol / (SystemSize * 1000)
+
 	outData["home_owner"] = HomeOwner
 	outData["current_status"] = CurrectStatus
 	outData["unique_id"] = uniqueID
 	outData["dealer_code"] = DealerCode
 	outData["today"] = time.Now()
 	outData["amount"] = amount
-	outData["sys_size"] = SystemSize
-	outData["rl"] = Rl
-	outData["contract_dol_dol"] = ContractDolDol
-	outData["loan_fee"] = LoanFee
-	outData["epc"] = ContractDolDol / (SystemSize * 1000)
-	outData["net_epc"] = NetEpc
-	outData["other_adders"] = OtherAdder
+	outData["sys_size"] = CheckFloat(SystemSize)
+	outData["rl"] = CheckFloat(Rl)
+	outData["contract_dol_dol"] = CheckFloat(ContractDolDol)
+	outData["loan_fee"] = CheckFloat(LoanFee)
+	outData["epc"] = CheckFloat(epc)
+	outData["net_epc"] = CheckFloat(NetEpc)
+	outData["other_adders"] = CheckFloat(OtherAdder)
 	outData["credit"] = credit
 	outData["rep_1"] = Rep1
 	outData["rep_2"] = Rep2
 	outData["setter"] = Setter
-	outData["draw_amt"] = DrawAmt
-	outData["amt_paid"] = amt_paid
-	outData["balance"] = balance
+	outData["draw_amt"] = CheckFloat(DrawAmt)
+	outData["amt_paid"] = CheckFloat(amt_paid)
+	outData["balance"] = CheckFloat(balance)
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
 	outData["finance_type"] = financeType
 	outData["ntp_date"] = NtpCompleteDate
-	outData["marketing_fee"] = mktFee
+	outData["marketing_fee"] = CheckFloat(mktFee)
 	outData["referral"] = Referral
 	outData["rebate"] = Rebate
 
@@ -288,4 +292,11 @@ func parseDollarStringToFloat(dollarStr string) float64 {
 		return 0.0
 	}
 	return val
+}
+
+func CheckFloat(value float64) float64 {
+	if math.IsInf(value, 1) || math.IsInf(value, -1) || math.IsNaN(value) {
+		return 0
+	}
+	return value
 }
