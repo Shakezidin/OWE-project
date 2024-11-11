@@ -364,7 +364,7 @@ input:checked+.slider:before {
 
 .login-input .input-inner-view .input {
   color: var(--input-border-color);
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 300;
 }
 
