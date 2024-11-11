@@ -7,6 +7,7 @@ interface TableProps {
   handleClose: () => void;
   isOpen?: boolean;
   projectDetail: any;
+  ntpValue:string;
 }
 
 // Filter component
@@ -14,7 +15,7 @@ const NtpPopUp: React.FC<TableProps> = ({
   projectDetail,
   handleClose,
   isOpen = false,
-  
+  ntpValue,
 }) => {
   const handleCloseModal = () => {
     handleClose();
@@ -97,7 +98,7 @@ const NtpPopUp: React.FC<TableProps> = ({
            <h3 className="createProfileText" style={{ margin: 0 }}>
               NTP
             </h3>
-            <p style={{fontSize:'12px', fontWeight:'500', color:'#EBA900'}}></p>
+            <p style={{fontSize:'12px', fontWeight:'500', color:'#EBA900'}}>{ntpValue==='0 days pending' ? "" : ntpValue}</p>
            </div>
             <div
               className="createUserCrossButton"

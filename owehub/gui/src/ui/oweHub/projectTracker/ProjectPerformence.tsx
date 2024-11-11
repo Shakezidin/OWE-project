@@ -653,7 +653,7 @@ const ProjectPerformence = () => {
   const ntpAction = () => {
     setNtpOPen(true);
   };
-
+  const [ntpValue,setNtpValue]=useState("0 days pending");
   const handleActiveTab = (tab: any) => {
     setActiveTab(tab);
   };
@@ -1393,6 +1393,7 @@ const ProjectPerformence = () => {
                                     onClick={() => {
                                       setSelectedProjectQC(project.ntp);
                                       ntpAction();
+                                      setNtpValue(project.days_ntp);
                                     }}
                                   >
                                     NTP:
@@ -1534,8 +1535,8 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    {project.days_permints && project.days_permints !== '0 days pending' && project.days_permints !== '-' &&<div className="pendingDayDiv">
-      <p className="daysRemaining">{project.days_permints}</p>
+    {project.days_permits && project.days_permits !== '0 days pending' && project.days_permits !== '-' &&<div className="pendingDayDiv">
+      <p className="daysRemaining">{project.days_permits}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1727,7 +1728,7 @@ const ProjectPerformence = () => {
                   projectDetail={selectedProjectQC}
                   isOpen={ntpOPen}
                   handleClose={ntpClose}
-
+                  ntpValue={ntpValue}
                 />
               </tbody>
             </table>
