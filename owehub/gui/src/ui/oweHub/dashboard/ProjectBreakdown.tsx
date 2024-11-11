@@ -53,7 +53,7 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({ handleClose, data }) => {
       <form action="" className="modal-down-break">
         <div className="breakdown-container">
           <div className="project-section">
-            <h5>Project BreakDown</h5>
+            <h5>Project Breakdown</h5>
             {/* <h4>{data?.}</h4> */}
 
           </div>
