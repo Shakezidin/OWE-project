@@ -4,7 +4,6 @@
   max-width: 100%;
   border-radius: 20px;
   background-color: #fff;
-  margin: 1rem 0;
   position: relative;
 }
 
@@ -21,7 +20,7 @@
 }
 
 .calendar-close:hover {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .calendar-date .icon {
@@ -37,7 +36,7 @@
 }
 
 .calendar-date .icon:hover {
-  transform: scale(1.2);
+  transform: scale(1.05);
 }
 
 .calendar-date .prev-icon {
@@ -66,10 +65,11 @@
 }
 
 .dropdown-calc-container select {
-  border: 2px solid #377cf6;
+  border: 1px solid #377cf6;
   border-radius: 4px;
   width: 50%;
-  padding: 2px;
+  padding: 4px;
+  font-size: 12px;
 }
 
 .calendar-btn-close {
@@ -87,7 +87,7 @@
   border-top-right-radius: 20px;
   font-family: 'Inter', sans-serif;
   font-size: 18px;
-  color: #333;
+  color: var(--input-border-color);
   padding: 1rem 0;
 }
 
@@ -106,7 +106,7 @@
   display: flex;
   justify-content: space-around;
   font-weight: 600;
-  color: #333;
+  color: var(--input-border-color);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   padding: 1rem 0;
@@ -167,7 +167,7 @@
   margin-bottom: 7px;
   font-size: 12px;
   font-weight: 600;
-  color: #333;
+  color: var(--input-border-color);
 }
 
 .non-month .number {
@@ -200,7 +200,7 @@
   font-size: 12px;
   font-weight: 500;
   background-color: white;
-  color: #333;
+  color: var(--input-border-color);
 }
 
 .event-box + .event-box {
@@ -295,6 +295,7 @@
   }
   .calendar-btn-close .calendar-head-btn {
     padding: 6px 10px !important;
+    width: 100%;
   }
 }
 
