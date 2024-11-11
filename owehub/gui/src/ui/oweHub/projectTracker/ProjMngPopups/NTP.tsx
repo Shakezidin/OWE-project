@@ -14,6 +14,7 @@ const NtpPopUp: React.FC<TableProps> = ({
   projectDetail,
   handleClose,
   isOpen = false,
+  
 }) => {
   const handleCloseModal = () => {
     handleClose();

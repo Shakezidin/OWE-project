@@ -141,14 +141,57 @@ const ProjectPerformence = () => {
       set_minValue(values);
     }
   };
-
+  const [FilterFlag,setFilterFlag]=useState(false);
+  const HandleFilterClick=()=>{
+    setFilterFlag(prev=>!prev);
+  }
+  useEffect(()=>{
+    setOpenFilter(FilterFlag);
+  },[FilterFlag]);
+  const [checkedOptions,setCheckedOptions]=useState<string[]>([]);
   const filterRef = useRef<HTMLDivElement>(null);
   const handleClickOutsidee = (event: MouseEvent) => {
     if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
       setOpenFilter(false);
     }
   };
+  const [filtered,setFiltered]=useState<boolean>(false);
 
+  const[fieldData,setFieldData]=useState<string[]>([]);
+
+  useEffect(() => {
+    const newFieldData: string[] = [];
+
+    if (checkedOptions.length === 0) {
+      // If no options are checked, clear the fieldData
+      setFieldData([]);
+    } 
+   else{
+    checkedOptions.forEach((val) => {
+      switch (val) {
+        case 'Project Age':
+          newFieldData.push('project_age');
+          break;
+        case 'NTP':
+          newFieldData.push('days_pending_ntp');
+          break;
+        case 'Permitting':
+          newFieldData.push('days_pending_permits');
+          break;
+        case 'Install':
+          newFieldData.push('days_pending_install');
+          break;
+        case 'PTO':
+          newFieldData.push('days_pending_pto');
+          break;
+        default:
+          break;
+      }
+    });
+   }
+
+    setFieldData(newFieldData); // Update the state with the final array
+  }, [checkedOptions]);
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutsidee);
     return () => {
@@ -160,21 +203,8 @@ const ProjectPerformence = () => {
   const [checkedStates, setCheckedStates] = useState(
     Array(5).fill(false) // Initialize an array of 5 false values
   );
-  const [checkedOptions,setCheckedOptions]=useState<string[]>([]);
-  const [myObj,setMyObj]=useState<object>({});
-  const createObject=()=>{
-    setMyObj({checkedOptions,minValue,maxValue});
-    setOpenFilter(false);
-    console.log(myObj, "  This is my Object");
-  }
-  // const [fields,setField]=useState<string[]>([]);
-  // const [pending_start_date, setPendingStartDate]=useState<number>(minValue);
-  // const [pending_end_date, setPendingEndDate]=useState<number>(maxValue);
-  // useEffect(()=>{
-  //   setField(checkedOptions);
-  //   setPendingStartDate(minValue);
-  //   setPendingEndDate(maxValue);
-  // },[checkedOptions,minValue,maxValue])
+ 
+
   const handleCheckboxChange = (index:number) => {
     setCheckedStates((prevState) => {
       const updatedStates = [...prevState]; // Create a copy of the array
@@ -467,9 +497,9 @@ const ProjectPerformence = () => {
           project_status:
             activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
           dealer_names: selectedDealer.map((item) => item.value),
-         
-          
-
+          fieldData,
+          minValue,
+          maxValue
         })
         
       );
@@ -485,6 +515,7 @@ const ProjectPerformence = () => {
     selectedDealer,
     isFetched,
     activeCardId,
+    filtered
   ]);
 
   useEffect(() => {
@@ -930,13 +961,12 @@ const ProjectPerformence = () => {
             <div className="perf-export-btn relative pipline-export-btn">
               {!!(projectStatus.length && !loading) && (
                 <div className='filterButtonAddition'>
+                
                   <div
                   className="filter-line relative"
                   style={{ backgroundColor: '#377CF6' }}
                   data-tooltip-id='filter'
-                  onClick={()=>{setOpenFilter(prev=> !prev);
-                    openFilter?console.log("Filter option is opened"):console.log("Filter option is closed")
-                  }}
+                  onClick={HandleFilterClick}
                 >
                   <img
                     src={ICONS.fil_white}
@@ -1110,10 +1140,11 @@ const ProjectPerformence = () => {
       }}
       
 		/> */}
-    <Slider
+    {/* <Slider
   range
   min={1}
   max={180}
+  step={1}
   defaultValue={[minValue, maxValue]}
   onChange={handleSliderChange}
   className="custom-slider"
@@ -1136,8 +1167,106 @@ const ProjectPerformence = () => {
       boxShadow: '0 0 0 2px white',
     }
   }}
-/>
-                        <div className='rangeOfDays'>
+/> */}
+
+<Slider
+
+                      range
+
+                      min={1}
+
+                      max={180}
+
+                      value={[minValue, maxValue]}
+
+                      onChange={handleSliderChange}
+
+                      marks={{
+
+                        1: {
+
+                          label: <span style={{ color: 'black',}}>1</span>,
+
+                        },
+
+                        30: {
+
+                          label: <span style={{ color: 'black' }}>30</span>,
+
+                        },
+
+                        60: {
+
+                          label: <span style={{ color: 'black' }}>60</span>,
+
+                        },
+
+                        90: {
+
+                          label: <span style={{ color: 'black' }}>90</span>,
+
+                        },
+
+                        120: {
+
+                          label: <span style={{ color: 'black' }}>120</span>,
+
+                        },
+
+                        150: {
+
+                          label: <span style={{ color: 'black' }}>150</span>,
+
+                        },
+
+                        180: {
+
+                          label: <span style={{ color: 'black' }}>180</span>,
+
+                        },
+
+                      }}
+
+                      className="custom-slider"
+
+                      railStyle={{
+
+                        backgroundColor: '#E5E7EB',
+
+                        height: 2,
+
+                      }}
+
+                      trackStyle={{
+
+                        backgroundColor: '#3B82F6',
+
+                        height: 2,
+
+                      }}
+
+                      handleStyle={{
+
+                        borderColor: '#3B82F6',
+
+                        backgroundColor: '#3B82F6',
+
+                        opacity: 1,
+
+                        width: 12,
+
+                        height: 12,
+
+                        marginTop: -4,
+
+                        boxShadow: '0 0 0 2px white',
+
+                      }}
+
+                    />
+
+ 
+                        {/* <div className='rangeOfDays'>
         <p className='rangeOption'>1</p> 
         <p className='rangeOption'>30</p> 
         <p className='rangeOption'>60</p> 
@@ -1145,13 +1274,15 @@ const ProjectPerformence = () => {
         <p className='rangeOption'>120</p> 
         <p className='rangeOption'>150</p> 
         <p className='rangeOption'>180+</p> 
-        </div> 
+        </div>  */}
 
 
                         <div className='filterButtons'> 
 
                           <div className='cancelButton' onClick={()=>setOpenFilter(false)} style={{cursor:"pointer"}}> Cancel </div>
-                          <div className='applyButton' style={{cursor:"pointer"}} onClick={createObject}> Apply </div>
+                          <div className='applyButton' style={{cursor:"pointer"}} onClick={()=>{
+                            setFiltered(prev=>!prev);
+                            setOpenFilter(false); }}> Apply </div>
                           </div>
 </div>
 
@@ -1220,7 +1351,7 @@ const ProjectPerformence = () => {
                                     </p>
                                   </div>
                                 </Link>
-                                { <div className='projectAge'>
+                                {project.days_project_age && project.days_project_age !=='-' && project.days_project_age !=='0'&& <div className='projectAge'>
                                      <p>Project age : 
                                       {
                                           project.days_project_age.split(" ")[0] + " days"
@@ -1596,6 +1727,7 @@ const ProjectPerformence = () => {
                   projectDetail={selectedProjectQC}
                   isOpen={ntpOPen}
                   handleClose={ntpClose}
+
                 />
               </tbody>
             </table>
