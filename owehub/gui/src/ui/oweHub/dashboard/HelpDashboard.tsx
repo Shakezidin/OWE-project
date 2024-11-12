@@ -267,7 +267,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                   />
                 </div>
 
-                <div className="create-input-field-help">
+                <div className="create-input-field-help attach-help-mob">
                   <label className="inputLabel">
                     <p>Attach File</p>
                   </label>

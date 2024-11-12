@@ -2282,7 +2282,7 @@
   width: 13px !important;
   height: 13px !important;
   border: 1.4px solid #007bff !important; /* Blue border */
-  border-radius: 5.6px !important; /* Rounded corners */
+  border-radius: 4px !important; /* Rounded corners */
   background-color: white !important; /* White background */
   cursor: pointer !important;
   display: flex !important;

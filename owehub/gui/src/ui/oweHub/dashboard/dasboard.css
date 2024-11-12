@@ -473,8 +473,9 @@
 .breakdown-container {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0.5rem 0 1rem;
-  color: #000;
+  align-items: center;
+  color: var(--input-border-color);
+  padding: 1rem;
 }
 
 .breakdown-img {
@@ -492,16 +493,13 @@
   font-size: 16px;
   font-weight: 500;
   text-align: left;
-  color: #000;
+  color: var(--input-border-color);
 }
 
 .project-section h5 {
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 18px;
-  text-align: left;
-  color: #000;
-  padding-bottom: 1rem;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--input-border-color);
 }
 
 .close-popup-btn {
@@ -609,13 +607,13 @@
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  z-index: 150;
+  z-index: 200;
 }
 
 .modal-down-break {
   background-color: #fefefe;
   border-radius: 16px;
-  width: 36%;
+  width: 600px;
   max-width: 900px;
   height: 500px;
   overflow: hidden;
@@ -830,15 +828,6 @@
     box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
   }
 
-  .modal-down-break {
-    background-color: #fefefe;
-    border-radius: 16px;
-    width: 40%;
-    max-width: 900px;
-    height: 427px;
-    overflow: hidden;
-  }
-
   .help-modal {
     position: fixed;
     background-color: #fefefe;
@@ -896,6 +885,14 @@
   .children-container {
     padding: unset;
     overflow-x: hidden;
+  }
+
+  .attach-help-mob{
+    flex-basis: auto;
+  }
+
+  .modal-down-break{
+    margin: 10px;
   }
 
   .date-button{
