@@ -44,6 +44,9 @@ interface EditModalProps {
 
   won?: boolean;
   setWon: React.Dispatch<React.SetStateAction<boolean>>;
+
+  qc?: boolean;
+  setQc: React.Dispatch<React.SetStateAction<boolean>>;
   currentFilter: string;
   setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -73,6 +76,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   finish,
   setFinish,
   currentFilter,
+  qc,
+  setQc,
   setCurrentFilter
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
@@ -355,6 +360,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       setVisibleDiv(5);
     } else if (finish === true) {
       MarkedConfirm();
+    } else if (qc === true) {
+      setVisibleDiv(88);
     } else if (leadData) {
       setVisibleDiv(leadData.status_id);
     }
@@ -732,7 +739,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <br />
                   <div className={classes.ctmracquiredDiv}>
                     <span className={classes.ctmracquiredQC}>
-                      12 Nov 2024
+                      {format(new Date(), 'dd MMM, yyyy')}
                     </span>
                     <span className={classes.ctmracquired} style={{
                       fontWeight: "500",
@@ -756,7 +763,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         opacity: (loadWon || !leadId) ? 0.6 : 1,
                         cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
                       }}
-                      onClick={handleCloseWon}
+                     
                     >
                       {loadWon ? "Wait..." : "Confirm"}
                     </button>

@@ -629,6 +629,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         setWon={setWon}
         finish={finish}
         setFinish={setFinish}
+        qc={qc}
+        setQc={setQc}
         currentFilter={currentFilter}
         setCurrentFilter={setCurrentFilter}
       />
