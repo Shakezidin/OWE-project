@@ -178,6 +178,7 @@ import LogCalc3 from "../assets/log_calc_3.svg"
 import MenuDealer from "../assets/SideDealerPay.svg"
 import MenuLead from "../assets/SideLead.svg";
 import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
+import QcLineLead from '../../resources/assets/QcLineLead.svg';
 
 
 export const ICONS = {
@@ -376,4 +377,5 @@ export const ICONS = {
   MenuDealer: MenuDealer,
   MenuLead: MenuLead,
   ScheduleRepeat: ScheduleRepeat,
+  QcLineLead:QcLineLead,
 };
