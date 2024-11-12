@@ -178,6 +178,7 @@ import LogCalc3 from "../assets/log_calc_3.svg"
 import MenuDealer from "../assets/SideDealerPay.svg"
 import MenuLead from "../assets/SideLead.svg";
 import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
+import QCAudit from "../assets/QCAudit.png"
 
 
 export const ICONS = {
@@ -198,6 +199,7 @@ export const ICONS = {
   editIcon: edit,
   Searchbar1:Searchbar1,
   searchbar2:searchbar2,
+  QCAudit:QCAudit,
   
   searchbar3:searchbar3,
   APPICON: require('../../resources/assets/appicon.png'),

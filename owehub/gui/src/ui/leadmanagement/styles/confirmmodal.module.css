@@ -156,7 +156,6 @@
   height: auto;
   padding-bottom: 14px;
 }
-
 .customer_wrapper_list_Edited {
   flex-basis: calc(100%);
   border-radius: 8px;
@@ -167,6 +166,49 @@
   background-color: #edfff0;
   padding-bottom: 33px;
 }
+/************************************************************************************************* QC AUDIT MODEL */
+.customer_wrapper_list_EditeQC {
+  flex-basis: calc(100%);
+  border-radius: 8px;
+  max-width: 593px;
+  height: auto;
+  margin-bottom: -28px;
+  background-color: #ffffff;
+  padding-bottom: 33px;
+}
+/* .success_not_Edited4Model  */
+.congratulationsQC {
+  padding-left: 33.5%;
+  font-weight: 600;
+  font-size: 18px;
+  color: #3ac759;
+  padding-top: 7%;
+}
+.ctmracquiredQC {
+  padding-left: 35.6%;
+  font-weight: 400;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+@media (max-width: 768px){
+  .congratulationsQC {
+    padding-left: 24.5%;
+    font-weight: 600;
+    font-size: 18px;
+    color: #3ac759;
+    padding-top: 7%;
+  }
+
+.ctmracquiredQC{
+  max-width: 35em; 
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+}
+
+/******************************************************************************************************* QC AUDIT END */
+
 .customer_wrapper_list_EditedCConfirmation {
   flex-basis: calc(100%);
   border-radius: 8px;

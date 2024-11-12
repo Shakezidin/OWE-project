@@ -465,19 +465,6 @@ table tbody tr:hover {
   gap: 6px;
 }
 
-input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
-  border-radius: 100px;
-  border: 1px solid #797979;
-  cursor: pointer;
-}
-
-input[type='checkbox']:checked {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-}
-
 .actionButtons {
   display: flex;
   gap: 10px; /* Adds space between buttons */
@@ -752,13 +739,15 @@ input[type='checkbox']:checked {
   .searchBarMobile {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    outline: none;
+    border: 0.5px solid black; 
     border-radius: 8px;
     padding: 5px;
     height: 36px;
     width: 252px !important;
     margin-right: 0;
-  }
+}
+
 
   .searchBarMobile input::placeholder {
     font-size: 11.8px;
@@ -862,7 +851,7 @@ input[type='checkbox']:checked {
   .searchBarMobile {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 0.5px solid black;
     border-radius: 8px;
     padding: 5px;
     height: 36px;
@@ -873,12 +862,23 @@ input[type='checkbox']:checked {
   .searchBarMobile input {
     padding-left: 16px;
   }
+  .searchBarMobile input::placeholder {
+    font-size: 11.8px;
+  }
 
+  .searchBarMobile:hover {
+    border: 1px solid var(--primary-color);
+  }
+  .searchBarMobile .searchInput:focus {
+    outline: none;
+  }
+  
+  .searchBarMobile:focus-within {
+    border: 1px solid var(--primary-color) !important;
+  }
   .searchBarMobile input::placeholder {
     font-size: 12px;
     text-align: left;
-    padding-left: 10px;
-    color: #999;
   }
 
   .searchIcon {

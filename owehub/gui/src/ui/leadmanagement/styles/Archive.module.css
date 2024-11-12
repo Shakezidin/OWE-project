@@ -228,7 +228,7 @@ table tbody tr:hover {
 }
 
 .filtericon:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.05);
 }
 
@@ -266,8 +266,10 @@ table tbody tr:hover {
 
 .history_list_inner {
   display: grid !important;
-  grid-template-columns: auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr) auto auto !important;
-
+  grid-template-columns: auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(
+      0,
+      1.4fr
+    ) auto auto !important;
 
   align-items: center !important;
   padding: 16px !important;
@@ -306,8 +308,8 @@ table tbody tr:hover {
 }
 
 input[type='checkbox'] {
-  /* width: 18px !important; */
-  /* height: 18px !important; */
+  width: 18px !important;
+  height: 18px !important;
   border-radius: 100px;
   border: 1px solid #797979;
   cursor: pointer;
@@ -319,8 +321,8 @@ input[type='checkbox']:hover {
 }
 
 input[type='checkbox']:checked {
-  background-color: #377CF6;
-  border-color: #377CF6;
+  background-color: #377cf6;
+  border-color: #377cf6;
 }
 
 .cardHeaderFirst {
@@ -354,7 +356,7 @@ input[type='checkbox']:checked {
 }
 
 .rescheduleButton {
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -365,7 +367,7 @@ input[type='checkbox']:checked {
 }
 
 .rescheduleButton:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 .archiveButton {
@@ -432,7 +434,7 @@ input[type='checkbox']:checked {
 }
 
 .archieveButtonX {
-  background-color: #D91515;
+  background-color: #d91515;
   border: 1px solid #929292;
   padding: 0px 0px 0px 0px;
   border-radius: 26px;
@@ -448,31 +450,30 @@ input[type='checkbox']:checked {
 
 .archieveButtonX:hover {
   transform: scale(1.05);
-  background-color: #AD1313;
+  background-color: #ad1313;
 }
 
 .archieveButtonA {
-  color: #ffffff;
-  background-color: #377CF6;
-  border: none;
-  padding: 0px 0px 0px 0px;
-  border-radius: 26px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  width: 120px;
-  height: 38px;
+  background-color: #377cf6;
+  color: white;
   text-align: center;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 120px;
+  font-size: 14px;
   transition: all 0.3s ease;
+  font-weight: 400;
 }
 
 .archieveButtonA:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 .archieveButton:hover {
-  background-color: #AD1313;
+  background-color: #ad1313;
   transform: scale(1.05);
 }
 
@@ -481,18 +482,18 @@ input[type='checkbox']:checked {
   color: white;
   text-align: center;
   border: none;
-  padding: 0px 20px 0px 20px;
-  border-radius: 26px;
+  padding: 8px;
+  height: 36px;
+  border-radius: 8px;
   cursor: pointer;
   width: 120px;
-  height: 38px;
   font-size: 14px;
   transition: all 0.3s ease;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .UnArchiveButton:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.05);
 }
 
@@ -543,7 +544,7 @@ input[type='checkbox']:checked {
   align-items: center;
   border-radius: 5px;
 }
-.PaginationFont a{
+.PaginationFont a {
   font-size: 12px !important;
 }
 
@@ -565,6 +566,7 @@ input[type='checkbox']:checked {
   .tabs_setting {
     padding: 10px 15px;
   }
+
 
   .history_list_inner_declined {
     display: grid;
@@ -622,7 +624,7 @@ input[type='checkbox']:checked {
 
   .history_list_inner {
     display: grid;
-    grid-template-columns: 0.2fr auto 0.2fr  0.1fr !important;
+    grid-template-columns: 0.2fr auto 0.2fr 0.01fr !important;
     align-items: baseline;
   }
 
@@ -699,18 +701,19 @@ input[type='checkbox']:checked {
   }
 
   .archieveButtonA {
- 
-    border: 1px solid #929292;
-    padding: 0px 0px 0px 0px;
-    border-radius: 26px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    width: 80px;
-    height: 31px;
+    background-color: #377cf6;
+    margin-top: 7px;
+    color: white;
     text-align: center;
+    border: none;
+    padding: 0px 20px 0px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 103px;
+    height: 31px;
+    font-size: 12px;
     transition: all 0.3s ease;
-    /* all: unset; */
+    font-weight: 400;
   }
 
   .archieveButtonA:hover {
@@ -718,7 +721,7 @@ input[type='checkbox']:checked {
   }
 
   .archieveButton:hover {
-    background-color: #AD1313;
+    background-color: #ad1313;
     transform: scale(1.05);
   }
 
@@ -727,18 +730,17 @@ input[type='checkbox']:checked {
     color: white;
     text-align: center;
     border: none;
-    padding: 0px 20px 0px 20px;
-    border-radius: 26px;
+    border-radius: 8px;
+    padding: 7px 8px;
     cursor: pointer;
-    width: 99px;
-    height: 31px;
+    width: 95px;
     font-size: 12px;
     transition: all 0.3s ease;
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .UnArchiveButton:hover {
-    background-color: #4062CA;
+    background-color: #4062ca;
     transform: scale(1.05);
   }
 
@@ -782,11 +784,9 @@ input[type='checkbox']:checked {
 }
 
 @media only screen and (min-width: 668px) and (max-width: 768px) {
-  .history_list_inner {}
-
   .UnArchiveButton {
     padding: 0px 10px 0px 10px;
-    border-radius: 26px;
+    border-radius: 8px;
     cursor: pointer;
     width: 85px;
     height: 33px;
@@ -796,7 +796,7 @@ input[type='checkbox']:checked {
   }
 
   .UnArchiveButton:hover {
-    background-color: #4062CA;
+    background-color: #4062ca;
     transform: scale(1.05);
   }
 }
@@ -804,7 +804,7 @@ input[type='checkbox']:checked {
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
   .history_list_inner_Tablet_View {
     display: grid;
-    grid-template-columns: 0.2fr 1fr 1fr 1fr 0.4fr 0.4fr auto !important;
+    grid-template-columns: 0.2fr 1fr 1fr 1fr 0.4fr 0.1fr auto !important;
     align-items: baseline;
   }
 
@@ -817,27 +817,6 @@ input[type='checkbox']:checked {
     padding-top: 5px;
     justify-self: center;
     align-self: center;
-  }
-
-  .UnArchiveButton {
-    background-color: #377cf6;
-    color: white;
-    text-align: center;
-    border: none;
-    padding: 0px 10px 0px 10px;
-    border-radius: 26px;
-    cursor: pointer;
-    width: 88px;
-    height: 29px;
-    font-size: 11px;
-    margin-right: -7px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .UnArchiveButton:hover {
-    background-color: #4062CA;
-    transform: scale(1.05);
   }
 
   .chartGrid {
@@ -890,21 +869,8 @@ input[type='checkbox']:checked {
   .leftitem,
   .rightitem {
     align-items: flex-start;
-    /* Optional: vertically center the items */
   }
 }
-
-/* Large desktops and monitors */
-@media only screen and (min-width: 1025px) and (max-width: 1200px) {
-  /* Styles for large desktops */
-}
-
-/* Extra large desktops */
-@media only screen and (min-width: 1201px) {
-  /* Styles for extra-large screens */
-}
-
-/*---------------- Shams Start-------------------- */
 
 .lead__datepicker_content {
   position: absolute;
@@ -937,39 +903,6 @@ input[type='checkbox']:checked {
   font-size: 14px;
   color: #377cf6;
 }
-/* 
-.monthSelect {
-  color: white;
-  padding: 4px 8px;
-  border: none;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.monthSelect option {
-  font-weight: 500;
-  font-size: 12px;
-  transition: all 0.3s ease;
-}
-
-.monthSelect :hover {
-  border: none;
-}
-
-.monthSelect option:hover {
-  transform: scale(1.06);
-}
-
-.monthSelect {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 32px;
-  padding-left: 15px;
-} */
 
 .calender {
   background-color: #377cf6;
@@ -985,7 +918,7 @@ input[type='checkbox']:checked {
 
 .calender:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 .date_calendar {
@@ -1077,8 +1010,8 @@ input[type='checkbox']:checked {
 .infoIcon {
   padding: 5px 5px;
   border-radius: 50%;
-  border: 1px solid #377CF6;
-  color: #377CF6;
+  border: 1px solid #377cf6;
+  color: #377cf6;
   display: flex;
   font-size: 19px;
   cursor: pointer;
@@ -1090,21 +1023,20 @@ input[type='checkbox']:checked {
   transform: scale(1.05);
 }
 
-@media  (max-width: 767px) {
+@media (max-width: 767px) {
   .monthSelect {
     width: 80px;
   }
   .infoIcon {
-    padding: 5px 5px 5px 5px ;
+    padding: 5px 5px 5px 5px;
     border-radius: 50%;
-    border: 1px solid #377CF6;
-    color: #377CF6;
+    border: 1px solid #377cf6;
+    color: #377cf6;
     display: flex;
     font-size: 19px;
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  
 }
 
 /* IT WILL BE ALSO USED */

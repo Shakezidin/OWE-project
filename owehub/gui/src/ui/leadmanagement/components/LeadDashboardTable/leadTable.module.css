@@ -270,7 +270,7 @@
     position: sticky;
     right: 0;
     display: table-cell;
-    padding: 10px 5px !important;
+    padding: 10px 5px 0 5px !important;
     border-left: 1px solid #d5d5d7; 
   }
   .RowMobile {

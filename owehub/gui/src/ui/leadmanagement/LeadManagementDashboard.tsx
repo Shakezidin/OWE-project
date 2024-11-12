@@ -1482,7 +1482,7 @@ const LeadManagementDashboard = () => {
                     }
                   </div>
                 )}
-        {isToggledX && <Select
+                {isToggledX && <Select
                   value={selectedPeriod}
                   onChange={handlePeriodChange}
                   options={periodFilterOptions}
@@ -1503,9 +1503,9 @@ const LeadManagementDashboard = () => {
                       backgroundColor: '#fffff',
                       boxShadow: 'none',
                       '@media only screen and (max-width: 767px)': {
-                       height:'30px !important',
+                        height: '30px !important',
                         width: 'fit-content',
-                        border:'1px solid '
+                        border: '1px solid '
                       },
                       '&:focus-within': {
                         borderColor: '#377CF6',
@@ -1556,7 +1556,7 @@ const LeadManagementDashboard = () => {
                           : '#ddebff',
                       },
                       cursor: 'pointer',
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
@@ -1607,8 +1607,8 @@ const LeadManagementDashboard = () => {
                 />
 
               </div>
-              
-              </div>
+
+            </div>
           </div>
         </div>
         {/* //HORIZONTAL ENDED */}
@@ -1957,15 +1957,11 @@ const LeadManagementDashboard = () => {
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
                 <>
-
                   <div className={styles.searchBarMobile}>
-                    <div className={styles.searchIcon}>
-                      <img src={ICONS.SearchICON001} />
-                    </div>
                     <input
                       value={search}
                       type="text"
-                      placeholder="Enter customer name or id"
+                      placeholder="Search customer name or id"
                       className={styles.searchInput}
                       onChange={(e) => {
                         if (e.target.value.length <= 50) {
