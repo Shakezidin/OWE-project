@@ -388,12 +388,12 @@ const FinanceSchedule: React.FC = () => {
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
-          {(!loading && currentPageData?.length === 0) &&
+          {(!loading && currentPageData?.length === 0) ?
             <div className='flex items-center justify-center' style={{height:"100%"}}>
               <DataNotFound />
             </div>
-          }
-          {!!currentPageData.length && <table>
+          
+          :<table>
             <thead>
               <tr>
                 {FinanceScheduleColumn.map((item, key) => (
