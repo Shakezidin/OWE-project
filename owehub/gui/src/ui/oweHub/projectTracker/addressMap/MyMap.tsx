@@ -573,7 +573,7 @@ const MyMapComponent: React.FC = () => {
                   }}
                   menuListStyles={{
                     fontWeight: 400,
-                    width: 148,
+                    width: 140,
                   }}
                   singleValueStyles={{
                     fontWeight: 400,
@@ -657,7 +657,7 @@ const MyMapComponent: React.FC = () => {
                     }}
                     menuListStyles={{
                       fontWeight: 400,
-                      width: 148,
+                      width: 140,
                     }}
                     singleValueStyles={{
                       fontWeight: 400,

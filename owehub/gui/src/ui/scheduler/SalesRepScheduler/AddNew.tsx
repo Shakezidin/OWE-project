@@ -565,6 +565,7 @@ const AddNew = () => {
                             menuList: (baseStyles) => ({
                               ...baseStyles,
                               maxHeight: '150px',
+                              padding: "4px"
                             }),
                           }}
                         />
