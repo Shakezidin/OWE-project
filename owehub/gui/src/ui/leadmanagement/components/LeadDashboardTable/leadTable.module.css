@@ -268,15 +268,9 @@
   }
   .FixedColumnMobile {
     position: sticky;
-   right: 0;
-    background-color: var(--white-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1px;
-    width: 130px;
-    flex-direction: column;
-    padding: 0 !important;
+    right: 0;
+    display: table-cell;
+    padding: 10px 5px !important;
     border-left: 1px solid #d5d5d7; 
   }
   .RowMobile {
@@ -285,12 +279,11 @@
     right: 0;
   }
   .RowMobileTwo {
-    padding-top: 3px;
-    margin-top: 0px;
+    padding-top: 8px;
     display: flex;
     flex-direction: row;
     right: 0;
-    gap: 8px;
+    gap: 12px;
     padding-bottom: 7px;
     padding-left: 5px;
     justify-content: center;
