@@ -31,9 +31,9 @@
 @media screen and (max-width: 768px) {
   .filtericonHistory {
     display: flex;
+    height: 30px;
+    width: 30px;
     align-items: center;
-    height: 27px;
-    width: 27px;
     margin-top: 0.3px !important;
     margin-left: 23px;
     border-radius: 8px;
@@ -108,4 +108,20 @@ border-radius: 0px !important; */
   .mobile_tooltip{
     display: none !important;
   }
+}
+@media only screen and (min-width: 340px) and (max-width: 539px) {
+  .filtericonHistory {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    margin-top: 0.3px !important;
+    margin-left: 23px;
+    border-radius: 8px;
+    border: 1.2px solid #377cf6;
+    cursor: pointer;
+
+    /* .buttonGroup INSIDE THIS GROUP WIDTH IS ALSO REMOVE */
+  }
+ 
 }

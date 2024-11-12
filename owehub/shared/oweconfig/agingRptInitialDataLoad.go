@@ -66,7 +66,7 @@ func LoadAgngRpInitialData(uniqueIds []string) (InitialDataa InitialAgngRPDataLi
 	log.EnterFn(0, "LoadAgngRpInitialData")
 	defer func() { log.ExitFn(0, "LoadAgngRpInitialData", err) }()
 	query = `
-	SELECT
+SELECT
     customers_customers_schema.unique_id,
     customers_customers_schema.project_status,
     customers_customers_schema.customer_name,
@@ -135,7 +135,7 @@ LEFT JOIN
     project_mgmt_metrics_schema ON project_mgmt_metrics_schema.unique_id = customers_customers_schema.unique_id
 
 WHERE
-    customers_customers_schema.project_status = 'ACTIVE' AND customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
+ customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
 `
 
 	if len(uniqueIds) > 0 {
