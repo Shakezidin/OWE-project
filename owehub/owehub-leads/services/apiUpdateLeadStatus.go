@@ -8,6 +8,7 @@ package services
 
 import (
 	leadService "OWEApp/owehub-leads/common"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	emailClient "OWEApp/shared/email"
@@ -257,6 +258,16 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
 
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
@@ -335,6 +346,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
@@ -398,6 +420,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
@@ -447,6 +480,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 

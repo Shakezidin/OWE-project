@@ -329,5 +329,15 @@ func sendProposalSignedNotification(leadsId int64) error {
 		log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 	}
 
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: firstName,
+		LeadLastName:  lastName,
+		Message:       "Thank You for showing interest in Our World Energy",
+	})
+	err = sendSms(phoneNo, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+	}
+
 	return nil
 }

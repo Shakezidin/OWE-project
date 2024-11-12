@@ -210,4 +210,14 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 	}
+
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: leadFirstName,
+		LeadLastName:  leadLastName,
+		Message:       "Thank You for showing interest in Our World Energy",
+	})
+	err = sendSms(leadPhone, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+	}
 }
