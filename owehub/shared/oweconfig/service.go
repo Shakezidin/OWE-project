@@ -143,6 +143,13 @@ func prepareConfigFilters(tableName string, dataFilter models.DataRequestBody, f
 					len(whereEleList)+1,
 				))
 				whereEleList = append(whereEleList, strings.ToLower(value.(string)))
+			case "state_3", " state_3":
+				filtersBuilder.WriteString(fmt.Sprintf(
+					"LOWER(TRIM(SUBSTRING(state_3 FROM POSITION('::' IN state_3) + 2 FOR LENGTH(state_3)))) %s $%d",
+					operator,
+					len(whereEleList)+1,
+				))
+				whereEleList = append(whereEleList, strings.ToLower(value.(string)))
 			case "transaction":
 				filtersBuilder.WriteString(fmt.Sprintf(
 					"LOWER(regexp_replace(transaction, '<[^>]*>', '', 'g')) %s LOWER($%d)",
