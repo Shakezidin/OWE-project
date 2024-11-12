@@ -183,6 +183,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
   const [finish, setFinish] = useState(false);
+  const [qc, setQc] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -263,12 +264,14 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       setAction(false);
       setWon(false);
       setFinish(false);
+      setQc(false);
       setReschedule(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
       setReschedule(false);
       setFinish(false);
+      setQc(false);
       setWon(false);
       setAction(true);
       setSelectedType('');
@@ -276,6 +279,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // handleCloseWon();
       handleOpenModal();
       setAction(false);
+      setQc(false);
       setReschedule(false);
       setFinish(false);
       setWon(true);
@@ -284,9 +288,19 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // handleCloseWon();
       handleOpenModal();
       setAction(false);
+      setQc(false);
       setReschedule(false);
       setWon(false);
       setFinish(true);
+      setSelectedType('');
+    } else if (selectedType === 'Mark QC Complete') {
+      // handleCloseWon();
+      handleOpenModal();
+      setAction(false);
+      setReschedule(false);
+      setWon(false);
+      setFinish(false);
+      setQc(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
@@ -542,28 +556,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     ];
   };
 
-  const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
-
-  const toggleCheckboxVisibility = (id: string) => {
-    setVisibilityState((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-  };
+ 
 
 
 
   const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
   const [loadEdit, setLoadEdit] = useState<number | null>(null);
-  const handleInputChange = (event: any, leadId: string) => {
-    const { value } = event.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ');
-
-    setSalesRep(prevState => ({
-      ...prevState,
-      [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
-    }));
-  };
+ 
   const handleConfrm = async (e: any, leadId: any) => {
     setLoadEdit(leadId);
     e.preventDefault();
@@ -592,10 +591,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     }
     setLoadEdit(null);
   };
-  const handleClick = (e: any, leadsId: any) => {
-    toggleCheckboxVisibility(leadsId);
-    handleConfrm(e, leadsId);
-  };
+ 
 
 
 
@@ -615,6 +611,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         setWon={setWon}
         finish={finish}
         setFinish={setFinish}
+        qc={qc}
+        setQc={setQc}
         currentFilter={currentFilter}
         setCurrentFilter={setCurrentFilter}
       />
@@ -689,7 +687,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
               </thead>
               <tbody>
                 {isLoading || isLoadingDocument ? (
-                  <tr ref={loaderRef}>
+                  <tr>
                     <td colSpan={30}>
                       <div
                         style={{ display: 'flex', justifyContent: 'center' }}
@@ -1026,18 +1024,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
+                                        ? ['Appointment Not Required', 'Deal Won']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required','Mark QC Complete']
-                                        : ['Appointment Not Required', 'Complete as Won','Mark QC Complete']
+                                        ? ['Appointment Not Required']
+                                        : ['Appointment Not Required', 'Complete as Won']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won','Mark QC Complete']
-                                        : ['Deal Won', 'Complete as Won','Mark QC Complete']
+                                        ? ['Deal Won']
+                                        : ['Deal Won', 'Complete as Won']
                                       : lead.can_manually_win
                                         ? ['Mark QC Complete']
-                                        : ['Complete as Won','Mark QC Complete']
+                                        : ['Complete as Won']
                                 }
                               />
 
