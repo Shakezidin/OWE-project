@@ -1565,7 +1565,7 @@ const LeadManagementDashboard = () => {
                     menu: (baseStyles) => ({
                       ...baseStyles,
                       width: '140px',
-                      border: '1.4px solid black',
+                      border: '0.7px solid black',
                       marginTop: '3px',
                     }),
                   }}
@@ -1960,7 +1960,6 @@ const LeadManagementDashboard = () => {
 
                   <div className={styles.searchBarMobile}>
                     <div className={styles.searchIcon}>
-                      {/* You can use an SVG or a FontAwesome icon here */}
                       <img src={ICONS.SearchICON001} />
                     </div>
                     <input
