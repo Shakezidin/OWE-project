@@ -727,13 +727,15 @@ input[type='checkbox']:checked {
 
   .UnArchiveButton {
     background-color: #377cf6;
+    margin-top: 7px;
     color: white;
     text-align: center;
     border: none;
+    padding: 0px 20px 0px 20px;
     border-radius: 8px;
-    padding: 7px 8px;
     cursor: pointer;
-    width: 95px;
+    width: 100px;
+    height: 31px;
     font-size: 12px;
     transition: all 0.3s ease;
     font-weight: 400;
