@@ -1308,14 +1308,17 @@ const ProjectPerformence = () => {
                                   </div>
                                 </Link>
                                 {project.days_project_age && project.days_project_age !=='-' && project.days_project_age !=='0'&& <div className='projectAge'>
-                                     <p>Project age : 
+                                     <p>Project age :  
                                       {
-                                          project.days_project_age.split(" ")[0] + " days"
+                                          ' '+project.days_project_age.split(" ")[0] + " days"
                                          
                                       }
                                      </p>
                                     
                                   </div>}
+                                  {
+                                    !project.days_project_age && <div style={{margin:'5px 0px'}}> </div>
+                                  }
                                 <div className="milestone-status">
                                   
                                   <div

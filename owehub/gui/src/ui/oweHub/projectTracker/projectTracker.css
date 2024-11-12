@@ -1506,8 +1506,14 @@
   }
  .filter-line{
   position: absolute;
-  right: 50px;
+  right: 45px;
   bottom:0px;
+ }
+ .options{
+  text-align:start;
+ }
+ .dropDownFilter{
+  margin-top:103px;
  }
   .mob-projSt {
     font-size: 16px;
@@ -1597,6 +1603,12 @@
   }
 }
 
+@media (max-width: 375px)
+{
+  .dropDownFilter{
+    margin-top: 140px;
+  }
+}
 .per-head-input {
   height: 50px;
   display: flex;
@@ -2336,8 +2348,8 @@
 
 
 .filter-line {
-  width: 36px !important;
-  height: 36px !important;
+  width: 37px !important;
+  height: 37px !important;
   border-radius: 8px;
   cursor: pointer;
   background-color: white;
