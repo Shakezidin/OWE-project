@@ -38,7 +38,7 @@ export default [
   {
     name: 'other_adders',
     displayName: 'Other Adders',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   
@@ -87,12 +87,7 @@ export default [
     isCheckbox: false,
   },
   { name: 'rl', displayName: 'RL', type: 'number', isCheckbox: false },
-  {
-    name: 'type',
-    displayName: 'Type',
-    type: 'string',
-    isCheckbox: false,
-  },
+ 
   {
     name: 'today',
     displayName: 'Today',

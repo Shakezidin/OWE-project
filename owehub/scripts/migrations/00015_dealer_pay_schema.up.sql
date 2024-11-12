@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS dealer_pay(
     loan_fee float,
     epc float,
     net_epc float,
-    other_adders TEXT,
+    other_adders float,
     credit TEXT,
     rep_1 TEXT,
     rep_2 TEXT,
