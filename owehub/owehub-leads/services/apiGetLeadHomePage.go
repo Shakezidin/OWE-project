@@ -108,6 +108,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 								OR li.appointment_accepted_date > li.appointment_date
 							)
 						)
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.lead_won_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP 
+							AND li.is_appointment_required = TRUE
+						)
 					)
 				)
 				
@@ -155,6 +162,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 							OR li.appointment_accepted_date > li.appointment_date
 						)
 					)
+					AND NOT (
+						li.appointment_date IS NOT NULL
+						AND li.appointment_declined_date IS NULL
+						AND li.lead_won_date IS NULL
+						AND li.appointment_date < CURRENT_TIMESTAMP 
+						AND li.is_appointment_required = TRUE
+					)
 				)
 			`
 		}
@@ -172,6 +186,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 								li.appointment_accepted_date IS NULL
 								OR li.appointment_accepted_date > li.appointment_date
 							)
+						)
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.lead_won_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP 
+							AND li.is_appointment_required = TRUE
 						)
 					)
 					OR (
@@ -205,6 +226,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 								li.appointment_accepted_date IS NULL
 								OR li.appointment_accepted_date > li.appointment_date
 							)
+						)
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.lead_won_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP 
+							AND li.is_appointment_required = TRUE
 						)
 					)
 				)
@@ -661,7 +689,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
 			WHERE li.lead_lost_date IS NULL AND li.docusign_envelope_completed_at IS NULL AND li.manual_won_date IS NULL
-				AND (
+			AND (
 					(
 						li.lead_won_date IS NOT NULL
 						AND NOT (
@@ -673,6 +701,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 								li.appointment_accepted_date IS NULL
 								OR li.appointment_accepted_date > li.appointment_date
 							)
+						)
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.lead_won_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP 
+							AND li.is_appointment_required = TRUE
 						)
 					)
 					OR (
@@ -706,6 +741,13 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 								li.appointment_accepted_date IS NULL
 								OR li.appointment_accepted_date > li.appointment_date
 							)
+						)
+						AND NOT (
+							li.appointment_date IS NOT NULL
+							AND li.appointment_declined_date IS NULL
+							AND li.lead_won_date IS NULL
+							AND li.appointment_date < CURRENT_TIMESTAMP 
+							AND li.is_appointment_required = TRUE
 						)
 					)
 				)
