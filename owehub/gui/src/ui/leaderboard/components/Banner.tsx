@@ -430,7 +430,7 @@ const Banner: React.FC<BannerProps> = ({
                   All
                 </div>
               )}
-              {opts?.map?.((option, ind) => (
+              {opts?.length?opts?.map?.((option, ind) => (
                 <div key={ind} className="dropdown-item">
                   <input
                     type="checkbox"
@@ -443,7 +443,7 @@ const Banner: React.FC<BannerProps> = ({
                   />
                   <span className='dropdown-text'>{option.label}</span>
                 </div>
-              ))}
+              )):<div className='text-center' style={{fontSize:14,color:"#000"}}>No Data Found</div>}
             </div>
           )}
 
