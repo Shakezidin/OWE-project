@@ -108,7 +108,8 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	Rep2 := dlrPayData.Rep2
 	Setter := dlrPayData.Setter
 	ST := dlrPayData.ST
-	ContractDate := dlrPayData.ContractDate
+	year, month, day := dlrPayData.ContractDate.Date()
+	ContractDate := time.Date(year, month, day, 0, 0, 0, 0, dlrPayData.ContractDate.Location())
 	NetEpc := dlrPayData.NetEpc
 	financeType := dlrPayData.FinanceType
 	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
