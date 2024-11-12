@@ -29,7 +29,7 @@ import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
 import Papa from 'papaparse';
 
-const  FinanceTypes: React.FC = () => {
+const FinanceTypes: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -37,15 +37,15 @@ const  FinanceTypes: React.FC = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
- 
-  
+
+
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState<number>(0)
-  
-  const [data,setData] = useState<any>([]);
+
+  const [data, setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false)
   const [isExportingData, setIsExporting] = useState(false);
@@ -66,20 +66,20 @@ const  FinanceTypes: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
-//   const getnewformData = async () => {
-//     const tableData = {
-//       tableNames: ['sub_dealer', 'dealer', 'states'],
-//     };
-//     const res = await postCaller(EndPoints.get_newFormData, tableData);
-//     setDealer((prev) => ({ ...prev, ...res.data }));
-//   };
+  //   const getnewformData = async () => {
+  //     const tableData = {
+  //       tableNames: ['sub_dealer', 'dealer', 'states'],
+  //     };
+  //     const res = await postCaller(EndPoints.get_newFormData, tableData);
+  //     setDealer((prev) => ({ ...prev, ...res.data }));
+  //   };
 
-//   useEffect(() => {
-//     getnewformData();
-//   }, []);
-const handleExportOpen = () => {
-  exportCsv();
-}
+  //   useEffect(() => {
+  //     getnewformData();
+  //   }, []);
+  const handleExportOpen = () => {
+    exportCsv();
+  }
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -108,7 +108,7 @@ const handleExportOpen = () => {
   };
 
   useEffect(() => {
-   
+
     (async () => {
       setLoading(true);
       try {
@@ -126,17 +126,17 @@ const handleExportOpen = () => {
         setData(data?.data?.FinanceTypesData)
         setTotalCount(data?.dbRecCount)
         setLoading(false);
-         
+
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-  
-}, [
-  currentPage, viewArchived, filters
-]);
-const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  }, [
+    currentPage, viewArchived, filters
+  ]);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -274,22 +274,22 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
-  setIsExporting(true);
-  const exportData = await configPostCaller('get_finacetypes', {
-    page_number: 1,
-    page_size: totalCount,
-  });
-  if (exportData.status > 201) {
-    toast.error(exportData.message);
-    return;
-  }
-  
-    
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, "");
+    };
+    setIsExporting(true);
+    const exportData = await configPostCaller('get_finacetypes', {
+      page_number: 1,
+      page_size: totalCount,
+    });
+    if (exportData.status > 201) {
+      toast.error(exportData.message);
+      return;
+    }
+
+
     const headers = [
       'Product Code',
       'Relationship',
@@ -314,9 +314,9 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
       'Active End Date'
 
     ];
-  
-   
-     
+
+
+
     const csvData = exportData?.data?.FinanceTypesData?.map?.((item: any) => [
       removeHtmlTags(item.product_code),
       item.relationship,
@@ -339,15 +339,15 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
       item[' status'],
       dateFormat(item.active_date_start),
       dateFormat(item.active_date_end)
-       
+
     ]);
 
-    
-  
+
+
     const csvRows = [headers, ...csvData];
-  
+
     const csvString = Papa.unparse(csvRows);
-  
+
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -357,9 +357,9 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-   
+
   };
- 
+
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -373,7 +373,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           viewArchive={viewArchived}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
@@ -406,46 +406,52 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
-          <table>
-            <thead>
-              <tr>
-                {FinanceTypesColumn.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={data}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-               
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={FinanceTypesColumn.length}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
-                </tr>
-              ) : currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, i: any) => (
-                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">
-                        {/* <CheckBox
+          {
+            !loading && currentPageData?.length === 0 ?
+              <div style={{ height: "100%" }} className="flex items-center justify-center">
+                <DataNotFound />
+              </div>
+              :
+              <table>
+                <thead>
+                  <tr>
+                    {FinanceTypesColumn.map((item, key) => (
+                      <SortableHeader
+                        key={key}
+                        isCheckbox={item.isCheckbox}
+                        titleName={item.displayName}
+                        data={data}
+                        isAllRowsSelected={isAllRowsSelected}
+                        isAnyRowSelected={isAnyRowSelected}
+                        selectAllChecked={selectAllChecked}
+                        setSelectAllChecked={setSelectAllChecked}
+                        selectedRows={selectedRows}
+                        setSelectedRows={setSelectedRows}
+                        sortKey={item.name}
+                        sortDirection={
+                          sortKey === item.name ? sortDirection : undefined
+                        }
+                        onClick={() => handleSort(item.name)}
+                      />
+                    ))}
+
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={FinanceTypesColumn.length}>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <MicroLoader />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : currentPageData?.length > 0 ? (
+                    currentPageData?.map((el: any, i: any) => (
+                      <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                        <td style={{ fontWeight: '500', color: 'black' }}>
+                          <div className="flex-check">
+                            {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -456,45 +462,46 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                             )
                           }
                         /> */}
-                         
-                      {el.product_code
-                        ? el.product_code.replace(/<\/?[^>]+(>|$)/g, '')
-                        : 'N/A'}
-                    
-                       
-                      </div>
-                    </td>
-                    <td>{el.relationship || 'N/A'}</td>
-                    <td>{el.type || 'N/A'}</td>
-                    <td>{el.term_years || 'N/A'}</td>
-                    <td>{el.sub_record || 'N/A'}</td>
-                    <td>{el.finance_company || 'N/A'}</td>
-                    <td>{el["  finance_type_name"] || 'N/A'}</td> 
-                    <td>{el.finance_company_for_search || 'N/A'}</td>
-                    <td>{el.finance_type_slug_portion_h || 'N/A'}</td>
-                    <td>{el.finance_fee || 'N/A'}</td>
-                    <td>{el.finance_type_uid || 'N/A'}</td>
-                    <td>{el.finance_type_uid_for_import || 'N/A'}</td>
-                    <td>{el.installer || 'N/A'}</td>
-                    <td>{el.payment_start_date_based_on || 'N/A'}</td>
-                    <td>{el.payment_start_date_days || 'N/A'}</td>
-                    <td>{el.ar_rate || 'N/A'}</td>
-                    <td>{el.dealer_fee || 'N/A'}</td>
-                    <td>{el.f_type || 'N/A'}</td>
-                    <td>{el["  status   "] || 'N/A'}</td>
-                   <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                   <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+
+                            {el.product_code
+                              ? el.product_code.replace(/<\/?[^>]+(>|$)/g, '')
+                              : 'N/A'}
+
+
+                          </div>
+                        </td>
+                        <td>{el.relationship || 'N/A'}</td>
+                        <td>{el.type || 'N/A'}</td>
+                        <td>{el.term_years || 'N/A'}</td>
+                        <td>{el.sub_record || 'N/A'}</td>
+                        <td>{el.finance_company || 'N/A'}</td>
+                        <td>{el["  finance_type_name"] || 'N/A'}</td>
+                        <td>{el.finance_company_for_search || 'N/A'}</td>
+                        <td>{el.finance_type_slug_portion_h || 'N/A'}</td>
+                        <td>{el.finance_fee || 'N/A'}</td>
+                        <td>{el.finance_type_uid || 'N/A'}</td>
+                        <td>{el.finance_type_uid_for_import || 'N/A'}</td>
+                        <td>{el.installer || 'N/A'}</td>
+                        <td>{el.payment_start_date_based_on || 'N/A'}</td>
+                        <td>{el.payment_start_date_days || 'N/A'}</td>
+                        <td>{el.ar_rate || 'N/A'}</td>
+                        <td>{el.dealer_fee || 'N/A'}</td>
+                        <td>{el.f_type || 'N/A'}</td>
+                        <td>{el["  status   "] || 'N/A'}</td>
+                        <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+                        <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr style={{ border: 0 }}>
+                      <td colSpan={10}>
+                        <DataNotFound />
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+          }
         </div>
 
         {data?.length > 0 ? (
@@ -520,4 +527,4 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   );
 };
 
-export default  FinanceTypes;
+export default FinanceTypes;
