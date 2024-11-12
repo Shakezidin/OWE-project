@@ -1504,10 +1504,17 @@
   .perf-export-btn {
     text-align: end;
   }
- .filter-line{
+ 
+.pipelineFilterLine{
   position: absolute;
-  right: 50px;
+  right: 45px;
   bottom:0px;
+ }
+ .options{
+  text-align:start;
+ }
+ .dropDownFilter{
+  margin-top:103px;
  }
   .mob-projSt {
     font-size: 16px;
@@ -1597,6 +1604,12 @@
   }
 }
 
+@media (max-width: 375px)
+{
+  .dropDownFilter{
+    margin-top: 140px;
+  }
+}
 .per-head-input {
   height: 50px;
   display: flex;
@@ -1961,7 +1974,8 @@
 }
 
 
-.filter-line {
+
+.pipelineFilterLine{
   width: 36px !important;
   height: 37px !important;
   border-radius: 8px;
@@ -1973,11 +1987,13 @@
   
 }
 
-.filter-line:hover {
+
+.pipelineFilterLine:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-.filter-line img {
+
+.pipelineFilterLine img {
   width: 20px;
   height: 20px;
 }
@@ -2177,14 +2193,17 @@
   font-size: 10px;
   font-weight: 600;
   cursor: default;
+  border-bottom: 1px solid #EBA900;
+  padding:0px 5px 5px 5px;
+  width: 100px;
 }
-.simpleLine{
+/* .simpleLine{
   height: 1px;
   width: 74%;
   margin:0 20px;
   background-color: #EBA900;
   margin-top:3px !important;
-}
+} */
 
 .rangeOption{
   font-size: 12px;
@@ -2260,12 +2279,15 @@
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  width: 20px !important;
-  height: 20px !important;
+  width: 13px !important;
+  height: 13px !important;
   border: 1.4px solid #007bff !important; /* Blue border */
   border-radius: 5.6px !important; /* Rounded corners */
   background-color: white !important; /* White background */
   cursor: pointer !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .pipeline-agingReport-filter input[type="checkbox"]:checked {
@@ -2274,13 +2296,10 @@
 }
 
 .pipeline-agingReport-filter input[type="checkbox"]:checked::before {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   content: "✔" !important; /* Use the Unicode checkmark character */
   display: block !important;
-  font-size: 14px !important;
+  font-size: 10px !important;
   color: #007bff !important; /* Set the checkmark color */
   line-height: 20px !important;
   text-align: center !important;
@@ -2335,9 +2354,9 @@
 }
 
 
-.filter-line {
-  width: 36px !important;
-  height: 36px !important;
+.pipelineFilterLine{
+  width: 37px !important;
+  height: 37px !important;
   border-radius: 8px;
   cursor: pointer;
   background-color: white;
@@ -2347,11 +2366,11 @@
   
 }
 
-.filter-line:hover {
+.pipelineFilterLine:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-.filter-line img {
+.pipelineFilterLine img {
   width: 20px;
   height: 20px;
 }
@@ -2402,7 +2421,7 @@
   width:81px;
   left:29.4px;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 28px;
   position: relative;
   left: 9.4px;
@@ -2527,19 +2546,22 @@
 
 .pendingDayDiv{
   margin-top:4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.daysRemaining{
+/* .daysRemaining{
   text-align: center;
   color: #EBA900;
   font-size: 10px;
   font-weight: 600;
-}
-.simpleLine{
+} */
+/* .simpleLine{
   height: 1px;
   width: 74%;
   margin:0 20px;
   background-color: #EBA900;
-}
+} */
 
 .rangeOption{
   font-size: 12px;
