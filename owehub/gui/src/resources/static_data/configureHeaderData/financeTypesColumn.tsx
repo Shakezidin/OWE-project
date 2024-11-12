@@ -91,7 +91,7 @@ export const FinanceTypesColumn: Column[] = [
   {
     name: 'payment_start_date_days',
     displayName: 'Payment Start Date Days',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {

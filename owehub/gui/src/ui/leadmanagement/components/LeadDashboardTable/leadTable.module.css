@@ -270,7 +270,7 @@
     position: sticky;
     right: 0;
     display: table-cell;
-    padding: 10px 5px !important;
+    padding: 10px 5px 0 5px !important;
     border-left: 1px solid #d5d5d7; 
   }
   .RowMobile {
@@ -330,4 +330,38 @@
 }
 .dropdownContainerModal input:focus {
   outline: none;
+}
+
+.qcbuttoncont{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: #F3F3F3;
+  width: 53px;
+  height: 21px;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 4px;
+  margin-top: 2px;
+  transition: all 0.3s ease;
+}
+.qcbuttoncont p{
+  font-size: 12px;
+  font-weight: 500;
+}
+.qcstaus{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qcactstatus{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #EB3434;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
 }
