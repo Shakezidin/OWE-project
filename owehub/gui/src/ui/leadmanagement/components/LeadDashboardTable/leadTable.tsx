@@ -690,7 +690,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                     <tr>
 
                       <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin: '7px' }}>
-                        <label>
+                        <label style={{marginBottom:"19px"}}>
                           <input
                             type="checkbox"
                             checked={selectedLeads.includes(lead['leads_id'])}
@@ -699,7 +699,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             }
                           />
                         </label>
-                        <div >
+                        <div>
                           <div
                             style={{
                               whiteSpace: 'pre-wrap',
@@ -710,7 +710,17 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             className={styles.name}>{lead.first_name} {lead.last_name}</div>
 
                           <div className={styles.ids}>OWE{lead.leads_id}</div>
+                          <div className={styles.qcbuttoncont}>
+                            <p>QC :</p>
+                            <div className={styles.qcstaus}>
+                              <img src={ICONS.Pendingqc} alt="img" />
+                              {/* <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div> */}
+                            </div>
+                          </div>
                         </div>
+
+
+
                       </td>
                       <td >
                         <div className={styles.info}>{lead.email_id}</div>
@@ -908,18 +918,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                        ? ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required']
-                                        : ['Appointment Not Required', 'Complete as Won']
+                                        ? ['Appointment Not Required','Mark QC Complete']
+                                        : ['Appointment Not Required', 'Complete as Won','Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won']
-                                        : ['Deal Won', 'Complete as Won']
+                                        ? ['Deal Won','Mark QC Complete']
+                                        : ['Deal Won', 'Complete as Won','Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? []
-                                        : ['Complete as Won']
+                                        ? ['Mark QC Complete']
+                                        : ['Complete as Won','Mark QC Complete']
                                 }
                               />
 
@@ -1003,18 +1013,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                        ? ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required']
-                                        : ['Appointment Not Required', 'Complete as Won']
+                                        ? ['Appointment Not Required','Mark QC Complete']
+                                        : ['Appointment Not Required', 'Complete as Won','Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won']
-                                        : ['Deal Won', 'Complete as Won']
+                                        ? ['Deal Won','Mark QC Complete']
+                                        : ['Deal Won', 'Complete as Won','Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? []
-                                        : ['Complete as Won']
+                                        ? ['Mark QC Complete']
+                                        : ['Complete as Won','Mark QC Complete']
                                 }
                               />
 
