@@ -157,6 +157,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [activeSection, setActiveSection] = useState<
     'Deal Won' | 'Deal Loss' | 'Appointment Not Required' | null
   >('Deal Won');
+  const tableRef = useRef<HTMLTableElement>(null);
+  const loaderRef = useRef<HTMLTableRowElement>(null);
 
   const [leadId, setLeadId] = useState(0);
   const [leadProposalLink, setLeadPropsalLink] = useState('');
@@ -238,6 +240,17 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   };
   const [won, setWon] = useState(false);
   const [isLoadingDocument, setIsLoadingDocument] = useState(false);
+
+  useEffect(() => {
+    if (isLoading || isLoadingDocument) {
+      // Scroll to the MicroLoader row if loading
+      loaderRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+    }
+  }, [isLoading, isLoadingDocument]);
 
   interface DocuSignResponse {
     url?: string; // Make it optional if it might not be present
@@ -676,7 +689,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
               </thead>
               <tbody>
                 {isLoading || isLoadingDocument ? (
-                  <tr>
+                  <tr ref={loaderRef}>
                     <td colSpan={30}>
                       <div
                         style={{ display: 'flex', justifyContent: 'center' }}
