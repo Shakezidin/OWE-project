@@ -449,7 +449,8 @@ const FinanceSchedule: React.FC = () => {
                     <td>{el.finance_type_ref || 'N/A'}</td>
                     <td>{el[" state_3"] || 'N/A'}</td>
                     <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                   
+                    <td>{!el.active_date_end || new Date(el.active_date_end).getFullYear() === 1 ? 'N/A' : dateFormat(el.active_date_end)}</td>
                     <td>{el[" finance_fee"] || '0'}</td>
                     <td>{el[" finance_type"] || 'N/A'}</td>
                     <td>{el[" finance_type_uid"] || 'N/A'}</td>
