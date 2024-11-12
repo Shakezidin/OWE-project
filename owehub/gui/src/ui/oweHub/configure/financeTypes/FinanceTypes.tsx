@@ -488,8 +488,10 @@ const FinanceTypes: React.FC = () => {
                         <td>{el.dealer_fee || 'N/A'}</td>
                         <td>{el.f_type || 'N/A'}</td>
                         <td>{el["  status   "] || 'N/A'}</td>
-                        <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                        <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                    
+                        <td>{!el.active_date_start || new Date(el.active_date_start).getFullYear() === 1 ? 'N/A' : dateFormat(el.active_date_start)}</td>
+                        
+                        <td>{!el.active_date_end || new Date(el.active_date_end).getFullYear() === 1 ? 'N/A' : dateFormat(el.active_date_end)}</td>
                       </tr>
                     ))
                   ) : (

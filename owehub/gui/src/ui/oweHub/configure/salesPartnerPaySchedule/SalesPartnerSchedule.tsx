@@ -43,11 +43,11 @@ const SalesPartnerSchedule: React.FC = () => {
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   const [data, setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [isExportingData, setIsExporting] = useState(false);
   const itemsPerPage = 25;
   const [sortKey, setSortKey] = useState('');
@@ -94,7 +94,6 @@ const SalesPartnerSchedule: React.FC = () => {
     handleOpen();
   };
 
-
   const filter = () => {
     setFilterOpen(true);
   };
@@ -105,14 +104,13 @@ const SalesPartnerSchedule: React.FC = () => {
   };
 
   useEffect(() => {
-
     (async () => {
       setLoading(true);
       try {
         const data = await configPostCaller('get_partnerpayschedule', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         });
 
         if (data.status > 201) {
@@ -120,19 +118,15 @@ const SalesPartnerSchedule: React.FC = () => {
           setLoading(false);
           return;
         }
-        setData(data?.data?.PartnerPayScheduleData)
-        setTotalCount(data?.dbRecCount)
+        setData(data?.data?.PartnerPayScheduleData);
+        setTotalCount(data?.dbRecCount);
         setLoading(false);
-
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-
-  }, [
-    currentPage, viewArchived, filters
-  ]);
+  }, [currentPage, viewArchived, filters]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -251,7 +245,7 @@ const SalesPartnerSchedule: React.FC = () => {
 
   const handleExportOpen = () => {
     exportCsv();
-  }
+  };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
@@ -276,7 +270,7 @@ const SalesPartnerSchedule: React.FC = () => {
     // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
-      return str.replace(/<\/?[^>]+(>|$)/g, "");
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
     setIsExporting(true);
     const exportData = await configPostCaller('get_partnerpayschedule', {
@@ -287,7 +281,6 @@ const SalesPartnerSchedule: React.FC = () => {
       toast.error(exportData.message);
       return;
     }
-
 
     const headers = [
       'Sales Partner',
@@ -302,26 +295,26 @@ const SalesPartnerSchedule: React.FC = () => {
       'Sales Rep Draw%',
       'Sales Rep Not_to_exceed',
       'Active Start Date',
-      'Active End Date'
+      'Active End Date',
     ];
 
-
-
-    const csvData = exportData?.data?.PartnerPayScheduleData?.map?.((item: any) => [
-      item.sales_partner,
-      item.finance_partner,
-      item.spps_ref,
-      item.state,
-      item.sug,
-      item.rep_pay,
-      item.redline,
-      item.m1_sales_partner_draw_percentage,
-      item.m1_sales_partner_not_to_exceed,
-      item.m1_sales_rep_draw_percentage,
-      item.m1_sales_rep_not_to_exceed,
-      dateFormat(item.active_date_start),
-      dateFormat(item.active_date_end),
-    ]);
+    const csvData = exportData?.data?.PartnerPayScheduleData?.map?.(
+      (item: any) => [
+        item.sales_partner,
+        item.finance_partner,
+        item.spps_ref,
+        item.state,
+        item.sug,
+        item.rep_pay,
+        item.redline,
+        item.m1_sales_partner_draw_percentage,
+        item.m1_sales_partner_not_to_exceed,
+        item.m1_sales_rep_draw_percentage,
+        item.m1_sales_rep_not_to_exceed,
+        dateFormat(item.active_date_start),
+        dateFormat(item.active_date_end),
+      ]
+    );
 
     const csvRows = [headers, ...csvData];
 
@@ -336,7 +329,6 @@ const SalesPartnerSchedule: React.FC = () => {
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-
   };
   return (
     <div className="comm">
@@ -351,7 +343,7 @@ const SalesPartnerSchedule: React.FC = () => {
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           checked={isAllRowsSelected}
@@ -382,14 +374,16 @@ const SalesPartnerSchedule: React.FC = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
-
-          {!loading && currentPageData?.length === 0 ?
-            <div style={{ height: "100%" }} className="flex items-center justify-center">
+          {!loading && currentPageData?.length === 0 ? (
+            <div
+              style={{ height: '100%' }}
+              className="flex items-center justify-center"
+            >
               <DataNotFound />
             </div>
-            :
+          ) : (
             <table>
               <thead>
                 <tr>
@@ -412,21 +406,25 @@ const SalesPartnerSchedule: React.FC = () => {
                       onClick={() => handleSort(item.name)}
                     />
                   ))}
-
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
                     <td colSpan={PartnerPayScheduleColumn.length}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
                         <MicroLoader />
                       </div>
                     </td>
                   </tr>
                 ) : (
                   currentPageData?.map((el: any, i: any) => (
-                    <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
                       <td style={{ fontWeight: '500', color: 'black' }}>
                         <div className="flex-check">
                           {/* <CheckBox
@@ -453,15 +451,25 @@ const SalesPartnerSchedule: React.FC = () => {
                       <td>{el.m1_sales_partner_not_to_exceed || 'N/A'}</td>
                       <td>{el.m1_sales_rep_draw_percentage || 'N/A'}</td>
                       <td>{el.m1_sales_rep_not_to_exceed || 'N/A'}</td>
-                      <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                      <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                      <td>
+                        {!el.active_date_start ||
+                        new Date(el.active_date_start).getFullYear() === 1
+                          ? 'N/A'
+                          : dateFormat(el.active_date_start)}
+                      </td>
 
+                      <td>
+                        {!el.active_date_end ||
+                        new Date(el.active_date_end).getFullYear() === 1
+                          ? 'N/A'
+                          : dateFormat(el.active_date_end)}
+                      </td>
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
-          }
+          )}
         </div>
 
         {data?.length > 0 ? (
