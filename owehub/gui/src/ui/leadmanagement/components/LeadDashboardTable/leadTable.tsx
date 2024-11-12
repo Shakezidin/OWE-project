@@ -413,9 +413,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const viewId = queryParams.get("view");
- 
+
     if (viewId) {
-      handleOpenProfileModal(Number(viewId)); 
+      handleOpenProfileModal(Number(viewId));
     }
   }, [location.search]);
 
@@ -545,7 +545,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const handleInputChange = (event: any, leadId: string) => {
     const { value } = event.target;
     const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ');
-    
+
     setSalesRep(prevState => ({
       ...prevState,
       [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
@@ -689,7 +689,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                   leadsData.map((lead: any, index: number) => (
                     <tr>
 
-                      <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin:'7px'}}>
+                      <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin: '7px' }}>
                         <label>
                           <input
                             type="checkbox"
@@ -723,53 +723,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             : lead.street_address
                           : 'N/A'}</div>
                       </td>
-
-
-
                       <td>
-                        {loadEdit === lead.leads_id ?
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><MicroLoader /></div>
-                          :
-                          <div className={styles.topdived}>
-                            {!visibilityState[lead.leads_id] && (
-                              <p>{lead.sales_rep_name || '__________'}</p>
-                            )}
-                            {visibilityState[lead.leads_id] && (
-                              <div className={styles.dropdownContainerModal}>
-                                <input
-                                  type="text"
-                                  value={salesrep[lead.leads_id] !== undefined ? salesrep[lead.leads_id] : lead.sales_rep_name || ''}
-                                  placeholder=""
-                                  onChange={(event) => handleInputChange(event, lead.leads_id)}
-                                  name="salesrep"
-                                  maxLength={40}
-                                />
-                              </div>
-                            )}
-                            <span>
-                              {!visibilityState[lead.leads_id] ? (
-                                <span
-                                  className={styles.EditPenIcon}
-                                  onClick={() => toggleCheckboxVisibility(lead.leads_id)}
-                                >
-                                  <img src={ICONS.EditPenNew} alt="Edit" />
-                                </span>
-                              ) : (
-                                <span
-                                  className={styles.SignEditBottonX}
-                                  onClick={(e) => handleClick(e, lead.leads_id)}
-                                >
-                                  <img src={ICONS.SignEditBotton} />
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                        }
+                        <div className={styles.topdived}>
+                          <p>{lead.sales_rep_name || '__________'}</p>
+                        </div>
                       </td>
-
-
-
-
                       <td>
                         {lead.lead_source ? (
                           <>
