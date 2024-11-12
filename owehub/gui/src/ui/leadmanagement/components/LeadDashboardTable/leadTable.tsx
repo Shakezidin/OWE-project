@@ -556,28 +556,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     ];
   };
 
-  const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
-
-  const toggleCheckboxVisibility = (id: string) => {
-    setVisibilityState((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-  };
+ 
 
 
 
   const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
   const [loadEdit, setLoadEdit] = useState<number | null>(null);
-  const handleInputChange = (event: any, leadId: string) => {
-    const { value } = event.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ');
-
-    setSalesRep(prevState => ({
-      ...prevState,
-      [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
-    }));
-  };
+ 
   const handleConfrm = async (e: any, leadId: any) => {
     setLoadEdit(leadId);
     e.preventDefault();
@@ -606,10 +591,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     }
     setLoadEdit(null);
   };
-  const handleClick = (e: any, leadsId: any) => {
-    toggleCheckboxVisibility(leadsId);
-    handleConfrm(e, leadsId);
-  };
+ 
 
 
 
@@ -705,7 +687,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
               </thead>
               <tbody>
                 {isLoading || isLoadingDocument ? (
-                  <tr ref={loaderRef}>
+                  <tr>
                     <td colSpan={30}>
                       <div
                         style={{ display: 'flex', justifyContent: 'center' }}
