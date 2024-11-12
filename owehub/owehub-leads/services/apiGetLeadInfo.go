@@ -96,12 +96,13 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.proposal_created_date,
 					li.status_id,
 					li.aurora_design_id,
-					li.sales_rep_name,
 					li.lead_source,
-					ud.name as created_by_name
+					ud_creator.name as created_by_name,
+					salerep.name as salerep_name
 				FROM
 					get_leads_info_hierarchy($1) li
-				INNER JOIN user_details ud ON ud.user_id = li.created_by
+				INNER JOIN user_details ud_creator ON ud_creator.user_id = li.created_by
+				LEFT JOIN user_details salerep ON salerep.user_id = li.salerep_id
 				WHERE li.leads_id = $2
 			`
 
@@ -228,7 +229,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		apiResponse.StatusID = statusId
 	}
 
-	salesRepName, ok := leadData["sales_rep_name"].(string)
+	salesRepName, ok := leadData["salerep_name"].(string)
 	if ok {
 		apiResponse.SalesRepName = salesRepName
 	}

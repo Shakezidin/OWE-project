@@ -15,19 +15,19 @@ export const FinanceScheduleColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'state',
+    name: ' state_3',
     displayName: 'State',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'active_state_date',
+    name: 'active_date_start',
     displayName: 'Active Start Date',
     type: 'date',
     isCheckbox: false,
   },
   {
-    name: 'active_end_date',
+    name: 'active_date_end',
     displayName: 'Active End Date',
     type: 'date',
     isCheckbox: false,

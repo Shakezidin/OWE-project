@@ -302,7 +302,7 @@
   }
 
   .calendar-logo{
-    top: 2px;
+    top: 2px !important;
   }
 }
 
@@ -312,7 +312,7 @@
   }
 
   .calendar-logo{
-    top: 0px;
+    top: 0px !important;
   }
 
   .menu-icon {

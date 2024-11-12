@@ -122,7 +122,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	whereClause = fmt.Sprintf(`
     	%s
 		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
-		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')
+		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
 		AND li.is_archived = $4
 		`, whereClause)
 

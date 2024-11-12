@@ -39,7 +39,6 @@ CREATE TABLE if NOT EXISTS leads_info (
     status_id INT DEFAULT 0,
     created_by INT NOT NULL,
     last_updated_by INT,
-    sales_rep_name VARCHAR(255),
     lead_source VARCHAR(255)
     FOREIGN KEY (created_by) REFERENCES user_details(user_id),
     FOREIGN KEY (last_updated_by) REFERENCES user_details(user_id),
@@ -95,7 +94,7 @@ BEGIN
     ELSIF v_user_role = 'SubDealer Owner' THEN
         RETURN QUERY
             SELECT leads_info.* FROM leads_info
-            INNER JOIN user_details ON user_details.dealer_id = v_dealer_id
+            INNER JOIN user_details ON user_details.partner_id = v_dealer_id
             INNER JOIN user_roles ON user_details.role_id = user_roles.role_id
             WHERE
                 leads_info.created_by = user_details.user_id AND
