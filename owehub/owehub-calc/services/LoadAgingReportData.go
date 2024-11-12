@@ -146,7 +146,7 @@ func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, proje
 	var daysPendingPermit int
 	today := time.Now()
 
-	if permitApprovedDate != "0001-01-01" {
+	if permitApprovedDate != "0001-01-01" && NTPDate != "0001-01-01"  { 
 		daysPendingPermit = int(parseTime(permitApprovedDate).Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days
 	} else if projectStatus == "ACTIVE" && NTPDate != "0001-01-01" {
 		daysPendingPermit = int(today.Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days from today
@@ -168,7 +168,7 @@ func calculateDaysPendingInstall(installComplete string, permitApprovedDate stri
 		return 0
 	}
 
-	if installComplete != "0001-01-01" {
+	if installComplete != "0001-01-01" && permitApprovedDate != "0001-01-01" {
 
 		installDate := parseTime(installComplete)
 		if installDate == nil {
@@ -192,7 +192,7 @@ func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, proje
 	var daysPendingPto int
 	today := time.Now()
 
-	if ptoDate != "0001-01-01" {
+	if ptoDate != "0001-01-01" && pvInstallCompleteDate != "0001-01-01"{
 		daysPendingPto = int(parseTime(ptoDate).Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days
 	} else if projectStatus == "ACTIVE" && pvInstallCompleteDate != "0001-01-01" {
 		daysPendingPto = int(today.Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days from today
@@ -208,7 +208,7 @@ func calculateProjectAge(uniqueId string, contractDate string) int {
 	var projectAge int
 	today := time.Now()
 
-	if uniqueId != "" {
+	if uniqueId != "" && contractDate != "0001-01-01"{
 		projectAge = int(today.Sub(*parseTime(contractDate)).Abs().Hours() / 24) // Calculate days from today
 	} else {
 		projectAge = 0
