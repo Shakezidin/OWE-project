@@ -339,7 +339,7 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 			case "rl":
 				filtersBuilder.WriteString(fmt.Sprintf("rl %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "contract_dol_dol":
+			case "contract":
 				filtersBuilder.WriteString(fmt.Sprintf("contract_dol_dol %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "loan_fee":
@@ -353,6 +353,9 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				whereEleList = append(whereEleList, value)
 			case "balance":
 				filtersBuilder.WriteString(fmt.Sprintf("balance %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "other_adders":
+				filtersBuilder.WriteString(fmt.Sprintf("other_adders %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
