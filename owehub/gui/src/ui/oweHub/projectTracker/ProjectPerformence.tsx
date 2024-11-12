@@ -962,7 +962,7 @@ const ProjectPerformence = () => {
                 <div className='filterButtonAddition'>
                 
                   <div
-                  className="filter-line"
+                  className="pipelineFilterLine"
                   style={{ backgroundColor: '#377CF6' }}
                   data-tooltip-id='filter'
                   onClick={HandleFilterClick}

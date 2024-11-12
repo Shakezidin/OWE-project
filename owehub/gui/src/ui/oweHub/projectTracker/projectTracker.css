@@ -1504,7 +1504,8 @@
   .perf-export-btn {
     text-align: end;
   }
- .filter-line{
+ 
+.pipelineFilterLine{
   position: absolute;
   right: 45px;
   bottom:0px;
@@ -1973,7 +1974,8 @@
 }
 
 
-.filter-line {
+
+.pipelineFilterLine{
   width: 36px !important;
   height: 37px !important;
   border-radius: 8px;
@@ -1985,11 +1987,13 @@
   
 }
 
-.filter-line:hover {
+
+.pipelineFilterLine:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-.filter-line img {
+
+.pipelineFilterLine img {
   width: 20px;
   height: 20px;
 }
@@ -2275,12 +2279,15 @@
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  width: 20px !important;
-  height: 20px !important;
+  width: 13px !important;
+  height: 13px !important;
   border: 1.4px solid #007bff !important; /* Blue border */
   border-radius: 5.6px !important; /* Rounded corners */
   background-color: white !important; /* White background */
   cursor: pointer !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .pipeline-agingReport-filter input[type="checkbox"]:checked {
@@ -2289,13 +2296,10 @@
 }
 
 .pipeline-agingReport-filter input[type="checkbox"]:checked::before {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   content: "✔" !important; /* Use the Unicode checkmark character */
   display: block !important;
-  font-size: 14px !important;
+  font-size: 10px !important;
   color: #007bff !important; /* Set the checkmark color */
   line-height: 20px !important;
   text-align: center !important;
@@ -2350,7 +2354,7 @@
 }
 
 
-.filter-line {
+.pipelineFilterLine{
   width: 37px !important;
   height: 37px !important;
   border-radius: 8px;
@@ -2362,11 +2366,11 @@
   
 }
 
-.filter-line:hover {
+.pipelineFilterLine:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-.filter-line img {
+.pipelineFilterLine img {
   width: 20px;
   height: 20px;
 }
@@ -2417,7 +2421,7 @@
   width:81px;
   left:29.4px;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 28px;
   position: relative;
   left: 9.4px;
