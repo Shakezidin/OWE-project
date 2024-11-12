@@ -2189,14 +2189,17 @@
   font-size: 10px;
   font-weight: 600;
   cursor: default;
+  border-bottom: 1px solid #EBA900;
+  padding:0px 5px 5px 5px;
+  width: 100px;
 }
-.simpleLine{
+/* .simpleLine{
   height: 1px;
   width: 74%;
   margin:0 20px;
   background-color: #EBA900;
   margin-top:3px !important;
-}
+} */
 
 .rangeOption{
   font-size: 12px;
@@ -2539,19 +2542,22 @@
 
 .pendingDayDiv{
   margin-top:4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.daysRemaining{
+/* .daysRemaining{
   text-align: center;
   color: #EBA900;
   font-size: 10px;
   font-weight: 600;
-}
-.simpleLine{
+} */
+/* .simpleLine{
   height: 1px;
   width: 74%;
   margin:0 20px;
   background-color: #EBA900;
-}
+} */
 
 .rangeOption{
   font-size: 12px;

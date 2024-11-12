@@ -1429,7 +1429,7 @@ const ProjectPerformence = () => {
     </div>
     {/* Days Remaining */}
     {project.days_site_survey && project.days_site_survey !== '0 day pending' && project.days_site_survey !== '-' && <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+      <p className="daysRemaining">{project.days_site_survey}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1597,7 +1597,7 @@ const ProjectPerformence = () => {
       </div>
       {/* Days Remaining */}
       {project.days_electrical &&  project.days_electrical !== '0 day pending' && project.days_electrical !=='-' &&<div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+      <p className="daysRemaining">{project.days_electrical}</p>
       <div className='simpleLine'> </div>
     </div>}
     </div>
