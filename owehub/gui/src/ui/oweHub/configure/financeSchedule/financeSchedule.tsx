@@ -29,7 +29,7 @@ import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
 import Papa from 'papaparse';
 
-const  FinanceSchedule: React.FC = () => {
+const FinanceSchedule: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -38,7 +38,7 @@ const  FinanceSchedule: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
- 
+
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -51,7 +51,7 @@ const  FinanceSchedule: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [data,setData] = useState<any>([]);
+  const [data, setData] = useState<any>([]);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
@@ -92,9 +92,9 @@ const  FinanceSchedule: React.FC = () => {
     setEditDealer(null);
     handleOpen();
   };
- 
 
-  
+
+
   const filter = () => {
     setFilterOpen(true);
   };
@@ -105,7 +105,7 @@ const  FinanceSchedule: React.FC = () => {
   };
 
   useEffect(() => {
-   
+
     (async () => {
       setLoading(true);
       try {
@@ -123,19 +123,19 @@ const  FinanceSchedule: React.FC = () => {
         setData(data?.data?.FinanceScheduleData)
         setTotalCount(data?.dbRecCount)
         setLoading(false);
-         
+
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-  
-}, [
-  currentPage, viewArchived, filters
-]);
 
- 
-const totalPages = Math.ceil(totalCount / itemsPerPage);
+  }, [
+    currentPage, viewArchived, filters
+  ]);
+
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -279,22 +279,22 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
-  setIsExporting(true);
-  const exportData = await configPostCaller('get_finaceschedule', {
-    page_number: 1,
-    page_size: totalCount,
-  });
-  if (exportData.status > 201) {
-    toast.error(exportData.message);
-    return;
-  }
-  
-    
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, "");
+    };
+    setIsExporting(true);
+    const exportData = await configPostCaller('get_finaceschedule', {
+      page_number: 1,
+      page_size: totalCount,
+    });
+    if (exportData.status > 201) {
+      toast.error(exportData.message);
+      return;
+    }
+
+
     const headers = [
       'Finance Company',
       'Finance Type Ref',
@@ -307,9 +307,9 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
       'Owe Finance Fee',
       'Commissions Rate'
     ];
-  
-   
-     
+
+
+
     const csvData = exportData?.data?.FinanceScheduleData?.map?.((item: any) => [
       item.finance_company,
       item.finance_type_ref,
@@ -321,15 +321,15 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
       item[' finance_type_uid'],
       item[' owe_finance_fee'],
       item.commissions_rate
-       
+
     ]);
 
-  
-  
+
+
     const csvRows = [headers, ...csvData];
-  
+
     const csvString = Papa.unparse(csvRows);
-  
+
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -339,9 +339,9 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-   
+
   };
- 
+
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -355,7 +355,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           checked={isAllRowsSelected}
@@ -388,7 +388,12 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
-          <table>
+          {(!loading && currentPageData?.length === 0) &&
+            <div className='flex items-center justify-center' style={{height:"100%"}}>
+              <DataNotFound />
+            </div>
+          }
+          {!!currentPageData.length && <table>
             <thead>
               <tr>
                 {FinanceScheduleColumn.map((item, key) => (
@@ -410,7 +415,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                
+
               </tr>
             </thead>
             <tbody>
@@ -422,7 +427,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     </div>
                   </td>
                 </tr>
-              ) : currentPageData?.length > 0 ? (
+              ) :
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -443,26 +448,20 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                     </td>
                     <td>{el.finance_type_ref || 'N/A'}</td>
                     <td>{el[" state_3"] || 'N/A'}</td>
-                   <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                   <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
-                   <td>{el[" finance_fee"] || '0'}</td>
-                   <td>{el[" finance_type"] || 'N/A'}</td>
-                   <td>{el[" finance_type_uid"] || 'N/A'}</td>
-                   <td>{el[" owe_finance_fee"] || '0'}</td>
-                   <td>{el.commissions_rate}</td>
+                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
+                    <td>{el[" finance_fee"] || '0'}</td>
+                    <td>{el[" finance_type"] || 'N/A'}</td>
+                    <td>{el[" finance_type_uid"] || 'N/A'}</td>
+                    <td>{el[" owe_finance_fee"] || '0'}</td>
+                    <td>{el.commissions_rate}</td>
 
-                   
+
                   </tr>
                 ))
-              ) : (
-                <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-              )}
+              }
             </tbody>
-          </table>
+          </table>}
         </div>
 
         {data?.length > 0 ? (
@@ -488,4 +487,4 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   );
 };
 
-export default  FinanceSchedule;
+export default FinanceSchedule;

@@ -274,6 +274,12 @@ const  SsOnboarding: React.FC = () => {
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
+          {
+            !loading && currentPageData?.length === 0 ?
+            <div style={{ height: "100%" }} className="flex items-center justify-center">
+              <DataNotFound />
+            </div>
+            :
           <table>
             <thead>
               <tr>
@@ -369,6 +375,7 @@ const  SsOnboarding: React.FC = () => {
               )}
             </tbody>
           </table>
+          }
         </div>
 
         {dealerList?.length > 0 ? (

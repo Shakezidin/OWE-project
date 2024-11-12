@@ -131,7 +131,7 @@ function getCurrentDateInUserTimezone() {
 }
 
 
-const today = getCurrentDateInUserTimezone();
+const today = new Date();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);

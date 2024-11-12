@@ -72,13 +72,13 @@ export const PartnerPayScheduleColumn: Column[] = [
   {
     name: 'active_date_start',
     displayName: 'Active Start Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'active_date_end',
     displayName: 'Active End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   
