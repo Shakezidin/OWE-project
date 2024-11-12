@@ -549,9 +549,11 @@ table tbody tr:hover {
   transition: all 0.3s ease;
 }
 
-.removeButton:hover {
-  background-color: #ad1313;
-  transform: scale(1.05);
+
+.removeButton {
+  cursor: pointer;
+  width: 95px;
+  height: 32px;
 }
 
 .paginationContainer {
@@ -613,6 +615,12 @@ table tbody tr:hover {
     align-items: center !important;
     margin: 0 auto;
   }
+  .removeButton {
+    cursor: pointer;
+    width: 95px;
+    height: 32px;
+  }
+  
 
   .vertical1 {
     order: 3;
@@ -921,7 +929,7 @@ table tbody tr:hover {
 }
 @media (min-width: 768px) {
   .tabs_setting {
-    padding: 19px 15px 0px  15px;
+    padding: 19px 15px 0px  15px !important;
   }
   .history_list_inner_declined {
     display: grid;
