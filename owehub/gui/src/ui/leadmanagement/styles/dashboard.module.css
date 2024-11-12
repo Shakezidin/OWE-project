@@ -921,7 +921,7 @@ table tbody tr:hover {
 }
 @media (min-width: 768px) {
   .tabs_setting {
-    padding: 19px 15px 0px  15px;
+    padding: 19px 15px 0px  15px !important;
   }
   .history_list_inner_declined {
     display: grid;
