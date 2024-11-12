@@ -440,7 +440,7 @@ const FinanceTypes: React.FC = () => {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={FinanceTypesColumn.length}>
+                      <td colSpan={8}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                           <MicroLoader />
                         </div>
