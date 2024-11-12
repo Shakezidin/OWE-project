@@ -178,11 +178,8 @@ import LogCalc3 from "../assets/log_calc_3.svg"
 import MenuDealer from "../assets/SideDealerPay.svg"
 import MenuLead from "../assets/SideLead.svg";
 import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
-<<<<<<< HEAD
 import QCAudit from "../assets/QCAudit.png"
-=======
 import QcLineLead from '../../resources/assets/QcLineLead.svg';
->>>>>>> 9660868c1973bf2f6866fe027361c2ea640b3e84
 
 
 export const ICONS = {
