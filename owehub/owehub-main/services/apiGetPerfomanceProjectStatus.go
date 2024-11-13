@@ -1523,7 +1523,7 @@ func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error)
 }
 
 func TextAccToInput(s string) string {
-	if s <= "1" {
+	if s == "0"||s == "1" {
 		return fmt.Sprintf("%s day pending", s)
 	}
 	return fmt.Sprintf("%s days pending", s)
