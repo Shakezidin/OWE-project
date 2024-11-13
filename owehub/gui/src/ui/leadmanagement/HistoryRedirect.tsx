@@ -84,8 +84,8 @@ const HistoryRedirect = () => {
       />
       {modenIsOpenX && (
         <div
-          id="dropdowninHistoryRedirect"
-          className="pr-dropdown editedinParent"
+          id="dropdowninHistoryRedirectXR"
+          className="pr-dropdown editedinParentXR"
         // className={`${classes.prdropdownX} editedinParent`}
         >
           <ul>
