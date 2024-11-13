@@ -200,6 +200,9 @@
 
 /* Media query for mobile devices */
 @media (max-width: 768px) {
+  .h_screen{
+    margin-top: 10px;
+  }
   .customer_wrapper_list {
     height: auto;
   }
