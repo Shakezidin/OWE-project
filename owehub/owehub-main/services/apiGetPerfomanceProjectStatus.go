@@ -586,14 +586,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
 
 	}
- 
+
 	updated := make(map[string]bool)
 	for i := range perfomanceList.PerfomanceList {
 		if _, alreadyUpdated := updated[perfomanceList.PerfomanceList[i].UniqueId]; !alreadyUpdated {
 
 			if exists, ok := agngRpForUserId[perfomanceList.PerfomanceList[i].UniqueId]; ok {
-
-				perfomanceList.PerfomanceList[i].Days_Pending_NTP = exists.Days_Pending_NTP
 
 				perfomanceList.PerfomanceList[i].Days_Pending_Permits = exists.Days_Pending_Permits
 
@@ -648,7 +646,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceList.PerfomanceList = filteredData
 		RecordCount = int64(len(perfomanceList.PerfomanceList))
 	}
-	paginatedData := PaginateData(perfomanceList, dataReq)
+	paginatedData := PaginateData(perfomanceList, dataReq, agngRpForUserId)
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", len(perfomanceList.PerfomanceList), perfomanceList)
@@ -666,7 +664,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 *****************************************************************************
 */
-func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
+
+func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
+	updated := make(map[string]bool)
 	log.EnterFn(0, "PaginateData")
 	defer func() { log.ExitFn(0, "PaginateData", nil) }()
 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
@@ -811,6 +811,14 @@ LEFT JOIN
 				UtilityBillUploaded:          UtilityBillUploaded,
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 				ActionRequiredCount:          actionRequiredCount,
+			}
+			if actionRequiredCount >= 1 {
+				if _, alrdyupdatd := updated[paginatedData[i].UniqueId]; !alrdyupdatd {
+					if exists, ok := agngRpForUserId[paginatedData[i].UniqueId]; ok {
+						paginatedData[i].Days_Pending_NTP = exists.Days_Pending_NTP
+						updated[paginatedData[i].UniqueId] = true
+					}
+				}
 			}
 			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
 			actionRequiredCount += count
