@@ -319,8 +319,14 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "today":
-				filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
+				valueAsTime, _ := time.Parse("02-01-2006", value.(string))
+
+				if !valueAsTime.Equal(time.Now().Truncate(24 * time.Hour)) {
+					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				} else {
+					filtersBuilder.WriteString(" 1 =1 ")
+				}
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -339,7 +345,7 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 			case "rl":
 				filtersBuilder.WriteString(fmt.Sprintf("rl %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "contract_dol_dol":
+			case "contract":
 				filtersBuilder.WriteString(fmt.Sprintf("contract_dol_dol %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "loan_fee":
@@ -353,6 +359,9 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				whereEleList = append(whereEleList, value)
 			case "balance":
 				filtersBuilder.WriteString(fmt.Sprintf("balance %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "other_adders":
+				filtersBuilder.WriteString(fmt.Sprintf("other_adders %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

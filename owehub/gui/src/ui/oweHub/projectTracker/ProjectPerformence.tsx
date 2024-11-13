@@ -962,7 +962,7 @@ const ProjectPerformence = () => {
                 <div className='filterButtonAddition'>
                 
                   <div
-                  className="filter-line"
+                  className="pipelineFilterLine"
                   style={{ backgroundColor: '#377CF6' }}
                   data-tooltip-id='filter'
                   onClick={HandleFilterClick}
@@ -1308,14 +1308,17 @@ const ProjectPerformence = () => {
                                   </div>
                                 </Link>
                                 {project.days_project_age && project.days_project_age !=='-' && project.days_project_age !=='0'&& <div className='projectAge'>
-                                     <p>Project age : 
+                                     <p>Project age :  
                                       {
-                                          project.days_project_age.split(" ")[0] + " days"
+                                          ' '+project.days_project_age.split(" ")[0] + " days"
                                          
                                       }
                                      </p>
                                     
                                   </div>}
+                                  {
+                                    !project.days_project_age && <div style={{margin:'5px 0px'}}> </div>
+                                  }
                                 <div className="milestone-status">
                                   
                                   <div
@@ -1426,7 +1429,7 @@ const ProjectPerformence = () => {
     </div>
     {/* Days Remaining */}
     {project.days_site_survey && project.days_site_survey !== '0 day pending' && project.days_site_survey !== '-' && <div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+      <p className="daysRemaining">{project.days_site_survey}</p>
       <div className='simpleLine'> </div>
     </div>}
   </div>
@@ -1594,7 +1597,7 @@ const ProjectPerformence = () => {
       </div>
       {/* Days Remaining */}
       {project.days_electrical &&  project.days_electrical !== '0 day pending' && project.days_electrical !=='-' &&<div className="pendingDayDiv">
-      <p className="daysRemaining">54 days remaining</p>
+      <p className="daysRemaining">{project.days_electrical}</p>
       <div className='simpleLine'> </div>
     </div>}
     </div>

@@ -187,7 +187,7 @@ const DashBoardTable = ({
                       </td>
                       <td>{el.draw_amt || '$0'}</td>
                       <td>{el.rl || 'N/A'}</td>
-                      <td>{el.type || 'N/A'}</td>
+                      
                       <td>{dateFormat(el.today) || 'N/A'}</td>
                       <td style={{ color: '#63BC51', fontWeight: '500' }}>
                         ${el.amount ?? 'N/A'}

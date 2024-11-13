@@ -103,7 +103,7 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: sanitizedValue,
       }));
-    } else {
+    }else {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -261,6 +261,7 @@ const LeadManagementNew = () => {
 
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
+    errors.sales_rep = '';
   };
 
   console.log(selectedSale, "sdaghfgfhdsa")
@@ -456,6 +457,28 @@ const LeadManagementNew = () => {
                       </div>
                     </div>
                     <div className={classes.salrep_input_container}>
+
+                    <div className={classes.srs_new_create}>
+                        <Input
+                          type="text"
+                          label="Lead Source"
+                          value={formData.lead_source}
+                          placeholder="Enter About Lead Source"
+                          onChange={handleInputChange}
+                          name="lead_source"
+                          maxLength={30}
+                        />
+                        {errors.lead_source && (
+                          <span
+                            style={{
+                              display: 'block',
+                            }}
+                            className="error"
+                          >
+                            {errors.lead_source}
+                          </span>
+                        )}
+                      </div>
                       <div className={classes.srs_new_create} style={{gap:"6px"}}>
                        <div className={classes.custom_label_newlead}>Sales Rep</div>
                         <Select
@@ -573,27 +596,7 @@ const LeadManagementNew = () => {
                         )}
                       </div>
 
-                      <div className={classes.srs_new_create}>
-                        <Input
-                          type="text"
-                          label="Lead Source"
-                          value={formData.lead_source}
-                          placeholder="Enter About Lead Source"
-                          onChange={handleInputChange}
-                          name="lead_source"
-                          maxLength={30}
-                        />
-                        {errors.lead_source && (
-                          <span
-                            style={{
-                              display: 'block',
-                            }}
-                            className="error"
-                          >
-                            {errors.lead_source}
-                          </span>
-                        )}
-                      </div>
+                   
                       <div className={classes.create_input_field_note}>
                         <label htmlFor="" className="inputLabel">
                           Notes

@@ -20,8 +20,6 @@ import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
-import ArchiveModal from './Modals/LeaderManamentSucessModel';
-import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import Papa from 'papaparse';
 
@@ -29,7 +27,6 @@ import Papa from 'papaparse';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { toZonedTime } from 'date-fns-tz';
 import {
   addMinutes,
   endOfWeek,
@@ -51,7 +48,6 @@ import {
   createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
   auroraWebProposal, auroraGenerateWebProposal, auroraListModules
 } from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading, MdHeight } from 'react-icons/md';
@@ -59,7 +55,6 @@ import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
-import { scale } from 'pdf-lib';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -131,7 +126,7 @@ function getCurrentDateInUserTimezone() {
 }
 
 
-const today = getCurrentDateInUserTimezone();
+const today = new Date();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
@@ -337,9 +332,6 @@ const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
-  const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
@@ -616,65 +608,7 @@ const LeadManagementDashboard = () => {
 
 
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     const fetchData = async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         const response = await postCaller(
-  //           'get_leads_count_by_status',
-  //           {
-  //             start_date: selectedDates.startDate
-  //             ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           end_date: selectedDates.endDate
-  //             ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           },
-  //           true
-  //         );
-
-  //         if (response.status === 200) {
-  //           const apiData = statusData1;
-
-  //           console.log(apiData, "data check")
-
-  //           const formattedData = apiData.reduce(
-  //             (acc: DefaultData, item: any) => {
-  //               const statusName = item.status_name;
-  //               const defaultDataKey = Object.keys(defaultData).find(
-  //                 (key) => key === statusName || defaultData[key].name === statusName
-  //               );
-
-  //               if (defaultDataKey) {
-  //                 acc[defaultDataKey] = {
-  //                   ...defaultData[defaultDataKey],
-  //                   value: item.count,
-  //                 };
-  //               }
-
-  //               return acc;
-  //             },
-  //             { ...defaultData }
-  //           );
-
-  //           const mergedData = Object.values(formattedData) as StatusData[];
-  //           setPieData(mergedData);
-
-  //         } else if (response.status > 201) {
-  //           toast.error(response.data.message);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
-
+ 
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -1482,7 +1416,7 @@ const LeadManagementDashboard = () => {
                     }
                   </div>
                 )}
-        {isToggledX && <Select
+                {isToggledX && <Select
                   value={selectedPeriod}
                   onChange={handlePeriodChange}
                   options={periodFilterOptions}
@@ -1503,9 +1437,9 @@ const LeadManagementDashboard = () => {
                       backgroundColor: '#fffff',
                       boxShadow: 'none',
                       '@media only screen and (max-width: 767px)': {
-                       height:'30px !important',
+                        height: '30px !important',
                         width: 'fit-content',
-                        border:'1px solid '
+                        border: '1px solid '
                       },
                       '&:focus-within': {
                         borderColor: '#377CF6',
@@ -1556,7 +1490,7 @@ const LeadManagementDashboard = () => {
                           : '#ddebff',
                       },
                       cursor: 'pointer',
-                      fontWeight:"400"
+                      fontWeight: "400"
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
@@ -1565,7 +1499,7 @@ const LeadManagementDashboard = () => {
                     menu: (baseStyles) => ({
                       ...baseStyles,
                       width: '140px',
-                      border: '1.4px solid black',
+                      border: '0.7px solid black',
                       marginTop: '3px',
                     }),
                   }}
@@ -1601,14 +1535,14 @@ const LeadManagementDashboard = () => {
                   offset={8}
                   delayShow={800}
                   id="downip"
-                  place="bottom"
+                  place="top"
                   content={isToggledX ? "Minimize" : "Maximize"}
                   className={styles.mobile_tooltip}
                 />
 
               </div>
-              
-              </div>
+
+            </div>
           </div>
         </div>
         {/* //HORIZONTAL ENDED */}
@@ -1838,22 +1772,7 @@ const LeadManagementDashboard = () => {
 
                 )}
 
-                <Tooltip
-                  style={{
-                    zIndex: 20,
-                    background: '#f7f7f7',
-                    color: '#000',
-                    fontSize: 12,
-                    paddingBlock: 4,
-                    fontWeight: "400"
-                  }}
-                  delayShow={800}
-                  offset={8}
-                  id="More Pages"
-                  place="bottom"
-                  content="More Pages"
-                  className={styles.mobile_tooltip}
-                />
+            
 
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
@@ -1871,7 +1790,7 @@ const LeadManagementDashboard = () => {
                     }}
                     offset={8}
                     id="NEW"
-                    place="bottom"
+                    place="top"
                     content="Add New Lead"
                     delayShow={800}
                     className={styles.mobile_tooltip}
@@ -1912,7 +1831,7 @@ const LeadManagementDashboard = () => {
                       offset={8}
                       delayShow={800}
                       id="export"
-                      place="bottom"
+                      place="top"
                       content="Export"
                       className={styles.mobile_tooltip}
                     />
@@ -1957,16 +1876,11 @@ const LeadManagementDashboard = () => {
             <div className={styles.FirstRowSearch}>
               {selectedLeads.length === 0 ? (
                 <>
-
                   <div className={styles.searchBarMobile}>
-                    <div className={styles.searchIcon}>
-                      {/* You can use an SVG or a FontAwesome icon here */}
-                      <img src={ICONS.SearchICON001} />
-                    </div>
                     <input
                       value={search}
                       type="text"
-                      placeholder="Enter customer name or id"
+                      placeholder="Search customer name or id"
                       className={styles.searchInput}
                       onChange={(e) => {
                         if (e.target.value.length <= 50) {
@@ -2000,7 +1914,7 @@ const LeadManagementDashboard = () => {
                     {!isMobileDevice() && !isTablet &&
                       <Tooltip
                         style={{
-                          zIndex: 20,
+                          zIndex: 103,
                           background: '#f7f7f7',
                           color: '#000',
                           fontSize: 12,
@@ -2009,7 +1923,7 @@ const LeadManagementDashboard = () => {
                         }}
                         offset={8}
                         id="NEW"
-                        place="bottom"
+                        place="top"
                         content="Add New Lead"
                         delayShow={800}
                         className={styles.mobile_tooltip}
@@ -2049,7 +1963,7 @@ const LeadManagementDashboard = () => {
                         offset={8}
                         delayShow={800}
                         id="export"
-                        place="bottom"
+                        place="top"
                         content="Export"
                         className={styles.mobile_tooltip}
                       />

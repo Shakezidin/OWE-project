@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import { DateRange } from 'react-date-range';
-import { toZonedTime } from 'date-fns-tz';
 import Papa from 'papaparse';
 import {
   addMinutes,
@@ -22,13 +21,11 @@ import Select, { SingleValue } from 'react-select';
 import useAuth from '../../hooks/useAuth';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import DataNotFound from '../components/loader/DataNotFound';
 import MicroLoader from '../components/loader/MicroLoader';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import { Tooltip } from 'react-tooltip';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoInformationOutline } from 'react-icons/io5';
 import Profile from './Modals/ProfileInfo';
 import useEscapeKey from '../../hooks/useEscape';

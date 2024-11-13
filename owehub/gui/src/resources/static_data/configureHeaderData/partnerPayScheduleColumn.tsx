@@ -48,7 +48,7 @@ export const PartnerPayScheduleColumn: Column[] = [
   {
     name: 'm1_sales_partner_draw_percentage',
     displayName: 'Sales Partner Draw %',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {
@@ -60,7 +60,7 @@ export const PartnerPayScheduleColumn: Column[] = [
   {
     name: 'm1_sales_rep_draw_percentage',
     displayName: 'Sales Rep Draw %',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {
@@ -72,13 +72,13 @@ export const PartnerPayScheduleColumn: Column[] = [
   {
     name: 'active_date_start',
     displayName: 'Active Start Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'active_date_end',
     displayName: 'Active End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   

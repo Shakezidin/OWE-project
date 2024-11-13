@@ -119,7 +119,7 @@ export const DashboardPage: React.FC = () => {
         const resp = await configPostCaller('get_dealerpaycommissions', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          paginate:true,
+          paginate: true,
           partner_name: partnerNames, // Send all values
           search_input: searchQuery,
           filters,
@@ -275,7 +275,7 @@ export const DashboardPage: React.FC = () => {
     setIsExporting(true);
     const exportData = await configPostCaller('get_dealerpaycommissions', {
       page_number: 1,
-      paginate:false
+      paginate: false
     });
     if (exportData.status > 201) {
       toast.error(exportData.message);
@@ -321,14 +321,14 @@ export const DashboardPage: React.FC = () => {
       item.rep2,
       item.setter,
       item.st,
-      item.contract_date,
+      item.contract_date ? format(new Date(item.contract_date), "dd-MM-yyyy") : "",
       item.loan_fee,
       item.net_epc,
       item.credit,
       item.draw_amt,
       item.rl,
       item.type,
-      item.today,
+      item.today ? format(new Date(item.today), "dd-MM-yyyy") : "",
       item.amount,
       item.epc,
       item.amt_paid,
@@ -404,6 +404,7 @@ export const DashboardPage: React.FC = () => {
                     style={{ marginLeft: 0 }}
                   >
                     <Calendar
+                   maxDate={new Date()}
                       date={selectionRange || new Date()}
                       onChange={handleSelect}
                     />
@@ -445,9 +446,8 @@ export const DashboardPage: React.FC = () => {
                   }}
                 />
                 <div
-                  className={`filter-line ${
-                    active === 0 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -457,9 +457,8 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
+                    }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (

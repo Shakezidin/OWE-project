@@ -465,19 +465,6 @@ table tbody tr:hover {
   gap: 6px;
 }
 
-input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
-  border-radius: 100px;
-  border: 1px solid #797979;
-  cursor: pointer;
-}
-
-input[type='checkbox']:checked {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-}
-
 .actionButtons {
   display: flex;
   gap: 10px; /* Adds space between buttons */
@@ -544,10 +531,7 @@ input[type='checkbox']:checked {
   transform: scale(1.09);
 }
 
-/* .closeIcon:hover {
-  background: #377cf630;
-  border-radius: 5px;
-} */
+
 
 .removeButton {
   background-color: #d91515;
@@ -561,11 +545,11 @@ input[type='checkbox']:checked {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-
-.removeButton:hover {
-  background-color: #ad1313;
+.removeButton:hover{
   transform: scale(1.05);
+  background-color: #AD1313;
 }
+
 
 .paginationContainer {
   display: flex;
@@ -626,6 +610,14 @@ input[type='checkbox']:checked {
     align-items: center !important;
     margin: 0 auto;
   }
+  .removeButton {
+    cursor: pointer;
+    width: 100px;
+    height: 32px;
+    font-size: 14px;
+
+  }
+  
 
   .vertical1 {
     order: 3;
@@ -723,9 +715,7 @@ input[type='checkbox']:checked {
     align-items: center;
     white-space: nowrap;
     margin: 0 auto;
-    padding-top: 15px;
-    padding-bottom: 7.5px;
-    /* width: 378px; */
+    padding: 15px 5px 7.5px 5px;
     width: calc(97vw - 10px);
     box-shadow: unset;
     scrollbar-width: thin;
@@ -754,17 +744,35 @@ input[type='checkbox']:checked {
   .searchBarMobile {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    outline: none;
+    border: 0.5px solid black; 
     border-radius: 8px;
     padding: 5px;
     height: 36px;
     width: 252px !important;
     margin-right: 0;
-  }
+}
+
 
   .searchBarMobile input::placeholder {
     font-size: 11.8px;
   }
+
+  .searchBarMobile:hover {
+    border: 1px solid var(--primary-color);
+  }
+  .searchBarMobile .searchInput:focus {
+    outline: none;
+  }
+  
+  .searchBarMobile:focus-within {
+    border: 1px solid var(--primary-color) !important;
+  }
+
+
+
+
+
 }
 @media (min-width: 401px) and (max-width: 560px) {
   .date_calendar {
@@ -848,7 +856,7 @@ input[type='checkbox']:checked {
   .searchBarMobile {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 0.5px solid black;
     border-radius: 8px;
     padding: 5px;
     height: 36px;
@@ -859,12 +867,23 @@ input[type='checkbox']:checked {
   .searchBarMobile input {
     padding-left: 16px;
   }
+  .searchBarMobile input::placeholder {
+    font-size: 11.8px;
+  }
 
+  .searchBarMobile:hover {
+    border: 1px solid var(--primary-color);
+  }
+  .searchBarMobile .searchInput:focus {
+    outline: none;
+  }
+  
+  .searchBarMobile:focus-within {
+    border: 1px solid var(--primary-color) !important;
+  }
   .searchBarMobile input::placeholder {
     font-size: 12px;
     text-align: left;
-    padding-left: 10px;
-    color: #999;
   }
 
   .searchIcon {
@@ -907,7 +926,7 @@ input[type='checkbox']:checked {
 }
 @media (min-width: 768px) {
   .tabs_setting {
-    padding: 10px 15px;
+    padding: 19px 15px 0px  15px !important;
   }
   .history_list_inner_declined {
     display: grid;

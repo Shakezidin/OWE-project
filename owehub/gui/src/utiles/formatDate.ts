@@ -61,3 +61,15 @@ export const dateFormat = (date: string) => {
     return '';
   }
 };
+
+export const monthDateFormat = (date: string) => {
+  if (!date) {
+    return '';
+  }
+  const isValid = new Date(date);
+  if (isValid) {
+    return format(new Date(date), 'MM-dd-yyyy'); // Corrected format
+  } else {
+    return '';
+  }
+};

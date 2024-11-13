@@ -157,6 +157,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [activeSection, setActiveSection] = useState<
     'Deal Won' | 'Deal Loss' | 'Appointment Not Required' | null
   >('Deal Won');
+  const tableRef = useRef<HTMLTableElement>(null);
+  const loaderRef = useRef<HTMLTableRowElement>(null);
 
   const [leadId, setLeadId] = useState(0);
   const [leadProposalLink, setLeadPropsalLink] = useState('');
@@ -181,6 +183,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
   const [finish, setFinish] = useState(false);
+  const [qc, setQc] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -239,6 +242,17 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [won, setWon] = useState(false);
   const [isLoadingDocument, setIsLoadingDocument] = useState(false);
 
+  useEffect(() => {
+    if (isLoading || isLoadingDocument) {
+      // Scroll to the MicroLoader row if loading
+      loaderRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+    }
+  }, [isLoading, isLoadingDocument]);
+
   interface DocuSignResponse {
     url?: string; // Make it optional if it might not be present
     // Add other properties if needed
@@ -250,12 +264,14 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       setAction(false);
       setWon(false);
       setFinish(false);
+      setQc(false);
       setReschedule(true);
       setSelectedType('');
     } else if (selectedType === 'Deal Loss') {
       handleOpenModal();
       setReschedule(false);
       setFinish(false);
+      setQc(false);
       setWon(false);
       setAction(true);
       setSelectedType('');
@@ -263,6 +279,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // handleCloseWon();
       handleOpenModal();
       setAction(false);
+      setQc(false);
       setReschedule(false);
       setFinish(false);
       setWon(true);
@@ -271,9 +288,19 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       // handleCloseWon();
       handleOpenModal();
       setAction(false);
+      setQc(false);
       setReschedule(false);
       setWon(false);
       setFinish(true);
+      setSelectedType('');
+    } else if (selectedType === 'Mark QC Complete') {
+      // handleCloseWon();
+      handleOpenModal();
+      setAction(false);
+      setReschedule(false);
+      setWon(false);
+      setFinish(false);
+      setQc(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
       onCreateProposal(leadId)
@@ -413,9 +440,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const viewId = queryParams.get("view");
- 
+
     if (viewId) {
-      handleOpenProfileModal(Number(viewId)); 
+      handleOpenProfileModal(Number(viewId));
     }
   }, [location.search]);
 
@@ -529,28 +556,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     ];
   };
 
-  const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
-
-  const toggleCheckboxVisibility = (id: string) => {
-    setVisibilityState((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-  };
+ 
 
 
 
   const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
   const [loadEdit, setLoadEdit] = useState<number | null>(null);
-  const handleInputChange = (event: any, leadId: string) => {
-    const { value } = event.target;
-    const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ');
-    
-    setSalesRep(prevState => ({
-      ...prevState,
-      [leadId]: sanitizedValue.trim() !== '' ? sanitizedValue : '',
-    }));
-  };
+ 
   const handleConfrm = async (e: any, leadId: any) => {
     setLoadEdit(leadId);
     e.preventDefault();
@@ -579,10 +591,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     }
     setLoadEdit(null);
   };
-  const handleClick = (e: any, leadsId: any) => {
-    toggleCheckboxVisibility(leadsId);
-    handleConfrm(e, leadsId);
-  };
+ 
 
 
 
@@ -602,6 +611,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         setWon={setWon}
         finish={finish}
         setFinish={setFinish}
+        qc={qc}
+        setQc={setQc}
         currentFilter={currentFilter}
         setCurrentFilter={setCurrentFilter}
       />
@@ -689,8 +700,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                   leadsData.map((lead: any, index: number) => (
                     <tr>
 
-                      <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin:'7px'}}>
-                        <label>
+                      <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin: '7px' }}>
+                        <label style={{marginBottom:"19px"}}>
                           <input
                             type="checkbox"
                             checked={selectedLeads.includes(lead['leads_id'])}
@@ -699,7 +710,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             }
                           />
                         </label>
-                        <div >
+                        <div>
                           <div
                             style={{
                               whiteSpace: 'pre-wrap',
@@ -710,7 +721,17 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             className={styles.name}>{lead.first_name} {lead.last_name}</div>
 
                           <div className={styles.ids}>OWE{lead.leads_id}</div>
+                          <div className={styles.qcbuttoncont}>
+                            <p>QC :</p>
+                            <div className={styles.qcstaus}>
+                              <img src={ICONS.Pendingqc} alt="img" />
+                              {/* <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div> */}
+                            </div>
+                          </div>
                         </div>
+
+
+
                       </td>
                       <td >
                         <div className={styles.info}>{lead.email_id}</div>
@@ -723,53 +744,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             : lead.street_address
                           : 'N/A'}</div>
                       </td>
-
-
-
                       <td>
-                        {loadEdit === lead.leads_id ?
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><MicroLoader /></div>
-                          :
-                          <div className={styles.topdived}>
-                            {!visibilityState[lead.leads_id] && (
-                              <p>{lead.sales_rep_name || '__________'}</p>
-                            )}
-                            {visibilityState[lead.leads_id] && (
-                              <div className={styles.dropdownContainerModal}>
-                                <input
-                                  type="text"
-                                  value={salesrep[lead.leads_id] !== undefined ? salesrep[lead.leads_id] : lead.sales_rep_name || ''}
-                                  placeholder=""
-                                  onChange={(event) => handleInputChange(event, lead.leads_id)}
-                                  name="salesrep"
-                                  maxLength={40}
-                                />
-                              </div>
-                            )}
-                            <span>
-                              {!visibilityState[lead.leads_id] ? (
-                                <span
-                                  className={styles.EditPenIcon}
-                                  onClick={() => toggleCheckboxVisibility(lead.leads_id)}
-                                >
-                                  <img src={ICONS.EditPenNew} alt="Edit" />
-                                </span>
-                              ) : (
-                                <span
-                                  className={styles.SignEditBottonX}
-                                  onClick={(e) => handleClick(e, lead.leads_id)}
-                                >
-                                  <img src={ICONS.SignEditBotton} />
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                        }
+                        <div className={styles.topdived}>
+                          <p>{lead.sales_rep_name || '__________'}</p>
+                        </div>
                       </td>
-
-
-
-
                       <td>
                         {lead.lead_source ? (
                           <>
@@ -950,18 +929,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                        ? ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required']
-                                        : ['Appointment Not Required', 'Complete as Won']
+                                        ? ['Appointment Not Required','Mark QC Complete']
+                                        : ['Appointment Not Required', 'Complete as Won','Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won']
-                                        : ['Deal Won', 'Complete as Won']
+                                        ? ['Deal Won','Mark QC Complete']
+                                        : ['Deal Won', 'Complete as Won','Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? []
-                                        : ['Complete as Won']
+                                        ? ['Mark QC Complete']
+                                        : ['Complete as Won','Mark QC Complete']
                                 }
                               />
 
@@ -978,9 +957,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 paddingBlock: 4,
 
                               }}
+                              delayShow={800}
                               offset={8}
                               id="info"
-                              place="bottom"
+                              place="top"
                               content="Lead Info"
                             />
                           </div>
@@ -1055,7 +1035,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                         ? ['Deal Won']
                                         : ['Deal Won', 'Complete as Won']
                                       : lead.can_manually_win
-                                        ? []
+                                        ? ['Mark QC Complete']
                                         : ['Complete as Won']
                                 }
                               />
@@ -1076,9 +1056,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               paddingBlock: 4,
 
                             }}
+                            delayShow={800}
                             offset={8}
                             id="info"
-                            place="bottom"
+                            place="top"
                             content="Lead Info"
                           />
                         </td>

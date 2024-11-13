@@ -12,7 +12,7 @@ import { DealerModel } from '../../../../core/models/configuration/create/Dealer
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
-import {PartnerPayScheduleColumn}  from '../../../../resources/static_data/configureHeaderData/partnerPayScheduleColumn';
+import { PartnerPayScheduleColumn } from '../../../../resources/static_data/configureHeaderData/partnerPayScheduleColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
@@ -29,7 +29,7 @@ import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
 import Papa from 'papaparse';
 
-const  SalesPartnerSchedule: React.FC = () => {
+const SalesPartnerSchedule: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -38,16 +38,16 @@ const  SalesPartnerSchedule: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  
+
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [totalCount, setTotalCount] = useState<number>(0)
-  
-  const [data,setData] = useState<any>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+
+  const [data, setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [isExportingData, setIsExporting] = useState(false);
   const itemsPerPage = 25;
   const [sortKey, setSortKey] = useState('');
@@ -94,7 +94,6 @@ const  SalesPartnerSchedule: React.FC = () => {
     handleOpen();
   };
 
-
   const filter = () => {
     setFilterOpen(true);
   };
@@ -105,14 +104,13 @@ const  SalesPartnerSchedule: React.FC = () => {
   };
 
   useEffect(() => {
-   
     (async () => {
       setLoading(true);
       try {
         const data = await configPostCaller('get_partnerpayschedule', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         });
 
         if (data.status > 201) {
@@ -120,20 +118,16 @@ const  SalesPartnerSchedule: React.FC = () => {
           setLoading(false);
           return;
         }
-        setData(data?.data?.PartnerPayScheduleData)
-        setTotalCount(data?.dbRecCount)
+        setData(data?.data?.PartnerPayScheduleData);
+        setTotalCount(data?.dbRecCount);
         setLoading(false);
-         
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-  
-}, [
-  currentPage, viewArchived, filters
-]);
-const totalPages = Math.ceil(totalCount / itemsPerPage);
+  }, [currentPage, viewArchived, filters]);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -251,7 +245,7 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handleExportOpen = () => {
     exportCsv();
-  }
+  };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
@@ -273,22 +267,21 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const exportCsv = async () => {
     // Define the headers for the CSV
-  // Function to remove HTML tags from strings
-  const removeHtmlTags = (str:any) => {
-    if (!str) return '';
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
-  setIsExporting(true);
-  const exportData = await configPostCaller('get_partnerpayschedule', {
-    page_number: 1,
-    page_size: totalCount,
-  });
-  if (exportData.status > 201) {
-    toast.error(exportData.message);
-    return;
-  }
-  
-    
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
+    };
+    setIsExporting(true);
+    const exportData = await configPostCaller('get_partnerpayschedule', {
+      page_number: 1,
+      page_size: totalCount,
+    });
+    if (exportData.status > 201) {
+      toast.error(exportData.message);
+      return;
+    }
+
     const headers = [
       'Sales Partner',
       'Finance Partner',
@@ -302,31 +295,31 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
       'Sales Rep Draw%',
       'Sales Rep Not_to_exceed',
       'Active Start Date',
-      'Active End Date'
+      'Active End Date',
     ];
-  
-   
-     
-    const csvData = exportData?.data?.PartnerPayScheduleData?.map?.((item: any) => [
-      item.sales_partner,
-      item.finance_partner,
-      item.spps_ref,
-      item.state,
-      item.sug,
-      item.rep_pay,
-      item.redline,
-      item.m1_sales_partner_draw_percentage,
-      item.m1_sales_partner_not_to_exceed,
-      item.m1_sales_rep_draw_percentage,
-      item.m1_sales_rep_not_to_exceed,
-      dateFormat(item.active_date_start),
-      dateFormat(item.active_date_end),
-    ]);
-  
+
+    const csvData = exportData?.data?.PartnerPayScheduleData?.map?.(
+      (item: any) => [
+        item.sales_partner,
+        item.finance_partner,
+        item.spps_ref,
+        item.state,
+        item.sug,
+        item.rep_pay,
+        item.redline,
+        item.m1_sales_partner_draw_percentage,
+        item.m1_sales_partner_not_to_exceed,
+        item.m1_sales_rep_draw_percentage,
+        item.m1_sales_rep_not_to_exceed,
+        dateFormat(item.active_date_start),
+        dateFormat(item.active_date_end),
+      ]
+    );
+
     const csvRows = [headers, ...csvData];
-  
+
     const csvString = Papa.unparse(csvRows);
-  
+
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -336,7 +329,6 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-   
   };
   return (
     <div className="comm">
@@ -382,48 +374,60 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
-          <table>
-            <thead>
-              <tr>
-                {PartnerPayScheduleColumn.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={dealerList}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-               
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
+          {!loading && currentPageData?.length === 0 ? (
+            <div
+              style={{ height: '100%' }}
+              className="flex items-center justify-center"
+            >
+              <DataNotFound />
+            </div>
+          ) : (
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan={PartnerPayScheduleColumn.length}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
+                  {PartnerPayScheduleColumn.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={dealerList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
                 </tr>
-              ) : currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, i: any) => (
-                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">
-                        {/* <CheckBox
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={PartnerPayScheduleColumn.length}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
+                        <MicroLoader />
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  currentPageData?.map((el: any, i: any) => (
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        <div className="flex-check">
+                          {/* <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -434,33 +438,38 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
                             )
                           }
                         /> */}
-                        {el.sales_partner || 'N/A'}
-                      </div>
-                    </td>
-                    <td>{el.finance_partner || 'N/A'}</td>
-                    <td>{el.spps_ref || 'N/A'}</td>
-                    <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{el.sug || 'N/A'}</td>
-                    <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.redline || 'N/A'}</td>
-                    <td>{el.m1_sales_partner_draw_percentage|| 'N/A'}</td>
-                    <td>{el.m1_sales_partner_not_to_exceed || 'N/A'}</td>
-                    <td>{el.m1_sales_rep_draw_percentage || 'N/A'}</td>
-                    <td>{el.m1_sales_rep_not_to_exceed || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_end) || 'N/A'}</td>
-                     
-                  </tr>
-                ))
-              ) : (
-                <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                          {el.sales_partner || 'N/A'}
+                        </div>
+                      </td>
+                      <td>{el.finance_partner || 'N/A'}</td>
+                      <td>{el.spps_ref || 'N/A'}</td>
+                      <td>{el.state?.trim?.() || 'N/A'}</td>
+                      <td>{el.sug || 'N/A'}</td>
+                      <td>{el.rep_pay || 'N/A'}</td>
+                      <td>{el.redline || 'N/A'}</td>
+                      <td>{el.m1_sales_partner_draw_percentage || 'N/A'}</td>
+                      <td>{el.m1_sales_partner_not_to_exceed || 'N/A'}</td>
+                      <td>{el.m1_sales_rep_draw_percentage || 'N/A'}</td>
+                      <td>{el.m1_sales_rep_not_to_exceed || 'N/A'}</td>
+                      <td>
+                        {!el.active_date_start ||
+                        new Date(el.active_date_start).getFullYear() === 1
+                          ? 'N/A'
+                          : dateFormat(el.active_date_start)}
+                      </td>
+
+                      <td>
+                        {!el.active_date_end ||
+                        new Date(el.active_date_end).getFullYear() === 1
+                          ? 'N/A'
+                          : dateFormat(el.active_date_end)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {data?.length > 0 ? (
@@ -486,4 +495,4 @@ const totalPages = Math.ceil(totalCount / itemsPerPage);
   );
 };
 
-export default  SalesPartnerSchedule;
+export default SalesPartnerSchedule;

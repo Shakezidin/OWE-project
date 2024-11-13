@@ -106,7 +106,7 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
         offset={8}
         delayShow={800}
         id="infoSt"
-        place="bottom"
+        place="top"
         content="Status Updates"
         className={classes.mobile_tooltip}
       />
@@ -144,6 +144,8 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
             Appointment Not Required
           </li>
 
+
+
           <li
             onClick={() => handleSelect('Complete as Won')}
             className={`${classes.dropdownItem} ${selectedType === 'Complete as Won' ? classes.selected : ''
@@ -153,6 +155,18 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
               }`}
           >
             Complete as Won
+          </li>
+
+
+          <li
+            onClick={() => handleSelect('Mark QC Complete')}
+            className={`${classes.dropdownItem} ${selectedType === 'Mark QC Complete' ? classes.selected : ''
+              } ${disabledOptions.includes('Mark QC Complete')
+                ? classes.disabled
+                : ''
+              }`}
+          >
+            Mark QC Complete
           </li>
         </ul>
       )}
