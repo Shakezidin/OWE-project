@@ -957,9 +957,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 paddingBlock: 4,
 
                               }}
+                              delayShow={800}
                               offset={8}
                               id="info"
-                              place="bottom"
+                              place="top"
                               content="Lead Info"
                             />
                           </div>
@@ -1055,9 +1056,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               paddingBlock: 4,
 
                             }}
+                            delayShow={800}
                             offset={8}
                             id="info"
-                            place="bottom"
+                            place="top"
                             content="Lead Info"
                           />
                         </td>
