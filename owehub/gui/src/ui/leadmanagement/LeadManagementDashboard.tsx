@@ -20,8 +20,6 @@ import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
-import ArchiveModal from './Modals/LeaderManamentSucessModel';
-import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import Papa from 'papaparse';
 
@@ -29,7 +27,6 @@ import Papa from 'papaparse';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { toZonedTime } from 'date-fns-tz';
 import {
   addMinutes,
   endOfWeek,
@@ -51,7 +48,6 @@ import {
   createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
   auroraWebProposal, auroraGenerateWebProposal, auroraListModules
 } from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading, MdHeight } from 'react-icons/md';
@@ -59,7 +55,6 @@ import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
-import { scale } from 'pdf-lib';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -337,9 +332,6 @@ const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
-  const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
@@ -616,65 +608,7 @@ const LeadManagementDashboard = () => {
 
 
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     const fetchData = async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         const response = await postCaller(
-  //           'get_leads_count_by_status',
-  //           {
-  //             start_date: selectedDates.startDate
-  //             ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           end_date: selectedDates.endDate
-  //             ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           },
-  //           true
-  //         );
-
-  //         if (response.status === 200) {
-  //           const apiData = statusData1;
-
-  //           console.log(apiData, "data check")
-
-  //           const formattedData = apiData.reduce(
-  //             (acc: DefaultData, item: any) => {
-  //               const statusName = item.status_name;
-  //               const defaultDataKey = Object.keys(defaultData).find(
-  //                 (key) => key === statusName || defaultData[key].name === statusName
-  //               );
-
-  //               if (defaultDataKey) {
-  //                 acc[defaultDataKey] = {
-  //                   ...defaultData[defaultDataKey],
-  //                   value: item.count,
-  //                 };
-  //               }
-
-  //               return acc;
-  //             },
-  //             { ...defaultData }
-  //           );
-
-  //           const mergedData = Object.values(formattedData) as StatusData[];
-  //           setPieData(mergedData);
-
-  //         } else if (response.status > 201) {
-  //           toast.error(response.data.message);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
-
+ 
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
