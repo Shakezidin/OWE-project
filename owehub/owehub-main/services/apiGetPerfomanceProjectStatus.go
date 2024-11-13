@@ -500,7 +500,17 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			ActivationColour:  activationColor,
 			NTPdate:           ntpD,
 		}
-		uniqueIds = append(uniqueIds, UniqueId)
+		forAGRp[UniqueId] = ForAgRp{
+			SurveyClr:     surveyColor,
+			CadClr:        cadColor,
+			PermittingClr: permitColor,
+			RoofingClr:    roofingColor,
+			InstallClr:    installColor,
+			ElectricalClr: electricColor,
+			InspectionClr: inspectionColor,
+			ActivationClr: activationColor,
+			NTPClr:        "",
+		}
 		switch dataReq.SelectedMilestone {
 		case "survey":
 			if SiteSurveyCountT == 1 {
