@@ -74,7 +74,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 			ud.email_id as creator_email_id,
 			ud.mobile_number as creator_phone_number
 		FROM get_leads_info_hierarchy($1) li
-		INNER JOIN user_details ud ON ud.user_id = li.created_by
+		INNER JOIN user_details ud ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $2
 	`
 
@@ -209,5 +209,15 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+	}
+
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: leadFirstName,
+		LeadLastName:  leadLastName,
+		Message:       "Thank You for showing interest in Our World Energy",
+	})
+	err = sendSms(leadPhone, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 	}
 }

@@ -170,6 +170,20 @@
  }
  
  // -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+const SmsHomeOwner SmsBodyTemplate = `Dear {{.LeadFirstName}} {{.LeadLastName}},
+{{.Message}}
+Regards,
+Our World Energy
+`
+
+type SmsDataHomeOwner struct {
+	LeadFirstName string
+	LeadLastName  string
+	Message       string
+}
+
+// -----------------------------------------------------------------------------
 
  const SmsAppointmentAccepted SmsBodyTemplate = `Dear {{.UserName}},
  Lead {{.LeadFirstName}} {{.LeadLastName}} (OWE{{.LeadId}}) has accepted the appointment.

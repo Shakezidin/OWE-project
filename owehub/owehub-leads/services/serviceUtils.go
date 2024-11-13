@@ -168,7 +168,7 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 				ud.mobile_number as creator_phone
 			FROM
 				leads_info li
-			INNER JOIN user_details ud ON ud.user_id = li.created_by	
+			INNER JOIN user_details ud ON ud.user_id = li.salerep_id	
 			WHERE
 				leads_id = $1
 		`
@@ -339,7 +339,7 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		ud.mobile_number as creator_phone
 	FROM
 		leads_info li
-	INNER JOIN user_details ud ON ud.user_id = li.created_by	
+	INNER JOIN user_details ud ON ud.user_id = li.salerep_id	
 	WHERE
 		leads_id = $1
 `

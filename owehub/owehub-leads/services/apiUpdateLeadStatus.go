@@ -8,6 +8,7 @@ package services
 
 import (
 	leadService "OWEApp/owehub-leads/common"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	emailClient "OWEApp/shared/email"
@@ -92,12 +93,12 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			li.phone_number,
 			li.email_id,
 			li.appointment_date,
-			ud.name as creator_name,
-			ud.email_id as creator_email,
-			ud.mobile_number as creator_phone
+			ud.name as salerep_name,
+			ud.email_id as salerep_email,
+			ud.mobile_number as salerep_phone
 		FROM
 			get_leads_info_hierarchy($1) li
-		INNER JOIN user_details ud ON ud.user_id = li.created_by	
+		INNER JOIN user_details ud ON ud.user_id = li.salerep_id	
 		WHERE
 			leads_id = $2
 	`
@@ -121,23 +122,23 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	creatorName, ok := data[0]["creator_name"].(string)
+	salerepName, ok := data[0]["salerep_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to assert creator_name to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
 		return
 	}
 
-	creatorEmail, ok := data[0]["creator_email"].(string)
+	salerepEmail, ok := data[0]["salerep_email"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to assert creator_email to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
 		return
 	}
 
-	creatorPhone, ok := data[0]["creator_phone"].(string)
+	salerepPhone, ok := data[0]["salerep_phone"].(string)
 	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert creator_phone to string type Item: %+v", data[0])
+		log.FuncErrorTrace(0, "Failed to assert salerep_phone to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
 		return
 	}
@@ -218,10 +219,10 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
@@ -237,24 +238,34 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
 				LeadLastName:  lastName,
-				UserName:      creatorName,
+				UserName:      salerepName,
 			})
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Appointment Sent",
 			TemplateData: emailTmplData,
 		})
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 		}
 
 		return
@@ -295,11 +306,11 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
@@ -316,18 +327,18 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
 				LeadLastName:  lastName,
-				UserName:      creatorName,
+				UserName:      salerepName,
 			})
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Deal Won",
 			TemplateData: emailTmplData,
 		})
@@ -335,6 +346,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
@@ -369,11 +391,11 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
@@ -383,14 +405,14 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Deal Lost",
 			TemplateData: emailTmplData,
 		})
@@ -398,6 +420,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
@@ -418,11 +451,11 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
@@ -432,14 +465,14 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Appointment Not Required",
 			TemplateData: emailTmplData,
 		})
@@ -447,6 +480,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
