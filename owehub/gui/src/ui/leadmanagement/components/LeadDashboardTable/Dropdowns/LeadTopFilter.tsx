@@ -69,7 +69,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
         offset={8}
         delayShow={800}
         id="Filters"
-        place="bottom"
+        place="top"
         content="Filters"
         className={classes.mobile_tooltip}
       />

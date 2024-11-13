@@ -531,10 +531,7 @@ table tbody tr:hover {
   transform: scale(1.09);
 }
 
-/* .closeIcon:hover {
-  background: #377cf630;
-  border-radius: 5px;
-} */
+
 
 .removeButton {
   background-color: #d91515;
@@ -548,13 +545,11 @@ table tbody tr:hover {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-
-
-.removeButton {
-  cursor: pointer;
-  width: 95px;
-  height: 32px;
+.removeButton:hover{
+  transform: scale(1.05);
+  background-color: #AD1313;
 }
+
 
 .paginationContainer {
   display: flex;
@@ -617,8 +612,10 @@ table tbody tr:hover {
   }
   .removeButton {
     cursor: pointer;
-    width: 95px;
+    width: 100px;
     height: 32px;
+    font-size: 14px;
+
   }
   
 
@@ -1466,7 +1463,7 @@ table tbody tr:hover {
   }
 
   .lead__datepicker_content {
-  margin-top: 120px;
+  margin-top: 127.8px;
   margin-left: 300px;
    
   }

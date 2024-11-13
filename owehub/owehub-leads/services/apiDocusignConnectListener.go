@@ -233,7 +233,7 @@ func sendProposalSignedNotification(leadsId int64) error {
 			li.phone_number,
 			li.proposal_pdf_key
 		FROM user_details ud
-		JOIN leads_info li ON ud.user_id = li.created_by
+		JOIN leads_info li ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $1
 	`
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadsId})
@@ -327,6 +327,16 @@ func sendProposalSignedNotification(leadsId int64) error {
 	err = sendSms(userPhone, smsBody)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
+	}
+
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: firstName,
+		LeadLastName:  lastName,
+		Message:       "Thank You for showing interest in Our World Energy",
+	})
+	err = sendSms(phoneNo, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 	}
 
 	return nil

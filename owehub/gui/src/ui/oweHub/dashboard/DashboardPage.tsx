@@ -404,6 +404,7 @@ export const DashboardPage: React.FC = () => {
                     style={{ marginLeft: 0 }}
                   >
                     <Calendar
+                   maxDate={new Date()}
                       date={selectionRange || new Date()}
                       onChange={handleSelect}
                     />

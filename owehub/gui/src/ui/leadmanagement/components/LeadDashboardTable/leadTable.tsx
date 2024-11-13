@@ -795,7 +795,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               <div style={{ marginTop: "4px" }} className={styles.date}>
                                 {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                               </div>
-                              {((lead.appointment_status_label === 'No Response' && lead.proposal_status !== '') || (lead.appointment_status_label === 'No Response' && lead.won_lost_label !== '')) &&
+                              {(((lead.appointment_status_label === 'No Response' || lead.appointment_status_label === 'Appointment Date Passed') && lead.proposal_status !== '') || ((lead.appointment_status_label === 'No Response' || lead.appointment_status_label === 'Appointment Date Passed') && lead.won_lost_label !== '')) &&
                                 <div style={{ color: "#D91515" }} className={styles.date}>
                                   Update Status!
                                 </div>}
@@ -957,9 +957,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 paddingBlock: 4,
 
                               }}
+                              delayShow={800}
                               offset={8}
                               id="info"
-                              place="bottom"
+                              place="top"
                               content="Lead Info"
                             />
                           </div>
@@ -1055,9 +1056,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               paddingBlock: 4,
 
                             }}
+                            delayShow={800}
                             offset={8}
                             id="info"
-                            place="bottom"
+                            place="top"
                             content="Lead Info"
                           />
                         </td>
@@ -1078,36 +1080,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
           </div>
 
         </div>
-        {/* {leadsData.length > 0 && !isLoading && (
-          <div className="page-heading-container">
-
-            <p className="page-heading">
-              {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
-            </p>
-
-
-
-            <Pagination
-              currentPage={page}
-              totalPages={totalPage}
-              paginate={paginate}
-              currentPageData={[]}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-              onPerPageChange={handlePerPageChange}
-            />
-          </div>
-
-        )} */}
+        
       </div>
     </>
   )
 }
 
 export default LeadTable
-
-
-// Status - won = Won - dis
-//st- sched, any status - not req - disable     <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh}/>
-
