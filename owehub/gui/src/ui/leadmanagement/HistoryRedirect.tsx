@@ -79,7 +79,7 @@ const HistoryRedirect = () => {
         offset={8}
         delayShow={800}
         id="More Pages"
-        place="bottom"
+        place="top"
         content="More Pages"
       />
       {modenIsOpenX && (
