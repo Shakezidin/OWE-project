@@ -7,6 +7,7 @@
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -103,4 +104,13 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Sending success response
 	appserver.FormAndSendHttpResp(resp, "Lead Created Successfully", http.StatusOK, nil)
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: CreateLeadsReq.FirstName,
+		LeadLastName:  CreateLeadsReq.LastName,
+		Message:       "Thank You for showing interest in Our World Energy",
+	})
+	err = sendSms(CreateLeadsReq.PhoneNumber, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+	}
 }

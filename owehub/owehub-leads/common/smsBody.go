@@ -41,6 +41,19 @@ func (t SmsBodyTemplate) WithData(data any) string {
 	return out.String()
 }
 
+// ----------------------------------------------------------------------------
+const SmsHomeOwner SmsBodyTemplate = `Dear {{.LeadFirstName}} {{.LeadLastName}},
+{{.Message}}
+Regards,
+Our World Energy
+`
+
+type SmsDataHomeOwner struct {
+	LeadFirstName string
+	LeadLastName  string
+	Message       string
+}
+
 // -----------------------------------------------------------------------------
 
 const SmsAppointmentSent SmsBodyTemplate = `Dear {{.UserName}},
