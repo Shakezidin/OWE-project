@@ -1508,6 +1508,9 @@
 
   .project-heading {
     grid-template-rows: auto auto;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: center;
   }
 
   .perf-export-btn {
@@ -1613,12 +1616,7 @@
   }
 }
 
-@media (max-width: 375px)
-{
-  .dropDownFilter{
-    margin-top: 140px;
-  }
-}
+
 .per-head-input {
   height: 50px;
   display: flex;
