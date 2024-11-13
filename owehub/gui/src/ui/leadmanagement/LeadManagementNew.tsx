@@ -87,7 +87,7 @@ const LeadManagementNew = () => {
         [name]: CorrectValue,
       }));
     }
-    if ( name === 'lead_source') {
+    if (name === 'lead_source') {
       if (value === '' || lettersAndSpacesPattern.test(value)) {
         setFormData((prevData) => ({
           ...prevData,
@@ -103,7 +103,7 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: sanitizedValue,
       }));
-    }else {
+    } else {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -222,8 +222,8 @@ const LeadManagementNew = () => {
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
-  
-  
+
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -268,15 +268,19 @@ const LeadManagementNew = () => {
 
   return (
     <div className={classes.ScrollableDivRemove}>
-      <div className={`${classes.main_head} ${classes.form_header}`}>
+      {/* <div className={`${classes.main_head} ${classes.form_header}`}>
         Create New Lead
         <img src={ICONS.cross} alt="" onClick={handleBack} />
-      </div>
-      <div style={{ paddingRight: "12px" }} className={`flex justify-between mt2 ${classes.h_screen}`}>
+      </div> */}
+      <div style={{ paddingRight: "12px" }} className={`flex justify-between ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
-              <div className={classes.an_head}>Fill the Form</div>
+              <div className={`${classes.main_head} ${classes.form_header}`}>
+                Create New Lead
+                <img src={ICONS.cross} alt="" onClick={handleBack} />
+              </div>
+              {/* <div className={classes.an_head}>Fill the Form</div> */}
               <div className="scroll-user">
                 <div className={classes.createProfileInputView}>
                   <div className={classes.createProfileTextView}>
@@ -458,7 +462,7 @@ const LeadManagementNew = () => {
                     </div>
                     <div className={classes.salrep_input_container}>
 
-                    <div className={classes.srs_new_create}>
+                      <div className={classes.srs_new_create}>
                         <Input
                           type="text"
                           label="Lead Source"
@@ -479,15 +483,15 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-                      <div className={classes.srs_new_create} style={{gap:"6px"}}>
-                       <div className={classes.custom_label_newlead}>Sales Rep</div>
+                      <div className={classes.srs_new_create} style={{ gap: "6px" }}>
+                        <div className={classes.custom_label_newlead}>Sales Rep</div>
                         <Select
-                         value={selectedSale}
-                         onChange={handleSaleChange}
-                         getOptionLabel={(option) => option.name} 
-                         getOptionValue={(option) => option.id.toString()}
-                         placeholder={"Select Sales Rep"}
-                         options={saleData} 
+                          value={selectedSale}
+                          onChange={handleSaleChange}
+                          getOptionLabel={(option) => option.name}
+                          getOptionValue={(option) => option.id.toString()}
+                          placeholder={"Select Sales Rep"}
+                          options={saleData}
                           styles={{
                             control: (baseStyles, state) => ({
                               ...baseStyles,
@@ -495,7 +499,7 @@ const LeadManagementNew = () => {
                               borderRadius: '8px',
                               outline: 'none',
                               color: '#3E3E3E',
-                              width: '200px',
+                              width: '370px',
                               height: '36px',
                               fontSize: '12px',
                               border: '1px solid #000000',
@@ -555,7 +559,7 @@ const LeadManagementNew = () => {
                               '&:hover': {
                                 background: state.isSelected ? '#377CF6' : '#DDEBFF',
                               },
-                             
+
                             }),
                             singleValue: (baseStyles, state) => ({
                               ...baseStyles,
@@ -566,7 +570,7 @@ const LeadManagementNew = () => {
                               width: '200px',
                               marginTop: '3px',
                               border: '1px solid #000000',
-                              
+
                             }),
                             menuList: (base) => ({
                               ...base,
@@ -596,7 +600,7 @@ const LeadManagementNew = () => {
                         )}
                       </div>
 
-                   
+
                       <div className={classes.create_input_field_note}>
                         <label htmlFor="" className="inputLabel">
                           Notes
