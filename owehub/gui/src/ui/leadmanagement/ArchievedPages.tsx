@@ -346,19 +346,7 @@ const ArchivedPages = () => {
                           {pending1 ? 'Unarchiving...' : 'Unarchive'}
                         </button>
                       </div>{' '}
-                      {/* <div>
-                      <button
-                        className={styles.archieveButtonX}
-                        onClick={deleteLeads}
-                        style={{
-                          pointerEvents: pending ? 'none' : 'auto',
-                          opacity: pending ? 0.6 : 1,
-                          cursor: pending ? 'not-allowed' : 'pointer',
-                        }}
-                      >
-                        {false ? 'Removing...' : 'Remove'}
-                      </button>
-                    </div> */}
+                      
                     </div>
                   ) : (
                     <div
@@ -366,9 +354,9 @@ const ArchivedPages = () => {
                       style={{ visibility: 'hidden' }}
                     >
                       <div className={styles.selectionHeader}>
-                        <button className={styles.archieveButtonA}>
+                      {/*   <button className={styles.archieveButtonA}>
                           Archive
-                        </button>
+                        </button>*/}
                       </div>{' '}
                     </div>
                   )}
