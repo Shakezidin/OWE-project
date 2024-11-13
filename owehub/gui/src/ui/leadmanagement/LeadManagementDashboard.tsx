@@ -616,65 +616,7 @@ const LeadManagementDashboard = () => {
 
 
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     const fetchData = async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         const response = await postCaller(
-  //           'get_leads_count_by_status',
-  //           {
-  //             start_date: selectedDates.startDate
-  //             ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           end_date: selectedDates.endDate
-  //             ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           },
-  //           true
-  //         );
-
-  //         if (response.status === 200) {
-  //           const apiData = statusData1;
-
-  //           console.log(apiData, "data check")
-
-  //           const formattedData = apiData.reduce(
-  //             (acc: DefaultData, item: any) => {
-  //               const statusName = item.status_name;
-  //               const defaultDataKey = Object.keys(defaultData).find(
-  //                 (key) => key === statusName || defaultData[key].name === statusName
-  //               );
-
-  //               if (defaultDataKey) {
-  //                 acc[defaultDataKey] = {
-  //                   ...defaultData[defaultDataKey],
-  //                   value: item.count,
-  //                 };
-  //               }
-
-  //               return acc;
-  //             },
-  //             { ...defaultData }
-  //           );
-
-  //           const mergedData = Object.values(formattedData) as StatusData[];
-  //           setPieData(mergedData);
-
-  //         } else if (response.status > 201) {
-  //           toast.error(response.data.message);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
-
+ 
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);

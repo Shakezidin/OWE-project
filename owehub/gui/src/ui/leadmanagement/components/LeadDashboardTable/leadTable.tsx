@@ -959,7 +959,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               }}
                               offset={8}
                               id="info"
-                              place="bottom"
+                              place="top"
                               content="Lead Info"
                             />
                           </div>
@@ -1057,7 +1057,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             }}
                             offset={8}
                             id="info"
-                            place="bottom"
+                            place="top"
                             content="Lead Info"
                           />
                         </td>

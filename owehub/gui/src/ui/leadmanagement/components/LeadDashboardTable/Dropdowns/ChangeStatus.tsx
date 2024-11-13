@@ -106,7 +106,7 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
         offset={8}
         delayShow={800}
         id="infoSt"
-        place="bottom"
+        place="top"
         content="Status Updates"
         className={classes.mobile_tooltip}
       />
