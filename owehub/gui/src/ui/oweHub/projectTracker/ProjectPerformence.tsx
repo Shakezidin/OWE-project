@@ -140,21 +140,48 @@ const ProjectPerformence = () => {
       set_minValue(values);
     }
   };
+
+  const handleMinChange = (e: any) => {
+    const value = e.target.value;
+
+    // Check if input length exceeds 4
+    if (value>180) {
+        set_minValue(180);
+        return
+    }
+
+    // Parse the value or default to 0 if it's invalid
+    const newMinValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
+    set_minValue(newMinValue);
+};
+
+const handleMaxChange = (e: any) => {
+    const value = e.target.value;
+
+    // Check if input length exceeds 4
+    if (value.length > 4) {
+        return;
+    }
+
+    // Parse the value or default to 0 if it's invalid
+    const newMaxValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
+    set_maxValue(newMaxValue);
+};
+
+
   const [FilterFlag,setFilterFlag]=useState(false);
   const HandleFilterClick=()=>{
-    setFilterFlag(prev=>!prev);
+    setOpenFilter(prev=>!prev);
   }
-  useEffect(()=>{
-    setOpenFilter(FilterFlag);
-  },[FilterFlag]);
+  const [filtered,setFiltered]=useState<boolean>(false);
   const [checkedOptions,setCheckedOptions]=useState<string[]>([]);
   const filterRef = useRef<HTMLDivElement>(null);
-  const handleClickOutsidee = (event: MouseEvent) => {
-    if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+  const handleClickOutsidee =(event: MouseEvent) => {
+    if (filterRef.current && !filterRef.current.contains(event.target as Node) && !(event.target as HTMLElement).classList.contains('pipelineFilterLine') ) {
       setOpenFilter(false);
     }
   };
-  const [filtered,setFiltered]=useState<boolean>(false);
+ 
 
   const[fieldData,setFieldData]=useState<string[]>([]);
 
@@ -194,9 +221,9 @@ const ProjectPerformence = () => {
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutsidee);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutsidee);
     };
-  }, []);
+  }, [openFilter]);
 
 
   const [checkedStates, setCheckedStates] = useState(
@@ -1092,7 +1119,7 @@ const ProjectPerformence = () => {
                     <p className='selectDays'>Select Days</p>
                     </div>
 
-                    <div className='filterdays'>
+                    {/* <div className='filterdays'>
                       <div className='startDay'>
                        <div className='mThen'>
                        <p className='moreThen'>More then</p>
@@ -1103,7 +1130,43 @@ const ProjectPerformence = () => {
                         <div className='lThen'><p className='lessThen'>Less then</p> </div>
                         <div className='dayBox'>{maxValue} days</div>
                         </div>
-                      </div>
+                      </div> */}
+                      <div className='filterdays'>
+  <div className='startDay'>
+    <div className='mThen'>
+      <p className='moreThen'>More then</p>
+    </div>
+    <input
+            className='dayBox'
+            value={minValue === 0 ? '' : minValue}
+            type="text"
+            onChange={handleMinChange}
+            // onFocus={(e) => e.target.value = ''}
+            onBlur={() => {set_minValue(minValue <= 0 ? 1 : minValue);
+              set_minValue(minValue>maxValue?maxValue:minValue);
+            }}
+        />
+        {/* {minValue > 0 && <span> days</span>} */}
+  </div>
+  <div className='endDay'>
+    <div className='lThen'>
+      <p className='lessThen'>Less then</p>
+    </div>
+    <input
+            className='dayBox'
+            value={maxValue===0 ? '' :maxValue}
+            type="text"
+            onChange={handleMaxChange}
+            disabled={minValue===180}
+            // onFocus={(e) => e.target.value = ''}
+            onBlur={() => {set_maxValue(maxValue <= 0 ? 180 : maxValue);
+              set_maxValue(maxValue<minValue?minValue:maxValue);
+            }}
+        />
+        {/* {maxValue > 0 && <span> days</span>} */}
+  </div>
+</div>
+
 
                       {/* <div className='sliderr'>
                       {/* <input
@@ -1238,7 +1301,7 @@ const ProjectPerformence = () => {
                           <div className='applyButton' style={{cursor:"pointer"}} onClick={()=>{
                             setFiltered(prev=>!prev);
                             setOpenFilter(false);
-                            setFilterFlag(false) }}> Apply </div>
+                            setFilterFlag(false); }}> Apply </div>
                           </div>
 </div>
 
@@ -1461,7 +1524,7 @@ const ProjectPerformence = () => {
       </div>
     </div>
     {/* Days Remaining */}
-    { project.days_cad_design && project.days_cad_design !== '0 day pending' && project.days_cad_design !== '-' &&<div className="pendingDayDiv">
+    {project.cad_design_colour==='#377CF6' && project.days_cad_design && project.days_cad_design !== '0 day pending' && project.days_cad_design !== '-' &&<div className="pendingDayDiv">
       <p className="daysRemaining">{project.days_cad_design}</p>
       <div className='simpleLine'> </div>
     </div>}
