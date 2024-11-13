@@ -659,6 +659,9 @@ table tbody tr:hover {
   .MobileViewHide {
     display: block;
     font-weight: 600;
+    background-color: red;
+    white-space: nowrap;
+    width: 150px;
   }
 
   .horizontal {
