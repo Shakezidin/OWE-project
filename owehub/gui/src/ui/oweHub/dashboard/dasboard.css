@@ -1010,8 +1010,4 @@
   .dealer-mob-upload {
     transform: scale(1.2);
   }
-
-  .dealer-mob-download {
-    transform: scale(1.7) !important;
-  }
 }
