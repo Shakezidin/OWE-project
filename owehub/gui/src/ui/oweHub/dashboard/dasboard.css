@@ -891,6 +891,10 @@
     flex-basis: auto;
   }
 
+  .help-projId{
+    width: 100% !important;
+  }
+
   .modal-down-break{
     margin: 10px;
   }
@@ -900,7 +904,7 @@
   }
 
   .help-proj-input{
-    width: 16.2% !important;
+    width: 100% !important;
   }
 
   .help-submit{

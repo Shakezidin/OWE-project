@@ -1322,7 +1322,7 @@ const ProjectPerformence = () => {
                                 <div className="milestone-status">
                                   
                                   <div
-                                    className="status-item click qc"
+                                    className="status-item qc-item click qc"
                                     onClick={() => {
                                       setSelectedProjectQC(project.qc);
                                       filter();
@@ -1348,7 +1348,7 @@ const ProjectPerformence = () => {
                                       : ''}
                                   </div>
                                   <div
-                                    className={`status-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
+                                    className={`status-item ntp-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
                                     onClick={() => {
                                       setSelectedProjectQC(project.ntp);
                                       ntpAction();

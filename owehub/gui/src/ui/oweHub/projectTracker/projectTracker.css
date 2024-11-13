@@ -194,6 +194,15 @@
   background-color: #377cf6;
 }
 
+.qc-item:hover{
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.ntp-item:hover{
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
 .status-icon {
   display: flex;
   align-items: center;
