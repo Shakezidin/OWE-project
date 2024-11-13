@@ -1121,7 +1121,7 @@ const ProjectPerformence = () => {
                     <p className='selectDays'>Select Days</p>
                   </div>
 
-                  {/* <div className='filterdays'>
+                  <div className='filterdays'>
                       <div className='startDay'>
                        <div className='mThen'>
                        <p className='moreThen'>More then</p>
@@ -1132,44 +1132,8 @@ const ProjectPerformence = () => {
                         <div className='lThen'><p className='lessThen'>Less then</p> </div>
                         <div className='dayBox'>{maxValue} days</div>
                         </div>
-                      </div> */}
-                  <div className='filterdays'>
-                    <div className='startDay'>
-                      <div className='mThen'>
-                        <p className='moreThen'>More then</p>
                       </div>
-                      <input
-                        className='dayBox'
-                        value={minValue === 0 ? '' : minValue}
-                        type="text"
-                        onChange={handleMinChange}
-                        // onFocus={(e) => e.target.value = ''}
-                        onBlur={() => {
-                          set_minValue(minValue <= 0 ? 1 : minValue);
-                          set_minValue(minValue > maxValue ? maxValue : minValue);
-                        }}
-                      />
-                      {/* {minValue > 0 && <span> days</span>} */}
-                    </div>
-                    <div className='endDay'>
-                      <div className='lThen'>
-                        <p className='lessThen'>Less then</p>
-                      </div>
-                      <input
-                        className='dayBox'
-                        value={maxValue === 0 ? '' : maxValue}
-                        type="text"
-                        onChange={handleMaxChange}
-                        disabled={minValue === 180}
-                        // onFocus={(e) => e.target.value = ''}
-                        onBlur={() => {
-                          set_maxValue(maxValue <= 0 ? 180 : maxValue);
-                          set_maxValue(maxValue < minValue ? minValue : maxValue);
-                        }}
-                      />
-                      {/* {maxValue > 0 && <span> days</span>} */}
-                    </div>
-                  </div>
+                  
 
 
                   {/* <div className='sliderr'>
