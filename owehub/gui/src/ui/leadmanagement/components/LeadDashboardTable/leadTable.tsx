@@ -957,6 +957,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 paddingBlock: 4,
 
                               }}
+                              delayShow={800}
                               offset={8}
                               id="info"
                               place="top"
@@ -1055,6 +1056,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               paddingBlock: 4,
 
                             }}
+                            delayShow={800}
                             offset={8}
                             id="info"
                             place="top"
