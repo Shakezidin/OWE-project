@@ -1490,6 +1490,9 @@
   .performance-exportbtn{
     padding: 8px;
     width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .performance-table-heading{
