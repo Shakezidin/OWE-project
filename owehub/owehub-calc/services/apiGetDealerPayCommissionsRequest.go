@@ -319,8 +319,14 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "today":
-				filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
+				valueAsTime, _ := time.Parse("02-01-2006", value.(string))
+
+				if !valueAsTime.Equal(time.Now().Truncate(24 * time.Hour)) {
+					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				} else {
+					filtersBuilder.WriteString(" 1 =1 ")
+				}
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)

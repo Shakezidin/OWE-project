@@ -98,7 +98,7 @@ const NtpPopUp: React.FC<TableProps> = ({
            <h3 className="createProfileText" style={{ margin: 0 }}>
               NTP
             </h3>
-            <p style={{fontSize:'12px', fontWeight:'500', color:'#EBA900'}}>{ntpValue==='0 days pending' ? "" : ntpValue}</p>
+            <p style={{fontSize:'12px', fontWeight:'500', color:'#EBA900'}}>{ntpValue==='0 day pending' ? "" : ntpValue}</p>
            </div>
             <div
               className="createUserCrossButton"

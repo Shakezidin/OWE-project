@@ -1601,7 +1601,7 @@ const LeadManagementDashboard = () => {
                   offset={8}
                   delayShow={800}
                   id="downip"
-                  place="bottom"
+                  place="top"
                   content={isToggledX ? "Minimize" : "Maximize"}
                   className={styles.mobile_tooltip}
                 />
@@ -1838,22 +1838,7 @@ const LeadManagementDashboard = () => {
 
                 )}
 
-                <Tooltip
-                  style={{
-                    zIndex: 20,
-                    background: '#f7f7f7',
-                    color: '#000',
-                    fontSize: 12,
-                    paddingBlock: 4,
-                    fontWeight: "400"
-                  }}
-                  delayShow={800}
-                  offset={8}
-                  id="More Pages"
-                  place="bottom"
-                  content="More Pages"
-                  className={styles.mobile_tooltip}
-                />
+            
 
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
@@ -1871,7 +1856,7 @@ const LeadManagementDashboard = () => {
                     }}
                     offset={8}
                     id="NEW"
-                    place="bottom"
+                    place="top"
                     content="Add New Lead"
                     delayShow={800}
                     className={styles.mobile_tooltip}
@@ -1912,7 +1897,7 @@ const LeadManagementDashboard = () => {
                       offset={8}
                       delayShow={800}
                       id="export"
-                      place="bottom"
+                      place="top"
                       content="Export"
                       className={styles.mobile_tooltip}
                     />
@@ -1995,7 +1980,7 @@ const LeadManagementDashboard = () => {
                     {!isMobileDevice() && !isTablet &&
                       <Tooltip
                         style={{
-                          zIndex: 20,
+                          zIndex: 103,
                           background: '#f7f7f7',
                           color: '#000',
                           fontSize: 12,
@@ -2004,7 +1989,7 @@ const LeadManagementDashboard = () => {
                         }}
                         offset={8}
                         id="NEW"
-                        place="bottom"
+                        place="top"
                         content="Add New Lead"
                         delayShow={800}
                         className={styles.mobile_tooltip}
@@ -2044,7 +2029,7 @@ const LeadManagementDashboard = () => {
                         offset={8}
                         delayShow={800}
                         id="export"
-                        place="bottom"
+                        place="top"
                         content="Export"
                         className={styles.mobile_tooltip}
                       />

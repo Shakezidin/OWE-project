@@ -94,6 +94,10 @@
   color: white;
 }
 
+.link-tab.disable-btn:hover svg {
+  color: var(--primary-color);
+}
+
 .link-tab img {
   height: 18px;
   width: 18px;

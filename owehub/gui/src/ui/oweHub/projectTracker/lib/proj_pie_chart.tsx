@@ -114,7 +114,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 !isDisabled && handleCopyLink(projectDetail?.includeContractUrl)
               }
             >
-              <FiLink style={{color: "#377cf6"}} />
+              <FiLink />
             </div>
             <div
               className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`}
@@ -127,7 +127,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                   handleClick(e, projectDetail?.includeContractUrl)
                 }
               >
-                <RiExternalLinkLine style={{color: "#377cf6"}} />
+                <RiExternalLinkLine />
               </a>
             </div>
           </div>
