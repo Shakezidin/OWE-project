@@ -531,7 +531,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       ];
     }
 
-    if (lead && lead.proposal_status === 'Completed' && lead.proposal_id !== '') {
+    if (lead && (lead.proposal_status === 'Completed' || lead.proposal_status === 'Send Docs') && lead.proposal_id !== '') {
       return [
         { label: 'View Proposal', value: 'viewProposal' },
         { label: 'Edit Proposal', value: 'editProposal' },
@@ -724,8 +724,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           <div className={styles.qcbuttoncont}>
                             <p>QC :</p>
                             <div className={styles.qcstaus}>
+                              {lead.docusign_label !== "Completed" ? 
                               <img src={ICONS.Pendingqc} alt="img" />
-                              {/* <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div> */}
+                              :
+                               <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div>
+                             }
                             </div>
                           </div>
                         </div>
@@ -795,7 +798,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               <div style={{ marginTop: "4px" }} className={styles.date}>
                                 {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
                               </div>
-                              {((lead.appointment_status_label === 'No Response' && lead.proposal_status !== '') || (lead.appointment_status_label === 'No Response' && lead.won_lost_label !== '')) &&
+                              {(((lead.appointment_status_label === 'No Response' || lead.appointment_status_label === 'Appointment Date Passed') && lead.proposal_status !== '') || ((lead.appointment_status_label === 'No Response' || lead.appointment_status_label === 'Appointment Date Passed') && lead.won_lost_label !== '')) &&
                                 <div style={{ color: "#D91515" }} className={styles.date}>
                                   Update Status!
                                 </div>}
@@ -929,18 +932,34 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required','Mark QC Complete']
-                                        : ['Appointment Not Required', 'Complete as Won','Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required']
+                                          : ['Appointment Not Required', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Complete as Won', 'Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won','Mark QC Complete']
-                                        : ['Deal Won', 'Complete as Won','Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Deal Won']
+                                          : ['Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Deal Won', 'Complete as Won']
+                                          : ['Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Mark QC Complete']
-                                        : ['Complete as Won','Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? []
+                                          : ['Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Complete as Won']
+                                          : ['Complete as Won', 'Mark QC Complete']
                                 }
                               />
 
@@ -1025,18 +1044,34 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required']
-                                        : ['Appointment Not Required', 'Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required']
+                                          : ['Appointment Not Required', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Complete as Won', 'Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won']
-                                        : ['Deal Won', 'Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Deal Won']
+                                          : ['Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Deal Won', 'Complete as Won']
+                                          : ['Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Mark QC Complete']
-                                        : ['Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? []
+                                          : ['Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Complete as Won']
+                                          : ['Complete as Won', 'Mark QC Complete']
                                 }
                               />
 
@@ -1080,36 +1115,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
           </div>
 
         </div>
-        {/* {leadsData.length > 0 && !isLoading && (
-          <div className="page-heading-container">
-
-            <p className="page-heading">
-              {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
-            </p>
-
-
-
-            <Pagination
-              currentPage={page}
-              totalPages={totalPage}
-              paginate={paginate}
-              currentPageData={[]}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-              onPerPageChange={handlePerPageChange}
-            />
-          </div>
-
-        )} */}
+        
       </div>
     </>
   )
 }
 
 export default LeadTable
-
-
-// Status - won = Won - dis
-//st- sched, any status - not req - disable     <LeadTable selectedLeads={selectedLeads} setSelectedLeads={setSelectedLeads} refresh={refresh} setRefresh={setRefresh}/>
-

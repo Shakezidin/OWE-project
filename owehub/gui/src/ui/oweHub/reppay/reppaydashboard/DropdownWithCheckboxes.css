@@ -88,8 +88,8 @@
 .dropdown-item input[type='checkbox']:checked::before {
   content: '';
   display: block;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: #377cf6;
   border-radius: 2px;
 }

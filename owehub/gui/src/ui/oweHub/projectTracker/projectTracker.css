@@ -194,6 +194,15 @@
   background-color: #377cf6;
 }
 
+.qc-item:hover{
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.ntp-item:hover{
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
 .status-icon {
   display: flex;
   align-items: center;
@@ -1481,6 +1490,9 @@
   .performance-exportbtn{
     padding: 8px;
     width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .performance-table-heading{
@@ -1499,6 +1511,9 @@
 
   .project-heading {
     grid-template-rows: auto auto;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: center;
   }
 
   .perf-export-btn {
@@ -1604,12 +1619,7 @@
   }
 }
 
-@media (max-width: 375px)
-{
-  .dropDownFilter{
-    margin-top: 140px;
-  }
-}
+
 .per-head-input {
   height: 50px;
   display: flex;
