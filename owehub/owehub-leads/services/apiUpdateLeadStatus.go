@@ -401,9 +401,10 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if dataReq.QC == true {
-		query = "UPDATE leads_info SET qc_audit = $1 WHERE WHERE leads_id = $2"
+	if dataReq.QC {
+		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
 		whereEleList = []interface{}{dataReq.QC, dataReq.LeadsId}
+		
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 
 		if err != nil {
