@@ -606,7 +606,10 @@ const LeadManagementDashboard = () => {
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
 
-
+  const processedData = pieData.map(data => ({
+    ...data,
+    value: data.value === 0 ? 0.001 : data.value, 
+  }));
 
  
   useEffect(() => {
@@ -1351,13 +1354,13 @@ const LeadManagementDashboard = () => {
 
 
             <div className={`${styles.customRight} ${styles.customFont}`}>
-              Total leads: {totalValue ? totalValue : '0'}
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
           <div className={styles.SecondColHead}>
             {
               isToggledX == false && <div className={styles.MobileViewHide}>
-                Total leads: {totalValue ? totalValue : '0'}
+                Total leads : {totalValue ? totalValue : '0'}
               </div>
             }
             {/* CARD DESIGNING STRTED */}
@@ -1554,7 +1557,7 @@ const LeadManagementDashboard = () => {
             </div>
 
             <div className={styles.customFont}>
-              Total leads: {totalValue ? totalValue : '0'}
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
 
@@ -1576,7 +1579,7 @@ const LeadManagementDashboard = () => {
                     <Pie
                       activeIndex={activeIndex}
                       activeShape={renderActiveShape}
-                      data={pieData}
+                      data={processedData}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
@@ -1585,9 +1588,9 @@ const LeadManagementDashboard = () => {
                       dataKey="value"
                       onClick={handlePieClick}
                     >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                     {processedData.map((entry, index) => (
+      <Cell key={`cell-${index}`} fill={entry.color} />
+    ))}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>

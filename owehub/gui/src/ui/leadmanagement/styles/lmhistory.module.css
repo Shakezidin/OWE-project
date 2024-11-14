@@ -346,6 +346,10 @@
     display: flex;
     align-items: center;
   }
+  .hist_ret img {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
   .customer_wrapper_list {
     margin-left: 4px;
