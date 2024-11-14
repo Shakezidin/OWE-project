@@ -39,7 +39,7 @@ CREATE TABLE if NOT EXISTS leads_info (
     status_id INT DEFAULT 0,
     created_by INT NOT NULL,
     last_updated_by INT,
-    lead_source VARCHAR(255)
+    lead_source VARCHAR(255),
     FOREIGN KEY (created_by) REFERENCES user_details(user_id),
     FOREIGN KEY (last_updated_by) REFERENCES user_details(user_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
