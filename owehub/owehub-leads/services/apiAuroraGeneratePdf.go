@@ -13,12 +13,10 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 /******************************************************************************
@@ -31,18 +29,17 @@ import (
  ******************************************************************************/
 func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                          error
-		leadId                       int
-		query                        string
-		data                         []map[string]interface{}
-		auroraPdfUrl                 string
-		auororaPdfRespBytes          []byte
-		auroraPdfResp                *http.Response
-		runProposalPdfGenerationResp *auroraclient.RunProposalPdfGenerationApiResponse
-		retreiveWebProposalResp      *auroraclient.RetrieveWebProposalApiResponse
+		err                     error
+		leadId                  int
+		query                   string
+		data                    []map[string]interface{}
+		auroraPdfUrl            string
+		auororaPdfRespBytes     []byte
+		auroraPdfResp           *http.Response
+		retreiveWebProposalResp *auroraclient.RetrieveWebProposalApiResponse
 	)
 
-	const totalSteps = 8
+	const totalSteps = 7
 
 	log.EnterFn(0, "HandleAuroraGeneratePdfRequest")
 	defer func() { log.ExitFn(0, "HandleAuroraGeneratePdfRequest", err) }()
@@ -146,44 +143,10 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		"total_steps":  totalSteps,
 	}, false)
 
-	// aurora api calls to generate pdf
-	runProposalPdfGenerationApi := auroraclient.RunProposalPdfGenerationApi{
-		DesignId: designId,
-	}
-
-	runProposalPdfGenerationResp, err = runProposalPdfGenerationApi.Call()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to call aurora api err %v", err)
-		handler.SendError("Server side error")
-		return
-	}
+	auroraPdfUrl, err = getAuroraProposalPdfUrl(designId)
 
 	handler.SendData(map[string]interface{}{
 		"current_step": 3,
-		"total_steps":  totalSteps,
-	}, false)
-
-	jobId, ok := runProposalPdfGenerationResp.ProposalPdfGenerationJob["job_id"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get job_id from run pdf generation: %+v", runProposalPdfGenerationResp.ProposalPdfGenerationJob)
-		handler.SendError("Server side error")
-		return
-	}
-
-	pdfGenUrl, ok := runProposalPdfGenerationResp.ProposalPdfGenerationJob["url"].(string)
-	if ok {
-		log.FuncDebugTrace(0, "Got URL from run pdf generation: %s", pdfGenUrl)
-		auroraPdfUrl = pdfGenUrl
-	} else {
-		auroraPdfUrl, err = getAuroraPdfUrlByPooling(designId, jobId)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get aurora pdf url by pooling err %v", err)
-			handler.SendError("Server side error")
-			return
-		}
-	}
-	handler.SendData(map[string]interface{}{
-		"current_step": 4,
 		"total_steps":  totalSteps,
 	}, false)
 
@@ -194,8 +157,9 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		handler.SendError("Server side error")
 		return
 	}
+
 	handler.SendData(map[string]interface{}{
-		"current_step": 5,
+		"current_step": 4,
 		"total_steps":  totalSteps,
 	}, false)
 	defer auroraPdfResp.Body.Close()
@@ -207,7 +171,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 	handler.SendData(map[string]interface{}{
-		"current_step": 6,
+		"current_step": 5,
 		"total_steps":  totalSteps,
 	}, false)
 
@@ -222,7 +186,7 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 	handler.SendData(map[string]interface{}{
-		"current_step": 7,
+		"current_step": 6,
 		"total_steps":  totalSteps,
 	}, false)
 
@@ -241,76 +205,4 @@ func HandleAuroraGeneratePdfRequest(resp http.ResponseWriter, req *http.Request)
 		"total_steps":  totalSteps,
 		"url":          leadsService.S3GetObjectUrl(filePath),
 	}, true)
-}
-
-/******************************************************************************
- * FUNCTION:        getAuroraPdfUrlByPooling
- * DESCRIPTION:     This function will get aurora pdf url by pooling
- * INPUT:			designId, jobId
- * RETURNS:    		string, error
- ******************************************************************************/
-func getAuroraPdfUrlByPooling(designId, jobId string) (string, error) {
-	var (
-		err                               error
-		auroraPdfUrl                      string
-		retrieveProposalPdfGenerationResp *auroraclient.RetrieveProposalPdfGenerationApiResponse
-	)
-
-	startTimeUnix := time.Now().Unix()
-	for {
-		<-time.After(time.Second * 5)
-		log.FuncDebugTrace(0, "PDF generation: Checking PDF generation status")
-
-		retrieveProposalPdfGenerationApi := auroraclient.RetrieveProposalPdfGenerationApi{
-			DesignId: designId,
-			JobId:    jobId,
-		}
-
-		retrieveProposalPdfGenerationResp, err = retrieveProposalPdfGenerationApi.Call()
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to call aurora api err %v", err)
-			return "", err
-		}
-
-		pdfGenerationJobStatus, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["status"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get status from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
-			return "", err
-		}
-
-		if pdfGenerationJobStatus == "running" {
-			log.FuncDebugTrace(0, "PDF generation: PDF generation still running")
-			continue
-		}
-
-		if pdfGenerationJobStatus == "failed" {
-			pdfGenerationError, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["error"].(map[string]string)
-			if !ok {
-				log.FuncErrorTrace(0, "Failed to get error from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
-				return "", errors.New("PDF generation failed")
-			}
-			log.FuncErrorTrace(0, "PDF generation: PDF generation failed with error: %s", pdfGenerationError["message"])
-			return "", errors.New("PDF generation failed")
-		}
-
-		if pdfGenerationJobStatus == "succeeded" {
-			log.FuncDebugTrace(0, "PDF generation: PDF generation completed")
-			pdfGenerationUrl, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["url"].(string)
-			if !ok {
-				log.FuncErrorTrace(0, "Failed to get url from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
-				return "", errors.New("PDF generation failed")
-			}
-			auroraPdfUrl = pdfGenerationUrl
-			log.FuncDebugTrace(0, "PDF generation: Got URL from retrieve pdf generation: %s", pdfGenerationUrl)
-			break
-		}
-
-		// timeout after 10 minutes
-		if time.Now().Unix()-startTimeUnix > 1200 {
-			log.FuncErrorTrace(0, "PDF generation: PDF generation timed out")
-			return "", errors.New("PDF generation timed out")
-		}
-	}
-
-	return auroraPdfUrl, nil
 }

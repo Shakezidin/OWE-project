@@ -6,6 +6,7 @@ import (
 	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 
 	"time"
 
+	"OWEApp/owehub-leads/auroraclient"
 	leadsService "OWEApp/owehub-leads/common"
 	models "OWEApp/shared/models"
 )
@@ -502,4 +504,96 @@ func sendSms(phoneNumber string, message string) error {
 	}
 	log.FuncDebugTrace(0, "Message sent successfully: %s with response %+v", apiUrl, resp.StatusCode)
 	return nil
+}
+
+// get aurora proposal pdf url
+// NOTE: This is a long running & blocking process
+func getAuroraProposalPdfUrl(designId string) (string, error) {
+	var (
+		err                               error
+		retrieveProposalPdfGenerationResp *auroraclient.RetrieveProposalPdfGenerationApiResponse
+		runProposalPdfGenerationResp      *auroraclient.RunProposalPdfGenerationApiResponse
+	)
+
+	log.EnterFn(0, "getAuroraProposalPdfUrl")
+	defer func() { log.ExitFn(0, "getAuroraProposalPdfUrl", err) }()
+
+	// aurora api calls to generate pdf
+	runProposalPdfGenerationApi := auroraclient.RunProposalPdfGenerationApi{
+		DesignId: designId,
+	}
+
+	runProposalPdfGenerationResp, err = runProposalPdfGenerationApi.Call()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to call aurora api err %v", err)
+		return "", err
+	}
+
+	jobId, ok := runProposalPdfGenerationResp.ProposalPdfGenerationJob["job_id"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get job_id from run pdf generation: %+v", runProposalPdfGenerationResp.ProposalPdfGenerationJob)
+		return "", errors.New("Failed to get job_id from run pdf generation")
+	}
+
+	pdfGenUrl, ok := runProposalPdfGenerationResp.ProposalPdfGenerationJob["url"].(string)
+	if ok {
+		log.FuncDebugTrace(0, "Got URL from run pdf generation: %s", pdfGenUrl)
+		return pdfGenUrl, nil
+	}
+
+	// If the job is not done, we will poll the status of the job
+	startTimeUnix := time.Now().Unix()
+	for {
+		<-time.After(time.Second * 5)
+		log.FuncDebugTrace(0, "PDF generation: Checking PDF generation status")
+
+		retrieveProposalPdfGenerationApi := auroraclient.RetrieveProposalPdfGenerationApi{
+			DesignId: designId,
+			JobId:    jobId,
+		}
+
+		retrieveProposalPdfGenerationResp, err = retrieveProposalPdfGenerationApi.Call()
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to call aurora api err %v", err)
+			return "", err
+		}
+
+		pdfGenerationJobStatus, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["status"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get status from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
+			return "", err
+		}
+
+		if pdfGenerationJobStatus == "running" {
+			log.FuncDebugTrace(0, "PDF generation: PDF generation still running")
+			continue
+		}
+
+		if pdfGenerationJobStatus == "failed" {
+			pdfGenerationError, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["error"].(map[string]string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get error from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
+				return "", errors.New("PDF generation failed")
+			}
+			log.FuncErrorTrace(0, "PDF generation: PDF generation failed with error: %s", pdfGenerationError["message"])
+			return "", errors.New("PDF generation failed")
+		}
+
+		if pdfGenerationJobStatus == "succeeded" {
+			log.FuncDebugTrace(0, "PDF generation: PDF generation completed")
+			pdfGenerationUrl, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["url"].(string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get url from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
+				return "", errors.New("PDF generation failed")
+			}
+			log.FuncDebugTrace(0, "PDF generation: Got URL from retrieve pdf generation: %s", pdfGenerationUrl)
+			return pdfGenerationUrl, nil
+		}
+
+		// timeout after 10 minutes
+		if time.Now().Unix()-startTimeUnix > 1200 {
+			log.FuncErrorTrace(0, "PDF generation: PDF generation timed out")
+			return "", errors.New("PDF generation timed out")
+		}
+	}
 }

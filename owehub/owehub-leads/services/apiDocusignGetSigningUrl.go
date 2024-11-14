@@ -36,6 +36,7 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 		query              string
 		data               []map[string]interface{}
 		leadId             int
+		pdfUrl             string
 		pdfResp            *http.Response
 		pdfBytes           []byte
 		pdfBase64          string
@@ -79,7 +80,7 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 			li.email_id,
 			li.first_name,
 			li.last_name,
-			li.proposal_pdf_key,
+			li.aurora_design_id,
 			li.docusign_envelope_id
 		FROM leads_info li
 		WHERE li.leads_id = $1
@@ -122,11 +123,11 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	designId, ok := data[0]["aurora_design_id"].(string)
 	if !ok {
-		err = fmt.Errorf("proposal_pdf_key not found in database")
+		err = fmt.Errorf("aurora_design_id not found in database")
 		log.FuncErrorTrace(0, "%v", err)
-		handler.SendError("The lead does not have a proposal pdf")
+		handler.SendError("Failed to retrieve aurora_design_id from database")
 		return
 	}
 
@@ -140,7 +141,8 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 	// if envelope id is null, create docusign envelope
 	if !ok {
 		// download proposal pdf
-		pdfResp, err = http.Get(leadsService.S3GetObjectUrl(proposalPdfKey))
+		pdfUrl, err = getAuroraProposalPdfUrl(designId)
+		pdfResp, err = http.Get(pdfUrl)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to download proposal pdf as base64 string err: %v", err)
 			handler.SendError("Failed to download proposal pdf")
