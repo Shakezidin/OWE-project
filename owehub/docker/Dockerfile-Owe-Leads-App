@@ -19,6 +19,7 @@ RUN apt-get update \
     file \
     libssl-dev \
     wget \
+    ghostscript \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -31,6 +32,9 @@ RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go$GOLANG_VERSION.linux-amd64
 ENV PATH=$PATH:/usr/local/go/bin
 
 RUN rm go$GOLANG_VERSION.linux-amd64.tar.gz
+
+# create temp folder
+RUN mkdir /temp
 
 #we delete the apk installed version to avoid conflict
 #RUN yum -y rm go

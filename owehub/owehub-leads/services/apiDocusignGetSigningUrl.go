@@ -17,7 +17,11 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"os/exec"
 	"strconv"
+
+	"github.com/google/uuid"
 )
 
 /******************************************************************************
@@ -135,7 +139,7 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 
 	// if envelope id is null, create docusign envelope
 	if !ok {
-		// download proposal pdf as base64 string
+		// download proposal pdf
 		pdfResp, err = http.Get(leadsService.S3GetObjectUrl(proposalPdfKey))
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to download proposal pdf as base64 string err: %v", err)
@@ -154,6 +158,79 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to read proposal pdf as base64 string err: %v", err)
 			handler.SendError("Failed to read proposal pdf")
+			return
+		}
+
+		// write downloaded file to temp folder
+		inputFilename := "/temp/" + uuid.New().String() + ".pdf"
+		outputFilename := "/temp/" + uuid.New().String() + ".pdf"
+
+		iFile, err := os.Create(inputFilename)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create file err: %v", err)
+			handler.SendError("Failed to create file")
+			return
+		}
+		defer iFile.Close()
+
+		_, err = iFile.Write(pdfBytes)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to write file err: %v", err)
+			handler.SendError("Failed to write file")
+			return
+		}
+
+		// compress the pdf using ghostscript
+		cmd := exec.Command("gs",
+			"-q",
+			"-DNOPAUSE",
+			"-DBATCH",
+			"-dSAFER",
+			"-dQUIET",
+			"-sDEVICE=pdfwrite",
+			"-dCompatibilityLevel=1.4",
+			"-dPDFSETTINGS=/screen",
+			"-dEmbedAllFonts=true",
+			"-dSubsetFonts=true",
+			"-dColorImageDownsampleType=/Bicubic",
+			"-dColorImageResolution=144",
+			"-dGrayImageDownsampleType=/Bicubic",
+			"-dGrayImageResolution=144",
+			"-dMonoImageDownsampleType=/Bicubic",
+			"-dMonoImageResolution=144",
+			"-sOutputFile="+outputFilename,
+			"-",
+			inputFilename,
+		)
+		err = cmd.Run()
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to run ghostscript err: %v", err)
+			handler.SendError("Failed to run ghostscript")
+			return
+		}
+
+		// read compressed file
+		pdfBytes, err = os.ReadFile(outputFilename)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to read ghostscript output file err: %v", err)
+			handler.SendError("Failed to read file")
+			return
+		}
+
+		log.FuncDebugTrace(0, "Ghostscript output file size: %f mb", float64(len(pdfBytes))/1024/1024)
+
+		// delete temperory files
+		err = os.Remove(inputFilename)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to remove input file err: %v", err)
+			handler.SendError("Failed to remove input file")
+			return
+		}
+
+		err = os.Remove(outputFilename)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to remove output file err: %v", err)
+			handler.SendError("Failed to remove output file")
 			return
 		}
 
