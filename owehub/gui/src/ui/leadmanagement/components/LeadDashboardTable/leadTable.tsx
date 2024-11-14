@@ -486,7 +486,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       color: "#fff"
     },
     "Send Docs": {
-      backgroundColor: "#EC9311",
+      backgroundColor: "#21BC27",
       color: "#fff"
     },
     "CREATED": {
