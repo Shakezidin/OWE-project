@@ -3,6 +3,10 @@ DELETE FROM leads_info; -- TODO: find a way to preserve data
 ALTER TABLE leads_info DROP CONSTRAINT leads_info_zipcode_fkey;
 ALTER TABLE leads_info ALTER COLUMN zipcode TYPE VARCHAR(20);
 
+ALTER TABLE leads_info ALTER COLUMN qc_audit TYPE BOOLEAN USING qc_audit::BOOLEAN, ALTER COLUMN qc_audit SET DEFAULT FALSE;
+
+
+
 -- CHANGE THE FUNCTION TO INSERT VARCHAR(20) FOR ZIPCODE
 CREATE OR REPLACE FUNCTION create_lead(
     p_creator_email_id VARCHAR,
