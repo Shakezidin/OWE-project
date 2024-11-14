@@ -607,7 +607,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		if statusId == 3 {
+		if declinedDatePtr != nil {
 			aptStatusLabel = "Appointment Declined"
 			aptStatusDate = declinedDatePtr
 		}
