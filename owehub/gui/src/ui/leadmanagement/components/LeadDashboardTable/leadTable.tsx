@@ -22,7 +22,7 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input';
 
-type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection" | "Completed";
+type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection" | "Completed" | "Documents Sent";
 type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
 interface VisibilityState {
   [key: string]: boolean;
@@ -486,7 +486,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       color: "#fff"
     },
     "Send Docs": {
-      backgroundColor: "#EC9311",
+      backgroundColor: "#21BC27",
+      color: "#fff"
+    },
+    "Documents Sent": {
+      backgroundColor: "#21BC27",
       color: "#fff"
     },
     "CREATED": {
@@ -531,7 +535,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       ];
     }
 
-    if (lead && (lead.proposal_status === 'Completed' || lead.proposal_status === 'Send Docs') && lead.proposal_id !== '') {
+    if (lead && (lead.proposal_status === 'Completed' || lead.proposal_status === 'Send Docs' || lead.proposal_status === 'Documents Sent') && lead.proposal_id !== '') {
       return [
         { label: 'View Proposal', value: 'viewProposal' },
         { label: 'Edit Proposal', value: 'editProposal' },

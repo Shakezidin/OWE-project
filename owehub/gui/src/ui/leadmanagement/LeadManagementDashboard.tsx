@@ -1277,7 +1277,7 @@ const LeadManagementDashboard = () => {
           toast.error('No web proposal available.');
         }
       } else {
-        toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+        // toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
       }
     } catch (error) {
       toast.error('An unexpected error occurred while retrieving the web proposal');
