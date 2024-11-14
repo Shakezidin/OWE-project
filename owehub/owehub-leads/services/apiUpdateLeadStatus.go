@@ -437,7 +437,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	if dataReq.QC {
 		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
 		whereEleList = []interface{}{dataReq.QC, dataReq.LeadsId}
-		
+
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 
 		if err != nil {
@@ -452,11 +452,11 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
@@ -466,14 +466,14 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Qualified",
 			TemplateData: emailTmplData,
 		})
