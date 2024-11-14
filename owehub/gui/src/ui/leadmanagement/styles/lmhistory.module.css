@@ -1,5 +1,6 @@
 .h_screen {
   min-height: 100vh;
+
  
 }
 
@@ -7,7 +8,7 @@
   /* flex-basis: 100%; */
   width: 100%;
   padding-top: 30px;
-  border-radius: 8px;
+  border-radius: 16px;
   background-color: #fff;
   padding-top: 15px;
   padding-inline: 20px;
@@ -344,6 +345,10 @@
   .h_screen {
     display: flex;
     align-items: center;
+  }
+  .hist_ret img {
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
 
   .customer_wrapper_list {
