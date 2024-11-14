@@ -401,6 +401,55 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	if dataReq.QC == true {
+		query = "UPDATE leads_info SET qc_audit = $1 WHERE WHERE leads_id = $2"
+		whereEleList = []interface{}{dataReq.QC, dataReq.LeadsId}
+		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update the lead  qc details in db : %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to update the lead qc details in db", http.StatusInternalServerError, nil)
+			return
+		}
+		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
+
+		// send sms and email
+		smsMessage := leadService.SmsAppointmentNotRequired.WithData(leadService.SmsDataAppointmentNotRequired{
+			LeadId:        dataReq.LeadsId,
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			UserName:      creatorName,
+		})
+
+		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
+			UserName:        creatorName,
+			LeadId:          dataReq.LeadsId,
+			LeadFirstName:   firstName,
+			LeadLastName:    lastName,
+			LeadEmailId:     leadEmail,
+			LeadPhoneNumber: phoneNo,
+			NewStatus:       "Qualified",
+			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+		}
+
+		err = sendSms(creatorPhone, smsMessage)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
+		}
+
+		err = emailClient.SendEmail(emailClient.SendEmailRequest{
+			ToName:       creatorName,
+			ToEmail:      creatorEmail,
+			Subject:      "Qualified",
+			TemplateData: emailTmplData,
+		})
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+		}
+		return
+	}
+
 	// CASE 4: status_id not provided (update is_appointment_required)
 	if dataReq.StatusId == 0 {
 		query = "UPDATE leads_info SET is_appointment_required = $1, updated_at = CURRENT_TIMESTAMP, last_updated_by = $2 WHERE leads_id = $3"
