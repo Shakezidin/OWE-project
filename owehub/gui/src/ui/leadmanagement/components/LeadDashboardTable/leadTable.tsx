@@ -531,7 +531,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       ];
     }
 
-    if (lead && lead.proposal_status === 'Completed' && lead.proposal_id !== '') {
+    if (lead && (lead.proposal_status === 'Completed' || lead.proposal_status === 'Send Docs') && lead.proposal_id !== '') {
       return [
         { label: 'View Proposal', value: 'viewProposal' },
         { label: 'Edit Proposal', value: 'editProposal' },
