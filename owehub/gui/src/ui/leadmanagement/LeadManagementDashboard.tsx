@@ -606,12 +606,9 @@ const LeadManagementDashboard = () => {
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
 
-  const processedData = pieData.map(data => ({
-    ...data,
-    value: data.value === 0 ? 0.001 : data.value, 
-  }));
 
- 
+
+
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -1253,7 +1250,7 @@ const LeadManagementDashboard = () => {
           return null;
         }
       } else {
-        toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+        // toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
         return null;
       }
     } catch (error) {
@@ -1579,7 +1576,7 @@ const LeadManagementDashboard = () => {
                     <Pie
                       activeIndex={activeIndex}
                       activeShape={renderActiveShape}
-                      data={processedData}
+                      data={pieData}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
@@ -1588,9 +1585,9 @@ const LeadManagementDashboard = () => {
                       dataKey="value"
                       onClick={handlePieClick}
                     >
-                     {processedData.map((entry, index) => (
-      <Cell key={`cell-${index}`} fill={entry.color} />
-    ))}
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
@@ -1775,7 +1772,7 @@ const LeadManagementDashboard = () => {
 
                 )}
 
-            
+
 
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
