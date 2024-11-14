@@ -367,6 +367,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         HandleModal();
       } else if (response.status >= 201) {
         toast.warn(response.message);
+        setQcComp(false);
       }
       setLoad(false);
     } catch (error) {
