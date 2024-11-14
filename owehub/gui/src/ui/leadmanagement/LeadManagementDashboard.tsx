@@ -608,7 +608,7 @@ const LeadManagementDashboard = () => {
 
 
 
- 
+
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -1250,7 +1250,7 @@ const LeadManagementDashboard = () => {
           return null;
         }
       } else {
-        toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+        // toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
         return null;
       }
     } catch (error) {
@@ -1351,13 +1351,13 @@ const LeadManagementDashboard = () => {
 
 
             <div className={`${styles.customRight} ${styles.customFont}`}>
-              Total leads: {totalValue ? totalValue : '0'}
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
           <div className={styles.SecondColHead}>
             {
               isToggledX == false && <div className={styles.MobileViewHide}>
-                Total leads: {totalValue ? totalValue : '0'}
+                Total leads : {totalValue ? totalValue : '0'}
               </div>
             }
             {/* CARD DESIGNING STRTED */}
@@ -1554,7 +1554,7 @@ const LeadManagementDashboard = () => {
             </div>
 
             <div className={styles.customFont}>
-              Total leads: {totalValue ? totalValue : '0'}
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
 
@@ -1772,7 +1772,7 @@ const LeadManagementDashboard = () => {
 
                 )}
 
-            
+
 
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
