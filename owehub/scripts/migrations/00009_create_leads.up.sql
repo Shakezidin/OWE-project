@@ -140,28 +140,14 @@ CREATE OR REPLACE FUNCTION create_lead(
     p_street_address VARCHAR, 
     p_zipcode VARCHAR, 
     p_notes VARCHAR,
-    p_sales_rep_name VARCHAR,
+    p_salerep_id INT,
     p_lead_source VARCHAR
 ) RETURNS INT AS $$
 DECLARE
     v_lead_id INT;
     v_state_id INT;
-    v_zipcode_id INT;
     v_creator_user_id INT;
 BEGIN
-    -- Get the zipcode id
-    IF p_zipcode IS NOT NULL AND p_zipcode != '' THEN
-        SELECT id INTO v_zipcode_id
-        FROM zipcodes
-        WHERE zipcode = p_zipcode;
-
-        IF NOT FOUND THEN
-            RAISE EXCEPTION 'Zipcode with zipcode % not found', p_zipcode;
-        END IF;
-    ELSE
-        v_zipcode_id := NULL;
-    END IF;
-
     -- Get the creator user_id via email_id
     SELECT user_id INTO v_creator_user_id
     FROM user_details
@@ -182,7 +168,7 @@ BEGIN
         street_address,
         zipcode,
         notes,
-        sales_rep_name,
+        salerep_id,
         lead_source
     ) VALUES (
         v_creator_user_id,
@@ -191,9 +177,9 @@ BEGIN
         p_email_id,
         p_phone_number,
         p_street_address,
-        v_zipcode_id, 
+        p_zipcode, 
         p_notes,
-        p_sales_rep_name,
+        p_salerep_id,
         p_lead_source
     ) RETURNING leads_id INTO v_lead_id;
 
