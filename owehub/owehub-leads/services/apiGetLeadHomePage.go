@@ -694,7 +694,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			AND (
 					(
 						li.lead_won_date IS NOT NULL
-						li.appointment_declined_date IS NULL
+						AND li.appointment_declined_date IS NULL
 						AND NOT (
 							li.appointment_date IS NOT NULL
 							AND li.appointment_declined_date IS NULL
