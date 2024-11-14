@@ -724,8 +724,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           <div className={styles.qcbuttoncont}>
                             <p>QC :</p>
                             <div className={styles.qcstaus}>
+                              {lead.docusign_label !== "Completed" ? 
                               <img src={ICONS.Pendingqc} alt="img" />
-                              {/* <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div> */}
+                              :
+                               <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div>
+                             }
                             </div>
                           </div>
                         </div>
@@ -929,18 +932,34 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required','Mark QC Complete']
-                                        : ['Appointment Not Required', 'Complete as Won','Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required']
+                                          : ['Appointment Not Required', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Complete as Won', 'Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won','Mark QC Complete']
-                                        : ['Deal Won', 'Complete as Won','Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Deal Won']
+                                          : ['Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Deal Won', 'Complete as Won']
+                                          : ['Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Mark QC Complete']
-                                        : ['Complete as Won','Mark QC Complete']
+                                        ? lead.docusign_label === "Completed"
+                                          ? []
+                                          : ['Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Complete as Won']
+                                          : ['Complete as Won', 'Mark QC Complete']
                                 }
                               />
 
@@ -1025,18 +1044,34 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                   (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
                                     ? lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Appointment Not Required', 'Deal Won']
-                                        : ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Appointment Not Required']
-                                        : ['Appointment Not Required', 'Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required']
+                                          : ['Appointment Not Required', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Appointment Not Required', 'Complete as Won']
+                                          : ['Appointment Not Required', 'Complete as Won', 'Mark QC Complete']
                                     : lead.won_lost_label !== ''
                                       ? lead.can_manually_win
-                                        ? ['Deal Won']
-                                        : ['Deal Won', 'Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? ['Deal Won']
+                                          : ['Deal Won', 'Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Deal Won', 'Complete as Won']
+                                          : ['Deal Won', 'Complete as Won', 'Mark QC Complete']
                                       : lead.can_manually_win
-                                        ? ['Mark QC Complete']
-                                        : ['Complete as Won']
+                                        ? lead.docusign_label === "Completed"
+                                          ? []
+                                          : ['Mark QC Complete']
+                                        : lead.docusign_label === "Completed"
+                                          ? ['Complete as Won']
+                                          : ['Complete as Won', 'Mark QC Complete']
                                 }
                               />
 
