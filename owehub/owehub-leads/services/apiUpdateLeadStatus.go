@@ -94,6 +94,8 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			li.email_id,
 			li.appointment_date,
 			li.frontend_base_url,
+			li.docusign_envelope_completed_at,
+			li.proposal_pdf_key,
 			ud.name as salerep_name,
 			ud.email_id as salerep_email,
 			ud.mobile_number as salerep_phone
@@ -127,6 +129,19 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to assert creator_name to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
+		return
+	}
+
+	envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
+		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
+		return
+	}
+
+	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
 		return
 	}
 
@@ -441,6 +456,8 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
+
 	if dataReq.QC {
 		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
 		whereEleList = []interface{}{dataReq.QC, dataReq.LeadsId}
@@ -455,22 +472,23 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsAppointmentNotRequired.WithData(leadService.SmsDataAppointmentNotRequired{
+		smsMessage := leadService.SmsQCSigned.WithData(leadService.SmsDataQCSigned{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
 			UserName:      salerepName,
 		})
 
-		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
+		emailTmplData := emailClient.TemplateDataLeadQCSigned{
 			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadEmailId:     leadEmail,
+			Date:            envelopeCreatedAt,
 			LeadPhoneNumber: phoneNo,
-			NewStatus:       "Qualified",
 			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
+			ProposalPdfUrl:  proposalPdfUrl,
 		}
 
 		err = sendSms(salerepPhone, smsMessage)
@@ -487,6 +505,16 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 		}
 		return
 	}

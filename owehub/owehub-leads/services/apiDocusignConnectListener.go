@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 /******************************************************************************
@@ -230,9 +231,11 @@ func sendProposalSignedNotification(leadsId int64) error {
 			ud.mobile_number as user_phone,
 			li.first_name,
 			li.last_name,
+			li.docusign_envelope_completed_at,
 			li.email_id,
 			li.phone_number,
-			li.proposal_pdf_key
+			li.proposal_pdf_key,
+			li.frontend_base_url
 		FROM user_details ud
 		JOIN leads_info li ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $1
@@ -284,6 +287,18 @@ func sendProposalSignedNotification(leadsId int64) error {
 		return nil
 	}
 
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get frontend_base_url from leads info Item: %+v\n", data[0])
+		return nil
+	}
+
+	envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
+		return nil
+	}
+
 	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
@@ -302,14 +317,16 @@ func sendProposalSignedNotification(leadsId int64) error {
 		ToName:  userName,
 		ToEmail: userEmail,
 		Subject: "Lead Won!",
-		TemplateData: emailClient.TemplateDataLeadProposalSigned{
+		TemplateData: emailClient.TemplateDataLeadQCSigned{
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadId:          leadsId,
-			ProposalPdfUrl:  proposalPdfUrl,
 			LeadEmailId:     email,
 			LeadPhoneNumber: phoneNo,
 			UserName:        userName,
+			Date:            envelopeCreatedAt,
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, leadsId),
+			ProposalPdfUrl:  proposalPdfUrl,
 		},
 	})
 
