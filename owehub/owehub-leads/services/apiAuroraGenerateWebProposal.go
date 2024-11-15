@@ -100,5 +100,15 @@ func HandleAuroraGenerateWebProposalRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
+	// set proposal_pdf_key to null, to trigger the pdf generation when generate_pdf api is called
+	query = "UPDATE leads_info SET proposal_pdf_key = NULL WHERE leads_id = $1"
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{dataReq.LeadsId})
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update proposal_pdf_key to null in DB err %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to update proposal_pdf_key to null in DB", http.StatusInternalServerError, nil)
+		return
+	}
+
 	appserver.FormAndSendHttpResp(resp, "Aurora create web proposal", http.StatusOK, auroraApiResp.WebProposal)
 }
