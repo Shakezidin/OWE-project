@@ -503,7 +503,7 @@ const LeadManagementNew = () => {
                               borderRadius: '8px',
                               outline: 'none',
                               color: '#3E3E3E',
-                              width: '370px',
+                              width: '300px',
                               height: '36px',
                               fontSize: '12px',
                               border: '1px solid #000000',
@@ -513,8 +513,8 @@ const LeadManagementNew = () => {
                               backgroundColor: '#fffff',
                               boxShadow: 'none',
                               '@media only screen and (max-width: 767px)': {
-                                // width: '80px',
-                                width: 'fit-content',
+                                width: '300px',
+                                // width: 'fit-content',
                               },
                               '&:focus-within': {
                                 borderColor: '#377CF6',
@@ -571,7 +571,7 @@ const LeadManagementNew = () => {
                             }),
                             menu: (baseStyles) => ({
                               ...baseStyles,
-                              width: '200px',
+                              width: '300px',
                               marginTop: '3px',
                               border: '1px solid #000000',
 
