@@ -403,6 +403,18 @@ const Profile: React.FC<EditModalProps> = ({
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
                                             >{leadData?.sales_rep_name || '.....'}</td>
                                         </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Download Proposal </td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            ><a href="#">Click here</a></td>
+                                        </tr>
 
                                     </tbody>
                                 </table>
