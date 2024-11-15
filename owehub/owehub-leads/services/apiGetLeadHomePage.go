@@ -364,6 +364,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				li.status_id,
 				li.zipcode,
 				li.lead_source,
+				li.manual_won_date,
 				ud.name as salerep_name
 				
 			FROM get_leads_info_hierarchy($1) li
@@ -384,19 +385,24 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range data {
 		// appointment label & appointment date
 		var (
-			aptStatusLabel       string
-			wonLostLabel         string
-			docusignLabel        string
-			aptStatusDate        *time.Time
-			wonLostDate          *time.Time
-			scheduledDatePtr     *time.Time
-			acceptedDatePtr      *time.Time
-			leadWonDatePtr       *time.Time
-			declinedDatePtr      *time.Time
-			proposalUpdatedAtPtr *time.Time
-			appointmentDatePtr   *time.Time
-			docusignDatePtr      *time.Time
-			canManuallyWin       bool
+			aptStatusLabel                   string
+			wonLostLabel                     string
+			docusignLabel                    string
+			aptStatusDate                    *time.Time
+			docusignDate                     *time.Time
+			wonLostDate                      *time.Time
+			scheduledDatePtr                 *time.Time
+			acceptedDatePtr                  *time.Time
+			leadWonDatePtr                   *time.Time
+			declinedDatePtr                  *time.Time
+			manualWonDatePtr                 *time.Time
+			proposalUpdatedAtPtr             *time.Time
+			appointmentDatePtr               *time.Time
+			docusignEnvelopeCompletedDatePtr *time.Time
+			docusignEnvelopeDeclinedDatePtr  *time.Time
+			docusignEnvelopeVoidedDatePtr    *time.Time
+			docusignEnvelopeSentDatePtr      *time.Time
+			canManuallyWin                   bool
 		)
 
 		leadsId, ok := item["leads_id"].(int64)
@@ -482,54 +488,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			proposalLink = ""
 		}
 
-		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
-			scheduledDatePtr = nil
-		} else {
-			scheduledDatePtr = &scheduledDate
-		}
-
-		appointmentDate, ok := item["appointment_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get appointment_date from leads info Item: %+v\n", item)
-			appointmentDatePtr = nil
-		} else {
-			appointmentDatePtr = &appointmentDate
-		}
-
-		acceptedDate, ok := item["appointment_accepted_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get appointment_accepted_date from leads info Item: %+v\n", item)
-			acceptedDatePtr = nil
-		} else {
-			acceptedDatePtr = &acceptedDate
-		}
-
-		leadWonDate, ok := item["lead_won_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get lead_won_date from leads info Item: %+v\n", item)
-			leadWonDatePtr = nil
-		} else {
-			leadWonDatePtr = &leadWonDate
-		}
-
-		declinedDate, ok := item["appointment_declined_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get appointment_declined_date from leads info Item: %+v\n", item)
-			declinedDatePtr = nil
-		} else {
-			declinedDatePtr = &declinedDate
-		}
-
-		proposalUpdatedAt, ok := item["aurora_proposal_updated_at"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get aurora_proposal_updated_at from leads info Item: %+v\n", item)
-			proposalUpdatedAtPtr = nil
-		} else {
-			proposalUpdatedAtPtr = &proposalUpdatedAt
-		}
-
 		salesRepName, ok := item["salerep_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get sales rep name from leads info Item: %+v\n", item)
@@ -539,48 +497,99 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to get lead source from leads info Item: %+v\n", item)
 		}
 
-		//
-		// DOCUSIGN LABEL & DATE
-		//
+		proposalPdfKey, ok := item["proposal_pdf_key"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get proposal pdf key from leads info Item: %+v\n", item)
+		} else {
+			proposalPdfLink = leadsService.S3GetObjectUrl(proposalPdfKey)
+		}
+
+		zipcode, ok := item["zipcode"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get zipcode from leads info Item: %+v\n", item)
+			continue
+		}
+
+		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_scheduled_date from leads info Item: %+v\n", item)
+		} else {
+			scheduledDatePtr = &scheduledDate
+		}
+
+		appointmentDate, ok := item["appointment_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_date from leads info Item: %+v\n", item)
+		} else {
+			appointmentDatePtr = &appointmentDate
+		}
+
+		acceptedDate, ok := item["appointment_accepted_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_accepted_date from leads info Item: %+v\n", item)
+		} else {
+			acceptedDatePtr = &acceptedDate
+		}
+
+		leadWonDate, ok := item["lead_won_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get lead_won_date from leads info Item: %+v\n", item)
+		} else {
+			leadWonDatePtr = &leadWonDate
+		}
+
+		manualWonDate, ok := item["manual_won_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get manual_won_date from leads info Item: %+v\n", item)
+		} else {
+			manualWonDatePtr = &manualWonDate
+		}
+
+		declinedDate, ok := item["appointment_declined_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get appointment_declined_date from leads info Item: %+v\n", item)
+		} else {
+			declinedDatePtr = &declinedDate
+		}
+
+		proposalUpdatedAt, ok := item["aurora_proposal_updated_at"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get aurora_proposal_updated_at from leads info Item: %+v\n", item)
+		} else {
+			proposalUpdatedAtPtr = &proposalUpdatedAt
+		}
+
 		docusignEnvelopeSentDate, ok := item["docusign_envelope_sent_at"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get docusign_envelope_sent_at from leads info Item: %+v\n", item)
 		} else {
-			docusignDatePtr = &docusignEnvelopeSentDate
-			docusignLabel = "Sent"
+			docusignEnvelopeSentDatePtr = &docusignEnvelopeSentDate
 		}
 
 		docusignEnvelopeVoidedDate, ok := item["docusign_envelope_voided_at"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get docusign_envelope_voided_at from leads info Item: %+v\n", item)
 		} else {
-			docusignDatePtr = &docusignEnvelopeVoidedDate
-			docusignLabel = "Voided"
+			docusignEnvelopeVoidedDatePtr = &docusignEnvelopeVoidedDate
 		}
 
 		docusignEnvelopeCompletedDate, ok := item["docusign_envelope_completed_at"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get docusign_envelope_completed_at from leads info Item: %+v\n", item)
 		} else {
-			docusignDatePtr = &docusignEnvelopeCompletedDate
-			docusignLabel = "Completed"
-
-			// can manually win if docusign_envelope_completed_at is null and deal_won_date is before 48 hours
-			if !leadWonDate.IsZero() && time.Now().Sub(docusignEnvelopeCompletedDate).Hours() < 48 {
-				canManuallyWin = true
-			}
+			docusignEnvelopeCompletedDatePtr = &docusignEnvelopeCompletedDate
 		}
 
 		docusignEnvelopeDeclinedDate, ok := item["docusign_envelope_declined_at"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get docusign_envelope_declined_at from leads info Item: %+v\n", item)
 		} else {
-			docusignDatePtr = &docusignEnvelopeDeclinedDate
-			docusignLabel = "Declined"
+			docusignEnvelopeDeclinedDatePtr = &docusignEnvelopeDeclinedDate
 		}
 
-		// --------------------------------------------------------------------------------
-
+		//
+		// APT STATUS LABEL & DATE
+		//
 		if scheduledDatePtr != nil {
 			aptStatusLabel = "Appointment Sent"
 			aptStatusDate = scheduledDatePtr
@@ -598,9 +607,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 		if dataReq.LeadStatus == "ACTION_NEEDED" {
 			aptStatusDate = nil
-			if acceptedDatePtr == nil {
-				aptStatusLabel = "No Response"
-			} else if appointmentDatePtr.Before(*acceptedDatePtr) {
+			if acceptedDatePtr == nil || appointmentDatePtr.Before(*acceptedDatePtr) {
 				aptStatusLabel = "No Response"
 			} else {
 				aptStatusLabel = "Appointment Date Passed"
@@ -617,17 +624,30 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			aptStatusDate = nil
 		}
 
-		proposalPdfKey, ok := item["proposal_pdf_key"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get proposal pdf key from leads info Item: %+v\n", item)
-		} else {
-			proposalPdfLink = leadsService.S3GetObjectUrl(proposalPdfKey)
+		//
+		// DOCUSIGN LABEL & DATE
+		//
+		if docusignEnvelopeSentDatePtr != nil {
+			docusignLabel = "Sent"
+			docusignDate = docusignEnvelopeSentDatePtr
+		}
+		if docusignEnvelopeVoidedDatePtr != nil {
+			docusignLabel = "Voided"
+			docusignDate = docusignEnvelopeVoidedDatePtr
+		}
+		if docusignEnvelopeDeclinedDatePtr != nil {
+			docusignLabel = "Declined"
+			docusignDate = docusignEnvelopeDeclinedDatePtr
+		}
+		if docusignEnvelopeCompletedDatePtr != nil {
+			docusignLabel = "Completed"
+			docusignDate = docusignEnvelopeCompletedDatePtr
 		}
 
-		zipcode, ok := item["zipcode"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get zipcode from leads info Item: %+v\n", item)
-			continue
+		// can manually win if docusign_envelope_completed_at is null and deal_won_date is before 48 hours
+		if leadWonDatePtr != nil && manualWonDatePtr == nil && docusignEnvelopeCompletedDatePtr == nil &&
+			time.Since(*leadWonDatePtr).Hours() > 48 {
+			canManuallyWin = true
 		}
 
 		apiResponse.LeadsData = append(apiResponse.LeadsData, models.GetLeadsData{
@@ -651,7 +671,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			ProposalUpdatedAt:      proposalUpdatedAtPtr,
 			ProposalPdfLink:        proposalPdfLink,
 			DocusignLabel:          docusignLabel,
-			DocusignDate:           docusignDatePtr,
+			DocusignDate:           docusignDate,
 			Zipcode:                zipcode,
 			CanManuallyWin:         canManuallyWin,
 			SalesRepName:           salesRepName,

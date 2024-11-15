@@ -6,6 +6,8 @@
 
 package email
 
+import "time"
+
 type SendEmailRequest struct {
 	ToName       string
 	ToEmail      string
@@ -54,9 +56,11 @@ type TemplateDataLeadStatusChanged struct {
 type TemplateDataLeadQCSigned struct {
 	LeadId          int64
 	LeadFirstName   string
+	Date            time.Time
 	LeadLastName    string
 	LeadEmailId     string
 	LeadPhoneNumber string
 	ViewUrl         string
 	UserName        string
+	ProposalPdfUrl  string
 }

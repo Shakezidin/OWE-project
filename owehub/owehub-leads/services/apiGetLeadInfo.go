@@ -151,7 +151,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		apiResponse.SaleSubmissionTriggered = saleSubmissionTriggered
 	}
 
-	qcAudit, ok := leadData["qc_audit"].(string)
+	qcAudit, ok := leadData["qc_audit"].(bool)
 	if ok {
 		apiResponse.QCAudit = qcAudit
 	}

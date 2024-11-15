@@ -82,7 +82,8 @@ const LeradManagementHistory = () => {
     const userTimezone = getUserTimezone();
     return addMinutes(now, now.getTimezoneOffset());
   }
-  const today = getCurrentDateInUserTimezone();
+  const today = new Date();
+
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
   const startOfThisMonth = startOfMonth(today);
   const startOfThisYear = startOfYear(today);

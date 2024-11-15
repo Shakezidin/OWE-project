@@ -303,7 +303,6 @@ const CustomTooltip = ({
           padding: '5px 10px',
           zIndex: '99',
           borderRadius: '4px',
-          // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
       >
         <p

@@ -7,7 +7,6 @@
 package services
 
 import (
-	leadService "OWEApp/owehub-leads/common"
 	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/owehub-leads/docusignclient"
 	"OWEApp/shared/appserver"
@@ -20,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 /******************************************************************************
@@ -145,7 +145,8 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 				proposal_pdf_key = $1,
 				docusign_envelope_completed_at = CURRENT_TIMESTAMP,
 				lead_won_date = CASE WHEN lead_won_date IS NULL THEN CURRENT_TIMESTAMP ELSE lead_won_date END,
-				updated_at = CURRENT_TIMESTAMP
+				updated_at = CURRENT_TIMESTAMP,
+				proposal_signed = TRUE
 			WHERE leads_id = $2
 		`
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{filePath, leadsId})
@@ -230,9 +231,11 @@ func sendProposalSignedNotification(leadsId int64) error {
 			ud.mobile_number as user_phone,
 			li.first_name,
 			li.last_name,
+			li.docusign_envelope_completed_at,
 			li.email_id,
 			li.phone_number,
-			li.proposal_pdf_key
+			li.proposal_pdf_key,
+			li.frontend_base_url
 		FROM user_details ud
 		JOIN leads_info li ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $1
@@ -284,11 +287,23 @@ func sendProposalSignedNotification(leadsId int64) error {
 		return nil
 	}
 
-	// proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
-	// if !ok {
-	// 	log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
-	// 	return nil
-	// }
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get frontend_base_url from leads info Item: %+v\n", data[0])
+		return nil
+	}
+
+	envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
+		return nil
+	}
+
+	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
+		return nil
+	}
 
 	userPhone, ok := data[0]["user_phone"].(string)
 	if !ok {
@@ -296,7 +311,7 @@ func sendProposalSignedNotification(leadsId int64) error {
 		return nil
 	}
 
-	//proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
+	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	err = emailClient.SendEmail(emailClient.SendEmailRequest{
 		ToName:  userName,
@@ -309,7 +324,9 @@ func sendProposalSignedNotification(leadsId int64) error {
 			LeadEmailId:     email,
 			LeadPhoneNumber: phoneNo,
 			UserName:        userName,
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, leadsId),
+			Date:            envelopeCreatedAt,
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, leadsId),
+			ProposalPdfUrl:  proposalPdfUrl,
 		},
 	})
 
