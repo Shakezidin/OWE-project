@@ -10,6 +10,7 @@ import DataNotFound from "../../components/loader/DataNotFound";
 import { format, parseISO } from "date-fns";
 import { Tooltip } from "react-tooltip";
 import { } from "date-fns-tz";
+import { useLocation } from 'react-router-dom';
 
 interface EditModalProps {
     isOpen1: boolean;
@@ -62,6 +63,8 @@ const Profile: React.FC<EditModalProps> = ({
     const RedirectMainDashboard = () => {
         navigate('/leadmng-dashboard')
     }
+    const location = useLocation();
+    const showDownloadProposal = location.pathname.includes('leadmng-records');
 
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
@@ -404,23 +407,23 @@ const Profile: React.FC<EditModalProps> = ({
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
                                             >{leadData?.sales_rep_name || '.....'}</td>
                                         </tr>
-                                        <tr>
-                                            <td className={classes.leftAlign}>Download Proposal </td>
-                                            <td
-                                                style={{
-                                                    whiteSpace: 'pre-wrap',
-                                                    overflowWrap: 'break-word',
-                                                    maxWidth: '200px',
-                                                    lineHeight: "16px",
-
-                                                }}
-                                                className={`${classes.rightAlign} ${classes.specialfont}`}
-                                            ><a style={{
-                                                pointerEvents: leadData?.proposal_pdf_url === "" ? 'none' : 'auto',
-                                                opacity: leadData?.proposal_pdf_url === "" ? 0.6 : 1,
-                                                cursor: leadData?.proposal_pdf_url === "" ? 'not-allowed' : 'pointer',
-                                            }} href={leadData?.proposal_pdf_url}>Click here</a></td>
-                                        </tr>
+                                        {showDownloadProposal && (
+                                            <tr>
+                                                <td className={classes.leftAlign}>Download Proposal</td>
+                                                <td className={`${classes.rightAlign} ${classes.specialfont}`}>
+                                                    <a
+                                                        style={{
+                                                            pointerEvents: leadData?.proposal_pdf_url === "" ? 'none' : 'auto',
+                                                            opacity: leadData?.proposal_pdf_url === "" ? 0.6 : 1,
+                                                            cursor: leadData?.proposal_pdf_url === "" ? 'not-allowed' : 'pointer',
+                                                        }}
+                                                        href={leadData?.proposal_pdf_url}
+                                                    >
+                                                        Click here
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        )}
 
                                     </tbody>
                                 </table>
