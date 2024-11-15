@@ -230,7 +230,7 @@ const Profile: React.FC<EditModalProps> = ({
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>QC Audit</td>
-                                            <td className={classes.rightAlign}>{leadData?.qc_audit.toString()}</td>
+                                            <td className={classes.rightAlign}>{leadData?.qc_audit ? "true" : "false"}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Proposal Signed</td>

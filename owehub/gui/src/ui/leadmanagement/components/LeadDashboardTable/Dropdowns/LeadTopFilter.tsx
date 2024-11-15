@@ -54,8 +54,20 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
       <div className={classes.filtericonLead} onClick={HistoryButtonCalled} data-tooltip-id="Filters">
+        {selectedValue !== 'ALL' &&
+          <span style={{
+            border: '1px solid rgb(255, 255, 255)',
+            borderRadius: '50%',
+            backgroundColor: 'rgb(45, 199, 79)',
+            width: '8px',
+            height: '8px',
+            top: '0px',
+            right: '-2px',
+            position: 'absolute'
+          }}></span>
+        }
         <FaFilter size={14} fontWeight={600} />
-        
+
       </div>
       <Tooltip
         style={{
@@ -64,7 +76,7 @@ const LeadTableFilter: React.FC<SelectedValueState> = ({ selectedValue = 'ALL', 
           color: '#000',
           fontSize: 12,
           paddingBlock: 4,
-          fontWeight:"400"
+          fontWeight: "400"
         }}
         offset={8}
         delayShow={800}
