@@ -20,7 +20,7 @@ type GetLeadInfoRes struct {
 	FinanceType                string     `json:"finance_type"`
 	FinanceCompany             string     `json:"finance_company"`
 	SaleSubmissionTriggered    bool       `json:"sale_submission_triggered"`
-	QCAudit                    string     `json:"qc_audit"`
+	QCAudit                    bool       `json:"qc_audit"`
 	ProposalSigned             bool       `json:"proposal_signed"`
 	AppointmentDisposition     string     `json:"appointment_disposition"`
 	AppointmentDispositionNote string     `json:"appointment_disposition_note"`
