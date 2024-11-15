@@ -165,6 +165,7 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 				li.phone_number,
 				li.email_id,
 				li.appointment_date,
+				li.frontend_base_url,
 				ud.name as creator_name,
 				ud.email_id as creator_email,
 				ud.mobile_number as creator_phone
@@ -226,6 +227,12 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			return nil
 		}
 
+		frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert frontend_base_url to string type Item: %+v", data[0])
+			return nil
+		}
+
 		smsMessage := leadsService.SmsAppointmentAccepted.WithData(leadsService.SmsDataAppointmentAccepted{
 			LeadId:        int64(leadsId),
 			LeadFirstName: firstName,
@@ -241,7 +248,7 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "APT_ACCEPTED",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadsService.LeadAppCfg.FrontendBaseUrl, leadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, leadsId),
 		}
 
 		err = sendSms(creatorPhone, smsMessage)
@@ -336,6 +343,7 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		li.phone_number,
 		li.email_id,
 		li.appointment_date,
+		li.frontend_base_url,
 		ud.name as creator_name,
 		ud.email_id as creator_email,
 		ud.mobile_number as creator_phone
@@ -397,6 +405,12 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		return nil
 	}
 
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert frontend_base_url to string type Item: %+v", data[0])
+		return nil
+	}
+
 	smsMessage := leadsService.SmsAppointmentDeclined.WithData(leadsService.SmsDataAppointmentDeclined{
 		LeadId:        int64(leadsId),
 		LeadFirstName: firstName,
@@ -412,7 +426,7 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		LeadEmailId:     leadEmail,
 		LeadPhoneNumber: phoneNo,
 		NewStatus:       "APT_DECLINED",
-		ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadsService.LeadAppCfg.FrontendBaseUrl, leadsId),
+		ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, leadsId),
 	}
 
 	err = sendSms(creatorPhone, smsMessage)

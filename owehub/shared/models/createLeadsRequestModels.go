@@ -16,4 +16,5 @@ type CreateLeadsReq struct {
 	Notes         string `json:"notes"`
 	SalerepID     int64  `json:"salerep_id"`
 	LeadSource    string `json:"lead_source"`
+	BaseURL       string `json:"base_url"`
 }

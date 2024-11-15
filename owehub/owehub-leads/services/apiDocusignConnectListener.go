@@ -144,7 +144,8 @@ func HandleDocusignConnectListenerRequest(resp http.ResponseWriter, req *http.Re
 				proposal_pdf_key = $1,
 				docusign_envelope_completed_at = CURRENT_TIMESTAMP,
 				lead_won_date = CASE WHEN lead_won_date IS NULL THEN CURRENT_TIMESTAMP ELSE lead_won_date END,
-				updated_at = CURRENT_TIMESTAMP
+				updated_at = CURRENT_TIMESTAMP,
+				proposal_signed = TRUE
 			WHERE leads_id = $2
 		`
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{filePath, leadsId})

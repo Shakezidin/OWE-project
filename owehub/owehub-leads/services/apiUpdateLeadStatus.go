@@ -93,6 +93,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			li.phone_number,
 			li.email_id,
 			li.appointment_date,
+			li.frontend_base_url,
 			ud.name as salerep_name,
 			ud.email_id as salerep_email,
 			ud.mobile_number as salerep_phone
@@ -162,6 +163,12 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Failed to get last name from database", http.StatusInternalServerError, nil)
 		return
 	}
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+		appserver.FormAndSendHttpResp(resp, "Failed to get frontend_base_url from database", http.StatusInternalServerError, nil)
+		return
+	}
 
 	// CASE 1: set lead status to 1 (SENT) --> Send Appointment
 	if dataReq.StatusId == 1 {
@@ -229,7 +236,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "APT_SENT",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		if isRescheduling {
@@ -317,12 +324,12 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "DEAL_WON",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		if dataReq.IsManualWin {
 			emailTmplData.NewStatus = "DEAL_WON_MANUAL"
-			emailTmplData.ViewUrl = fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId)
+			emailTmplData.ViewUrl = fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId)
 			smsMessage = leadService.SmsLeadWonManual.WithData(leadService.SmsDataLeadWonManual{
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
@@ -402,7 +409,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "DEAL_LOST",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		err = sendSms(salerepPhone, smsMessage)
@@ -463,7 +470,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "Qualified",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		err = sendSms(salerepPhone, smsMessage)
@@ -512,7 +519,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "APT_NOT_REQUIRED",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		err = sendSms(salerepPhone, smsMessage)
