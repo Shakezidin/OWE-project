@@ -29,7 +29,7 @@ interface LeadData {
     finance_type: string;
     finance_company: string;
     sale_submission_triggered: boolean;
-    qc_audit: string;
+    qc_audit: boolean;
     proposal_signed: boolean;
     appointment_disposition: string;
     appointment_accepted_date: string | null;
@@ -230,7 +230,7 @@ const Profile: React.FC<EditModalProps> = ({
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>QC Audit</td>
-                                            <td className={classes.rightAlign}>{leadData?.qc_audit}</td>
+                                            <td className={classes.rightAlign}>{leadData?.qc_audit.toString()}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Proposal Signed</td>
@@ -402,6 +402,18 @@ const Profile: React.FC<EditModalProps> = ({
                                                 }}
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
                                             >{leadData?.sales_rep_name || '.....'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Download Proposal </td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            ><a href="#">Click here</a></td>
                                         </tr>
 
                                     </tbody>
