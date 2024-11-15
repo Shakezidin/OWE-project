@@ -22,7 +22,7 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input';
 
-type ProposalStatus = "In Progress" | "Send Docs" | "CREATED" | "Clear selection" | "Completed" | "Documents Sent";
+type ProposalStatus = "In Progress" | "Send Docs" | "Created" | "Clear selection" | "Completed" | "Documents Sent";
 type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
 interface VisibilityState {
   [key: string]: boolean;
@@ -342,7 +342,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       params.append("leads_id", leadId.toString() || "");
       params.append("return_url", `${BASE_URL}/leadmng-dashboard`);
 
-      const eventSourceUrl = `https://staging.owe-hub.com/api/owe-leads-service/v1/docusign_get_signing_url?${params.toString()}`;
+      const eventSourceUrl = `${process.env.REACT_APP_LEADS_URL}/docusign_get_signing_url?${params.toString()}`;
       const eventSource = new EventSource(eventSourceUrl);
 
       eventSource.onmessage = (event) => {
@@ -493,7 +493,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       backgroundColor: "#21BC27",
       color: "#fff"
     },
-    "CREATED": {
+    "Created": {
       backgroundColor: "#B459FC",
       color: "#fff"
     },
@@ -538,9 +538,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     if (lead && (lead.proposal_status === 'Completed' || lead.proposal_status === 'Send Docs' || lead.proposal_status === 'Documents Sent') && lead.proposal_id !== '') {
       return [
         { label: 'View Proposal', value: 'viewProposal' },
-        { label: 'Edit Proposal', value: 'editProposal' },
+        ...(lead.docusign_label !== 'Completed' ? [{ label: 'Edit Proposal', value: 'editProposal' }] : []),
         { label: 'Download Proposal', value: 'download' },
-        ...(lead.proposal_pdf_link ? [{ label: 'Sign Document', value: 'signature' }] : []),
+        ...(lead.proposal_pdf_link && (lead.docusign_label !== 'Completed' && !lead.docusign_label) ? [{ label: 'Sign Document', value: 'signature' }] : []), // To ensure that the "Sign Document" option is displayed when docusign_label is either null, an empty string (''), or not equal to 'Completed'
         { label: 'Reschedule Appointment', value: 'app_sched' },
         { label: 'Refresh Url', value: 'renew_proposal' },
       ];
