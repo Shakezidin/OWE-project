@@ -7,8 +7,8 @@
 package services
 
 import (
-	//"OWEApp/owehub-leads/common"
 	"OWEApp/owehub-leads/auroraclient"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -97,6 +97,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.status_id,
 					li.aurora_design_id,
 					li.lead_source,
+					li.proposal_pdf_key,
 					ud_creator.name as created_by_name,
 					salerep.name as salerep_name
 				FROM
@@ -236,6 +237,11 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	leadSource, ok := leadData["lead_source"].(string)
 	if ok {
 		apiResponse.LeadSource = leadSource
+	}
+
+	proposalPdfKey, ok := leadData["proposal_pdf_key"].(string)
+	if ok {
+		apiResponse.ProposalPdfUrl = leadsService.S3GetObjectUrl(proposalPdfKey)
 	}
 
 	// if aurora_design_id is present in the db, then get & update the finance type and company
