@@ -9,7 +9,7 @@ import MicroLoader from "../../components/loader/MicroLoader";
 import DataNotFound from "../../components/loader/DataNotFound";
 import { format, parseISO } from "date-fns";
 import { Tooltip } from "react-tooltip";
-import {  } from "date-fns-tz";
+import { } from "date-fns-tz";
 
 interface EditModalProps {
     isOpen1: boolean;
@@ -30,6 +30,7 @@ interface LeadData {
     finance_company: string;
     sale_submission_triggered: boolean;
     qc_audit: boolean;
+    proposal_pdf_url: string;
     proposal_signed: boolean;
     appointment_disposition: string;
     appointment_accepted_date: string | null;
@@ -45,8 +46,8 @@ interface LeadData {
     status_id: number;
     updated_at: string;
     proposal_created_date: string | null;
-    sales_rep_name:string | null;
-    lead_source:string | null;
+    sales_rep_name: string | null;
+    lead_source: string | null;
 }
 
 const Profile: React.FC<EditModalProps> = ({
@@ -115,7 +116,7 @@ const Profile: React.FC<EditModalProps> = ({
         };
     }, []);
 
-    
+
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list_mob_inner}>
@@ -250,14 +251,14 @@ const Profile: React.FC<EditModalProps> = ({
 
                                         <tr>
                                             <td className={classes.leftAlign}
-                                                
+
                                             >Lead Source</td>
                                             <td style={{
-                                                    lineHeight: "16px",
-                                                    whiteSpace: 'pre-wrap',
-                                                    overflowWrap: 'break-word',
-                                                    maxWidth: '150px',
-                                                }}
+                                                lineHeight: "16px",
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '150px',
+                                            }}
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.lead_source}</td>
                                         </tr>
 
@@ -410,10 +411,15 @@ const Profile: React.FC<EditModalProps> = ({
                                                     whiteSpace: 'pre-wrap',
                                                     overflowWrap: 'break-word',
                                                     maxWidth: '200px',
-                                                    lineHeight: "16px"
+                                                    lineHeight: "16px",
+
                                                 }}
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
-                                            ><a href="#">Click here</a></td>
+                                            ><a style={{
+                                                pointerEvents: leadData?.proposal_pdf_url === "" ? 'none' : 'auto',
+                                                opacity: leadData?.proposal_pdf_url === "" ? 0.6 : 1,
+                                                cursor: leadData?.proposal_pdf_url === "" ? 'not-allowed' : 'pointer',
+                                            }} href={leadData?.proposal_pdf_url}>Click here</a></td>
                                         </tr>
 
                                     </tbody>
