@@ -30,7 +30,9 @@
   min-height: 200px;
   padding: 20px;
 } */
-
+.pieChart text{
+  
+}
 .PaginationFont a {
   font-size: 12px !important;
 }
@@ -636,6 +638,7 @@ table tbody tr:hover {
     margin: 0;
     padding-left: 0 !important;
     margin-bottom: 14px;
+    margin-left: -34px;
   }
   .HideContent {
     display: flex;
