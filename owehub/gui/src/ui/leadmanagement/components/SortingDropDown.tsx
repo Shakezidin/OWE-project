@@ -48,6 +48,18 @@ useEscapeKey(toggleDropdown);
         className={`flex items-center justify-center  sort_btn1`}
         data-tooltip-id="Filters"
       >
+        {isActiveX !== 'all' &&
+          <span style={{
+            border: '1px solid rgb(255, 255, 255)',
+            borderRadius: '50%',
+            backgroundColor: 'rgb(45, 199, 79)',
+            width: '8px',
+            height: '8px',
+            top: '0px',
+            right: '-2px',
+            position: 'absolute'
+          }}></span>
+        }
         <FaFilter size={14} fontWeight={600} />
       </button>
 

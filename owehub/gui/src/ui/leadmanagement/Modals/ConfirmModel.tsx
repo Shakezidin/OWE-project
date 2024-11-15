@@ -313,7 +313,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
-      setLoad(false);
+      setLoadWon(false);
     } catch (error) {
       setLoadWon(false);
       console.error('Error submitting form:', error);

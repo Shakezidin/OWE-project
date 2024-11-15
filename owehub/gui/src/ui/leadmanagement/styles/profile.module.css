@@ -15,6 +15,21 @@
   display: flex;
   flex-direction: column;
 }
+.specialfont a {
+  color: #7996ec  !important;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.specialfont a:hover {
+  color: #4062ca !important;
+}
+.specialfont a:active {
+  color: #4062ca !important;
+}
+.specialfont a:focus {
+  color: #4062ca !important;
+}
 
 .Column1Details {
   flex-grow: 1;
@@ -31,14 +46,12 @@ tr {
   /* Smooth transition for background color */
 }
 
-.RowDiv {}
+.RowDiv {
+}
 
 .RowDiv:hover {
   background-color: #ddebff;
-
-
 }
-
 
 .Column1Details::after {
   content: '';
@@ -47,14 +60,12 @@ tr {
   right: 0;
   width: 2px;
   height: 92.5%;
-  background-color: #CCCCCC;
+  background-color: #cccccc;
 }
 
 .Column1Details tr {
-
   width: 100% !important;
 }
-
 
 .Column2Details {
   flex-grow: 1;
@@ -84,7 +95,7 @@ tr {
   text-align: right;
   height: 25px !important;
   padding: 12px 18px 12px 0px;
-  color: #377CF6;
+  color: #377cf6;
   line-height: 9px;
   font-weight: 500;
   font-size: 14px;
@@ -93,14 +104,10 @@ tr {
   white-space: normal;
 }
 
-
 .specialfont {
   font-weight: 400;
-  color: #3E3E3E !important;
-
+  color: #3e3e3e !important;
 }
-
-
 
 .btnContainer {
   display: flex;
@@ -114,7 +121,6 @@ tr {
   margin-top: 18px;
   margin-left: 20px;
   font-weight: 600;
-
 }
 
 .crossIconImg {
@@ -122,20 +128,16 @@ tr {
   margin-top: 18px;
   margin-right: 20px;
   transition: all 0.3s ease;
-
 }
 
 .crossIconImg:hover {
   transform: scale(1.05);
 }
-.SignDocumentPage{
+.SignDocumentPage {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-
-
 
 @media screen and (max-width: 767px) {
   .DetailsMcontainer {
@@ -180,7 +182,7 @@ tr {
   .leftAlign {
     line-height: 14px;
   }
-  .customer_wrapper_list_mob_inner{
+  .customer_wrapper_list_mob_inner {
     padding: 0 8px;
   }
 }
