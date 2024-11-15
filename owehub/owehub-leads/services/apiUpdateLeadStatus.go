@@ -94,8 +94,6 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			li.email_id,
 			li.appointment_date,
 			li.frontend_base_url,
-			li.docusign_envelope_completed_at,
-			li.proposal_pdf_key,
 			ud.name as salerep_name,
 			ud.email_id as salerep_email,
 			ud.mobile_number as salerep_phone
@@ -132,18 +130,18 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
-		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
-		return
-	}
+	// envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
+	// 	appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
+	// 	return
+	// }
 
-	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
-		return
-	}
+	// proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
+	// 	return
+	// }
 
 	salerepEmail, ok := data[0]["salerep_email"].(string)
 	if !ok {
@@ -456,7 +454,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
+	// proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	if dataReq.QC {
 		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
@@ -480,15 +478,15 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadQCSigned{
-			UserName:        salerepName,
-			LeadId:          dataReq.LeadsId,
-			LeadFirstName:   firstName,
-			LeadLastName:    lastName,
-			LeadEmailId:     leadEmail,
-			Date:            envelopeCreatedAt,
+			UserName:      salerepName,
+			LeadId:        dataReq.LeadsId,
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			LeadEmailId:   leadEmail,
+			//Date:            envelopeCreatedAt,
 			LeadPhoneNumber: phoneNo,
 			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
-			ProposalPdfUrl:  proposalPdfUrl,
+			// ProposalPdfUrl:  proposalPdfUrl,
 		}
 
 		err = sendSms(salerepPhone, smsMessage)
