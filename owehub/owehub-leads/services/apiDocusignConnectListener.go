@@ -7,6 +7,7 @@
 package services
 
 import (
+	leadService "OWEApp/owehub-leads/common"
 	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/owehub-leads/docusignclient"
 	"OWEApp/shared/appserver"
@@ -283,11 +284,11 @@ func sendProposalSignedNotification(leadsId int64) error {
 		return nil
 	}
 
-	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
-		return nil
-	}
+	// proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
+	// 	return nil
+	// }
 
 	userPhone, ok := data[0]["user_phone"].(string)
 	if !ok {
@@ -295,20 +296,20 @@ func sendProposalSignedNotification(leadsId int64) error {
 		return nil
 	}
 
-	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
+	//proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	err = emailClient.SendEmail(emailClient.SendEmailRequest{
 		ToName:  userName,
 		ToEmail: userEmail,
 		Subject: "Lead Won!",
-		TemplateData: emailClient.TemplateDataLeadProposalSigned{
+		TemplateData: emailClient.TemplateDataLeadQCSigned{
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadId:          leadsId,
-			ProposalPdfUrl:  proposalPdfUrl,
 			LeadEmailId:     email,
 			LeadPhoneNumber: phoneNo,
 			UserName:        userName,
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, leadsId),
 		},
 	})
 

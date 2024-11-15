@@ -448,21 +448,20 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsAppointmentNotRequired.WithData(leadService.SmsDataAppointmentNotRequired{
+		smsMessage := leadService.SmsQCSigned.WithData(leadService.SmsDataQCSigned{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
 			UserName:      salerepName,
 		})
 
-		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
+		emailTmplData := emailClient.TemplateDataLeadQCSigned{
 			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
-			NewStatus:       "Qualified",
 			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
 		}
 
@@ -480,6 +479,16 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Thank You for showing interest in Our World Energy",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 		}
 		return
 	}
