@@ -77,6 +77,8 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	frontendBaseURL, _ := strings.CutSuffix(CreateLeadsReq.BaseURL, "/")
+
 	queryParameters = append(queryParameters,
 		userEmail,
 		CreateLeadsReq.FirstName,
@@ -88,6 +90,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		CreateLeadsReq.Notes,
 		CreateLeadsReq.SalerepID,
 		CreateLeadsReq.LeadSource,
+		frontendBaseURL,
 	)
 
 	// Insert the lead details into the database using function CallDBFunction
