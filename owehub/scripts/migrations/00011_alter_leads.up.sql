@@ -5,6 +5,8 @@ ALTER TABLE leads_info ALTER COLUMN zipcode TYPE VARCHAR(20);
 
 ALTER TABLE leads_info ALTER COLUMN qc_audit TYPE BOOLEAN USING qc_audit::BOOLEAN, ALTER COLUMN qc_audit SET DEFAULT FALSE;
 
+ALTER TABLE leads_info ALTER COLUMN proposal_signed TYPE BOOLEAN USING proposal_signed::BOOLEAN,
+ALTER COLUMN proposal_signed SET DEFAULT FALSE;
 
 ---- ADD AURORA COLUMNS
 ALTER TABLE leads_info ADD COLUMN aurora_project_id VARCHAR(40);
