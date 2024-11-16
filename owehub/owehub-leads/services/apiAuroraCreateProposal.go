@@ -220,7 +220,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 		LeadFirstName: leadFirstName,
 		LeadLastName:  leadLastName,
-		Message:       "Thank You for showing interest in Our World Energy",
+		Message:       "Your proposal has been creaded.",
 	})
 	err = sendSms(leadPhone, smsbody)
 	if err != nil {

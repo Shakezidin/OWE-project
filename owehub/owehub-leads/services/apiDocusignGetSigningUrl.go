@@ -251,12 +251,11 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 			},
 			Recipients: []docusignclient.CreateEnvelopeApiRecipient{
 				{
-					Email:        leadsEmail,
-					Name:         fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
-					FirstName:    leadsFirstName,
-					LastName:     leadsLastName,
-					RecipientId:  fmt.Sprintf("%d", leadId),
-					ClientUserId: fmt.Sprintf("OWE%d", leadId),
+					Email:       leadsEmail,
+					Name:        fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
+					FirstName:   leadsFirstName,
+					LastName:    leadsLastName,
+					RecipientId: fmt.Sprintf("%d", leadId),
 				},
 			},
 		}
@@ -274,7 +273,15 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 			return
 		}
 
-		query = "UPDATE leads_info SET docusign_envelope_id = $1, docusign_envelope_sent_at = CURRENT_TIMESTAMP WHERE leads_id = $2"
+		query = `
+			UPDATE leads_info SET
+			docusign_envelope_id = $1,
+			docusign_envelope_completed_at = NULL,
+			docusign_envelope_declined_at = NULL,
+			docusign_envelope_voided_at = NULL,
+			docusign_envelope_sent_at = CURRENT_TIMESTAMP
+			WHERE leads_id = $2
+		`
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{envelopeId, leadId})
 
 		if err != nil {

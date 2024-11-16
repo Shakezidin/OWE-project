@@ -26,12 +26,11 @@ type CreateEnvelopeApiDocument struct {
 	FileExtension  string `json:"fileExtension"`
 }
 type CreateEnvelopeApiRecipient struct {
-	ClientUserId string `json:"clientUserId"`
-	RecipientId  string `json:"recipientId"`
-	Name         string `json:"name"`
-	Email        string `json:"email"`
-	FirstName    string `json:"firstName"`
-	LastName     string `json:"lastName"`
+	RecipientId string `json:"recipientId"`
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
 }
 
 func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {

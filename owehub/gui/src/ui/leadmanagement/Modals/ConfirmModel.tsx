@@ -444,8 +444,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.pers_det_top}>
                   <div className={classes.Column1Details}>
                     <div className={classes.main_name}>
-                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 15
-                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 15)}...`
+                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 25
+                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 25)}...`
                         : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
                       <img
                         onClick={HandleModal}

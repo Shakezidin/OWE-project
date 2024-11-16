@@ -90,11 +90,12 @@ func (h *LeadsMsgraphEventHandler) HandleCreated(eventDetails models.EventDetail
 // Update the leads status in the database, accepted, declined, etc.
 func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetails, attendeeResponse string) error {
 	var (
-		err     error
-		event   graphmodels.Eventable
-		data    []map[string]interface{}
-		query   string
-		leadsId int
+		err         error
+		event       graphmodels.Eventable
+		updateCount int64
+		data        []map[string]interface{}
+		query       string
+		leadsId     int
 	)
 
 	log.EnterFn(0, "LeadsEventHandler.HandleUpdated")
@@ -150,11 +151,18 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			APPOINTMENT_DECLINED_DATE = NULL,
 			STATUS_ID = 2
 			WHERE leads_id = $1
+			AND APPOINTMENT_DATE > CURRENT_TIMESTAMP
 		`
-		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+		err, updateCount = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update leads info in db: %v", err)
 			return err
+		}
+
+		if updateCount == 0 {
+			log.FuncErrorTrace(0, "No leads info found for given lead id or appointment date is passed")
+			return nil
 		}
 
 		// send sms and email
@@ -275,13 +283,19 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 			UPDATED_AT = CURRENT_TIMESTAMP,
 			APPOINTMENT_ACCEPTED_DATE = NULL,
+			APPOINTMENT_DATE = NULL,
 			STATUS_ID = 3
 			WHERE leads_id = $1
+			AND APPOINTMENT_DATE > CURRENT_TIMESTAMP
 		`
-		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+		err, updateCount = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update leads info in db: %v", err)
 			return err
+		}
+		if updateCount == 0 {
+			log.FuncErrorTrace(0, "No leads info found for given lead id or appointment date is passed")
+			return nil
 		}
 	}
 
@@ -326,6 +340,7 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 		UPDATED_AT = CURRENT_TIMESTAMP,
 		APPOINTMENT_ACCEPTED_DATE = NULL,
+		APPOINTMENT_DATE = NULL,
 		STATUS_ID = 3
 		WHERE leads_id = $1
 	`
