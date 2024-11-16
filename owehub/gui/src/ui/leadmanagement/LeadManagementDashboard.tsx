@@ -1568,7 +1568,7 @@ const LeadManagementDashboard = () => {
               >
                 <MicroLoader />
               </div>
-            ) : lineData.length > 0 ? (
+            ) : totalValue > 0 ? (
               <>
                 <ResponsiveContainer width="100%" height={260}>
                   <PieChart className={styles.pieChart}>
