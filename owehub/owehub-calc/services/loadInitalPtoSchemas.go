@@ -60,7 +60,9 @@ func LoadPtoInitialData(uniqueIds []string) (InitialData InitialPtoDataLists, er
 		JOIN 
 			fin_permits_fin_schema f ON i.customer_unique_id = f.customer_unique_id
 		JOIN 
-			pto_ic_schema p ON i.customer_unique_id = p.customer_unique_id;
+			pto_ic_schema p ON i.customer_unique_id = p.customer_unique_id
+		
+		WHERE i.customer_unique_id != ''
 	`
 
 	if len(uniqueIds) > 0 {
@@ -68,7 +70,7 @@ func LoadPtoInitialData(uniqueIds []string) (InitialData InitialPtoDataLists, er
 		for i, id := range uniqueIds {
 			placeholders[i] = fmt.Sprintf("'%s'", id)
 		}
-		query += fmt.Sprintf(" WHERE i.customer_unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
+		query += fmt.Sprintf(" AND i.customer_unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
 	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)

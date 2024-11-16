@@ -114,7 +114,8 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		JOIN 
 			roofing_request_install_subcontracting_schema AS roofing ON cust.unique_id = roofing.customer_unique_id
 		JOIN 
-			survey_survey_schema AS survey ON cust.unique_id = survey.customer_unique_id;
+			survey_survey_schema AS survey ON cust.unique_id = survey.customer_unique_id
+		WHERE cust.unique_id != ''
 		`
 
 	if len(uniqueIds) > 0 {
@@ -122,7 +123,7 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		for i, id := range uniqueIds {
 			placeholders[i] = fmt.Sprintf("'%s'", id)
 		}
-		query += fmt.Sprintf(" WHERE cust.unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
+		query += fmt.Sprintf(" AND cust.unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
 	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
@@ -131,6 +132,7 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		err = fmt.Errorf("failed to fetch inital data from db")
 		return InitialData, err
 	}
+
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
 
 	for _, data := range dataList {
