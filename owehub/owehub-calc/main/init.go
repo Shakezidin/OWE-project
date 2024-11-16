@@ -8,6 +8,7 @@
 package main
 
 import (
+	"OWEApp/owehub-calc/services"
 	apiHandler "OWEApp/owehub-calc/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
@@ -243,14 +244,14 @@ func init() {
 	/* Init postgre DB from the config and save handler, Create initial connection */
 	/* In case of intentional service restart and MNO wants config to be read from files*/
 	/* Read configuration and initialize the service*/
-	err = InitConfigFromFiles()
-	if err == nil {
-		/*Update server configuration based on recieved glb config*/
-		UpdateSrvConfiguration()
-	} else {
-		log.ConfErrorTrace(0, "Failed to read the config from files. %+v", err)
-		return
-	}
+	// err = InitConfigFromFiles()
+	// if err == nil {
+	// 	/*Update server configuration based on recieved glb config*/
+	// 	UpdateSrvConfiguration()
+	// } else {
+	// 	log.ConfErrorTrace(0, "Failed to read the config from files. %+v", err)
+	// 	return
+	// }
 
 	/* Init DB Connection */
 	/* If Connection from DB gets failed then abort the application */
@@ -260,6 +261,23 @@ func init() {
 		return
 	} else {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
+	}
+
+	err = services.ExecInstalEtaInitialCalculation("", "")
+	if err == nil {
+		log.FuncInfoTrace(0, "succesfully loaded initial install eta data")
+	} else {
+		log.ConfErrorTrace(0, "Failed to update initial data to install eta. %+v", err)
+		return
+	}
+
+	/* init setting PTO values*/
+	err = services.ExecPtoInitialCalculation("", "")
+	if err == nil {
+		log.FuncInfoTrace(0, "succesfully loaded initial pto data")
+	} else {
+		log.ConfErrorTrace(0, "Failed to update initial data to pto. %+v", err)
+		return
 	}
 
 	types.ExitChan = make(chan error)

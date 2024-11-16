@@ -68,7 +68,7 @@ func LoadPtoInitialData(uniqueIds []string) (InitialData InitialPtoDataLists, er
 		for i, id := range uniqueIds {
 			placeholders[i] = fmt.Sprintf("'%s'", id)
 		}
-		query += fmt.Sprintf(" AND cs.unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
+		query += fmt.Sprintf(" WHERE i.customer_unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
 	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)

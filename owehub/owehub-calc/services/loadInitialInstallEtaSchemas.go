@@ -122,7 +122,7 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		for i, id := range uniqueIds {
 			placeholders[i] = fmt.Sprintf("'%s'", id)
 		}
-		query += fmt.Sprintf(" AND cs.unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
+		query += fmt.Sprintf(" WHERE cust.unique_id IN (%s)", strings.Join(placeholders, ",")) //* change query here
 	}
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)

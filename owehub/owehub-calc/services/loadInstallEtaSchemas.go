@@ -8,7 +8,7 @@
 package services
 
 import (
-"OWEApp/shared/db"
+	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 )
 
