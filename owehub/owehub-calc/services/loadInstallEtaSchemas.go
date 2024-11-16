@@ -37,8 +37,6 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		return err
 	}
 
-	log.FuncErrorTrace(0, "data %v", InitailData)
-
 	for _, data := range InitailData.InitialDataList {
 		var installEtaData map[string]interface{}
 
@@ -69,8 +67,6 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		}
 		count++
 	}
-
-	log.FuncErrorTrace(0, "data val %v", installEtaDataList)
 
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", installEtaDataList)
 	if err != nil {
