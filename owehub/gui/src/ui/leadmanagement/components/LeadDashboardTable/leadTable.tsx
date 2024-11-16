@@ -478,7 +478,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
   const statusStyles = {
     "In Progress": {
-      backgroundColor: "#EC9311",
+      backgroundColor: "#B459FC",
       color: "#fff"
     },
     "Completed": {
@@ -494,7 +494,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       color: "#fff"
     },
     "Created": {
-      backgroundColor: "#B459FC",
+      backgroundColor: "#EC9311",
       color: "#fff"
     },
     "Clear selection": {
@@ -884,13 +884,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
 
 
-                    <td>
+                    {/* <td>
                       <div className={styles.topofinfo}>
                         {lead.finance_company ? lead.finance_company : "_____"}
                       </div>
                     </td>
                     <td><div className={styles.topofinfo}>{lead.finance_type ? lead.finance_type : "_____"}</div></td>
-                    <td><div className={styles.topofinfo}>{lead.qc_audit ? lead.qc_audit : "_____"}</div></td>
+                    <td><div className={styles.topofinfo}>{lead.qc_audit ? lead.qc_audit : "_____"}</div></td> */}
                     {(selectedLeads.length === 0 && isMobile) &&
                       <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
                         <div className={styles.RowMobile}
