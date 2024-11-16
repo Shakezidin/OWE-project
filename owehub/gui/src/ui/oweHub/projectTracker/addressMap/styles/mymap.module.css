@@ -660,6 +660,9 @@ input[type='checkbox']:checked {
   align-items: center;
   border-radius: 5px;
 }
+.chart_main_grid svg text{
+  color: red;
+}
 
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
 

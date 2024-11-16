@@ -187,7 +187,7 @@ const renderActiveShape = (props: any) => {
   const sy = cy + (outerRadius + 10) * sin;
   const mx = cx + (outerRadius + 30) * cos;
   const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 2;
   const ey = my;
   const textAnchor = cos >= 0 ? 'start' : 'end';
 
@@ -270,12 +270,12 @@ const renderActiveShape = (props: any) => {
         {`${value}`}
       </text>
       <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        x={(ex + (cos >= 0 ? 1 : 1.4) * 12)}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
-        style={{ fontSize: '14px' }}
+        style={{ fontSize: '12px' }}
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
