@@ -251,12 +251,11 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 			},
 			Recipients: []docusignclient.CreateEnvelopeApiRecipient{
 				{
-					Email:        leadsEmail,
-					Name:         fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
-					FirstName:    leadsFirstName,
-					LastName:     leadsLastName,
-					RecipientId:  fmt.Sprintf("%d", leadId),
-					ClientUserId: fmt.Sprintf("OWE%d", leadId),
+					Email:       leadsEmail,
+					Name:        fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
+					FirstName:   leadsFirstName,
+					LastName:    leadsLastName,
+					RecipientId: fmt.Sprintf("%d", leadId),
 				},
 			},
 		}
