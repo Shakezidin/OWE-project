@@ -1156,11 +1156,12 @@ useEffect(()=>{
                         onBlur={() => {
                           set_minValue(minValue <= 0 ? 1 : minValue);
                         }}
-                        style={{outline:'none'}}
+                        style={{outline:'none', width: minValue.toString().length === 1 ? '15px' :
+                          minValue.toString().length === 2 ? '24px' : '30px'}}
                         min={1}
                         max={180}
                       />
-                     {minValue !==0 && <p className='pipeline-inputBox-div-para'>{minValue===1?'day':'days'}</p>}
+                     {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue===1?'day':'days'}</p>}
                         </label>
                     </div>
                     <div className='endDay'>
@@ -1179,11 +1180,12 @@ useEffect(()=>{
                           set_maxValue(maxValue <= 0 ? 180 : maxValue);
                           
                         }}
-                        style={{outline:'none',}}
+                        style={{outline:'none',width: maxValue.toString().length === 1 ? '15px' :
+                          maxValue.toString().length === 2 ? '24px' : '30px'}}
                         min={1}
                         max={360}
                       />
-                       {minValue !==0 && <p className='pipeline-inputBox-div-para'>{maxValue===1?'day':'days'}</p>}
+                       {maxValue !==0 && <p className='pipeline-inputBox-div-para'>{maxValue===1?'day':'days'}</p>}
 </label>
                     </div>
                   </div>
@@ -1255,7 +1257,7 @@ useEffect(()=>{
 
 
                     <div className='applyButton' style={{ cursor: "pointer" }} onClick={() => {
-                      (minValue > maxValue)?(`${toast.error("Min value can not be more than Max value")} ${set_minValue(25)} ${set_maxValue(70)}`):setFiltered(prev => !prev);
+                      (minValue > maxValue)?(`${toast.error("In Range Min value can not be more than Max value")} ${set_minValue(25)} ${set_maxValue(70)}`):setFiltered(prev => !prev);
                       setOpenFilter(false);
                       setFilterFlag(false);
                     }}> Apply </div>
