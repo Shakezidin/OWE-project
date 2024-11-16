@@ -10,6 +10,8 @@ package services
 import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"strconv"
+	"time"
 )
 
 func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
@@ -35,11 +37,13 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		return err
 	}
 
+	log.FuncErrorTrace(0, "data %v", InitailData)
+
 	for _, data := range InitailData.InitialDataList {
 		var installEtaData map[string]interface{}
 
 		//* uncomment when function is done
-		// installEtaData, err := CalculatePto(data)
+		installEtaData, err := CalculateInstallPto(data)
 		if err != nil {
 			log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
 			continue
@@ -66,6 +70,8 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		count++
 	}
 
+	log.FuncErrorTrace(0, "data val %v", installEtaDataList)
+
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", installEtaDataList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert initial Install ETA Data in DB err: %v", err)
@@ -74,39 +80,141 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 	return err
 }
 
-// func buildUpdateQuery(tableName string, row map[string]interface{}, idColumn string, idValue interface{}) (string, error) {
-// 	sets := []string{}
+func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, err error) {
+	outData = make(map[string]interface{})
+	var installEto time.Time
+	outData["unique_id"] = data.UniqueId
+	if !data.PvInstallInstallSubcontractingSchemaInstallFixCompletedDate.IsZero() { //24
+		installEto = data.PvInstallInstallSubcontractingSchemaInstallFixCompletedDate
+	} else if !data.PvInstallInstallSubcontractingSchemaInstallFixScheduleDate.IsZero() { //23
+		installEto = data.PvInstallInstallSubcontractingSchemaInstallFixScheduleDate
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Roof" && data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.IsZero() { //22
+		installEto = data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.AddDate(0, 0, 20)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Roof" && !data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.IsZero() { //21
+		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 60)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending HOA" { //20
+		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 30)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending AHJ" && !data.PermitFinPvPermitsSchemaAbExpectedApprovalDate.IsZero() { //19(a)
+		installEto = data.PermitFinPvPermitsSchemaAbExpectedApprovalDate.AddDate(0, 0, 7)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending AHJ" && data.PermitFinPvPermitsSchemaAbExpectedApprovalDate.IsZero() { //19(b)
+		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
+			PermitFinPvPermitsSchemaPermitTurnaroundTime = 0
+		}
+		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 7+PermitFinPvPermitsSchemaPermitTurnaroundTime)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Scheduling" { //18
+		installEto = data.PvInstallInstallSubcontractingSchemaPvSchedulingReadyDate.AddDate(0, 0, 5)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Scheduling - Design Updated" { //17
+		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 1)
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && (data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Change Order" || data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending NCA Review") { //16
+		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 11)
+		// }else if !data.pvInstallInstallSubcontractingSchemaInstallCreated.IsZero() && data.pvInstallInstallSubcontractingSchemaAppStatus == "App Status" { //15 not need to for now as per client reply
+		//  outData["unique_id"] = data.uniqueId
+		//  installEto = data.pvInstallInstallSubcontractingSchemaInstallCreated.AddDate(0, 0, 11)
+		//  return outData, nil
+		// }
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() { //14
+		var latestInstallEto time.Time
+		if data.ICICPtoSchemaIcApprovedDate.After(data.PermitFinPvPermitsSchemaPvApproved) {
+			latestInstallEto = data.ICICPtoSchemaIcApprovedDate
+		} else {
+			latestInstallEto = data.PermitFinPvPermitsSchemaPvApproved
+		}
+		installEto = latestInstallEto.AddDate(0, 0, 20)
+	} else if !data.PermitFinPvPermitsSchemaPvApproved.IsZero() && !data.ICICPtoSchemaIcEstimatedApprovalDate.IsZero() { //13
+		installEto = data.ICICPtoSchemaIcEstimatedApprovalDate.AddDate(0, 0, 20)
+	} else if !data.PermitFinPvPermitsSchemaPvApproved.IsZero() && data.ICICPtoSchemaAppStatus == "Pending IC Docs" { //12
+		ICICPtoSchemaUtilityTurnaroundTime, err := strconv.Atoi(data.ICICPtoSchemaUtilityTurnaroundTime)
+		if err != nil {
+			ICICPtoSchemaUtilityTurnaroundTime = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaPvApproved.AddDate(0, 0, 30+ICICPtoSchemaUtilityTurnaroundTime)
+	} else if !data.PermitFinPvPermitsSchemaPvApproved.IsZero() && data.ICICPtoSchemaAppStatus == "Pending Powerclerk" { //11
+		ICICPtoSchemaUtilityTurnaroundTime, err := strconv.Atoi(data.ICICPtoSchemaUtilityTurnaroundTime)
+		if err != nil {
+			ICICPtoSchemaUtilityTurnaroundTime = 0
+		}
+		AhjDbDbhubSchemaAhjTimeline, err := strconv.Atoi(data.AhjDbDbhubSchemaAhjTimeline)
+		if err != nil {
+			AhjDbDbhubSchemaAhjTimeline = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaItemCreatedOn.AddDate(0, 0, 20+AhjDbDbhubSchemaAhjTimeline+ICICPtoSchemaUtilityTurnaroundTime)
+	} else if !data.PermitFinPvPermitsSchemaPvExpectedApprovalDate.IsZero() && data.PermitFinPvPermitsSchemaPvApproved.IsZero() { //10
+		installEto = data.PermitFinPvPermitsSchemaPvExpectedApprovalDate.AddDate(0, 0, 20)
+	} else if !data.PermitFinPvPermitsSchemaPvResubmitted.IsZero() { //9
+		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
+			PermitFinPvPermitsSchemaPermitTurnaroundTime = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaPvResubmitted.AddDate(0, 0, 20+PermitFinPvPermitsSchemaPermitTurnaroundTime)
+	} else if !data.PermitFinPvPermitsSchemaPvRedlinedDate.IsZero() && data.PermitFinPvPermitsSchemaSolarAppSubmission == "YES" { //8
+		installEto = data.PermitFinPvPermitsSchemaPvRedlinedDate.AddDate(0, 0, 23)
+	} else if !data.PermitFinPvPermitsSchemaPvRedlinedDate.IsZero() { //7
+		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
+			PermitFinPvPermitsSchemaPermitTurnaroundTime = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaPvRedlinedDate.AddDate(0, 0, 23+PermitFinPvPermitsSchemaPermitTurnaroundTime)
+	} else if !data.PermitFinPvPermitsSchemaPvSubmitted.IsZero() { //6
+		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
+			PermitFinPvPermitsSchemaPermitTurnaroundTime = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaPvSubmitted.AddDate(0, 0, 20+PermitFinPvPermitsSchemaPermitTurnaroundTime)
+	} else if !data.PermitFinPvPermitsSchemaItemCreatedOn.IsZero() && data.PermitFinPvPermitsSchemaAppStatus == "Pending IC Status" && !data.PermitFinPvPermitsSchemaPvSubmitted.IsZero() { //5
+		ICICPtoSchemaUtilityTurnaroundTime, err := strconv.Atoi(data.ICICPtoSchemaUtilityTurnaroundTime)
+		if err != nil {
+			ICICPtoSchemaUtilityTurnaroundTime = 0
+		}
+		AhjDbDbhubSchemaAhjTimeline, err := strconv.Atoi(data.AhjDbDbhubSchemaAhjTimeline)
+		if err != nil {
+			AhjDbDbhubSchemaAhjTimeline = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaPvSubmitted.AddDate(0, 0, 20+ICICPtoSchemaUtilityTurnaroundTime+AhjDbDbhubSchemaAhjTimeline)
+	} else if !data.PermitFinPvPermitsSchemaItemCreatedOn.IsZero() && data.PermitFinPvPermitsSchemaSolarAppSubmission == "YES" { //4
+		installEto = data.PermitFinPvPermitsSchemaItemCreatedOn.AddDate(0, 0, 20)
+	} else if !data.PermitFinPvPermitsSchemaItemCreatedOn.IsZero() { //3
+		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
+			PermitFinPvPermitsSchemaPermitTurnaroundTime = 0
+		}
+		installEto = data.PermitFinPvPermitsSchemaItemCreatedOn.AddDate(0, 0, 21+PermitFinPvPermitsSchemaPermitTurnaroundTime)
+	} else if !data.SurveySurveySchemaSurveyCompletionDate.IsZero() { //2
+		AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall, err := strconv.Atoi(data.AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall to int")
+			AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall = 0
+		}
+		installEto = data.CustomersCustomersSchemaSaleDate.AddDate(0, 0, AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall)
+	} else if !data.CustomersCustomersSchemaItemCreatedOn.IsZero() { //1
+		AhjDbDbhubSchemaAverageTimeToPvInstall, err := strconv.Atoi(data.AhjDbDbhubSchemaAverageTimeToPvInstall)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while parsing AhjDbDbhubSchemaAverageTimeToPvInstall to int")
+			AhjDbDbhubSchemaAverageTimeToPvInstall = 0
+		}
+		installEto = data.CustomersCustomersSchemaItemCreatedOn.AddDate(0, 0, AhjDbDbhubSchemaAverageTimeToPvInstall)
+	}
 
-// 	for col, val := range row {
-// 		if col != idColumn {
-// 			var valStr string
-// 			switch v := val.(type) {
-// 			case string:
-// 				// Escape single quotes in string values
-// 				valStr = strings.ReplaceAll(v, "'", "''")
-// 				valStr = fmt.Sprintf("'%s'", valStr) // Enclose string values in quotes
+	if !data.DerateCreatedOn.IsZero() && data.DerateCompletionDate.IsZero() {
+		installEto = data.DerateCreatedOn
+	}
 
-// 			case time.Time:
-// 				// Format time.Time values and enclose in quotes
-// 				valStr = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+	today := time.Now()
+	twentyOneDaysFromToday := today.Add(21 * 24 * time.Hour)
 
-// 			default:
-// 				valStr = fmt.Sprintf("%v", v) // Keep numeric and other types as they are
-// 			}
-// 			sets = append(sets, fmt.Sprintf("%s = %s", col, valStr))
-// 		}
-// 	}
+	if !installEto.IsZero() {
+		if installEto.Before(today) || (installEto.After(today) && installEto.Before(twentyOneDaysFromToday)) {
+			installEto = twentyOneDaysFromToday
+		}
 
-// 	// Escape the idValue to prevent SQL injection
-// 	var idValueStr string
-// 	switch v := idValue.(type) {
-// 	case string:
-// 		idValueStr = strings.ReplaceAll(v, "'", "''")
-// 		idValueStr = fmt.Sprintf("'%s'", idValueStr) // Enclose string ID values in quotes
-// 	default:
-// 		idValueStr = fmt.Sprintf("%v", idValue) // Keep numeric and other types as they are
-// 	}
+	}
 
-// 	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s = %s", tableName, strings.Join(sets, ", "), idColumn, idValueStr)
-// 	return query, nil
-// }
+	outData["install_eta"] = installEto
+
+	return outData, nil
+}

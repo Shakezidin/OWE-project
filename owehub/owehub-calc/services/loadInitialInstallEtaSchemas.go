@@ -49,6 +49,8 @@ type InitialStruct struct {
 
 	RoofingRequestInstallSubcontractingSchemaWorkScheduledDate time.Time
 	SurveySurveySchemaSurveyCompletionDate                     time.Time
+	DerateCompletionDate                                       time.Time
+	DerateCreatedOn                                            time.Time
 }
 
 type InitialDataLists struct {
@@ -115,7 +117,7 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 			roofing_request_install_subcontracting_schema AS roofing ON cust.unique_id = roofing.customer_unique_id
 		JOIN 
 			survey_survey_schema AS survey ON cust.unique_id = survey.customer_unique_id
-		WHERE cust.unique_id != ''
+		WHERE cust.unique_id = 'OUR28098'
 		`
 
 	if len(uniqueIds) > 0 {
