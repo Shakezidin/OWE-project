@@ -540,7 +540,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         { label: 'View Proposal', value: 'viewProposal' },
         ...(lead.docusign_label !== 'Completed' ? [{ label: 'Edit Proposal', value: 'editProposal' }] : []),
         { label: 'Download Proposal', value: 'download' },
-        ...(lead.proposal_id && (lead.docusign_label !== 'Completed' && lead.docusign_label !== "" ) ? [{ label: 'Sign Document', value: 'signature' }] : []), // To ensure that the "Sign Document" option is displayed when docusign_label is either null, an empty string (''), or not equal to 'Completed'
+        ...(lead.proposal_id && (lead.docusign_label !== 'Completed' && lead.docusign_label === "" ) ? [{ label: 'Sign Document', value: 'signature' }] : []), // To ensure that the "Sign Document" option is displayed when docusign_label is either null, an empty string (''), or not equal to 'Completed'
         { label: 'Reschedule Appointment', value: 'app_sched' },
         { label: 'Refresh Url', value: 'renew_proposal' },
       ];
