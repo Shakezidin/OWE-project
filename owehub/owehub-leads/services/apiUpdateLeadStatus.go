@@ -215,6 +215,8 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 					SET appointment_date = $1, 
 					appointment_scheduled_date = CURRENT_TIMESTAMP,
 					appointment_accepted_date = NULL,
+					appointment_declined_date = NULL,
+					is_appointment_required = TRUE,
 					status_id = 1,
 					updated_at = CURRENT_TIMESTAMP,
 					last_updated_by = $2 
@@ -280,7 +282,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			Message:       "Thank You for showing interest in Our World Energy",
+			Message:       "Your appointment has been scheduled. You may check your mail for details.",
 		})
 		err = sendSms(phoneNo, smsbody)
 		if err != nil {
@@ -369,7 +371,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			Message:       "Thank You for showing interest in Our World Energy",
+			Message:       "You have been marked as won on the platform!",
 		})
 		err = sendSms(phoneNo, smsbody)
 		if err != nil {
@@ -443,7 +445,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			Message:       "Thank You for showing interest in Our World Energy",
+			Message:       "We're sorry to disappoint you. Please consider leaving us a feedback so we can improve our service.",
 		})
 		err = sendSms(phoneNo, smsbody)
 		if err != nil {
@@ -507,7 +509,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			Message:       "Thank You for showing interest in Our World Energy",
+			Message:       "Your proposal has been QC verified!",
 		})
 		err = sendSms(phoneNo, smsbody)
 		if err != nil {
@@ -574,7 +576,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			Message:       "Thank You for showing interest in Our World Energy",
+			Message:       "You have been marked as you don't require an appointment.",
 		})
 		err = sendSms(phoneNo, smsbody)
 		if err != nil {

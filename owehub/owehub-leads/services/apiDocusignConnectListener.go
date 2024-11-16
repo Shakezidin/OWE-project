@@ -350,7 +350,7 @@ func sendProposalSignedNotification(leadsId int64) error {
 	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
 		LeadFirstName: firstName,
 		LeadLastName:  lastName,
-		Message:       "Thank You for showing interest in Our World Energy",
+		Message:       "Your proposal has been signed.",
 	})
 	err = sendSms(phoneNo, smsbody)
 	if err != nil {
