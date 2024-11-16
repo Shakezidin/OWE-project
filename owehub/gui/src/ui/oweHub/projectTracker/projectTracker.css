@@ -2490,13 +2490,14 @@
 
 }
 .dayBox{
-  width: 74px;
-  height: 28px;
+  width:30px;
+  height: 20px;
 
   display: flex;
   align-items: center;
-  justify-content: center;
-  border:1px solid #7D7D7D;
+  justify-content: flex-end;
+  /* border:1px solid #7D7D7D; */
+  border:none;
   border-radius: 5.6px;
   padding: 8px 4px;
   font-size: 12px;
@@ -2670,4 +2671,25 @@
   justify-content: flex-start;
   gap: 1rem;
   margin-top: 6px !important;
+}
+
+.pipeline-inputBox-div{
+  width: 74px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content:flex-start;
+  border:1px solid #7D7D7D;
+  border-radius: 5.6px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'poppins';
+  color: #293540;
+  position: relative;
+  left: -2px;
+}
+.pipeline-inputBox-div-para{
+  font-size: 12px;
 }

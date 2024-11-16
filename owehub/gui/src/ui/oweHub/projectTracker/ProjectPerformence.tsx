@@ -145,13 +145,18 @@ const ProjectPerformence = () => {
     const value = e.target.value;
 
     // Check if input length exceeds 4
-    if (value > 180) {
-      set_minValue(180);
-      return
+    if (value.length > 3) {
+      return;
     }
 
     // Parse the value or default to 0 if it's invalid
     const newMinValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
+    if(newMinValue>180)
+    {
+      set_minValue(180);
+
+      return;
+    }
     set_minValue(newMinValue);
   };
 
@@ -159,16 +164,29 @@ const ProjectPerformence = () => {
     const value = e.target.value;
 
     // Check if input length exceeds 4
-    if (value.length > 4) {
+    if (value.length > 3 || value>360) {
       return;
     }
+    
+
+
+
 
     // Parse the value or default to 0 if it's invalid
     const newMaxValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
     set_maxValue(newMaxValue);
   };
 
-
+useEffect(()=>{
+  const maxi=maxValue;
+  if(minValue===180)
+  {
+    set_maxValue(360)
+  }
+  else{
+    set_maxValue(maxi);
+  }
+},[minValue])
   const [FilterFlag, setFilterFlag] = useState(false);
   const HandleFilterClick = () => {
     setOpenFilter(prev => !prev);
@@ -1081,6 +1099,7 @@ const ProjectPerformence = () => {
                     (option: string, index) => (
                       <div className="eachOption" key={index}>
                         <input
+                          id={`pipeline-filter-options-${index}`}
                           type="checkbox"
                           checked={checkedStates[index]}
                           onChange={() => {
@@ -1099,12 +1118,13 @@ const ProjectPerformence = () => {
                             }
                           }}
                         />
-                        <p
+                        <label
                           className="options"
-                          style={{ color: checkedStates[index] ? '#377CF6' : 'black' }}
+                          style={{ color: checkedStates[index] ? '#377CF6' : 'black' , cursor:'pointer'}}
+                          htmlFor={`pipeline-filter-options-${index}`}
                         >
                           {option}
-                        </p>
+                        </label>
                         {
 
                         }
@@ -1122,81 +1142,53 @@ const ProjectPerformence = () => {
                   </div>
 
                   <div className='filterdays'>
-                      <div className='startDay'>
-                       <div className='mThen'>
-                       <p className='moreThen'>More then</p>
-                        </div>
-                        <div className='dayBox'>{minValue} days</div>
-                        </div>
-                      <div className='endDay'>
-                        <div className='lThen'><p className='lessThen'>Less then</p> </div>
-                        <div className='dayBox'>{maxValue} days</div>
-                        </div>
+                    <div className='startDay'>
+                      <div className='mThen'>
+                        <p className='moreThen'>More then</p>
                       </div>
-                  
-
-
-                  {/* <div className='sliderr'>
-                      {/* <input
-        type="range"
-        min={1}
-        max={180}
-        step="1"
-        // value={selectedValue}
-        // onChange={handleSliderChange}
-        style={{ width: '100%' }}
-      /> */}
-                  {/* <div className='progress'></div>
-      
-                        </div> */}
-                  {/* <MultiRangeSlider
-			min={1}
-			max={180}
-			step={5}
-			minValue={minValue}
-			maxValue={maxValue}
-			onInput={(e) => {
-				handleInput(e);
-			}}
-      style={{
-        width: '200px',
-        height: '1px',
-        background: 'none',
-        borderRadius: '5px',
-        border: 'none',
-        outline: 'none',
-        position: 'relative',
-      }}
-      
-		/> */}
-                  {/* <Slider
-  range
-  min={1}
-  max={180}
-  step={1}
-  defaultValue={[minValue, maxValue]}
-  onChange={handleSliderChange}
-  className="custom-slider"
-  styles={{
-    rail: {
-      backgroundColor: '#E5E7EB',
-      height: 2,  
-    },
-    track: {
-      backgroundColor: '#3B82F6',
-      height: 2,  
-    },
-    handle: {
-      borderColor: '#3B82F6',
-      backgroundColor: '#3B82F6',
-      opacity: 1,
-      width: 12,   
-      height: 12,  
-      marginTop: -4,  
-      boxShadow: '0 0 0 2px white',
-    }
-  }}
-/> */}
+                      <label className='pipeline-inputBox-div'>
+                      <input
+                        className='dayBox'
+                        value={minValue === 0 ? '' : minValue}
+                        type="text"
+                        onChange={handleMinChange}
+                        // onFocus={(e) => e.target.value = ''}
+                        onBlur={() => {
+                          set_minValue(minValue <= 0 ? 1 : minValue);
+                        }}
+                        style={{outline:'none', width: minValue.toString().length === 1 ? '15px' :
+                          minValue.toString().length === 2 ? '24px' : '30px'}}
+                        min={1}
+                        max={180}
+                      />
+                     {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue===1?'day':'days'}</p>}
+                        </label>
+                    </div>
+                    <div className='endDay'>
+                      <div className='lThen'>
+                        <p className='lessThen'>Less then</p>
+                      </div>
+                      <label className='pipeline-inputBox-div'>
+                      <input
+                        className='dayBox'
+                        value={maxValue === 0 ? '' : maxValue}
+                        type="text"
+                        onChange={handleMaxChange}
+                        disabled={minValue === 180}
+                        // onFocus={(e) => e.target.value = ''}
+                        onBlur={() => {
+                          set_maxValue(maxValue <= 0 ? 180 : maxValue);
+                          
+                        }}
+                        style={{outline:'none',width: maxValue.toString().length === 1 ? '15px' :
+                          maxValue.toString().length === 2 ? '24px' : '30px'}}
+                        min={1}
+                        max={360}
+                      />
+                       {maxValue !==0 && <p className='pipeline-inputBox-div-para'>{maxValue===1?'day':'days'}</p>}
+</label>
+                    </div>
+                  </div>
 
                   <Slider
                     range
@@ -1227,7 +1219,7 @@ const ProjectPerformence = () => {
                         label: <span style={{ color: 'black' }}>180</span>,
                       },
                     }}
-                    className="custom-slider" // Custom class applied to the slider
+                    className="custom-slider"
                     railStyle={{
                       backgroundColor: '#E5E7EB',
                       height: 2,
@@ -1248,28 +1240,24 @@ const ProjectPerformence = () => {
                   />
 
 
-                  {/* <div className='rangeOfDays'>
-        <p className='rangeOption'>1</p> 
-        <p className='rangeOption'>30</p> 
-        <p className='rangeOption'>60</p> 
-        <p className='rangeOption'>90</p> 
-        <p className='rangeOption'>120</p> 
-        <p className='rangeOption'>150</p> 
-        <p className='rangeOption'>180+</p> 
-        </div>  */}
+                 
 
 
                   <div className='filterButtons'>
 
                     <div className='cancelButton' onClick={() => {
-                      setFieldData([]); const resetStates = new Array(5).fill(false);  // Assuming you have 5 options
+                      setFieldData([]); const resetStates = new Array(5).fill(false);
                       setCheckedStates(resetStates);
+                      set_maxValue(75);
+                      set_minValue(25);
 
                       // Also clear the checkedOptions array
-                      setCheckedOptions([]); setOpenFilter(false); setFilterFlag(false);
+                      setCheckedOptions([]); setOpenFilter(false); 
                     }} style={{ cursor: "pointer" }}> Cancel </div>
+
+
                     <div className='applyButton' style={{ cursor: "pointer" }} onClick={() => {
-                      setFiltered(prev => !prev);
+                      (minValue > maxValue)?(`${toast.error("In Range Min value can not be more than Max value")} ${set_minValue(25)} ${set_maxValue(70)}`):setFiltered(prev => !prev);
                       setOpenFilter(false);
                       setFilterFlag(false);
                     }}> Apply </div>
@@ -1757,5 +1745,5 @@ const ProjectPerformence = () => {
     </div>
   );
 };
-
+  
 export default ProjectPerformence;
