@@ -787,7 +787,7 @@
     font-weight: 400;
     /* background-color: cyan; */
     display: inline-block;
-    max-width: 21ch;
+    max-width: 27ch;
     word-wrap: break-word;
     overflow: hidden;
     white-space: normal;
