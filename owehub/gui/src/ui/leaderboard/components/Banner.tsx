@@ -396,13 +396,13 @@ const Banner: React.FC<BannerProps> = ({
                   value={search}
                   disabled={isLoading}
                   onChange={(e) => {
-                    setSearch(e.target.value);
-                    if (e.target.value.trim()) {
-                      const filtered = leaderDealer(newFormData)?.filter(
-                        (item) =>
-                          item?.value
-                            .toLocaleLowerCase()
-                            .includes(e.target.value.toLowerCase().trim())
+                    // Remove any non-alphanumeric characters
+                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                    setSearch(sanitizedValue);
+                    
+                    if (sanitizedValue.trim()) {
+                      const filtered = leaderDealer(newFormData)?.filter((item) =>
+                        item?.value.toLowerCase().includes(sanitizedValue.toLowerCase().trim())
                       );
                       setOpts([...filtered]);
                     } else {

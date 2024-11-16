@@ -7,7 +7,6 @@
 package services
 
 import (
-	leadService "OWEApp/owehub-leads/common"
 	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
@@ -94,8 +93,6 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			li.email_id,
 			li.appointment_date,
 			li.frontend_base_url,
-			li.docusign_envelope_completed_at,
-			li.proposal_pdf_key,
 			ud.name as salerep_name,
 			ud.email_id as salerep_email,
 			ud.mobile_number as salerep_phone
@@ -132,18 +129,18 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
-		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
-		return
-	}
+	// envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
+	// 	appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
+	// 	return
+	// }
 
-	proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
-		return
-	}
+	// proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
+	// 	return
+	// }
 
 	salerepEmail, ok := data[0]["salerep_email"].(string)
 	if !ok {
@@ -237,7 +234,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Appointment Sent", http.StatusOK, respData, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsAppointmentSent.WithData(leadService.SmsDataAppointmentSent{
+		smsMessage := leadsService.SmsAppointmentSent.WithData(leadsService.SmsDataAppointmentSent{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
@@ -256,7 +253,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 
 		if isRescheduling {
 			emailTmplData.NewStatus = "APT_RESCHEDULED"
-			smsMessage = leadService.SmsAppointmentRescheduled.WithData(leadService.SmsDataAppointmentRescheduled{
+			smsMessage = leadsService.SmsAppointmentRescheduled.WithData(leadsService.SmsDataAppointmentRescheduled{
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
 				LeadLastName:  lastName,
@@ -324,7 +321,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsLeadWon.WithData(leadService.SmsDataLeadWon{
+		smsMessage := leadsService.SmsLeadWon.WithData(leadsService.SmsDataLeadWon{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
@@ -345,7 +342,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if dataReq.IsManualWin {
 			emailTmplData.NewStatus = "DEAL_WON_MANUAL"
 			emailTmplData.ViewUrl = fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId)
-			smsMessage = leadService.SmsLeadWonManual.WithData(leadService.SmsDataLeadWonManual{
+			smsMessage = leadsService.SmsLeadWonManual.WithData(leadsService.SmsDataLeadWonManual{
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
 				LeadLastName:  lastName,
@@ -409,7 +406,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsLeadLost.WithData(leadService.SmsDataLeadLost{
+		smsMessage := leadsService.SmsLeadLost.WithData(leadsService.SmsDataLeadLost{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
@@ -456,7 +453,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
+	// proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	if dataReq.QC {
 		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
@@ -472,7 +469,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsQCSigned.WithData(leadService.SmsDataQCSigned{
+		smsMessage := leadsService.SmsQCSigned.WithData(leadsService.SmsDataQCSigned{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
@@ -480,15 +477,15 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadQCSigned{
-			UserName:        salerepName,
-			LeadId:          dataReq.LeadsId,
-			LeadFirstName:   firstName,
-			LeadLastName:    lastName,
-			LeadEmailId:     leadEmail,
-			Date:            envelopeCreatedAt,
+			UserName:      salerepName,
+			LeadId:        dataReq.LeadsId,
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			LeadEmailId:   leadEmail,
+			//Date:            envelopeCreatedAt,
 			LeadPhoneNumber: phoneNo,
 			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
-			ProposalPdfUrl:  proposalPdfUrl,
+			// ProposalPdfUrl:  proposalPdfUrl,
 		}
 
 		err = sendSms(salerepPhone, smsMessage)
@@ -521,7 +518,15 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// CASE 4: status_id not provided (update is_appointment_required)
 	if dataReq.StatusId == 0 {
-		query = "UPDATE leads_info SET is_appointment_required = $1, updated_at = CURRENT_TIMESTAMP, last_updated_by = $2 WHERE leads_id = $3"
+		query = `UPDATE leads_info 
+					SET is_appointment_required = $1,
+					updated_at = CURRENT_TIMESTAMP,
+					appointment_date = NULL,
+					appointment_scheduled_date = NULL,
+					appointment_accepted_date = NULL,
+					appointment_declined_date = NULL,
+					last_updated_by = $2
+					WHERE leads_id = $3`
 		whereEleList = []interface{}{dataReq.IsAppointmentRequired, authenticatedUserId, dataReq.LeadsId}
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
@@ -532,7 +537,7 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsAppointmentNotRequired.WithData(leadService.SmsDataAppointmentNotRequired{
+		smsMessage := leadsService.SmsAppointmentNotRequired.WithData(leadsService.SmsDataAppointmentNotRequired{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,

@@ -203,6 +203,7 @@
   }
   .customer_wrapper_list {
     height: auto;
+    margin-left: 0;
   }
 
   .form_header {
