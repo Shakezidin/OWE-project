@@ -47,6 +47,9 @@ type InitialStruct struct {
 	AhjDbDbhubSchemaAverageTimeToPvInstall                   string
 	AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall string
 
+	DerateCompletionDate time.Time
+	DerateCreatedOn      time.Time
+
 	RoofingRequestInstallSubcontractingSchemaWorkScheduledDate time.Time
 	SurveySurveySchemaSurveyCompletionDate                     time.Time
 }
@@ -93,6 +96,8 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 			pv.install_fix_complete_date AS pv_install_install_subcontracting_schema_install_fix_complete_date,
 			pv.install_fix_scheduled_date AS pv_install_install_subcontracting_schema_install_fix_scheduled_date,
 
+			derate.completion_date AS derate_completion_date,
+			derate.derate_created_on AS derate_created_on,
 	
 			ahj.ahj_timeline AS ahj_db_dbhub_schema_ahj_timeline,
 			ahj.average_time_to_pv_install AS ahj_db_dbhub_schema_average_time_to_pv_install,
@@ -115,6 +120,9 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 			roofing_request_install_subcontracting_schema AS roofing ON cust.unique_id = roofing.customer_unique_id
 		JOIN 
 			survey_survey_schema AS survey ON cust.unique_id = survey.customer_unique_id
+		JOIN 
+			derates_service_electrical_schema AS derate ON cust.unique_id = derate.customer_unique_id
+		
 		WHERE cust.unique_id != ''
 		`
 
@@ -132,7 +140,6 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		err = fmt.Errorf("failed to fetch inital data from db")
 		return InitialData, err
 	}
-
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
 
 	for _, data := range dataList {
@@ -234,6 +241,14 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		// SurveySurveySchema fields
 		if surveyCompletionDate, ok := data["survey_survey_schema_survey_completion_date"]; ok && surveyCompletionDate != nil {
 			initialData.SurveySurveySchemaSurveyCompletionDate = surveyCompletionDate.(time.Time)
+		}
+
+		// DerateSchema fields
+		if derateCompletionDate, ok := data["derate_completion_date"]; ok && derateCompletionDate != nil {
+			initialData.DerateCompletionDate = derateCompletionDate.(time.Time)
+		}
+		if derateCreatedOn, ok := data["derate_created_on"]; ok && derateCreatedOn != nil {
+			initialData.DerateCreatedOn = derateCreatedOn.(time.Time)
 		}
 
 		InitialData.InitialDataList = append(InitialData.InitialDataList, initialData)
