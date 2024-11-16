@@ -65,20 +65,12 @@ type SSEPayload =
     data: null;
   };
 
-interface DocumentStatus {
-  status: 'signed' | 'viewed' | 'pending' | 'accepted' | null;
-  message: string;
-}
 
 const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal, side, setSide }: LeadSelectionProps) => {
 
   const dispatch = useDispatch();
 
   const location = useLocation();
-  const [documentStatus, setDocumentStatus] = useState<DocumentStatus>({
-    status: null,
-    message: ''
-  });
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -341,47 +333,41 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       const params = new URLSearchParams();
       params.append("leads_id", leadId.toString() || "");
       params.append("return_url", `${BASE_URL}/leadmng-dashboard`);
-
+  
       const eventSourceUrl = `${process.env.REACT_APP_LEADS_URL}/docusign_get_signing_url?${params.toString()}`;
       const eventSource = new EventSource(eventSourceUrl);
-
+  
       eventSource.onmessage = (event) => {
         const payload = JSON.parse(event.data);
-
+  
         if (payload.is_done) {
           setIsLoadingDocument(false);
           if (payload.error === null) {
-            window.open(payload.data.url, '_blank');
+            if (payload.data?.url) {
+              // window.open(payload.data.url, '_blank');
+            } else {
+              toast.success('The document has been successfully sent for signing.');
+              setRefresh((prev) => prev + 1);
+            }
           } else {
-            const errorMessage = payload.error || 'Error generating signing URL. Please try again.';
-            console.error(`Error during DocuSign URL generation: ${errorMessage}`);
-            setDocumentStatus({
-              status: 'pending',
-              message: errorMessage
-            });
-            toast.error(errorMessage);
+            const errorMessage = payload.error || 'An unexpected error occurred while completing the signing process.';
+            console.error(`Error during DocuSign process: ${errorMessage}`);
+            toast.error(`Error: ${errorMessage}`);
           }
           eventSource.close();
         }
       };
-
+  
       eventSource.onerror = (error) => {
         console.error('Error with SSE connection', error);
         setIsLoadingDocument(false);
-        setDocumentStatus({
-          status: 'pending',
-          message: 'Connection error. Please try again.'
-        });
         toast.error('Connection error. Please try again.');
         eventSource.close();
       };
     } catch (error) {
       console.error("Error initiating DocuSign signing:", error);
       setIsLoadingDocument(false);
-      setDocumentStatus({
-        status: 'pending',
-        message: 'Error initiating signing process. Please try again.'
-      });
+  
       toast.error('Error initiating signing process. Please try again.');
     }
   };
