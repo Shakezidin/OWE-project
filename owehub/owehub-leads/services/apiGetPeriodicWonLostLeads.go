@@ -156,6 +156,11 @@ func getPeriodicLabelsAndDates(startDateStr, endDateStr string) (periodicLabelsA
 				t.Format(time.DateOnly) + " 23:59:59",
 			})
 		}
+		periodicLabelsAndDates = append(periodicLabelsAndDates, []string{
+			end.Weekday().String(),
+			end.Format(time.DateOnly) + " 00:00:00",
+			end.Format(time.DateOnly) + " 23:59:59",
+		})
 		return periodicLabelsAndDates, nil
 	}
 
