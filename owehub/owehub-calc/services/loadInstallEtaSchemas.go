@@ -80,19 +80,27 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 	outData = make(map[string]interface{})
 	var installEto time.Time
 	outData["unique_id"] = data.UniqueId
+
 	if !data.PvInstallInstallSubcontractingSchemaInstallFixCompletedDate.IsZero() { //24
+		log.FuncInfoTrace(0, "LEVEL === 24")
 		installEto = data.PvInstallInstallSubcontractingSchemaInstallFixCompletedDate
 	} else if !data.PvInstallInstallSubcontractingSchemaInstallFixScheduleDate.IsZero() { //23
+		log.FuncInfoTrace(0, "LEVEL === 23")
 		installEto = data.PvInstallInstallSubcontractingSchemaInstallFixScheduleDate
-	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Roof" && data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.IsZero() { //22
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Roof" && !data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.IsZero() { //22
+		log.FuncInfoTrace(0, "LEVEL === 22")
 		installEto = data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.AddDate(0, 0, 20)
-	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Roof" && !data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.IsZero() { //21
+	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Roof" && data.RoofingRequestInstallSubcontractingSchemaWorkScheduledDate.IsZero() { //21
+		log.FuncInfoTrace(0, "LEVEL === 21")
 		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 60)
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending HOA" { //20
+		log.FuncInfoTrace(0, "LEVEL === 20")
 		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 30)
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending AHJ" && !data.PermitFinPvPermitsSchemaAbExpectedApprovalDate.IsZero() { //19(a)
+		log.FuncInfoTrace(0, "LEVEL === 19")
 		installEto = data.PermitFinPvPermitsSchemaAbExpectedApprovalDate.AddDate(0, 0, 7)
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending AHJ" && data.PermitFinPvPermitsSchemaAbExpectedApprovalDate.IsZero() { //19(b)
+		log.FuncInfoTrace(0, "LEVEL === 18")
 		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
@@ -100,10 +108,13 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 7+PermitFinPvPermitsSchemaPermitTurnaroundTime)
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Scheduling" { //18
+		log.FuncInfoTrace(0, "LEVEL === 17")
 		installEto = data.PvInstallInstallSubcontractingSchemaPvSchedulingReadyDate.AddDate(0, 0, 5)
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Scheduling - Design Updated" { //17
+		log.FuncInfoTrace(0, "LEVEL === 16")
 		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 1)
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() && (data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending Change Order" || data.PvInstallInstallSubcontractingSchemaAppStatus == "Pending NCA Review") { //16
+		log.FuncInfoTrace(0, "LEVEL === 15")
 		installEto = data.PvInstallInstallSubcontractingSchemaItemCreatedOn.AddDate(0, 0, 11)
 		// }else if !data.pvInstallInstallSubcontractingSchemaInstallCreated.IsZero() && data.pvInstallInstallSubcontractingSchemaAppStatus == "App Status" { //15 not need to for now as per client reply
 		//  outData["unique_id"] = data.uniqueId
@@ -111,6 +122,7 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		//  return outData, nil
 		// }
 	} else if !data.PvInstallInstallSubcontractingSchemaItemCreatedOn.IsZero() { //14
+		log.FuncInfoTrace(0, "LEVEL === 14")
 		var latestInstallEto time.Time
 		if data.ICICPtoSchemaIcApprovedDate.After(data.PermitFinPvPermitsSchemaPvApproved) {
 			latestInstallEto = data.ICICPtoSchemaIcApprovedDate
@@ -119,14 +131,17 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = latestInstallEto.AddDate(0, 0, 20)
 	} else if !data.PermitFinPvPermitsSchemaPvApproved.IsZero() && !data.ICICPtoSchemaIcEstimatedApprovalDate.IsZero() { //13
+		log.FuncInfoTrace(0, "LEVEL === 13")
 		installEto = data.ICICPtoSchemaIcEstimatedApprovalDate.AddDate(0, 0, 20)
 	} else if !data.PermitFinPvPermitsSchemaPvApproved.IsZero() && data.ICICPtoSchemaAppStatus == "Pending IC Docs" { //12
 		ICICPtoSchemaUtilityTurnaroundTime, err := strconv.Atoi(data.ICICPtoSchemaUtilityTurnaroundTime)
+		log.FuncInfoTrace(0, "LEVEL === 12")
 		if err != nil {
 			ICICPtoSchemaUtilityTurnaroundTime = 0
 		}
 		installEto = data.PermitFinPvPermitsSchemaPvApproved.AddDate(0, 0, 30+ICICPtoSchemaUtilityTurnaroundTime)
 	} else if !data.PermitFinPvPermitsSchemaPvApproved.IsZero() && data.ICICPtoSchemaAppStatus == "Pending Powerclerk" { //11
+		log.FuncInfoTrace(0, "LEVEL === 11")
 		ICICPtoSchemaUtilityTurnaroundTime, err := strconv.Atoi(data.ICICPtoSchemaUtilityTurnaroundTime)
 		if err != nil {
 			ICICPtoSchemaUtilityTurnaroundTime = 0
@@ -137,8 +152,10 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PermitFinPvPermitsSchemaItemCreatedOn.AddDate(0, 0, 20+AhjDbDbhubSchemaAhjTimeline+ICICPtoSchemaUtilityTurnaroundTime)
 	} else if !data.PermitFinPvPermitsSchemaPvExpectedApprovalDate.IsZero() && data.PermitFinPvPermitsSchemaPvApproved.IsZero() { //10
+		log.FuncInfoTrace(0, "LEVEL === 10")
 		installEto = data.PermitFinPvPermitsSchemaPvExpectedApprovalDate.AddDate(0, 0, 20)
 	} else if !data.PermitFinPvPermitsSchemaPvResubmitted.IsZero() { //9
+		log.FuncInfoTrace(0, "LEVEL === 09")
 		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
@@ -146,8 +163,10 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PermitFinPvPermitsSchemaPvResubmitted.AddDate(0, 0, 20+PermitFinPvPermitsSchemaPermitTurnaroundTime)
 	} else if !data.PermitFinPvPermitsSchemaPvRedlinedDate.IsZero() && data.PermitFinPvPermitsSchemaSolarAppSubmission == "YES" { //8
+		log.FuncInfoTrace(0, "LEVEL === 08")
 		installEto = data.PermitFinPvPermitsSchemaPvRedlinedDate.AddDate(0, 0, 23)
 	} else if !data.PermitFinPvPermitsSchemaPvRedlinedDate.IsZero() { //7
+		log.FuncInfoTrace(0, "LEVEL === 07")
 		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
@@ -155,6 +174,7 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PermitFinPvPermitsSchemaPvRedlinedDate.AddDate(0, 0, 23+PermitFinPvPermitsSchemaPermitTurnaroundTime)
 	} else if !data.PermitFinPvPermitsSchemaPvSubmitted.IsZero() { //6
+		log.FuncInfoTrace(0, "LEVEL === 06")
 		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
@@ -162,6 +182,7 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PermitFinPvPermitsSchemaPvSubmitted.AddDate(0, 0, 20+PermitFinPvPermitsSchemaPermitTurnaroundTime)
 	} else if !data.PermitFinPvPermitsSchemaItemCreatedOn.IsZero() && data.PermitFinPvPermitsSchemaAppStatus == "Pending IC Status" && !data.PermitFinPvPermitsSchemaPvSubmitted.IsZero() { //5
+		log.FuncInfoTrace(0, "LEVEL === 05")
 		ICICPtoSchemaUtilityTurnaroundTime, err := strconv.Atoi(data.ICICPtoSchemaUtilityTurnaroundTime)
 		if err != nil {
 			ICICPtoSchemaUtilityTurnaroundTime = 0
@@ -172,8 +193,10 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PermitFinPvPermitsSchemaPvSubmitted.AddDate(0, 0, 20+ICICPtoSchemaUtilityTurnaroundTime+AhjDbDbhubSchemaAhjTimeline)
 	} else if !data.PermitFinPvPermitsSchemaItemCreatedOn.IsZero() && data.PermitFinPvPermitsSchemaSolarAppSubmission == "YES" { //4
+		log.FuncInfoTrace(0, "LEVEL === 04")
 		installEto = data.PermitFinPvPermitsSchemaItemCreatedOn.AddDate(0, 0, 20)
 	} else if !data.PermitFinPvPermitsSchemaItemCreatedOn.IsZero() { //3
+		log.FuncInfoTrace(0, "LEVEL === 03")
 		PermitFinPvPermitsSchemaPermitTurnaroundTime, err := strconv.Atoi(data.PermitFinPvPermitsSchemaPermitTurnaroundTime)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing PermitFinPvPermitsSchemaPermitTurnaroundTime to int")
@@ -181,6 +204,7 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.PermitFinPvPermitsSchemaItemCreatedOn.AddDate(0, 0, 21+PermitFinPvPermitsSchemaPermitTurnaroundTime)
 	} else if !data.SurveySurveySchemaSurveyCompletionDate.IsZero() { //2
+		log.FuncInfoTrace(0, "LEVEL === 02")
 		AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall, err := strconv.Atoi(data.AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall to int")
@@ -188,6 +212,7 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 		}
 		installEto = data.CustomersCustomersSchemaSaleDate.AddDate(0, 0, AhjDbDbhubSchemaAverageTimeToInstallSurveyToSolarInstall)
 	} else if !data.CustomersCustomersSchemaItemCreatedOn.IsZero() { //1
+		log.FuncInfoTrace(0, "LEVEL === 01")
 		AhjDbDbhubSchemaAverageTimeToPvInstall, err := strconv.Atoi(data.AhjDbDbhubSchemaAverageTimeToPvInstall)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while parsing AhjDbDbhubSchemaAverageTimeToPvInstall to int")
@@ -204,13 +229,11 @@ func CalculateInstallPto(data InitialStruct) (outData map[string]interface{}, er
 	twentyOneDaysFromToday := today.Add(21 * 24 * time.Hour)
 
 	if !installEto.IsZero() {
-		if installEto.Before(today) || (installEto.After(today) && installEto.Before(twentyOneDaysFromToday)) {
+		if (installEto.Before(today) && len(data.PvInstallInstallSubcontractingSchemaTimeStampScheduled) <= 0) || (installEto.After(today) && installEto.Before(twentyOneDaysFromToday)) {
 			installEto = twentyOneDaysFromToday
 		}
-
 	}
 
 	outData["install_eta"] = installEto
-
 	return outData, nil
 }

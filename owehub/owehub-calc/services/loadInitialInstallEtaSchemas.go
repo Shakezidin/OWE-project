@@ -42,6 +42,7 @@ type InitialStruct struct {
 	PvInstallInstallSubcontractingSchemaAppStatus               string
 	PvInstallInstallSubcontractingSchemaInstallFixCompletedDate time.Time
 	PvInstallInstallSubcontractingSchemaInstallFixScheduleDate  time.Time
+	PvInstallInstallSubcontractingSchemaTimeStampScheduled      string
 
 	AhjDbDbhubSchemaAhjTimeline                              string
 	AhjDbDbhubSchemaAverageTimeToPvInstall                   string
@@ -95,6 +96,7 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 			pv.app_status AS pv_install_install_subcontracting_schema_app_status,
 			pv.install_fix_complete_date AS pv_install_install_subcontracting_schema_install_fix_complete_date,
 			pv.install_fix_scheduled_date AS pv_install_install_subcontracting_schema_install_fix_scheduled_date,
+			pv.time_stamp_scheduled AS pv_install_install_subcontracting_schema_timestamp_scheduled, 
 
 			derate.completion_date AS derate_completion_date,
 			derate.derate_created_on AS derate_created_on,
@@ -220,6 +222,9 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 		}
 		if installFixSchedule, ok := data["pv_install_install_subcontracting_schema_install_fix_scheduled_date"]; ok && installFixSchedule != nil {
 			initialData.PvInstallInstallSubcontractingSchemaInstallFixScheduleDate = installFixSchedule.(time.Time)
+		}
+		if timeStampScheduled, ok := data["pv_install_install_subcontracting_schema_timestamp_scheduled"]; ok && timeStampScheduled != nil {
+			initialData.PvInstallInstallSubcontractingSchemaTimeStampScheduled = timeStampScheduled.(string)
 		}
 
 		// AhjDbDbhubSchema fields
