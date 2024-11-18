@@ -116,11 +116,9 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 		return nil
 	}
 
-	// Build a single UPDATE query with multiple cases
 	var builder strings.Builder
 	builder.WriteString(fmt.Sprintf("UPDATE %s SET ", tableName))
 
-	// Get all columns from the first record (excluding uniqueId)
 	columns := make([]string, 0)
 	for col := range batch[0].Data {
 		if col != "unique_id" {
@@ -128,7 +126,6 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 		}
 	}
 
-	// Build SET clause for each column
 	for i, col := range columns {
 		if i > 0 {
 			builder.WriteString(", ")
@@ -153,7 +150,6 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 		builder.WriteString("ELSE " + col + " END")
 	}
 
-	// Add WHERE clause with all unique_ids
 	builder.WriteString(" WHERE unique_id IN (")
 	for i, op := range batch {
 		if i > 0 {
@@ -163,6 +159,5 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 	}
 	builder.WriteString(")")
 
-	// Execute the query
 	return db.ExecQueryDB(db.OweHubDbIndex, builder.String())
 }
