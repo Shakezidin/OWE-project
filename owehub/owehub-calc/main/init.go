@@ -272,13 +272,13 @@ func init() {
 	}
 
 	/* init setting PTO values*/
-	// err = services.ExecPtoInitialCalculation("", "")
-	// if err == nil {
-	// 	log.FuncInfoTrace(0, "succesfully loaded initial pto data")
-	// } else {
-	// 	log.ConfErrorTrace(0, "Failed to update initial data to pto. %+v", err)
-	// 	return
-	// }
+	err = services.ExecPtoInitialCalculation("", "")
+	if err == nil {
+		log.FuncInfoTrace(0, "succesfully loaded initial pto data")
+	} else {
+		log.ConfErrorTrace(0, "Failed to update initial data to pto. %+v", err)
+		return
+	}
 
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()

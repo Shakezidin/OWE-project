@@ -10,14 +10,25 @@ package services
 import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"fmt"
+	"strings"
+	"time"
 )
+
+type BatchOperation struct {
+	UniqueID interface{}
+	Data     map[string]interface{}
+}
 
 func ExecPtoInitialCalculation(uniqueIds string, hookType string) error {
 	var (
-		err         error
-		ptoDataList []map[string]interface{}
+		err error
+		// ptoDataList []map[string]interface{}
 		InitailData InitialPtoDataLists
+		updateBatch []BatchOperation
+		// createBatch []map[string]interface{}
 	)
+
 	log.EnterFn(0, "ExecPtoInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecPtoInitialCalculation", err) }()
 
@@ -38,38 +49,120 @@ func ExecPtoInitialCalculation(uniqueIds string, hookType string) error {
 	for _, data := range InitailData.InitialDataList {
 		var ptoData map[string]interface{}
 
+		// ptoData, err := CalculatePto(data)
+		// if err != nil {
+		// 	log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
+		// 	continue
+		// }
+
+		updateBatch = append(updateBatch, BatchOperation{
+			UniqueID: data.UniqueId,
+			Data:     ptoData,
+		})
+		count++
+
+		if len(updateBatch) >= 1000 {
+			if err := executeBatchUpdate("install_pto_schema", updateBatch); err != nil {
+				log.FuncErrorTrace(0, "Failed to batch update PTO Data: %v", err)
+			}
+			updateBatch = nil // Clear the batch after processing
+		}
+
 		//* uncomment when function is done
 		// ptoData, err := CalculatePto(data)
-		if err != nil {
-			log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
-			continue
-		}
+		// if err != nil {
+		// 	log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
+		// 	continue
+		// }
 
-		if hookType == "update" {
-			query, _ := buildUpdateQuery("install_pto_schema", ptoData, "unique_id", data.UniqueId)
+		// if hookType == "update" {
+		// query, _ := buildUpdateQuery("install_pto_schema", ptoData, "unique_id", data.UniqueId)
 
-			err = db.ExecQueryDB(db.OweHubDbIndex, query)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to update DLR Pay Data for unique id: %+v err: %+v", data.UniqueId, err)
-			}
-		} else {
-			ptoDataList = append(ptoDataList, ptoData)
-		}
+		// err = db.ExecQueryDB(db.OweHubDbIndex, query)
+		// if err != nil {
+		// 	log.FuncErrorTrace(0, "Failed to update DLR Pay Data for unique id: %+v err: %+v", data.UniqueId, err)
+		// }
+		// }
+		// else {
+		// 	ptoDataList = append(ptoDataList, ptoData)
+		// }
 
-		if (count+1)%1000 == 0 && len(ptoDataList) > 0 {
-			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", ptoDataList)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to insert initial install eta Data in DB err: %v", err)
-			}
-			ptoDataList = nil
-		}
-		count++
+		// if (count+1)%1000 == 0 && len(ptoDataList) > 0 {
+		// 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", ptoDataList)
+		// 	if err != nil {
+		// 		log.FuncErrorTrace(0, "Failed to insert initial install eta Data in DB err: %v", err)
+		// 	}
+		// 	ptoDataList = nil
+		// }
+		// count++
 	}
 
-	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", ptoDataList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial Install ETA Data in DB err: %v", err)
+	if len(updateBatch) > 0 {
+		if err := executeBatchUpdate("install_pto_schema", updateBatch); err != nil {
+			log.FuncErrorTrace(0, "Failed to batch update remaining PTO Data: %v", err)
+		}
 	}
+
+	// err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", ptoDataList)
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to insert initial Install ETA Data in DB err: %v", err)
+	// }
 
 	return err
+}
+
+func executeBatchUpdate(tableName string, batch []BatchOperation) error {
+	if len(batch) == 0 {
+		return nil
+	}
+
+	// Build a single UPDATE query with multiple cases
+	var builder strings.Builder
+	builder.WriteString(fmt.Sprintf("UPDATE %s SET ", tableName))
+
+	// Get all columns from the first record (excluding uniqueId)
+	columns := make([]string, 0)
+	for col := range batch[0].Data {
+		if col != "unique_id" {
+			columns = append(columns, col)
+		}
+	}
+
+	// Build SET clause for each column
+	for i, col := range columns {
+		if i > 0 {
+			builder.WriteString(", ")
+		}
+		builder.WriteString(fmt.Sprintf("%s = CASE ", col))
+
+		for _, op := range batch {
+			val := op.Data[col]
+			var valStr string
+			switch v := val.(type) {
+			case string:
+				valStr = strings.ReplaceAll(v, "'", "''")
+				valStr = fmt.Sprintf("'%s'", valStr)
+			case time.Time:
+				valStr = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+			default:
+				valStr = fmt.Sprintf("%v", v)
+			}
+
+			builder.WriteString(fmt.Sprintf("WHEN unique_id = '%v' THEN %s ", op.UniqueID, valStr))
+		}
+		builder.WriteString("ELSE " + col + " END")
+	}
+
+	// Add WHERE clause with all unique_ids
+	builder.WriteString(" WHERE unique_id IN (")
+	for i, op := range batch {
+		if i > 0 {
+			builder.WriteString(", ")
+		}
+		builder.WriteString(fmt.Sprintf("'%v'", op.UniqueID))
+	}
+	builder.WriteString(")")
+
+	// Execute the query
+	return db.ExecQueryDB(db.OweHubDbIndex, builder.String())
 }
