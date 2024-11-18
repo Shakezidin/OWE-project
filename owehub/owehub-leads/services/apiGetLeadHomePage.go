@@ -76,7 +76,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 	whereEleList = append(whereEleList, userEmail)
 
 	// default condition: not in lost or won
-	whereClause = "WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit)"
+	whereClause = "WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit AND li.manual_won_date is NULL)"
 
 	// build whereclause based on requested status
 	if dataReq.LeadStatus == "NEW" {
@@ -695,7 +695,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 
 	query = `
 		SELECT 'NEW' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit)
+		WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit AND li.manual_won_date is NULL)
 			AND (
 				li.appointment_date IS NULL
 				AND li.appointment_declined_date IS NULL
@@ -710,7 +710,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'PROGRESS' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-			WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit)
+			WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit AND li.manual_won_date is NULL)
 			AND (
 					(
 						li.lead_won_date IS NOT NULL
@@ -780,7 +780,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'DECLINED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit)
+		WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit AND li.manual_won_date is NULL)
 			AND (li.appointment_declined_date IS NOT NULL AND li.is_appointment_required = TRUE)
 			AND li.updated_at BETWEEN $2 AND $3  -- Start and end date range
 			AND li.is_archived = FALSE
@@ -788,7 +788,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		UNION ALL
 
 		SELECT 'ACTION_NEEDED' AS status_name, COUNT(*) AS count FROM get_leads_info_hierarchy($1) li
-		WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit)
+		WHERE (li.lead_lost_date IS NULL AND NOT li.qc_audit AND li.manual_won_date is NULL)
 			AND (
 				(
 					li.appointment_date IS NOT NULL
