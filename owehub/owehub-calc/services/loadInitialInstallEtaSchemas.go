@@ -110,19 +110,19 @@ func LoadInstallEtaInitialData(uniqueIds []string) (InitialData InitialDataLists
 			survey.survey_completion_date AS survey_survey_schema_survey_completion_date
 		FROM 
 			customers_customers_schema AS cust
-		JOIN 
+		LEFT JOIN 
 			permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
-		JOIN 
+		LEFT JOIN 
 			ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
-		JOIN 
+		LEFT JOIN 
 			pv_install_install_subcontracting_schema AS pv ON cust.unique_id = pv.customer_unique_id
-		JOIN 
+		LEFT JOIN 
 			ahj_db_dbhub_schema AS ahj ON cust.ahj = ahj.title
-		JOIN 
+		LEFT JOIN 
 			roofing_request_install_subcontracting_schema AS roofing ON cust.unique_id = roofing.customer_unique_id
-		JOIN 
+		LEFT JOIN 
 			survey_survey_schema AS survey ON cust.unique_id = survey.customer_unique_id
-		JOIN 
+		LEFT JOIN 
 			derates_service_electrical_schema AS derate ON cust.unique_id = derate.customer_unique_id
 		
 		WHERE cust.unique_id != ''
