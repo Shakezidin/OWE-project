@@ -212,6 +212,7 @@ const renderActiveShape = (props: any) => {
   };
 
   const lines = splitText(payload.name, 15);
+  const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (
     <g>
@@ -270,7 +271,7 @@ const renderActiveShape = (props: any) => {
         {`${value}`}
       </text>
       <text
-        x={(ex + (cos >= 0 ? 1 : 1.4) * 12)}
+        x={isMobile ? (ex + (cos >= 0 ? 1 : 1.4) * 12) : (ex + (cos >= 0 ? 1 : -1) * 12)}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
@@ -404,11 +405,6 @@ const LeadManagementDashboard = () => {
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
-  const isMobileChevron = useMatchMedia('(max-width: 767px)');
-  const isMobile = useMatchMedia('(max-width: 1024px)');
-  const isMobileFixed = useMatchMedia(
-    '(min-width: 320px) and (max-width: 480px)'
-  );
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
   const [webProposal, setWebProposal] = useState<WebProposal | null>(null);

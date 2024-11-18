@@ -886,35 +886,8 @@ const LeradManagementHistory = () => {
                       />
                     }
                   </div>
-                  {!isMobile && expandedItemIds.includes(item.leads_id) && (
-                    <>
-                      {isTablet && (
-                        <div className={styles.phone_number_tab}>
-                          {item.phone_number}
-                        </div>
-                      )}
-
-                    </>
-                  )}
-                  {isMobile && expandedItemIds.includes(item.leads_id) && (
-                    <>
-                      <div className={styles.personal_info_mob}>
-                        <div className={styles.phone_number}>
-                          {item.phone_number ? item.phone_number : 'N/A'}
-                        </div>
-                        <div className={styles.email}>
-                          <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                        </div>
-                        <div className={styles.address}>
-                          {item?.street_address
-                            ? item.street_address.length > 40
-                              ? `${item.street_address.slice(0, 40)}...`
-                              : item.street_address
-                            : 'N/A'}
-                        </div>
-                      </div>
-                    </>
-                  )}
+                 
+               
                 </div>
               ))
             ) : (
