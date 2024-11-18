@@ -8,6 +8,7 @@
 package main
 
 import (
+	"OWEApp/owehub-calc/services"
 	apiHandler "OWEApp/owehub-calc/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
@@ -260,6 +261,26 @@ func init() {
 		return
 	} else {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
+	}
+
+	/* To clear all existing values in install_pto_schema table */
+	err = services.ClearInstallPto()
+
+	err = services.ExecInstalEtaInitialCalculation("", "")
+	if err == nil {
+		log.FuncInfoTrace(0, "succesfully loaded initial install eta data")
+	} else {
+		log.ConfErrorTrace(0, "Failed to update initial data to install eta. %+v", err)
+		return
+	}
+
+	/* init setting PTO values*/
+	err = services.ExecPtoInitialCalculation("", "")
+	if err == nil {
+		log.FuncInfoTrace(0, "succesfully loaded initial pto data")
+	} else {
+		log.ConfErrorTrace(0, "Failed to update initial data to pto. %+v", err)
+		return
 	}
 
 	types.ExitChan = make(chan error)

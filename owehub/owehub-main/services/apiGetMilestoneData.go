@@ -217,7 +217,7 @@ func HandleGetMilestoneDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 	// Calculate total counts
 	totalSaleCount = sumMapValues(saleCountMap)
-	totalNtpCount = sumMapValues(ntpCountMap)
+	totalNtpCount = sumMapValues(ntpCountMap) // for that date gow many in ntp state
 	totalInstallCount = sumMapValues(installCountMap)
 	previousInstallCount = installCountMap[prevDate]
 	previousNtpCount = ntpCountMap[prevDate]
@@ -321,7 +321,6 @@ func PrepareMilestoneDataFilters(dataReq models.GetMilestoneDataReq, table strin
 		csBuilder.WriteString(fmt.Sprintf("dealer IN (%s)", strings.Join(dealerNames, ", ")))
 	}
 
-	// Additional static filters based on table
 	if table == "customer" || table == "ntp" {
 		csBuilder.WriteString(" AND project_status != 'DUPLICATE' AND unique_id != ''")
 	} else {
