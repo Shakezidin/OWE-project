@@ -9,7 +9,6 @@ import (
 	leadsService "OWEApp/owehub-leads/common"
 	log "OWEApp/shared/logger"
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -55,10 +54,8 @@ func (api *GetAccessTokenApi) Call() (*GetAccessTokenApiResponse, error) {
 	}
 
 	// set headers
-	authData := fmt.Sprintf("%s:%s", leadsService.LeadAppCfg.DocusignIntegrationKey, leadsService.LeadAppCfg.DocusignSecretKey)
-	authHeader := base64.StdEncoding.EncodeToString([]byte(authData))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", "Basic "+authHeader)
+	req.SetBasicAuth(leadsService.LeadAppCfg.DocusignIntegrationKey, leadsService.LeadAppCfg.DocusignSecretKey)
 
 	// send the request
 	log.FuncDebugTrace(0, "Calling docusign oauth api with code %s", api.AuthorizationCode)
