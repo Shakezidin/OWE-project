@@ -265,6 +265,9 @@ func init() {
 
 	/* To clear all existing values in install_pto_schema table */
 	err = services.ClearInstallPto()
+	if err != nil {
+		log.FuncErrorTrace(0, "error while truncating install_pto_schema with err : %v", err)
+	}
 
 	err = services.ExecInstalEtaInitialCalculation("", "")
 	if err == nil {
