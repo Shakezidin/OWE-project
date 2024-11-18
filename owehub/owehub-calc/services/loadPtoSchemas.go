@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -49,11 +50,11 @@ func ExecPtoInitialCalculation(uniqueIds string, hookType string) error {
 	for _, data := range InitailData.InitialDataList {
 		var ptoData map[string]interface{}
 
-		// ptoData, err := CalculatePto(data)
-		// if err != nil {
-		// 	log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
-		// 	continue
-		// }
+		ptoData, err := CalculatePTOEta(data, time.Time{})
+		if err != nil {
+			log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
+			continue
+		}
 
 		updateBatch = append(updateBatch, BatchOperation{
 			UniqueID: data.UniqueId,
@@ -162,7 +163,7 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 	return db.ExecQueryDB(db.OweHubDbIndex, builder.String())
 }
 
-//* change to owe_db
+// * change to owe_db
 func ClearInstallPto() error {
 	query := `TRUNCATE TABLE install_pto_schema`
 	err := db.ExecQueryDB(db.OweHubDbIndex, query)
@@ -170,4 +171,57 @@ func ClearInstallPto() error {
 		return err
 	}
 	return nil
+}
+
+func CalculatePTOEta(data InitialPtoStruct, installEto time.Time) (outData map[string]interface{}, err error) {
+	outData = make(map[string]interface{})
+	outData["unique_id"] = data.UniqueId
+	var PTOETA time.Time
+	var ptoExpectedtimeLine int //pending from colten Side
+	var finCompletedDate int
+	finCreatedCompleteAvg, err := strconv.ParseFloat(data.FinCreatedCompleteAvg, 64)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while converting AhjDbDbhubSchemaFinCreatedCompleteAvg to float64 with err : %v ", err)
+		finCreatedCompleteAvg = 0
+	}
+
+	if finCreatedCompleteAvg == 0 {
+		finCreatedCompleteAvg = 22.76
+	}
+
+	if !data.PTOGranted.IsZero() { //8
+		PTOETA = data.PTOGranted
+	} else if !data.PTOETA.IsZero() { //7
+		PTOETA = data.PTOETA
+	} else if !data.PTOSubmitted.IsZero() { //6
+		PTOETA = data.PTOSubmitted.AddDate(0, 0, ptoExpectedtimeLine+2)
+	} else if !data.PTOItemCreatedOn.IsZero() { //5
+		PTOETA = data.PTOItemCreatedOn.AddDate(0, 0, ptoExpectedtimeLine+2)
+	} else if !data.PvFinDate.IsZero() { //4
+		PTOETA = data.PvFinDate.AddDate(0, 0, ptoExpectedtimeLine+3)
+	} else if data.FinScheduledOn != "" { //3
+		FinScheduledOn, _ := time.Parse("02-01-2006", data.FinScheduledOn)
+		PTOETA = FinScheduledOn.AddDate(0, 0, finCompletedDate+int(finCreatedCompleteAvg)+ptoExpectedtimeLine+3)
+	} else if !data.FinItemCreatedOn.IsZero() { //2
+		PTOETA = installEto.AddDate(0, 0, DaysFromToday(data.FinItemCreatedOn)+int(finCreatedCompleteAvg)+ptoExpectedtimeLine+3)
+	} else if data.PVCompletionDate.IsZero() { //1
+		PTOETA = installEto.AddDate(0, 0, int(finCreatedCompleteAvg)+ptoExpectedtimeLine+3)
+	}
+
+	outData["pto"] = PTOETA
+
+	return outData, nil
+}
+
+func DaysFromToday(targetDate time.Time) int {
+	// Get today's date (only year, month, day; time is set to zero)
+	today := time.Now().Truncate(24 * time.Hour)
+	target := targetDate.Truncate(24 * time.Hour)
+
+	// Calculate the duration between the two dates
+	duration := target.Sub(today)
+
+	// Convert duration to days
+	days := int(duration.Hours() / 24)
+	return days
 }

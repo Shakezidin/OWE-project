@@ -26,6 +26,8 @@ type InitialPtoStruct struct {
 	PTOItemCreatedOn      time.Time `json:"pto_item_created_on"`
 	PTOSubmitted          time.Time `json:"pto_submitted"`
 	PTOETA                time.Time `json:"pto_eta"`
+	PTOGranted            time.Time `json:"pto_granted"`
+	PvFinDate             time.Time `json:"fin_pass_date"`
 }
 
 type InitialPtoDataLists struct {
@@ -50,9 +52,11 @@ func LoadPtoInitialData(uniqueIds []string) (InitialData InitialPtoDataLists, er
 			a.fin_created_complete_avg,
 			f.fin_scheduled_on,
 			f.item_created_on AS fin_item_created_on,
+			f.pv_fin_date,
 			p.item_created_on AS pto_item_created_on,
 			p.submitted AS pto_submitted,
-			p.pto_eta
+			p.pto_eta,
+			p.pto_granted
 		FROM 
 			pv_install_install_subcontracting_schema i
 		JOIN 
@@ -110,6 +114,10 @@ func LoadPtoInitialData(uniqueIds []string) (InitialData InitialPtoDataLists, er
 				initialData.PTOSubmitted = value.(time.Time)
 			case "pto_eta":
 				initialData.PTOETA = value.(time.Time)
+			case "pto_granted":
+				initialData.PTOGranted = value.(time.Time)
+			case "pv_fin_date":
+				initialData.PvFinDate = value.(time.Time)
 			default:
 				log.FuncWarnTrace(0, "Unmapped field: %s", key)
 			}
