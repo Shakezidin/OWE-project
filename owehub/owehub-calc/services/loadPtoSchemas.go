@@ -161,3 +161,13 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 
 	return db.ExecQueryDB(db.OweHubDbIndex, builder.String())
 }
+
+//* change to owe_db
+func ClearInstallPto() error {
+	query := `TRUNCATE TABLE install_pto_schema`
+	err := db.ExecQueryDB(db.OweHubDbIndex, query)
+	if err != nil {
+		return err
+	}
+	return nil
+}

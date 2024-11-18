@@ -263,6 +263,9 @@ func init() {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
 	}
 
+	/* To clear all existing values in install_pto_schema table */
+	err = services.ClearInstallPto()
+
 	err = services.ExecInstalEtaInitialCalculation("", "")
 	if err == nil {
 		log.FuncInfoTrace(0, "succesfully loaded initial install eta data")
