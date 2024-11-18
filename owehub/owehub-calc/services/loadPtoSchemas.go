@@ -23,8 +23,8 @@ type BatchOperation struct {
 
 func ExecPtoInitialCalculation(uniqueIds string, hookType string) error {
 	var (
-		err error
-		// ptoDataList []map[string]interface{}
+		err         error
+		dataList    []map[string]interface{}
 		InitailData InitialPtoDataLists
 		updateBatch []BatchOperation
 		// createBatch []map[string]interface{}
@@ -47,10 +47,20 @@ func ExecPtoInitialCalculation(uniqueIds string, hookType string) error {
 		return err
 	}
 
+	query := `select * from install_pto_schema`
+	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil || len(dataList) == 0 {
+		log.FuncErrorTrace(0, "Failed to fetch data from DB err: %+v", err)
+		err = fmt.Errorf("failed to fetch data from db")
+		return err
+	}
+
+	installEtaVal, _ := ProcessSlice(dataList)
+
 	for _, data := range InitailData.InitialDataList {
 		var ptoData map[string]interface{}
 
-		ptoData, err := CalculatePTOEta(data, time.Time{})
+		ptoData, err := CalculatePTOEta(data, installEtaVal[data.UniqueId])
 		if err != nil {
 			log.FuncInfoTrace(0, "error calculating value for uid: %v", data.UniqueId)
 			continue
@@ -160,13 +170,13 @@ func executeBatchUpdate(tableName string, batch []BatchOperation) error {
 	}
 	builder.WriteString(")")
 
-	return db.ExecQueryDB(db.OweHubDbIndex, builder.String())
+	return db.ExecQueryDB(db.RowDataDBIndex, builder.String())
 }
 
 // * change to owe_db
 func ClearInstallPto() error {
 	query := `TRUNCATE TABLE install_pto_schema`
-	err := db.ExecQueryDB(db.OweHubDbIndex, query)
+	err := db.ExecQueryDB(db.RowDataDBIndex, query)
 	if err != nil {
 		return err
 	}
@@ -224,4 +234,41 @@ func DaysFromToday(targetDate time.Time) int {
 	// Convert duration to days
 	days := int(duration.Hours() / 24)
 	return days
+}
+
+func ProcessSlice(data []map[string]interface{}) (map[string]time.Time, error) {
+	result := make(map[string]time.Time)
+
+	for _, item := range data {
+		// Get the unique ID (ensure it's a string)
+		id, ok := item["unique_id"].(string)
+		if !ok {
+			return nil, fmt.Errorf("missing or invalid 'id' in item: %v", item)
+		}
+
+		// Get the timestamp (ensure it's parseable as time.Time)
+		timestampRaw, ok := item["install_eta"]
+		if !ok {
+			return nil, fmt.Errorf("missing 'timestamp' in item with id: %s", id)
+		}
+
+		var timestamp time.Time
+		switch v := timestampRaw.(type) {
+		case time.Time:
+			timestamp = v
+		case string:
+			parsedTime, err := time.Parse(time.RFC3339, v)
+			if err != nil {
+				return nil, fmt.Errorf("invalid timestamp format for id %s: %v", id, err)
+			}
+			timestamp = parsedTime
+		default:
+			return nil, fmt.Errorf("unsupported timestamp type for id %s: %T", id, timestampRaw)
+		}
+
+		// Add the entry to the result map
+		result[id] = timestamp
+	}
+
+	return result, nil
 }

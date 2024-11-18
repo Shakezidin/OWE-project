@@ -50,7 +50,7 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		if hookType == "update" {
 			query, _ := buildUpdateQuery("install_pto_schema", installEtaData, "unique_id", data.UniqueId)
 
-			err = db.ExecQueryDB(db.OweHubDbIndex, query)
+			err = db.ExecQueryDB(db.RowDataDBIndex, query)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to update DLR Pay Data for unique id: %+v err: %+v", data.UniqueId, err)
 			}
@@ -59,7 +59,7 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		}
 
 		if (count+1)%1000 == 0 && len(installEtaDataList) > 0 {
-			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", installEtaDataList)
+			err = db.AddMultipleRecordInDB(db.RowDataDBIndex, "install_pto_schema", installEtaDataList)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to insert initial install eta Data in DB err: %v", err)
 			}
@@ -68,7 +68,7 @@ func ExecInstalEtaInitialCalculation(uniqueIds string, hookType string) error {
 		count++
 	}
 
-	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "install_pto_schema", installEtaDataList)
+	err = db.AddMultipleRecordInDB(db.RowDataDBIndex, "install_pto_schema", installEtaDataList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert initial Install ETA Data in DB err: %v", err)
 	}
