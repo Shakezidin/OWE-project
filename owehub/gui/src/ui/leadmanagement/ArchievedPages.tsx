@@ -479,7 +479,7 @@ const ArchivedPages = () => {
                           {selectedLeads.length > 0 ? (
                             ' '
                           ) : (
-                            <div>
+                            <div style={{marginTop:isMobile? "-10px" : "0"}}>
                               <button
                                 className={styles.UnArchiveButton}
                                 onClick={() => {
