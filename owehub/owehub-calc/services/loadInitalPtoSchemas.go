@@ -59,11 +59,11 @@ func LoadPtoInitialData(uniqueIds []string) (InitialData InitialPtoDataLists, er
 			p.pto_granted
 		FROM 
 			pv_install_install_subcontracting_schema i
-		JOIN 
+		LEFT JOIN 
 			ahj_db_dbhub_schema a ON i.ahj = a.title
-		JOIN 
+		LEFT JOIN 
 			fin_permits_fin_schema f ON i.customer_unique_id = f.customer_unique_id
-		JOIN 
+		LEFT JOIN 
 			pto_ic_schema p ON i.customer_unique_id = p.customer_unique_id
 		
 		WHERE i.customer_unique_id != ''

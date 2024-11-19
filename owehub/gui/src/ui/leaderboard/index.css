@@ -637,6 +637,7 @@
   .rank-card-stats {
     margin-top: 13px;
     gap: 36px;
+    overflow-x: scroll;
   }
 
   .rank-card-statss {
