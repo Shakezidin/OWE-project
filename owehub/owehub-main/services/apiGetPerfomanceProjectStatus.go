@@ -36,6 +36,7 @@ const (
 
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
+		singleData         map[string]bool
 		err                error
 		dataReq            models.PerfomanceStatusReq
 		data               []map[string]interface{}
@@ -231,11 +232,19 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 	var uniqueIds []string
 
+	singleData = make(map[string]bool)
+
 	for _, item := range data {
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
 			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
+			continue
+		}
+
+		if !singleData[UniqueId] {
+			singleData[UniqueId] = true
+		} else {
 			continue
 		}
 
@@ -552,27 +561,27 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	updated := make(map[string]bool)
 	for i := range perfomanceList.PerfomanceList {
 		if _, alreadyUpdated := updated[perfomanceList.PerfomanceList[i].UniqueId]; !alreadyUpdated {
-			
-		if exists, ok := agngRpForUserId[perfomanceList.PerfomanceList[i].UniqueId]; ok {
 
-			perfomanceList.PerfomanceList[i].Days_Pending_NTP = exists.Days_Pending_NTP
+			if exists, ok := agngRpForUserId[perfomanceList.PerfomanceList[i].UniqueId]; ok {
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Permits = exists.Days_Pending_Permits
+				perfomanceList.PerfomanceList[i].Days_Pending_NTP = exists.Days_Pending_NTP
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Install = exists.Days_Pending_Install
+				perfomanceList.PerfomanceList[i].Days_Pending_Permits = exists.Days_Pending_Permits
 
-			perfomanceList.PerfomanceList[i].Days_Pending_PTO = exists.Days_Pending_PTO
+				perfomanceList.PerfomanceList[i].Days_Pending_Install = exists.Days_Pending_Install
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Project_Age = exists.Days_Pending_Project_Age
+				perfomanceList.PerfomanceList[i].Days_Pending_PTO = exists.Days_Pending_PTO
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design = exists.Days_Pending_Cad_Design
+				perfomanceList.PerfomanceList[i].Days_Pending_Project_Age = exists.Days_Pending_Project_Age
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Roofing = exists.Days_Pending_Roofing
+				perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design = exists.Days_Pending_Cad_Design
 
-			perfomanceList.PerfomanceList[i].Days_Pending_Inspection = exists.Days_Pending_Inspection
+				perfomanceList.PerfomanceList[i].Days_Pending_Roofing = exists.Days_Pending_Roofing
 
-			updated[perfomanceList.PerfomanceList[i].UniqueId]=true
-		}
+				perfomanceList.PerfomanceList[i].Days_Pending_Inspection = exists.Days_Pending_Inspection
+
+				updated[perfomanceList.PerfomanceList[i].UniqueId] = true
+			}
 
 		}
 	}
