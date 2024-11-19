@@ -15,6 +15,13 @@
   height: 19px;
 }
 
+.loadModalDefault{
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .success_not {
   display: flex;
   flex-direction: column;
