@@ -59,6 +59,12 @@ const ProjectStatus = () => {
   const projectId = new URLSearchParams(location.search).get('project_id');
   const projectName = new URLSearchParams(location.search).get('customer-name');
 
+  useEffect(()=>{
+    window.scrollTo({
+      top:0,
+      behavior: 'smooth'
+    })    
+  },[location.pathname])
   const getStatus = (arr: string[]) => {
     return arr.every(
       (item) => projectDetail[item as keyof typeof projectDetail]
@@ -67,6 +73,9 @@ const ProjectStatus = () => {
   const [search, setSearch] = useState('OUR22645');
   const [searchValue, setSearchValue] = useState('OUR22645');
   const [active, setActive] = useState(false);
+
+
+  
   const filtered = [
     // {
     //   name: 'Sales',
