@@ -49,9 +49,7 @@ func (api *ResendEnvelopeApi) Call() (*map[string]interface{}, error) {
 
 	apiUrl := "/restapi/v2.1/accounts/{accountId}/envelopes/" + api.EnvelopeId + "/recipients?resend_envelop=true"
 
-	reqBody := map[string]interface{}{
-		"recipients": map[string]interface{}{"signers": api.Recipients},
-	}
+	reqBody := map[string]interface{}{"signers": api.Recipients}
 
 	err = callApi(http.MethodPost, apiUrl, reqBody, &respBody)
 	if err != nil {
