@@ -137,10 +137,25 @@ func HandleDocusignGetSigningUrlRequest(resp http.ResponseWriter, req *http.Requ
 		"total_steps":  totalSteps,
 	}, false)
 
-	_, ok = data[0]["docusign_envelope_id"].(string)
+	envelopeId, ok = data[0]["docusign_envelope_id"].(string)
 
 	if ok {
-		handler.SendError("Proposal already sent for signing")
+		// if docusign envelope id is present, resend the envelope
+		resendEnvelopeApi := docusignclient.ResendEnvelopeApi{
+			EnvelopeId: envelopeId,
+			Recipients: []docusignclient.ResendEnvelopeApiRecipient{{RecipientId: leadIdStr}},
+		}
+		_, err = resendEnvelopeApi.Call()
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to resend docusign envelope err %v", err)
+			handler.SendError(err.Error())
+			return
+		}
+
+		handler.SendData(map[string]interface{}{
+			"current_step": totalSteps,
+			"total_steps":  totalSteps,
+		}, true)
 		return
 	}
 

@@ -343,6 +343,7 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		APPOINTMENT_DATE = NULL,
 		STATUS_ID = 3
 		WHERE leads_id = $1
+		AND APPOINTMENT_DATE > CURRENT_TIMESTAMP
 	`
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
 	if err != nil {

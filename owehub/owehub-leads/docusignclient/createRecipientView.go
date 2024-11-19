@@ -7,12 +7,9 @@
 package docusignclient
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
 	log "OWEApp/shared/logger"
 	"errors"
-	"fmt"
 	"net/http"
-	"strings"
 )
 
 type CreateRecipientViewApi struct {
@@ -54,7 +51,6 @@ func (api *CreateRecipientViewApi) Call() (*CreateRecipientViewApiResponse, erro
 		return nil, err
 	}
 
-	apiUrl := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes/%s/views/recipient", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId, api.EnvelopeId)
 	data := map[string]interface{}{
 		"recipientId":          api.RecipientId,
 		"userName":             api.UserName,
@@ -64,13 +60,11 @@ func (api *CreateRecipientViewApi) Call() (*CreateRecipientViewApiResponse, erro
 		"authenticationMethod": "Password",
 	}
 
+	apiUrl := "restapi/v2.1/accounts/{accountId}/envelopes/" + api.EnvelopeId + "/views/recipient"
 	err = callApi(http.MethodPost, apiUrl, data, &respBody)
 
 	if err != nil {
-		if strings.Contains(err.Error(), "unauthorized") {
-			return nil, err
-		}
-
+		log.FuncErrorTrace(0, "Failed to create recipient view err %v", err)
 		return nil, errors.New("server side error when creating recipient view")
 	}
 
