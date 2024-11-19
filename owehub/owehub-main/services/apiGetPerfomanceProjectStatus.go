@@ -48,6 +48,7 @@ type ForAgRp struct {
 
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
+		singleData         map[string]bool
 		err                error
 		dataReq            models.PerfomanceStatusReq
 		data               []map[string]interface{}
@@ -244,11 +245,19 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 	var uniqueIds []string
 
+	singleData = make(map[string]bool)
+
 	for _, item := range data {
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
 			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
+			continue
+		}
+
+		if !singleData[UniqueId] {
+			singleData[UniqueId] = true
+		} else {
 			continue
 		}
 
@@ -1523,7 +1532,7 @@ func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error)
 }
 
 func TextAccToInput(s string) string {
-	if s == "0"||s == "1" {
+	if s == "0" || s == "1" {
 		return fmt.Sprintf("%s day pending", s)
 	}
 	return fmt.Sprintf("%s days pending", s)
