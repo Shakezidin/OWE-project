@@ -60,7 +60,7 @@ func (api *CreateRecipientViewApi) Call() (*CreateRecipientViewApiResponse, erro
 		"authenticationMethod": "Password",
 	}
 
-	apiUrl := "restapi/v2.1/accounts/{accountId}/envelopes/" + api.EnvelopeId + "/views/recipient"
+	apiUrl := "/restapi/v2.1/accounts/{accountId}/envelopes/" + api.EnvelopeId + "/views/recipient"
 	err = callApi(http.MethodPost, apiUrl, data, &respBody)
 
 	if err != nil {

@@ -60,7 +60,7 @@ func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
 		"status":       "sent",
 	}
 
-	err = callApi(http.MethodPost, "restapi/v2.1/accounts/{accountId}/envelopes", reqBody, &respBody)
+	err = callApi(http.MethodPost, "/restapi/v2.1/accounts/{accountId}/envelopes", reqBody, &respBody)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "INVALID_EMAIL_ADDRESS_FOR_RECIPIENT") {
