@@ -884,7 +884,7 @@
 @media screen and (max-width: 768px) {
   .children-container {
     padding: unset;
-    overflow-x: hidden;
+    overflow: unset;
   }
 
   .attach-help-mob{

@@ -79,8 +79,7 @@
   background-color: var(--children-bg-color);
   padding: 0.5rem 2rem;
   flex: 1;
-  overflow-y: auto;
-  max-height: calc(100vh - 64px);
+
   scroll-behavior: smooth;
 }
 
