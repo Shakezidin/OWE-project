@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import './projectTracker.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-date-range/dist/styles.css'; // main style file
@@ -164,7 +165,7 @@ const ProjectPerformence = () => {
     const value = e.target.value;
 
     // Check if input length exceeds 4
-    if (value.length > 3 || value>360) {
+    if (value.length > 3 || value>180) {
       return;
     }
     
@@ -423,6 +424,14 @@ useEffect(()=>{
 
   // const showDropdown =
 
+  const location = useLocation();
+
+  useEffect(() => {
+    
+      window.scrollTo({top:10,behavior:'smooth'});
+        
+  }, [location.pathname]);
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -1319,8 +1328,11 @@ useEffect(()=>{
                           <td style={{ padding: '0px' }}>
                             <div className="milestone-data">
                               <div className="project-info-details">
+
+
                                 <Link
                                   to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
+                                  
                                 >
                                   <div className="deco-text">
                                     <h3>{project.customer}</h3>
