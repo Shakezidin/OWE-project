@@ -37,6 +37,9 @@ func callApi(method string, apiUrl string, reqBody interface{}, respBody interfa
 
 	// encode request body into buffer
 
+	apiUrl = leadsService.LeadAppCfg.DocusignApiBaseUrl +
+		strings.ReplaceAll(apiUrl, "{accountId}", leadsService.LeadAppCfg.DocusignAccountId)
+
 	if reqBody != nil {
 		err = json.NewEncoder(&reqBodyBuff).Encode(reqBody)
 		if err != nil {

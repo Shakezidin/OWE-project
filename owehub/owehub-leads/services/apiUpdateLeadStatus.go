@@ -7,7 +7,7 @@
 package services
 
 import (
-	leadService "OWEApp/owehub-leads/common"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	emailClient "OWEApp/shared/email"
@@ -92,12 +92,13 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 			li.phone_number,
 			li.email_id,
 			li.appointment_date,
-			ud.name as creator_name,
-			ud.email_id as creator_email,
-			ud.mobile_number as creator_phone
+			li.frontend_base_url,
+			ud.name as salerep_name,
+			ud.email_id as salerep_email,
+			ud.mobile_number as salerep_phone
 		FROM
 			get_leads_info_hierarchy($1) li
-		INNER JOIN user_details ud ON ud.user_id = li.created_by	
+		INNER JOIN user_details ud ON ud.user_id = li.salerep_id	
 		WHERE
 			leads_id = $2
 	`
@@ -121,23 +122,36 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	creatorName, ok := data[0]["creator_name"].(string)
+	salerepName, ok := data[0]["salerep_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to assert creator_name to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
 		return
 	}
 
-	creatorEmail, ok := data[0]["creator_email"].(string)
+	// envelopeCreatedAt, ok := data[0]["docusign_envelope_completed_at"].(time.Time)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to assert docusign_envelope_completed_at to time type Item: %+v", data[0])
+	// 	appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
+	// 	return
+	// }
+
+	// proposalPdfKey, ok := data[0]["proposal_pdf_key"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get proposal_pdf_key from leads info Item: %+v\n", data[0])
+	// 	return
+	// }
+
+	salerepEmail, ok := data[0]["salerep_email"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to assert creator_email to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
 		return
 	}
 
-	creatorPhone, ok := data[0]["creator_phone"].(string)
+	salerepPhone, ok := data[0]["salerep_phone"].(string)
 	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert creator_phone to string type Item: %+v", data[0])
+		log.FuncErrorTrace(0, "Failed to assert salerep_phone to string type Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get lead details from database", http.StatusInternalServerError, nil)
 		return
 	}
@@ -159,6 +173,12 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
 		appserver.FormAndSendHttpResp(resp, "Failed to get last name from database", http.StatusInternalServerError, nil)
+		return
+	}
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+		appserver.FormAndSendHttpResp(resp, "Failed to get frontend_base_url from database", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -195,6 +215,8 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 					SET appointment_date = $1, 
 					appointment_scheduled_date = CURRENT_TIMESTAMP,
 					appointment_accepted_date = NULL,
+					appointment_declined_date = NULL,
+					is_appointment_required = TRUE,
 					status_id = 1,
 					updated_at = CURRENT_TIMESTAMP,
 					last_updated_by = $2 
@@ -214,47 +236,57 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Appointment Sent", http.StatusOK, respData, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsAppointmentSent.WithData(leadService.SmsDataAppointmentSent{
+		smsMessage := leadsService.SmsAppointmentSent.WithData(leadsService.SmsDataAppointmentSent{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "APT_SENT",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		if isRescheduling {
 			emailTmplData.NewStatus = "APT_RESCHEDULED"
-			smsMessage = leadService.SmsAppointmentRescheduled.WithData(leadService.SmsDataAppointmentRescheduled{
+			smsMessage = leadsService.SmsAppointmentRescheduled.WithData(leadsService.SmsDataAppointmentRescheduled{
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
 				LeadLastName:  lastName,
-				UserName:      creatorName,
+				UserName:      salerepName,
 			})
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Appointment Sent",
 			TemplateData: emailTmplData,
 		})
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Your appointment has been scheduled. You may check your mail for details.",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 		}
 
 		return
@@ -291,43 +323,43 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsLeadWon.WithData(leadService.SmsDataLeadWon{
+		smsMessage := leadsService.SmsLeadWon.WithData(leadsService.SmsDataLeadWon{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "DEAL_WON",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
 		if dataReq.IsManualWin {
 			emailTmplData.NewStatus = "DEAL_WON_MANUAL"
-			emailTmplData.ViewUrl = fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId)
-			smsMessage = leadService.SmsLeadWonManual.WithData(leadService.SmsDataLeadWonManual{
+			emailTmplData.ViewUrl = fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId)
+			smsMessage = leadsService.SmsLeadWonManual.WithData(leadsService.SmsDataLeadWonManual{
 				LeadId:        dataReq.LeadsId,
 				LeadFirstName: firstName,
 				LeadLastName:  lastName,
-				UserName:      creatorName,
+				UserName:      salerepName,
 			})
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Deal Won",
 			TemplateData: emailTmplData,
 		})
@@ -335,6 +367,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "You have been marked as won on the platform!",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 
@@ -365,32 +408,32 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsLeadLost.WithData(leadService.SmsDataLeadLost{
+		smsMessage := leadsService.SmsLeadLost.WithData(leadsService.SmsDataLeadLost{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "DEAL_LOST",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Deal Lost",
 			TemplateData: emailTmplData,
 		})
@@ -398,12 +441,94 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "We're sorry to disappoint you. Please consider leaving us a feedback so we can improve our service.",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
+		return
+	}
+
+	// proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
+
+	if dataReq.QC {
+		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
+		whereEleList = []interface{}{dataReq.QC, dataReq.LeadsId}
+
+		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update the lead  qc details in db : %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to update the lead qc details in db", http.StatusInternalServerError, nil)
+			return
+		}
+		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
+
+		// send sms and email
+		smsMessage := leadsService.SmsQCSigned.WithData(leadsService.SmsDataQCSigned{
+			LeadId:        dataReq.LeadsId,
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			UserName:      salerepName,
+		})
+
+		emailTmplData := emailClient.TemplateDataLeadQCSigned{
+			UserName:      salerepName,
+			LeadId:        dataReq.LeadsId,
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			LeadEmailId:   leadEmail,
+			//Date:            envelopeCreatedAt,
+			LeadPhoneNumber: phoneNo,
+			ViewUrl:         fmt.Sprintf("%s/leadmng-records?view=%d", frontendBaseUrl, dataReq.LeadsId),
+			// ProposalPdfUrl:  proposalPdfUrl,
+		}
+
+		err = sendSms(salerepPhone, smsMessage)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
+		}
+
+		err = emailClient.SendEmail(emailClient.SendEmailRequest{
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
+			Subject:      "Qualified",
+			TemplateData: emailTmplData,
+		})
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "Your proposal has been QC verified!",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
 		return
 	}
 
 	// CASE 4: status_id not provided (update is_appointment_required)
 	if dataReq.StatusId == 0 {
-		query = "UPDATE leads_info SET is_appointment_required = $1, updated_at = CURRENT_TIMESTAMP, last_updated_by = $2 WHERE leads_id = $3"
+		query = `UPDATE leads_info 
+					SET is_appointment_required = $1,
+					updated_at = CURRENT_TIMESTAMP,
+					appointment_date = NULL,
+					appointment_scheduled_date = NULL,
+					appointment_accepted_date = NULL,
+					appointment_declined_date = NULL,
+					last_updated_by = $2
+					WHERE leads_id = $3`
 		whereEleList = []interface{}{dataReq.IsAppointmentRequired, authenticatedUserId, dataReq.LeadsId}
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
@@ -414,32 +539,32 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		appserver.FormAndSendHttpResp(resp, "Status Updated", http.StatusOK, nil, 0)
 
 		// send sms and email
-		smsMessage := leadService.SmsAppointmentNotRequired.WithData(leadService.SmsDataAppointmentNotRequired{
+		smsMessage := leadsService.SmsAppointmentNotRequired.WithData(leadsService.SmsDataAppointmentNotRequired{
 			LeadId:        dataReq.LeadsId,
 			LeadFirstName: firstName,
 			LeadLastName:  lastName,
-			UserName:      creatorName,
+			UserName:      salerepName,
 		})
 
 		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
-			UserName:        creatorName,
+			UserName:        salerepName,
 			LeadId:          dataReq.LeadsId,
 			LeadFirstName:   firstName,
 			LeadLastName:    lastName,
 			LeadEmailId:     leadEmail,
 			LeadPhoneNumber: phoneNo,
 			NewStatus:       "APT_NOT_REQUIRED",
-			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		}
 
-		err = sendSms(creatorPhone, smsMessage)
+		err = sendSms(salerepPhone, smsMessage)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
 		}
 
 		err = emailClient.SendEmail(emailClient.SendEmailRequest{
-			ToName:       creatorName,
-			ToEmail:      creatorEmail,
+			ToName:       salerepName,
+			ToEmail:      salerepEmail,
 			Subject:      "Appointment Not Required",
 			TemplateData: emailTmplData,
 		})
@@ -447,6 +572,17 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
+
+		smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			Message:       "You have been marked as you don't require an appointment.",
+		})
+		err = sendSms(phoneNo, smsbody)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+		}
+
 		return
 	}
 

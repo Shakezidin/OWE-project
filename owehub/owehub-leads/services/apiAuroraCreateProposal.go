@@ -70,11 +70,12 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 			li.first_name,
 			li.last_name,
 			li.phone_number,
+			li.frontend_base_url,
 			ud.name as creator_name,
 			ud.email_id as creator_email_id,
 			ud.mobile_number as creator_phone_number
 		FROM get_leads_info_hierarchy($1) li
-		INNER JOIN user_details ud ON ud.user_id = li.created_by
+		INNER JOIN user_details ud ON ud.user_id = li.salerep_id
 		WHERE li.leads_id = $2
 	`
 
@@ -176,6 +177,11 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		log.FuncErrorTrace(0, "Failed to assert creator_phone_number to string type Item: %+v", data[0])
 		return
 	}
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert frontend_base_url to string type Item: %+v", data[0])
+		return
+	}
 
 	smsBody := leadsService.SmsLeadProposalCreated.WithData(leadsService.SmsDataLeadProposalCreated{
 		LeadId:        int64(dataReq.LeadsId),
@@ -191,7 +197,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 		LeadEmailId:     leadEmail,
 		LeadPhoneNumber: leadPhone,
 		UserName:        creatorName,
-		ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", leadsService.LeadAppCfg.FrontendBaseUrl, dataReq.LeadsId),
+		ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, dataReq.LeadsId),
 		NewStatus:       "PROPOSAL_CREATED",
 	}
 
@@ -209,5 +215,15 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
+	}
+
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: leadFirstName,
+		LeadLastName:  leadLastName,
+		Message:       "Your proposal has been creaded.",
+	})
+	err = sendSms(leadPhone, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
 	}
 }

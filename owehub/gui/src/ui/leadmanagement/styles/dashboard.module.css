@@ -30,7 +30,9 @@
   min-height: 200px;
   padding: 20px;
 } */
-
+.pieChart text{
+  
+}
 .PaginationFont a {
   font-size: 12px !important;
 }
@@ -636,6 +638,7 @@ table tbody tr:hover {
     margin: 0;
     padding-left: 0 !important;
     margin-bottom: 14px;
+    margin-left: -34px;
   }
   .HideContent {
     display: flex;
@@ -1463,7 +1466,7 @@ table tbody tr:hover {
   }
 
   .lead__datepicker_content {
-  margin-top: 120px;
+  margin-top: 127.8px;
   margin-left: 300px;
    
   }

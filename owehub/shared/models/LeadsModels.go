@@ -35,7 +35,7 @@ type GetLeadsData struct {
 	DocusignDate           *time.Time `json:"docusign_date"`
 	FinanceCompany         string     `json:"finance_company"`
 	FinanceType            string     `json:"finance_type"`
-	QCAudit                string     `json:"qc_audit"`
+	QCAudit                bool     `json:"qc_audit"`
 	ProposalID             string     `json:"proposal_id"`
 	ProposalStatus         string     `json:"proposal_status"`
 	ProposalLink           string     `json:"proposal_link"`

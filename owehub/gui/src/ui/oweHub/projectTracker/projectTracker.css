@@ -194,6 +194,15 @@
   background-color: #377cf6;
 }
 
+.qc-item:hover{
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.ntp-item:hover{
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
 .status-icon {
   display: flex;
   align-items: center;
@@ -1481,6 +1490,9 @@
   .performance-exportbtn{
     padding: 8px;
     width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .performance-table-heading{
@@ -1499,6 +1511,9 @@
 
   .project-heading {
     grid-template-rows: auto auto;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: center;
   }
 
   .perf-export-btn {
@@ -1604,12 +1619,7 @@
   }
 }
 
-@media (max-width: 375px)
-{
-  .dropDownFilter{
-    margin-top: 140px;
-  }
-}
+
 .per-head-input {
   height: 50px;
   display: flex;
@@ -2480,13 +2490,14 @@
 
 }
 .dayBox{
-  width: 74px;
-  height: 28px;
+  width:30px;
+  height: 20px;
 
   display: flex;
   align-items: center;
-  justify-content: center;
-  border:1px solid #7D7D7D;
+  justify-content: flex-end;
+  /* border:1px solid #7D7D7D; */
+  border:none;
   border-radius: 5.6px;
   padding: 8px 4px;
   font-size: 12px;
@@ -2660,4 +2671,25 @@
   justify-content: flex-start;
   gap: 1rem;
   margin-top: 6px !important;
+}
+
+.pipeline-inputBox-div{
+  width: 74px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content:flex-start;
+  border:1px solid #7D7D7D;
+  border-radius: 5.6px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'poppins';
+  color: #293540;
+  position: relative;
+  left: -2px;
+}
+.pipeline-inputBox-div-para{
+  font-size: 12px;
 }

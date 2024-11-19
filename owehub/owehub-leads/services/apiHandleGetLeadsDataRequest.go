@@ -323,10 +323,10 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to get finance_company from leads info Item %+v", item)
 			finCompany = ""
 		}
-		qcAudit, ok := item["qc_audit"].(string)
+		qcAudit, ok := item["qc_audit"].(bool)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get qc_audit from leads info Item %+v", item)
-			qcAudit = ""
+			qcAudit = false
 		}
 
 		proposalId, ok := item["aurora_proposal_id"].(string)

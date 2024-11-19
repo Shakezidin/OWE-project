@@ -52,9 +52,19 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
       }
     };
 
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+        setSearch('');
+        setDropDownOptions(options);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [options]);
 
@@ -69,17 +79,28 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
     setDropDownOptions(options);
   }, [options]);
 
+ 
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    if (e.target.value.trim()) {
-      setDropDownOptions(options.filter((item) =>
-        item.value.toLowerCase().includes(e.target.value.toLowerCase().trim())
-      ));
+    let inputValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Prevent special characters
+  
+    if (inputValue.length > 50) {
+      inputValue = inputValue.slice(0, 50); // Limit input to 50 characters
+    }
+  
+    setSearch(inputValue);
+  
+    if (inputValue.trim()) {
+      setDropDownOptions(
+        options
+          .filter((item) => item.value.toLowerCase().includes(inputValue.toLowerCase().trim()))
+          .slice(0, 50) // Limit search results to 50 items
+      );
     } else {
-      setDropDownOptions(options);
+      setDropDownOptions(options.slice(0, 50)); // Show first 50 items if no search
     }
   };
-
+  
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
       if (option === 'All') {

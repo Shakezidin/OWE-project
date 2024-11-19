@@ -6,10 +6,8 @@
 package docusignclient
 
 import (
-	leadsService "OWEApp/owehub-leads/common"
 	log "OWEApp/shared/logger"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -26,12 +24,11 @@ type CreateEnvelopeApiDocument struct {
 	FileExtension  string `json:"fileExtension"`
 }
 type CreateEnvelopeApiRecipient struct {
-	ClientUserId string `json:"clientUserId"`
-	RecipientId  string `json:"recipientId"`
-	Name         string `json:"name"`
-	Email        string `json:"email"`
-	FirstName    string `json:"firstName"`
-	LastName     string `json:"lastName"`
+	RecipientId string `json:"recipientId"`
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
 }
 
 func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
@@ -63,8 +60,7 @@ func (api *CreateEnvelopeApi) Call() (*map[string]interface{}, error) {
 		"status":       "sent",
 	}
 
-	url := fmt.Sprintf("%s/restapi/v2.1/accounts/%s/envelopes", leadsService.LeadAppCfg.DocusignApiBaseUrl, leadsService.LeadAppCfg.DocusignAccountId)
-	err = callApi(http.MethodPost, url, reqBody, &respBody)
+	err = callApi(http.MethodPost, "/restapi/v2.1/accounts/{accountId}/envelopes", reqBody, &respBody)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "INVALID_EMAIL_ADDRESS_FOR_RECIPIENT") {

@@ -313,7 +313,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
-      setLoad(false);
+      setLoadWon(false);
     } catch (error) {
       setLoadWon(false);
       console.error('Error submitting form:', error);
@@ -347,9 +347,39 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
+
+  const [qcComp, setQcComp] = useState(false);
+  const handleQCComplete = async () => {
+    setQcComp(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          qc: true
+        },
+        true
+      );
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setRefresh((prev) => prev + 1);
+        setQcComp(false);
+        HandleModal();
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+        setQcComp(false);
+      }
+      setLoad(false);
+    } catch (error) {
+      setQcComp(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
   const MarkedConfirm = () => {
     setVisibleDiv(14);
   };
+
 
   useEffect(() => {
     if (reschedule === true) {
@@ -414,8 +444,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.pers_det_top}>
                   <div className={classes.Column1Details}>
                     <div className={classes.main_name}>
-                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 15
-                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 15)}...`
+                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 25
+                        ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 25)}...`
                         : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
                       <img
                         onClick={HandleModal}
@@ -759,13 +789,13 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: `${loadingProposal ? '#377C49' : '#377CF6'}`,
                         color: 'white',
                         border: 'none',
-                        pointerEvents: (loadWon || !leadId) ? 'none' : 'auto',
-                        opacity: (loadWon || !leadId) ? 0.6 : 1,
-                        cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
+                        pointerEvents: (qcComp || !leadId) ? 'none' : 'auto',
+                        opacity: (qcComp || !leadId) ? 0.6 : 1,
+                        cursor: (qcComp || !leadId) ? 'not-allowed' : 'pointer',
                       }}
-                     
+                     onClick={handleQCComplete}
                     >
-                      {loadWon ? "Wait..." : "Confirm"}
+                      {qcComp ? "Wait..." : "Confirm"}
                     </button>
 
 

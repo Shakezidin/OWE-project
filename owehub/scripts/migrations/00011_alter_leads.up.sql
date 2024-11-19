@@ -3,66 +3,10 @@ DELETE FROM leads_info; -- TODO: find a way to preserve data
 ALTER TABLE leads_info DROP CONSTRAINT leads_info_zipcode_fkey;
 ALTER TABLE leads_info ALTER COLUMN zipcode TYPE VARCHAR(20);
 
--- CHANGE THE FUNCTION TO INSERT VARCHAR(20) FOR ZIPCODE
-CREATE OR REPLACE FUNCTION create_lead(
-    p_creator_email_id VARCHAR,
-    p_first_name VARCHAR,
-    p_last_name VARCHAR,
-    p_email_id VARCHAR,
-    p_phone_number VARCHAR,
-    p_street_address VARCHAR, 
-    p_zipcode VARCHAR, 
-    p_notes VARCHAR,
-    p_salerep_id INT,
-    p_lead_source VARCHAR
-) RETURNS INT AS $$
-DECLARE
-    v_lead_id INT;
-    v_state_id INT;
-    v_creator_user_id INT;
-BEGIN
-    -- Get the creator user_id via email_id
-    SELECT user_id INTO v_creator_user_id
-    FROM user_details
-    WHERE email_id = p_creator_email_id;
-    
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'User with email_id % not found', p_creator_email_id;
-    END IF;
+ALTER TABLE leads_info ALTER COLUMN qc_audit TYPE BOOLEAN USING qc_audit::BOOLEAN, ALTER COLUMN qc_audit SET DEFAULT FALSE;
 
-
-    -- Insert into leads_info table 
-    INSERT INTO leads_info (
-        created_by,
-        first_name,
-        last_name,
-        email_id,
-        phone_number,
-        street_address,
-        zipcode,
-        notes,
-        salerep_id,
-        lead_source
-    ) VALUES (
-        v_creator_user_id,
-        p_first_name,
-        p_last_name,
-        p_email_id,
-        p_phone_number,
-        p_street_address,
-        p_zipcode, 
-        p_notes,
-        p_salerep_id,
-        p_lead_source
-    ) RETURNING leads_id INTO v_lead_id;
-
-    -- Return the inserted lead's ID
-    RETURN v_lead_id;
-
-    EXCEPTION WHEN unique_violation THEN RAISE EXCEPTION 'EMAIL_OR_PHONE_NO._EXISTS';
-END;
-$$ LANGUAGE plpgsql;
-
+ALTER TABLE leads_info ALTER COLUMN proposal_signed TYPE BOOLEAN USING proposal_signed::BOOLEAN,
+ALTER COLUMN proposal_signed SET DEFAULT FALSE;
 
 ---- ADD AURORA COLUMNS
 ALTER TABLE leads_info ADD COLUMN aurora_project_id VARCHAR(40);
@@ -128,6 +72,7 @@ ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS salerep_id INT;
 ALTER TABLE leads_info ADD CONSTRAINT leads_info_salerep_id_fkey
     FOREIGN KEY (salerep_id)
     REFERENCES user_details(user_id) ON DELETE SET NULL;
+ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS frontend_base_url VARCHAR(255);
 
 -- GET SALES REPS UNDER AUTHENTICATED USER
 CREATE OR REPLACE FUNCTION get_salesreps_under(p_email_id VARCHAR)

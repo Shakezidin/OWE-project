@@ -212,6 +212,7 @@
   color: #fff;
   font-size: 12px;
   border-radius: 6px;
+  min-height: 36px;
   padding: 8px;
   border: none;
   cursor: pointer;
@@ -271,7 +272,9 @@
     right: 0;
     display: table-cell;
     padding: 10px 5px 0 5px !important;
-    border-left: 1px solid #d5d5d7; 
+    border-left: 1.5px solid #E5E5E5;
+    border-bottom: 0.7px solid #E5E5E5; 
+ 
   }
   .RowMobile {
     display: flex;
@@ -298,6 +301,7 @@
     border-radius: 6px;
     padding: 6px 12px;
     min-width: 91px;
+    
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;

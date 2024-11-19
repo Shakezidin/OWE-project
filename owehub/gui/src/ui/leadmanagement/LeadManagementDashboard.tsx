@@ -20,8 +20,6 @@ import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
-import ArchiveModal from './Modals/LeaderManamentSucessModel';
-import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import Papa from 'papaparse';
 
@@ -29,7 +27,6 @@ import Papa from 'papaparse';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { toZonedTime } from 'date-fns-tz';
 import {
   addMinutes,
   endOfWeek,
@@ -51,7 +48,6 @@ import {
   createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
   auroraWebProposal, auroraGenerateWebProposal, auroraListModules
 } from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import ArchivedPages from './ArchievedPages';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading, MdHeight } from 'react-icons/md';
@@ -59,7 +55,6 @@ import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
-import { scale } from 'pdf-lib';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -192,7 +187,7 @@ const renderActiveShape = (props: any) => {
   const sy = cy + (outerRadius + 10) * sin;
   const mx = cx + (outerRadius + 30) * cos;
   const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 2;
   const ey = my;
   const textAnchor = cos >= 0 ? 'start' : 'end';
 
@@ -217,6 +212,7 @@ const renderActiveShape = (props: any) => {
   };
 
   const lines = splitText(payload.name, 15);
+  const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (
     <g>
@@ -275,12 +271,12 @@ const renderActiveShape = (props: any) => {
         {`${value}`}
       </text>
       <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        x={isMobile ? (ex + (cos >= 0 ? 1 : 1.4) * 12) : (ex + (cos >= 0 ? 1 : -1) * 12)}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
-        style={{ fontSize: '14px' }}
+        style={{ fontSize: '12px' }}
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -308,7 +304,6 @@ const CustomTooltip = ({
           padding: '5px 10px',
           zIndex: '99',
           borderRadius: '4px',
-          // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}
       >
         <p
@@ -337,9 +332,6 @@ const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
-  const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [designs, setDesigns] = useState([]);
@@ -413,11 +405,6 @@ const LeadManagementDashboard = () => {
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([]);
-  const isMobileChevron = useMatchMedia('(max-width: 767px)');
-  const isMobile = useMatchMedia('(max-width: 1024px)');
-  const isMobileFixed = useMatchMedia(
-    '(min-width: 320px) and (max-width: 480px)'
-  );
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
   const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
@@ -616,64 +603,6 @@ const LeadManagementDashboard = () => {
 
 
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     const fetchData = async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         const response = await postCaller(
-  //           'get_leads_count_by_status',
-  //           {
-  //             start_date: selectedDates.startDate
-  //             ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           end_date: selectedDates.endDate
-  //             ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
-  //             : '',
-  //           },
-  //           true
-  //         );
-
-  //         if (response.status === 200) {
-  //           const apiData = statusData1;
-
-  //           console.log(apiData, "data check")
-
-  //           const formattedData = apiData.reduce(
-  //             (acc: DefaultData, item: any) => {
-  //               const statusName = item.status_name;
-  //               const defaultDataKey = Object.keys(defaultData).find(
-  //                 (key) => key === statusName || defaultData[key].name === statusName
-  //               );
-
-  //               if (defaultDataKey) {
-  //                 acc[defaultDataKey] = {
-  //                   ...defaultData[defaultDataKey],
-  //                   value: item.count,
-  //                 };
-  //               }
-
-  //               return acc;
-  //             },
-  //             { ...defaultData }
-  //           );
-
-  //           const mergedData = Object.values(formattedData) as StatusData[];
-  //           setPieData(mergedData);
-
-  //         } else if (response.status > 201) {
-  //           toast.error(response.data.message);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [isAuthenticated, selectedDates, ref, isModalOpen, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -1316,7 +1245,7 @@ const LeadManagementDashboard = () => {
           return null;
         }
       } else {
-        toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+        // toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
         return null;
       }
     } catch (error) {
@@ -1343,7 +1272,7 @@ const LeadManagementDashboard = () => {
           toast.error('No web proposal available.');
         }
       } else {
-        toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+        // toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
       }
     } catch (error) {
       toast.error('An unexpected error occurred while retrieving the web proposal');
@@ -1417,13 +1346,13 @@ const LeadManagementDashboard = () => {
 
 
             <div className={`${styles.customRight} ${styles.customFont}`}>
-              Total leads: {totalValue ? totalValue : '0'}
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
           <div className={styles.SecondColHead}>
             {
               isToggledX == false && <div className={styles.MobileViewHide}>
-                Total leads: {totalValue ? totalValue : '0'}
+                Total leads : {totalValue ? totalValue : '0'}
               </div>
             }
             {/* CARD DESIGNING STRTED */}
@@ -1620,7 +1549,7 @@ const LeadManagementDashboard = () => {
             </div>
 
             <div className={styles.customFont}>
-              Total leads: {totalValue ? totalValue : '0'}
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
 
@@ -1635,7 +1564,7 @@ const LeadManagementDashboard = () => {
               >
                 <MicroLoader />
               </div>
-            ) : lineData.length > 0 ? (
+            ) : totalValue > 0 ? (
               <>
                 <ResponsiveContainer width="100%" height={260}>
                   <PieChart className={styles.pieChart}>
@@ -1838,7 +1767,7 @@ const LeadManagementDashboard = () => {
 
                 )}
 
-            
+
 
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">

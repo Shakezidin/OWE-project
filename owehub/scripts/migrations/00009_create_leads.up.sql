@@ -39,7 +39,7 @@ CREATE TABLE if NOT EXISTS leads_info (
     status_id INT DEFAULT 0,
     created_by INT NOT NULL,
     last_updated_by INT,
-    lead_source VARCHAR(255)
+    lead_source VARCHAR(255),
     FOREIGN KEY (created_by) REFERENCES user_details(user_id),
     FOREIGN KEY (last_updated_by) REFERENCES user_details(user_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
@@ -140,28 +140,15 @@ CREATE OR REPLACE FUNCTION create_lead(
     p_street_address VARCHAR, 
     p_zipcode VARCHAR, 
     p_notes VARCHAR,
-    p_sales_rep_name VARCHAR,
-    p_lead_source VARCHAR
+    p_salerep_id INT,
+    p_lead_source VARCHAR,
+    p_frontend_base_url VARCHAR
 ) RETURNS INT AS $$
 DECLARE
     v_lead_id INT;
     v_state_id INT;
-    v_zipcode_id INT;
     v_creator_user_id INT;
 BEGIN
-    -- Get the zipcode id
-    IF p_zipcode IS NOT NULL AND p_zipcode != '' THEN
-        SELECT id INTO v_zipcode_id
-        FROM zipcodes
-        WHERE zipcode = p_zipcode;
-
-        IF NOT FOUND THEN
-            RAISE EXCEPTION 'Zipcode with zipcode % not found', p_zipcode;
-        END IF;
-    ELSE
-        v_zipcode_id := NULL;
-    END IF;
-
     -- Get the creator user_id via email_id
     SELECT user_id INTO v_creator_user_id
     FROM user_details
@@ -182,8 +169,9 @@ BEGIN
         street_address,
         zipcode,
         notes,
-        sales_rep_name,
-        lead_source
+        salerep_id,
+        lead_source,
+        frontend_base_url
     ) VALUES (
         v_creator_user_id,
         p_first_name,
@@ -191,10 +179,11 @@ BEGIN
         p_email_id,
         p_phone_number,
         p_street_address,
-        v_zipcode_id, 
+        p_zipcode, 
         p_notes,
-        p_sales_rep_name,
-        p_lead_source
+        p_salerep_id,
+        p_lead_source,
+        p_frontend_base_url
     ) RETURNING leads_id INTO v_lead_id;
 
     -- Return the inserted lead's ID

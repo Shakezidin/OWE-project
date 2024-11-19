@@ -115,14 +115,16 @@ func SendEmail(request SendEmailRequest) error {
 	to := mail.NewEmail(request.ToName, request.ToEmail)
 	message := mail.NewSingleEmail(from, request.Subject, to, "", emailHtml)
 	client := sendgrid.NewSendClient(types.CommGlbCfg.EmailCfg.SendgridKey)
-	resp, err = client.Send(message)
+	// resp, err = client.Send(message)
+
+	log.FuncDebugTrace(0, "Sending email with message %+v, to client %+v, resp: %+v", message, client, resp)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email err: %v", err)
 		return err
 	}
 
-	log.FuncDebugTrace(0, "Email sent to %s with response %+v, status code %d", request.ToEmail, resp, resp.StatusCode)
+	// log.FuncDebugTrace(0, "Email sent to %s with response %+v, status code %d", request.ToEmail, resp, resp.StatusCode)
 
 	return nil
 }
