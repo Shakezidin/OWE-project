@@ -51,7 +51,7 @@ func (api *ResendEnvelopeApi) Call() (*map[string]interface{}, error) {
 
 	reqBody := map[string]interface{}{"signers": api.Recipients}
 
-	err = callApi(http.MethodPost, apiUrl, reqBody, &respBody)
+	err = callApi(http.MethodPut, apiUrl, reqBody, &respBody)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to resend docusign envelope err %v", err)
 		return nil, errors.New("server side error when resending docusign envelope")
