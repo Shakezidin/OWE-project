@@ -636,6 +636,7 @@ const ProjectStatus = () => {
                     <SelectOption
                       options={projectOption}
                       value={selectedProject}
+                      disabled={isLoading}
                       lazyRender
                       onChange={(val) => {
                         if (val) {
