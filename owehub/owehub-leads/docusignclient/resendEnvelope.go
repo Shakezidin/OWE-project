@@ -47,7 +47,7 @@ func (api *ResendEnvelopeApi) Call() (*map[string]interface{}, error) {
 		return nil, err
 	}
 
-	apiUrl := "/restapi/v2.1/accounts/{accountId}/envelopes/" + api.EnvelopeId + "/recipients?resend_envelop=true"
+	apiUrl := "/restapi/v2.1/accounts/{accountId}/envelopes/" + api.EnvelopeId + "/recipients?resend_envelope=true"
 
 	reqBody := map[string]interface{}{"signers": api.Recipients}
 
