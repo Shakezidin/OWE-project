@@ -248,6 +248,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	singleData = make(map[string]bool)
 
 	for _, item := range data {
+
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
@@ -585,6 +586,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 		}
 	}
+	RecordCount = int64(len(perfomanceList.PerfomanceList))
+
+	
 
 	agngRpForUserId, err := agngRpData(forAGRp, dataReq)
 	if err != nil {
