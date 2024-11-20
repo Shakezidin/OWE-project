@@ -239,8 +239,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
-
-	RecordCount = int64(len(data))
 	perfomanceList := models.PerfomanceListResponse{}
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 	var uniqueIds []string
@@ -248,6 +246,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	singleData = make(map[string]bool)
 
 	for _, item := range data {
+
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
@@ -260,6 +259,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			continue
 		}
+
+		RecordCount++
 
 		Customer, ok := item["home_owner"].(string)
 		if !ok || UniqueId == "" {
@@ -585,7 +586,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 		}
 	}
-
 	agngRpForUserId, err := agngRpData(forAGRp, dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get agngRpForUserId for Unique ID: %v err: %v", uniqueIds, err)

@@ -526,7 +526,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         { label: 'View Proposal', value: 'viewProposal' },
         ...(lead.docusign_label !== 'Completed' ? [{ label: 'Edit Proposal', value: 'editProposal' }] : []),
         { label: 'Download Proposal', value: 'download' },
-        ...(lead.proposal_id && ((lead.docusign_label !== 'Completed') && (lead.docusign_label === "") &&  (lead.docusign_label !== "Sent")) ? [{ label: 'Sign Document', value: 'signature' }] : []), // To ensure that the "Sign Document" option is displayed when docusign_label is either null, an empty string (''), or not equal to 'Completed'
+        ...(lead.proposal_id && (lead.docusign_label !== 'Completed' || lead.docusign_label === 'Sent' || lead.docusign_label === '') ? [{ label: lead.docusign_label === 'Sent' ? "Resend for Sign Document": 'Sign Document', value: 'signature' }] : []),
         { label: 'Reschedule Appointment', value: 'app_sched' },
         { label: 'Refresh Url', value: 'renew_proposal' },
       ];
@@ -545,46 +545,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       { label: 'Schedule Appointment', value: 'app_sched' },
     ];
   };
-
-
-
-
-
-  const [salesrep, setSalesRep] = useState<{ [key: string]: string }>({});
-  const [loadEdit, setLoadEdit] = useState<number | null>(null);
-
-  const handleConfrm = async (e: any, leadId: any) => {
-    setLoadEdit(leadId);
-    e.preventDefault();
-    if (salesrep[leadId]) {
-      try {
-        const response = await postCaller(
-          'edit_leads',
-          {
-            leads_id: leadId,
-            sales_rep_name: salesrep[leadId]
-          },
-          true
-        );
-
-        if (response.status === 200) {
-          toast.success('Lead Updated Successfully');
-          setRefresh((prev) => prev + 1);
-        } else if (response.status >= 201) {
-          toast.warn(response.message);
-        }
-        setLoadEdit(null);
-      } catch (error) {
-        setLoadEdit(null);
-        console.error('Error submitting form:', error);
-      }
-    }
-    setLoadEdit(null);
-  };
-
-
-
-
 
   return (
     <>

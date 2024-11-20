@@ -80,7 +80,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   setQc,
   setCurrentFilter
 }) => {
-  const [visibleDiv, setVisibleDiv] = useState(0);
+  const [visibleDiv, setVisibleDiv] = useState(-1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -501,6 +501,16 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
               refresh={refresh}
               setRefresh={setRefresh}
             />
+
+            {visibleDiv === -1 && (
+              <>
+                {' '}
+                  <div className={classes.loadModalDefault}>
+                    <MicroLoader />
+                  </div>
+              </>
+            )}
+
             {visibleDiv === 0 && (
               <AppointmentScheduler
                 setVisibleDiv={setVisibleDiv}
@@ -793,7 +803,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         opacity: (qcComp || !leadId) ? 0.6 : 1,
                         cursor: (qcComp || !leadId) ? 'not-allowed' : 'pointer',
                       }}
-                     onClick={handleQCComplete}
+                      onClick={handleQCComplete}
                     >
                       {qcComp ? "Wait..." : "Confirm"}
                     </button>

@@ -2103,7 +2103,7 @@
 .filterdays{
   display: flex;
   justify-content:flex-start;
-  gap:1rem;
+  gap:0.5rem;
 }
 .startDay, .endDay
 {
@@ -2407,7 +2407,6 @@
   position: absolute;
   top:48px;
   right: 45px;
-  /* border: 1.4px solid #377CF6; */
   border-radius: 11.2px;
   box-shadow: -2px 4px 12px 0px #00000024;
 }
@@ -2440,10 +2439,8 @@
 .breakLine {
   width: 90%;
   height: 1px;
-  /* background-color: #DBDBDB; */
   content: '';
   display: block;
-  /* margin-bottom: 10px; */
   background-image: repeating-linear-gradient(to right, transparent, transparent 4px, #DBDBDB 5px, #DBDBDB 9px); /* Adjust spacing here */
 }
 
@@ -2470,18 +2467,13 @@
   width: 55px;
   height: fit-content;
   color: #424242;
-  padding-left: 3px;
 }
 .mThen, .lThen{
   width: 47px;
   height: fit-content;
 
 }
-.filterdays{
-  display: flex;
-  justify-content:flex-start;
-  gap:1rem;
-}
+
 .startDay, .endDay
 {
   display: flex;
@@ -2496,7 +2488,6 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* border:1px solid #7D7D7D; */
   border:none;
   border-radius: 5.6px;
   padding: 8px 4px;
@@ -2524,7 +2515,6 @@
   padding: 10px 4px;
   border: 1px solid #377CF6;
   border-radius: 5.6px;
-  /* color: rgb(0, 162, 255); */
   width: 97px;
   height: 32px;
   display: flex;
@@ -2561,19 +2551,6 @@
   justify-content: center;
   align-items: center;
 }
-/* .daysRemaining{
-  text-align: center;
-  color: #EBA900;
-  font-size: 10px;
-  font-weight: 600;
-} */
-/* .simpleLine{
-  height: 1px;
-  width: 74%;
-  margin:0 20px;
-  background-color: #EBA900;
-} */
-
 .rangeOption{
   font-size: 12px;
 }
@@ -2669,7 +2646,7 @@
 .filterdays {
   display: flex;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-top: 6px !important;
 }
 
@@ -2692,4 +2669,15 @@
 }
 .pipeline-inputBox-div-para{
   font-size: 12px;
+}
+
+.pipeLine-filter-ActiveSign{
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background-color: #2DC74F;
+  position: relative;
+  top: -14px;
+  right: -9px;
+  border: 1px solid rgb(255, 255, 255);
 }

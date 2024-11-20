@@ -76,6 +76,10 @@ const ProjectPerformence = () => {
 
   const [mapHovered, setMapHovered] = useState(false);
 
+  //Ajay chaudhary code starts from here
+
+  const [filterAplied,setFilterAplied]=useState<boolean>(false);
+
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
     value: string;
@@ -145,12 +149,10 @@ const ProjectPerformence = () => {
   const handleMinChange = (e: any) => {
     const value = e.target.value;
 
-    // Check if input length exceeds 4
     if (value.length > 3) {
       return;
     }
 
-    // Parse the value or default to 0 if it's invalid
     const newMinValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
     if(newMinValue>180)
     {
@@ -164,16 +166,10 @@ const ProjectPerformence = () => {
   const handleMaxChange = (e: any) => {
     const value = e.target.value;
 
-    // Check if input length exceeds 4
+
     if (value.length > 3 || value>180) {
       return;
     }
-    
-
-
-
-
-    // Parse the value or default to 0 if it's invalid
     const newMaxValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
     set_maxValue(newMaxValue);
   };
@@ -188,7 +184,6 @@ useEffect(()=>{
     set_maxValue(maxi);
   }
 },[minValue])
-  const [FilterFlag, setFilterFlag] = useState(false);
   const HandleFilterClick = () => {
     setOpenFilter(prev => !prev);
   }
@@ -974,8 +969,6 @@ useEffect(()=>{
                   onChange={(e) => {
                     const input = e.target.value;
                     const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
-
-                    // Check if input contains valid characters and length is <= 50
                     if (regex.test(input) && input.length <= 50) {
                       setSearch(input);
                       handleSearchChange(e);
@@ -1026,11 +1019,14 @@ useEffect(()=>{
                     <img
                       src={ICONS.fil_white}
                       alt=""
-                      style={{ height: '15px', width: '15px' }}
+                      style={{ height: '15px', width: '15px',position:filterAplied?'relative':'static', left:filterAplied? '5px' : '0px' }}
                       className='filterImg'
-                    // className="downloading-animation"
-                    />
 
+                   
+                    />
+                    { filterAplied &&
+                      <div className='pipeLine-filter-ActiveSign'></div>
+                    }
 
                   </div>
 
@@ -1079,29 +1075,7 @@ useEffect(()=>{
                 place="bottom"
                 content="Filter"
               />}
-              {openFilter && <div ref={filterRef} className='dropDownFilter'>
-                {/* <div className='filterOptions'>
-  <div className='eachOption'>
-    <input type='checkbox'/>
-    <p className='options'>Project Age</p>
-  </div>
-  <div className='eachOption'>
-    <input type='checkbox' />
-    <p className='options'>NTP</p>
-  </div>
-  <div className='eachOption'>
-    <input type='checkbox' />
-    <p className='options'>Permitting</p>
-  </div>
-  <div className='eachOption'>
-    <input type='checkbox' />
-    <p className='options'>Install</p>
-  </div>
-  <div className='eachOption'>
-    <input type='checkbox' />
-    <p className='options'>PTO</p>
-  </div>
-</div> */}
+              {openFilter && !loading && <div ref={filterRef} className='dropDownFilter'>
 
                 <div className='filterOptions'>
                   {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
@@ -1153,7 +1127,7 @@ useEffect(()=>{
                   <div className='filterdays'>
                     <div className='startDay'>
                       <div className='mThen'>
-                        <p className='moreThen'>More then</p>
+                        <p className='moreThen'>More than</p>
                       </div>
                       <label className='pipeline-inputBox-div'>
                       <input
@@ -1161,7 +1135,6 @@ useEffect(()=>{
                         value={minValue === 0 ? '' : minValue}
                         type="text"
                         onChange={handleMinChange}
-                        // onFocus={(e) => e.target.value = ''}
                         onBlur={() => {
                           set_minValue(minValue <= 0 ? 1 : minValue);
                         }}
@@ -1175,7 +1148,7 @@ useEffect(()=>{
                     </div>
                     <div className='endDay'>
                       <div className='lThen'>
-                        <p className='lessThen'>Less then</p>
+                        <p className='lessThen'>Less than</p>
                       </div>
                       <label className='pipeline-inputBox-div'>
                       <input
@@ -1184,7 +1157,7 @@ useEffect(()=>{
                         type="text"
                         onChange={handleMaxChange}
                         disabled={minValue === 180}
-                        // onFocus={(e) => e.target.value = ''}
+                        
                         onBlur={() => {
                           set_maxValue(maxValue <= 0 ? 180 : maxValue);
                           
@@ -1259,17 +1232,38 @@ useEffect(()=>{
                       setCheckedStates(resetStates);
                       set_maxValue(75);
                       set_minValue(25);
-
+                      setPage(1);
                       // Also clear the checkedOptions array
                       setCheckedOptions([]); setOpenFilter(false); 
+                      setFilterAplied(false);
+                      setFiltered(prev=>!prev);
+                      
                     }} style={{ cursor: "pointer" }}> Cancel </div>
 
 
-                    <div className='applyButton' style={{ cursor: "pointer" }} onClick={() => {
-                      (minValue > maxValue)?(`${toast.error("In Range Min value can not be more than Max value")} ${set_minValue(25)} ${set_maxValue(70)}`):setFiltered(prev => !prev);
-                      setOpenFilter(false);
-                      setFilterFlag(false);
-                    }}> Apply </div>
+                    <div className='applyButton' 
+                    style={{cursor:'pointer'}}
+                    onClick={() => {
+                    if (minValue > maxValue) {
+                    toast.error("In Range Min value can not be more than Max value");
+                    set_minValue(25);
+                    set_maxValue(70);
+                    setFilterAplied(false);
+                    }
+                    else if(fieldData.length===0)
+                    {
+                      toast.error("Please Select atleast one Option!");
+                    }
+                    else {
+                    setFiltered(prev => !prev);
+                    setOpenFilter(false);
+                    setFilterAplied(true);
+                    setPage(1);
+                    }
+      
+      
+                    }}
+                   > Apply </div>
                   </div>
                 </div>
 
