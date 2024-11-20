@@ -341,7 +341,7 @@ table tbody tr:hover {
   padding: 0 14px;
   height: 36px;
   width: 399px !important;
-  margin-right: 11px;
+  margin-right: 10px;
   box-shadow: 1px solid var(--primary-color);
 }
 
