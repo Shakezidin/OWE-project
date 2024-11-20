@@ -240,7 +240,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
-	RecordCount = int64(len(data))
 	perfomanceList := models.PerfomanceListResponse{}
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 	var uniqueIds []string
@@ -260,6 +259,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			continue
 		}
+
+		RecordCount++
 
 		Customer, ok := item["home_owner"].(string)
 		if !ok || UniqueId == "" {
