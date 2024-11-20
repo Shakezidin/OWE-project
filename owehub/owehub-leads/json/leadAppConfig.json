@@ -1,7 +1,7 @@
 {
-  "auroraTenantId": "7f4bc152-fd84-47dd-baba-8da817c97668",
-  "auroraBearerToken": "sk_prod_74a24062b4fead4740b87cb1",
-  "auroraApiBaseUrl": "https://api.aurorasolar.com",
+  "auroraTenantId": "cf6dc6cc-0784-49aa-9246-c7a09b68a09c",
+  "auroraBearerToken": "sk_sand_5a12a3d6bb1964b970e20858",
+  "auroraApiBaseUrl": "https://api-sandbox.aurorasolar.com",
   "appointmentSenderEmail": "shivam.petwal@ourworldenergy.com",
   "awsS3Bucket": "owe-assets",
   "awsS3Region": "ap-southeast-2",
