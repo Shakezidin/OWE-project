@@ -517,8 +517,11 @@ const ProjectStatus = () => {
 
   useEffect(() => {
     if (projectId) {
+      const anotheropt = projectOption.filter((item) => item.value === projectId)
       const opt = { label: projectId, value: projectId };
-      setSelectedProject(opt);
+      console.log(anotheropt, "kjgfh")
+      setSelectedProject(anotheropt[0])
+
     } else if (projectOption.length) {
       const val = {
         label: projectOption[0].label || '',
@@ -530,12 +533,12 @@ const ProjectStatus = () => {
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
-    if (selectedProject.value) {
-      dispatch(getProjectDetail(selectedProject.value));
+    if (selectedProject?.value) {
+      dispatch(getProjectDetail(selectedProject?.value));
     } else if (projectOption.length) {
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
-  }, [selectedProject.value]);
+  }, [selectedProject?.value]);
 
   useEffect(() => {
     if (projectId) {
@@ -603,6 +606,7 @@ const ProjectStatus = () => {
 
   const [isHovered, setIsHovered] = useState(-1);
 
+ 
   return (
     <>
       <QCModal
@@ -631,7 +635,7 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className="cust-name">
-                      Customer name:<pre> {projectDetail.home_owner}</pre>
+                      Customer name:<pre> {projectName || projectDetail.home_owner}</pre>
                     </span>
                     <SelectOption
                       options={projectOption}
