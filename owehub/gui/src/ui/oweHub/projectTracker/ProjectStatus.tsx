@@ -635,7 +635,7 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className="cust-name">
-                      Customer name:<pre> {projectName || projectDetail.home_owner}</pre>
+                      Customer name:<pre> { projectDetail.home_owner}</pre>
                     </span>
                     <SelectOption
                       options={projectOption}
