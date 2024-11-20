@@ -61,7 +61,6 @@ const AddNew = () => {
     { value: 'W-TILE', label: 'W-TILE' },
     { value: 'DIMENSIONAL SHINGLE', label: 'DIMENSIONAL SHINGLE' },
     { value: 'FLAT TAR & GRAVEL', label: 'FLAT TAR & GRAVEL' },
-    { value: 'LOW SLOPE', label: 'LOW SLOPE' },
     { value: 'STANDING SEAM - METAL', label: 'STANDING SEAM - METAL' },
   ];
 
@@ -236,7 +235,7 @@ const AddNew = () => {
     navigate(-1);
   };
 
-  useEscapeKey(() => navigate(-1));
+  // useEscapeKey(() => navigate(-1));
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -304,13 +303,13 @@ const AddNew = () => {
   return (
     <div className={styles.parent_div}>
       <SalesRepSchedulePage isOpen={filterOpen} handleClose={filterClose} />
-      <div className={styles.an_top}>Add New Project</div>
+      {/* <div className={styles.an_top}>Add New Project</div> */}
       <div className={` mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
               <div className={styles.an_head}>
-                <p>Enter Customer Information</p>
+              <div className={styles.an_top}>Add New Project</div>
                 <span
                   className={styles.back_button}
                   onClick={handleBack}
@@ -355,7 +354,7 @@ const AddNew = () => {
                           }}
                           name="first_name"
                           maxLength={20}
-                          backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -396,7 +395,7 @@ const AddNew = () => {
                           }}
                           name="last_name"
                           maxLength={20}
-                          backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -416,8 +415,8 @@ const AddNew = () => {
                           placeholder="Enter Email"
                           onChange={handleInputChange}
                           name="email_id"
-                          maxLength={60}
-                          backgroundColor="#F3F3F3"
+                          maxLength={50}
+                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -438,7 +437,7 @@ const AddNew = () => {
                           name="mobile_number"
                           maxLength={20}
                           className={styles.custom_Input}
-                          backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
                         />
@@ -458,7 +457,7 @@ const AddNew = () => {
                           onChange={handleInputChange}
                           name="address"
                           maxLength={250}
-                          backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -495,7 +494,7 @@ const AddNew = () => {
                               { isFocused, selectProps }
                             ) => ({
                               ...baseStyles,
-                              backgroundColor: '#F3F3F3',
+                              // backgroundColor: '#F3F3F3',
                               border: `1px solid ${
                                 isFocused || selectProps?.value
                                   ? '#377CF6'
@@ -526,7 +525,7 @@ const AddNew = () => {
                             }),
                             placeholder: (baseStyles) => ({
                               ...baseStyles,
-                              color: '#777777',
+                              color: '#292b2e',
                               fontSize: '12px',
                               padding: '5px',
                               transition: 'color 0.2s ease',
@@ -534,11 +533,13 @@ const AddNew = () => {
                                 color: '#377CF6', // Change placeholder color on hover
                               },
                             }),
-                            dropdownIndicator: (baseStyles, { isFocused }) => ({
+                            dropdownIndicator: (baseStyles, { isFocused, selectProps }) => ({
                               ...baseStyles,
-                              color: isFocused ? '#377CF6' : '#777777', // Change SVG icon color on hover and focus
+                              transform: selectProps.menuIsOpen ? 'rotate(180deg)' : 'none', // Rotate indicator when menu is open
+                              transition: 'transform 0.3s ease',
+                              color: isFocused || selectProps.menuIsOpen ? '#377CF6' : '#777777',
                               '&:hover': {
-                                color: '#377CF6', // Change color on hover
+                                color: '#377CF6',
                               },
                             }),
                             indicatorSeparator: () => ({
@@ -547,14 +548,13 @@ const AddNew = () => {
                             option: (baseStyles, state) => ({
                               ...baseStyles,
                               fontSize: '13px',
-                              color: state.isSelected ? '#ffffff' : '#000000',
-                              backgroundColor: state.isSelected
-                                ? '#377CF6'
-                                : '#ffffff',
+                              color: state.isSelected ? '#ffffff' : '#000000', // Text color based on selection
+                              // backgroundColor: state.isSelected
+                              //   ? '#377CF6'  
+                              //   : '#ffffff', 
                               '&:hover': {
-                                backgroundColor: state.isSelected
-                                  ? '#0493CE'
-                                  : '#DDEBFF',
+                                // Prevent hover effect on selected items
+                                // backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF', 
                               },
                               cursor: 'pointer',
                             }),
@@ -562,10 +562,19 @@ const AddNew = () => {
                               ...baseStyles,
                               width: '85%',
                             }),
-                            menuList: (baseStyles) => ({
-                              ...baseStyles,
-                              maxHeight: '150px',
-                              padding: "4px"
+                            menuList: (base) => ({
+                              ...base,
+                              '&::-webkit-scrollbar': {
+                                scrollbarWidth: 'thin',
+                                scrollBehavior: 'smooth',
+                                display: 'block',
+                                scrollbarColor: 'rgb(173, 173, 173) #fff',
+                                width: 8,
+                              },
+                              '&::-webkit-scrollbar-thumb': {
+                                background: 'rgb(173, 173, 173)',
+                                borderRadius: '30px',
+                              },
                             }),
                           }}
                         />
@@ -605,9 +614,10 @@ const AddNew = () => {
                                 ? '#377CF6'
                                 : '#292B2E',
                             borderWidth: '1px', // Ensure border is visible
-                            color: formData.stories_in_house > 0
-                          ? ''
-                          : '#777777',
+                          //   color: formData.stories_in_house > 0
+                          // ? ''
+                          // : '#777777',
+                          color:'#292b2e'
                           }}
                           
                         />
@@ -651,7 +661,7 @@ const AddNew = () => {
                           onKeyDown={handleNumericInput}
                           name="house"
                           maxLength={7}
-                          backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -689,7 +699,7 @@ const AddNew = () => {
                           onKeyDown={handleNumericInput}
                           name="size"
                           maxLength={7}
-                          backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
