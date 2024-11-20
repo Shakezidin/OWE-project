@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { HiSortDescending } from 'react-icons/hi';
 import styles from './Sort.module.css';
 import useEscapeKey from '../../../../hooks/useEscape';
+import { Tooltip } from 'react-tooltip';
 
 interface SortOption {
   label: string;
@@ -46,9 +47,10 @@ const Sort: React.FC<SortProps> = ({
 
 
   return (
-    <div ref={dropdownRef} className={styles.sortContainer}>
+    <div ref={dropdownRef} className={styles.sortContainer}
+>
       <div
-        className={`${styles.sortIcon} ${isOpen ? styles.active : ''}`}
+        className={`${styles.sortIcon} ${isOpen ? styles.active : ''}`}  data-tooltip-id="Sort"
         onClick={() => setIsOpen(!isOpen)}
       >
         <HiSortDescending size={19} />
@@ -68,6 +70,22 @@ const Sort: React.FC<SortProps> = ({
           ))}
         </div>
       )}
+
+<Tooltip
+        style={{
+          zIndex: 20,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: "400"
+        }}
+        offset={5}
+        delayShow={300}
+        id="Sort"
+        place="bottom"
+        content="Sort"
+      />
     </div>
   );
 };

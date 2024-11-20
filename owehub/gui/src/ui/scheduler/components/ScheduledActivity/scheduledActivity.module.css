@@ -78,7 +78,22 @@
     margin-top: 8px;
     margin-left: 8px;
     margin-right: 8px;
+    transition: transform 0.3s ease;
 }
+/* .date_container:hover{
+    transform: scale(1.02);
+} */
+
+.date_container:hover .appointment_quantity,
+.date_container:hover .date_button {
+  transform: scale(1.07);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* .date_container:hover .appointment_quantity {
+    transform: scale(1.07);
+    transition: transform 0.3s ease-in-out;
+  } */
 
 .name_container {
     display: flex;
@@ -303,6 +318,7 @@
     transform: scale(1.05);
 
 }
+
 
 @media (max-width: 1210px) {
     .phone_container {
