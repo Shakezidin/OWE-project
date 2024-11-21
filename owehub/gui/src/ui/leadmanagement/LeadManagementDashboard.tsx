@@ -1444,7 +1444,7 @@ const LeadManagementDashboard = () => {
                           color: '#377CF6',
                         },
                         '& .css-tj5bde-Svg': {
-                          color: '#377CF6',
+                          color:  state.menuIsOpen?'#377CF6':"#000",
                         },
                       },
                       '&:hover': {

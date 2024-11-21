@@ -3,13 +3,14 @@ import Styles from './scheduledActivity.module.css';
 import { TbChevronDown } from 'react-icons/tb';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
-import Select, {
-  SelectOption,
-} from '../../SalesRepScheduler/components/Select';
+// import Select, {
+//   SelectOption,
+// } from '../../SalesRepScheduler/components/Select';
 import { FaXmark } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import useEscapeKey from '../../../../hooks/useEscape';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
+import SelectOption from '../../../components/selectOption/SelectOption';
 
 interface Appointment {
   name: string;
@@ -17,11 +18,22 @@ interface Appointment {
   contact_number: string;
   scheduled_time: string;
   status: 'Pending' | 'Approved';
+  state?: string; 
 }
 
 interface AppointmentData {
   date: string;
   appointment: Appointment[];
+}
+
+interface SelectOption {
+  label: string;
+  value: string;
+}
+
+interface Option {
+  label: string;
+  value: string;
 }
 
 interface ScheduledActivityProps {
@@ -32,7 +44,7 @@ interface ScheduledActivityProps {
 function ScheduledActivity({ onClose }: ScheduledActivityProps) {
   const [selectedDate, setSelectedDate] = useState<number>(-1);
   const [collapse, setCollapse] = useState<number>(-1);
-  const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([]);
+  const [selectedState, setSelectedState] = useState<SelectOption>({ label: 'All State', value: 'All' });
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   const isMobile = useMatchMedia('(max-width:600px)');
@@ -47,6 +59,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '9:45 AM',
           status: 'Pending',
+          state: 'Arizona'
         },
         {
           name: 'Jacob Martin',
@@ -54,6 +67,8 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '11:45 AM',
           status: 'Pending',
+          state: 'Texas'
+
         },
         {
           name: 'Jacob Martin',
@@ -61,6 +76,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '2:45 PM',
           status: 'Approved',
+          state: 'New Mexico'
         },
       ],
     },
@@ -73,6 +89,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '9:45 AM',
           status: 'Pending',
+          state: 'Dallas'
         },
         {
           name: 'Jacob Martin',
@@ -80,6 +97,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '11:45 AM',
           status: 'Approved',
+          state: 'California'
         },
       ],
     },
@@ -87,11 +105,12 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
       date: '30 Oct 2024',
       appointment: [
         {
-          name: 'Jacob Martin',
+          name: 'Jon Jones',
           email: 'Alexsimon322@gmail.com',
           contact_number: '(831) 544-1235',
           scheduled_time: '9:45 AM',
           status: 'Pending',
+          state: 'New York'
         },
       ],
     },
@@ -101,17 +120,46 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
     },
   ];
 
-  const stateOptions: SelectOption[] = [
-    { label: 'All', value: 'ALL' },
-    { label: 'Arizona', value: 'AZ' },
-    { label: 'Texas', value: 'TX' },
-    { label: 'New Mexico', value: 'NM' },
-  ];
+  // const stateOptions: SelectOption[] = [
+  //   { label: 'All', value: 'ALL' },
+  //   { label: 'Arizona', value: 'AZ' },
+  //   { label: 'Texas', value: 'TX' },
+  //   { label: 'New Mexico', value: 'NM' },
+  // ];
 
-  const handleSelectChange = (options: SelectOption[]) => {
-    setSelectedOptions(options);
-    console.log(options);
+   // Get unique states from appointments
+   const getAvailableStates = (): SelectOption[] => {
+    const states = new Set<string>();
+    appointmentsData.forEach(data => {
+      data.appointment.forEach(apt => {
+        if (apt.state) {
+          states.add(apt.state);
+        }
+      });
+    });
+    
+    return [
+      { label: 'All State', value: 'All' },
+      ...Array.from(states).map(state => ({
+        label: state,
+        value: state
+      }))
+    ];
   };
+
+  const handleStateChange = (option: Option | null) => {
+    if (option) {
+      setSelectedState(option);
+    } else {
+      // Handle null case - could reset to "All State" or other default behavior
+      setSelectedState({ label: 'All State', value: 'All' });
+    }
+  };
+
+  // const handleSelectChange = (options: SelectOption[]) => {
+  //   setSelectedOptions(options);
+  //   console.log(options);
+  // };
 
   const handleEdit = (appointment: Appointment) => {
     console.log('Edit:', appointment);
@@ -134,18 +182,42 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
-  useEscapeKey(handleClose);
+
+  useEscapeKey(() => {setCollapse(-1)});
+    useEscapeKey(handleClose);
   
   return (
     <div className={`${Styles.main_container} ${isClosing ? Styles.closing : ''}`}>
       <div className={Styles.header}>
         <div className={Styles.title}>Scheduled Activity</div>
         <div className={Styles.header_right}>
-          <Select
-            options={stateOptions}
-            selectedOptions={selectedOptions}
-            onChange={handleSelectChange}
-            placeholder="State"
+        <SelectOption
+            options={getAvailableStates()}
+            controlStyles={{
+              marginTop: 0,
+              minHeight: 30,
+              '@media (min-width: 768px)': {
+                flex: 1,
+              },
+            }}
+            onChange={handleStateChange}
+            value={selectedState}
+            menuStyles={{
+              minWidth: 135,
+              flexBasis: 115,
+              '@media (min-width: 768px)': {
+                flex: 1,
+              },
+            }}
+            menuListStyles={{
+              fontWeight: 500,
+              fontSize:'13px',
+            }}
+            singleValueStyles={{
+              fontWeight: 500,
+              fontSize:'13px',
+            }}
+            width="130px"
           />
           <span onClick={handleClose} className={Styles.back_button}>
             <FaXmark className={Styles.icon} />
@@ -171,7 +243,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
                 }}
                 className={`${Styles.date_container} ${selectedDate === index ? Styles.open : ''}`}
               >
-                <div>
+                <div className={Styles.appointment_quantity}>
                   {data.appointment.length > 0
                     ? `${data.appointment.length} Appointment${data.appointment.length > 1 ? 's' : ''}`
                     : 'No Appointments'}
