@@ -48,7 +48,7 @@ type ForAgRp struct {
 
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		singleData         map[string]bool
+		// singleData         map[string]bool
 		err                error
 		dataReq            models.PerfomanceStatusReq
 		data               []map[string]interface{}
@@ -244,7 +244,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 	var uniqueIds []string
 
-	singleData = make(map[string]bool)
+	// singleData = make(map[string]bool)
 
 	for _, item := range data {
 		// if no unique id is present we skip that project
@@ -254,11 +254,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			continue
 		}
 
-		if !singleData[UniqueId] {
-			singleData[UniqueId] = true
-		} else {
-			continue
-		}
+		// if !singleData[UniqueId] {
+		// 	singleData[UniqueId] = true
+		// } else {
+		// 	continue
+		// }
 
 		RecordCount++
 
