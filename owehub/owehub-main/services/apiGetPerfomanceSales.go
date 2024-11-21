@@ -29,7 +29,7 @@ import (
 ******************************************************************************/
 func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		singleData         map[string]bool
+		// singleData         map[string]bool
 		err                error
 		dataReq            models.PerfomanceTileDataReq
 		data               []map[string]interface{}
@@ -219,7 +219,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	singleData = make(map[string]bool)
+	// singleData = make(map[string]bool)
 	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 
 	for _, item := range data {
@@ -230,11 +230,13 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 			continue
 		}
 
-		if !singleData[UniqueId] {
-			singleData[UniqueId] = true
-		} else {
-			continue
-		}
+		// if !singleData[UniqueId] {
+		// 	singleData[UniqueId] = true
+		// } else {
+		// 	continue
+		// }
+
+		RecordCount++
 
 		RecordCount++
 
