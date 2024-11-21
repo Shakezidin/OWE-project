@@ -565,7 +565,20 @@ table tbody tr:hover {
   justify-content: space-between;
   align-items: center;
   height: 50px;
+  background-color: red !important;
+
 }
+.PaginationFont select {
+  min-width: 44px;
+  min-height: 31.1px;
+  border-radius: 4px;
+  text-align: center; 
+  text-align-last: center;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+}
+
 
 .chevron_down {
   display: none !important;
