@@ -66,6 +66,13 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
+	if len(dataReq.PartnerName) <= 0 {
+		var dlrpayComm []models.DealerPayReportResponse
+		dlsPayCommResp.DealerPayComm = dlrpayComm
+		appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
+		return
+	}
+
 	tableName := "dealer_pay"
 	query = `SELECT home_owner, current_status, unique_id, dealer_code, marketing_fee, referral, rebate,
 				today, amount, sys_size, rl, contract_dol_dol, loan_fee, 
