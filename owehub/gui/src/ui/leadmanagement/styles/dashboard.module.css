@@ -565,7 +565,6 @@ table tbody tr:hover {
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  background-color: red !important;
 
 }
 .PaginationFont select {
