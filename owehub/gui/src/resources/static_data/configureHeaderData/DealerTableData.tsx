@@ -12,7 +12,7 @@ export const DealerTableData: Column[] = [
   {
     name: 'pay_rate',
     displayName: 'Pay Rate',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
