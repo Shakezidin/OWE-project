@@ -48,6 +48,7 @@ import DropdownCheckbox from '../../components/DropdownCheckBox';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 import Slider from 'rc-slider';
+import useEscapeKey from '../../../hooks/useEscape';
 interface Option {
   value: string;
   label: string;
@@ -411,13 +412,8 @@ useEffect(()=>{
     setExportShow(false);
   };
 
-  // useEffect(() => {
-  //   dispatch(getProjects());
 
-  //   return () => toast.dismiss();
-  // }, []);
-
-  // const showDropdown =
+  useEscapeKey(()=>setOpenFilter(false));
 
   const location = useLocation();
 
