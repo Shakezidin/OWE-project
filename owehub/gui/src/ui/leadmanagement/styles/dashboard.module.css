@@ -20,16 +20,15 @@
 .CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-
-/* .vertical2 ::selection {
-  background-color: #000 !important; 
-  color: white !important; 
+.chart_main_grid ::selection { 
+  background-color: var(--select-Context-Menu) !important; 
+  color: var(--white-color) !important; 
 }
-.vertical2 ::-webkit-selection {
-  background-color: red !important;
-  color: white !important;
-} */
-
+ 
+.pieChart ::selection {
+  background-color: var(--select-Context-Menu) !important;
+  color: var(--white-color)  !important;
+}
 .PaginationFont a {
   font-size: 12px !important;
 }
