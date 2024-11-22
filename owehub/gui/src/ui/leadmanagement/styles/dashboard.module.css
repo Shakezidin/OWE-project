@@ -20,7 +20,7 @@
 .CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-.chart_main_grid ::selection { 
+/* .chart_main_grid ::selection { 
   background-color: var(--select-Context-Menu) !important; 
   color: var(--white-color) !important; 
 }
@@ -28,7 +28,7 @@
 .pieChart ::selection {
   background-color: var(--select-Context-Menu) !important;
   color: var(--white-color)  !important;
-}
+} */
 .PaginationFont a {
   font-size: 12px !important;
 }
