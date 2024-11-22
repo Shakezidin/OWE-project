@@ -43,10 +43,13 @@ const LeadManagementNew = () => {
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
-    const lettersAndSpacesPattern = /^[A-Za-z\s]+$/;
-
+    const allowedPattern = /^[A-Za-z\s]+$/;
+ 
     if (name === 'first_name' || name === 'last_name') {
-      if (value === '' || lettersAndSpacesPattern.test(value)) {
+      // Only allow letters, spaces, $ and _
+      const sanitizedValue = value.replace(/[^A-Za-z\s$_]/g, '');
+     
+      if (sanitizedValue === value) { // Only update if no characters were stripped
         setFormData((prevData) => ({
           ...prevData,
           [name]: value,
@@ -57,7 +60,7 @@ const LeadManagementNew = () => {
       }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
-
+ 
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
@@ -68,12 +71,12 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: trimmedValue,
       }));
-
-
+ 
+ 
     } else if (name === 'zip_code') {
       const trimmedValueC = value.trim();
       const isValidZipCode = validateZipCode(trimmedValueC);
-
+ 
       if (trimmedValueC.length > 10) {
         setZip_codeError('Zip code should not exceed 10 characters');
       } else if (!isValidZipCode) {
@@ -86,9 +89,8 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: CorrectValue,
       }));
-    }
-    if (name === 'lead_source') {
-      if (value === '' || lettersAndSpacesPattern.test(value)) {
+    } else if (name === 'lead_source') {
+      if (value === '' || allowedPattern.test(value)) {
         setFormData((prevData) => ({
           ...prevData,
           [name]: value,
@@ -108,12 +110,13 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: value,
       }));
-
+ 
       const err = { ...errors };
       delete err[name];
       setErrors(err);
     }
   };
+
   const initialFormData = {
     first_name: '',
     last_name: '',

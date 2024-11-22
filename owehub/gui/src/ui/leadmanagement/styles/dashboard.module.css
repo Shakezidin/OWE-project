@@ -20,19 +20,15 @@
 .CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-/* .chartGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr  1fr !important;
-  margin-bottom: 24px;
-  background-color: #d1d6de;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-height: 200px;
-  padding: 20px;
-} */
-.pieChart text{
-  
+/* .chart_main_grid ::selection { 
+  background-color: var(--select-Context-Menu) !important; 
+  color: var(--white-color) !important; 
 }
+ 
+.pieChart ::selection {
+  background-color: var(--select-Context-Menu) !important;
+  color: var(--white-color)  !important;
+} */
 .PaginationFont a {
   font-size: 12px !important;
 }

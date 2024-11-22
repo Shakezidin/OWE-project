@@ -7,7 +7,7 @@
 
 .FixedColumn {
   position: sticky;
-  right: 0;
+  right: -1px;
   background-color: var(--white-color);
 }
 
@@ -269,7 +269,7 @@
   }
   .FixedColumnMobile {
     position: sticky;
-    right: 0;
+    right: -1px;
     display: table-cell;
     padding: 10px 5px 0 5px !important;
     border-left: 1.5px solid #E5E5E5;
