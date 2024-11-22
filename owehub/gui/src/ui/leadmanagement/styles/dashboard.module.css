@@ -21,17 +21,7 @@
   transform: scale(1.13);
 }
 
-/* .vertical1 ::selection {
-  background-color: #000 !important; 
-  color: white !important; 
-}
-
-.vertical1 ::-webkit-selection {
-  background-color: red !important;
-  color: white !important;
-}
-
-.vertical2 ::selection {
+/* .vertical2 ::selection {
   background-color: #000 !important; 
   color: white !important; 
 }
