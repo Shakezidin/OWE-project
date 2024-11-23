@@ -48,49 +48,20 @@ import {
   createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
   auroraWebProposal, auroraGenerateWebProposal, auroraListModules
 } from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import useMatchMedia from '../../hooks/useMatchMedia';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading, MdHeight } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
+import renderActiveShape from './components/RenderActiveShape/renderActiveShape';
+import CustomSelect from './components/CustomSelect/CustomSelect';
 
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
-interface StatusData {
-  name: string;
-  value: number;
-  color: string;
-}
-interface Design {
-  id: string;
-  external_provider_id: string;
-  name: string;
-  created_at: string;
-  system_size_stc: number;
-  system_size_ptc: number;
-  system_size_ac: number;
-  milestone: string | null;
-}
-
-interface Proposal {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  proposal_template_id: string;
-  proposal_link: string;
-}
-
-
-
-interface WebProposal {
-  url: string;
-  url_expired: boolean;
-}
 
 type SSEPayload =
   | {
@@ -119,13 +90,6 @@ function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
-function getCurrentDateInUserTimezone() {
-  const now = new Date();
-  const userTimezone = getUserTimezone();
-  return addMinutes(now, now.getTimezoneOffset());
-}
-
-
 const today = new Date();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
@@ -153,139 +117,6 @@ const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Quarter', start: startOfThreeMonthsAgo, end: today },
   { label: 'This Year', start: startOfThisYear, end: today },
 ];
-// shams end
-
-type Lead = {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  status: string;
-};
-
-
-
-const renderActiveShape = (props: any) => {
-  const RADIAN = Math.PI / 180;
-  const {
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-    payload,
-    percent,
-    value,
-  } = props;
-  const sin = Math.sin(-RADIAN * midAngle);
-  const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
-  const mx = cx + (outerRadius + 30) * cos;
-  const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 2;
-  const ey = my;
-  const textAnchor = cos >= 0 ? 'start' : 'end';
-
-  // Center text in pie chart
-
-  const splitText = (text: string, width: number) => {
-    const words = text.split(' ');
-    const lines = [];
-    let line = '';
-
-    words.forEach((word: string) => {
-      const testLine = line + word + ' ';
-      if (testLine.length > width) {
-        lines.push(line.trim());
-        line = word + ' ';
-      } else {
-        line = testLine;
-      }
-    });
-    lines.push(line.trim());
-    return lines;
-  };
-
-  const lines = splitText(payload.name, 15);
-  const isMobile = useMatchMedia('(max-width: 767px)');
-
-  return (
-    <g>
-      <text
-        x={cx}
-        y={cy - (lines.length - 1) * 6}
-        textAnchor="middle"
-        fill={fill}
-      >
-        {lines.map((line, index) => (
-          <tspan
-            key={index}
-            x={cx}
-            dy={index ? 15 : 0}
-            style={{
-              fontSize: '14px',
-              wordBreak: 'break-word',
-              fontWeight: 550,
-            }}
-          >
-            {line}
-          </tspan>
-        ))}
-      </text>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={outerRadius + 6}
-        outerRadius={outerRadius + 10}
-        fill={fill}
-      />
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
-        fill="none"
-      />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        textAnchor={textAnchor}
-        fill="#333"
-        style={{ fontSize: '14px' }}
-      >
-        {`${value}`}
-      </text>
-      <text
-        x={isMobile ? (ex + (cos >= 0 ? 1 : 1.4) * 12) : (ex + (cos >= 0 ? 1 : -1) * 12)}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill="#999"
-        style={{ fontSize: '12px' }}
-      >
-        {`(${(percent * 100).toFixed(2)}%)`}
-      </text>
-    </g>
-  );
-};
-
-
-
 
 const CustomTooltip = ({
   active,
@@ -333,16 +164,25 @@ const LeadManagementDashboard = () => {
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [designs, setDesigns] = useState([]);
-  // const [ChevronClick, setChevronClick] = useState(true);
-  const [proposal, setProposal] = useState<Proposal | null>(null);
-  const [isProjectLoading, setIsProjectLoading] = useState(false); // Project-specific loader
   const [selectedValue, setSelectedValue] = useState('ALL');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
+  const [refresh, setRefresh] = useState(1);
+  const [archived, setArchived] = useState(false);
+  const [isToggledX, setIsToggledX] = useState(true);
+  const [side, setSide] = useState<"left" | "right">('left');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
-  // shams start
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(
       periodFilterOptions.find((option) => option.label === 'This Week') || null
@@ -363,8 +203,6 @@ const LeadManagementDashboard = () => {
     setSelectedRanges([ranges.selection]);
   };
 
-
-
   const onReset = () => {
     const currentDate = new Date();
     setSelectedDates({ startDate: startOfThisWeek, endDate: today });
@@ -381,7 +219,6 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-
   const onApply = () => {
     const startDate = selectedRanges[0].startDate;
     const endDate = selectedRanges[0].endDate;
@@ -390,34 +227,9 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const dateRangeRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLDivElement>(null);
-  const [toggledId, setToggledId] = useState<number[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(1);
-  const [itemsPerPage, setItemPerPage] = useState(10);
-  const startIndex = (page - 1) * itemsPerPage + 1;
-  const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / itemsPerPage);
-  const [refresh, setRefresh] = useState(1);
-  const [archived, setArchived] = useState(false);
-  const [leadId, setLeadId] = useState(0);
-  const [projects, setProjects] = useState([]);
-  const [reschedule, setReschedule] = useState(false);
-  const [action, setAction] = useState(false);
-  const [webProposal, setWebProposal] = useState<WebProposal | null>(null);
-  const [isToggledX, setIsToggledX] = useState(true);
-  const [designID, setDesignsID] = useState<string>(''); // Change to string
-  const [leadIDPdf, setLeadPdf] = useState<string>(''); // Change to string
-  const [leadNamePdf, setLeadNamePdf] = useState<string>(''); // Change to string
-  const [side, setSide] = useState<"left" | "right">('left');
-
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
   };
-
 
   const goToNextPage = () => {
     setPage(page + 1);
@@ -477,8 +289,6 @@ const LeadManagementDashboard = () => {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
-  // shams end
-  // const itemsPerPage = 10;
   const navigate = useNavigate();
 
   const handleAddLead = () => {
@@ -516,18 +326,6 @@ const LeadManagementDashboard = () => {
       )
     );
   };
-
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-
 
 
   // ************************ API Integration By Saurabh ********************************\\
@@ -601,9 +399,6 @@ const LeadManagementDashboard = () => {
   const [archive, setArchive] = useState(false);
   const [ref, setRef] = useState(0);
 
-
-
-
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -645,19 +440,6 @@ const LeadManagementDashboard = () => {
 
     }
   }, [statusData1])
-
-  const getAuroraData = async () => {
-    setIsProjectLoading(true); // Start project-specific loader
-    try {
-      const response = await axios.get('http://localhost:5000/api/projects');
-      // Handle the response as needed
-      setProjects(response.data.projects);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setIsProjectLoading(false); // Stop project-specific loader
-    }
-  };
 
   const [searchTerm, setSearchTerm] = useState('')
   const [search, setSearch] = useState('');
@@ -708,11 +490,7 @@ const LeadManagementDashboard = () => {
         page_number: archive ? 1 : page,
       };
 
-      if (statusId == 5) {
-        getAuroraData(); // Call the function to get Aurora Project data
-      } else {
         dispatch(getLeads(data));
-      }
     }
   }, [
     searchTerm,
@@ -773,268 +551,6 @@ const LeadManagementDashboard = () => {
     setCurrentFilter('Projects'); // Example filter name
     setIsNewButtonActive(true);
   };
-
-  // Function to fetch project details
-  const fetchProjectDetails = async (projectId: string) => {
-    const monthlyEnergy = [
-      100, 200, 150, 100, 250, 300, 100, 400, 100, 350, 450, 100,
-    ]; // Example data
-    const monthlyBill = [50, 75, 60, 50, 80, 90, 90, 100, 110, 120, 50, 60]; // Example data
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/projects/${projectId}`
-      );
-      setSelectedProject(response.data); // Set the selected project details
-      fetchDesigns(projectId); // Fetch designs for the selected project
-      // fetchConsumptionProfile(projectId); // Fetch Consumption Profile for the selected project
-      // updateConsumptionProfile(projectId, monthlyEnergy, monthlyBill); // Fetch Update Consumption Profile for the selected project
-    } catch (error) {
-      console.error('Error fetching project details:', error);
-    }
-  };
-
-  // Function to fetch designs for a project
-  const fetchDesigns = async (projectId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/designs/${projectId}`
-      );
-      setDesigns(response.data.designs); // Set the designs for the selected project
-
-      // Find the most recently created design
-      if (response.data.designs && response.data.designs.length > 0) {
-        const sortedDesigns = response.data.designs.sort(
-          (a: Design, b: Design) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        const latestDesign = sortedDesigns[0];
-
-        // Generate new URL every time and fetch the proposal
-        generateWebProposalUrl(latestDesign.id); // Generate new URL every time.
-        // Pass external_provider_id and name to fetchWebProposal
-        // fetchWebProposal(latestDesign.id, latestDesign.external_provider_id, latestDesign.name);
-        setDesignsID(latestDesign.id);
-        setLeadPdf(latestDesign.external_provider_id);
-        setLeadNamePdf(latestDesign.name);
-
-      } else {
-        console.log('No designs found for this project');
-      }
-    } catch (error) {
-      console.error('Error fetching designs:', error);
-    }
-  };
-
-
-  // Function to fetch proposal for a design
-  const fetchProposal = async (designId: string) => {
-    try {
-      const response = await axios.get<{ proposal: Proposal }>(
-        `http://localhost:5000/api/proposals/${designId}`
-      );
-      setProposal(response.data.proposal);
-
-      // Automatically open the proposal link in a new tab
-      openProposalLink(response.data.proposal.proposal_link);
-    } catch (error) {
-      console.error('Error fetching proposal:', error);
-    }
-  };
-
-  // // Function to fetch Web Proposal for a design 
-  // const fetchWebProposal = async (designId: string, externalProviderId: string, projectName: string) => { 
-  //   try {
-  //     // Step 1: Fetch the web proposal from the API
-  //     const response = await axios.get<{ web_proposal: { url: string } }>(
-  //       `http://localhost:5000/api/web-proposals/${designId}`
-  //     );
-
-  //     const proposalLink = response.data.web_proposal.url;
-  //     console.log('Proposal Link:', proposalLink);
-
-  //     // Step 2: Open the link in a new tab (optional)
-  //     window.open(proposalLink, '_blank');
-
-  //     // Step 3: Trigger server-side function to generate and download PDF
-  //     await axios.post('http://localhost:5000/download-pdf', {
-  //       fileUrl: proposalLink,
-  //       leadName: projectName, // Pass the project name
-  //       externalProviderId, // Pass the external provider ID if needed
-  //     });
-  //   } catch (error) {
-  //     console.error('Error fetching web proposal:', error);
-  //   }
-  // };
-
-  const downloadFile = async (fileUrl: string) => {
-    const apiUrl = `http://localhost:5000/download-pdf?fileUrl=${encodeURIComponent(fileUrl)}`; // Build the API URL with the dynamic fileUrl
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch the file');
-      }
-
-      // Convert the response to a Blob
-      const blob = await response.blob();
-
-      // Create a link element, set its href to the Blob, and trigger the download
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'proposal.pdf'; // Adjust filename if needed
-      link.click();
-
-      // Cleanup the object URL
-      window.URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.error('Error downloading the file:', error);
-    }
-  };
-
-  // Function to handle click event and call API
-  const handleViewProposalClick = async (proposalId: number) => {
-    try {
-      // Replace this URL with the actual API endpoint
-      const response = await axios.get(`/api/proposals/${proposalId}`, {
-        responseType: 'blob' // If you expect to download a PDF
-      });
-
-      // Create a link element to download the PDF
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'proposal.pdf'); // Specify the file name
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Failed to download proposal:', error);
-    }
-  }
-
-  const generateWebProposalUrl = async (designId: string) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:5000/api/web-proposals/${designId}/generate`
-      );
-      const proposalUrl = response.data.web_proposal.url;
-
-      if (!response.data.web_proposal.url_expired) {
-        openProposalLink(proposalUrl); // Open the proposal URL in a new tab
-      } else {
-        console.error('The web proposal URL has expired.');
-      }
-    } catch (error) {
-      console.error('Error generating web proposal URL:', error);
-    }
-  };
-
-  const fetchDesignSummary = async (designId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/designs/${designId}/summary`
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching design summary:', error);
-      throw error;
-    }
-  };
-
-  const fetchDesignPricing = async (designId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/designs/${designId}/pricing`
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching design pricing:', error);
-      throw error;
-    }
-  };
-
-  const fetchFinanceListing = async (designId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/designs/${designId}/financings`
-      );
-      const financings = response.data.financings;
-
-
-      if (financings && financings.length > 0) {
-        // Assuming you want to use the first financing ID
-        const financingId = financings[0].id;
-
-        // Call the next API using the financing ID
-        fetchFinancingDetails(designId, financingId);
-      } else {
-        console.error('No financings found');
-      }
-    } catch (error) {
-      console.error('Error fetching financings:', error);
-    }
-  };
-
-  const fetchFinancingDetails = async (
-    designId: string,
-    financingId: string
-  ) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/designs/${designId}/financings/${financingId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching financing details:', error);
-      throw error;
-    }
-  };
-
-  const fetchConsumptionProfile = async (projectId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/projects/${projectId}/consumption_profile`
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching consumption profile:', error);
-      throw error;
-    }
-  };
-
-  const updateConsumptionProfile = async (
-    projectId: string,
-    monthlyEnergy: (number | null)[],
-    monthlyBill: (number | null)[]
-  ) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:5000/api/projects/${projectId}/consumption_profile`,
-        {
-          consumption_profile: {
-            monthly_energy: monthlyEnergy,
-            // monthly_bill: monthlyBill,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error updating consumption profile:', error);
-      throw error;
-    }
-  };
-
-  // Function to open the proposal link in a new tab
-  const openProposalLink = (link: string) => {
-    window.open(link, '_blank', 'noopener,noreferrer');
-  };
-
 
   const OpenWindowClick = () => {
     setIsToggledX((prev) => !prev);
@@ -1326,10 +842,7 @@ const LeadManagementDashboard = () => {
       (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
     );
   };
-
-
   //*************************************************************************************************//
-
   return (
     <div className={styles.dashboard}>
       <div className={styles.chartGrid}>
@@ -1343,8 +856,6 @@ const LeadManagementDashboard = () => {
                 Overview
               </div>
             )}
-
-
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads : {totalValue ? totalValue : '0'}
             </div>
@@ -1411,93 +922,11 @@ const LeadManagementDashboard = () => {
                     }
                   </div>
                 )}
-                {isToggledX && <Select
+                {isToggledX && <CustomSelect
                   value={selectedPeriod}
                   onChange={handlePeriodChange}
                   options={periodFilterOptions}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: 'px',
-                      borderRadius: '8px',
-                      outline: 'none',
-                      color: '#3E3E3E',
-                      width: '140px',
-                      height: '36px',
-                      fontSize: '12px',
-                      border: '1.2px solid black',
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      alignContent: 'center',
-                      backgroundColor: '#fffff',
-                      boxShadow: 'none',
-                      '@media only screen and (max-width: 767px)': {
-                        height: '30px !important',
-                        width: 'fit-content',
-                        border: '1px solid '
-                      },
-                      '&:focus-within': {
-                        borderColor: '#377CF6',
-                        boxShadow: '0 0 0 0.3px #377CF6',
-                        caretColor: '#3E3E3E',
-                        '& .css-kofgz1-singleValue': {
-                          color: '#377CF6',
-                        },
-                        '& .css-tj5bde-Svg': {
-                          color:  state.menuIsOpen?'#377CF6':"#000",
-                        },
-                      },
-                      '&:hover': {
-                        borderColor: '#377CF6',
-                        boxShadow: '0 0 0 0.3px #377CF6',
-                        '& .css-kofgz1-singleValue': {
-                          color: '#377CF6',
-                        },
-                        '& .css-tj5bde-Svg': {
-                          color: '#377CF6',
-                        },
-                      },
-                    }),
-                    placeholder: (baseStyles) => ({
-                      ...baseStyles,
-                      color: '#3E3E3E',
-                    }),
-                    indicatorSeparator: () => ({
-                      display: 'none',
-                    }),
-                    dropdownIndicator: (baseStyles, state) => ({
-                      ...baseStyles,
-                      transform: state.isFocused ? 'rotate(180deg)' : 'none',
-                      transition: 'transform 0.3s ease',
-                      color: '#3E3E3E',
-                      '&:hover': {
-                        color: '#3E3E3E',
-                      },
-                    }),
-                    option: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontSize: '13px',
-                      color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                      backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                      '&:hover': {
-                        backgroundColor: state.isSelected
-                          ? '#ddebff'
-                          : '#ddebff',
-                      },
-                      cursor: 'pointer',
-                      fontWeight: "400"
-                    }),
-                    singleValue: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: '#3E3E3E',
-                    }),
-                    menu: (baseStyles) => ({
-                      ...baseStyles,
-                      width: '140px',
-                      border: '0.7px solid black',
-                      marginTop: '3px',
-                    }),
-                  }}
+                  isToggledX={isToggledX}
                 />}
                 {isToggledX && <div
                   ref={toggleRef}
@@ -1660,9 +1089,6 @@ const LeadManagementDashboard = () => {
         </div>
 
         }
-
-
-
         {/* HERE NOT ENTER BELOW CODES */}
       </div>
       <div className={styles.card}>
@@ -1711,20 +1137,9 @@ const LeadManagementDashboard = () => {
                       </button>
                     );
                   })}
-                  {/* <button
-                    onClick={handleNewButtonClick}
-                    className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
-                  >
-                    <p className={styles.statusInactive}></p>
-                    Aurora Projects
-                  </button> */}
                 </div>
 
                 <div className={styles.searchBar}>
-                  {/* <div className={styles.searchIcon}>
-                    <img src={ICONS.SearchICON001} />
-
-                  </div> */}
                   <input
                     type="text"
                     value={search}
@@ -1757,8 +1172,6 @@ const LeadManagementDashboard = () => {
                     </div>
                   )}
                 </div>
-
-
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
                 <HistoryRedirect />
@@ -1766,14 +1179,10 @@ const LeadManagementDashboard = () => {
                   <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
 
                 )}
-
-
-
                 <div className={styles.filterCallToAction}>
                   <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
-
                   <Tooltip
                     style={{
                       zIndex: 103,
@@ -1790,9 +1199,6 @@ const LeadManagementDashboard = () => {
                     delayShow={800}
                     className={styles.mobile_tooltip}
                   />
-
-
-
                   <div
                     className={styles.export_btn}
                     onClick={exportCsv}
@@ -1831,11 +1237,6 @@ const LeadManagementDashboard = () => {
                       className={styles.mobile_tooltip}
                     />
                   }
-
-
-
-
-
                 </div>
               </>
             ) : (
@@ -2038,44 +1439,21 @@ const LeadManagementDashboard = () => {
         )}
 
         <div className={styles.cardContent}>
-          {currentFilter === 'Projects' ? (
-            isProjectLoading ? (
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <MicroLoader />
-              </div>
-            ) : projects.length > 0 ? (
-              projects.map((project: any, index: number) => (
-                <div
-                  key={project.id}
-                  className={styles.history_lists}
-                  onClick={() => fetchProjectDetails(project.id)}
-                >
-                  <div className={styles.project_list}>
-                    <div style={{ fontWeight: 'bold' }}>{project.name}</div>
-                    <div>{project.property_address}</div>
-                    <div>{new Date(project.created_at).toLocaleString()}</div>
-                    <div>{project.id}</div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <DataNotFound />
-            )
-          ) : (
-            <LeadTable
-              selectedLeads={selectedLeads}
-              setSelectedLeads={setSelectedLeads}
-              refresh={refresh}
-              side={side}
-              setSide={setSide}
-              setRefresh={setRefresh}
-              onCreateProposal={handleCreateProposal}
-              retrieveWebProposal={retrieveWebProposal}
-              generateWebProposal={generateWebProposal}
-              currentFilter={currentFilter}
-              setCurrentFilter={setCurrentFilter}
-            />
-          )}
+
+          <LeadTable
+            selectedLeads={selectedLeads}
+            setSelectedLeads={setSelectedLeads}
+            refresh={refresh}
+            side={side}
+            setSide={setSide}
+            setRefresh={setRefresh}
+            onCreateProposal={handleCreateProposal}
+            retrieveWebProposal={retrieveWebProposal}
+            generateWebProposal={generateWebProposal}
+            currentFilter={currentFilter}
+            setCurrentFilter={setCurrentFilter}
+          />
+
           {leadsData.length > 0 && !isLoading && (
             <div className="page-heading-container">
               <p className="page-heading">

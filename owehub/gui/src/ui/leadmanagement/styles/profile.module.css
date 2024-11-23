@@ -46,9 +46,6 @@ tr {
   /* Smooth transition for background color */
 }
 
-.RowDiv {
-}
-
 .RowDiv:hover {
   background-color: #ddebff;
 }
@@ -132,11 +129,6 @@ tr {
 
 .crossIconImg:hover {
   transform: scale(1.05);
-}
-.SignDocumentPage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 @media screen and (max-width: 767px) {
