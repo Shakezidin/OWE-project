@@ -1,60 +1,50 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { handleCreateProposal, generateWebProposal, retrieveWebProposal } from './api/auroraApi';
-import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
-import Select, { SingleValue, ActionMeta } from 'react-select';
-import styles from './styles/dashboard.module.css';
-import './styles/mediaQuery.css';
-import { ICONS } from '../../resources/icons/Icons';
-import { useNavigate } from 'react-router-dom';
-import Pagination from '../components/pagination/Pagination';
-import useWindowWidth from '../../hooks/useWindowWidth';
 import Papa from 'papaparse';
-import { DateRange } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { addMinutes,endOfWeek,format,parseISO,startOfMonth,startOfWeek,startOfYear, subDays,} from 'date-fns';
-import HistoryRedirect from './HistoryRedirect';
-import useAuth from '../../hooks/useAuth';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import MicroLoader from '../components/loader/MicroLoader';
-import DataNotFound from '../components/loader/DataNotFound';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import {getLeads} from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import LeadTable from './components/LeadDashboardTable/leadTable';
-import { MdDownloading, MdHeight } from 'react-icons/md';
+import useAuth from '../../hooks/useAuth';
 import { LuImport } from 'react-icons/lu';
-import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
+import { DateRange } from 'react-date-range';
+import { useNavigate } from 'react-router-dom';
+import HistoryRedirect from './HistoryRedirect';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
-import CustomSelect from './components/CustomSelect/CustomSelect';
+import { ICONS } from '../../resources/icons/Icons';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import { MdDownloading, MdHeight } from 'react-icons/md';
+import MicroLoader from '../components/loader/MicroLoader';
+import Pagination from '../components/pagination/Pagination';
+import DataNotFound from '../components/loader/DataNotFound';
+import Select, { SingleValue, ActionMeta } from 'react-select';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
+import LeadTable from './components/LeadDashboardTable/leadTable';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import './styles/mediaQuery.css';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import styles from './styles/dashboard.module.css';
 import CustomPieChart from './components/CustomPieChart';
 import CustomLineChart from './components/CustomLineChart';
+import CustomSelect from './components/CustomSelect/CustomSelect';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
+import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import { handleCreateProposal, generateWebProposal, retrieveWebProposal } from './api/auroraApi';
+import { addMinutes,endOfWeek,format,parseISO,startOfMonth,startOfWeek,startOfYear, subDays,} from 'date-fns';
 
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
-
 const today = new Date();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(
-  today.getFullYear(),
-  today.getMonth() - 2,
-  1
-);
+const startOfThreeMonthsAgo = new Date( today.getFullYear(), today.getMonth() - 2, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
-  weekStartsOn: 1,
-});
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
-  weekStartsOn: 1,
-});
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1,});
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1,});
 
 const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Week', start: startOfThisWeek, end: today },
@@ -65,16 +55,18 @@ const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Year', start: startOfThisYear, end: today },
 ];
 
-
-
 const LeadManagementDashboard = () => {
-
-  //---------------------------STATE------------------------------------------------
+  const width = useWindowWidth();
+  const isTablet = width <= 1024;
   const [page, setPage] = useState(1);
+  const [refresh, setRefresh] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
   const toggleRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
-  const [totalCount, setTotalCount] = useState(1);
+  const [archived, setArchived] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isToggledX, setIsToggledX] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsPerPage, setItemPerPage] = useState(10);
   const [selectedValue, setSelectedValue] = useState('ALL');
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -83,23 +75,15 @@ const LeadManagementDashboard = () => {
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const [refresh, setRefresh] = useState(1);
-  const [archived, setArchived] = useState(false);
-  const [isToggledX, setIsToggledX] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [side, setSide] = useState<"left" | "right">('left');
   const [selectedRanges, setSelectedRanges] = useState([{ startDate: startOfThisWeek, endDate: today, key: 'selection' },]);
   const [selectedDates, setSelectedDates] = useState<{startDate: Date | null;endDate: Date | null;}>({startDate: startOfThisWeek,endDate: today,});
   const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(periodFilterOptions.find((option) => option.label === 'This Week') || null);
-  const width = useWindowWidth();
-  const isTablet = width <= 1024;
 
-//------------------------------FUNCTIONS----------------------------------------
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
   };
-
   const onReset = () => {
     const currentDate = new Date();
     setSelectedDates({ startDate: startOfThisWeek, endDate: today });
@@ -115,7 +99,6 @@ const LeadManagementDashboard = () => {
     ]);
     setIsCalendarOpen(false);
   };
-
   const onApply = () => {
     const startDate = selectedRanges[0].startDate;
     const endDate = selectedRanges[0].endDate;
@@ -123,15 +106,12 @@ const LeadManagementDashboard = () => {
     setSelectedPeriod(null);
     setIsCalendarOpen(false);
   };
-
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
   };
-
   const goToNextPage = () => {
     setPage(page + 1);
   };
-
   const goToPrevPage = () => {
     setPage(page - 1);
   };
@@ -139,17 +119,14 @@ const LeadManagementDashboard = () => {
     setItemPerPage(selectedPerPage);
     setPage(1);
   };
-
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
-
   const handleCalenderClose = () => {
     setIsCalendarOpen(false);
   }
   useEscapeKey(handleCalenderClose);
 
-  //CALLING FOR RANGE PICK IN USING SELECT CODE
   const handlePeriodChange = (
     newValue: SingleValue<DateRangeWithLabel>,
     actionMeta: ActionMeta<DateRangeWithLabel>
@@ -164,8 +141,6 @@ const LeadManagementDashboard = () => {
       setSelectedDates({ startDate: null, endDate: null });
     }
   };
-  //CALLING FOR HISTORY
-
   const handleClickOutside = (event: Event) => {
     if (
       calendarRef.current &&
@@ -176,42 +151,19 @@ const LeadManagementDashboard = () => {
       setIsCalendarOpen(false);
     }
   };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, []);
   const navigate = useNavigate();
-
   const handleAddLead = () => {
     navigate('/leadmng-dashboard/leadmgt-addnew');
   };
-
   const statusMap = {
     'NEW': 'New Leads',
     'PROGRESS': 'In Progress',
     'DECLINED': 'Declined',
     'ACTION_NEEDED': 'Action Needed',
   };
-
-  useEffect(() => {
-    if (pieData.length > 0) {
-      const pieName = pieData[activeIndex].name;
-      const newFilter = statusMap[pieName as keyof typeof statusMap];
-      setCurrentFilter(newFilter);
-      setPage(1);
-    }
-  }, [activeIndex]);
-
   const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
     setActiveIndex(index);
   };
-
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
     setBackup(filter);
@@ -226,7 +178,24 @@ const LeadManagementDashboard = () => {
   const createProposal = async (leadId: number) => {
     await handleCreateProposal(leadId, setRefresh); // Pass setRefresh here
 };
+useEffect(() => {
+  if (pieData.length > 0) {
+    const pieName = pieData[activeIndex].name;
+    const newFilter = statusMap[pieName as keyof typeof statusMap];
+    setCurrentFilter(newFilter);
+    setPage(1);
+  }
+}, [activeIndex]);
 
+useEffect(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+  document.addEventListener('touchstart', handleClickOutside);
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+    document.removeEventListener('touchstart', handleClickOutside);
+  };
+}, []);
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -239,16 +208,33 @@ const LeadManagementDashboard = () => {
   const [exporting, setIsExporting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
   const [backup, setBackup] = useState('New Leads');
+  const [lineData, setLineData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('');
 
-
+  interface DefaultData {
+    [key: string]: StatusData;
+  }
+  interface StatusData {
+    name: string;
+    value: number;
+    color: string;
+  }
+  const defaultData: DefaultData = {
+    NEW: { name: 'NEW', value: 0, color: '#21BC27' },
+    PROGRESS: { name: 'PROGRESS', value: 0, color: '#377CF6' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#D91515' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#EC9311' },
+  };
+  const dispatch = useAppDispatch();
+  const { isLoading, leadsData, statusData1, totalcount } = useAppSelector(
+    (state) => state.leadManagmentSlice
+  );
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
-
-  const [lineData, setLineData] = useState([]);
-
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
@@ -288,22 +274,6 @@ const LeadManagementDashboard = () => {
       fetchData();
     }
   }, [isAuthenticated, selectedDates]);
-
-  const defaultData: DefaultData = {
-    NEW: { name: 'NEW', value: 0, color: '#21BC27' },
-    PROGRESS: { name: 'PROGRESS', value: 0, color: '#377CF6' },
-    DECLINED: { name: 'DECLINED', value: 0, color: '#D91515' },
-    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#EC9311' },
-  };
-  interface DefaultData {
-    [key: string]: StatusData;
-  }
-  interface StatusData {
-    name: string;
-    value: number;
-    color: string;
-  }
-
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -312,12 +282,6 @@ const LeadManagementDashboard = () => {
 
     calculateTotalValue();
   }, [pieData]);
-
-  const dispatch = useAppDispatch();
-  const { isLoading, leadsData, statusData1, totalcount } = useAppSelector(
-    (state) => state.leadManagmentSlice
-  );
-
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       const apiData = statusData1;
@@ -345,18 +309,6 @@ const LeadManagementDashboard = () => {
 
     }
   }, [statusData1])
-
-  const [searchTerm, setSearchTerm] = useState('')
-  const [search, setSearch] = useState('');
-
-  const handleSearchChange = useCallback(
-    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(e.target.value);
-
-    }, 800),
-    []
-  );
-
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
@@ -423,7 +375,18 @@ const LeadManagementDashboard = () => {
   useEffect(() => {
     setPage(1);
   }, [selectedDates, selectedValue]);
-
+  useEffect(() => {
+    if (searchTerm === '') {
+      setCurrentFilter(backup);
+      setPage(1);
+    }
+  }, [searchTerm]);
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 800),
+    []
+  );
   const handleArchiveSelected = async () => {
     setArchived(true);
     try {
@@ -451,16 +414,13 @@ const LeadManagementDashboard = () => {
     }
     setArchived(false);
   };
-
   const handleNewButtonClick = () => {
     setCurrentFilter('Projects'); // Example filter name
     setIsNewButtonActive(true);
   };
-
   const OpenWindowClick = () => {
     setIsToggledX((prev) => !prev);
   };
-
   const exportCsv = async () => {
     setShowTooltip(false);
     setIsExporting(true);
@@ -574,20 +534,11 @@ const LeadManagementDashboard = () => {
     }
     setShowTooltip(true);
   };
-
-  useEffect(() => {
-    if (searchTerm === '') {
-      setCurrentFilter(backup);
-      setPage(1);
-    }
-  }, [searchTerm]);
-
   const handleCrossIcon = () => {
     setCurrentFilter(backup);
     setSearchTerm('');
     setSearch('');
   }
-
   const isMobileDevice = () => {
     return (
       typeof window !== 'undefined' &&
