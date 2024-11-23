@@ -1,19 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip as RechartsTooltip,
-  Legend,
-  Sector,
-} from 'recharts';
+import { handleCreateProposal, generateWebProposal, retrieveWebProposal } from './api/auroraApi';
 import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
-import axios from 'axios';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
 import './styles/mediaQuery.css';
@@ -22,21 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import Papa from 'papaparse';
-
-// shams start
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import {
-  addMinutes,
-  endOfWeek,
-  format,
-  parseISO,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
-  subDays,
-} from 'date-fns';
+import { addMinutes,endOfWeek,format,parseISO,startOfMonth,startOfWeek,startOfYear, subDays,} from 'date-fns';
 import HistoryRedirect from './HistoryRedirect';
 import useAuth from '../../hooks/useAuth';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
@@ -44,51 +20,22 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import {
-  createProposal, getLeads, getProjectByLeadId, auroraCreateProject, auroraCreateDesign, auroraCreateProposal,
-  auroraWebProposal, auroraGenerateWebProposal, auroraListModules
-} from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import {getLeads} from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { MdDownloading, MdHeight } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
-import renderActiveShape from './components/RenderActiveShape/renderActiveShape';
 import CustomSelect from './components/CustomSelect/CustomSelect';
+import CustomPieChart from './components/CustomPieChart';
+import CustomLineChart from './components/CustomLineChart';
 
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
-
-type SSEPayload =
-  | {
-    is_done: false;
-    data: {
-      current_step: number;
-      total_steps: number;
-    };
-  }
-  | {
-    is_done: true;
-    data: {
-      current_step: number;
-      total_steps: number;
-      url: string;
-    };
-    error: null;
-  }
-  | {
-    is_done: true;
-    error: string;
-    data: null;
-  };
-
-function getUserTimezone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
-}
 
 const today = new Date();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
@@ -118,87 +65,37 @@ const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Year', start: startOfThisYear, end: today },
 ];
 
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: any[];
-  label?: string;
-}) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        style={{
-          backgroundColor: 'white',
-          padding: '5px 10px',
-          zIndex: '99',
-          borderRadius: '4px',
-        }}
-      >
-        <p
-          style={{
-            margin: '2px 0',
-            color: '#21BC27',
-            fontWeight: 'bold',
-            fontSize: 11,
-          }}
-        >{`${payload[0].value} Closed Won`}</p>
-        <p
-          style={{
-            margin: '2px 0',
-            color: '#D91515',
-            fontWeight: 'bold',
-            fontSize: 11,
-          }}
-        >{`${payload[1].value} Closed Lost`}</p>
-      </div>
-    );
-  }
-  return null;
-};
+
 
 const LeadManagementDashboard = () => {
+
+  //---------------------------STATE------------------------------------------------
+  const [page, setPage] = useState(1);
+  const toggleRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const [totalCount, setTotalCount] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const [selectedValue, setSelectedValue] = useState('ALL');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [isNewButtonActive, setIsNewButtonActive] = useState(false);
-  const [selectedValue, setSelectedValue] = useState('ALL');
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLDivElement>(null);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(1);
-  const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [isToggledX, setIsToggledX] = useState(true);
-  const [side, setSide] = useState<"left" | "right">('left');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
+  const [side, setSide] = useState<"left" | "right">('left');
+  const [selectedRanges, setSelectedRanges] = useState([{ startDate: startOfThisWeek, endDate: today, key: 'selection' },]);
+  const [selectedDates, setSelectedDates] = useState<{startDate: Date | null;endDate: Date | null;}>({startDate: startOfThisWeek,endDate: today,});
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(periodFilterOptions.find((option) => option.label === 'This Week') || null);
   const width = useWindowWidth();
   const isTablet = width <= 1024;
-  const [selectedPeriod, setSelectedPeriod] =
-    useState<DateRangeWithLabel | null>(
-      periodFilterOptions.find((option) => option.label === 'This Week') || null
-    );
-  const [selectedRanges, setSelectedRanges] = useState([
-    { startDate: startOfThisWeek, endDate: today, key: 'selection' },
-  ]);
 
-  const [selectedDates, setSelectedDates] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
-  }>({
-    startDate: startOfThisWeek,
-    endDate: today,
-  });
-
+//------------------------------FUNCTIONS----------------------------------------
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
   };
@@ -326,12 +223,24 @@ const LeadManagementDashboard = () => {
       )
     );
   };
+  const createProposal = async (leadId: number) => {
+    await handleCreateProposal(leadId, setRefresh); // Pass setRefresh here
+};
 
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   const [loading, setIsLoading] = useState(false);
+  const [pieData, setPieData] = useState<StatusData[]>([]);
+  const [totalValue, setTotalValue] = useState<number>(0);
+  const [archive, setArchive] = useState(false);
+  const [ref, setRef] = useState(0);
+  const [exporting, setIsExporting] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
+  const [backup, setBackup] = useState('New Leads');
+
+
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
@@ -394,10 +303,6 @@ const LeadManagementDashboard = () => {
     value: number;
     color: string;
   }
-  const [pieData, setPieData] = useState<StatusData[]>([]);
-  const [totalValue, setTotalValue] = useState<number>(0);
-  const [archive, setArchive] = useState(false);
-  const [ref, setRef] = useState(0);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -556,10 +461,6 @@ const LeadManagementDashboard = () => {
     setIsToggledX((prev) => !prev);
   };
 
-  const [exporting, setIsExporting] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
-
-
   const exportCsv = async () => {
     setShowTooltip(false);
     setIsExporting(true);
@@ -673,155 +574,6 @@ const LeadManagementDashboard = () => {
     }
     setShowTooltip(true);
   };
-
-  //----------------Aurora API integration START-----------------------//
-  const handleCreateProposal = async (leadId: number) => {
-
-
-    try {
-      // Step 1: Fetch preferred solar modules using dispatch
-      const modulesResult = await dispatch(auroraListModules({}));
-
-      if (auroraListModules.fulfilled.match(modulesResult)) {
-        const modulesData = modulesResult.payload.data;
-
-        if (modulesData.length > 0) {
-          const moduleIds = modulesData.map((module: any) => module.id); // Extract the ids from the module list
-
-          // Step 2: Create Project with dynamic preferred solar modules
-          const createProjectResult = await dispatch(auroraCreateProject({
-            "leads_id": leadId,
-            "customer_salutation": "Mr./Mrs.",
-            "project_type": "residential",
-            "status": "In Progress",
-            "preferred_solar_modules": moduleIds,
-            "tags": ["third_party_1"]
-          }));
-
-          if (auroraCreateProject.fulfilled.match(createProjectResult)) {
-            // toast.success('Project created successfully!');
-
-            // Step 3: Create Design
-            const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
-
-            if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
-              // toast.success('Design created successfully!');
-
-              // Step 4: Create Proposal
-              const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
-
-              if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
-                const proposalData = createProposalResult.payload.data;
-
-                if (proposalData.proposal_link) {
-                  // Step 5: Generate Web Proposal
-                  await downloadProposalWithSSE(leadId);
-
-                  toast.success('Proposal created successfully!');
-                  setRefresh((prev) => prev + 1);
-
-                  // Open the proposal link in a new tab
-                  window.open(proposalData.proposal_link, '_blank');
-                } else {
-                  toast.error('Proposal link not available.');
-                }
-              } else {
-                toast.error(createProposalResult.payload as string || 'Failed to create proposal');
-              }
-            } else {
-              toast.error(createDesignResult.payload as string || 'Failed to create design');
-            }
-          } else {
-            toast.error(createProjectResult.payload as string || 'Failed to create project');
-          }
-        } else {
-          toast.error('No solar modules available.');
-        }
-      } else {
-        toast.error('Failed to fetch solar modules');
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred');
-      console.error('Error in handleCreateProposal:', error);
-    }
-  };
-
-  const generateWebProposal = async (leadId: number) => {
-    try {
-      //Generate Web Proposal
-      const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
-
-      if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
-        const generatedProposalData = generateProposalResult.payload.data;
-        if (generatedProposalData.url) {
-          toast.success('Web proposal generated successfully!');
-          return generatedProposalData;
-        } else {
-          toast.error('Failed to generate web proposal.');
-          return null;
-        }
-      } else {
-        // toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
-        return null;
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred while generating the web proposal');
-      console.error('Error in generateWebProposal:', error);
-      return null;
-    }
-  };
-
-  const retrieveWebProposal = async (leadId: number) => {
-    try {
-      //Retrieve Web Proposal
-      const webProposalResult = await dispatch(auroraWebProposal(leadId));
-
-      if (auroraWebProposal.fulfilled.match(webProposalResult)) {
-        const webProposalData = webProposalResult.payload.data;
-
-        if (webProposalData.url) {
-          toast.success('Web proposal retrieved successfully!');
-          window.open(webProposalData.url, '_blank');
-        } else if (webProposalData.url_expired) {
-          toast.error('Web proposal URL has expired. Please regenerate.');
-        } else {
-          toast.error('No web proposal available.');
-        }
-      } else {
-        // toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred while retrieving the web proposal');
-      console.error('Error in retrieveWebProposal:', error);
-    }
-  };
-
-  const downloadProposalWithSSE = (leadId: number) => {
-
-
-    const eventSource = new EventSource(
-      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
-    );
-
-    eventSource.onmessage = (event) => {
-      const payload: SSEPayload = JSON.parse(event.data);
-
-      if (!payload.is_done) {
-        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
-        console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
-      } else if (payload.is_done) {
-
-        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
-      }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('Error with SSE connection', error);
-    };
-  };
-  //----------------Aurora API integration END-------------------------//
-
-  const [backup, setBackup] = useState('New Leads');
 
   useEffect(() => {
     if (searchTerm === '') {
@@ -995,26 +747,11 @@ const LeadManagementDashboard = () => {
               </div>
             ) : totalValue > 0 ? (
               <>
-                <ResponsiveContainer width="100%" height={260}>
-                  <PieChart className={styles.pieChart}>
-                    <Pie
-                      activeIndex={activeIndex}
-                      activeShape={renderActiveShape}
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      onClick={handlePieClick}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+                <CustomPieChart 
+                  activeIndex={activeIndex} 
+                  pieData={pieData} 
+                  handlePieClick={handlePieClick} 
+                />
                 <div className={styles.legend}>
                   {pieData.map((item) => (
                     <div key={item.name} className={styles.legendItem}>
@@ -1046,42 +783,7 @@ const LeadManagementDashboard = () => {
             </div>
           ) : lineData.length > 0 ? (
             <>
-              <ResponsiveContainer
-                className={styles.chart_main_grid}
-                width="100%"
-                height={300}
-              >
-                <LineChart data={lineData}>
-                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <RechartsTooltip content={<CustomTooltip />} />
-                  <Legend
-                    className={styles.lineChart_legend}
-                    formatter={(value) =>
-                      value === 'won' ? 'Total won' : 'Total Lost'
-                    }
-                    wrapperStyle={{
-                      fontSize: '12px',
-                      fontWeight: 550,
-                      marginBottom: -15,
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="won"
-                    stroke="#21BC27"
-                    strokeWidth={2}
-                    name="won"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="lost"
-                    stroke="#D91515"
-                    strokeWidth={2}
-                    name="lost"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <CustomLineChart lineData={lineData} />
             </>
           ) : (
             <DataNotFound />
@@ -1447,7 +1149,7 @@ const LeadManagementDashboard = () => {
             side={side}
             setSide={setSide}
             setRefresh={setRefresh}
-            onCreateProposal={handleCreateProposal}
+            onCreateProposal={createProposal}
             retrieveWebProposal={retrieveWebProposal}
             generateWebProposal={generateWebProposal}
             currentFilter={currentFilter}
