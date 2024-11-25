@@ -458,7 +458,9 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 	// proposalPdfUrl := leadsService.S3GetObjectUrl(proposalPdfKey)
 
 	if dataReq.QC {
-		query = `UPDATE leads_info SET qc_audit = $1 WHERE leads_id = $2`
+		query = `UPDATE leads_info SET qc_audit = $1,
+		updated_at = CURRENT_TIMESTAMP
+		WHERE leads_id = $2`
 		whereEleList = []interface{}{dataReq.QC, dataReq.LeadsId}
 
 		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
