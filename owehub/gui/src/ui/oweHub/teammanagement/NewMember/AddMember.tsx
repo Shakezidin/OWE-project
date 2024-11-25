@@ -149,11 +149,11 @@ const AddMember: React.FC<createUserProps> = ({
     const validationErrors: { [key: string]: string } = {};
 
     if (!selectedDropdown) {
-      validationErrors.user = 'User is required.';
+      validationErrors.user = 'User is required';
     }
 
     if (!selectedRole) {
-      validationErrors.role = 'Role is required.';
+      validationErrors.role = 'Role is required';
     }
 
     if (Object.keys(validationErrors).length > 0) {

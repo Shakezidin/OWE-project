@@ -191,7 +191,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     const validationErrors: { [key: string]: string } = {};
 
     if (formData.first_name.trim() === '') {
-      validationErrors.first_name = 'Team Name is required.';
+      validationErrors.first_name = 'Team Name is required';
     }
 
     if (selectedOptions2.length === 0) {
