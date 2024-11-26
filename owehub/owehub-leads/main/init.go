@@ -294,6 +294,15 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{},
 	},
+
+	// get_appointment_setters_under
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_appointment_setters_under",
+		apiHandler.HandleGetAppointmentSettersUnderRequest,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************
