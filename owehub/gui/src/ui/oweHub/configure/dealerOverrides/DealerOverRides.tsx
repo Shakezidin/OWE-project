@@ -142,11 +142,10 @@ const DealerOverRides: React.FC = () => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
-      setSortKey(key);
       setSortDirection('asc');
     }
+    setSortKey(key);
   };
-
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];

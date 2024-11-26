@@ -61,10 +61,10 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
 
         <div className="table-header" onClick={handleClick}>
           <p>{titleName}</p>{' '}
-          {sortDirection !== 'desc' ? (
-            <FaArrowDown className="arrow-icon-table" />
-          ) : (
+          {sortDirection === 'asc' ? (
             <FaArrowUp className="arrow-icon-table" />
+          ) : (
+            <FaArrowDown className="arrow-icon-table" />
           )}
         </div>
       </div>
