@@ -21,6 +21,7 @@ import { createDocuSignRecipientView, createEnvelope, getDocument, getDocuSignUr
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input';
+import { downloadProposalWithSSE } from '../../api/auroraApi';
 
 type ProposalStatus = "In Progress" | "Send Docs" | "Created" | "Clear selection" | "Completed" | "Documents Sent";
 type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
@@ -185,52 +186,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     setIsModalOpen(false);
   };
 
-
-  const downloadProposalWithSSE = (leadId: number) => {
-    setDownloadingLeadId(leadId); // Set downloading state for this row
-    setDownloadProgress(0); // Reset the progress initially
-
-    const eventSource = new EventSource(
-      `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
-    );
-
-    eventSource.onmessage = (event) => {
-      const payload: SSEPayload = JSON.parse(event.data);
-
-      if (!payload.is_done) {
-        const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
-        setDownloadProgress(progressPercentage); // Update the progress state
-        // console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
-      } else if (payload.is_done) {
-        setDownloadingLeadId(null); // Reset downloading state once done
-        setDownloadProgress(0); // Reset progress
-
-        if (payload.error === null) {
-          // PDF generation successful, trigger download
-          const pdfUrl = payload.data.url;
-          const link = document.createElement('a');
-          link.href = pdfUrl;
-          link.download = 'Proposal.pdf';
-          link.target = '_blank';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          // Handle generation error
-          console.error(`Error during PDF generation: ${payload.error}`);
-        }
-
-        eventSource.close(); // Close the connection once the PDF is ready or an error occurs
-      }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('Error with SSE connection', error);
-      setDownloadingLeadId(null); // Reset downloading state on error
-      setDownloadProgress(0); // Reset progress on error
-      eventSource.close();
-    };
-  };
   const [won, setWon] = useState(false);
   const [isLoadingDocument, setIsLoadingDocument] = useState(false);
 

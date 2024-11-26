@@ -22,7 +22,7 @@ const HistoryRedirect = () => {
 
   const ArchivesTable = () => {
     // setArchive(true);
-    navigate('/leadmng-dashboard/lead-dashboard-archieves');
+    navigate('/leadmng-dashboard/lead-dashboard-archives');
   };
 
   const HistoryButtonCalled = () => {
