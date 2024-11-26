@@ -154,7 +154,7 @@ function App() {
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIEVES} element={<ArchivedPages   />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIVES} element={<ArchivedPages   />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
