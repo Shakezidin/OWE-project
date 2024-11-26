@@ -1994,13 +1994,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 300ms;
   
 }
 
 
 .pipelineFilterLine:hover {
-  transform: scale(1.07);
+  transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  background-color: #4062CA !important;
 }
 
 .pipelineFilterLine img {
@@ -2364,26 +2366,7 @@
 }
 
 
-.pipelineFilterLine{
-  width: 37px !important;
-  height: 37px !important;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-}
 
-.pipelineFilterLine:hover {
-  transform: scale(1.07);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-}
-.pipelineFilterLine img {
-  width: 20px;
-  height: 20px;
-}
 .active-filter-line {
   background-color: #377cf6;
 }
@@ -2411,14 +2394,14 @@
   box-shadow: -2px 4px 12px 0px #00000024;
 }
 
-.filterOptions {
+/* .filterOptions {
   padding: 12px 4px;
   height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 203px;
-}
+} */
 .eachOption{
   display: flex;
   justify-content: flex-start;
