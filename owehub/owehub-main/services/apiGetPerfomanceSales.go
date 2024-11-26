@@ -238,6 +238,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		RecordCount++
 
+		RecordCount++
+
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)
 		if !ok || SiteSurveyScheduleDate.Equal(invalidDate) {
 			// log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
