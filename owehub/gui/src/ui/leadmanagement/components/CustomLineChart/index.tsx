@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Legend, Tooltip as RechartsTooltip } from 'recharts';
-import styles from '../styles/dashboard.module.css'; // Adjust the path as necessary
+import styles from '../../styles/dashboard.module.css'; // Adjust the path as necessary
+
 
 interface CustomLineChartProps {
   lineData: any[]; // Adjust the type as necessary

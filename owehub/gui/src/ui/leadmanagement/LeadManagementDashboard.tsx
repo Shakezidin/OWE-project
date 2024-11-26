@@ -24,7 +24,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import styles from './styles/dashboard.module.css';
 import CustomPieChart from './components/CustomPieChart';
 import CustomLineChart from './components/CustomLineChart';
-import CustomSelect from './components/CustomSelect/CustomSelect';
+import CustomSelect from './components/CustomSelect';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';

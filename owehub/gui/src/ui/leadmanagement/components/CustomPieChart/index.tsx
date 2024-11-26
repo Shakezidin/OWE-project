@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import styles from '../styles/dashboard.module.css'; // Adjust the path as necessary
-import renderActiveShape from './RenderActiveShape/renderActiveShape';
+import styles from '../../styles/dashboard.module.css'; // Adjust the path as necessary
+import renderActiveShape from '../RenderActiveShape/renderActiveShape';
 
 interface CustomPieChartProps {
   activeIndex: number;
