@@ -648,6 +648,11 @@ const ProjectStatus = () => {
                         }
                       }}
                       width="190px"
+                      optionStyles={{
+                        overflowX: "hidden",
+                        textOverflow: "ellipsis",
+                        textWrap: "nowrap",
+                      }}
                     />
                   </div>
                 </div>
