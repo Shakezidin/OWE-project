@@ -4,6 +4,7 @@ import '../pagination/pagination.css';
 
 import { MdArrowForwardIos, MdArrowBackIos } from 'react-icons/md';
 import ReactPaginate from 'react-paginate';
+import { Tooltip } from 'react-tooltip';
 interface PaginationProps {
   currentPage: number;
   currentPageData: any[];
@@ -49,12 +50,45 @@ const Pagination: React.FC<PaginationProps> = ({
           </select>
         </div>
       )}
+       <Tooltip
+              style={{
+                zIndex: 103,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+                fontWeight: '400',
+              }}
+              offset={8}
+              id="pagination-nxt"
+              place="top"
+              content="Next"
+              delayShow={200}
+              className='pagination-tooltip'
+            />
+       <Tooltip
+              style={{
+                zIndex: 103,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+                fontWeight: '400',
+              }}
+              offset={8}
+              id="pagination-prev"
+              place="top"
+              content="Prev"
+              delayShow={200}
+              className='pagination-tooltip'
+            />
       <ReactPaginate
         breakLabel="..."
         nextLabel={
           <button
             disabled={currentPage === totalPages}
             className={currentPage === totalPages ? 'disabled' : 'current-btn'}
+            data-tooltip-id="pagination-nxt"
           >
             <MdArrowForwardIos
               style={{
@@ -78,6 +112,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             className={currentPage === 1 ? 'disabled' : 'current-btn'}
             disabled={currentPage === 1}
+            data-tooltip-id={currentPage === 1 ? 'disabled' : 'pagination-prev'}
           >
             <MdArrowBackIos
               style={{
