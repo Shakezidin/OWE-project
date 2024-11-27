@@ -170,53 +170,16 @@ const FormModal = () => {
     const errors = validateForm(formData);
     setErrors(errors);
 
-
-    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
-
-      setLoad(true);
-      
-
-      try {
-        const response = await postCaller(
-          'create_leads',
-          {
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-            phone_number: formData.mobile_number,
-            email_id: formData.email_id,
-            street_address: formData.address,
-            zipcode: formData.zip_code,
-            notes: formData.notes,
-            lead_source: formData.lead_source,
-            salerep_id: selectedSale?.id,
-            base_url:window.location.origin
-          },
-          true
-        );
-        if (response.status === 200) {
-          toast.success('Lead Created Succesfully');
-          resetFormData();
-          navigate('/leadmng-dashboard');
-        } else if (response.status >= 201) {
-          toast.warn(response.message);
-        }
-        setLoad(false);
-      } catch (error) {
-        setLoad(false);
-        console.error('Error submitting form:', error);
-      }
-    }
-
   };
 
   const resetFormData = () => {
     setFormData(initialFormData);
   };
 
-  const navigate = useNavigate();
-  const handleBack = () => {
-    navigate('/leadmng-dashboard');
-  };
+//   const navigate = useNavigate();
+//   const handleBack = () => {
+//     navigate('/leadmng-dashboard');
+//   };
 
 
 
