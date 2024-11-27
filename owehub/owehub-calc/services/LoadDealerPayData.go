@@ -112,6 +112,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	ContractDate := time.Date(year, month, day, 0, 0, 0, 0, dlrPayData.ContractDate.Location())
 	NetEpc := dlrPayData.NetEpc
 	financeType := dlrPayData.FinanceType
+	financeCompany := dlrPayData.FinanceCompany
 	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
 	OtherAdderStr := getString(adderBreakDown, "Total")
 	mktFeeStr := getString(adderBreakDown, "marketing_fee")
@@ -120,14 +121,13 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 
 	mktFee := parseDollarStringToFloat(mktFeeStr)
 	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
-	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
+	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeCompany, ST, ContractDate) // draw %
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
 	PvComplettionDate := dlrPayData.PvComplettionDate
 	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
 	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
-	financeCompany := dlrPayData.FinanceCompany
 	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST, time.Time{})
 	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, amt_paid)
 	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawAmt, drawMax)
