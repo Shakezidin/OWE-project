@@ -38,7 +38,8 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import { toZonedTime } from 'date-fns-tz';
 import { MdDownloading } from 'react-icons/md';
-import {  monthDateFormat } from '../../../utiles/formatDate';
+import { monthDateFormat } from '../../../utiles/formatDate';
+import { Tooltip } from 'react-tooltip';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -329,12 +330,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -505,7 +506,23 @@ const DateFilter = ({
           }}
         />
       </div>
-      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
+      <Tooltip
+        style={{
+          zIndex: 103,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: '400',
+        }}
+        offset={8}
+        id="lead-calendar"
+        place="top"
+        content="Calendar"
+        delayShow={200}
+        className='pagination-tooltip'
+      />
+      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper" data-tooltip-id="lead-calendar">
         <span
           role="button"
           onClick={() => setShowCalendar((prev) => !prev)}
@@ -514,7 +531,7 @@ const DateFilter = ({
           <Calendar disabled={disabled} />
         </span>
         {showCalendar && !disabled && (
-          <div className="leaderboard-data__datepicker-content">
+          <div className="leaderboard-data__datepicker-content" >
             <DateRange
               editableDateInputs={true}
               onChange={(item) => {
@@ -863,58 +880,57 @@ const Table = ({
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
-      { groupBy === 'dealer' ? null :
-      <div className="relative exportt" ref={wrapperReff}>
-        <div className="leaderboard-data__title">
-          <img src={award} alt="" />
-          <h2 style={{fontSize: "18px", fontWeight: 600, color: "#292B2E" }}>
-            Leaderboard
-          </h2>
-        </div>
-        <div
-          className="export-trigger overflow-hidden"
-          onClick={() => !isExporting && !isExportingData && toggleExportShow()}
-        >
-          {isExporting || isExportingData ? (
-            <MdDownloading className="downloading-animation" size={20} />
-          ) : (
-            <FaUpload size={12} />
-          )}
-          <span>
-            {' '}
-            {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
-          </span>
-        </div>
-      
-       
-            {exportShow && (
-              <div className="export-opt">
-                <button
-                  className="export-btn"
-                  disabled={isExporting || isExportingData}
-                  onClick={() => {
-                    exportPdf();
-                    setExportShow(false);
-                  }}
-                >
-                  <span>Pdf</span>
-                </button>
-                <button
-                  disabled={isExportingData}
-                  className="export-btn export-btnn"
-                  onClick={() => {
-                    exportCsv();
-                    setExportShow(false);
-                  }}
-                >
-                  <span>Csv</span>
-                </button>
-              </div>
+      {groupBy === 'dealer' ? null : (
+        <div className="relative exportt" ref={wrapperReff}>
+          <div className="leaderboard-data__title">
+            <img src={award} alt="" />
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#292B2E' }}>
+              Leaderboard
+            </h2>
+          </div>
+          <div
+            className="export-trigger overflow-hidden"
+            onClick={() =>
+              !isExporting && !isExportingData && toggleExportShow()
+            }
+          >
+            {isExporting || isExportingData ? (
+              <MdDownloading className="downloading-animation" size={20} />
+            ) : (
+              <FaUpload size={12} />
             )}
-        
-      
-      </div>
-        }
+            <span>
+              {' '}
+              {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
+            </span>
+          </div>
+
+          {exportShow && (
+            <div className="export-opt">
+              <button
+                className="export-btn"
+                disabled={isExporting || isExportingData}
+                onClick={() => {
+                  exportPdf();
+                  setExportShow(false);
+                }}
+              >
+                <span>Pdf</span>
+              </button>
+              <button
+                disabled={isExportingData}
+                className="export-btn export-btnn"
+                onClick={() => {
+                  exportCsv();
+                  setExportShow(false);
+                }}
+              >
+                <span>Csv</span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
       {/* <div className="leaderboard-data__export">
         <Select
           options={exportOptions}
@@ -1006,10 +1022,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                role === TYPE_OF_USER.ACCOUNT_MANAGER
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

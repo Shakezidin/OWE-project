@@ -39,6 +39,7 @@ import Input from '../../../components/text_input/Input';
 import Swal from 'sweetalert2';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import { Tooltip } from 'react-tooltip';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -151,21 +152,25 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const resetPassword = async(user_emails:string)=>{
+  const resetPassword = async (user_emails: string) => {
     try {
-      const data = await postCaller("reset_user_passwords",{user_emails:[user_emails]});
-      if(data.status>200){
+      const data = await postCaller('reset_user_passwords', {
+        user_emails: [user_emails],
+      });
+      if (data.status > 200) {
         toast.error(data.message);
         return;
       }
-      toast.success("Password reset successful! Check your email for the new password");
+      toast.success(
+        'Password reset successful! Check your email for the new password'
+      );
     } catch (error) {
       toast.error((error as Error).message as string);
     }
-  }
+  };
 
   const handlePasswordReset = async (id?: string) => {
-  const prompt =   await Swal.fire({
+    const prompt = await Swal.fire({
       title: 'Confirm Password Reset',
       text: 'Are you sure you want to reset your password? A new password will be generated and sent to your registered email address',
       icon: 'warning',
@@ -173,20 +178,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       confirmButtonColor: '#007bff',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirm',
-      customClass:{
-        actions:"flex-row-reverse"
-      }
-    })
+      customClass: {
+        actions: 'flex-row-reverse',
+      },
+    });
 
-
-    if( prompt.isConfirmed){
+    if (prompt.isConfirmed) {
       if (id) {
         resetPassword(id);
       }
     }
-    
-    
-  }
+  };
 
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -440,7 +442,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               <h3>{activeSalesRep} Sales Rep</h3>
             </>
           ) : (
-            <h3>{selectedOption?.label || ''}</h3>  
+            <h3>{selectedOption?.label || ''}</h3>
           )}
         </div>
 
@@ -487,22 +489,27 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   <SelectOption
                     options={userDropdownData}
                     value={selectedOption}
-                    menuStyles={{ width: 'fit-content', left: -30}}
+                    menuStyles={{ width: 'fit-content', left: -30 }}
                     controlStyles={{
                       border: 'none',
                       margin: '0',
                       width: 'fit-content',
                       marginTop: '-6px !important',
-                      minHeight: "36px !important"
+                      minHeight: '36px !important',
                     }}
-                    dropdownIndicatorStyles={{ color: '#292B2E', padding: 0, marginTop: "7px", marginRight: "2px"}}
+                    dropdownIndicatorStyles={{
+                      color: '#292B2E',
+                      padding: 0,
+                      marginTop: '7px',
+                      marginRight: '2px',
+                    }}
                     singleValueStyles={{
                       marginBlock: 0,
-                      padding: "0 5px",
+                      padding: '0 5px',
                       color: '#292B2E',
                       fontWeight: '500',
-                      marginTop: "7px",
-                      className: "dropdownText"
+                      marginTop: '7px',
+                      className: 'dropdownText',
                     }}
                     valueContainerStyles={{ paddingInline: 0, marginInline: 0 }}
                     onChange={(data: any) => {
@@ -520,6 +527,22 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 </div>
               </div>
             )}
+            <Tooltip
+              style={{
+                zIndex: 103,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+                fontWeight: '400',
+              }}
+              offset={8}
+              id="user-delete"
+              place="bottom"
+              content="Multi delete"
+              delayShow={200}
+              className="pagination-tooltip"
+            />
             <button
               onClick={onClickMultiDelete}
               className="trash-btn rounded-8 border-none flex items-center justify-center"
@@ -527,6 +550,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               style={buttonStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              data-tooltip-id='user-delete'
             >
               <svg
                 width="24"
