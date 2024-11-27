@@ -895,6 +895,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                             />
 
                           </div>
+                          <div className={styles.infoIcon} onClick={() => handleOpenEditModal(lead.leads_id)} data-tooltip-id="info">
+                          <CiEdit />
+                          </div>
                           <div className={`${styles.RowMobileColumns} ${styles.infoIcon}`} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
                             <IoInformationOutline />
                           </div>
