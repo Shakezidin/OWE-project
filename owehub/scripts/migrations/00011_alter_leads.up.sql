@@ -75,7 +75,7 @@ ALTER TABLE leads_info ADD CONSTRAINT leads_info_salerep_id_fkey
 ALTER TABLE leads_info ADD COLUMN IF NOT EXISTS frontend_base_url VARCHAR(255);
 
 -- GET SALES REPS UNDER AUTHENTICATED USER
-CREATE OR REPLACE FUNCTION get_salesreps_under(p_email_id VARCHAR)
+CREATE OR REPLACE FUNCTION get_users_under(p_email_id VARCHAR, p_roles VARCHAR[])
     RETURNS TABLE(user_id INT, name VARCHAR, role_name VARCHAR) AS $$
 DECLARE
     v_user_id INT;
@@ -101,7 +101,7 @@ BEGIN
             FROM user_details
             INNER JOIN user_roles 
                 ON user_details.role_id = user_roles.role_id
-                AND user_roles.role_name IN ('Appointment Setter', 'Finance Admin', 'Sale Representative');
+                AND user_roles.role_name = ANY (p_roles);
 
     -- Account Executive or Account Manager check
     ELSIF v_user_role IN ('Account Executive', 'Account Manager') THEN
@@ -112,7 +112,7 @@ BEGIN
                 ON user_details.partner_id = sales_partner_dbhub_schema.partner_id
             INNER JOIN user_roles 
                 ON user_details.role_id = user_roles.role_id
-                AND user_roles.role_name IN ('Appointment Setter', 'Finance Admin', 'Sale Representative')
+                AND user_roles.role_name = ANY (p_roles)
             WHERE (v_user_role = 'Account Executive' AND sales_partner_dbhub_schema.account_executive = v_user_name)
                OR (v_user_role = 'Account Manager' AND sales_partner_dbhub_schema.account_manager2 = v_user_name);
 
@@ -123,7 +123,7 @@ BEGIN
             FROM user_details
             INNER JOIN user_roles 
                 ON user_details.role_id = user_roles.role_id
-                AND user_roles.role_name IN ('Appointment Setter', 'Finance Admin', 'Sale Representative')
+                AND user_roles.role_name = ANY (p_roles)
             WHERE user_details.partner_id = v_dealer_id;
 
     -- Regional Manager and Sales Manager check
@@ -143,7 +143,7 @@ BEGIN
             INNER JOIN hierarchy ON hierarchy.user_id = user_details.user_id
             INNER JOIN user_roles 
                 ON user_details.role_id = user_roles.role_id
-                AND user_roles.role_name IN ('Appointment Setter', 'Finance Admin', 'Sale Representative');
+                AND user_roles.role_name = ANY (p_roles);
 
     -- Sales Rep, Finance Admin, and Appointment Setter check
     ELSIF v_user_role IN ('Sale Representative', 'Finance Admin', 'Appointment Setter') THEN
@@ -152,7 +152,7 @@ BEGIN
             FROM user_details
             INNER JOIN user_roles 
                 ON user_details.role_id = user_roles.role_id
-                AND user_roles.role_name IN ('Appointment Setter', 'Finance Admin', 'Sale Representative')
+                AND user_roles.role_name = ANY (p_roles)
             WHERE user_details.user_id = v_user_id;
     END IF;
 END;
