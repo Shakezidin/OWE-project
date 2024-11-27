@@ -22,6 +22,9 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input';
 import { downloadProposalWithSSE } from '../../api/auroraApi';
+import { CiEdit } from "react-icons/ci";
+import EditFormModal from '../../Modals/EditFormModal'
+
 
 type ProposalStatus = "In Progress" | "Send Docs" | "Created" | "Clear selection" | "Completed" | "Documents Sent";
 type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
@@ -378,6 +381,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   };
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const viewId = queryParams.get("view");
@@ -392,8 +396,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     setLeadId(leadsId);
   };
 
+  const handleOpenEditModal = (leadsId: number) => {
+    setIsEditOpen(true);
+    // setLeadId(leadsId);
+  };
+
+
   const handleCloseProfileModal = () => {
     setIsProfileOpen(false);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditOpen(false);
   };
 
 
@@ -526,6 +540,12 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         isOpen1={isProfileOpen}
         onClose1={handleCloseProfileModal}
         leadId={leadId}
+      />
+
+      <EditFormModal 
+      isOpen1={isEditOpen}
+      onClose1={handleCloseEditModal}
+      leadId={leadId}
       />
 
       <div className={styles.dashTabTop}>
@@ -988,9 +1008,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
                           </div>
                           {/* SECOND ROW SECOND COLUMNS STARTED */}
+                          <div className={styles.infoIcon} onClick={() => handleOpenEditModal(lead.leads_id)} data-tooltip-id="info">
+                          <CiEdit />
+                          </div>
+
+                                   {/*middle button*/}
                           <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
                             <IoInformationOutline />
                           </div>
+
+
+
+
                         </div>
                         {/* SECOND ROW SECOND COLUMNS ENDED */}
                         <Tooltip
@@ -1029,6 +1058,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         </div>
 
       </div>
+
+      {/* <EditFormModal/> */}
 
     </div >
     </>
