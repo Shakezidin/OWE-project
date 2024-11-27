@@ -4,6 +4,9 @@
 * DATE			: 27-Sept-2024
 **************************************************************************/
 
+//🍅🍅🍅🍅
+// email id and phone duplication error andling while updating the leads
+
 package services
 
 import (
@@ -66,6 +69,16 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if len(dataReq.FirstName) > 0 {
+		whereEleList = append(whereEleList, dataReq.FirstName)
+		updateFields = append(updateFields, fmt.Sprintf("first_name = $%d", len(whereEleList)))
+	}
+
+	if len(dataReq.LastName) > 0 {
+		whereEleList = append(whereEleList, dataReq.LastName)
+		updateFields = append(updateFields, fmt.Sprintf("last_name = $%d", len(whereEleList)))
+	}
+
 	if len(dataReq.PhoneNumber) > 0 {
 		whereEleList = append(whereEleList, dataReq.PhoneNumber)
 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
@@ -107,9 +120,15 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
+
 	if len(dataReq.StreetAddress) > 0 {
 		whereEleList = append(whereEleList, dataReq.StreetAddress)
 		updateFields = append(updateFields, fmt.Sprintf("street_address = $%d", len(whereEleList)))
+	}
+
+	if len(dataReq.Notes) > 0 {
+		whereEleList = append(whereEleList, dataReq.Notes)
+		updateFields = append(updateFields, fmt.Sprintf("notes = $%d", len(whereEleList)))
 	}
 
 	if dataReq.SalerepID > 0 {
