@@ -64,8 +64,8 @@ var apiRoutes = appserver.ApiRoutes{
 
 	{
 		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/get_sales_reps",
-		apiHandler.HandleGetSalesRepsRequest,
+		"/owe-leads-service/v1/get_users_under",
+		apiHandler.HandleGetUsersUnderRequest,
 		true,
 		leadsRoleGroup,
 	},
@@ -293,15 +293,6 @@ var apiRoutes = appserver.ApiRoutes{
 		apiHandler.HandleDocusignConnectListenerRequest,
 		false,
 		[]types.UserGroup{},
-	},
-
-	// get_appointment_setters_under
-	{
-		strings.ToUpper("POST"),
-		"/owe-leads-service/v1/get_appointment_setters_under",
-		apiHandler.HandleGetAppointmentSettersUnderRequest,
-		true,
-		leadsRoleGroup,
 	},
 }
 
