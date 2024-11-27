@@ -44,7 +44,6 @@ const LeadManagementNew = () => {
     email_id: '',
     mobile_number: '',
     address: '',
-    zip_code: '',
     notes: '',
     sales_rep: '',
     lead_source: '',
@@ -53,7 +52,6 @@ const LeadManagementNew = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
@@ -75,10 +73,10 @@ const LeadManagementNew = () => {
         delete err[name];
         setErrors(err);
       }
-    }else if (name === "address") {
+    } else if (name === "address") {
       const regex = /^[a-zA-Z0-9,\s]*$/;
       const consecutiveSpacesRegex = /\s{2,}/;
-      
+
       if (regex.test(value) && !consecutiveSpacesRegex.test(value)) {
         setFormData((prevData) => ({
           ...prevData,
@@ -101,22 +99,6 @@ const LeadManagementNew = () => {
       }));
 
 
-    } else if (name === 'zip_code') {
-      const trimmedValueC = value.trim();
-      const isValidZipCode = validateZipCode(trimmedValueC);
-
-      if (trimmedValueC.length > 10) {
-        setZip_codeError('Zip code should not exceed 10 characters');
-      } else if (!isValidZipCode) {
-        setZip_codeError('Please enter a valid ZipCode');
-      } else {
-        setZip_codeError('');
-      }
-      const CorrectValue = value.replace(/\s/g, '');
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: CorrectValue,
-      }));
     } else if (name === 'lead_source') {
       if (value === '' || allowedPattern.test(value)) {
         setFormData((prevData) => ({
@@ -151,7 +133,6 @@ const LeadManagementNew = () => {
     email_id: '',
     mobile_number: '+1',
     address: '',
-    zip_code: '',
     notes: '',
     sales_rep: '',
     lead_source: '',
@@ -175,9 +156,6 @@ const LeadManagementNew = () => {
     if (formData.address.trim() === '') {
       errors.address = 'Address is required';
     }
-    if (formData.zip_code.trim() === '') {
-      errors.zip_code = 'Zip Code is required';
-    }
     if (!selectedSale) {
       errors.sales_rep = 'Sales Rep is required';
     }
@@ -199,7 +177,7 @@ const LeadManagementNew = () => {
     setErrors(errors);
 
 
-    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
+    if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
 
       setLoad(true);
 
@@ -213,7 +191,6 @@ const LeadManagementNew = () => {
             phone_number: formData.mobile_number,
             email_id: formData.email_id,
             street_address: formData.address,
-            zipcode: formData.zip_code,
             notes: formData.notes,
             lead_source: formData.lead_source,
             salerep_id: selectedSale?.id,
@@ -531,68 +508,31 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-                      <div className={classes.srs_new_create}>
-                        <Input
-                          type="number"
-                          label="Zip Code"
-                          value={formData.zip_code}
-                          placeholder="Enter Zip Code"
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (value.length <= 10) {
-                              handleInputChange(e);
-
-                              if (value.trim() === '') {
-                                setErrors((prevErrors) => ({
-                                  ...prevErrors,
-                                  zip_code: 'Zip Code is required',
-                                }));
-                              } else if (/^0+$/.test(value)) {
-                                setErrors((prevErrors) => ({
-                                  ...prevErrors,
-                                  zip_code: 'Invalid ZIP Code, cannot consist of only zeros.',
-                                }));
-                              } else {
-                                setErrors((prevErrors) => ({
-                                  ...prevErrors,
-                                  zip_code: '',
-                                }));
-                              }
-                            }
-                          }}
-                          name="zip_code"
-                        />
-
-                        {(zip_codeError || errors.zip_code) && (
-                          <div className="error">
-                            {zip_codeError || errors.zip_code}
-                          </div>
-                        )}
-                      </div>
+                     
+                        <div className={classes.srs_new_create}>
+                          <Input
+                            type="text"
+                            label="Lead Source"
+                            value={formData.lead_source}
+                            placeholder="Enter About Lead Source"
+                            onChange={handleInputChange}
+                            name="lead_source"
+                            maxLength={30}
+                          />
+                          {errors.lead_source && (
+                            <span
+                              style={{
+                                display: 'block',
+                              }}
+                              className="error"
+                            >
+                              {errors.lead_source}
+                            </span>
+                          )}
+                        </div>
+                      
                     </div>
                     <div className={classes.salrep_input_container}>
-
-                      <div className={classes.srs_new_create}>
-                        <Input
-                          type="text"
-                          label="Lead Source"
-                          value={formData.lead_source}
-                          placeholder="Enter About Lead Source"
-                          onChange={handleInputChange}
-                          name="lead_source"
-                          maxLength={30}
-                        />
-                        {errors.lead_source && (
-                          <span
-                            style={{
-                              display: 'block',
-                            }}
-                            className="error"
-                          >
-                            {errors.lead_source}
-                          </span>
-                        )}
-                      </div>
                       <div className={classes.srs_new_create} style={{ gap: "6px" }}>
                         <div className={classes.custom_label_newlead}>Sales Rep</div>
                         <Select
@@ -709,8 +649,6 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-
-
                       <div className={classes.create_input_field_note}>
                         <label htmlFor="" className="inputLabel">
                           Notes
