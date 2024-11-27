@@ -3,6 +3,7 @@ package services
 import (
 	log "OWEApp/shared/logger"
 	oweconfig "OWEApp/shared/oweconfig"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -132,19 +133,17 @@ func CalcDealerOvrdCommissionDealerPay(dealerOvrd []oweconfig.DealerOverrideStru
 }
 
 func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer, financePartner, state string, contractDate time.Time) (drawPerc, drawMax, redline float64) {
-	// partnerRegex := regexp.MustCompile(`^(.*?)(?: -|-)`)
+	partnerRegex := regexp.MustCompile(`^(.*?)(?: -|-)`)
 	if len(state) > 6 {
 		state = state[6:]
 	}
 	for _, entry := range partnerPaySchedule {
-		// matches := partnerRegex.FindStringSubmatch(entry.Finance_partner)
-		// partnerName := entry.Finance_partner
-		// if len(matches) > 1 {
-		// 	partnerName = matches[1] // Capture the portion before " -" or "-"
-		// }
-		if entry.Sales_partner == dealer && entry.State == state {
-			log.FuncErrorTrace(0, "data matched")
-			// entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate)
+		matches := partnerRegex.FindStringSubmatch(entry.Finance_partner)
+		partnerName := entry.Finance_partner
+		if len(matches) > 1 {
+			partnerName = matches[1] // Capture the portion before " -" or "-"
+		}
+		if entry.Sales_partner == dealer && entry.State == state && partnerName == financePartner && entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
 			// Convert M1SalesPartnerDrawPercentage from string to float64
 			percentage, err := strconv.ParseFloat(entry.M1SalesPartnerDrawPercentage, 64)
 			if err != nil {

@@ -113,6 +113,19 @@ tr {
   width: 100%;
 }
 
+.btnContainerNew {
+  display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      padding-bottom: 10px;
+      border-radius: 8px;
+}
+
 .XR {
   cursor: pointer;
   margin-top: 18px;

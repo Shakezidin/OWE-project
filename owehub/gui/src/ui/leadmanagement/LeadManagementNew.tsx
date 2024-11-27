@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classes from './styles/leadManagementNew.module.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,11 +11,28 @@ import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 import useAuth from '../../hooks/useAuth';
 import Select, { SingleValue, ActionMeta } from 'react-select';
+import {
+  Autocomplete,
+  useLoadScript,
+} from '@react-google-maps/api';
+import { RiMapPinLine } from 'react-icons/ri';
+import { IoClose } from 'react-icons/io5';
 
 interface SaleData {
   id: number;
   name: string;
   role: string;
+}
+type LatLng = {
+  lat: number;
+  lng: number;
+};
+interface LocationInfo {
+  lat: number;
+  lng: number;
+  unique_id: string;
+  home_owner: string;
+  project_status: string;
 }
 
 interface FormInput
@@ -27,7 +44,6 @@ const LeadManagementNew = () => {
     email_id: '',
     mobile_number: '',
     address: '',
-    zip_code: '',
     notes: '',
     sales_rep: '',
     lead_source: '',
@@ -36,7 +52,6 @@ const LeadManagementNew = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
@@ -44,11 +59,11 @@ const LeadManagementNew = () => {
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     const allowedPattern = /^[A-Za-z\s]+$/;
- 
+
     if (name === 'first_name' || name === 'last_name') {
       // Only allow letters, spaces, $ and _
       const sanitizedValue = value.replace(/[^A-Za-z\s$_]/g, '');
-     
+
       if (sanitizedValue === value) { // Only update if no characters were stripped
         setFormData((prevData) => ({
           ...prevData,
@@ -58,9 +73,20 @@ const LeadManagementNew = () => {
         delete err[name];
         setErrors(err);
       }
+    } else if (name === "address") {
+      const regex = /^[a-zA-Z0-9,\s]*$/;
+      const consecutiveSpacesRegex = /\s{2,}/;
+
+      if (regex.test(value) && !consecutiveSpacesRegex.test(value)) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+        errors.address = ""
+      }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
- 
+
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
@@ -71,24 +97,8 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: trimmedValue,
       }));
- 
- 
-    } else if (name === 'zip_code') {
-      const trimmedValueC = value.trim();
-      const isValidZipCode = validateZipCode(trimmedValueC);
- 
-      if (trimmedValueC.length > 10) {
-        setZip_codeError('Zip code should not exceed 10 characters');
-      } else if (!isValidZipCode) {
-        setZip_codeError('Please enter a valid ZipCode');
-      } else {
-        setZip_codeError('');
-      }
-      const CorrectValue = value.replace(/\s/g, '');
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: CorrectValue,
-      }));
+
+
     } else if (name === 'lead_source') {
       if (value === '' || allowedPattern.test(value)) {
         setFormData((prevData) => ({
@@ -110,7 +120,7 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: value,
       }));
- 
+
       const err = { ...errors };
       delete err[name];
       setErrors(err);
@@ -123,7 +133,6 @@ const LeadManagementNew = () => {
     email_id: '',
     mobile_number: '+1',
     address: '',
-    zip_code: '',
     notes: '',
     sales_rep: '',
     lead_source: '',
@@ -147,9 +156,6 @@ const LeadManagementNew = () => {
     if (formData.address.trim() === '') {
       errors.address = 'Address is required';
     }
-    if (formData.zip_code.trim() === '') {
-      errors.zip_code = 'Zip Code is required';
-    }
     if (!selectedSale) {
       errors.sales_rep = 'Sales Rep is required';
     }
@@ -161,7 +167,7 @@ const LeadManagementNew = () => {
     return errors;
   };
 
-  
+
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -171,10 +177,10 @@ const LeadManagementNew = () => {
     setErrors(errors);
 
 
-    if (Object.keys(errors).length === 0 && emailError === '' && zip_codeError === '' && phoneNumberError === '') {
+    if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
 
       setLoad(true);
-      
+
 
       try {
         const response = await postCaller(
@@ -185,11 +191,10 @@ const LeadManagementNew = () => {
             phone_number: formData.mobile_number,
             email_id: formData.email_id,
             street_address: formData.address,
-            zipcode: formData.zip_code,
             notes: formData.notes,
             lead_source: formData.lead_source,
             salerep_id: selectedSale?.id,
-            base_url:window.location.origin
+            base_url: window.location.origin
           },
           true
         );
@@ -272,6 +277,39 @@ const LeadManagementNew = () => {
   };
 
   console.log(selectedSale, "sdaghfgfhdsa")
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
+    libraries: ['places'],
+  });
+
+  const [searchValue, setSearchValue] = useState<any>('');
+
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const [isInputFocused, setInputFocused] = useState(false);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [locations, setLocations] = useState<LocationInfo[]>([]);
+
+  const onPlaceChanged = () => {
+    const place = autocompleteRef.current?.getPlace();
+    if (!place || !place.geometry || !place.geometry.location) {
+      console.log('No details available for the selected place.');
+      return;
+    }
+
+    const selectedAddress = place.formatted_address || place.name || '';
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      address: selectedAddress,
+    }));
+    setSearchValue(selectedAddress);
+  };
+
+
+  const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
+    console.log(autocomplete, "")
+    autocompleteRef.current = autocomplete;
+  };
 
   return (
     <div className={classes.ScrollableDivRemove}>
@@ -408,15 +446,57 @@ const LeadManagementNew = () => {
                     </div>
                     <div className={classes.salrep_input_container}>
                       <div className={classes.srs_new_create}>
-                        <Input
-                          type="text"
-                          label="Address"
-                          value={formData.address}
-                          placeholder="Enter Address"
-                          onChange={handleInputChange}
-                          name="address"
-                          maxLength={80}
-                        />
+                        <div className={classes.custom_label_newlead}>Address</div>
+                        {isLoaded &&
+                          <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                            <div className={classes.inputWrap}>
+                              <input
+                                type="text"
+                                placeholder="Enter address"
+                                maxLength={100}
+                                className={`${classes.inputsearch} ${isInputFocused ? classes.focused : ''}`}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 2rem',
+                                }}
+                                onFocus={() => setInputFocused(true)}
+                                onBlur={() => setInputFocused(false)}
+                                onChange={handleInputChange}
+                                value={formData.address}
+                                name="address"
+                              />
+                              {searchValue && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSearchValue('');
+                                    setFormData((prevFormData) => ({
+                                      ...prevFormData,
+                                      address: "",
+                                    }));
+                                    if (mapRef.current) {
+                                      const bounds = new google.maps.LatLngBounds();
+                                      locations.forEach((location) => {
+                                        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                                      });
+                                      mapRef.current.fitBounds(bounds);
+                                    }
+                                  }}
+                                  style={{
+                                    position: 'absolute',
+                                    right: '8px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                </button>
+                              )}
+                              <RiMapPinLine className={`${classes.inputMap} ${isInputFocused ? classes.focused : ''}`} />
+                            </div>
+                          </Autocomplete>}
                         {errors.address && (
                           <span
                             style={{
@@ -428,68 +508,31 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-                      <div className={classes.srs_new_create}>
-                        <Input
-                          type="number"
-                          label="Zip Code"
-                          value={formData.zip_code}
-                          placeholder="Enter Zip Code"
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (value.length <= 10) {
-                              handleInputChange(e);
-
-                              if (value.trim() === '') {
-                                setErrors((prevErrors) => ({
-                                  ...prevErrors,
-                                  zip_code: 'Zip Code is required',
-                                }));
-                              } else if (/^0+$/.test(value)) {
-                                setErrors((prevErrors) => ({
-                                  ...prevErrors,
-                                  zip_code: 'Invalid ZIP Code, cannot consist of only zeros.',
-                                }));
-                              } else {
-                                setErrors((prevErrors) => ({
-                                  ...prevErrors,
-                                  zip_code: '',
-                                }));
-                              }
-                            }
-                          }}
-                          name="zip_code"
-                        />
-
-                        {(zip_codeError || errors.zip_code) && (
-                          <div className="error">
-                            {zip_codeError || errors.zip_code}
-                          </div>
-                        )}
-                      </div>
+                     
+                        <div className={classes.srs_new_create}>
+                          <Input
+                            type="text"
+                            label="Lead Source"
+                            value={formData.lead_source}
+                            placeholder="Enter About Lead Source"
+                            onChange={handleInputChange}
+                            name="lead_source"
+                            maxLength={30}
+                          />
+                          {errors.lead_source && (
+                            <span
+                              style={{
+                                display: 'block',
+                              }}
+                              className="error"
+                            >
+                              {errors.lead_source}
+                            </span>
+                          )}
+                        </div>
+                      
                     </div>
                     <div className={classes.salrep_input_container}>
-
-                      <div className={classes.srs_new_create}>
-                        <Input
-                          type="text"
-                          label="Lead Source"
-                          value={formData.lead_source}
-                          placeholder="Enter About Lead Source"
-                          onChange={handleInputChange}
-                          name="lead_source"
-                          maxLength={30}
-                        />
-                        {errors.lead_source && (
-                          <span
-                            style={{
-                              display: 'block',
-                            }}
-                            className="error"
-                          >
-                            {errors.lead_source}
-                          </span>
-                        )}
-                      </div>
                       <div className={classes.srs_new_create} style={{ gap: "6px" }}>
                         <div className={classes.custom_label_newlead}>Sales Rep</div>
                         <Select
@@ -606,8 +649,6 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-
-
                       <div className={classes.create_input_field_note}>
                         <label htmlFor="" className="inputLabel">
                           Notes
