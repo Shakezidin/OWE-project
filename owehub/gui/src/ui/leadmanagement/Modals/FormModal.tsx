@@ -326,7 +326,9 @@ const FormModal: React.FC<EditModalProps> = ({
     <div className={classes.ScrollableDivRemove}>
       <div style={{ paddingRight: "12px" }} className={`flex justify-between ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
-          {loading ? <MicroLoader /> :
+          {loading ?  <div style={{height:'50vh'}} className="flex items-center justify-center">
+                <MicroLoader />
+              </div> :
             <form onSubmit={handleSubmit}>
               <div className="modal-body">
                 <div className="scroll-user">
