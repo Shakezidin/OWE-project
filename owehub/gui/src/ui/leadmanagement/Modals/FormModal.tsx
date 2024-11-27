@@ -17,6 +17,7 @@ import {
 } from '@react-google-maps/api';
 import { RiMapPinLine } from 'react-icons/ri';
 import MicroLoader from '../../components/loader/MicroLoader';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 
 interface SaleData {
   id: number;
@@ -321,14 +322,23 @@ const FormModal: React.FC<EditModalProps> = ({
     autocompleteRef.current = autocomplete;
   };
 
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem('role');
+    if (storedRole) {
+      setRole(storedRole);
+    }
+  }, []);
+
 
   return (
     <div className={classes.ScrollableDivRemove}>
       <div style={{ paddingRight: "12px" }} className={`flex justify-between ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
-          {loading ?  <div style={{height:'50vh'}} className="flex items-center justify-center">
-                <MicroLoader />
-              </div> :
+          {loading ? <div style={{ height: '50vh' }} className="flex items-center justify-center">
+            <MicroLoader />
+          </div> :
             <form onSubmit={handleSubmit}>
               <div className="modal-body">
                 <div className="scroll-user">
@@ -522,6 +532,7 @@ const FormModal: React.FC<EditModalProps> = ({
                             getOptionValue={(option) => option.id.toString()}
                             placeholder={"Select Setter"}
                             options={saleData}
+                            isDisabled={((role !== TYPE_OF_USER.ADMIN) && (role !== TYPE_OF_USER.DEALER_OWNER) && (role !== TYPE_OF_USER.SUB_DEALER_OWNER) && (role !== TYPE_OF_USER.REGIONAL_MANGER) && (role !== TYPE_OF_USER.SALE_MANAGER))}
                             styles={{
                               control: (baseStyles, state) => ({
                                 ...baseStyles,
@@ -658,6 +669,9 @@ const FormModal: React.FC<EditModalProps> = ({
                             getOptionValue={(option) => option.id.toString()}
                             placeholder={"Select Sales Rep"}
                             options={saleData}
+
+                            isDisabled={((role !== TYPE_OF_USER.ADMIN) && (role !== TYPE_OF_USER.DEALER_OWNER) && (role !== TYPE_OF_USER.SUB_DEALER_OWNER) && (role !== TYPE_OF_USER.REGIONAL_MANGER) && (role !== TYPE_OF_USER.SALE_MANAGER))}
+
                             styles={{
                               control: (baseStyles, state) => ({
                                 ...baseStyles,
