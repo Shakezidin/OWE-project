@@ -101,9 +101,11 @@ export const DashboardPage: React.FC = () => {
   const [isFetched, setIsFetched] = useState(false);
 
   const datePickerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!selectedDealer || selectedDealer.length === 0) return; // Exit early if selectedDealer is empty
 
+  console.log(selectedDealer, "dfkjvgdfgjhkef")
+  useEffect(() => {
+ 
+   if(isFetched) {
     (async () => {
       setLoading(true); // Start loading before the request
 
@@ -134,7 +136,7 @@ export const DashboardPage: React.FC = () => {
           return;
         }
 
-        setData(resp.data.DealerPayComm);
+        setData(resp?.data?.DealerPayComm || []);
         setTotalCount(resp.dbRecCount);
         setTileData(resp.data);
       } catch (error) {
@@ -145,6 +147,7 @@ export const DashboardPage: React.FC = () => {
         setLoading(false);
       }
     })();
+  }
   }, [
     currentPage,
     selectedOption2,
