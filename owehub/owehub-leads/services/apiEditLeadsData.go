@@ -165,5 +165,21 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully", http.StatusOK, nil)
+	countQuery := "SELECT COUNT(*) as count FROM leads_info"
+	countData, err := db.ReteriveFromDB(db.OweHubDbIndex, countQuery, nil)
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to count records in database: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to count records in database", http.StatusInternalServerError, nil)
+		return
+	}
+
+	if len(countData) == 0 {
+		log.FuncErrorTrace(0, "No data returned from count query")
+		appserver.FormAndSendHttpResp(resp, "No data returned from count query", http.StatusInternalServerError, nil)
+		return
+	}
+
+	recordCount := countData[0]["count"]
+	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Lead info updated successfully. Total records: %v", recordCount), http.StatusOK, nil)
 }
