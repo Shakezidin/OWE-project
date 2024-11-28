@@ -77,8 +77,9 @@ type StatusWinRequest struct {
 type GetSaleRepsResponseItem struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
-	Role string `json:"role"`
 }
+
+type GetSaleRepsResponse map[string][]GetSaleRepsResponseItem
 
 // Get sales rep request
 type GetSalesRepRequest struct {
