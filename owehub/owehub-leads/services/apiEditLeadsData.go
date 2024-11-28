@@ -4,8 +4,6 @@
 * DATE			: 27-Sept-2024
 **************************************************************************/
 
-// Handle email ID and phone number duplication errors while updating leads
-// email id and phone duplication error andling while updating the leads
 
 package services
 
