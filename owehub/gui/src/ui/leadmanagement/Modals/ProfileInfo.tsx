@@ -77,6 +77,7 @@ const Profile: React.FC<EditModalProps> = ({
         setAuthenticated(isPasswordChangeRequired === 'false');
     }, [authData]);
 
+    
     useEffect(() => {
         if (isAuthenticated && isOpen1) {
             const fetchData = async () => {

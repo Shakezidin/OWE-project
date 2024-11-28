@@ -1,8 +1,8 @@
-/**************************************************************************
- * File       	   : apiGetSaleReps.go
+/**************************
+ * File       	   : apiGetUsersUnder.go
  * DESCRIPTION     : This file contains functions for get sales reps handler
  * DATE            : 24-Jun-2024
- **************************************************************************/
+ **************************/
 
 package services
 
@@ -14,39 +14,42 @@ import (
 	"fmt"
 
 	"net/http"
+
+	"github.com/lib/pq"
 )
 
-/******************************************************************************
- * FUNCTION:		HandleGetSalesRepsRequest
+/**************************
+ * FUNCTION:		HandleGetUsersUnderRequest
  * DESCRIPTION:     handler for get sales reps request
  * INPUT:			resp, req
  * RETURNS:    		void
- ******************************************************************************/
-func HandleGetSalesRepsRequest(resp http.ResponseWriter, req *http.Request) {
+ **************************/
+func HandleGetUsersUnderRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		query        string
 		whereEleList []interface{}
 		data         []map[string]interface{}
+		dataReq      models.GetSalesRepRequest
 	)
 
-	log.EnterFn(0, "HandleGetSalesRepsRequest")
-	defer func() { log.ExitFn(0, "HandleGetSalesRepsRequest", err) }()
+	log.EnterFn(0, "HandleGetUsersUnderRequest")
+	defer func() { log.ExitFn(0, "HandleGetUsersUnderRequest", err) }()
 
 	authenticatedEmailId := req.Context().Value("emailid").(string)
 
-	query = fmt.Sprintf("SELECT * FROM %s($1)", db.GetSalesRepsUnderFunction)
-	whereEleList = []interface{}{authenticatedEmailId}
+	query = fmt.Sprintf("SELECT * FROM %s($1,$2)", db.GetUsersUnderFunction)
+	whereEleList = []interface{}{authenticatedEmailId, pq.Array(dataReq.Roles)}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get sales reps under %v err: %v", authenticatedEmailId, err)
+		log.FuncErrorTrace(0, "Failed to get users under %v err: %v", authenticatedEmailId, err)
 		appserver.FormAndSendHttpResp(resp, "Internal Server Error", http.StatusInternalServerError, nil)
 		return
 	}
 
-	apiResp := []models.GetSaleRepsResponseItem{}
+	apiResp := models.GetSaleRepsResponse{}
 
 	for _, item := range data {
 
@@ -63,14 +66,21 @@ func HandleGetSalesRepsRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to assert role name under %v, item: %v", authenticatedEmailId, item)
 		}
 
-		apiResp = append(apiResp, models.GetSaleRepsResponseItem{
+		_, roleExistInMap := apiResp[roleName]
+		if roleExistInMap {
+			apiResp[roleName] = append(apiResp[roleName], models.GetSaleRepsResponseItem{
+				ID:   userId,
+				Name: name,
+			})
+			continue
+		}
+		apiResp[roleName] = []models.GetSaleRepsResponseItem{{
 			ID:   userId,
 			Name: name,
-			Role: roleName,
-		})
+		}}
 	}
 
 	log.FuncDebugTrace(0, "Number of sales reps under %v list %+v", authenticatedEmailId, data)
 
-	appserver.FormAndSendHttpResp(resp, "Sale Reps", http.StatusOK, apiResp)
+	appserver.FormAndSendHttpResp(resp, "Users ", http.StatusOK, apiResp)
 }
