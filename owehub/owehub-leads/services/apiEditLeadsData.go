@@ -4,7 +4,6 @@
 * DATE			: 27-Sept-2024
 **************************************************************************/
 
-
 package services
 
 import (
@@ -130,5 +129,5 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
 		return
 	}
-	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Lead info updated successfully. Total records: %v", res), http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully.", http.StatusOK, nil)
 }
