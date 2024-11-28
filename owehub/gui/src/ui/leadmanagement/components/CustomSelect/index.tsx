@@ -1,31 +1,46 @@
 import React from 'react';
 import Select, { SingleValue, ActionMeta } from 'react-select';
-import { DateRangeWithLabel } from '../../LeadManagementDashboard';
 
-interface CustomSelectProps {
-  value: DateRangeWithLabel | null;
-  onChange: (newValue: SingleValue<DateRangeWithLabel>, actionMeta: ActionMeta<DateRangeWithLabel>) => void;
-  options: DateRangeWithLabel[];
-  isToggledX: boolean;
+interface CustomSelectProps<T> {
+  value: T | null;
+  onChange: (newValue: T | null) => void;
+  options: T[];
+  isVisible: boolean;
+  placeholder?: string;
+  isDisabled?: boolean;
+  width?: string;
+  getOptionLabel?: (option: T) => string;
+  getOptionValue?: (option: T) => string;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, isToggledX }) => {
+const CustomSelect = <T,>({ 
+  value, 
+  onChange, 
+  options, 
+  isVisible,
+  placeholder,
+  isDisabled = false,
+  width = '140px',
+  getOptionLabel = (option: any) => option.label || option.name || '',
+  getOptionValue = (option: any) => option.id?.toString() || option.value || ''
+}: CustomSelectProps<T>) => {
   const customStyles = {
     control: (baseStyles: any, state: any) => ({
       ...baseStyles,
-      marginTop: 'px',
+      marginTop: '2px',
       borderRadius: '8px',
       outline: 'none',
       color: '#3E3E3E',
-      width: '140px',
+      width: width,
       height: '36px',
       fontSize: '12px',
       border: '1.2px solid black',
       fontWeight: '500',
-      cursor: 'pointer',
+      cursor: isDisabled ? 'not-allowed' : 'pointer',
       alignContent: 'center',
-      backgroundColor: '#fffff',
+      backgroundColor: isDisabled ? '#f5f5f5' : '#ffffff',
       boxShadow: 'none',
+      opacity: isDisabled ? 0.6 : 1,
       '@media only screen and (max-width: 767px)': {
         height: '30px !important',
         width: 'fit-content',
@@ -43,13 +58,13 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, i
         },
       },
       '&:hover': {
-        borderColor: '#377CF6',
-        boxShadow: '0 0 0 0.3px #377CF6',
+        borderColor: isDisabled ? 'black' : '#377CF6',
+        boxShadow: isDisabled ? 'none' : '0 0 0 0.3px #377CF6',
         '& .css-kofgz1-singleValue': {
-          color: '#377CF6',
+          color: isDisabled ? '#3E3E3E' : '#377CF6',
         },
         '& .css-tj5bde-Svg': {
-          color: '#377CF6',
+          color: isDisabled ? '#3E3E3E' : '#377CF6',
         },
       },
     }),
@@ -66,16 +81,16 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, i
       transition: 'transform 0.3s ease',
       color: '#3E3E3E',
       '&:hover': {
-        color: '#3E3E3E',
+        color: isDisabled ? '#3E3E3E' : '#377CF6',
       },
     }),
     option: (baseStyles: any, state: any) => ({
       ...baseStyles,
       fontSize: '13px',
       color: '#3E3E3E',
-      backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+      backgroundColor: state.isSelected ? '#ddebff' : '#ffffff',
       '&:hover': {
-        backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+        backgroundColor: '#ddebff',
       },
       cursor: 'pointer',
       fontWeight: "400",
@@ -86,22 +101,27 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, i
     }),
     menu: (baseStyles: any) => ({
       ...baseStyles,
-      width: '140px',
+      width: width,
       border: '0.7px solid black',
       marginTop: '3px',
+      zIndex: 1000,
     }),
   };
 
-  if (!isToggledX) {
+  if (!isVisible) {
     return null;
   }
 
   return (
     <Select
       value={value}
-      onChange={onChange}
+      onChange={(newValue) => onChange(newValue as T)}
       options={options}
       styles={customStyles}
+      placeholder={placeholder}
+      isDisabled={isDisabled}
+      getOptionLabel={getOptionLabel}
+      getOptionValue={getOptionValue}
     />
   );
 };

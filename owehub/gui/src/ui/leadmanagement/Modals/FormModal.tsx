@@ -34,15 +34,19 @@ interface LocationInfo {
 }
 interface FormInput
   extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
-interface EditModalProps {
-  leadData: any,
-  onClose1: () => void;
-  loading: boolean
-}
+
+
+  interface EditModalProps {
+    leadData: any,
+    loading: boolean,
+    onClose: () => void
+  }
+
+
 const FormModal: React.FC<EditModalProps> = ({
   leadData,
   loading,
-  onClose1
+  onClose
 }) => {
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [setterData, setSetterData] = useState<SetterData[]>([]);
@@ -192,10 +196,13 @@ const FormModal: React.FC<EditModalProps> = ({
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     const errors = validateForm(formData);
     setErrors(errors);
+
     if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
       setLoad(true);
+
       try {
         const response = await postCaller(
           'edit_leads',
@@ -209,14 +216,14 @@ const FormModal: React.FC<EditModalProps> = ({
             notes: formData.notes,
             lead_source: formData.lead_source,
             salerep_id: selectedSale ? selectedSale?.id : saleId,
-            setter_id:selectedSetter ? selectedSetter?.id : setterId
+            setter_id: selectedSetter ? selectedSetter?.id : setterId
           },
           true
         );
+        
         if (response.status === 200) {
-          toast.success('Lead Updated Succesfully');
-          onClose1();
-          
+          toast.success('Lead Updated Successfully');
+          onClose();  // Close the modal on successful submission
         } else if (response.status >= 201) {
           toast.warn(response.message);
         }
@@ -226,7 +233,6 @@ const FormModal: React.FC<EditModalProps> = ({
         console.error('Error submitting form:', error);
       }
     }
-
   };
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
