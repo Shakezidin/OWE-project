@@ -115,6 +115,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    /* position: fixed; */
   }
   
   .submitbut:hover {
@@ -174,9 +175,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 24px 0 24px 0;
+    padding: 0px 0 24px 0;
     gap: 1rem;
     /* border-top: 1px solid #d0d5dd; */
+    margin-bottom: 20px;
   }
   
   .mobileNumber {

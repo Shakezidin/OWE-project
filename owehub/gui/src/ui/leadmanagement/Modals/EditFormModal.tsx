@@ -130,10 +130,11 @@ const Profile: React.FC<EditModalProps> = ({
                         <span className={classes.XR} onClick={RedirectMainDashboard}>Edit Lead</span>
                         <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
 
-                  <FormModal
-                   leadData={leadData}
-                   loading={loading}
-                  />
+                        <FormModal
+                        leadData={leadData}
+                        loading={loading}
+                        onClose={onClose1}  // Pass the onClose prop
+                    />
                     
                   
                 </div>

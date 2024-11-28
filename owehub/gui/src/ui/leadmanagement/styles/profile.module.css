@@ -10,11 +10,14 @@
   background-color: #fff;
   max-width: 1012px;
   min-height: 572px;
-  max-height: 625px;
+  max-height: 650px;
   min-width: 612px;
   display: flex;
   flex-direction: column;
+  height: auto;
+
 }
+
 .specialfont a {
   color: #7996ec  !important;
   text-decoration: underline;
