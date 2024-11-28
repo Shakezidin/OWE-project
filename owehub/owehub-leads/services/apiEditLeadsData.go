@@ -4,7 +4,7 @@
 * DATE			: 27-Sept-2024
 **************************************************************************/
 
-//🍅🍅🍅🍅
+// Handle email ID and phone number duplication errors while updating leads
 // email id and phone duplication error andling while updating the leads
 
 package services
@@ -83,42 +83,12 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		whereEleList = append(whereEleList, dataReq.PhoneNumber)
 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
 
-		// Check if new phone_number already exists
-		phoneCheckQuery := "SELECT 1 FROM leads_info WHERE phone_number = $1 AND leads_id != $2"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, phoneCheckQuery, []interface{}{dataReq.PhoneNumber, dataReq.LeadId})
-
-		if err != nil {
-			log.FuncErrorTrace(0, "Error querying phone number in database: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Database error", http.StatusInternalServerError, nil)
-			return
-		}
-
-		if len(data) > 0 {
-			log.FuncErrorTrace(0, "Phone number already exists in the system")
-			appserver.FormAndSendHttpResp(resp, "Phone number already exists", http.StatusConflict, nil)
-			return
-		}
 
 	}
 	if len(dataReq.EmailId) > 0 {
 		whereEleList = append(whereEleList, dataReq.EmailId)
 		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
 
-		// Check if new email_id already exists
-		emailCheckQuery := "SELECT 1 FROM leads_info WHERE email_id = $1 AND leads_id != $2"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, emailCheckQuery, []interface{}{dataReq.EmailId, dataReq.LeadId})
-
-		if err != nil {
-			log.FuncErrorTrace(0, "Error querying email in database: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Database error", http.StatusInternalServerError, nil)
-			return
-		}
-
-		if len(data) > 0 {
-			log.FuncErrorTrace(0, "Email already exists in the system")
-			appserver.FormAndSendHttpResp(resp, "Email already exists", http.StatusConflict, nil)
-			return
-		}
 	}
 
 	if len(dataReq.StreetAddress) > 0 {
@@ -174,12 +144,18 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+
 	if len(countData) == 0 {
 		log.FuncErrorTrace(0, "No data returned from count query")
 		appserver.FormAndSendHttpResp(resp, "No data returned from count query", http.StatusInternalServerError, nil)
 		return
 	}
 
-	recordCount := countData[0]["count"]
+	recordCount, ok := countData[0]["count"].(int)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert count to int")
+		appserver.FormAndSendHttpResp(resp, "Failed to assert count to int", http.StatusInternalServerError, nil)
+		return
+	}
 	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Lead info updated successfully. Total records: %v", recordCount), http.StatusOK, nil)
 }
