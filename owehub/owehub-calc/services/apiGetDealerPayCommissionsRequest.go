@@ -139,7 +139,10 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
 
-	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
+	if len(dataReq.PartnerName) > 0 {
+		if dataReq.PayroleDate == "" {
+			dataReq.PayroleDate = time.Now().Format("02-01-2006") // Format to match expected input
+		}
 		// Prepare a string for dealer names, with each name properly escaped
 		escapedPartnerNames := make([]string, len(dataReq.PartnerName))
 		for i, name := range dataReq.PartnerName {

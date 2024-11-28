@@ -108,6 +108,9 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	Rep2 := dlrPayData.Rep2
 	Setter := dlrPayData.Setter
 	ST := dlrPayData.ST
+	if len(ST) > 6 {
+		ST = ST[6:]
+	}
 	year, month, day := dlrPayData.ContractDate.Date()
 	ContractDate := time.Date(year, month, day, 0, 0, 0, 0, dlrPayData.ContractDate.Location())
 	NetEpc := dlrPayData.NetEpc
@@ -134,10 +137,6 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
 	balance := totalNetCommission - amt_paid
 	// here i have some doubts
-
-	if len(ST) > 6 {
-		ST = ST[6:]
-	}
 
 	epc := ContractDolDol / (SystemSize * 1000)
 
