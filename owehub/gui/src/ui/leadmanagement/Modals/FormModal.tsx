@@ -24,6 +24,11 @@ interface SaleData {
   name: string;
   role: string;
 }
+interface SetterData {
+  id: number;
+  name: string;
+  role: string;
+}
 interface LocationInfo {
   lat: number;
   lng: number;
@@ -80,10 +85,12 @@ const FormModal: React.FC<EditModalProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [zip_codeError, setZip_codeError] = useState('');
+  const [setterError, setSetterError] = useState('');
   const [load, setLoad] = useState(false);
   const [saleData, setSaleData] = useState<SaleData[]>([]);
+  const [setterData, setSetterData] = useState<SetterData[]>([]);
   const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
+  const [selectedSetter, setSelectedSetter] = useState<SetterData | null>(null);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -128,22 +135,6 @@ const FormModal: React.FC<EditModalProps> = ({
         }));
         errors.address = ""
       }
-    } else if (name === 'zip_code') {
-      const trimmedValueC = value.trim();
-      const isValidZipCode = validateZipCode(trimmedValueC);
-
-      if (trimmedValueC.length > 10) {
-        setZip_codeError('Zip code should not exceed 10 characters');
-      } else if (!isValidZipCode) {
-        setZip_codeError('Please enter a valid ZipCode');
-      } else {
-        setZip_codeError('');
-      }
-      const CorrectValue = value.replace(/\s/g, '');
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: CorrectValue,
-      }));
     } else if (name === 'lead_source') {
       if (value === '' || allowedPattern.test(value)) {
         setFormData((prevData) => ({
@@ -172,17 +163,7 @@ const FormModal: React.FC<EditModalProps> = ({
     }
   };
 
-  const initialFormData = {
-    first_name: '',
-    last_name: '',
-    email_id: '',
-    mobile_number: '+1',
-    address: '',
-    zip_code: '',
-    notes: '',
-    sales_rep: '',
-    lead_source: '',
-  };
+  
 
   const validateForm = (formData: any) => {
     const errors: { [key: string]: string } = {};
@@ -202,15 +183,18 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.address.trim() === '') {
       errors.address = 'Address is required';
     }
-    if (formData.zip_code.trim() === '') {
-      errors.zip_code = 'Zip Code is required';
-    }
+   
     if (!selectedSale) {
       errors.sales_rep = 'Sales Rep is required';
     }
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
+    if (!selectedSetter) {
+      errors.setterError = 'Setter is required';
+    }
+   
+    
 
 
     return errors;
@@ -225,17 +209,44 @@ const FormModal: React.FC<EditModalProps> = ({
     const errors = validateForm(formData);
     setErrors(errors);
 
+
+    if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
+
+      setLoad(true);
+
+
+      try {
+        const response = await postCaller(
+          'edit_leads',
+          {
+            leads_id: leadData.leads_id,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone_number: formData.mobile_number,
+            email_id: formData.email_id,
+            street_address: formData.address,
+            notes: formData.notes,
+            lead_source: formData.lead_source,
+            salerep_id: selectedSale?.id,
+            setter_id:selectedSetter?.id
+          },
+          true
+        );
+        if (response.status === 200) {
+          toast.success('Lead Updated Succesfully');
+        } else if (response.status >= 201) {
+          toast.warn(response.message);
+        }
+        setLoad(false);
+      } catch (error) {
+        setLoad(false);
+        console.error('Error submitting form:', error);
+      }
+    }
+
   };
 
-  const resetFormData = () => {
-    setFormData(initialFormData);
-  };
-
-  //   const navigate = useNavigate();
-  //   const handleBack = () => {
-  //     navigate('/leadmng-dashboard');
-  //   };
-
+ 
 
 
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -256,15 +267,16 @@ const FormModal: React.FC<EditModalProps> = ({
         try {
           setIsLoadSelect(true);
           const response = await postCaller(
-            'get_sales_reps',
+            'get_users_under',
             {
-
+              "roles": ["Sale Representative", "Appointment Setter"]
             },
             true
           );
 
           if (response.status === 200) {
-            setSaleData(response.data)
+            setSaleData(response.data['Sale Representative']);
+            setSetterData(response.data['Appointment Setter'])
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -284,6 +296,10 @@ const FormModal: React.FC<EditModalProps> = ({
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
     errors.sales_rep = '';
+  };
+  const handleSetterChange = (selectedOption: SaleData | null) => {
+    setSelectedSetter(selectedOption);
+    errors.app_setter = '';
   };
 
   console.log(selectedSale, "sdaghfgfhdsa")
@@ -526,12 +542,12 @@ const FormModal: React.FC<EditModalProps> = ({
                         <div className={classes.srs_new_create}>
                           <div className={classes.custom_label_newlead}>Setter</div>
                           <Select
-                            value={selectedSale || saleData.find(option => option.name === leadData.sales_rep_name) || null}
-                            onChange={handleSaleChange}
+                            value={selectedSetter || setterData.find(option => option.name === leadData.sales_rep_name) || null}
+                            onChange={handleSetterChange}
                             getOptionLabel={(option) => option.name}
                             getOptionValue={(option) => option.id.toString()}
                             placeholder={"Select Setter"}
-                            options={saleData}
+                            options={setterData}
                             isDisabled={((role !== TYPE_OF_USER.ADMIN) && (role !== TYPE_OF_USER.DEALER_OWNER) && (role !== TYPE_OF_USER.SUB_DEALER_OWNER) && (role !== TYPE_OF_USER.REGIONAL_MANGER) && (role !== TYPE_OF_USER.SALE_MANAGER))}
                             styles={{
                               control: (baseStyles, state) => ({
@@ -630,9 +646,9 @@ const FormModal: React.FC<EditModalProps> = ({
                             }}
                           />
 
-                          {(zip_codeError || errors.zip_code) && (
+                          {(setterError || errors.setterError) && (
                             <div className="error">
-                              {zip_codeError || errors.zip_code}
+                              {setterError || errors.setterError}
                             </div>
                           )}
                         </div>
