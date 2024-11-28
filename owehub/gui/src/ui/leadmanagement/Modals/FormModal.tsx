@@ -1,16 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import classes from '../Modals/FormModal.module.css';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { validateEmail, validateZipCode } from '../../../utiles/Validation';
+import { validateEmail } from '../../../utiles/Validation';
 import Input from '../../components/text_input/Input';
 import PhoneInput from 'react-phone-input-2';
-import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { ICONS } from '../../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
-import Select, { SingleValue, ActionMeta } from 'react-select';
 import {
   Autocomplete,
   useLoadScript,
@@ -18,7 +14,7 @@ import {
 import { RiMapPinLine } from 'react-icons/ri';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-
+import CustomSelect from '../components/CustomSelect';
 interface SaleData {
   id: number;
   name: string;
@@ -36,21 +32,17 @@ interface LocationInfo {
   home_owner: string;
   project_status: string;
 }
-
-
 interface FormInput
   extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
-
-
 interface EditModalProps {
   leadData: any,
+  onClose1: () => void;
   loading: boolean
 }
-
-
 const FormModal: React.FC<EditModalProps> = ({
   leadData,
-  loading
+  loading,
+  onClose1
 }) => {
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [setterData, setSetterData] = useState<SetterData[]>([]);
@@ -69,8 +61,6 @@ const FormModal: React.FC<EditModalProps> = ({
     lead_source: '',
   });
   console.log(setterData, 'form data consoling ');
-
-
   useEffect(() => {
     if (leadData && setterData) {
       const salesRepId = saleData.find(
@@ -96,15 +86,11 @@ const FormModal: React.FC<EditModalProps> = ({
       setSetterId(setterId);
     }
   }, [leadData, setterData]);
-
-
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [setterError, setSetterError] = useState('');
   const [load, setLoad] = useState(false);
-  
-
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     const allowedPattern = /^[A-Za-z\s]+$/;
@@ -175,9 +161,6 @@ const FormModal: React.FC<EditModalProps> = ({
       setErrors(err);
     }
   };
-
-  
-
   const validateForm = (formData: any) => {
     const errors: { [key: string]: string } = {};
 
@@ -199,24 +182,20 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
+    if (!selectedSale) {
+      errors.sales_rep = 'Sales Rep is required';
+    }
+    if (!selectedSetter) {
+      errors.setterError = 'Setter is required';
+    }
     return errors;
   };
-
-
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-
     const errors = validateForm(formData);
     setErrors(errors);
-
-
     if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
-
       setLoad(true);
-
-
       try {
         const response = await postCaller(
           'edit_leads',
@@ -236,6 +215,7 @@ const FormModal: React.FC<EditModalProps> = ({
         );
         if (response.status === 200) {
           toast.success('Lead Updated Succesfully');
+          onClose1();
           
         } else if (response.status >= 201) {
           toast.warn(response.message);
@@ -248,10 +228,6 @@ const FormModal: React.FC<EditModalProps> = ({
     }
 
   };
-
- 
-
-
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   const [loadselect, setIsLoadSelect] = useState(false);
@@ -260,10 +236,6 @@ const FormModal: React.FC<EditModalProps> = ({
       authData?.isPasswordChangeRequired?.toString();
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
-
-
-
-
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
@@ -293,9 +265,6 @@ const FormModal: React.FC<EditModalProps> = ({
       fetchData();
     }
   }, [isAuthenticated]);
-
-
-
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
     errors.sales_rep = '';
@@ -304,22 +273,16 @@ const FormModal: React.FC<EditModalProps> = ({
     setSelectedSetter(selectedOption);
     errors.setterError = '';
   };
-
   console.log(selectedSale, "sdaghfgfhdsa")
-
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
     libraries: ['places'],
   });
-
   const [searchValue, setSearchValue] = useState<any>('');
-
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-
   const [isInputFocused, setInputFocused] = useState(false);
   const mapRef = useRef<google.maps.Map | null>(null);
   const [locations, setLocations] = useState<LocationInfo[]>([]);
-
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
     if (!place || !place.geometry || !place.geometry.location) {
@@ -334,23 +297,17 @@ const FormModal: React.FC<EditModalProps> = ({
     }));
     setSearchValue(selectedAddress);
   };
-
-
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
     console.log(autocomplete, "")
     autocompleteRef.current = autocomplete;
   };
-
   const [role, setRole] = useState('');
-
   useEffect(() => {
     const storedRole = localStorage.getItem('role');
     if (storedRole) {
       setRole(storedRole);
     }
   }, []);
-
-
   return (
     <div className={classes.ScrollableDivRemove}>
       <div style={{ paddingRight: "12px" }} className={`flex justify-between ${classes.h_screen}`}>
@@ -542,119 +499,25 @@ const FormModal: React.FC<EditModalProps> = ({
                             </span>
                           )}
                         </div>
-                        <div className={classes.srs_new_create}>
-                          <div className={classes.custom_label_newlead}>Setter</div>
-                          <Select
-                            value={selectedSetter || setterData.find(option => option.name === leadData.sales_rep_name) || null}
-                            onChange={handleSetterChange}
-                            getOptionLabel={(option) => option.name}
-                            getOptionValue={(option) => option.id.toString()}
-                            placeholder={"Select Setter"}
-                            options={setterData}
-                            isDisabled={((role !== TYPE_OF_USER.ADMIN) && (role !== TYPE_OF_USER.DEALER_OWNER) && (role !== TYPE_OF_USER.SUB_DEALER_OWNER) && (role !== TYPE_OF_USER.REGIONAL_MANGER) && (role !== TYPE_OF_USER.SALE_MANAGER))}
-                            styles={{
-                              control: (baseStyles, state) => ({
-                                ...baseStyles,
-                                marginTop: 'px',
-                                borderRadius: '8px',
-                                outline: 'none',
-                                color: '#3E3E3E',
-                                width: '300px',
-                                height: '36px',
-                                fontSize: '12px',
-                                border: '1px solid #000000',
-                                fontWeight: '500',
-                                cursor: 'pointer',
-                                alignContent: 'center',
-                                backgroundColor: '#fffff',
-                                boxShadow: 'none',
-                                '@media only screen and (max-width: 767px)': {
-                                  width: '300px',
-                                  // width: 'fit-content',
-                                },
-                                '&:focus-within': {
-                                  borderColor: '#377CF6',
-                                  boxShadow: '0 0 0 0.3px #377CF6',
-                                  caretColor: '#3E3E3E',
-                                  '& .css-kofgz1-singleValue': {
-                                    color: '#377CF6',
-                                  },
-                                  '& .css-tj5bde-Svg': {
-                                    color: '#377CF6',
-                                  },
-                                },
-                                '&:hover': {
-                                  borderColor: '#377CF6',
-                                  boxShadow: '0 0 0 0.3px #377CF6',
-                                  '& .css-kofgz1-singleValue': {
-                                    color: '#377CF6',
-                                  },
-                                  '& .css-tj5bde-Svg': {
-                                    color: '#377CF6',
-                                  },
-                                },
-                              }),
-                              placeholder: (baseStyles) => ({
-                                ...baseStyles,
-                                color: '#3E3E3E',
-                              }),
-                              indicatorSeparator: () => ({
-                                display: 'none',
-                              }),
-                              dropdownIndicator: (baseStyles, state) => ({
-                                ...baseStyles,
-                                transform: state.isFocused ? 'rotate(180deg)' : 'none',
-                                transition: 'transform 0.3s ease',
-                                color: '#3E3E3E',
-                                '&:hover': {
-                                  color: '#3E3E3E',
-                                },
-                              }),
-                              option: (baseStyles, state) => ({
-                                ...baseStyles,
-                                fontSize: '12px',
-                                cursor: 'pointer',
-                                background: state.isSelected ? '#377CF6' : '#fff',
-                                color: baseStyles.color,
-                                '&:hover': {
-                                  background: state.isSelected ? '#377CF6' : '#DDEBFF',
-                                },
-
-                              }),
-                              singleValue: (baseStyles, state) => ({
-                                ...baseStyles,
-                                color: '#3E3E3E',
-                              }),
-                              menu: (baseStyles) => ({
-                                ...baseStyles,
-                                width: '300px',
-                                marginTop: '3px',
-                                border: '1px solid #000000',
-
-                              }),
-                              menuList: (base) => ({
-                                ...base,
-                                '&::-webkit-scrollbar': {
-                                  scrollbarWidth: 'thin',
-                                  scrollBehavior: 'smooth',
-                                  display: 'block',
-                                  scrollbarColor: 'rgb(173, 173, 173) #fff',
-                                  width: 8,
-                                },
-                                '&::-webkit-scrollbar-thumb': {
-                                  background: 'rgb(173, 173, 173)',
-                                  borderRadius: '30px',
-                                },
-                              }),
-                            }}
-                          />
-
-                          {(setterError || errors.setterError) && (
-                            <div className="error">
-                              {setterError || errors.setterError}
-                            </div>
-                          )}
-                        </div>
+                        {/* Setter Field */}
+                          <div className={classes.srs_new_create}>
+                            <div className={classes.custom_label_newlead}>Setter</div>
+                            <CustomSelect<SetterData>
+                                value={selectedSetter || setterData.find((option) => option.name === leadData.sales_rep_name) || null}
+                                onChange={handleSetterChange}
+                                options={setterData}
+                                isVisible={true}
+                                placeholder="Select Setter"
+                                width="100%"
+                                getOptionLabel={(option) => option.name}
+                                getOptionValue={(option) => option.id.toString()}
+                              />
+                            {(setterError || errors.setterError) && (
+                              <div className="error">
+                                {setterError || errors.setterError}
+                              </div>
+                            )}
+                          </div>
                       </div>
                       <div className={classes.salrep_input_container}>
 
@@ -679,113 +542,18 @@ const FormModal: React.FC<EditModalProps> = ({
                             </span>
                           )}
                         </div>
-                        <div className={classes.srs_new_create} style={{ gap: "6px" }}>
+                        {/* Sales Rep Field */}
+                        <div className={classes.srs_new_create}>
                           <div className={classes.custom_label_newlead}>Sales Rep</div>
-                          <Select
-                            value={selectedSale || saleData.find(option => option.name === leadData.sales_rep_name)}
-                            onChange={handleSaleChange}
+                          <CustomSelect<SaleData>
+                            value={selectedSale || saleData.find((option) => option.name === leadData.sales_rep_name) || null}
+                            onChange={(newValue) => handleSaleChange(newValue)}
+                            options={saleData}
+                            isVisible={role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.DEALER_OWNER || role === TYPE_OF_USER.SUB_DEALER_OWNER || role === TYPE_OF_USER.REGIONAL_MANGER || role === TYPE_OF_USER.SALE_MANAGER}
+                            placeholder="Select Sales Rep"
+                            width="100%"
                             getOptionLabel={(option) => option.name}
                             getOptionValue={(option) => option.id.toString()}
-                            placeholder={"Select Sales Rep"}
-                            options={saleData}
-
-                            isDisabled={((role !== TYPE_OF_USER.ADMIN) && (role !== TYPE_OF_USER.DEALER_OWNER) && (role !== TYPE_OF_USER.SUB_DEALER_OWNER) && (role !== TYPE_OF_USER.REGIONAL_MANGER) && (role !== TYPE_OF_USER.SALE_MANAGER))}
-
-                            styles={{
-                              control: (baseStyles, state) => ({
-                                ...baseStyles,
-                                marginTop: 'px',
-                                borderRadius: '8px',
-                                outline: 'none',
-                                color: '#3E3E3E',
-                                width: '300px',
-                                height: '36px',
-                                fontSize: '12px',
-                                border: '1px solid #000000',
-                                fontWeight: '500',
-                                cursor: 'pointer',
-                                alignContent: 'center',
-                                backgroundColor: '#fffff',
-                                boxShadow: 'none',
-                                '@media only screen and (max-width: 767px)': {
-                                  width: '300px',
-                                  // width: 'fit-content',
-                                },
-                                '&:focus-within': {
-                                  borderColor: '#377CF6',
-                                  boxShadow: '0 0 0 0.3px #377CF6',
-                                  caretColor: '#3E3E3E',
-                                  '& .css-kofgz1-singleValue': {
-                                    color: '#377CF6',
-                                  },
-                                  '& .css-tj5bde-Svg': {
-                                    color: '#377CF6',
-                                  },
-                                },
-                                '&:hover': {
-                                  borderColor: '#377CF6',
-                                  boxShadow: '0 0 0 0.3px #377CF6',
-                                  '& .css-kofgz1-singleValue': {
-                                    color: '#377CF6',
-                                  },
-                                  '& .css-tj5bde-Svg': {
-                                    color: '#377CF6',
-                                  },
-                                },
-                              }),
-                              placeholder: (baseStyles) => ({
-                                ...baseStyles,
-                                color: '#3E3E3E',
-                              }),
-                              indicatorSeparator: () => ({
-                                display: 'none',
-                              }),
-                              dropdownIndicator: (baseStyles, state) => ({
-                                ...baseStyles,
-                                transform: state.isFocused ? 'rotate(180deg)' : 'none',
-                                transition: 'transform 0.3s ease',
-                                color: '#3E3E3E',
-                                '&:hover': {
-                                  color: '#3E3E3E',
-                                },
-                              }),
-                              option: (baseStyles, state) => ({
-                                ...baseStyles,
-                                fontSize: '12px',
-                                cursor: 'pointer',
-                                background: state.isSelected ? '#377CF6' : '#fff',
-                                color: baseStyles.color,
-                                '&:hover': {
-                                  background: state.isSelected ? '#377CF6' : '#DDEBFF',
-                                },
-
-                              }),
-                              singleValue: (baseStyles, state) => ({
-                                ...baseStyles,
-                                color: '#3E3E3E',
-                              }),
-                              menu: (baseStyles) => ({
-                                ...baseStyles,
-                                width: '300px',
-                                marginTop: '3px',
-                                border: '1px solid #000000',
-
-                              }),
-                              menuList: (base) => ({
-                                ...base,
-                                '&::-webkit-scrollbar': {
-                                  scrollbarWidth: 'thin',
-                                  scrollBehavior: 'smooth',
-                                  display: 'block',
-                                  scrollbarColor: 'rgb(173, 173, 173) #fff',
-                                  width: 8,
-                                },
-                                '&::-webkit-scrollbar-thumb': {
-                                  background: 'rgb(173, 173, 173)',
-                                  borderRadius: '30px',
-                                },
-                              }),
-                            }}
                           />
                           {errors.sales_rep && (
                             <span
@@ -798,8 +566,6 @@ const FormModal: React.FC<EditModalProps> = ({
                             </span>
                           )}
                         </div>
-
-
                         <div className={classes.create_input_field_note}>
                           <label htmlFor="" className="inputLabel">
                             Notes
