@@ -82,7 +82,6 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		whereEleList = append(whereEleList, dataReq.PhoneNumber)
 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
 
-
 	}
 	if len(dataReq.EmailId) > 0 {
 		whereEleList = append(whereEleList, dataReq.EmailId)
@@ -133,28 +132,5 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
 		return
 	}
-
-	countQuery := "SELECT COUNT(*) as count FROM leads_info"
-	countData, err := db.ReteriveFromDB(db.OweHubDbIndex, countQuery, nil)
-
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to count records in database: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to count records in database", http.StatusInternalServerError, nil)
-		return
-	}
-
-
-	if len(countData) == 0 {
-		log.FuncErrorTrace(0, "No data returned from count query")
-		appserver.FormAndSendHttpResp(resp, "No data returned from count query", http.StatusInternalServerError, nil)
-		return
-	}
-
-	recordCount, ok := countData[0]["count"].(int)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert count to int")
-		appserver.FormAndSendHttpResp(resp, "Failed to assert count to int", http.StatusInternalServerError, nil)
-		return
-	}
-	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Lead info updated successfully. Total records: %v", recordCount), http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Lead info updated successfully. Total records: %v", res), http.StatusOK, nil)
 }
