@@ -17,4 +17,5 @@ type EditLeadsDataReq struct {
 	Notes         string `json:"notes"`
 	SalerepID     int64  `json:"salerep_id"`
 	LeadSource    string `json:"lead_source"`
+	SetterID      int64  `json:"setter_id"`
 }
