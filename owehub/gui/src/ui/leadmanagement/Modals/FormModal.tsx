@@ -52,6 +52,13 @@ const FormModal: React.FC<EditModalProps> = ({
   leadData,
   loading
 }) => {
+  const [saleData, setSaleData] = useState<SaleData[]>([]);
+  const [setterData, setSetterData] = useState<SetterData[]>([]);
+  const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
+  const [selectedSetter, setSelectedSetter] = useState<SetterData | null>(null);
+  const [saleId, setSaleId] = useState<number | string>(0);
+  const [setterId, setSetterId] = useState<number | string>(0);
+  console.log(saleId, "dhsghgfdsfghdsfdhsghfdhs")
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -59,14 +66,23 @@ const FormModal: React.FC<EditModalProps> = ({
     mobile_number: '',
     address: '',
     notes: '',
-    sales_rep: '',
     lead_source: '',
   });
-  console.log(leadData, 'form data consoling ');
+  console.log(setterData, 'form data consoling ');
 
 
   useEffect(() => {
-    if (leadData) {
+    if (leadData && setterData) {
+      const salesRepId = saleData.find(
+        (setter) => setter.name === leadData.sales_rep_name
+      )?.id || '';
+
+      const setterId = setterData.find(
+        (setter) => setter.name === leadData.sales_rep_name
+      )?.id || '';
+
+      console.log(salesRepId, "show this")
+  
       setFormData({
         first_name: leadData.first_name || '',
         last_name: leadData.last_name || '',
@@ -74,12 +90,12 @@ const FormModal: React.FC<EditModalProps> = ({
         mobile_number: leadData.phone_number || '',
         address: leadData.street_address || '',
         notes: leadData.notes || '',
-        sales_rep: leadData.sales_rep_name || '',
         lead_source: leadData.lead_source || '',
       });
-
+      setSaleId(salesRepId);
+      setSetterId(setterId);
     }
-  }, [leadData]);
+  }, [leadData, setterData]);
 
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
@@ -87,10 +103,7 @@ const FormModal: React.FC<EditModalProps> = ({
   const [emailError, setEmailError] = useState('');
   const [setterError, setSetterError] = useState('');
   const [load, setLoad] = useState(false);
-  const [saleData, setSaleData] = useState<SaleData[]>([]);
-  const [setterData, setSetterData] = useState<SetterData[]>([]);
-  const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
-  const [selectedSetter, setSelectedSetter] = useState<SetterData | null>(null);
+  
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -183,20 +196,9 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.address.trim() === '') {
       errors.address = 'Address is required';
     }
-   
-    if (!selectedSale) {
-      errors.sales_rep = 'Sales Rep is required';
-    }
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-    if (!selectedSetter) {
-      errors.setterError = 'Setter is required';
-    }
-   
-    
-
-
     return errors;
   };
 
@@ -227,13 +229,14 @@ const FormModal: React.FC<EditModalProps> = ({
             street_address: formData.address,
             notes: formData.notes,
             lead_source: formData.lead_source,
-            salerep_id: selectedSale?.id,
-            setter_id:selectedSetter?.id
+            salerep_id: selectedSale ? selectedSale?.id : saleId,
+            setter_id:selectedSetter ? selectedSetter?.id : setterId
           },
           true
         );
         if (response.status === 200) {
           toast.success('Lead Updated Succesfully');
+          
         } else if (response.status >= 201) {
           toast.warn(response.message);
         }
@@ -299,7 +302,7 @@ const FormModal: React.FC<EditModalProps> = ({
   };
   const handleSetterChange = (selectedOption: SaleData | null) => {
     setSelectedSetter(selectedOption);
-    errors.app_setter = '';
+    errors.setterError = '';
   };
 
   console.log(selectedSale, "sdaghfgfhdsa")
