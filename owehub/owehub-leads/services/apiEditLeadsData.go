@@ -34,7 +34,6 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		updateFields []string
 		dataReq      models.EditLeadsDataReq
 		query        string
-		data         []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleEditLeadsRequest")
@@ -67,7 +66,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Invalid lead ID, update failed", http.StatusBadRequest, nil)
 		return
-	} 
+	}
 
 	if len(dataReq.FirstName) > 0 {
 		whereEleList = append(whereEleList, dataReq.FirstName)
