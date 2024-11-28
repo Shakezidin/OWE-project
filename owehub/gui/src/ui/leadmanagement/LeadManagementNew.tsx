@@ -23,6 +23,11 @@ interface SaleData {
   name: string;
   role: string;
 }
+interface SetterData {
+  id: number;
+  name: string;
+  role: string;
+}
 type LatLng = {
   lat: number;
   lng: number;
@@ -55,6 +60,9 @@ const LeadManagementNew = () => {
   const [load, setLoad] = useState(false);
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [selectedSale, setSelectedSale] = useState<SaleData | null>(null);
+
+  const [setterData, setSetterData] = useState<SetterData[]>([]);
+  const [selectedSetter, setSelectedSetter] = useState<SetterData | null>(null);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -159,9 +167,13 @@ const LeadManagementNew = () => {
     if (!selectedSale) {
       errors.sales_rep = 'Sales Rep is required';
     }
+    if (!selectedSetter) {
+      errors.setter = 'Setter is required';
+    }
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
+    
 
 
     return errors;
@@ -194,6 +206,7 @@ const LeadManagementNew = () => {
             notes: formData.notes,
             lead_source: formData.lead_source,
             salerep_id: selectedSale?.id,
+            setter_id: selectedSetter?.id,
             base_url: window.location.origin
           },
           true
@@ -243,15 +256,16 @@ const LeadManagementNew = () => {
         try {
           setIsLoading(true);
           const response = await postCaller(
-            'get_sales_reps',
+            'get_users_under',
             {
-
+              "roles": ["Sale Representative", "Appointment Setter"]
             },
             true
           );
 
           if (response.status === 200) {
-            setSaleData(response.data)
+            setSaleData(response.data['Sale Representative'])
+            setSetterData(response.data['Appointment Setter'])
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -274,6 +288,11 @@ const LeadManagementNew = () => {
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
     errors.sales_rep = '';
+  };
+
+  const handleSetterChange = (selectedOption: SaleData | null) => {
+    setSelectedSetter(selectedOption);
+    errors.setter = '';
   };
 
   console.log(selectedSale, "sdaghfgfhdsa")
@@ -646,6 +665,122 @@ const LeadManagementNew = () => {
                             className="error"
                           >
                             {errors.sales_rep}
+                          </span>
+                        )}
+                      </div>
+                      <div className={classes.srs_new_create} style={{ gap: "6px" }}>
+                        <div className={classes.custom_label_newlead}>Sales Rep</div>
+                        <Select
+                          value={selectedSetter}
+                          onChange={handleSetterChange}
+                          getOptionLabel={(option) => option.name}
+                          getOptionValue={(option) => option.id.toString()}
+                          placeholder={"Select Setter"}
+                          options={setterData}
+                          styles={{
+                            control: (baseStyles, state) => ({
+                              ...baseStyles,
+                              marginTop: 'px',
+                              borderRadius: '8px',
+                              outline: 'none',
+                              color: '#3E3E3E',
+                              width: '300px',
+                              height: '36px',
+                              fontSize: '12px',
+                              border: '1px solid #000000',
+                              fontWeight: '500',
+                              cursor: 'pointer',
+                              alignContent: 'center',
+                              backgroundColor: '#fffff',
+                              boxShadow: 'none',
+                              '@media only screen and (max-width: 767px)': {
+                                width: '300px',
+                                // width: 'fit-content',
+                              },
+                              '&:focus-within': {
+                                borderColor: '#377CF6',
+                                boxShadow: '0 0 0 0.3px #377CF6',
+                                caretColor: '#3E3E3E',
+                                '& .css-kofgz1-singleValue': {
+                                  color: '#377CF6',
+                                },
+                                '& .css-tj5bde-Svg': {
+                                  color: '#377CF6',
+                                },
+                              },
+                              '&:hover': {
+                                borderColor: '#377CF6',
+                                boxShadow: '0 0 0 0.3px #377CF6',
+                                '& .css-kofgz1-singleValue': {
+                                  color: '#377CF6',
+                                },
+                                '& .css-tj5bde-Svg': {
+                                  color: '#377CF6',
+                                },
+                              },
+                            }),
+                            placeholder: (baseStyles) => ({
+                              ...baseStyles,
+                              color: '#3E3E3E',
+                            }),
+                            indicatorSeparator: () => ({
+                              display: 'none',
+                            }),
+                            dropdownIndicator: (baseStyles, state) => ({
+                              ...baseStyles,
+                              transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                              transition: 'transform 0.3s ease',
+                              color: '#3E3E3E',
+                              '&:hover': {
+                                color: '#3E3E3E',
+                              },
+                            }),
+                            option: (baseStyles, state) => ({
+                              ...baseStyles,
+                              fontSize: '12px',
+                              cursor: 'pointer',
+                              background: state.isSelected ? '#377CF6' : '#fff',
+                              color: baseStyles.color,
+                              '&:hover': {
+                                background: state.isSelected ? '#377CF6' : '#DDEBFF',
+                              },
+
+                            }),
+                            singleValue: (baseStyles, state) => ({
+                              ...baseStyles,
+                              color: '#3E3E3E',
+                            }),
+                            menu: (baseStyles) => ({
+                              ...baseStyles,
+                              width: '300px',
+                              marginTop: '3px',
+                              border: '1px solid #000000',
+
+                            }),
+                            menuList: (base) => ({
+                              ...base,
+                              '&::-webkit-scrollbar': {
+                                scrollbarWidth: 'thin',
+                                scrollBehavior: 'smooth',
+                                display: 'block',
+                                scrollbarColor: 'rgb(173, 173, 173) #fff',
+                                width: 8,
+                              },
+                              '&::-webkit-scrollbar-thumb': {
+                                background: 'rgb(173, 173, 173)',
+                                borderRadius: '30px',
+                              },
+                            }),
+                          }}
+                        />
+                        {errors.setter && (
+                          <span
+                            style={{
+                              display: 'block',
+                            }}
+                            className="error"
+                          >
+                            {errors.setter}
                           </span>
                         )}
                       </div>
