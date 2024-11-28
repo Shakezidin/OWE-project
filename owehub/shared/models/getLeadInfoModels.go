@@ -40,4 +40,5 @@ type GetLeadInfoRes struct {
 	ProposalType               string     `json:"proposal_type"`
 	SalesRepName               string     `json:"sales_rep_name"`
 	LeadSource                 string     `json:"lead_source"`
+	SetterName                 string     `json:"setter_name"`
 }
