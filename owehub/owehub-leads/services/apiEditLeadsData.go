@@ -67,7 +67,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Invalid lead ID, update failed", http.StatusBadRequest, nil)
 		return
-	}
+	} 
 
 	if len(dataReq.FirstName) > 0 {
 		whereEleList = append(whereEleList, dataReq.FirstName)
