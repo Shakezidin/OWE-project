@@ -1,8 +1,8 @@
-/**************************************************************************
+/**************************
  * File       	   : apiGetUsersUnder.go
  * DESCRIPTION     : This file contains functions for get sales reps handler
  * DATE            : 24-Jun-2024
- **************************************************************************/
+ **************************/
 
 package services
 
@@ -18,12 +18,12 @@ import (
 	"github.com/lib/pq"
 )
 
-/******************************************************************************
+/**************************
  * FUNCTION:		HandleGetUsersUnderRequest
  * DESCRIPTION:     handler for get sales reps request
  * INPUT:			resp, req
  * RETURNS:    		void
- ******************************************************************************/
+ **************************/
 func HandleGetUsersUnderRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
@@ -49,7 +49,7 @@ func HandleGetUsersUnderRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	apiResp := []models.GetSaleRepsResponseItem{}
+	apiResp := models.GetSaleRepsResponse{}
 
 	for _, item := range data {
 
@@ -66,14 +66,21 @@ func HandleGetUsersUnderRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to assert role name under %v, item: %v", authenticatedEmailId, item)
 		}
 
-		apiResp = append(apiResp, models.GetSaleRepsResponseItem{
+		_, roleExistInMap := apiResp[roleName]
+		if roleExistInMap {
+			apiResp[roleName] = append(apiResp[roleName], models.GetSaleRepsResponseItem{
+				ID:   userId,
+				Name: name,
+			})
+			continue
+		}
+		apiResp[roleName] = []models.GetSaleRepsResponseItem{{
 			ID:   userId,
 			Name: name,
-			Role: roleName,
-		})
+		}}
 	}
 
 	log.FuncDebugTrace(0, "Number of sales reps under %v list %+v", authenticatedEmailId, data)
 
-	appserver.FormAndSendHttpResp(resp, "Sale Reps", http.StatusOK, apiResp)
+	appserver.FormAndSendHttpResp(resp, "Users ", http.StatusOK, apiResp)
 }
