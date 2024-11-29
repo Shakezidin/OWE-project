@@ -546,6 +546,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         isOpen1={isEditOpen}
         onClose1={handleCloseEditModal}
         leadId={leadId}
+        refresh={refresh}
+        setRefresh={setRefresh}
       />
 
       <div className={styles.dashTabTop}>

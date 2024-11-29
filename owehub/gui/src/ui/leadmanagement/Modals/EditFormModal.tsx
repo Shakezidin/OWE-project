@@ -18,7 +18,10 @@ interface EditModalProps {
     isOpen1: boolean;
     onClose1: () => void;
     leadId: number
+    refresh: number;
+    setRefresh: (value: number | ((prevValue: number) => number)) => void;
 }
+
 
 interface LeadData {
     leads_id: number;
@@ -56,7 +59,9 @@ interface LeadData {
 const Profile: React.FC<EditModalProps> = ({
     isOpen1,
     onClose1,
-    leadId
+    leadId,
+    refresh,
+    setRefresh
 }) => {
     const navigate = useNavigate()
     const CloseModalhandler = () => {
@@ -126,17 +131,19 @@ const Profile: React.FC<EditModalProps> = ({
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list_mob_inner}>
                 <div className={`   ${classes.customer_wrapper_list} `}>
-                <div className={classes.btnContainerNew}>
+                    <div className={classes.btnContainerNew}>
                         <span className={classes.XR} onClick={RedirectMainDashboard}>Edit Lead</span>
                         <span className={classes.crossIconImg}> <img src={CrossIcon} onClick={CloseModalhandler} /></span></div>
 
-                        <FormModal
+                    <FormModal
                         leadData={leadData}
                         loading={loading}
-                        onClose={onClose1}  // Pass the onClose prop
+                        onClose={onClose1}
+                        refresh={refresh}
+                        setRefresh={setRefresh}  // Pass the onClose prop
                     />
-                    
-                  
+
+
                 </div>
             </div>
         </div>
