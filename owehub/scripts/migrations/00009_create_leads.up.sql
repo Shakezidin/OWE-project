@@ -16,7 +16,7 @@ CREATE TABLE if NOT EXISTS leads_info (
     street_address character varying,
     city VARCHAR(80),
     state INT,
-    zipcode INT NOT NULL,
+    --zipcode INT NOT NULL,
     proposal_type TEXT,
     finance_type TEXT,
     finance_company TEXT,
@@ -43,22 +43,22 @@ CREATE TABLE if NOT EXISTS leads_info (
     FOREIGN KEY (created_by) REFERENCES user_details(user_id),
     FOREIGN KEY (last_updated_by) REFERENCES user_details(user_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
-    FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
+    --FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
     FOREIGN KEY (status_id) REFERENCES leads_status(status_id),
     PRIMARY KEY (leads_id)
 );
 
 
 -------------------------get leads info hierarchy ------------------
-CREATE OR REPLACE FUNCTION get_leads_info_hierarchy(p_email VARCHAR(255)) 
+CREATE OR REPLACE FUNCTION get_leads_info_hierarchy(p_email VARCHAR(255))
     RETURNS SETOF leads_info AS $$
 DECLARE
     v_user_id INT;
     v_user_role VARCHAR;
     v_dealer_id VARCHAR;
 BEGIN
-    SELECT 
-        user_details.user_id, user_details.partner_id, user_roles.role_name 
+    SELECT
+        user_details.user_id, user_details.partner_id, user_roles.role_name
         INTO v_user_id, v_dealer_id, v_user_role
     FROM user_details
     INNER JOIN user_roles ON user_details.role_id = user_roles.role_id
@@ -82,11 +82,11 @@ BEGIN
             WHERE
                 leads_info.created_by = user_details.user_id AND
                 (
-                    user_details.user_id = v_user_id OR 
+                    user_details.user_id = v_user_id OR
                     user_roles.role_name IN (
-                        'SubDealer Owner', 
-                        'Regional Manager', 
-                        'Sales Manager', 
+                        'SubDealer Owner',
+                        'Regional Manager',
+                        'Sales Manager',
                         'Sale Representative'
                 ));
 
@@ -99,10 +99,10 @@ BEGIN
             WHERE
                 leads_info.created_by = user_details.user_id AND
                 (
-                    user_details.user_id = v_user_id OR 
+                    user_details.user_id = v_user_id OR
                     user_roles.role_name IN (
-                        'Regional Manager', 
-                        'Sales Manager', 
+                        'Regional Manager',
+                        'Sales Manager',
                         'Sale Representative'
                 ));
 
@@ -115,7 +115,7 @@ BEGIN
                 UNION
                 SELECT user_details.user_id
                 FROM user_details
-                INNER JOIN hierarchy ON hierarchy.user_id = user_details.reporting_manager 
+                INNER JOIN hierarchy ON hierarchy.user_id = user_details.reporting_manager
             )
             SELECT leads_info.* FROM leads_info
             INNER JOIN hierarchy ON hierarchy.user_id = leads_info.created_by;
@@ -130,19 +130,20 @@ END;
 $$ LANGUAGE plpgsql;
 
 
---------------------------crete lead ()---------------------
+--------------------------create lead ()---------------------
 CREATE OR REPLACE FUNCTION create_lead(
     p_creator_email_id VARCHAR,
     p_first_name VARCHAR,
     p_last_name VARCHAR,
     p_email_id VARCHAR,
     p_phone_number VARCHAR,
-    p_street_address VARCHAR, 
-    p_zipcode VARCHAR, 
+    p_street_address VARCHAR,
+    --p_zipcode VARCHAR,
     p_notes VARCHAR,
     p_salerep_id INT,
+    p_frontend_base_url VARCHAR,
     p_lead_source VARCHAR,
-    p_frontend_base_url VARCHAR
+    p_setter_id INT
 ) RETURNS INT AS $$
 DECLARE
     v_lead_id INT;
@@ -153,13 +154,12 @@ BEGIN
     SELECT user_id INTO v_creator_user_id
     FROM user_details
     WHERE email_id = p_creator_email_id;
-    
+
     IF NOT FOUND THEN
         RAISE EXCEPTION 'User with email_id % not found', p_creator_email_id;
     END IF;
 
-
-    -- Insert into leads_info table 
+    -- Insert into leads_info table
     INSERT INTO leads_info (
         created_by,
         first_name,
@@ -167,11 +167,12 @@ BEGIN
         email_id,
         phone_number,
         street_address,
-        zipcode,
+        --zipcode,
         notes,
         salerep_id,
+        frontend_base_url,
         lead_source,
-        frontend_base_url
+        setter_id
     ) VALUES (
         v_creator_user_id,
         p_first_name,
@@ -179,11 +180,12 @@ BEGIN
         p_email_id,
         p_phone_number,
         p_street_address,
-        p_zipcode, 
+        --p_zipcode,
         p_notes,
         p_salerep_id,
+        p_frontend_base_url,
         p_lead_source,
-        p_frontend_base_url
+        p_setter_id
     ) RETURNING leads_id INTO v_lead_id;
 
     -- Return the inserted lead's ID
@@ -197,7 +199,7 @@ $$ LANGUAGE plpgsql;
 
 
 INSERT INTO public.leads_status (status_id, status_name)
-VALUES 
+VALUES
 (0, 'PENDING'),
 (1, 'SENT'),
 (2, 'ACCEPTED'),
@@ -207,7 +209,7 @@ VALUES
 (6, 'LOST' );
 
 
-------------insert into zipcode 
+------------insert into zipcode
 
 
 INSERT INTO zipcodes (id, zipcode) VALUES

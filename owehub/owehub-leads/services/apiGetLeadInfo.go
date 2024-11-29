@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetLeadsHistory.go // 🔴🔴
- * DESCRIPTION     : This file contains functions for get LeadsHistory data handler
+ * File       	   : apiGetLeadsInfo.go
+ * DESCRIPTION     : This file contains functions for getLeadsInfo data handler
  * DATE            : 21-Sept-2024
  **************************************************************************/
 
@@ -16,10 +16,6 @@ import (
 	"errors"
 	"time"
 
-	// "OWEApp/shared/types"
-	// "sort"
-	// "strings"
-	//"time"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -27,8 +23,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetLeadInfo// 🔴🔴
- * DESCRIPTION:     handler for get LeadsHistoy data request
+ * FUNCTION:		HandleGetLeadInfo
+ * DESCRIPTION:     handler for get LeadsInfo data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -99,11 +95,13 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.lead_source,
 					li.proposal_pdf_key,
 					ud_creator.name as created_by_name,
-					salerep.name as salerep_name
+					salerep.name as salerep_name,
+					setter.name as setter_name
 				FROM
 					get_leads_info_hierarchy($1) li
 				INNER JOIN user_details ud_creator ON ud_creator.user_id = li.created_by
 				LEFT JOIN user_details salerep ON salerep.user_id = li.salerep_id
+				LEFT JOIN user_details setter ON setter.user_id = li.setter_id
 				WHERE li.leads_id = $2
 			`
 
@@ -234,6 +232,12 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	if ok {
 		apiResponse.SalesRepName = salesRepName
 	}
+
+	setterName, ok := leadData["setter_name"].(string)
+	if ok {
+		apiResponse.SetterName = setterName
+	}
+
 	leadSource, ok := leadData["lead_source"].(string)
 	if ok {
 		apiResponse.LeadSource = leadSource
