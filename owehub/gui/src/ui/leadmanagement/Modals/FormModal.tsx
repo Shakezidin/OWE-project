@@ -39,14 +39,18 @@ interface FormInput
   interface EditModalProps {
     leadData: any,
     loading: boolean,
-    onClose: () => void
+    onClose: () => void,
+    refresh: number;
+    setRefresh: (value: number | ((prevValue: number) => number)) => void;
   }
 
 
 const FormModal: React.FC<EditModalProps> = ({
   leadData,
   loading,
-  onClose
+  onClose,
+  refresh,
+  setRefresh
 }) => {
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [setterData, setSetterData] = useState<SetterData[]>([]);
@@ -186,12 +190,12 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-    if (!selectedSale) {
-      errors.sales_rep = 'Sales Rep is required';
-    }
-    if (!selectedSetter) {
-      errors.setterError = 'Setter is required';
-    }
+    // if (!selectedSale) {
+    //   errors.sales_rep = 'Sales Rep is required';
+    // }
+    // if (!selectedSetter) {
+    //   errors.setterError = 'Setter is required';
+    // }
     return errors;
   };
   const handleSubmit = async (e: any) => {
@@ -223,6 +227,7 @@ const FormModal: React.FC<EditModalProps> = ({
         
         if (response.status === 200) {
           toast.success('Lead Updated Successfully');
+          setRefresh((val) => val + 1)
           onClose();  // Close the modal on successful submission
         } else if (response.status >= 201) {
           toast.warn(response.message);
@@ -267,6 +272,7 @@ const FormModal: React.FC<EditModalProps> = ({
           setIsLoadSelect(false);
         }
       };
+
 
       fetchData();
     }
