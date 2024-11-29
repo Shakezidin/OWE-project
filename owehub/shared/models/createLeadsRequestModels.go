@@ -6,7 +6,8 @@
 
 package models
 
-type CreateLeadsReq struct {
+type
+CreateLeadsReq struct {
 	FirstName     string `json:"first_name"`
 	LastName      string `json:"last_name"`
 	PhoneNumber   string `json:"phone_number"`
@@ -17,4 +18,5 @@ type CreateLeadsReq struct {
 	SalerepID     int64  `json:"salerep_id"`
 	LeadSource    string `json:"lead_source"`
 	BaseURL       string `json:"base_url"`
+	SetterID      int64  `json:"setter_id"`
 }
