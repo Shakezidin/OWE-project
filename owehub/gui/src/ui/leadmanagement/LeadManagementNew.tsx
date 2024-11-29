@@ -669,7 +669,7 @@ const LeadManagementNew = () => {
                         )}
                       </div>
                       <div className={classes.srs_new_create} style={{ gap: "6px" }}>
-                        <div className={classes.custom_label_newlead}>Sales Rep</div>
+                        <div className={classes.custom_label_newlead}>Setter</div>
                         <Select
                           value={selectedSetter}
                           onChange={handleSetterChange}

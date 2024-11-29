@@ -625,12 +625,17 @@ useEffect(() => {
                     }
                   </div>
                 )}
-                {isToggledX && <CustomSelect
-                  value={selectedPeriod}
-                  onChange={handlePeriodChange}
-                  options={periodFilterOptions}
-                  isToggledX={isToggledX}
-                />}
+                {isToggledX && 
+                  <CustomSelect<DateRangeWithLabel>
+                    value={selectedPeriod}
+                    onChange={(newValue) => handlePeriodChange(newValue, {} as ActionMeta<DateRangeWithLabel>)}
+                    options={periodFilterOptions}
+                    isVisible={isToggledX}
+                    placeholder="Select Period"
+                    getOptionLabel={(option) => option.label || ''}
+                    getOptionValue={(option) => option.label || ''}
+                  />
+                }
                 {isToggledX && <div
                   ref={toggleRef}
                   className={styles.calender}
