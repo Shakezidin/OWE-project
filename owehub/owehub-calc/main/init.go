@@ -274,7 +274,7 @@ func init() {
 		log.FuncInfoTrace(0, "succesfully loaded initial install eta data")
 	} else {
 		log.ConfErrorTrace(0, "Failed to update initial data to install eta. %+v", err)
-		return
+		// return
 	}
 
 	/* init setting PTO values*/
@@ -283,7 +283,7 @@ func init() {
 		log.FuncInfoTrace(0, "succesfully loaded initial pto data")
 	} else {
 		log.ConfErrorTrace(0, "Failed to update initial data to pto. %+v", err)
-		return
+		// return
 	}
 
 	types.ExitChan = make(chan error)

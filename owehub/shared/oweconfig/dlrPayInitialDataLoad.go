@@ -54,14 +54,15 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 
 	// uidList := []string{"OUR21563"} //OUR21190
 	query = `SELECT cs.customer_name, cs.project_status, cs.unique_id, cs.dealer, 
-			 cs.contracted_system_size, cs.total_system_cost,cs.adder_breakdown_and_total_new,
+			 scs.contracted_system_size_parent, cs.total_system_cost,cs.adder_breakdown_and_total_new,
 			 cs.primary_sales_rep,cs.secondary_sales_rep, cs.setter, 
 			 cs.state, cs.sale_date, ns.net_epc, 
 			 ns.ntp_complete_date,ps.pv_completion_date, 
 			 ns.finance_type, ns.finance
 			 from customers_customers_schema cs
              LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
-             LEFT JOIN pv_install_install_subcontracting_schema ps ON ps.customer_unique_id = cs.unique_id WHERE cs.unique_id != ''`
+             LEFT JOIN pv_install_install_subcontracting_schema ps ON ps.customer_unique_id = cs.unique_id 
+			 LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id WHERE cs.unique_id != ''`
 
 	if len(uniqueIds) > 0 {
 		// Create a string to hold the unique IDs for the SQL query
@@ -104,7 +105,7 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 			InitialDataa.CurrectStatus = ""
 		}
 
-		if contractedSystemSize, ok := data["contracted_system_size"]; (ok) && (contractedSystemSize != nil) {
+		if contractedSystemSize, ok := data["contracted_system_size_parent"]; (ok) && (contractedSystemSize != nil) {
 			InitialDataa.SystemSize = contractedSystemSize.(float64)
 		} else {
 			InitialDataa.SystemSize = 0.0
@@ -116,34 +117,7 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 			InitialDataa.DealerCode = ""
 		}
 
-		if totalSystemCost, ok := data["total_system_cost"]; ok && totalSystemCost != nil {
-			// Step 1: Convert to string and trim spaces
-			costStr := strings.TrimSpace(totalSystemCost.(string))
-
-			// Step 2: Remove any HTML tags if present
-			re := regexp.MustCompile(`<.*?>`)
-			costStr = re.ReplaceAllString(costStr, "")
-
-			// Step 3: Remove commas and "$" symbols
-			costStr = strings.ReplaceAll(costStr, ",", "")
-			costStr = strings.ReplaceAll(costStr, "$", "")
-
-			// Step 4: Final trim to remove any residual spaces after cleaning
-			costStr = strings.TrimSpace(costStr)
-
-			// Step 5: Attempt to parse the cleaned string as a float
-			if costStr != "" { // Ensure the string is not empty
-				InitialDataa.ContractDolDol, err = strconv.ParseFloat(costStr, 64)
-				if err != nil {
-					log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
-					InitialDataa.ContractDolDol = 0.0
-				}
-			} else {
-				InitialDataa.ContractDolDol = 0.0
-			}
-		} else {
-			InitialDataa.ContractDolDol = 0.0
-		}
+		InitialDataa.ContractDolDol = extractAndParseCost(data)
 
 		if primarySalesRep, ok := data["primary_sales_rep"]; (ok) && (primarySalesRep != nil) {
 			InitialDataa.Rep1 = primarySalesRep.(string)
@@ -214,4 +188,41 @@ func LoadDlrPayInitialData(uniqueIds []string) (InitialData InitialDataLists, er
 		InitialData.InitialDataList = append(InitialData.InitialDataList, InitialDataa)
 	}
 	return InitialData, err
+}
+
+var validNumberRegex = regexp.MustCompile(`[-+]?[0-9]+(?:\.[0-9]{3})*(?:,[0-9]{2})?|[-+]?[0-9]+(?:,[0-9]{3})*(?:\.[0-9]+)?`)
+
+func extractAndParseCost(data map[string]interface{}) float64 {
+	if totalSystemCost, ok := data["total_system_cost"]; ok && totalSystemCost != nil {
+		// Step 1: Convert to string and trim spaces
+		costStr := strings.TrimSpace(totalSystemCost.(string))
+
+		// Step 2: Remove any HTML tags or unwanted characters
+		re := regexp.MustCompile(`<.*?>`)
+		costStr = re.ReplaceAllString(costStr, "")
+
+		// Step 3: Find the first valid numeric value using the updated regex
+		match := validNumberRegex.FindString(costStr)
+		if match != "" {
+			// Step 4: Handle grouping dots and commas
+			cleanedCost := strings.ReplaceAll(match, ".", "") // Remove all grouping dots
+
+			// Step 5: Ensure the decimal separator is correct (last occurrence only)
+			lastDotIndex := strings.LastIndex(match, ".")
+			if lastDotIndex != -1 {
+				cleanedCost = match[:lastDotIndex] + "." + strings.ReplaceAll(match[lastDotIndex+1:], ".", "")
+			}
+
+			// Step 6: Remove commas used as thousand separators (European format)
+			cleanedCost = strings.ReplaceAll(cleanedCost, ",", "")
+
+			// Step 7: Parse the cleaned string as a float
+			parsedCost, err := strconv.ParseFloat(cleanedCost, 64)
+			if err == nil {
+				return parsedCost
+			}
+			log.FuncErrorTrace(0, "Failed to parse total_system_cost: %v", err)
+		}
+	}
+	return 0.0
 }

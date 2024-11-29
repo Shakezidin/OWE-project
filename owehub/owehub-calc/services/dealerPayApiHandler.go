@@ -77,9 +77,6 @@ func GetCreditByUniqueID(dealerCredit []oweconfig.DealerCreditsStruct, UniqueId 
 }
 
 func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleStruct, financeType, financeCompany, state string, saleDate time.Time) (loanfee float64) {
-	if len(state) > 6 {
-		state = state[6:]
-	}
 	for _, entry := range financeSchedule {
 		if entry.FinanceType == financeType && entry.FinanceCompany == financeCompany && entry.State3 == state {
 			loanfee += entry.FinanceFee
@@ -134,9 +131,6 @@ func CalcDealerOvrdCommissionDealerPay(dealerOvrd []oweconfig.DealerOverrideStru
 
 func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer, financePartner, state string, contractDate time.Time) (drawPerc, drawMax, redline float64) {
 	partnerRegex := regexp.MustCompile(`^(.*?)(?: -|-)`)
-	if len(state) > 6 {
-		state = state[6:]
-	}
 	for _, entry := range partnerPaySchedule {
 		matches := partnerRegex.FindStringSubmatch(entry.Finance_partner)
 		partnerName := entry.Finance_partner
