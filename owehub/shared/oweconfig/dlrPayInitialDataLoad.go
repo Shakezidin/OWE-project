@@ -231,23 +231,24 @@ func extractAndParseCost(data map[string]interface{}) float64 {
 		re := regexp.MustCompile(`<.*?>`)
 		costStr = re.ReplaceAllString(costStr, "")
 
-		// Step 2: Remove BOM (\ufeff) and non-breaking spaces (\u00a0)
+		// Step 2: Remove BOM (\ufeff), non-breaking spaces (\u00a0), and other spaces
 		costStr = strings.ReplaceAll(costStr, "\ufeff", "")
-		costStr = strings.ReplaceAll(costStr, "\u00a0", " ")
+		costStr = strings.ReplaceAll(costStr, "\u00a0", "")
+		costStr = strings.ReplaceAll(costStr, " ", "") // Remove spaces between numbers
 
 		// Step 3: Remove dollar signs and trim
 		costStr = strings.ReplaceAll(costStr, "$", "")
 		costStr = strings.TrimSpace(costStr)
 
 		// Step 4: Extract the first numeric value
-		reNums := regexp.MustCompile(`\d{1,3}(?:,\d{3})*(?:\.\d+)?`)
+		reNums := regexp.MustCompile(`\d+(?:,\d{3})*(?:\.\d+)?`)
 		match := reNums.FindString(costStr) // Extract only the first match
 		if match == "" {
-			log.FuncErrorTrace(0, "Unique ID: %s - No numeric value found, skipping parsing. value %v", uniqueID, totalSystemCost)
+			log.FuncErrorTrace(0, "Unique ID: %s - No numeric value found, skipping parsing. val %v", uniqueID, totalSystemCost)
 			return 0.0
 		}
 
-		// Step 5: Remove commas to prepare for float conversion
+		// Step 5: Remove commas for float conversion
 		numericPart := strings.ReplaceAll(match, ",", "")
 		// log.FuncErrorTrace(0, "Unique ID: %s - Numeric Portion Extracted: '%s'", uniqueID, numericPart)
 
