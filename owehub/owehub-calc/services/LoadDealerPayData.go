@@ -46,18 +46,6 @@ func ExecDlrPayInitialCalculation(uniqueIds string, hookType string) error {
 		var dlrPayData map[string]interface{}
 		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd, partnerPaySchedule)
 
-		// if err != nil || dlrPayData == nil {
-		// 	if len(data.UniqueId) > 0 {
-		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
-		// 	} else {
-		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
-		// 	}
-		// } else if operaiton == "create" {
-		// 	dlrPayDataList = append(dlrPayDataList, dlrPayData)
-		// } else {
-		// 	updateDlrPayData = append(updateDlrPayData, dlrPayData)
-		// }
-
 		if hookType == "update" {
 			// Build the update query
 			query, _ := buildUpdateQuery("dealer_pay", dlrPayData, "unique_id", data.UniqueId)
@@ -113,32 +101,28 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	}
 	year, month, day := dlrPayData.ContractDate.Date()
 	ContractDate := time.Date(year, month, day, 0, 0, 0, 0, dlrPayData.ContractDate.Location())
-	NetEpc := dlrPayData.NetEpc
-	financeType := dlrPayData.FinanceType
-	financeCompany := dlrPayData.FinanceCompany
+	epc := ContractDolDol / (SystemSize * 1000)
 	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
 	OtherAdderStr := getString(adderBreakDown, "Total")
-	mktFeeStr := getString(adderBreakDown, "marketing_fee")
-	Referral := getString(adderBreakDown, "referral")
-	Rebate := getString(adderBreakDown, "rebate")
-
-	mktFee := parseDollarStringToFloat(mktFeeStr)
 	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
-	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeCompany, ST, ContractDate) // draw %
+	NetEpc := (ContractDolDol - OtherAdder) / (SystemSize * 1000)
+	financeType := dlrPayData.FinanceType
+	financeCompany := dlrPayData.FinanceCompany
 	NtpCompleteDate := dlrPayData.NtpCompleteDate
-	PvComplettionDate := dlrPayData.PvComplettionDate
+	Referral := getString(adderBreakDown, "referral") //have doubts
+	Rebate := getString(adderBreakDown, "rebate")     //have doubts
+	drawMax, Rl := CalcDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeCompany, ST, ContractDate)
+	DrawPerc := CalcDrawPercCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, ContractDate)
 	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
-	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
+	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, uniqueID)
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
-	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST, time.Time{})
-	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, amt_paid)
-	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawAmt, drawMax)
-	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
+	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST)
+	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, amt_paid)
+	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawPerc, drawMax, amt_paid)
+	amount := CalcAmountDealerPay(dealerPayments.DealerPaymentsData, uniqueID)
 	balance := totalNetCommission - amt_paid
 	// here i have some doubts
-
-	epc := ContractDolDol / (SystemSize * 1000)
 
 	outData["home_owner"] = HomeOwner
 	outData["current_status"] = CurrectStatus
@@ -157,14 +141,15 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	outData["rep_1"] = Rep1
 	outData["rep_2"] = Rep2
 	outData["setter"] = Setter
-	outData["draw_amt"] = CheckFloat(DrawAmt)
+	outData["draw_perc"] = CheckFloat(DrawPerc)
 	outData["amt_paid"] = CheckFloat(amt_paid)
 	outData["balance"] = CheckFloat(balance)
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
 	outData["finance_type"] = financeType
 	outData["ntp_date"] = NtpCompleteDate
-	outData["marketing_fee"] = CheckFloat(mktFee)
+	outData["m1_payment"] = m1Payment
+	outData["m2_payment"] = m2Payment
 	outData["referral"] = Referral
 	outData["rebate"] = Rebate
 
