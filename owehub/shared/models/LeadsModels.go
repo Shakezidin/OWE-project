@@ -45,6 +45,7 @@ type GetLeadsData struct {
 	CanManuallyWin         bool       `json:"can_manually_win"`
 	SalesRepName           string     `json:"sales_rep_name"`
 	LeadSource             string     `json:"lead_source"`
+	SetterName             string     `json:"setter_name"`
 }
 
 // combine struct of get leads AND get leads count status API.
