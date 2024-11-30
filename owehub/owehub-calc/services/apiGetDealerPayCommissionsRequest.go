@@ -74,10 +74,10 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	tableName := "dealer_pay"
-	query = `SELECT home_owner, current_status, unique_id, dealer_code, marketing_fee, referral, rebate,
+	query = `SELECT home_owner, current_status, unique_id, dealer_code, referral, rebate,
 				today, amount, sys_size, rl, contract_dol_dol, loan_fee, 
 				epc, net_epc, other_adders, credit, rep_1, rep_2, 
-				setter, draw_amt, amt_paid, balance, st, contract_date,finance_type 
+				setter, draw_perc, amt_paid, balance, st, contract_date,finance_type 
 				FROM dealer_pay`
 
 	filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq)
@@ -114,7 +114,7 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		dlrPay.Rep1 = getStringVal(item, "rep_1")
 		dlrPay.Rep2 = getStringVal(item, "rep_2")
 		dlrPay.Setter = getStringVal(item, "setter")
-		dlrPay.Draw_Amt = getFloat(item, "draw_amt")
+		dlrPay.Draw_Amt = getFloat(item, "draw_perc")
 		dlrPay.Amt_Paid = getFloat(item, "amt_paid")
 		dlrPay.Balance = getFloat(item, "balance")
 		dlrPay.ST = getStringVal(item, "st")
