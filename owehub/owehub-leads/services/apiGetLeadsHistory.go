@@ -14,10 +14,7 @@ import (
 	models "OWEApp/shared/models"
 	"time"
 
-	// "OWEApp/shared/types"
-	// "sort"
-	// "strings"
-	//"time"
+
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -104,7 +101,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	// if leads status is -1, show all won or lost
 	if dataReq.LeadsStatus == -1 {
 		whereClause = `
-			WHERE (li.lead_lost_date IS NOT NULL 
+			WHERE (li.lead_lost_date IS NOT NULL
 				OR li.manual_won_date IS NOT NULL
 				OR li.qc_audit IS TRUE )
 			`
@@ -120,7 +117,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Add date range and archive conditions to the whereClause
 	whereClause = fmt.Sprintf(`
-    	%s
+		%s
 		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
 		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
 		AND li.is_archived = $4
@@ -128,17 +125,19 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Construct the final query with pagination and ORDER BY
 	leadsHistoryQuery = fmt.Sprintf(`
-    SELECT
-        li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
-        ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
-        li.appointment_scheduled_date, li.appointment_accepted_date, li.zipcode,
-        li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
+		SELECT
+			li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
+			ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
+			li.appointment_scheduled_date, li.appointment_accepted_date,
+			li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date,
+			ud.name AS setter_name
 		FROM
-        get_leads_info_hierarchy($1) li
-	INNER JOIN leads_status ls ON ls.status_id = li.status_id
-    %s
-    ORDER BY li.updated_at DESC
-`, whereClause)
+			get_leads_info_hierarchy($1) li
+		INNER JOIN leads_status ls ON ls.status_id = li.status_id
+		LEFT JOIN user_details ud ON ud.user_id = li.setter_id
+		%s
+		ORDER BY li.updated_at DESC
+	`, whereClause)
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	whereEleList = append(whereEleList,
@@ -181,12 +180,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			streetAddress = ""
 		}
 
-		zipcode, ok := item["zipcode"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get zipcode for Lead: %+v\n", item)
-			zipcode = ""
-		}
-
 		// deal won if lead_won_date is not null
 		leadWonDate, ok := item["lead_won_date"].(time.Time)
 		if !ok {
@@ -203,10 +196,16 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			dealDateStr = &leadLostDate
 			dealStatus = "Deal Loss"
 		}
+
+		setterName, ok := item["setter_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get setter name for Lead: %+v\n", item)
+			setterName = ""
+		}
+
 		LeadsHistory := models.GetLeadsHistoryResponse{
 			DealDate:      dealDateStr,
 			DealStatus:    dealStatus,
-			Zipcode:       zipcode,
 			FirstName:     item["first_name"].(string),
 			LastName:      item["last_name"].(string),
 			EmailId:       item["email_id"].(string),
@@ -214,6 +213,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			LeadsID:       item["leads_id"].(int64),
 			StatusID:      item["status_id"].(int64),
 			StreetAddress: streetAddress,
+			SetterName:    setterName,
 			Timeline:      timeline,
 		}
 
@@ -222,9 +222,9 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Count total records from db
 	leadsHistoryCountQuery = fmt.Sprintf(`
-        SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
-        %s
-        `, whereClause)
+		SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
+		%s
+		`, whereClause)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryCountQuery, whereEleList[0:4])
 	if err != nil {
