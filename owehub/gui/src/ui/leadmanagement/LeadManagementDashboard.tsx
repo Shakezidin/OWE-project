@@ -443,6 +443,9 @@ useEffect(() => {
       'Proposal Status',
       'Proposal Link',
       'Proposal Created Date',
+      'Sales Rep',
+      'Lead Source',
+      'Setter'
     ];
 
     let statusId;
@@ -514,6 +517,9 @@ useEffect(() => {
         item.proposal_status,
         item.proposal_link,
         item.proposal_updated_at ? `${format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy')}` : '',
+        item.sales_rep_name,
+        item.lead_source,
+        item.setter_name ? item.setter_name : "",
       ]);
 
       const csvRows = [headers, ...csvData];

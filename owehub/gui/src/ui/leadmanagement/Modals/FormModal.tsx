@@ -76,7 +76,7 @@ const FormModal: React.FC<EditModalProps> = ({
       )?.id || '';
 
       const setterId = setterData.find(
-        (setter) => setter.name === leadData.sales_rep_name
+        (setter) => setter.name === leadData.setter_name
       )?.id || '';
 
       console.log(salesRepId, "show this")
@@ -190,12 +190,12 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-    // if (!selectedSale) {
-    //   errors.sales_rep = 'Sales Rep is required';
-    // }
-    // if (!selectedSetter) {
-    //   errors.setterError = 'Setter is required';
-    // }
+    if (!selectedSale && (saleId == "")) {
+      errors.sales_rep = 'Sales Rep is required';
+    }
+    if (!selectedSetter && (setterId == "")) {
+      errors.setterError = 'Setter is required';
+    }
     return errors;
   };
   const handleSubmit = async (e: any) => {
@@ -515,7 +515,7 @@ const FormModal: React.FC<EditModalProps> = ({
                           <div className={classes.srs_new_create}>
                             <div className={classes.custom_label_newlead}>Setter</div>
                             <CustomSelect<SetterData>
-                                value={selectedSetter || setterData.find((option) => option.name === leadData.sales_rep_name) || null}
+                                value={selectedSetter || setterData.find((option) => option.name === leadData.setter_name) || null}
                                 onChange={handleSetterChange}
                                 options={setterData}
                                 isVisible={true}

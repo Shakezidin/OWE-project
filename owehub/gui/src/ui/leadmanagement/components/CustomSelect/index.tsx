@@ -106,6 +106,20 @@ const CustomSelect = <T,>({
       marginTop: '3px',
       zIndex: 1000,
     }),
+    menuList: (base:any) => ({
+      ...base,
+      '&::-webkit-scrollbar': {
+        scrollbarWidth: 'thin',
+        scrollBehavior: 'smooth',
+        display: 'block',
+        scrollbarColor: 'rgb(173, 173, 173) #fff',
+        width: 8,
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: 'rgb(173, 173, 173)',
+        borderRadius: '30px',
+      },
+    }),
   };
 
   if (!isVisible) {
