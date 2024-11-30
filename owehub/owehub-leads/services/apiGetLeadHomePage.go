@@ -365,10 +365,12 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 				li.zipcode,
 				li.lead_source,
 				li.manual_won_date,
-				ud.name as salerep_name
+				ud.name as salerep_name,
+				setter.name as setter_name
 				
 			FROM get_leads_info_hierarchy($1) li
 			LEFT JOIN user_details ud ON ud.user_id = li.salerep_id
+			LEFT JOIN user_details setter ON setter.user_id = li.setter_id
 			%s
 			ORDER BY li.updated_at DESC
 			%s;
@@ -507,7 +509,6 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 		zipcode, ok := item["zipcode"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get zipcode from leads info Item: %+v\n", item)
-			continue
 		}
 
 		scheduledDate, ok := item["appointment_scheduled_date"].(time.Time)
@@ -650,6 +651,12 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			canManuallyWin = true
 		}
 
+		setterName, ok := item["setter_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get setter_name from leads info Item: %+v\n", item)
+			setterName = ""
+		}
+
 		apiResponse.LeadsData = append(apiResponse.LeadsData, models.GetLeadsData{
 			LeadID:                 leadsId,
 			FirstName:              fName,
@@ -676,6 +683,7 @@ func HandleGetLeadHomePage(resp http.ResponseWriter, req *http.Request) {
 			CanManuallyWin:         canManuallyWin,
 			SalesRepName:           salesRepName,
 			LeadSource:             leadSource,
+			SetterName:             setterName,
 		})
 
 	}
