@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './leadTable.module.css';
 import { LeadColumn } from '../../../../resources/static_data/leadData/leadTable';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
@@ -12,22 +12,32 @@ import ConfirmaModel from '../../Modals/ConfirmModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Profile from '../../Modals/ProfileInfo';
-import { ICONS } from "../../../../resources/icons/Icons"
+import { ICONS } from '../../../../resources/icons/Icons';
 import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import Pagination from '../../../components/pagination/Pagination';
-import { createDocuSignRecipientView, createEnvelope, getDocument, getDocuSignUrl } from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  createDocuSignRecipientView,
+  createEnvelope,
+  getDocument,
+  getDocuSignUrl,
+} from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input';
 import { downloadProposalWithSSE } from '../../api/auroraApi';
-import { CiEdit } from "react-icons/ci";
-import EditFormModal from '../../Modals/EditFormModal'
+import { CiEdit } from 'react-icons/ci';
+import EditFormModal from '../../Modals/EditFormModal';
 
-
-type ProposalStatus = "In Progress" | "Send Docs" | "Created" | "Clear selection" | "Completed" | "Documents Sent";
-type DocuStatus = "Completed" | "Sent" | "Voided" | "Declined";
+type ProposalStatus =
+  | 'In Progress'
+  | 'Send Docs'
+  | 'Created'
+  | 'Clear selection'
+  | 'Completed'
+  | 'Documents Sent';
+type DocuStatus = 'Completed' | 'Sent' | 'Voided' | 'Declined';
 interface VisibilityState {
   [key: string]: boolean;
 }
@@ -40,38 +50,48 @@ interface LeadSelectionProps {
   onCreateProposal: (leadId: number) => void;
   retrieveWebProposal: (leadId: number) => void;
   generateWebProposal: (leadId: number) => void;
-  side: "left" | "right";
-  setSide: React.Dispatch<React.SetStateAction<"left" | "right">>;
+  side: 'left' | 'right';
+  setSide: React.Dispatch<React.SetStateAction<'left' | 'right'>>;
   currentFilter: string;
   setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 type SSEPayload =
   | {
-    is_done: false;
-    data: {
-      current_step: number;
-      total_steps: number;
-    };
-  }
+      is_done: false;
+      data: {
+        current_step: number;
+        total_steps: number;
+      };
+    }
   | {
-    is_done: true;
-    data: {
-      current_step: number;
-      total_steps: number;
-      url: string;
-    };
-    error: null;
-  }
+      is_done: true;
+      data: {
+        current_step: number;
+        total_steps: number;
+        url: string;
+      };
+      error: null;
+    }
   | {
-    is_done: true;
-    error: string;
-    data: null;
-  };
+      is_done: true;
+      error: string;
+      data: null;
+    };
 
-
-const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelectedLeads, refresh, setRefresh, onCreateProposal, retrieveWebProposal, generateWebProposal, side, setSide }: LeadSelectionProps) => {
-
+const LeadTable = ({
+  selectedLeads,
+  currentFilter,
+  setCurrentFilter,
+  setSelectedLeads,
+  refresh,
+  setRefresh,
+  onCreateProposal,
+  retrieveWebProposal,
+  generateWebProposal,
+  side,
+  setSide,
+}: LeadSelectionProps) => {
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -87,11 +107,10 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   }, [location]);
 
   const handleCodeExchange = async (code: string) => {
-
     const params = {
-      action: "gettoken" as const,
+      action: 'gettoken' as const,
       authorization_code: code,
-      redirect_uri: "http://localhost:3000/leadmng-dashboard",
+      redirect_uri: 'http://localhost:3000/leadmng-dashboard',
     };
 
     try {
@@ -112,17 +131,14 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       } else {
         console.error('Access token not found in payload.');
       }
-
     } catch (error) {
-      console.error("Error exchanging authorization code:", error);
+      console.error('Error exchanging authorization code:', error);
     }
   };
 
-
   const fetchUserInfo = async (accessToken: string) => {
-
     const params = {
-      action: "getuserinfo" as const,
+      action: 'getuserinfo' as const,
       authorization_code: accessToken, // Include the access token in the params if required by your backend
     };
 
@@ -140,14 +156,12 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
 
       // Store user info in your state or context as needed
     } catch (error) {
-      console.error("Error fetching user info:", error);
+      console.error('Error fetching user info:', error);
     }
   };
 
-
-
   const [selectedType, setSelectedType] = useState('');
-  const [selected, setSelected] = useState(-1)
+  const [selected, setSelected] = useState(-1);
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isMobileXR = useMatchMedia('(max-width: 600px)');
   const [activeSection, setActiveSection] = useState<
@@ -159,7 +173,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [leadId, setLeadId] = useState(0);
   const [leadProposalLink, setLeadPropsalLink] = useState('');
   const [proposalPdfLink, setProposalPdfLink] = useState('');
-  const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(null);
+  const [downloadingLeadId, setDownloadingLeadId] = useState<number | null>(
+    null
+  );
   const [downloadProgress, setDownloadProgress] = useState<number>(0); // Track download percentage
   const scrollWrapper = useRef<HTMLDivElement>(null);
 
@@ -174,7 +190,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         : [...prev, leadId]
     );
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
@@ -183,7 +199,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
-
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -253,13 +268,13 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       setQc(true);
       setSelectedType('');
     } else if (selectedType === 'new_proposal') {
-      onCreateProposal(leadId)
+      onCreateProposal(leadId);
       setSelectedType('');
     } else if (selectedType === 'viewProposal') {
-      retrieveWebProposal(leadId)
+      retrieveWebProposal(leadId);
       setSelectedType('');
       // if (proposalPdfLink) {
-      //   window.open(proposalPdfLink, '_blank'); 
+      //   window.open(proposalPdfLink, '_blank');
       // }
     } else if (selectedType === 'editProposal') {
       if (leadProposalLink) {
@@ -267,7 +282,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       }
       setSelectedType('');
     } else if (selectedType === 'renew_proposal') {
-      generateWebProposal(leadId)
+      generateWebProposal(leadId);
       setSelectedType('');
     } else if (selectedType === 'download') {
       downloadProposalWithSSE(leadId);
@@ -275,12 +290,11 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     } else if (selectedType === 'signature') {
       OpenSignDocument();
       setSelectedType('');
-    }
-    else if (selectedType === 'Appointment Not Required') {
+    } else if (selectedType === 'Appointment Not Required') {
       handleAppNotReq();
       setSelectedType('');
     }
-  }, [selectedType])
+  }, [selectedType]);
 
   // Dynamically get the base URL using window.location.origin
   const BASE_URL = window.location.origin;
@@ -289,8 +303,8 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     setIsLoadingDocument(true);
     try {
       const params = new URLSearchParams();
-      params.append("leads_id", leadId.toString() || "");
-      params.append("return_url", `${BASE_URL}/leadmng-dashboard`);
+      params.append('leads_id', leadId.toString() || '');
+      params.append('return_url', `${BASE_URL}/leadmng-dashboard`);
 
       const eventSourceUrl = `${process.env.REACT_APP_LEADS_URL}/docusign_get_signing_url?${params.toString()}`;
       const eventSource = new EventSource(eventSourceUrl);
@@ -304,11 +318,15 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
             if (payload.data?.url) {
               // window.open(payload.data.url, '_blank');
             } else {
-              toast.success('The document has been successfully sent for signing.');
+              toast.success(
+                'The document has been successfully sent for signing.'
+              );
               setRefresh((prev) => prev + 1);
             }
           } else {
-            const errorMessage = payload.error || 'An unexpected error occurred while completing the signing process.';
+            const errorMessage =
+              payload.error ||
+              'An unexpected error occurred while completing the signing process.';
             console.error(`Error during DocuSign process: ${errorMessage}`);
             toast.error(`Error: ${errorMessage}`);
           }
@@ -323,13 +341,12 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         eventSource.close();
       };
     } catch (error) {
-      console.error("Error initiating DocuSign signing:", error);
+      console.error('Error initiating DocuSign signing:', error);
       setIsLoadingDocument(false);
 
       toast.error('Error initiating signing process. Please try again.');
     }
   };
-
 
   const [load, setLoad] = useState(false);
   const handleCloseWon = async () => {
@@ -363,7 +380,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
         'update_lead_status',
         {
           leads_id: leadId,
-          is_appointment_required: false
+          is_appointment_required: false,
         },
         true
       );
@@ -384,7 +401,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
   const [isEditOpen, setIsEditOpen] = useState(false);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const viewId = queryParams.get("view");
+    const viewId = queryParams.get('view');
 
     if (viewId) {
       handleOpenProfileModal(Number(viewId));
@@ -401,7 +418,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     setLeadId(leadsId);
   };
 
-
   const handleCloseProfileModal = () => {
     setIsProfileOpen(false);
   };
@@ -410,79 +426,75 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
     setIsEditOpen(false);
   };
 
-
-
-
   const handleReschedule = () => {
-    setSelectedType("app_sched");
-  }
-
-
+    setSelectedType('app_sched');
+  };
 
   const handleMoreClick = () => {
-    const elm = scrollWrapper.current
+    const elm = scrollWrapper.current;
     if (!elm) return;
     if (side == 'left') {
-      elm.scroll({ left: elm.scrollWidth, behavior: "smooth" })
+      elm.scroll({ left: elm.scrollWidth, behavior: 'smooth' });
       setSide('right');
     } else if (side == 'right') {
-      elm.scroll({ left: 0, behavior: "smooth" })
+      elm.scroll({ left: 0, behavior: 'smooth' });
       setSide('left');
     }
   };
 
   const statusStyles = {
-    "In Progress": {
-      backgroundColor: "#B459FC",
-      color: "#fff"
+    'In Progress': {
+      backgroundColor: '#B459FC',
+      color: '#fff',
     },
-    "Completed": {
-      backgroundColor: "#21BC27",
-      color: "#fff"
+    Completed: {
+      backgroundColor: '#21BC27',
+      color: '#fff',
     },
-    "Send Docs": {
-      backgroundColor: "#21BC27",
-      color: "#fff"
+    'Send Docs': {
+      backgroundColor: '#21BC27',
+      color: '#fff',
     },
-    "Documents Sent": {
-      backgroundColor: "#21BC27",
-      color: "#fff"
+    'Documents Sent': {
+      backgroundColor: '#21BC27',
+      color: '#fff',
     },
-    "Created": {
-      backgroundColor: "#EC9311",
-      color: "#fff"
+    Created: {
+      backgroundColor: '#EC9311',
+      color: '#fff',
     },
-    "Clear selection": {
-      backgroundColor: "#808080",
-      color: "#fff"
-    }
+    'Clear selection': {
+      backgroundColor: '#808080',
+      color: '#fff',
+    },
   };
 
-
   const docusignStyles = {
-    "Completed": {
-      backgroundColor: "#21BC27",
-      color: "#fff"
+    Completed: {
+      backgroundColor: '#21BC27',
+      color: '#fff',
     },
-    "Sent": {
-      backgroundColor: "#EC9311",
-      color: "#fff"
+    Sent: {
+      backgroundColor: '#EC9311',
+      color: '#fff',
     },
-    "Voided": {
-      backgroundColor: "#4999E3",
-      color: "#fff"
+    Voided: {
+      backgroundColor: '#4999E3',
+      color: '#fff',
     },
-    "Declined": {
-      backgroundColor: "#D91515",
-      color: "#fff"
-    }
+    Declined: {
+      backgroundColor: '#D91515',
+      color: '#fff',
+    },
   };
 
   //GET LEADS AS FUNCTIONS AS USE AS ASSIGNE
   const getLeadOptions = (lead: any) => {
     if (
-      (lead?.appointment_status_label === "Appointment Sent" && lead.proposal_id === '') ||
-      (lead.appointment_status_label === 'Appointment Date Passed' && lead.proposal_id === '')
+      (lead?.appointment_status_label === 'Appointment Sent' &&
+        lead.proposal_id === '') ||
+      (lead.appointment_status_label === 'Appointment Date Passed' &&
+        lead.proposal_id === '')
     ) {
       return [
         { label: 'Reschedule Appointment', value: 'app_sched' },
@@ -490,18 +502,43 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       ];
     }
 
-    if (lead && (lead.proposal_status === 'Completed' || lead.proposal_status === 'Send Docs' || lead.proposal_status === 'Documents Sent') && lead.proposal_id !== '') {
+    if (
+      lead &&
+      (lead.proposal_status === 'Completed' ||
+        lead.proposal_status === 'Send Docs' ||
+        lead.proposal_status === 'Documents Sent') &&
+      lead.proposal_id !== ''
+    ) {
       return [
         { label: 'View Proposal', value: 'viewProposal' },
-        ...(lead.docusign_label !== 'Completed' ? [{ label: 'Edit Proposal', value: 'editProposal' }] : []),
+        ...(lead.docusign_label !== 'Completed'
+          ? [{ label: 'Edit Proposal', value: 'editProposal' }]
+          : []),
         { label: 'Download Proposal', value: 'download' },
-        ...(lead.proposal_id && (lead.docusign_label !== 'Completed' || lead.docusign_label === 'Sent' || lead.docusign_label === '') ? [{ label: lead.docusign_label === 'Sent' ? "Resend for Sign Document" : 'Sign Document', value: 'signature' }] : []),
+        ...(lead.proposal_id &&
+        (lead.docusign_label !== 'Completed' ||
+          lead.docusign_label === 'Sent' ||
+          lead.docusign_label === '')
+          ? [
+              {
+                label:
+                  lead.docusign_label === 'Sent'
+                    ? 'Resend for Sign Document'
+                    : 'Sign Document',
+                value: 'signature',
+              },
+            ]
+          : []),
         { label: 'Reschedule Appointment', value: 'app_sched' },
         { label: 'Refresh Url', value: 'renew_proposal' },
       ];
     }
 
-    if (lead && lead.proposal_id !== '' && lead.proposal_status !== 'Completed') {
+    if (
+      lead &&
+      lead.proposal_id !== '' &&
+      lead.proposal_status !== 'Completed'
+    ) {
       return [
         { label: 'View Proposal', value: 'viewProposal' },
         { label: 'Edit Proposal', value: 'editProposal' },
@@ -551,23 +588,33 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
       />
 
       <div className={styles.dashTabTop}>
-
-        <div className={styles.TableContainer1} ref={scrollWrapper} >
+        <div className={styles.TableContainer1} ref={scrollWrapper}>
           <div
             // style={{ overflowX: 'auto', whiteSpace: 'nowrap', minHeight: "400px" }}
             // ref={tableContainerRef}
-            style={{ width: '100%', whiteSpace: 'nowrap', minHeight: "400px", scrollBehavior: 'smooth' }}
+            style={{
+              width: '100%',
+              whiteSpace: 'nowrap',
+              minHeight: '400px',
+              scrollBehavior: 'smooth',
+            }}
             className={styles.scrolly}
           >
             {isLoading ? (
-              <td style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "150px" }} colSpan={10}>
+              <td
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '150px',
+                }}
+                colSpan={10}
+              >
                 <MicroLoader />
               </td>
-
             ) : leadsData.length > 0 ? (
               <table>
-                <thead
-                >
+                <thead>
                   <tr>
                     {LeadColumn.map((item) => (
                       <th key={item.id}>
@@ -578,28 +625,30 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                         </div>
                       </th>
                     ))}
-                    {selectedLeads.length === 0 &&
+                    {selectedLeads.length === 0 && (
                       <th
                         onClick={handleMoreClick}
                         style={{
                           fontWeight: '500',
                           color: 'black',
-                          background: isMobile ? 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 100%)' : 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
+                          background: isMobile
+                            ? 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 100%)'
+                            : 'linear-gradient(to right, #CADCFA 40%, #d5e4ff 40%)',
 
                           cursor: 'pointer',
-                          minWidth: isMobile ? '65px' : "200px",
-                          zIndex: "102",
-
+                          minWidth: isMobile ? '65px' : '200px',
+                          zIndex: '102',
                         }}
                         className={styles.FixedColumn}
-
                       >
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'flex-start',
-                          width: "100%"
-                        }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            width: '100%',
+                          }}
+                        >
                           <div className={styles.slidebutton}>
                             {side === 'left' ? (
                               <>
@@ -615,7 +664,7 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           </div>
                         </div>
                       </th>
-                    }
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -632,9 +681,18 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                   ) : leadsData.length > 0 ? (
                     leadsData.map((lead: any, index: number) => (
                       <tr>
-
-                        <td style={{ fontWeight: '500', color: 'black', display: 'flex', flexDirection: 'row', gap: '10px', alignItems: "center", margin: '7px' }}>
-                          <label style={{ marginBottom: "19px" }}>
+                        <td
+                          style={{
+                            fontWeight: '500',
+                            color: 'black',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: '10px',
+                            alignItems: 'center',
+                            margin: '7px',
+                          }}
+                        >
+                          <label style={{ marginBottom: '19px' }}>
                             <input
                               type="checkbox"
                               checked={selectedLeads.includes(lead['leads_id'])}
@@ -649,36 +707,40 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 whiteSpace: 'pre-wrap',
                                 overflowWrap: 'break-word',
                                 width: '155px',
-                                lineHeight: "16px"
+                                lineHeight: '16px',
                               }}
-                              className={styles.name}>{lead.first_name} {lead.last_name}</div>
+                              className={styles.name}
+                            >
+                              {lead.first_name} {lead.last_name}
+                            </div>
 
                             <div className={styles.ids}>OWE{lead.leads_id}</div>
                             <div className={styles.qcbuttoncont}>
                               <p>QC :</p>
                               <div className={styles.qcstaus}>
-                                {lead.docusign_label !== "Completed" ?
+                                {lead.docusign_label !== 'Completed' ? (
                                   <img src={ICONS.Pendingqc} alt="img" />
-                                  :
-                                  <div className={styles.qcactstatus}><img src={ICONS.QcLineLead} alt="" /></div>
-                                }
+                                ) : (
+                                  <div className={styles.qcactstatus}>
+                                    <img src={ICONS.QcLineLead} alt="" />
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
-
-
-
                         </td>
-                        <td >
+                        <td>
                           <div className={styles.info}>{lead.email_id}</div>
                           <div className={styles.info}>{lead.phone_number}</div>
                         </td>
                         <td>
-                          <div className={styles.info}>{lead?.street_address
-                            ? lead.street_address.length >= 100
-                              ? `${lead.street_address.slice(0, 100)}...`
-                              : lead.street_address
-                            : 'N/A'}</div>
+                          <div className={styles.info}>
+                            {lead?.street_address
+                              ? lead.street_address.length >= 100
+                                ? `${lead.street_address.slice(0, 100)}...`
+                                : lead.street_address
+                              : 'N/A'}
+                          </div>
                         </td>
                         <td>
                           <div className={styles.topdived}>
@@ -688,21 +750,14 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                         <td>
                           {lead.lead_source ? (
                             <>
-                              <div
-                                className={styles.topdived}
-                              >
-
+                              <div className={styles.topdived}>
                                 <p>{lead.lead_source}</p>
                               </div>
-
                             </>
                           ) : (
                             <div>______</div>
                           )}
                         </td>
-
-
-
 
                         <td>
                           <div className={styles.topofinfo}>
@@ -710,31 +765,59 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               <>
                                 <div
                                   style={{
-                                    backgroundColor: lead.appointment_status_label === 'Not Required'
-                                      ? '#B459FC'
-                                      : lead.appointment_status_label === 'Appointment Accepted'
-                                        ? '#21BC27'
-                                        : lead.appointment_status_label === 'No Response'
-                                          ? '#777777'
-                                          : lead.appointment_status_label === 'Appointment Sent'
-                                            ? '#EC9311'
-                                            : lead.appointment_status_label === 'Appointment Declined'
-                                              ? '#D91515'
-                                              : lead.appointment_status_label === 'Appointment Date Passed'
-                                                ? '#3B70A1'
-                                                : 'inherit',
+                                    backgroundColor:
+                                      lead.appointment_status_label ===
+                                      'Not Required'
+                                        ? '#B459FC'
+                                        : lead.appointment_status_label ===
+                                            'Appointment Accepted'
+                                          ? '#21BC27'
+                                          : lead.appointment_status_label ===
+                                              'No Response'
+                                            ? '#777777'
+                                            : lead.appointment_status_label ===
+                                                'Appointment Sent'
+                                              ? '#EC9311'
+                                              : lead.appointment_status_label ===
+                                                  'Appointment Declined'
+                                                ? '#D91515'
+                                                : lead.appointment_status_label ===
+                                                    'Appointment Date Passed'
+                                                  ? '#3B70A1'
+                                                  : 'inherit',
                                   }}
                                   className={styles.appointment_status}
                                 >
                                   {lead.appointment_status_label}
                                 </div>
-                                <div style={{ marginTop: "4px" }} className={styles.date}>
-                                  {lead.appointment_status_date ? format((parseISO(lead.appointment_status_date)), 'dd-MM-yyyy') : ""}
+                                <div
+                                  style={{ marginTop: '4px' }}
+                                  className={styles.date}
+                                >
+                                  {lead.appointment_status_date
+                                    ? format(
+                                        parseISO(lead.appointment_status_date),
+                                        'dd-MM-yyyy'
+                                      )
+                                    : ''}
                                 </div>
-                                {(((lead.appointment_status_label === 'No Response' || lead.appointment_status_label === 'Appointment Date Passed') && lead.proposal_status !== '') || ((lead.appointment_status_label === 'No Response' || lead.appointment_status_label === 'Appointment Date Passed') && lead.won_lost_label !== '')) &&
-                                  <div style={{ color: "#D91515" }} className={styles.date}>
+                                {(((lead.appointment_status_label ===
+                                  'No Response' ||
+                                  lead.appointment_status_label ===
+                                    'Appointment Date Passed') &&
+                                  lead.proposal_status !== '') ||
+                                  ((lead.appointment_status_label ===
+                                    'No Response' ||
+                                    lead.appointment_status_label ===
+                                      'Appointment Date Passed') &&
+                                    lead.won_lost_label !== '')) && (
+                                  <div
+                                    style={{ color: '#D91515' }}
+                                    className={styles.date}
+                                  >
                                     Update Status!
-                                  </div>}
+                                  </div>
+                                )}
                               </>
                             ) : (
                               <div>____</div>
@@ -753,14 +836,22 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 </div>
                                 {lead.won_lost_date && (
                                   <div className={styles.date}>
-                                    {lead.won_lost_date ? format((parseISO(lead.won_lost_date)), 'dd-MM-yyyy') : ""}
-
+                                    {lead.won_lost_date
+                                      ? format(
+                                          parseISO(lead.won_lost_date),
+                                          'dd-MM-yyyy'
+                                        )
+                                      : ''}
                                   </div>
                                 )}
-                                {(lead.can_manually_win) &&
-                                  <div style={{ color: "#D91515" }} className={styles.date}>
+                                {lead.can_manually_win && (
+                                  <div
+                                    style={{ color: '#D91515' }}
+                                    className={styles.date}
+                                  >
                                     48hrs passed
-                                  </div>}
+                                  </div>
+                                )}
                               </>
                             ) : (
                               <div>______</div>
@@ -768,18 +859,28 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                           </div>
                         </td>
 
-
                         <td>
                           <div
-                            style={lead.proposal_status in statusStyles
-                              ? statusStyles[lead.proposal_status as ProposalStatus]
-                              : { backgroundColor: lead.proposal_status ? "#808080" : "", color: lead.proposal_status ? "#fff" : "black" }}
+                            style={
+                              lead.proposal_status in statusStyles
+                                ? statusStyles[
+                                    lead.proposal_status as ProposalStatus
+                                  ]
+                                : {
+                                    backgroundColor: lead.proposal_status
+                                      ? '#808080'
+                                      : '',
+                                    color: lead.proposal_status
+                                      ? '#fff'
+                                      : 'black',
+                                  }
+                            }
                             className={styles.appointment_status}
                           >
                             {lead.proposal_status ? (
-                              (lead.proposal_status)
+                              lead.proposal_status
                             ) : (
-                              <span style={{ color: "black" }}>_____</span>
+                              <span style={{ color: 'black' }}>_____</span>
                             )}
                           </div>
                         </td>
@@ -787,25 +888,49 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                         <td>
                           <div className={styles.topofinfo}>
                             <div
-                              style={lead.docusign_label in docusignStyles
-                                ? docusignStyles[lead.docusign_label as DocuStatus]
-                                : { backgroundColor: "inherit", color: "black" }}
+                              style={
+                                lead.docusign_label in docusignStyles
+                                  ? docusignStyles[
+                                      lead.docusign_label as DocuStatus
+                                    ]
+                                  : {
+                                      backgroundColor: 'inherit',
+                                      color: 'black',
+                                    }
+                              }
                               className={styles.appointment_status}
                             >
                               {lead.docusign_label ? (
-                                (lead.docusign_label)
+                                lead.docusign_label
                               ) : (
-                                <span style={{ color: "black" }}>_____</span>
+                                <span style={{ color: 'black' }}>_____</span>
                               )}
                             </div>
                             <div className={styles.date}>
-                              {lead.docusign_date ? format((parseISO(lead.docusign_date)), 'dd-MM-yyyy') : ""}
+                              {lead.docusign_date
+                                ? format(
+                                    parseISO(lead.docusign_date),
+                                    'dd-MM-yyyy'
+                                  )
+                                : ''}
                             </div>
                           </div>
                           {/* style={{ marginLeft: '29px', marginTop: "4px" }} */}
                         </td>
 
+                   
 
+                        <td>
+                          {lead.setter_name ? (
+                            <>
+                              <div className={styles.topdived}>
+                                <p>{lead.setter_name}</p>
+                              </div>
+                            </>
+                          ) : (
+                            <div>______</div>
+                          )}
+                        </td>
 
                         {/* <td>
                       <div className={styles.topofinfo}>
@@ -814,25 +939,266 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                     </td>
                     <td><div className={styles.topofinfo}>{lead.finance_type ? lead.finance_type : "_____"}</div></td>
                     <td><div className={styles.topofinfo}>{lead.qc_audit ? lead.qc_audit : "_____"}</div></td> */}
-                        {(selectedLeads.length === 0 && isMobile) &&
-                          <td className={styles.FixedColumnMobile} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }} >
-                            <div className={styles.RowMobile}
+                        {selectedLeads.length === 0 && isMobile && (
+                          <td
+                            className={styles.FixedColumnMobile}
+                            style={{
+                              backgroundColor: '#fff',
+                              zIndex: selected === index ? 101 : 0,
+                            }}
+                          >
+                            <div
+                              className={styles.RowMobile}
                               onClick={() => {
-                                (setLeadId(lead.leads_id));
+                                setLeadId(lead.leads_id);
                                 setLeadPropsalLink(lead.proposal_link);
-                                setProposalPdfLink(lead.proposal_pdf_link)
-                              }}>
-                              {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
-                                <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                              ) :
-                                ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
-                                  <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
+                                setProposalPdfLink(lead.proposal_pdf_link);
+                              }}
+                            >
+                              {(lead?.appointment_status_label ===
+                                'No Response' &&
+                                lead.proposal_id === '') ||
+                              (lead.appointment_status_label ===
+                                'Appointment Declined' &&
+                                lead.proposal_id === '') ? (
+                                <button
+                                  className={styles.create_proposal}
+                                  onClick={handleReschedule}
+                                >
+                                  Reschedule
+                                </button>
+                              ) : (lead.appointment_status_label ===
+                                  'Not Required' &&
+                                  lead.proposal_id === '') ||
+                                (lead.proposal_id === '' &&
+                                  lead.appointment_status_label !== '') ? (
+                                <button
+                                  className={styles.create_proposal}
+                                  onClick={() =>
+                                    onCreateProposal(lead.leads_id)
+                                  }
+                                >
+                                  Create Proposal
+                                </button>
+                              ) : (
+                                <>
+                                  {downloadingLeadId === lead.leads_id ? (
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      <MicroLoader />
+                                      <span style={{ marginLeft: 8 }}>
+                                        {Math.round(downloadProgress)}%
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <DropDownLeadTable
+                                      selectedType={selectedType}
+                                      onSelectType={(type: string) => {
+                                        setSelectedType(type);
+                                        setActiveSection(activeSection);
+                                      }}
+                                      cb={() => {
+                                        setSelected(index);
+                                      }}
+                                      options={getLeadOptions(lead)}
+                                    />
+                                  )}
+                                </>
+                              )}
+                            </div>
+                            <div className={styles.RowMobileTwo}>
+                              <div
+                                className={styles.RowMobileColumns}
+                                onClick={() => setLeadId(lead.leads_id)}
+                              >
+                                <ChangeStatus
+                                  selectedType={selectedType}
+                                  onSelectType={(type: string) => {
+                                    setSelectedType(type);
+                                    setActiveSection(activeSection);
+                                  }}
+                                  cb={() => {
+                                    setSelected(index);
+                                  }}
+                                  disabledOptions={
+                                    lead.appointment_status_label !== '' &&
+                                    lead.appointment_status_label !==
+                                      'No Response' &&
+                                    lead.appointment_status_label !==
+                                      'Appointment Declined'
+                                      ? lead.won_lost_label !== ''
+                                        ? lead.can_manually_win
+                                          ? lead.docusign_label === 'Completed'
+                                            ? [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                              ]
+                                            : [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                                'Mark QC Complete',
+                                              ]
+                                          : lead.docusign_label === 'Completed'
+                                            ? [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                                'Complete as Won',
+                                              ]
+                                            : [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
+                                        : lead.can_manually_win
+                                          ? lead.docusign_label === 'Completed'
+                                            ? ['Appointment Not Required']
+                                            : [
+                                                'Appointment Not Required',
+                                                'Mark QC Complete',
+                                              ]
+                                          : lead.docusign_label === 'Completed'
+                                            ? [
+                                                'Appointment Not Required',
+                                                'Complete as Won',
+                                              ]
+                                            : [
+                                                'Appointment Not Required',
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
+                                      : lead.won_lost_label !== ''
+                                        ? lead.can_manually_win
+                                          ? lead.docusign_label === 'Completed'
+                                            ? ['Deal Won']
+                                            : ['Deal Won', 'Mark QC Complete']
+                                          : lead.docusign_label === 'Completed'
+                                            ? ['Deal Won', 'Complete as Won']
+                                            : [
+                                                'Deal Won',
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
+                                        : lead.can_manually_win
+                                          ? lead.docusign_label === 'Completed'
+                                            ? []
+                                            : ['Mark QC Complete']
+                                          : lead.docusign_label === 'Completed'
+                                            ? ['Complete as Won']
+                                            : [
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
+                                  }
+                                />
+                              </div>
+                              <div
+                                className={styles.infoIcon}
+                                onClick={() =>
+                                  handleOpenEditModal(lead.leads_id)
+                                }
+                                data-tooltip-id="info"
+                              >
+                                <CiEdit />
+                              </div>
+                              <div
+                                className={`${styles.RowMobileColumns} ${styles.infoIcon}`}
+                                onClick={() =>
+                                  handleOpenProfileModal(lead.leads_id)
+                                }
+                                data-tooltip-id="info"
+                              >
+                                <IoInformationOutline />
+                              </div>
+                              <Tooltip
+                                style={{
+                                  zIndex: 20,
+                                  background: '#f7f7f7',
+                                  color: '#000',
+                                  fontSize: 12,
+                                  paddingBlock: 4,
+                                }}
+                                delayShow={800}
+                                offset={8}
+                                id="info"
+                                place="top"
+                                content="Lead Info"
+                              />
+                            </div>
+                          </td>
+                        )}
+                        {selectedLeads.length === 0 && !isMobile && (
+                          <td
+                            className={styles.FixedColumn}
+                            style={{
+                              backgroundColor: '#fff',
+                              zIndex: selected === index ? 101 : 0,
+                            }}
+                          >
+                            {/* FIRST ROW FIRST COLUMNS STARTED*/}
+                            <div
+                              style={{
+                                display: 'flex',
+                                gap: '20px',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '100%',
+                              }}
+                            >
+                              <div
+                                onClick={() => {
+                                  setLeadId(lead.leads_id);
+                                  setLeadPropsalLink(lead.proposal_link);
+                                  setProposalPdfLink(lead.proposal_pdf_link);
+                                }}
+                              >
+                                {(lead?.appointment_status_label ===
+                                  'No Response' &&
+                                  lead.proposal_id === '') ||
+                                (lead.appointment_status_label ===
+                                  'Appointment Declined' &&
+                                  lead.proposal_id === '') ? (
+                                  <button
+                                    className={styles.create_proposal}
+                                    onClick={handleReschedule}
+                                  >
+                                    Reschedule
+                                  </button>
+                                ) : (lead.appointment_status_label ===
+                                    'Not Required' &&
+                                    lead.proposal_id === '') ||
+                                  (lead.appointment_status_label !==
+                                    'Appointment Date Passed' &&
+                                    lead.proposal_id === '' &&
+                                    lead.appointment_status_label !== '') ? (
+                                  <button
+                                    className={styles.create_proposal}
+                                    onClick={() =>
+                                      onCreateProposal(lead.leads_id)
+                                    }
+                                  >
+                                    Create Proposal
+                                  </button>
                                 ) : (
                                   <>
                                     {downloadingLeadId === lead.leads_id ? (
-                                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                      <div
+                                        style={{
+                                          display: 'flex',
+                                          justifyContent: 'center',
+                                          alignItems: 'center',
+                                          transform: 'scale(0.7)',
+                                        }}
+                                      >
                                         <MicroLoader />
-                                        <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
+                                        <span style={{ marginLeft: 8 }}>
+                                          {Math.round(downloadProgress)}%
+                                        </span>
                                       </div>
                                     ) : (
                                       <DropDownLeadTable
@@ -849,9 +1215,9 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                     )}
                                   </>
                                 )}
-                            </div>
-                            <div className={styles.RowMobileTwo}>
-                              <div className={styles.RowMobileColumns} onClick={() => (setLeadId(lead.leads_id))}>
+                              </div>
+
+                              <div onClick={() => setLeadId(lead.leads_id)}>
                                 <ChangeStatus
                                   selectedType={selectedType}
                                   onSelectType={(type: string) => {
@@ -859,172 +1225,101 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                     setActiveSection(activeSection);
                                   }}
                                   cb={() => {
-                                    setSelected(index)
+                                    setSelected(index);
                                   }}
                                   disabledOptions={
-                                    (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
+                                    lead.appointment_status_label !== '' &&
+                                    lead.appointment_status_label !==
+                                      'No Response' &&
+                                    lead.appointment_status_label !==
+                                      'Appointment Declined'
                                       ? lead.won_lost_label !== ''
                                         ? lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required', 'Deal Won']
-                                            : ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
-                                            : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
+                                          ? lead.docusign_label === 'Completed'
+                                            ? [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                              ]
+                                            : [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                                'Mark QC Complete',
+                                              ]
+                                          : lead.docusign_label === 'Completed'
+                                            ? [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                                'Complete as Won',
+                                              ]
+                                            : [
+                                                'Appointment Not Required',
+                                                'Deal Won',
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
                                         : lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
+                                          ? lead.docusign_label === 'Completed'
                                             ? ['Appointment Not Required']
-                                            : ['Appointment Not Required', 'Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required', 'Complete as Won']
-                                            : ['Appointment Not Required', 'Complete as Won', 'Mark QC Complete']
+                                            : [
+                                                'Appointment Not Required',
+                                                'Mark QC Complete',
+                                              ]
+                                          : lead.docusign_label === 'Completed'
+                                            ? [
+                                                'Appointment Not Required',
+                                                'Complete as Won',
+                                              ]
+                                            : [
+                                                'Appointment Not Required',
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
                                       : lead.won_lost_label !== ''
                                         ? lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
+                                          ? lead.docusign_label === 'Completed'
                                             ? ['Deal Won']
                                             : ['Deal Won', 'Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
+                                          : lead.docusign_label === 'Completed'
                                             ? ['Deal Won', 'Complete as Won']
-                                            : ['Deal Won', 'Complete as Won', 'Mark QC Complete']
+                                            : [
+                                                'Deal Won',
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
                                         : lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
+                                          ? lead.docusign_label === 'Completed'
                                             ? []
                                             : ['Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
+                                          : lead.docusign_label === 'Completed'
                                             ? ['Complete as Won']
-                                            : ['Complete as Won', 'Mark QC Complete']
+                                            : [
+                                                'Complete as Won',
+                                                'Mark QC Complete',
+                                              ]
                                   }
                                 />
-
-                              </div>
-                              <div className={styles.infoIcon} onClick={() => handleOpenEditModal(lead.leads_id)} data-tooltip-id="info">
-                                <CiEdit />
-                              </div>
-                              <div className={`${styles.RowMobileColumns} ${styles.infoIcon}`} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
-                                <IoInformationOutline />
-                              </div>
-                              <Tooltip
-                                style={{
-                                  zIndex: 20,
-                                  background: '#f7f7f7',
-                                  color: '#000',
-                                  fontSize: 12,
-                                  paddingBlock: 4,
-
-                                }}
-                                delayShow={800}
-                                offset={8}
-                                id="info"
-                                place="top"
-                                content="Lead Info"
-                              />
-                            </div>
-                          </td>
-                        }
-                        {(selectedLeads.length === 0 && !isMobile) &&
-
-                          <td className={styles.FixedColumn} style={{ backgroundColor: "#fff", zIndex: selected === index ? 101 : 0 }}>
-                            {/* FIRST ROW FIRST COLUMNS STARTED*/}
-                            <div style={{
-                              display: 'flex',
-                              gap: "20px",
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: "100%"
-                            }}>
-                              <div onClick={() => {
-                                (setLeadId(lead.leads_id));
-                                setLeadPropsalLink(lead.proposal_link);
-                                setProposalPdfLink(lead.proposal_pdf_link)
-                              }}>
-                                {(lead?.appointment_status_label === "No Response" && lead.proposal_id === "") || (lead.appointment_status_label === "Appointment Declined" && lead.proposal_id === "") ? (
-                                  <button className={styles.create_proposal} onClick={handleReschedule}>Reschedule</button>
-                                ) :
-                                  ((lead.appointment_status_label === "Not Required" && lead.proposal_id === "") || (lead.appointment_status_label !== 'Appointment Date Passed' && lead.proposal_id === "" && lead.appointment_status_label !== "")) ? (
-                                    <button className={styles.create_proposal} onClick={() => (onCreateProposal(lead.leads_id))}>Create Proposal</button>
-                                  ) : (
-                                    <>
-                                      {downloadingLeadId === lead.leads_id ? (
-                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transform: 'scale(0.7)' }}>
-                                          <MicroLoader />
-                                          <span style={{ marginLeft: 8 }}>{Math.round(downloadProgress)}%</span>
-                                        </div>
-                                      ) : (
-                                        <DropDownLeadTable
-                                          selectedType={selectedType}
-                                          onSelectType={(type: string) => {
-                                            setSelectedType(type);
-                                            setActiveSection(activeSection);
-                                          }}
-                                          cb={() => {
-                                            setSelected(index);
-                                          }}
-                                          options={getLeadOptions(lead)}
-                                        />
-                                      )}
-                                    </>
-                                  )}
-                              </div>
-
-                              <div onClick={() => (setLeadId(lead.leads_id))}>
-                                <ChangeStatus
-                                  selectedType={selectedType}
-                                  onSelectType={(type: string) => {
-                                    setSelectedType(type);
-                                    setActiveSection(activeSection);
-                                  }}
-                                  cb={() => {
-                                    setSelected(index)
-                                  }}
-                                  disabledOptions={
-                                    (lead.appointment_status_label !== '' && lead.appointment_status_label !== 'No Response' && lead.appointment_status_label !== 'Appointment Declined')
-                                      ? lead.won_lost_label !== ''
-                                        ? lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required', 'Deal Won']
-                                            : ['Appointment Not Required', 'Deal Won', 'Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required', 'Deal Won', 'Complete as Won']
-                                            : ['Appointment Not Required', 'Deal Won', 'Complete as Won', 'Mark QC Complete']
-                                        : lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required']
-                                            : ['Appointment Not Required', 'Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
-                                            ? ['Appointment Not Required', 'Complete as Won']
-                                            : ['Appointment Not Required', 'Complete as Won', 'Mark QC Complete']
-                                      : lead.won_lost_label !== ''
-                                        ? lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
-                                            ? ['Deal Won']
-                                            : ['Deal Won', 'Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
-                                            ? ['Deal Won', 'Complete as Won']
-                                            : ['Deal Won', 'Complete as Won', 'Mark QC Complete']
-                                        : lead.can_manually_win
-                                          ? lead.docusign_label === "Completed"
-                                            ? []
-                                            : ['Mark QC Complete']
-                                          : lead.docusign_label === "Completed"
-                                            ? ['Complete as Won']
-                                            : ['Complete as Won', 'Mark QC Complete']
-                                  }
-                                />
-
                               </div>
                               {/* SECOND ROW SECOND COLUMNS STARTED */}
-                              <div className={styles.infoIcon} onClick={() => handleOpenEditModal(lead.leads_id)} data-tooltip-id="info">
+                              <div
+                                className={styles.infoIcon}
+                                onClick={() =>
+                                  handleOpenEditModal(lead.leads_id)
+                                }
+                                data-tooltip-id="info"
+                              >
                                 <CiEdit />
                               </div>
 
                               {/*middle button*/}
-                              <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
+                              <div
+                                className={styles.infoIcon}
+                                onClick={() =>
+                                  handleOpenProfileModal(lead.leads_id)
+                                }
+                                data-tooltip-id="info"
+                              >
                                 <IoInformationOutline />
                               </div>
-
-
-
-
                             </div>
                             {/* SECOND ROW SECOND COLUMNS ENDED */}
                             <Tooltip
@@ -1034,7 +1329,6 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                                 color: '#000',
                                 fontSize: 12,
                                 paddingBlock: 4,
-
                               }}
                               delayShow={800}
                               offset={8}
@@ -1043,32 +1337,33 @@ const LeadTable = ({ selectedLeads, currentFilter, setCurrentFilter, setSelected
                               content="Lead Info"
                             />
                           </td>
-                        }
-
+                        )}
                       </tr>
                     ))
                   ) : (
-                    <tr style={{ border: 0 }}>
-
-                    </tr>
+                    <tr style={{ border: 0 }}></tr>
                   )}
                 </tbody>
               </table>
             ) : (
-              <td style={{ display: "flex", alignItems: "center", justifyContent: "center" }} colSpan={10}>
+              <td
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                colSpan={10}
+              >
                 <DataNotFound />
               </td>
             )}
-
           </div>
-
         </div>
 
         {/* <EditFormModal/> */}
-
-      </div >
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default LeadTable
+export default LeadTable;
