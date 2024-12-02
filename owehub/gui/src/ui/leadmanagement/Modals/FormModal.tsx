@@ -39,14 +39,18 @@ interface FormInput
   interface EditModalProps {
     leadData: any,
     loading: boolean,
-    onClose: () => void
+    onClose: () => void,
+    refresh: number;
+    setRefresh: (value: number | ((prevValue: number) => number)) => void;
   }
 
 
 const FormModal: React.FC<EditModalProps> = ({
   leadData,
   loading,
-  onClose
+  onClose,
+  refresh,
+  setRefresh
 }) => {
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [setterData, setSetterData] = useState<SetterData[]>([]);
@@ -72,7 +76,7 @@ const FormModal: React.FC<EditModalProps> = ({
       )?.id || '';
 
       const setterId = setterData.find(
-        (setter) => setter.name === leadData.sales_rep_name
+        (setter) => setter.name === leadData.setter_name
       )?.id || '';
 
       console.log(salesRepId, "show this")
@@ -186,10 +190,10 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-    if (!selectedSale) {
+    if (!selectedSale && (saleId == "")) {
       errors.sales_rep = 'Sales Rep is required';
     }
-    if (!selectedSetter) {
+    if (!selectedSetter && (setterId == "")) {
       errors.setterError = 'Setter is required';
     }
     return errors;
@@ -223,6 +227,7 @@ const FormModal: React.FC<EditModalProps> = ({
         
         if (response.status === 200) {
           toast.success('Lead Updated Successfully');
+          setRefresh((val) => val + 1)
           onClose();  // Close the modal on successful submission
         } else if (response.status >= 201) {
           toast.warn(response.message);
@@ -267,6 +272,7 @@ const FormModal: React.FC<EditModalProps> = ({
           setIsLoadSelect(false);
         }
       };
+
 
       fetchData();
     }
@@ -509,7 +515,7 @@ const FormModal: React.FC<EditModalProps> = ({
                           <div className={classes.srs_new_create}>
                             <div className={classes.custom_label_newlead}>Setter</div>
                             <CustomSelect<SetterData>
-                                value={selectedSetter || setterData.find((option) => option.name === leadData.sales_rep_name) || null}
+                                value={selectedSetter || setterData.find((option) => option.name === leadData.setter_name) || null}
                                 onChange={handleSetterChange}
                                 options={setterData}
                                 isVisible={true}

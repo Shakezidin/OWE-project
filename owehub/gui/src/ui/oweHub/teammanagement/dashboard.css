@@ -313,7 +313,7 @@
   cursor: default;
   padding: 0;
   box-shadow: none;
-  color: #263747;
+  color: var(--input-border-color);
 }
 
 .team-cancel {

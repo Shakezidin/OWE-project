@@ -107,7 +107,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.SetterID > 0 {
-		whereEleList = append(whereEleList, dataReq.SalerepID)
+		whereEleList = append(whereEleList, dataReq.SetterID)
 		updateFields = append(updateFields, fmt.Sprintf("setter_id = $%d", len(whereEleList)))
 	}
 

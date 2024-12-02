@@ -16,14 +16,15 @@ CREATE TABLE IF NOT EXISTS dealer_pay(
     rep_1 TEXT,
     rep_2 TEXT,
     setter TEXT,
-    draw_amt float,
+    draw_perc float,
     amt_paid float,
     balance float,
     st TEXT,
     contract_date TIMESTAMP,
     finance_type TEXT,
     ntp_date TIMESTAMP,
-    marketing_fee float,
+    m1_payment float,
+	m2_payment float,
     referral TEXT,
     rebate TEXT
 )

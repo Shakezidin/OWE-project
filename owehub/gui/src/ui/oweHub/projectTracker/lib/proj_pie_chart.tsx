@@ -143,7 +143,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               )}
             </div>
             <div
-              className={`link-tab ${!projectDetail?.dat_link ? 'disable-btn' : ''}`}
+              className={`link-tab ${!projectDetail?.dat_link ? 'disable-btn' : ''}`} data-tooltip-id={projectDetail?.dat_link ? 'status-link' : ''}
             >
               <a
                 href={projectDetail?.dat_link}
@@ -152,6 +152,24 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 onClick={(e) => handleClick(e, projectDetail?.dat_link)}
               >
                 <RiExternalLinkLine />
+                {!isDisabled && projectDetail?.cad_link && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-link"
+                  place="top"
+                  content="Visit"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />)
+}
               </a>
             </div>
           </div>
@@ -199,7 +217,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               )}
             </div>
             <div
-              className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`}
+              className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`} data-tooltip-id={projectDetail?.includeContractUrl ? 'status-link' : ''}
             >
               <a
                 href={projectDetail?.includeContractUrl}
@@ -210,6 +228,24 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 }
               >
                 <RiExternalLinkLine />
+                {!isDisabled && projectDetail?.includeContractUrl && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-link"
+                  place="top"
+                  content="Visit"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />)
+}
               </a>
             </div>
           </div>

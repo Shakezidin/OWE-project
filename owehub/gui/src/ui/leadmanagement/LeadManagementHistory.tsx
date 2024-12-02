@@ -387,7 +387,7 @@ const LeradManagementHistory = () => {
       'Phone Number',
       'Email ID',
       'Street Address',
-      'Zipcode',
+      'Setter',
       'Deal Date',
       'Deal Status',
     ];
@@ -428,7 +428,7 @@ const LeradManagementHistory = () => {
         `'${item.phone_number}'`,
         item.email_id,
         item.street_address,
-        `'${item.zipcode}'`,
+        item.setter_name,
         item.deal_date ? `${format(parseISO(item.deal_date), 'dd-MM-yyyy')}` : '',
         item.deal_status,
       ]);

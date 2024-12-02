@@ -49,6 +49,7 @@ interface LeadData {
     proposal_created_date: string | null;
     sales_rep_name: string | null;
     lead_source: string | null;
+    setter_name:string | null;
 }
 
 const Profile: React.FC<EditModalProps> = ({
@@ -240,7 +241,8 @@ const Profile: React.FC<EditModalProps> = ({
                                             <td className={classes.leftAlign}>Proposal Signed</td>
                                             <td className={classes.rightAlign}>{leadData?.proposal_signed.toString()}</td>
                                         </tr>
-                                      
+
+                                       
 
 
 
@@ -376,6 +378,11 @@ const Profile: React.FC<EditModalProps> = ({
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
                                             >{leadData?.sales_rep_name || '.....'}</td>
                                         </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Setter</td>
+                                            <td className={classes.rightAlign}>{leadData?.setter_name ? leadData?.setter_name : "....."}</td>
+                                        </tr>
+                                      
                                         <tr>
                                             <td className={classes.leftAlign}
 

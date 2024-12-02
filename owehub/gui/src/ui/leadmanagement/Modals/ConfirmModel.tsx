@@ -35,6 +35,7 @@ interface EditModalProps {
   onClose1: () => void;
   leadId?: number;
   refresh: number;
+  
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
   reschedule?: boolean;
   action?: boolean;
