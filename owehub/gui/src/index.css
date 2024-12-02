@@ -156,7 +156,7 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
 /* Style the highlighted text inside each item */
 .pac-item .pac-item-query {
   font-weight: 400px !important;
-  color: #263747 !important;
+  color: var(--input-border-color) !important;
 }
 
 /* scheduler calendar css  */
@@ -209,7 +209,7 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
   --border-color: #eaecf0;
   --btn-text-color: #344054;
   --check-border-color: #ccc;
-  --page-heading-color: #263747;
+  --page-heading-color: var(--input-border-color);
   --secondary-text-color: #565656;
   --active-text-color: #04a5e8;
   --input-border-color: #d5d5d5;

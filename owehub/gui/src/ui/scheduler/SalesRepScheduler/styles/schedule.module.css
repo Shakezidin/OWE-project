@@ -1,6 +1,6 @@
 .schedule_detail {
   font-size: 20px;
-  color: #263747;
+  color: var(--input-border-color);
   font-size: 600;
 }
 .grid_spans {

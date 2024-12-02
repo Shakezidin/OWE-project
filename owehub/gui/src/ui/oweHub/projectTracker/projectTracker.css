@@ -11,7 +11,7 @@
 .pipeline-heading h2 {
   font-size: 18px;
   font-weight: 600;
-  color: #263747;
+  color: var(--input-border-color);
 }
 
 .desktop-btn:disabled {
@@ -330,7 +330,7 @@
 .active-queue svg:hover {
   background-color: #ddebff;
   border-radius: 4px;
-  transform: scale(1.13);
+  transform: scale(1.05);
 }
 
 #chart {
@@ -433,18 +433,17 @@
 .pipeline-header-btns {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .pipeline-header-btns button {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
   border: 1.5px solid #377cf6;
   background: #fff;
   color: #377cf6;
-  padding: 5px 14px;
-  border-radius: 6px;
-  font-size: 15px;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -452,6 +451,10 @@
 .pipeline-header-btns .desktop-btn.active, .pipeline-header-btns .mobile-btn.active {
   background: #377cf6;
   color: #fff;
+}
+
+.pipeline-header-btns .desktop-btn.active:hover, .pipeline-header-btns .mobile-btn.active:hover{
+  transform: none;
 }
 
 .pipeline-header-btns .mobile-btn {
@@ -621,7 +624,7 @@
 }
 
 .project-card p {
-  color: #263747;
+  color: var(--input-border-color);
   font-weight: 500;
   width: 100px;
   text-wrap: nowrap;
@@ -802,11 +805,11 @@
   position: absolute;
   right: 10px;
   top: 60px;
-  color: #263747;
+  color: var(--input-border-color);
 }
 
 .view-flex img {
-  color: #263747;
+  color: var(--input-border-color);
 }
 
 .status-card-wrp:hover .view-flex {
@@ -1387,7 +1390,7 @@
   font-weight: 600;
   line-height: 30px;
   text-align: left;
-  color: #263747;
+  color: var(--input-border-color);
 }
 
 /*Responsive*/
@@ -1536,7 +1539,7 @@
     font-weight: 600;
     line-height: 30px;
     text-align: left;
-    color: #263747;
+    color: var(--input-border-color);
     margin-bottom: 20px;
   }
 
@@ -1987,7 +1990,7 @@
 
 .pipelineFilterLine{
   width: 36px !important;
-  height: 37px !important;
+  height: 36px !important;
   border-radius: 8px;
   cursor: pointer;
   background-color: white;
@@ -2088,7 +2091,7 @@
   font-weight: 600;
   font-size: 14px;
   line-height: 28px;
-
+  color: #292b2e;
 }
 .moreThen, .lessThen{
   font-weight: 400;
@@ -2122,7 +2125,7 @@
   align-items: center;
   justify-content: center;
   border:1px solid #7D7D7D;
-  border-radius: 5.6px;
+  border-radius: 4px;
   padding: 8px 4px;
   font-size: 12px;
   font-weight: 500;
@@ -2149,7 +2152,7 @@
   padding: 10px 4px;
   /* border: 1px solid #377CF6; */
   border: 1px solid var(--input-border-color);
-  border-radius: 5.6px;
+  border-radius: 8px;
   /* color: rgb(0, 162, 255); */
   width: 97px;
   height: 32px;
@@ -2167,26 +2170,27 @@
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 .applyButton{
   padding:10px 4px;
-  border:1px solid #377CF6;
+  border: none;
   background-color: #377CF6;
   color:white;
-  border-radius: 5.6px;
+  border-radius: 8px;
   width: 97px;
   height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   transition: all 0.3s ease;
 }
 
 .applyButton:hover{
-  transform: scale(1.07);
+  transform: scale(1.05);
+  background-color: var(--button-hover-color)
 }
 
 
@@ -2390,7 +2394,7 @@
   position: absolute;
   top:48px;
   right: 45px;
-  border-radius: 11.2px;
+  border-radius: 8px;
   box-shadow: -2px 4px 12px 0px #00000024;
 }
 
@@ -2472,7 +2476,7 @@
   align-items: center;
   justify-content: flex-end;
   border:none;
-  border-radius: 5.6px;
+  border-radius: 4px;
   padding: 8px 4px;
   font-size: 12px;
   font-weight: 500;
@@ -2495,9 +2499,8 @@
 }
 
 .cancelButton {
-  padding: 10px 4px;
   border: 1px solid #377CF6;
-  border-radius: 5.6px;
+  border-radius: 8px;
   width: 97px;
   height: 32px;
   display: flex;
@@ -2508,18 +2511,17 @@
   font-weight: 500;
 }
 .applyButton{
-  padding:10px 4px;
   border:1px solid #377CF6;
   background-color: #377CF6;
   color:white;
-  border-radius: 5.6px;
+  border-radius: 8px;
   width: 97px;
   height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 
@@ -2636,15 +2638,14 @@
 .pipeline-inputBox-div{
   width: 74px;
   height: 28px;
-
   display: flex;
   align-items: center;
   justify-content:flex-start;
   border:1px solid #7D7D7D;
-  border-radius: 5.6px;
+  border-radius: 4px;
   padding: 8px 4px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   font-family: 'poppins';
   color: #293540;
   position: relative;

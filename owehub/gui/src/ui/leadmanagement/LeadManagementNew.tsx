@@ -336,7 +336,7 @@ const LeadManagementNew = () => {
         Create New Lead
         <img src={ICONS.cross} alt="" onClick={handleBack} />
       </div> */}
-      <div style={{ paddingRight: "12px" }} className={`flex justify-between ${classes.h_screen}`}>
+      <div className={`flex justify-between ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">

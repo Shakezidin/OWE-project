@@ -44,7 +44,7 @@
     overflow: hidden;       
     text-overflow: ellipsis; 
     white-space: nowrap; 
-    color: #263747;   
+    color: var(--input-border-color);   
     display: block;
     max-width: 100px;
 }
@@ -99,6 +99,6 @@
 
 
 .card_content{
-    color: #263747;
+    color: var(--input-border-color);
     font-size: 10px;
 }

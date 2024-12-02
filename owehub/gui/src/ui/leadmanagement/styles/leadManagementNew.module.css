@@ -7,7 +7,6 @@
   max-width: auto;
   align-items: center;
   justify-content: center;
-  margin-left: 20px;
 }
 
 .createProfileTextView {
@@ -81,8 +80,6 @@
 .main_head img {
   cursor: pointer;
   margin-right: 6px;
-  min-height: 32px;
-  max-width: 32px;
   transition: all 0.33s ease;
 }
 
@@ -104,12 +101,12 @@
 }
 
 .submitbut {
-  width: 236px;
-  height: 51px;
+  width: 150px;
+  height: 40px;
   background-color: #377cf6;
   border-radius: 8px;
   color: #fff;
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 450;
   border: none;
   cursor: pointer;

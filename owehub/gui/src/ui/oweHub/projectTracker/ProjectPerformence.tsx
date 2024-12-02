@@ -892,7 +892,7 @@ useEffect(()=>{
                           style={{
                             color:
                               isHovered === index && !isActive
-                                ? '#263747'
+                                ? 'var(--input-border-color)'
                                 : isActive
                                   ? '#fff'
                                   : cardColor,
@@ -1049,7 +1049,7 @@ useEffect(()=>{
                 style={{
                   zIndex: 20,
                   background: '#f7f7f7',
-                  color: '#000',
+                  color: '#292b2e',
                   fontSize: 12,
                   paddingBlock: 4,
                 }}
@@ -1062,7 +1062,7 @@ useEffect(()=>{
                 style={{
                   zIndex: 20,
                   background: '#f7f7f7',
-                  color: '#000',
+                  color: '#292b2e',
                   fontSize: 12,
                   paddingBlock: 4,
                 }}
@@ -1099,7 +1099,7 @@ useEffect(()=>{
                         />
                         <label
                           className="options"
-                          style={{ color: checkedStates[index] ? '#377CF6' : 'black' , cursor:'pointer'}}
+                          style={{ color: checkedStates[index] ? '#377CF6' : '#292b2e' , cursor:'pointer'}}
                           htmlFor={`pipeline-filter-options-${index}`}
                         >
                           {option}
@@ -1176,25 +1176,25 @@ useEffect(()=>{
                     onChange={handleSliderChange}
                     marks={{
                       1: {
-                        label: <span style={{ color: 'black' }}>1</span>,
+                        label: <span style={{ color: '#292b2e' }}>1</span>,
                       },
                       30: {
-                        label: <span style={{ color: 'black' }}>30</span>,
+                        label: <span style={{ color: '#292b2e' }}>30</span>,
                       },
                       60: {
-                        label: <span style={{ color: 'black' }}>60</span>,
+                        label: <span style={{ color: '#292b2e' }}>60</span>,
                       },
                       90: {
-                        label: <span style={{ color: 'black' }}>90</span>,
+                        label: <span style={{ color: '#292b2e' }}>90</span>,
                       },
                       120: {
-                        label: <span style={{ color: 'black' }}>120</span>,
+                        label: <span style={{ color: '#292b2e' }}>120</span>,
                       },
                       150: {
-                        label: <span style={{ color: 'black' }}>150</span>,
+                        label: <span style={{ color: '#292b2e' }}>150</span>,
                       },
                       180: {
-                        label: <span style={{ color: 'black' }}>180</span>,
+                        label: <span style={{ color: '#292b2e' }}>180</span>,
                       },
                     }}
                     className="custom-slider"
