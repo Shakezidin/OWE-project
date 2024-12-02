@@ -337,7 +337,7 @@ table tbody tr:hover {
   padding: 0 14px;
   height: 36px;
   width: 399px !important;
-  margin-right: 10px;
+  margin-right: 13px;
   box-shadow: 1px solid var(--primary-color);
 }
 
@@ -963,10 +963,10 @@ table tbody tr:hover {
   }
   .filterCallToAction {
     display: flex;
-    gap: 10px;
+    gap: 13px;
     transform: scale(1);
     position: unset;
-    padding-left: 10px;
+    padding-left: 13px;
   }
   .mobile_view_table {
     display: flex;
@@ -1132,7 +1132,7 @@ table tbody tr:hover {
 .hist_date {
   font-weight: 600;
   font-size: 14px;
-  margin-right: 6.2px !important;
+  /* margin-right: 6.2px !important; */
   color: #377cf6;
 }
 
@@ -1179,7 +1179,7 @@ table tbody tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 6px !important;
+  /* margin-left: 6px !important; */
   cursor: pointer;
   transition: all 500ms ease;
 }
@@ -1253,7 +1253,7 @@ table tbody tr:hover {
 .date_calendar {
   display: flex;
   flex-direction: row;
-  gap: 5px !important;
+  gap: 13px !important;
   align-items: center;
   flex-wrap: wrap;
   justify-content: right !important;
