@@ -635,7 +635,7 @@
   padding: 0.5rem;
   font-size: 13px !important;
   border-radius: 0.5rem;
-  /* background-color: #263747; */
+  /* background-color: var(--input-border-color); */
   width: 100%;
   margin-top: 0.5rem;
   background-color: white;
@@ -718,7 +718,7 @@
 }
 
 .createUserActionButtonDash :hover {
-  background-color: #263747;
+  background-color: var(--input-border-color);
 }
 
 .create-input-field-help {
@@ -884,7 +884,6 @@
 @media screen and (max-width: 768px) {
   .children-container {
     padding: unset;
-    overflow: unset;
   }
 
   .attach-help-mob{

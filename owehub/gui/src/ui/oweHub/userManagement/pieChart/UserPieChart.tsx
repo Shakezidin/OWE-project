@@ -304,7 +304,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       color:
                         isHovered || activeSalesRep === 'Active'
                           ? '#fff'
-                          : '#263747',
+                          : 'var(--input-border-color)',
                     }}
                   >
                     {userPerformanceList?.[0]?.value}
@@ -349,7 +349,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       color:
                         isHovered1 || activeSalesRep === 'InActive'
                           ? '#fff'
-                          : '#263747',
+                          : 'var(--input-border-color)',
                     }}
                   >
                     {userPerformanceList?.[1]?.value}

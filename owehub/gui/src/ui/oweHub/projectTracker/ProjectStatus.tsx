@@ -688,7 +688,7 @@ const ProjectStatus = () => {
                           style={{
                             width: '100%',
                             textAlign: 'center',
-                            color: isHovered === i ? '#fff' : '#263747',
+                            color: isHovered === i ? '#fff' : 'var(--input-border-color)',
                           }}
                         >
                           <p className="para-head text-white-color">
