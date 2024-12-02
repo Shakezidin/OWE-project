@@ -176,8 +176,18 @@ const LeadManagementDashboard = () => {
     );
   };
   const createProposal = async (leadId: number) => {
-    await handleCreateProposal(leadId, setRefresh); // Pass setRefresh here
-};
+    const createHandler = handleCreateProposal(leadId, setRefresh, dispatch);
+    await createHandler();
+  };
+  const generateProposalWrapper = async (leadId: number) => {
+    const generateHandler = generateWebProposal(leadId, dispatch);
+    await generateHandler();
+  };
+  
+  const retrieveProposalWrapper = async (leadId: number) => {
+    const retrieveHandler = retrieveWebProposal(leadId, dispatch);
+    await retrieveHandler();
+ };
 useEffect(() => {
   if (pieData.length > 0) {
     const pieName = pieData[activeIndex].name;
@@ -443,6 +453,9 @@ useEffect(() => {
       'Proposal Status',
       'Proposal Link',
       'Proposal Created Date',
+      'Sales Rep',
+      'Lead Source',
+      'Setter'
     ];
 
     let statusId;
@@ -514,6 +527,9 @@ useEffect(() => {
         item.proposal_status,
         item.proposal_link,
         item.proposal_updated_at ? `${format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy')}` : '',
+        item.sales_rep_name,
+        item.lead_source,
+        item.setter_name ? item.setter_name : "",
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -1106,8 +1122,8 @@ useEffect(() => {
             setSide={setSide}
             setRefresh={setRefresh}
             onCreateProposal={createProposal}
-            retrieveWebProposal={retrieveWebProposal}
-            generateWebProposal={generateWebProposal}
+            retrieveWebProposal={retrieveProposalWrapper}
+            generateWebProposal={generateProposalWrapper}
             currentFilter={currentFilter}
             setCurrentFilter={setCurrentFilter}
           />
