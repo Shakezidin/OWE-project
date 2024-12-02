@@ -176,8 +176,18 @@ const LeadManagementDashboard = () => {
     );
   };
   const createProposal = async (leadId: number) => {
-    await handleCreateProposal(leadId, setRefresh); // Pass setRefresh here
-};
+    const createHandler = handleCreateProposal(leadId, setRefresh, dispatch);
+    await createHandler();
+  };
+  const generateProposalWrapper = async (leadId: number) => {
+    const generateHandler = generateWebProposal(leadId, dispatch);
+    await generateHandler();
+  };
+  
+  const retrieveProposalWrapper = async (leadId: number) => {
+    const retrieveHandler = retrieveWebProposal(leadId, dispatch);
+    await retrieveHandler();
+ };
 useEffect(() => {
   if (pieData.length > 0) {
     const pieName = pieData[activeIndex].name;
@@ -1112,8 +1122,8 @@ useEffect(() => {
             setSide={setSide}
             setRefresh={setRefresh}
             onCreateProposal={createProposal}
-            retrieveWebProposal={retrieveWebProposal}
-            generateWebProposal={generateWebProposal}
+            retrieveWebProposal={retrieveProposalWrapper}
+            generateWebProposal={generateProposalWrapper}
             currentFilter={currentFilter}
             setCurrentFilter={setCurrentFilter}
           />

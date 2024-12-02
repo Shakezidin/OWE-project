@@ -1,5 +1,4 @@
 import { toast } from 'react-toastify';
-import { useAppDispatch } from '../../../redux/hooks';
 import { auroraCreateDesign, auroraCreateProject, auroraCreateProposal, auroraGenerateWebProposal, auroraListModules, auroraWebProposal } from '../../../redux/apiActions/leadManagement/LeadManagementAction';
 
 type SSEPayload =
@@ -26,9 +25,7 @@ type SSEPayload =
     };
 
 // Function to handle creating a proposal
-export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: number) => number) => void) => {
-  const dispatch = useAppDispatch(); // Move dispatch inside the function
-
+export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: number) => number) => void, dispatch: any) => {
   return async () => {
     try {
       // Step 1: Fetch preferred solar modules using dispatch
@@ -95,8 +92,8 @@ export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: 
   };
 };
 
-export const generateWebProposal = async (leadId: number) => {
-  const dispatch = useAppDispatch(); // Define dispatch here
+export const generateWebProposal = (leadId: number, dispatch: any) => {
+  return async () => {
   try {
     // Generate Web Proposal
     const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
@@ -119,10 +116,11 @@ export const generateWebProposal = async (leadId: number) => {
     console.error('Error in generateWebProposal:', error);
     return null;
   }
+}
 };
 
-export const retrieveWebProposal = async (leadId: number) => {
-  const dispatch = useAppDispatch(); // Define dispatch here
+export const retrieveWebProposal = (leadId: number, dispatch: any) => {
+  return async () => {
   try {
     // Retrieve Web Proposal
     const webProposalResult = await dispatch(auroraWebProposal(leadId));
@@ -145,6 +143,7 @@ export const retrieveWebProposal = async (leadId: number) => {
     toast.error('An unexpected error occurred while retrieving the web proposal');
     console.error('Error in retrieveWebProposal:', error);
   }
+}
 };
 
 export const downloadProposalWithSSE = (leadId: number) => {

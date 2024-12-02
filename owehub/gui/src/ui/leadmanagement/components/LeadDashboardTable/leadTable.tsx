@@ -221,7 +221,15 @@ const LeadTable = ({
   interface DocuSignResponse {
     url?: string; // Make it optional if it might not be present
     // Add other properties if needed
-  }
+  } 
+
+  const handleGenerateWebProposal = async (leadId: number) => {
+    await generateWebProposal(leadId);
+  };
+
+  const handleRetrieveWebProposal = async (leadId: number) => {
+    await retrieveWebProposal(leadId);
+  };
 
   useEffect(() => {
     if (selectedType === 'app_sched') {
@@ -271,7 +279,7 @@ const LeadTable = ({
       onCreateProposal(leadId);
       setSelectedType('');
     } else if (selectedType === 'viewProposal') {
-      retrieveWebProposal(leadId);
+      handleRetrieveWebProposal(leadId)
       setSelectedType('');
       // if (proposalPdfLink) {
       //   window.open(proposalPdfLink, '_blank');
@@ -282,7 +290,7 @@ const LeadTable = ({
       }
       setSelectedType('');
     } else if (selectedType === 'renew_proposal') {
-      generateWebProposal(leadId);
+      handleGenerateWebProposal(leadId)
       setSelectedType('');
     } else if (selectedType === 'download') {
       downloadProposalWithSSE(leadId);
