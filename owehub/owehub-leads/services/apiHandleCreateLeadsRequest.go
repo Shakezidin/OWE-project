@@ -88,8 +88,8 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		CreateLeadsReq.StreetAddress,
 		CreateLeadsReq.Notes,
 		CreateLeadsReq.SalerepID,
-		CreateLeadsReq.LeadSource,
 		frontendBaseURL,
+		CreateLeadsReq.LeadSource,
 		CreateLeadsReq.SetterID,
 	)
 
