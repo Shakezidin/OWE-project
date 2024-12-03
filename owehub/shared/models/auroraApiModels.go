@@ -49,3 +49,12 @@ type AuroraRetrieveWebProposaltRequest struct {
 type AuroraGenerateWebProposalRequest struct {
 	LeadsId int64 `json:"leads_id"`
 }
+
+type AuroraUpdateProjectRequest struct {
+	LeadId        int64  `json:"leads_id"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	PhoneNumber   string `json:"phone_number"`
+	EmailId       string `json:"email_id"`
+	StreetAddress string `json:"street_address"`
+}
