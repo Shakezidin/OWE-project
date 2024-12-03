@@ -29,6 +29,7 @@ import Input from '../../../scheduler/SaleRepCustomerForm/component/Input/Input'
 import { downloadProposalWithSSE } from '../../api/auroraApi';
 import { CiEdit } from 'react-icons/ci';
 import EditFormModal from '../../Modals/EditFormModal';
+import LeadEditModal from '../../Modals/LeadeditModal';
 
 type ProposalStatus =
   | 'In Progress'
@@ -587,7 +588,15 @@ const LeadTable = ({
         leadId={leadId}
       />
 
-      <EditFormModal
+      {/* <EditFormModal
+        isOpen1={isEditOpen}
+        onClose1={handleCloseEditModal}
+        leadId={leadId}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      /> */}
+
+      <LeadEditModal
         isOpen1={isEditOpen}
         onClose1={handleCloseEditModal}
         leadId={leadId}
