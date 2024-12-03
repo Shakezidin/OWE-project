@@ -9,6 +9,52 @@
     justify-content: center;
     margin-left: 20px;
   }
+
+  .customer_wrapper_listt {
+  flex-basis: calc(100%);
+  border-radius: 8px;
+  background-color: #fff;
+  max-width: 1012px;
+  min-height: 572px;
+  max-height: 685px;
+  min-width: 650px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  overflow: scroll;
+
+}
+
+.btnContainerNew {
+  display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      padding-bottom: 10px;
+      border-radius: 8px;
+}
+
+.XR {
+  cursor: pointer;
+  margin-top: 18px;
+  margin-left: 20px;
+  font-weight: 600;
+}
+
+.crossIconImg {
+  cursor: pointer;
+  margin-top: 18px;
+  margin-right: 20px;
+  transition: all 0.3s ease;
+}
+
+.crossIconImg:hover {
+  transform: scale(1.05);
+}
   
   .createProfileTextView {
     display: flex;
@@ -290,4 +336,47 @@
   .focused + .inputMap, .inputsearch.focused::placeholder {
     fill: var(--primary-color); 
   }
+
+
+  @media screen and (max-width: 767px) {
+  
+    .customer_wrapper_listt {
+      height: 635px;
+      scroll-behavior: smooth;
+      overflow-y: auto;
+      min-width: 290px;
+    }
+  
+    .customer_wrapper_listt::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+  
+    .customer_wrapper_listt::-webkit-scrollbar {
+      display: initial;
+    }
+  
+    .customer_wrapper_listt::-webkit-scrollbar-thumb {
+      background-color: rgb(173, 173, 173);
+      border-radius: 30px;
+    }
+  
+    .customer_wrapper_listt::-webkit-scrollbar-button {
+      display: initial;
+    }
+  
+    .customer_wrapper_listt::-webkit-scrollbar {
+      -ms-overflow-style: initial;
+      scrollbar-width: thin;
+    }
+  
+    .customer_wrapper_listt::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+  
+    .customer_wrapper_list_mob_inner {
+      padding: 0 8px;
+    }
+  }
+  
   
