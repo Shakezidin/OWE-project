@@ -280,10 +280,7 @@ const LeadManagementNew = () => {
     }
   }, [isAuthenticated]);
 
-  const options1 = saleData.map(data => ({
-    value: data.id,
-    label: data.name
-  }));
+ 
 
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
