@@ -5,7 +5,7 @@ interface CustomSelectProps<T> {
   value: T | null;
   onChange: (newValue: T | null) => void;
   options: T[];
-  isVisible: boolean;
+  isVisible?: boolean;
   placeholder?: string;
   isDisabled?: boolean;
   width?: string;
