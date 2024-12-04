@@ -588,6 +588,9 @@ const LeadManagementNew = () => {
                                 '& .css-tj5bde-Svg': {
                                   color: '#377CF6',
                                 },
+                                '& .css-a1pt0f-placeholder':{
+                                  color: '#377CF6',
+                                }
                               },
                               '&:hover': {
                                 borderColor: '#377CF6',
@@ -598,6 +601,9 @@ const LeadManagementNew = () => {
                                 '& .css-tj5bde-Svg': {
                                   color: '#377CF6',
                                 },
+                                '& .css-a1pt0f-placeholder':{
+                                  color: '#377CF6',
+                                }
                               },
                             }),
                             placeholder: (baseStyles) => ({
@@ -609,7 +615,7 @@ const LeadManagementNew = () => {
                             }),
                             dropdownIndicator: (baseStyles, state) => ({
                               ...baseStyles,
-                              transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                              transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : 'none',
                               transition: 'transform 0.3s ease',
                               color: '#3E3E3E',
                               '&:hover': {
@@ -704,6 +710,9 @@ const LeadManagementNew = () => {
                                 '& .css-tj5bde-Svg': {
                                   color: '#377CF6',
                                 },
+                                '& .css-a1pt0f-placeholder':{
+                                  color: '#377CF6',
+                                }
                               },
                               '&:hover': {
                                 borderColor: '#377CF6',
@@ -714,6 +723,9 @@ const LeadManagementNew = () => {
                                 '& .css-tj5bde-Svg': {
                                   color: '#377CF6',
                                 },
+                                '& .css-a1pt0f-placeholder':{
+                                  color: '#377CF6',
+                                }
                               },
                             }),
                             placeholder: (baseStyles) => ({
@@ -725,7 +737,7 @@ const LeadManagementNew = () => {
                             }),
                             dropdownIndicator: (baseStyles, state) => ({
                               ...baseStyles,
-                              transform: state.isFocused ? 'rotate(180deg)' : 'none',
+                              transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : 'none',
                               transition: 'transform 0.3s ease',
                               color: '#3E3E3E',
                               '&:hover': {

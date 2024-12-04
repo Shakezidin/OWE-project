@@ -13,10 +13,10 @@ interface CustomSelectProps<T> {
   getOptionValue?: (option: T) => string;
 }
 
-const CustomSelect = <T,>({ 
-  value, 
-  onChange, 
-  options, 
+const CustomSelect = <T,>({
+  value,
+  onChange,
+  options,
   isVisible,
   placeholder,
   isDisabled = false,
@@ -56,6 +56,9 @@ const CustomSelect = <T,>({
         '& .css-tj5bde-Svg': {
           color: state.menuIsOpen ? '#377CF6' : "#000",
         },
+        '& .css-a1pt0f-placeholder': {
+          color: '#377CF6',
+        }
       },
       '&:hover': {
         borderColor: isDisabled ? 'black' : '#377CF6',
@@ -66,6 +69,9 @@ const CustomSelect = <T,>({
         '& .css-tj5bde-Svg': {
           color: isDisabled ? '#3E3E3E' : '#377CF6',
         },
+        '& .css-a1pt0f-placeholder': {
+          color: '#377CF6',
+        }
       },
     }),
     placeholder: (baseStyles: any) => ({
@@ -77,9 +83,10 @@ const CustomSelect = <T,>({
     }),
     dropdownIndicator: (baseStyles: any, state: any) => ({
       ...baseStyles,
-      transform: state.isFocused ? 'rotate(180deg)' : 'none',
+      transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : 'none',
       transition: 'transform 0.3s ease',
       color: '#3E3E3E',
+
       '&:hover': {
         color: isDisabled ? '#3E3E3E' : '#377CF6',
       },
@@ -106,7 +113,7 @@ const CustomSelect = <T,>({
       marginTop: '3px',
       zIndex: 1000,
     }),
-    menuList: (base:any) => ({
+    menuList: (base: any) => ({
       ...base,
       '&::-webkit-scrollbar': {
         scrollbarWidth: 'thin',
