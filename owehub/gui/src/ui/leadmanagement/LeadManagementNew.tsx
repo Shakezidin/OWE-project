@@ -173,7 +173,7 @@ const LeadManagementNew = () => {
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-    
+
 
 
     return errors;
@@ -280,7 +280,7 @@ const LeadManagementNew = () => {
     }
   }, [isAuthenticated]);
 
- 
+
 
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
@@ -524,29 +524,29 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-                     
-                        <div className={classes.srs_new_create}>
-                          <Input
-                            type="text"
-                            label="Lead Source"
-                            value={formData.lead_source}
-                            placeholder="Enter About Lead Source"
-                            onChange={handleInputChange}
-                            name="lead_source"
-                            maxLength={30}
-                          />
-                          {errors.lead_source && (
-                            <span
-                              style={{
-                                display: 'block',
-                              }}
-                              className="error"
-                            >
-                              {errors.lead_source}
-                            </span>
-                          )}
-                        </div>
-                      
+
+                      <div className={classes.srs_new_create}>
+                        <Input
+                          type="text"
+                          label="Lead Source"
+                          value={formData.lead_source}
+                          placeholder="Enter About Lead Source"
+                          onChange={handleInputChange}
+                          name="lead_source"
+                          maxLength={30}
+                        />
+                        {errors.lead_source && (
+                          <span
+                            style={{
+                              display: 'block',
+                            }}
+                            className="error"
+                          >
+                            {errors.lead_source}
+                          </span>
+                        )}
+                      </div>
+
                     </div>
                     <div className={classes.salrep_input_container}>
                       <div className={classes.srs_new_create} style={{ gap: "6px" }}>
@@ -582,32 +582,32 @@ const LeadManagementNew = () => {
                                 borderColor: '#377CF6',
                                 boxShadow: '0 0 0 0.3px #377CF6',
                                 caretColor: '#3E3E3E',
-                                '& .css-kofgz1-singleValue': {
+                                '& [class*="singleValue"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-tj5bde-Svg': {
+                                '& [class*="Svg"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-a1pt0f-placeholder':{
+                                '& [class*="placeholder"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-132qdjg-indicatorContainer':{
+                                '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
                                 }
                               },
                               '&:hover': {
                                 borderColor: '#377CF6',
                                 boxShadow: '0 0 0 0.3px #377CF6',
-                                '& .css-kofgz1-singleValue': {
+                                '& [class*="singleValue"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-tj5bde-Svg': {
+                                '& [class*="Svg"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-a1pt0f-placeholder':{
+                                '& [class*="placeholder"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-132qdjg-indicatorContainer':{
+                                '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
                                 }
                               },
@@ -710,32 +710,32 @@ const LeadManagementNew = () => {
                                 borderColor: '#377CF6',
                                 boxShadow: '0 0 0 0.3px #377CF6',
                                 caretColor: '#3E3E3E',
-                                '& .css-kofgz1-singleValue': {
+                                '& [class*="singleValue"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-tj5bde-Svg': {
+                                '& [class*="Svg"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-a1pt0f-placeholder':{
+                                '& [class*="placeholder"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-132qdjg-indicatorContainer':{
+                                '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
                                 }
                               },
                               '&:hover': {
                                 borderColor: '#377CF6',
                                 boxShadow: '0 0 0 0.3px #377CF6',
-                                '& .css-kofgz1-singleValue': {
+                                '& [class*="singleValue"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-tj5bde-Svg': {
+                                '& [class*="Svg"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-a1pt0f-placeholder':{
+                                '& [class*="placeholder"]': {
                                   color: '#377CF6',
                                 },
-                                '& .css-132qdjg-indicatorContainer':{
+                                '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
                                 }
                               },

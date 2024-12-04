@@ -358,7 +358,7 @@ const LeadTable = ({
   };
 
   const [load, setLoad] = useState(false);
-  
+
 
   const handleAppNotReq = async () => {
     setLoad(true);
@@ -1315,10 +1315,24 @@ const LeadTable = ({
                                 onClick={() =>
                                   handleOpenEditModal(lead.leads_id)
                                 }
-                                data-tooltip-id="info"
+                                data-tooltip-id="edit"
                               >
                                 <CiEdit />
                               </div>
+                              <Tooltip
+                                style={{
+                                  zIndex: 20,
+                                  background: '#f7f7f7',
+                                  color: '#000',
+                                  fontSize: 12,
+                                  paddingBlock: 4,
+                                }}
+                                delayShow={800}
+                                offset={8}
+                                id="edit"
+                                place="top"
+                                content="Edit Leads"
+                              />
 
                               {/*middle button*/}
                               <div
@@ -1346,6 +1360,7 @@ const LeadTable = ({
                               place="top"
                               content="Lead Info"
                             />
+
                           </td>
                         )}
                       </tr>
