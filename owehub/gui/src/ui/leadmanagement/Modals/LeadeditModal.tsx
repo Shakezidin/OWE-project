@@ -72,28 +72,52 @@ const LeadeditModal: React.FC<ModalProps> = ({
   refresh,
   setRefresh
 }) => {
-  const resetFormState = () => {
-    setFormData({
-      first_name: '',
-      last_name: '',
-      email_id: '',
-      mobile_number: '',
-      address: '',
-      notes: '',
-      lead_source: '',
-    });
-    setSelectedSale(null);
-    setSelectedSetter(null);
-    setSaleId(0);
-    setSetterId(0);
+  const navigate = useNavigate();
+  const resetFormData = () => {
+    if (leadData) {
+      const salesRepId = saleData.find(
+        (setter) => setter.name === leadData.sales_rep_name
+      )?.id || '';
+
+      const setterId = setterData.find(
+        (setter) => setter.name === leadData.setter_name
+      )?.id || '';
+
+      setFormData({
+        first_name: leadData.first_name || '',
+        last_name: leadData.last_name || '',
+        email_id: leadData.email_id || '',
+        mobile_number: leadData.phone_number || '',
+        address: leadData.street_address || '',
+        notes: leadData.notes || '',
+        lead_source: leadData.lead_source || '',
+      });
+      
+      setSaleId(salesRepId);
+      setSetterId(setterId);
+      
+      // Reset sale and setter selections to match original data
+      const originalSaleRep = saleData.find(
+        (option) => option.name === leadData.sales_rep_name
+      );
+      const originalSetter = setterData.find(
+        (option) => option.name === leadData.setter_name
+      );
+      
+      setSelectedSale(originalSaleRep || null);
+      setSelectedSetter(originalSetter || null);
+    }
+
+    // Clear errors
     setErrors({});
-    setPhoneNumberError('');
     setEmailError('');
+    setPhoneNumberError('');
+    setSetterError('');
     setSearchValue('');
   };
-  const navigate = useNavigate();
+
   const CloseModalhandler = () => {
-    resetFormState();
+    resetFormData(); // Reset form data when closing
     onClose1 && onClose1();
   }
   const RedirectMainDashboard = () => {
