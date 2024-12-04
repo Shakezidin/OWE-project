@@ -75,11 +75,11 @@ func (api *UpdateProjectApi) Call() (*UpdateProjectApiResponse, error) {
 
 	reqBody := map[string]interface{}{
 		"project": map[string]interface{}{
-			"customer_first_name":      api.CustomerFirstName,
-			"customer_last_name":       api.CustomerLastName,
-			"customer_phone":           api.CustomerPhone,
-			"customer_email":           api.CustomerEmail,
-			"customer_mailing_address": api.MailingAddress,
+			"customer_first_name": api.CustomerFirstName,
+			"customer_last_name":  api.CustomerLastName,
+			"customer_phone":      api.CustomerPhone,
+			"customer_email":      api.CustomerEmail,
+			"mailing_address":     api.MailingAddress,
 		},
 	}
 
