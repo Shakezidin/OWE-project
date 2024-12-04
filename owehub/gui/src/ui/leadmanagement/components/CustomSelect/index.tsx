@@ -58,6 +58,9 @@ const CustomSelect = <T,>({
         },
         '& .css-a1pt0f-placeholder': {
           color: '#377CF6',
+        },
+        '& .css-132qdjg-indicatorContainer':{
+          color: '#377CF6',
         }
       },
       '&:hover': {
@@ -70,6 +73,10 @@ const CustomSelect = <T,>({
           color: isDisabled ? '#3E3E3E' : '#377CF6',
         },
         '& .css-a1pt0f-placeholder': {
+          color: '#377CF6',
+        },
+        
+        '& .css-132qdjg-indicatorContainer':{
           color: '#377CF6',
         }
       },

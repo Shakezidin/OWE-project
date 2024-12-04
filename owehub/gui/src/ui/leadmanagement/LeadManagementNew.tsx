@@ -590,6 +590,9 @@ const LeadManagementNew = () => {
                                 },
                                 '& .css-a1pt0f-placeholder':{
                                   color: '#377CF6',
+                                },
+                                '& .css-132qdjg-indicatorContainer':{
+                                  color: '#377CF6',
                                 }
                               },
                               '&:hover': {
@@ -602,6 +605,9 @@ const LeadManagementNew = () => {
                                   color: '#377CF6',
                                 },
                                 '& .css-a1pt0f-placeholder':{
+                                  color: '#377CF6',
+                                },
+                                '& .css-132qdjg-indicatorContainer':{
                                   color: '#377CF6',
                                 }
                               },
@@ -712,6 +718,9 @@ const LeadManagementNew = () => {
                                 },
                                 '& .css-a1pt0f-placeholder':{
                                   color: '#377CF6',
+                                },
+                                '& .css-132qdjg-indicatorContainer':{
+                                  color: '#377CF6',
                                 }
                               },
                               '&:hover': {
@@ -724,6 +733,9 @@ const LeadManagementNew = () => {
                                   color: '#377CF6',
                                 },
                                 '& .css-a1pt0f-placeholder':{
+                                  color: '#377CF6',
+                                },
+                                '& .css-132qdjg-indicatorContainer':{
                                   color: '#377CF6',
                                 }
                               },
