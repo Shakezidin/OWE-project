@@ -42,31 +42,45 @@ func (api *UpdateProjectApi) Call() (*UpdateProjectApiResponse, error) {
 	defer log.ExitFn(0, "UpdateProjectApi.Call", err)
 
 	// validate required fields
+	if api.ProjectId == "" {
+		err = fmt.Errorf("cannot update project without CustomerProjectId")
+		return nil, err
+	}
 	if api.CustomerFirstName == "" {
-		err = fmt.Errorf("cannot create project without CustomerFirstName")
+		err = fmt.Errorf("cannot update project without CustomerFirstName")
 		return nil, err
 	}
 	if api.CustomerLastName == "" {
-		err = fmt.Errorf("cannot create project without CustomerLastName")
+		err = fmt.Errorf("cannot update project without CustomerLastName")
 		return nil, err
 	}
 	if api.CustomerEmail == "" {
-		err = fmt.Errorf("cannot create project without CustomerEmail")
+		err = fmt.Errorf("cannot update project without CustomerEmail")
 		return nil, err
 	}
 	if api.CustomerPhone == "" {
-		err = fmt.Errorf("cannot create project without CustomerPhone")
+		err = fmt.Errorf("cannot update project without CustomerPhone")
 		return nil, err
 	}
 	if api.MailingAddress == "" {
-		err = fmt.Errorf("cannot create project without MailingAddress")
+		err = fmt.Errorf("cannot update project without MailingAddress")
 		return nil, err
 	}
 
 	endPt := fmt.Sprintf("/tenants/{tenant_id}/projects/%s", api.ProjectId)
 
-	reqBody := map[string]*UpdateProjectApi{
-		"project": api,
+	// reqBody := map[string]*UpdateProjectApi{
+	// 	"project": api,
+	// }
+
+	reqBody := map[string]interface{}{
+		"project": map[string]interface{}{
+			"customer_first_name":      api.CustomerFirstName,
+			"customer_last_name":       api.CustomerLastName,
+			"customer_phone":           api.CustomerPhone,
+			"customer_email":           api.CustomerEmail,
+			"customer_mailing_address": api.MailingAddress,
+		},
 	}
 
 	err = callApi(http.MethodPut, endPt, reqBody, &respBody)
