@@ -50,33 +50,32 @@ const CustomSelect = <T,>({
         borderColor: '#377CF6',
         boxShadow: '0 0 0 0.3px #377CF6',
         caretColor: '#3E3E3E',
-        '& .css-kofgz1-singleValue': {
+        '& [class*="singleValue"]': {
           color: '#377CF6',
         },
-        '& .css-tj5bde-Svg': {
-          color: state.menuIsOpen ? '#377CF6' : "#000",
-        },
-        '& .css-a1pt0f-placeholder': {
+        '& [class*="Svg"]': {
           color: '#377CF6',
         },
-        '& .css-132qdjg-indicatorContainer':{
+        '& [class*="placeholder"]': {
+          color: '#377CF6',
+        },
+        '& [class*="indicatorContainer"]': {
           color: '#377CF6',
         }
       },
       '&:hover': {
         borderColor: isDisabled ? 'black' : '#377CF6',
         boxShadow: isDisabled ? 'none' : '0 0 0 0.3px #377CF6',
-        '& .css-kofgz1-singleValue': {
-          color: isDisabled ? '#3E3E3E' : '#377CF6',
-        },
-        '& .css-tj5bde-Svg': {
-          color: isDisabled ? '#3E3E3E' : '#377CF6',
-        },
-        '& .css-a1pt0f-placeholder': {
+        '& [class*="singleValue"]': {
           color: '#377CF6',
         },
-        
-        '& .css-132qdjg-indicatorContainer':{
+        '& [class*="Svg"]': {
+          color: '#377CF6',
+        },
+        '& [class*="placeholder"]': {
+          color: '#377CF6',
+        },
+        '& [class*="indicatorContainer"]': {
           color: '#377CF6',
         }
       },
