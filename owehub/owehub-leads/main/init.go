@@ -236,6 +236,14 @@ var apiRoutes = appserver.ApiRoutes{
 		leadsRoleGroup,
 	},
 
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_update_project",
+		apiHandler.HandleAuroraUpdateProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+
 	// DOCUSIGN
 	{
 		strings.ToUpper("POST"),
