@@ -777,3 +777,9 @@ br {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.react-tel-input .selected-flag:hover, .react-tel-input .selected-flag:focus {
+  background-color: #fff;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
