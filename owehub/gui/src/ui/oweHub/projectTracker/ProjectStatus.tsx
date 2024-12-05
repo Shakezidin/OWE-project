@@ -606,7 +606,7 @@ const ProjectStatus = () => {
 
   const [isHovered, setIsHovered] = useState(-1);
 
- 
+ console.log(selectedProject, 'fhfh')
   return (
     <>
       <QCModal
@@ -635,7 +635,7 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className="cust-name">
-                      Customer name:<pre> { selectedProject?.label}</pre>
+                    Customer name: <pre>{selectedProject?.label?.split('-')[1]}</pre>
                     </span>
                     <SelectOption
                       options={projectOption}
