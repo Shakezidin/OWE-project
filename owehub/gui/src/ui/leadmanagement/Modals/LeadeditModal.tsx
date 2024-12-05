@@ -51,6 +51,8 @@ interface LeadData {
   lead_source: string;
   sales_rep_name: string | null;
   setter_name: string | null;
+  proposal_id: string | null;
+  proposal_created_date: string | null,
 }
 
 interface ModalProps {
@@ -92,10 +94,10 @@ const LeadeditModal: React.FC<ModalProps> = ({
         notes: leadData.notes || '',
         lead_source: leadData.lead_source || '',
       });
-      
+
       setSaleId(salesRepId);
       setSetterId(setterId);
-      
+
       // Reset sale and setter selections to match original data
       const originalSaleRep = saleData.find(
         (option) => option.name === leadData.sales_rep_name
@@ -103,7 +105,7 @@ const LeadeditModal: React.FC<ModalProps> = ({
       const originalSetter = setterData.find(
         (option) => option.name === leadData.setter_name
       );
-      
+
       setSelectedSale(originalSaleRep || null);
       setSelectedSetter(originalSetter || null);
     }
@@ -395,6 +397,48 @@ const LeadeditModal: React.FC<ModalProps> = ({
 
         if (response.status === 200) {
           toast.success('Lead Updated Successfully');
+          if (leadData?.proposal_created_date === null) {
+            setRefresh && setRefresh((val) => val + 1)
+            onClose1 && onClose1();
+            setLoad(false)
+          }else{
+            handleAuroraEdit(e);
+          }
+        } else if (response.status >= 201) {
+          toast.warn(response.message);
+          setLoad(false)
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        setLoad(false)
+      }
+    }
+  };
+
+  const handleAuroraEdit = async (e: any) => {
+    e.preventDefault();
+
+    const errors = validateForm(formData);
+    setErrors(errors);
+
+    if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
+
+      try {
+        const response = await postCaller(
+          'aurora_update_project',
+          {
+            leads_id: leadData?.leads_id,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone_number: formData.mobile_number,
+            email_id: formData.email_id,
+            street_address: formData.address
+          },
+          true
+        );
+
+        if (response.status === 200) {
+          toast.success('Lead Aurora Updated Successfully');
           setRefresh && setRefresh((val) => val + 1)
           onClose1 && onClose1();
         } else if (response.status >= 201) {
@@ -659,7 +703,7 @@ const LeadeditModal: React.FC<ModalProps> = ({
                                     isDisabled={
                                       role !== TYPE_OF_USER.ADMIN &&
                                       role !== TYPE_OF_USER.DEALER_OWNER &&
-                                      role !== TYPE_OF_USER.SUB_DEALER_OWNER && 
+                                      role !== TYPE_OF_USER.SUB_DEALER_OWNER &&
                                       role !== TYPE_OF_USER.REGIONAL_MANGER &&
                                       role !== TYPE_OF_USER.SALE_MANAGER
                                     }
@@ -709,7 +753,7 @@ const LeadeditModal: React.FC<ModalProps> = ({
                                     isDisabled={
                                       role !== TYPE_OF_USER.ADMIN &&
                                       role !== TYPE_OF_USER.DEALER_OWNER &&
-                                      role !== TYPE_OF_USER.SUB_DEALER_OWNER && 
+                                      role !== TYPE_OF_USER.SUB_DEALER_OWNER &&
                                       role !== TYPE_OF_USER.REGIONAL_MANGER &&
                                       role !== TYPE_OF_USER.SALE_MANAGER
                                     }
