@@ -358,6 +358,9 @@ const PerformanceCalendar: React.FC = () => {
         </div>
         {showCalendar && (
           <div className="performance-cal-content" ref={calendarRef}>
+            <div style={{ height: '26px' }}   onClick={() => setShowCalendar(false)}>
+              <IoClose className="calendar-close" style={{float:'inline-end'}}/>
+            </div>
             <div className="dropdown-calc-container">
               <select
                 value={selectedMonth}
