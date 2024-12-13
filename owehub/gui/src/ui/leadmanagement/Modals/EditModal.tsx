@@ -54,7 +54,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       errors.mobile_number = '',
       setEmailError(''),
       errors.address = ''
-  }, [leadData, onClose]);
+  }, [leadData, onClose, isOpen]);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -228,32 +228,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
-  // const containerRef = useRef<HTMLDivElement>(null);
-
-  // const checkZoomLevel = useCallback(() => {
-  //   const zoomLevel = Math.round(window.devicePixelRatio * 100);
-
-  //   if (containerRef.current) {
-  //     if (zoomLevel > 138) {
-  //       containerRef.current.style.marginTop = "0";
-  //     } else if (zoomLevel > 100) {
-  //       containerRef.current.style.marginTop = "-310px"; 
-  //     } else {
-  //       containerRef.current.style.marginTop = "-317px"; 
-  //     }
-  //     console.log(`Zoom Level: ${zoomLevel}, Margin Top: ${containerRef.current.style.marginTop}`);
-  //     console.log("Rabindra");
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //       checkZoomLevel();
-  //   window.addEventListener('resize', checkZoomLevel);
-  //   return () => {
-  //     window.removeEventListener('resize', checkZoomLevel);
-  //   };
-  // }, [checkZoomLevel]);
-
+ 
   return (
 
     <>

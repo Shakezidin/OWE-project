@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import { DateRange } from 'react-date-range';
-import { toZonedTime } from 'date-fns-tz';
 import Papa from 'papaparse';
 import {
   addMinutes,
@@ -22,13 +21,11 @@ import Select, { SingleValue } from 'react-select';
 import useAuth from '../../hooks/useAuth';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import DataNotFound from '../components/loader/DataNotFound';
 import MicroLoader from '../components/loader/MicroLoader';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import { Tooltip } from 'react-tooltip';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoInformationOutline } from 'react-icons/io5';
 import Profile from './Modals/ProfileInfo';
 import useEscapeKey from '../../hooks/useEscape';
@@ -85,7 +82,8 @@ const LeradManagementHistory = () => {
     const userTimezone = getUserTimezone();
     return addMinutes(now, now.getTimezoneOffset());
   }
-  const today = getCurrentDateInUserTimezone();
+  const today = new Date();
+
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
   const startOfThisMonth = startOfMonth(today);
   const startOfThisYear = startOfYear(today);
@@ -197,7 +195,7 @@ const LeradManagementHistory = () => {
     setCheckedCount(0);
   };
 
-  const handlesee = (itemId: number) => {
+  const handleView = (itemId: number) => {
     console.log("RABINDRA ")
     setLeadId(itemId);
     setIsProfileOpen(true);
@@ -389,7 +387,7 @@ const LeradManagementHistory = () => {
       'Phone Number',
       'Email ID',
       'Street Address',
-      'Zipcode',
+      'Setter',
       'Deal Date',
       'Deal Status',
     ];
@@ -430,7 +428,7 @@ const LeradManagementHistory = () => {
         `'${item.phone_number}'`,
         item.email_id,
         item.street_address,
-        `'${item.zipcode}'`,
+        item.setter_name,
         item.deal_date ? `${format(parseISO(item.deal_date), 'dd-MM-yyyy')}` : '',
         item.deal_status,
       ]);
@@ -483,6 +481,15 @@ const LeradManagementHistory = () => {
       divRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [page]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const viewId = queryParams.get("view");
+ 
+    if (viewId) {
+      handleView(Number(viewId));
+    }
+  }, [location.search]);
 
   return (
     <>
@@ -607,7 +614,7 @@ const LeradManagementHistory = () => {
                           width: '140px',
                           height: '36px',
                           fontSize: '12px',
-                          border: '1px solid #d0d5dd',
+                          border: '1.4px solid black',
                           fontWeight: '500',
                           cursor: 'pointer',
                           alignContent: 'center',
@@ -672,7 +679,8 @@ const LeradManagementHistory = () => {
                         menu: (baseStyles) => ({
                           ...baseStyles,
                           width: '140px',
-                          marginTop: '0px',
+                          marginTop: '3px',
+                          border: '1.4px solid black',
                         }),
                       }}
                     />
@@ -856,7 +864,7 @@ const LeradManagementHistory = () => {
 
                     <div
                       className={styles.see_moreHistory}
-                      onClick={() => handlesee(item.leads_id)}
+                      onClick={() => handleView(item.leads_id)}
                       data-tooltip-id="info"
                     >
                       <IoInformationOutline />
@@ -878,35 +886,8 @@ const LeradManagementHistory = () => {
                       />
                     }
                   </div>
-                  {!isMobile && expandedItemIds.includes(item.leads_id) && (
-                    <>
-                      {isTablet && (
-                        <div className={styles.phone_number_tab}>
-                          {item.phone_number}
-                        </div>
-                      )}
-
-                    </>
-                  )}
-                  {isMobile && expandedItemIds.includes(item.leads_id) && (
-                    <>
-                      <div className={styles.personal_info_mob}>
-                        <div className={styles.phone_number}>
-                          {item.phone_number ? item.phone_number : 'N/A'}
-                        </div>
-                        <div className={styles.email}>
-                          <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                        </div>
-                        <div className={styles.address}>
-                          {item?.street_address
-                            ? item.street_address.length > 40
-                              ? `${item.street_address.slice(0, 40)}...`
-                              : item.street_address
-                            : 'N/A'}
-                        </div>
-                      </div>
-                    </>
-                  )}
+                 
+               
                 </div>
               ))
             ) : (

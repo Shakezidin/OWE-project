@@ -1,14 +1,14 @@
 /**************************************************************************
- * File       	   : apiGetLeadsHistory.go // 🔴🔴
- * DESCRIPTION     : This file contains functions for get LeadsHistory data handler
+ * File       	   : apiGetLeadsInfo.go
+ * DESCRIPTION     : This file contains functions for getLeadsInfo data handler
  * DATE            : 21-Sept-2024
  **************************************************************************/
 
 package services
 
 import (
-	//"OWEApp/owehub-leads/common"
 	"OWEApp/owehub-leads/auroraclient"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -16,10 +16,6 @@ import (
 	"errors"
 	"time"
 
-	// "OWEApp/shared/types"
-	// "sort"
-	// "strings"
-	//"time"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -27,8 +23,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetLeadInfo// 🔴🔴
- * DESCRIPTION:     handler for get LeadsHistoy data request
+ * FUNCTION:		HandleGetLeadInfo
+ * DESCRIPTION:     handler for get LeadsInfo data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -96,12 +92,16 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 					li.proposal_created_date,
 					li.status_id,
 					li.aurora_design_id,
-					li.sales_rep_name,
 					li.lead_source,
-					ud.name as created_by_name
+					li.proposal_pdf_key,
+					ud_creator.name as created_by_name,
+					salerep.name as salerep_name,
+					setter.name as setter_name
 				FROM
 					get_leads_info_hierarchy($1) li
-				INNER JOIN user_details ud ON ud.user_id = li.created_by
+				INNER JOIN user_details ud_creator ON ud_creator.user_id = li.created_by
+				LEFT JOIN user_details salerep ON salerep.user_id = li.salerep_id
+				LEFT JOIN user_details setter ON setter.user_id = li.setter_id
 				WHERE li.leads_id = $2
 			`
 
@@ -150,7 +150,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		apiResponse.SaleSubmissionTriggered = saleSubmissionTriggered
 	}
 
-	qcAudit, ok := leadData["qc_audit"].(string)
+	qcAudit, ok := leadData["qc_audit"].(bool)
 	if ok {
 		apiResponse.QCAudit = qcAudit
 	}
@@ -228,13 +228,24 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		apiResponse.StatusID = statusId
 	}
 
-	salesRepName, ok := leadData["sales_rep_name"].(string)
+	salesRepName, ok := leadData["salerep_name"].(string)
 	if ok {
 		apiResponse.SalesRepName = salesRepName
 	}
+
+	setterName, ok := leadData["setter_name"].(string)
+	if ok {
+		apiResponse.SetterName = setterName
+	}
+
 	leadSource, ok := leadData["lead_source"].(string)
 	if ok {
 		apiResponse.LeadSource = leadSource
+	}
+
+	proposalPdfKey, ok := leadData["proposal_pdf_key"].(string)
+	if ok {
+		apiResponse.ProposalPdfUrl = leadsService.S3GetObjectUrl(proposalPdfKey)
 	}
 
 	// if aurora_design_id is present in the db, then get & update the finance type and company

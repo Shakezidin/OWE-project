@@ -48,7 +48,6 @@ import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
 import TotalCount from './ui/TotalCount/TotalCount';
-import SignDocument from './ui/leadmanagement/components/SignDocument/SignDocument';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -155,12 +154,11 @@ function App() {
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIEVES} element={<ArchivedPages   />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIVES} element={<ArchivedPages   />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
-          <Route path={ROUTES.SIGN_DOCUMENT} element={<SignDocument   />}/>
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />

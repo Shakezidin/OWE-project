@@ -4,35 +4,32 @@
   /* padding: 24px; */
   background-color: #f3f4f6;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif ;
+  font-family: 'Poppins', sans-serif;
 }
 .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 24px;
 }
-.CrossRemoveSearch{
+.CrossRemoveSearch {
   right: 0;
   padding-right: 5px;
   transition: all 0.3s ease;
   cursor: pointer;
 }
-.CrossRemoveSearch:hover{
+.CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-/* .chartGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr  1fr !important;
-  margin-bottom: 24px;
-  background-color: #d1d6de;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-height: 200px;
-  padding: 20px;
+/* .chart_main_grid ::selection { 
+  background-color: var(--select-Context-Menu) !important; 
+  color: var(--white-color) !important; 
+}
+ 
+.pieChart ::selection {
+  background-color: var(--select-Context-Menu) !important;
+  color: var(--white-color)  !important;
 } */
-
-
-.PaginationFont a{
+.PaginationFont a {
   font-size: 12px !important;
 }
 .chartGrid {
@@ -52,7 +49,7 @@
   width: 100%;
 }
 .customFont,
-.customLeft {
+.customLeftRRR {
   font-weight: 600;
   color: var(--input-border-color);
 }
@@ -208,8 +205,8 @@
 }
 
 .button {
-  border: 1px solid #292B2E !important;
-  color: #292B2E;
+  border: 1px solid #292b2e !important;
+  color: #292b2e;
   background-color: #fff;
   padding: 8px 12px;
   border-radius: 26px;
@@ -224,14 +221,15 @@
 }
 
 .button:hover {
-  color:#377cf6 ;
+  color: #377cf6;
   background-color: #ddebff;
   border: 1px solid #377cf6 !important;
 
   /* border-color: var(--primary-color) !important; */
 }
 
-.button:hover p, .button:hover span{
+.button:hover p,
+.button:hover span {
   /* color: var(--primary-color); */
 }
 
@@ -269,7 +267,7 @@
 .buttonActive:hover {
   background-color: #3b82f6;
   color: #ffffff;
-  font-weight: 500; 
+  font-weight: 500;
   border: none !important;
 }
 
@@ -310,7 +308,7 @@ table tbody tr:hover {
   transition: all 0.3s ease;
 }
 .filtericon:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.05);
 }
 .filtericon img {
@@ -325,15 +323,6 @@ table tbody tr:hover {
   width: 35%;
 }
 
-/* .customLeft {
-  flex: 1;
-  text-align: left; 
-} */
-
-/* .customRight {
-  flex: 1; 
-  text-align: right; 
-} */
 .SecondColHead {
   display: flex;
   justify-content: space-between;
@@ -348,13 +337,12 @@ table tbody tr:hover {
   padding: 0 14px;
   height: 36px;
   width: 399px !important;
-  margin-right: 11px;
-  box-shadow:1px solid var(--primary-color);
+  margin-right: 13px;
+  box-shadow: 1px solid var(--primary-color);
 }
 
-.searchBar:hover{
+.searchBar:hover {
   border: 1px solid var(--primary-color);
-  
 }
 .searchBar .searchInput:focus {
   outline: none;
@@ -369,27 +357,26 @@ table tbody tr:hover {
   margin-right: 5px;
   display: flex;
   align-items: center;
-  color: #292B2E;
+  color: #292b2e;
   height: 12px !important;
   width: 12px !important;
 }
 .searchBar:hover .searchInput::placeholder,
 .searchBar:focus-within .searchInput::placeholder {
-  color: #377CF6 !important;
+  color: #377cf6 !important;
 }
 
 .searchBar:hover .searchIcon img,
 .searchBar:focus-within .searchIcon img {
-  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(100%);
+  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg)
+    brightness(100%) contrast(100%);
 }
-
-
 
 .searchInput {
   border: none;
   outline: none;
   width: 100%;
-  color: #292B2E;
+  color: #292b2e;
   padding: 2.5px;
   font-weight: 400;
   border-radius: 5px;
@@ -399,13 +386,11 @@ table tbody tr:hover {
   transition: color 0.3s ease;
 }
 
-
 .searchInput:focus::placeholder,
 .searchInput:hover::placeholder {
-  color: #377CF6;
+  color: #377cf6;
   font-weight: 400;
 }
-
 
 .filterCallToAction {
   display: flex;
@@ -478,19 +463,6 @@ table tbody tr:hover {
   gap: 6px;
 }
 
-input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
-  border-radius: 100px;
-  border: 1px solid #797979;
-  cursor: pointer;
-}
-
-input[type='checkbox']:checked {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-}
-
 .actionButtons {
   display: flex;
   gap: 10px; /* Adds space between buttons */
@@ -509,8 +481,7 @@ input[type='checkbox']:checked {
 }
 .rescheduleButton:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
-
+  background-color: #4062ca;
 }
 
 .archiveButton {
@@ -558,13 +529,10 @@ input[type='checkbox']:checked {
   transform: scale(1.09);
 }
 
-/* .closeIcon:hover {
-  background: #377cf630;
-  border-radius: 5px;
-} */
+
 
 .removeButton {
-  background-color: #D91515;
+  background-color: #d91515;
   color: white;
   border: none;
   padding: 0px 20px;
@@ -575,11 +543,11 @@ input[type='checkbox']:checked {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-
-.removeButton:hover {
-  background-color: #AD1313;
+.removeButton:hover{
   transform: scale(1.05);
+  background-color: #AD1313;
 }
+
 
 .paginationContainer {
   display: flex;
@@ -593,7 +561,19 @@ input[type='checkbox']:checked {
   justify-content: space-between;
   align-items: center;
   height: 50px;
+
 }
+.PaginationFont select {
+  min-width: 44px;
+  min-height: 31.1px;
+  border-radius: 4px;
+  text-align: center; 
+  text-align-last: center;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+}
+
 
 .chevron_down {
   display: none !important;
@@ -637,10 +617,17 @@ input[type='checkbox']:checked {
   .chartGrid {
     display: flex;
     flex-direction: column;
-    width: 94% !important;
     align-items: center !important;
     margin: 0 auto;
   }
+  .removeButton {
+    cursor: pointer;
+    width: 100px;
+    height: 32px;
+    font-size: 14px;
+
+  }
+  
 
   .vertical1 {
     order: 3;
@@ -659,6 +646,7 @@ input[type='checkbox']:checked {
     margin: 0;
     padding-left: 0 !important;
     margin-bottom: 14px;
+    margin-left: -34px;
   }
   .HideContent {
     display: flex;
@@ -738,9 +726,8 @@ input[type='checkbox']:checked {
     align-items: center;
     white-space: nowrap;
     margin: 0 auto;
-    padding-top: 15px;
-    padding-bottom: 7.5px;
-    width: 378px;
+    padding: 15px 5px 7.5px 5px;
+    width: calc(97vw - 10px);
     box-shadow: unset;
     scrollbar-width: thin;
     scrollbar-color: #ccc transparent;
@@ -768,16 +755,53 @@ input[type='checkbox']:checked {
   .searchBarMobile {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    outline: none;
+    border: 0.5px solid black; 
     border-radius: 8px;
     padding: 5px;
     height: 36px;
     width: 252px !important;
     margin-right: 0;
-  }
+}
+
 
   .searchBarMobile input::placeholder {
     font-size: 11.8px;
+  }
+
+  .searchBarMobile:hover {
+    border: 1px solid var(--primary-color);
+  }
+  .searchBarMobile .searchInput:focus {
+    outline: none;
+  }
+  
+  .searchBarMobile:focus-within {
+    border: 1px solid var(--primary-color) !important;
+  }
+
+
+
+
+
+}
+@media (min-width: 401px) and (max-width: 560px) {
+  .date_calendar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 270px;
+  }
+
+  .date_calendar > .hist_date {
+    order: -1;
+    text-align: right;
+    font-size: 12px !important;
+    margin-bottom: 1px;
+    font-weight: 550;
+    min-width: 100%;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 
@@ -834,6 +858,7 @@ input[type='checkbox']:checked {
   }
 
   .filterCallToActionMobile {
+    margin-top: 5px;
     display: flex;
     transform: scale(0.75);
     position: inherit;
@@ -842,7 +867,7 @@ input[type='checkbox']:checked {
   .searchBarMobile {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 0.5px solid black;
     border-radius: 8px;
     padding: 5px;
     height: 36px;
@@ -853,12 +878,23 @@ input[type='checkbox']:checked {
   .searchBarMobile input {
     padding-left: 16px;
   }
+  .searchBarMobile input::placeholder {
+    font-size: 11.8px;
+  }
 
+  .searchBarMobile:hover {
+    border: 1px solid var(--primary-color);
+  }
+  .searchBarMobile .searchInput:focus {
+    outline: none;
+  }
+  
+  .searchBarMobile:focus-within {
+    border: 1px solid var(--primary-color) !important;
+  }
   .searchBarMobile input::placeholder {
     font-size: 12px;
     text-align: left;
-    padding-left: 10px;
-    color: #999;
   }
 
   .searchIcon {
@@ -872,28 +908,36 @@ input[type='checkbox']:checked {
   }
 
   .filtericon {
-    padding: 21.25px;
+    width: 48px;
+    height: 48px;
   }
 
   .export_btn {
-    width: 42.5px !important;
-    height: 42.5px !important;
+    width: 47px !important;
+    height: 47px !important;
     margin-bottom: 5px;
   }
 
   .export_btn:hover {
     transform: scale(1.05);
-    background-color: #4062CA;
-
+    background-color: #4062ca;
   }
 }
 
 /* *********************************************** RABINDRA ********************************************************************* */
 
 /* For tablets and larger screens */
+@media (max-width: 768px) {
+  .dashboard {
+    margin: 10px;
+  }
+  .card{
+    margin-top: 0;
+  }
+}
 @media (min-width: 768px) {
   .tabs_setting {
-    padding: 10px 15px;
+    padding: 19px 15px 0px  15px !important;
   }
   .history_list_inner_declined {
     display: grid;
@@ -919,10 +963,10 @@ input[type='checkbox']:checked {
   }
   .filterCallToAction {
     display: flex;
-    gap: 10px;
+    gap: 13px;
     transform: scale(1);
     position: unset;
-    padding-left: 10px;
+    padding-left: 13px;
   }
   .mobile_view_table {
     display: flex;
@@ -933,19 +977,19 @@ input[type='checkbox']:checked {
 }
 @media screen and (min-width: 336px) and (max-width: 436px) {
   .date_calendar {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    justify-content: right !important;
-    gap: 4px !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: right;
+    gap: 4px;
   }
 }
 
 @media screen and (max-width: 767px) {
   .date_calendar {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 4px !important;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
     /* padding: 17px 16px 17px 35px !important;
     margin: 17px 16px 17px 35px !important; */
   }
@@ -990,9 +1034,7 @@ input[type='checkbox']:checked {
     transform: scale(0.8);
     margin-right: -15px;
   }
-  /* .date_calendar {
-    gap: unset !important;
-  } */
+
   .user_name {
     transform: translate(5px, -5px);
   }
@@ -1011,23 +1053,13 @@ input[type='checkbox']:checked {
 
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
-  /* Styles for small desktops */
-  /* .history_list_inner_declined {
-    display: grid;
-    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    align-items: center;
-
-  } */
   .chartGrid {
-    grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
+    grid-template-columns: 45% 55%;
   }
   .lineChart_div {
     position: relative;
-    /* top: 50px; */
     align-items: center;
     justify-content: center;
-    /* margin-top: 30px;
-      margin-right: 40px; */
     right: 30px;
   }
 
@@ -1039,24 +1071,6 @@ input[type='checkbox']:checked {
     font-weight: 500 !important;
     font-size: 12px !important;
   }
-
-  .date_display {
-    position: relative;
-  }
-
-  .date_calendar {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: right !important;
-    gap: 10px;
-  }
-
-  .date_parent {
-    display: flex;
-    gap: 10px;
-  }
-
   .history_list_inner {
     display: grid;
     grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
@@ -1074,13 +1088,8 @@ input[type='checkbox']:checked {
 
   .leftitem,
   .rightitem {
-    align-items: flex-start; /* Optional: vertically center the items */
+    align-items: flex-start;
   }
-}
-
-/* Large desktops and monitors */
-@media only screen and (min-width: 1025px) and (max-width: 1200px) {
-  /* Styles for large desktops */
 }
 
 /* Extra large desktops */
@@ -1088,7 +1097,6 @@ input[type='checkbox']:checked {
   /* Styles for extra-large screens */
 }
 
-/*---------------- Shams Start-------------------- */
 .lead__datepicker_wrapper {
   position: relative;
   line-height: 0;
@@ -1124,7 +1132,7 @@ input[type='checkbox']:checked {
 .hist_date {
   font-weight: 600;
   font-size: 14px;
-  margin-right: 6.2px !important;
+  /* margin-right: 6.2px !important; */
   color: #377cf6;
 }
 
@@ -1171,14 +1179,14 @@ input[type='checkbox']:checked {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 6px !important;
+  /* margin-left: 6px !important; */
   cursor: pointer;
   transition: all 500ms ease;
 }
 
 .calender:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 .export_btn {
@@ -1195,21 +1203,8 @@ input[type='checkbox']:checked {
 
 .export_btn:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
-
-/* @media only screen and (min-width: 1400px)and (max-width: 2561px) {
-  .ButtonAbovearrov {
-    margin-left: unset;
-    margin-left: -252px !important
-  }
-} */
-/* @media only screen and (min-width: 1400px)and (max-width: 250px) {
-  .ButtonAbovearrov {
-    margin-left: -168px !important
-  }
-} */
-/* margin-left: -105px !important */
 
 .upKeys_DownKeysX {
   transform: rotate(180deg);
@@ -1223,6 +1218,8 @@ input[type='checkbox']:checked {
 
 .ArrowDX {
   position: relative;
+  height: 36px;
+  width: 36px;
 }
 .ArrowD {
   position: relative;
@@ -1256,7 +1253,7 @@ input[type='checkbox']:checked {
 .date_calendar {
   display: flex;
   flex-direction: row;
-  gap: 5px !important;
+  gap: 13px !important;
   align-items: center;
   flex-wrap: wrap;
   justify-content: right !important;
@@ -1345,6 +1342,27 @@ input[type='checkbox']:checked {
 }
 
 @media only screen and (max-width: 767px) {
+  .ButtonAbovearrov {
+    width: 30px;
+    border-radius: 8px;
+    height: 30px;
+  }
+
+  .calender {
+    background-color: #377cf6;
+    width: 30px;
+    height: 30px;
+  }
+  .ArrowDX {
+    position: relative;
+    height: 30px;
+    width: 30px;
+  }
+  .ArrowD {
+    position: relative;
+    height: 30px;
+    width: 30px;
+  }
   .cardHeaderSecond span {
     font-size: 14px;
     text-align: left;
@@ -1415,16 +1433,79 @@ input[type='checkbox']:checked {
   gap: 16px;
 }
 
-.ichove{
+.ichove {
   transition: all 0.3s ease;
 }
-.ichove:hover{
+.ichove:hover {
   transform: scale(1.08);
 }
 
-@media (max-width:968px) {
-  
-  .mobile_tooltip{
+@media (max-width: 968px) {
+  .mobile_tooltip {
     display: none !important;
+  }
+}
+@media only screen and (min-width: 767px) and (max-width: 1025px) {
+  .date_calendar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 270px;
+    z-index: 1;
+  }
+
+  .date_calendar > .hist_date {
+    order: -1;
+    text-align: left;
+    font-size: 12px !important;
+    margin-bottom: 1px;
+    font-weight: 550;
+    margin-left: 10px !important;
+    min-width: 214px;
+    z-index: 1;
+  }
+
+  .lead__datepicker_wrapper {
+    position: inherit;
+    line-height: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 11; 
+  }
+
+  .lead__datepicker_content {
+  margin-top: 127.8px;
+  margin-left: 300px;
+   
+  }
+  .mobile_tooltip {
+    display: none !important;
+  }
+
+  .customLeftRRR {
+    font-weight: 600;
+    color: var(--input-border-color);
+  }
+}
+
+@media only screen and (min-width: 540px) and (max-width: 555px) {
+  .filtericon {
+    height: 46px;
+    width: 46px;
+    border-radius: 8px;
+  }
+  .export_btn {
+    width: 46px !important;
+    height: 46px !important;
+  }
+}
+@media only screen and (min-width: 340px) and (max-width: 539px) {
+  .filtericon {
+    height: 40px;
+    width: 40px;
+  }
+  .export_btn {
+    width: 40px !important;
+    height: 40px !important;
   }
 }

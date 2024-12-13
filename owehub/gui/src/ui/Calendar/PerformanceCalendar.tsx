@@ -325,6 +325,7 @@ const PerformanceCalendar: React.FC = () => {
                   display: 'block',
                   width: '180px',
                   textAlign: 'center',
+                  color: "##292b2e"
                 }}
               >
                 {isDefaultDate
@@ -357,6 +358,7 @@ const PerformanceCalendar: React.FC = () => {
         </div>
         {showCalendar && (
           <div className="performance-cal-content" ref={calendarRef}>
+
               <div style={{ height: '26px' }}   onClick={() => setShowCalendar(false)}>
               <IoClose className="calendar-close" style={{float:'inline-end'}}/>
             </div>

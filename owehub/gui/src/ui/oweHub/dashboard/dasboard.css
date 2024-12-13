@@ -473,8 +473,9 @@
 .breakdown-container {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0.5rem 0 1rem;
-  color: #000;
+  align-items: center;
+  color: var(--input-border-color);
+  padding: 1rem;
 }
 
 .breakdown-img {
@@ -492,16 +493,13 @@
   font-size: 16px;
   font-weight: 500;
   text-align: left;
-  color: #000;
+  color: var(--input-border-color);
 }
 
 .project-section h5 {
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 18px;
-  text-align: left;
-  color: #000;
-  padding-bottom: 1rem;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--input-border-color);
 }
 
 .close-popup-btn {
@@ -609,13 +607,13 @@
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  z-index: 150;
+  z-index: 200;
 }
 
 .modal-down-break {
   background-color: #fefefe;
   border-radius: 16px;
-  width: 40%;
+  width: 600px;
   max-width: 900px;
   height: 500px;
   overflow: hidden;
@@ -637,7 +635,7 @@
   padding: 0.5rem;
   font-size: 13px !important;
   border-radius: 0.5rem;
-  /* background-color: #263747; */
+  /* background-color: var(--input-border-color); */
   width: 100%;
   margin-top: 0.5rem;
   background-color: white;
@@ -720,7 +718,7 @@
 }
 
 .createUserActionButtonDash :hover {
-  background-color: #263747;
+  background-color: var(--input-border-color);
 }
 
 .create-input-field-help {
@@ -830,15 +828,6 @@
     box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
   }
 
-  .modal-down-break {
-    background-color: #fefefe;
-    border-radius: 16px;
-    width: 40%;
-    max-width: 900px;
-    height: 427px;
-    overflow: hidden;
-  }
-
   .help-modal {
     position: fixed;
     background-color: #fefefe;
@@ -895,7 +884,30 @@
 @media screen and (max-width: 768px) {
   .children-container {
     padding: unset;
-    overflow-x: hidden;
+  }
+
+  .attach-help-mob{
+    flex-basis: auto;
+  }
+
+  .help-projId{
+    width: 100% !important;
+  }
+
+  .modal-down-break{
+    margin: 10px;
+  }
+
+  .date-button{
+    gap: 1.5rem !important;
+  }
+
+  .help-proj-input{
+    width: 100% !important;
+  }
+
+  .help-submit{
+    width: 100px;
   }
 
   .white-back {
@@ -920,6 +932,7 @@
   .rep-manage-user {
     flex-direction: column;
     gap: 14px !important;
+    align-items: flex-start !important;
   }
 
   .DashboardPage-container {
@@ -995,9 +1008,5 @@
 
   .dealer-mob-upload {
     transform: scale(1.2);
-  }
-
-  .dealer-mob-download {
-    transform: scale(1.7) !important;
   }
 }

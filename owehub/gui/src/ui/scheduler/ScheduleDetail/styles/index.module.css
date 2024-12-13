@@ -1,6 +1,6 @@
 .detail_heading {
   font-size: 20px;
-  color: #263747;
+  color: var(--input-border-color);
   font-weight: 600;
 }
 

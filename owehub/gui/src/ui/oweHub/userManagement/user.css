@@ -272,7 +272,7 @@ opacity: 0px;
 @media screen and (max-width: 767px) {
   .ManagerUser-container {
     flex-direction: column;
-    margin-top: 1rem;
+    margin-top: 10px;
   }
 
   .delete-icon-container {

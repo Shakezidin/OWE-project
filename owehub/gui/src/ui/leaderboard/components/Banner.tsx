@@ -396,13 +396,13 @@ const Banner: React.FC<BannerProps> = ({
                   value={search}
                   disabled={isLoading}
                   onChange={(e) => {
-                    setSearch(e.target.value);
-                    if (e.target.value.trim()) {
-                      const filtered = leaderDealer(newFormData)?.filter(
-                        (item) =>
-                          item?.value
-                            .toLocaleLowerCase()
-                            .includes(e.target.value.toLowerCase().trim())
+                    // Remove any non-alphanumeric characters
+                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                    setSearch(sanitizedValue);
+                    
+                    if (sanitizedValue.trim()) {
+                      const filtered = leaderDealer(newFormData)?.filter((item) =>
+                        item?.value.toLowerCase().includes(sanitizedValue.toLowerCase().trim())
                       );
                       setOpts([...filtered]);
                     } else {
@@ -430,7 +430,7 @@ const Banner: React.FC<BannerProps> = ({
                   All
                 </div>
               )}
-              {opts?.map?.((option, ind) => (
+              {opts?.length?opts?.map?.((option, ind) => (
                 <div key={ind} className="dropdown-item">
                   <input
                     type="checkbox"
@@ -443,7 +443,7 @@ const Banner: React.FC<BannerProps> = ({
                   />
                   <span className='dropdown-text'>{option.label}</span>
                 </div>
-              ))}
+              )):<div className='text-center' style={{fontSize:14,color:"#000"}}>No Data Found</div>}
             </div>
           )}
 

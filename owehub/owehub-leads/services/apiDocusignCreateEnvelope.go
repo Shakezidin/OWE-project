@@ -150,12 +150,11 @@ func HandleDocusignCreateEnvelopeRequest(resp http.ResponseWriter, req *http.Req
 		},
 		Recipients: []docusignclient.CreateEnvelopeApiRecipient{
 			{
-				Email:        leadsEmail,
-				Name:         fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
-				FirstName:    leadsFirstName,
-				LastName:     leadsLastName,
-				RecipientId:  fmt.Sprintf("%d", dataReq.LeadsId),
-				ClientUserId: fmt.Sprintf("OWE%d", dataReq.LeadsId),
+				Email:       leadsEmail,
+				Name:        fmt.Sprintf("%s %s", leadsFirstName, leadsLastName),
+				FirstName:   leadsFirstName,
+				LastName:    leadsLastName,
+				RecipientId: fmt.Sprintf("%d", dataReq.LeadsId),
 			},
 		},
 	}

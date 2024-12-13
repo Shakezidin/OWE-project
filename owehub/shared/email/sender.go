@@ -15,6 +15,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
@@ -40,6 +41,51 @@ func getEmailTemplate() (*template.Template, error) {
 }
 
 /******************************************************************************
+ * FUNCTION:        RenderTemplate
+ *
+ * DESCRIPTION:     This function will render the email template. Exposed for
+ *                  testing purposes.
+ * INPUT:           templateData
+ * RETURNS:         string
+ ******************************************************************************/
+func RenderTemplate(templateData any) (string, error) {
+	var (
+		err        error
+		tmplName   string
+		emailTmpl  *template.Template
+		tmplWriter *bytes.Buffer
+	)
+
+	log.EnterFn(0, "RenderTemplate")
+	defer func() { log.ExitFn(0, "RenderTemplate", err) }()
+
+	if !isLoaded {
+		err = errors.New("Email config is not loaded. Call FetchEmailCfg() on service init to do it.")
+		log.FuncErrorTrace(0, "%v", err)
+		return "", err
+	}
+
+	emailTmpl, err = getEmailTemplate()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read email template err: %v", err)
+		return "", err
+	}
+
+	tmplName, _ = strings.CutPrefix(reflect.TypeOf(templateData).Name(), "TemplateData")
+	tmplName = tmplName + ".html"
+
+	tmplWriter = bytes.NewBufferString("")
+
+	err = emailTmpl.ExecuteTemplate(tmplWriter, tmplName, templateData)
+	if err != nil {
+		log.FuncErrorTrace(0, "Bad input data for email template err: %v", err)
+		return "", err
+	}
+
+	return tmplWriter.String(), nil
+}
+
+/******************************************************************************
  * FUNCTION:        SendEmail
  *
  * DESCRIPTION:     This function will send the email
@@ -50,49 +96,35 @@ func getEmailTemplate() (*template.Template, error) {
  ******************************************************************************/
 func SendEmail(request SendEmailRequest) error {
 	var (
-		err        error
-		tmplName   string
-		emailTmpl  *template.Template
-		tmplWriter *bytes.Buffer
+		err       error
+		emailHtml string
+		resp      *rest.Response
 	)
 
 	log.EnterFn(0, "SendEmail")
 	defer func() { log.ExitFn(0, "SendEmail", err) }()
 
-	if !isLoaded {
-		err = errors.New("Email config is not loaded. Call FetchEmailCfg() on service init to do it.")
-		log.FuncErrorTrace(0, "%v", err)
-		return err
-	}
-
-	emailTmpl, err = getEmailTemplate()
+	emailHtml, err = RenderTemplate(request.TemplateData)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read email template err: %v", err)
-		return err
-	}
-
-	tmplName, _ = strings.CutPrefix(reflect.TypeOf(request.TemplateData).Name(), "TemplateData")
-	tmplName = tmplName + ".html"
-
-	tmplWriter = bytes.NewBufferString("")
-
-	err = emailTmpl.ExecuteTemplate(tmplWriter, tmplName, request.TemplateData)
-	if err != nil {
-		log.FuncErrorTrace(0, "Bad input data for email template err: %v", err)
+		log.FuncErrorTrace(0, "Failed to render email template err: %v", err)
 		return err
 	}
 
 	// Send the email
 	from := mail.NewEmail(types.CommGlbCfg.EmailCfg.SenderName, types.CommGlbCfg.EmailCfg.SenderEmail)
 	to := mail.NewEmail(request.ToName, request.ToEmail)
-	message := mail.NewSingleEmail(from, request.Subject, to, "", tmplWriter.String())
+	message := mail.NewSingleEmail(from, request.Subject, to, "", emailHtml)
 	client := sendgrid.NewSendClient(types.CommGlbCfg.EmailCfg.SendgridKey)
-	_, err = client.Send(message)
+	// resp, err = client.Send(message)
+
+	log.FuncDebugTrace(0, "Sending email with message %+v, to client %+v, resp: %+v", message, client, resp)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email err: %v", err)
 		return err
 	}
+
+	// log.FuncDebugTrace(0, "Email sent to %s with response %+v, status code %d", request.ToEmail, resp, resp.StatusCode)
 
 	return nil
 }

@@ -29,6 +29,7 @@ import (
 ******************************************************************************/
 func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
+		singleData         map[string]bool
 		err                error
 		dataReq            models.PerfomanceTileDataReq
 		data               []map[string]interface{}
@@ -218,10 +219,29 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
+	singleData = make(map[string]bool)
+	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
+
 	for _, item := range data {
 
+		UniqueId, ok := item["unique_id"].(string)
+		if !ok || UniqueId == "" {
+			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
+			continue
+		}
+
+		if !singleData[UniqueId] {
+			singleData[UniqueId] = true
+		} else {
+			continue
+		}
+
+		RecordCount++
+
+		RecordCount++
+
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)
-		if !ok {
+		if !ok || SiteSurveyScheduleDate.Equal(invalidDate) {
 			// log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			SiteSurveyD = ""
 		} else {
@@ -425,7 +445,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		RoofingStatus, ok := item["roofing_status"].(string)
 		if !ok || RoofingStatus == "" {
-			log.FuncErrorTrace(0, "Failed to get roofing status Item: %+v\n", item)
+			// log.FuncErrorTrace(0, "Failed to get roofing status Item: %+v\n", item)
 			// continue
 		}
 

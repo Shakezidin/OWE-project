@@ -159,6 +159,9 @@
   color: grey !important;
   cursor: not-allowed !important;
 }
+.disabled:hover{
+  background-color: #fff;
+}
 /* HERE FOR RESPONSIVESNESS */
 
 @media screen and (max-width: 1200px) {
@@ -174,14 +177,11 @@
 
 .filtericonLead{
   display: flex;
-  width: 31.88px !important;
-  height: 31.88px !important;
   align-items: center;
   justify-content: center;
   border: none;
-  padding: 10.8px 10.8px 10.8px 10.8px;
   cursor: pointer;
-  border-radius: 50%; 
+  border-radius: 6px; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: #ffffff;
   background-color: #377cf6;
@@ -249,6 +249,7 @@
   border: none;
   margin-left: 7px;
   padding: 8px;
+  min-height: 36px;
   min-width: 121.33px;
   border-radius: 8px;
   cursor: pointer;
@@ -320,5 +321,32 @@
   
   .mobile_tooltip{
     display: none !important;
+  }
+}
+@media only screen and (min-width: 767px) and (max-width: 1025px) {
+  .filtericonLead{
+    height: 36px !important;
+    width: 36px !important;
+    border-radius: 8px !important;
+    margin-left: 11px;
+  }
+}
+@media only screen and (min-width: 540px) and (max-width: 555px) {
+  
+.filtericonLead{
+  width: 36px !important;
+  height: 36px !important;
+
+}
+}
+@media only screen and (min-width: 340px) and (max-width: 539px) {
+  .filtericonLead{
+    width: 30px !important;
+    height: 30px !important;
+  
+  }
+  .export_btn {
+    width: 40px !important;
+    height: 40px !important;
   }
 }

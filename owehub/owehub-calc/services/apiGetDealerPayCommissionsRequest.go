@@ -12,6 +12,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
+	"math"
 	"strings"
 	"time"
 
@@ -65,11 +66,18 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
+	if len(dataReq.PartnerName) <= 0 {
+		var dlrpayComm []models.DealerPayReportResponse
+		dlsPayCommResp.DealerPayComm = dlrpayComm
+		appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
+		return
+	}
+
 	tableName := "dealer_pay"
-	query = `SELECT home_owner, current_status, unique_id, dealer_code, marketing_fee, referral, rebate,
+	query = `SELECT home_owner, current_status, unique_id, dealer_code, referral, rebate,
 				today, amount, sys_size, rl, contract_dol_dol, loan_fee, 
 				epc, net_epc, other_adders, credit, rep_1, rep_2, 
-				setter, draw_amt, amt_paid, balance, st, contract_date,finance_type 
+				setter, draw_perc, amt_paid, balance, st, contract_date,finance_type 
 				FROM dealer_pay`
 
 	filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq)
@@ -89,189 +97,39 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		var dlrPay models.DealerPayReportResponse
 		var adder models.Adder
 
-		// Check and assign values based on conditions
-		homeOwnerVal, homeOwnerOk := item["home_owner"].(string)
-		if homeOwnerVal == "" || !homeOwnerOk {
-			dlrPay.Home_Owner = homeOwnerVal
-		} else {
-			dlrPay.Home_Owner = homeOwnerVal
-		}
+		dlrPay.Home_Owner = getStringVal(item, "home_owner")
+		dlrPay.Current_Status = getStringVal(item, "current_status")
+		dlrPay.Unique_ID = getStringVal(item, "unique_id")
+		dlrPay.Dealer_Code = getStringVal(item, "dealer_code")
+		dlrPay.Today = time.Now().Truncate(24 * time.Hour)
+		dlrPay.Amount = getFloat(item, "amount")
+		dlrPay.Sys_Size = getFloat(item, "sys_size")
+		dlrPay.RL = getFloat(item, "rl")
+		dlrPay.Contract = getFloat(item, "contract_dol_dol")
+		dlrPay.Loan_Fee = getFloat(item, "loan_fee")
+		dlrPay.EPC = getFloat(item, "epc")
+		dlrPay.Net_EPC = getFloat(item, "net_epc")
+		dlrPay.Other_Adders = getFloat(item, "other_adders")
+		dlrPay.Credit = getStringVal(item, "credit")
+		dlrPay.Rep1 = getStringVal(item, "rep_1")
+		dlrPay.Rep2 = getStringVal(item, "rep_2")
+		dlrPay.Setter = getStringVal(item, "setter")
+		dlrPay.Draw_Amt = getFloat(item, "draw_perc")
+		dlrPay.Amt_Paid = getFloat(item, "amt_paid")
+		dlrPay.Balance = getFloat(item, "balance")
+		dlrPay.ST = getStringVal(item, "st")
+		dlrPay.Contract_Date = getTime(item, "contract_date")
+		dlrPay.Type = getStringVal(item, "finance_type")
 
-		currentStatusVal, currentStatusOk := item["current_status"].(string)
-		if currentStatusVal == "" || !currentStatusOk {
-			dlrPay.Current_Status = currentStatusVal
-		} else {
-			dlrPay.Current_Status = currentStatusVal
-		}
-
-		uniqueIDVal, uniqueIDOk := item["unique_id"].(string)
-		if uniqueIDVal == "" || !uniqueIDOk {
-			dlrPay.Unique_ID = uniqueIDVal
-		} else {
-			dlrPay.Unique_ID = uniqueIDVal
-		}
-
-		dealerCodeVal, dealerCodeOk := item["dealer_code"].(string)
-		if dealerCodeVal == "" || !dealerCodeOk {
-			dlrPay.Dealer_Code = dealerCodeVal
-		} else {
-			dlrPay.Dealer_Code = dealerCodeVal
-		}
-
-		todayVal, todayOk := item["today"].(time.Time)
-		if todayVal.IsZero() || !todayOk {
-			dlrPay.Today = todayVal
-		} else {
-			dlrPay.Today = todayVal
-		}
-
-		amountVal, amountOk := item["amount"].(float64)
-		if amountVal == 0.0 || !amountOk {
-			dlrPay.Amount = amountVal
-		} else {
-			dlrPay.Amount = amountVal
-		}
-
-		sysSizeVal, sysSizeOk := item["sys_size"].(float64)
-		if sysSizeVal == 0.0 || !sysSizeOk {
-			dlrPay.Sys_Size = sysSizeVal
-		} else {
-			dlrPay.Sys_Size = sysSizeVal
-		}
-
-		rlVal, rlOk := item["rl"].(float64)
-		if rlVal == 0.0 || !rlOk {
-			dlrPay.RL = rlVal
-		} else {
-			dlrPay.RL = rlVal
-		}
-
-		contractVal, contractOk := item["contract_dol_dol"].(float64)
-		if contractVal == 0.0 || !contractOk {
-			dlrPay.Contract = contractVal
-		} else {
-			dlrPay.Contract = contractVal
-		}
-
-		loanFeeVal, loanFeeOk := item["loan_fee"].(float64)
-		if loanFeeVal == 0.0 || !loanFeeOk {
-			dlrPay.Loan_Fee = loanFeeVal
-		} else {
-			dlrPay.Loan_Fee = loanFeeVal
-		}
-
-		epcVal, epcOk := item["epc"].(float64)
-		if epcVal == 0.0 || !epcOk {
-			dlrPay.EPC = epcVal
-		} else {
-			dlrPay.EPC = epcVal
-		}
-
-		netEpcVal, netEpcOk := item["net_epc"].(float64)
-		if netEpcVal == 0.0 || !netEpcOk {
-			dlrPay.Net_EPC = netEpcVal
-		} else {
-			dlrPay.Net_EPC = netEpcVal
-		}
-
-		otherAddersVal, otherAddersOk := item["other_adders"].(string)
-		if otherAddersVal == "" || !otherAddersOk {
-			dlrPay.Other_Adders = otherAddersVal
-		} else {
-			dlrPay.Other_Adders = otherAddersVal
-		}
-
-		creditVal, creditOk := item["credit"].(string)
-		if creditVal == "" || !creditOk {
-			dlrPay.Credit = creditVal
-		} else {
-			dlrPay.Credit = creditVal
-		}
-
-		rep1Val, rep1Ok := item["rep_1"].(string)
-		if rep1Val == "" || !rep1Ok {
-			dlrPay.Rep1 = rep1Val
-		} else {
-			dlrPay.Rep1 = rep1Val
-		}
-
-		rep2Val, rep2Ok := item["rep_2"].(string)
-		if rep2Val == "" || !rep2Ok {
-			dlrPay.Rep2 = rep2Val
-		} else {
-			dlrPay.Rep2 = rep2Val
-		}
-
-		setterVal, setterOk := item["setter"].(string)
-		if setterVal == "" || !setterOk {
-			dlrPay.Setter = setterVal
-		} else {
-			dlrPay.Setter = setterVal
-		}
-
-		drawAmtVal, drawAmtOk := item["draw_amt"].(float64)
-		if drawAmtVal == 0.0 || !drawAmtOk {
-			dlrPay.Draw_Amt = drawAmtVal
-		} else {
-			dlrPay.Draw_Amt = drawAmtVal
-		}
-
-		amtPaidVal, amtPaidOk := item["amt_paid"].(float64)
-		if amtPaidVal == 0.0 || !amtPaidOk {
-			dlrPay.Amt_Paid = amtPaidVal
-		} else {
-			dlrPay.Amt_Paid = amtPaidVal
-		}
-
-		balanceVal, balanceOk := item["balance"].(float64)
-		if balanceVal == 0.0 || !balanceOk {
-			dlrPay.Balance = balanceVal
-		} else {
-			dlrPay.Balance = balanceVal
-		}
-
-		stVal, stOk := item["st"].(string)
-		if stVal == "" || !stOk {
-			dlrPay.ST = stVal
-		} else {
-			dlrPay.ST = stVal
-		}
-
-		contractDateVal, contractDateOk := item["contract_date"].(time.Time)
-		if contractDateVal.IsZero() || !contractDateOk {
-			dlrPay.Contract_Date = contractDateVal
-		} else {
-			dlrPay.Contract_Date = contractDateVal
-		}
-
-		financeTypeVal, financeTypeOk := item["finance_type"].(string)
-		if financeTypeVal == "" || !financeTypeOk {
-			dlrPay.Type = financeTypeVal
-		} else {
-			dlrPay.Type = financeTypeVal
-		}
-
-		// Same approach for adder fields
-		marketVal, marketOk := item["marketing_fee"].(float64)
-		if marketVal == 0.0 || !marketOk {
-			adder.Marketing = marketVal
-		}
-
-		refVal, referralOk := item["referral"].(string)
-		if refVal == "" || !referralOk {
-			adder.Referral = refVal
-		}
-
-		rebateVal, rebateOk := item["rebate"].(string)
-		if rebateVal == "" || !rebateOk {
-			adder.Rebate = rebateVal
-		}
-
+		// Assign values for `adder` fields
+		adder.Marketing = getFloat(item, "marketing_fee")
+		adder.Referral = getStringVal(item, "referral")
+		adder.Rebate = getStringVal(item, "rebate")
 		adder.SmallSystemSize = dlrPay.Sys_Size
 		adder.Credit = dlrPay.Credit
-		dlrPay.Adder = adder
 
-		// Append the populated struct to the response
+		// Assign `adder` to `dlrPay` and add `dlrPay` to the response
+		dlrPay.Adder = adder
 		dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
 	}
 
@@ -281,7 +139,10 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
 
-	if len(dataReq.PartnerName) > 0 && dataReq.PayroleDate != "" {
+	if len(dataReq.PartnerName) > 0 {
+		if dataReq.PayroleDate == "" {
+			dataReq.PayroleDate = time.Now().Format("02-01-2006") // Format to match expected input
+		}
 		// Prepare a string for dealer names, with each name properly escaped
 		escapedPartnerNames := make([]string, len(dataReq.PartnerName))
 		for i, name := range dataReq.PartnerName {
@@ -376,17 +237,17 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		}
 
 		if len(data) > 0 {
-			amountPrepaid, _ = data[0]["amount_prepaid"].(float64)
-			pipelineRemaining, _ = data[0]["pipeline_remaining"].(float64)
-			currentDue, _ = data[0]["current_due"].(float64)
+			amountPrepaid = getFloat(data[0], "amount_prepaid")
+			pipelineRemaining = getFloat(data[0], "pipeline_remaining")
+			currentDue = getFloat(data[0], "current_due")
 
-			amountPrepaidThisMonth, _ := data[0]["amount_prepaid_this_month"].(float64)
-			pipelineRemainingThisMonth, _ := data[0]["pipeline_remaining_this_month"].(float64)
-			currentDueThisMonth, _ := data[0]["current_due_this_month"].(float64)
+			amountPrepaidThisMonth := getFloat(data[0], "amount_prepaid_this_month")
+			pipelineRemainingThisMonth := getFloat(data[0], "pipeline_remaining_this_month")
+			currentDueThisMonth := getFloat(data[0], "current_due_this_month")
 
-			amountPrepaidLastMonth, _ := data[0]["amount_prepaid_last_month"].(float64)
-			pipelineRemainingLastMonth, _ := data[0]["pipeline_remaining_last_month"].(float64)
-			currentDueLastMonth, _ := data[0]["current_due_last_month"].(float64)
+			amountPrepaidLastMonth := getFloat(data[0], "amount_prepaid_last_month")
+			pipelineRemainingLastMonth := getFloat(data[0], "pipeline_remaining_last_month")
+			currentDueLastMonth := getFloat(data[0], "current_due_last_month")
 
 			amountPrepaidThisMonth = amountPrepaid - amountPrepaidThisMonth          // This month’s value only
 			amountPrepaidLastMonth = amountPrepaidThisMonth - amountPrepaidLastMonth // Last month’s value only
@@ -468,8 +329,14 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "today":
-				filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
+				valueAsTime, _ := time.Parse("02-01-2006", value.(string))
+
+				if !valueAsTime.Equal(time.Now().Truncate(24 * time.Hour)) {
+					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				} else {
+					filtersBuilder.WriteString(" 1 =1 ")
+				}
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -488,7 +355,7 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 			case "rl":
 				filtersBuilder.WriteString(fmt.Sprintf("rl %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "contract_dol_dol":
+			case "contract":
 				filtersBuilder.WriteString(fmt.Sprintf("contract_dol_dol %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "loan_fee":
@@ -502,6 +369,9 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				whereEleList = append(whereEleList, value)
 			case "balance":
 				filtersBuilder.WriteString(fmt.Sprintf("balance %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "other_adders":
+				filtersBuilder.WriteString(fmt.Sprintf("other_adders %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -595,4 +465,25 @@ func calculatePercentageIncrease(currentMonthValue, lastMonthValue float64) floa
 	increase := currentMonthValue - lastMonthValue
 	percentageIncrease := (increase / lastMonthValue) * 100
 	return percentageIncrease
+}
+
+func getStringVal(item map[string]interface{}, key string) string {
+	if val, ok := item[key].(string); ok {
+		return val
+	}
+	return ""
+}
+
+func getFloat(item map[string]interface{}, key string) float64 {
+	if val, ok := item[key].(float64); ok {
+		return math.Round(val*100) / 100 // round to 2 decimals
+	}
+	return 0.0
+}
+
+func getTime(item map[string]interface{}, key string) time.Time {
+	if val, ok := item[key].(time.Time); ok {
+		return val
+	}
+	return time.Time{}
 }

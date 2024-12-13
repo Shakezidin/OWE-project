@@ -18,7 +18,6 @@ type GetLeadsHistoryRequest struct {
 	IsArchived  bool   `json:"is_archived"`
 	PageSize    int    `json:"page_size"`   // page size
 	PageNumber  int    `json:"page_number"` // pagination page number
-	// SortBy      string `json:"sort_by"`     // sort according to deal won or loss
 }
 
 // Lead timeline containing relevant dates
@@ -36,9 +35,9 @@ type GetLeadsHistoryResponse struct {
 	PhoneNumber   string                 `json:"phone_number"`
 	EmailId       string                 `json:"email_id"`
 	StreetAddress string                 `json:"street_address"`
-	Zipcode       string                 `json:"zipcode"`
 	DealDate      *time.Time             `json:"deal_date"`
 	DealStatus    string                 `json:"deal_status"` // Won or Lost
+	SetterName    string                 `json:"setter_name"` // New field
 	Timeline      []GetLeadsTimelineItem `json:"timeline"`
 }
 

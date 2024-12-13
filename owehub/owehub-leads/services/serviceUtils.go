@@ -2,9 +2,11 @@ package services
 
 import (
 	"OWEApp/shared/db"
+	emailClient "OWEApp/shared/email"
 	graphapi "OWEApp/shared/graphApi"
 	log "OWEApp/shared/logger"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,6 +18,7 @@ import (
 
 	"time"
 
+	"OWEApp/owehub-leads/auroraclient"
 	leadsService "OWEApp/owehub-leads/common"
 	models "OWEApp/shared/models"
 )
@@ -87,10 +90,12 @@ func (h *LeadsMsgraphEventHandler) HandleCreated(eventDetails models.EventDetail
 // Update the leads status in the database, accepted, declined, etc.
 func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetails, attendeeResponse string) error {
 	var (
-		err     error
-		event   graphmodels.Eventable
-		query   string
-		leadsId int
+		err         error
+		event       graphmodels.Eventable
+		updateCount int64
+		data        []map[string]interface{}
+		query       string
+		leadsId     int
 	)
 
 	log.EnterFn(0, "LeadsEventHandler.HandleUpdated")
@@ -108,11 +113,6 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 	}
 
 	leadsIdStr := strings.TrimPrefix(*eventDetails.TransactionID, "OWEHUB-LEADS-")
-	// leadsId, err = strconv.Atoi(leadsIdStr)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to parse leads id err %v", err)
-	// 	return err
-	// }
 
 	// Split the TransactionID to retrieve the lead ID
 	parts := strings.Split(leadsIdStr, "-")
@@ -151,11 +151,128 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			APPOINTMENT_DECLINED_DATE = NULL,
 			STATUS_ID = 2
 			WHERE leads_id = $1
+			AND APPOINTMENT_DATE > CURRENT_TIMESTAMP
 		`
-		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+		err, updateCount = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update leads info in db: %v", err)
 			return err
+		}
+
+		if updateCount == 0 {
+			log.FuncErrorTrace(0, "No leads info found for given lead id or appointment date is passed")
+			return nil
+		}
+
+		// send sms and email
+		query = `
+			SELECT
+				li.first_name,
+				li.last_name,
+				li.phone_number,
+				li.email_id,
+				li.appointment_date,
+				li.frontend_base_url,
+				ud.name as creator_name,
+				ud.email_id as creator_email,
+				ud.mobile_number as creator_phone
+			FROM
+				leads_info li
+			INNER JOIN user_details ud ON ud.user_id = li.salerep_id	
+			WHERE
+				leads_id = $1
+		`
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get lead details from database: %v", err)
+			return err
+		}
+		if len(data) <= 0 {
+			log.FuncErrorTrace(0, "Lead with leads_id %d not found", leadsId)
+			return nil
+		}
+
+		phoneNo, ok := data[0]["phone_number"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert phone_number to string type Item: %+v", data[0])
+			return nil
+		}
+
+		creatorName, ok := data[0]["creator_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert creator_name to string type Item: %+v", data[0])
+			return nil
+		}
+
+		creatorEmail, ok := data[0]["creator_email"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert creator_email to string type Item: %+v", data[0])
+			return nil
+		}
+
+		creatorPhone, ok := data[0]["creator_phone"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert creator_phone to string type Item: %+v", data[0])
+			return nil
+		}
+
+		firstName, ok := data[0]["first_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+			return nil
+		}
+		lastName, ok := data[0]["last_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+			return nil
+		}
+
+		leadEmail, ok := data[0]["email_id"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert email_id to string type Item: %+v", data[0])
+			return nil
+		}
+
+		frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to assert frontend_base_url to string type Item: %+v", data[0])
+			return nil
+		}
+
+		smsMessage := leadsService.SmsAppointmentAccepted.WithData(leadsService.SmsDataAppointmentAccepted{
+			LeadId:        int64(leadsId),
+			LeadFirstName: firstName,
+			LeadLastName:  lastName,
+			UserName:      creatorName,
+		})
+
+		emailTmplData := emailClient.TemplateDataLeadStatusChanged{
+			UserName:        creatorName,
+			LeadId:          int64(leadsId),
+			LeadFirstName:   firstName,
+			LeadLastName:    lastName,
+			LeadEmailId:     leadEmail,
+			LeadPhoneNumber: phoneNo,
+			NewStatus:       "APT_ACCEPTED",
+			ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, leadsId),
+		}
+
+		err = sendSms(creatorPhone, smsMessage)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
+		}
+
+		err = emailClient.SendEmail(emailClient.SendEmailRequest{
+			ToName:       creatorName,
+			ToEmail:      creatorEmail,
+			Subject:      "Appointment Accepted",
+			TemplateData: emailTmplData,
+		})
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 		}
 	}
 
@@ -166,13 +283,19 @@ func (h *LeadsMsgraphEventHandler) HandleUpdated(eventDetails models.EventDetail
 			SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 			UPDATED_AT = CURRENT_TIMESTAMP,
 			APPOINTMENT_ACCEPTED_DATE = NULL,
+			APPOINTMENT_DATE = NULL,
 			STATUS_ID = 3
 			WHERE leads_id = $1
+			AND APPOINTMENT_DATE > CURRENT_TIMESTAMP
 		`
-		err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+		err, updateCount = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update leads info in db: %v", err)
 			return err
+		}
+		if updateCount == 0 {
+			log.FuncErrorTrace(0, "No leads info found for given lead id or appointment date is passed")
+			return nil
 		}
 	}
 
@@ -184,6 +307,7 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 	var (
 		err   error
 		query string
+		data  []map[string]interface{}
 	)
 
 	log.EnterFn(0, "LeadsEventHandler.HandleDeleted")
@@ -199,13 +323,6 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		log.FuncDebugTrace(0, "Event id %v does not have a valid leads id", *eventDetails.TransactionID)
 		return nil
 	}
-
-	// leadsIdStr := strings.TrimPrefix(*eventDetails.TransactionID, "OWEHUB-LEADS-")
-	// leadsId, err := strconv.Atoi(leadsIdStr)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to parse leads id err %v", err)
-	// 	return err
-	// }
 
 	leadsIdStr := strings.TrimPrefix(*eventDetails.TransactionID, "OWEHUB-LEADS-")
 
@@ -223,13 +340,125 @@ func (h *LeadsMsgraphEventHandler) HandleDeleted(eventDetails models.EventDetail
 		SET APPOINTMENT_DECLINED_DATE = CURRENT_TIMESTAMP,
 		UPDATED_AT = CURRENT_TIMESTAMP,
 		APPOINTMENT_ACCEPTED_DATE = NULL,
+		APPOINTMENT_DATE = NULL,
 		STATUS_ID = 3
 		WHERE leads_id = $1
+		AND APPOINTMENT_DATE > CURRENT_TIMESTAMP
 	`
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{leadsId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update leads info in db: %v", err)
 		return err
+	}
+
+	// send sms and email
+	query = `
+	SELECT
+		li.first_name,
+		li.last_name,
+		li.phone_number,
+		li.email_id,
+		li.appointment_date,
+		li.frontend_base_url,
+		ud.name as creator_name,
+		ud.email_id as creator_email,
+		ud.mobile_number as creator_phone
+	FROM
+		leads_info li
+	INNER JOIN user_details ud ON ud.user_id = li.salerep_id	
+	WHERE
+		leads_id = $1
+`
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{leadsId})
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get lead details from database: %v", err)
+		return err
+	}
+	if len(data) <= 0 {
+		log.FuncErrorTrace(0, "Lead with leads_id %d not found", leadsId)
+		return nil
+	}
+
+	phoneNo, ok := data[0]["phone_number"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert phone_number to string type Item: %+v", data[0])
+		return nil
+	}
+
+	creatorName, ok := data[0]["creator_name"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert creator_name to string type Item: %+v", data[0])
+		return nil
+	}
+
+	creatorEmail, ok := data[0]["creator_email"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert creator_email to string type Item: %+v", data[0])
+		return nil
+	}
+
+	creatorPhone, ok := data[0]["creator_phone"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert creator_phone to string type Item: %+v", data[0])
+		return nil
+	}
+
+	firstName, ok := data[0]["first_name"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+		return nil
+	}
+	lastName, ok := data[0]["last_name"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get first name from database Item: %+v", data[0])
+		return nil
+	}
+
+	leadEmail, ok := data[0]["email_id"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert email_id to string type Item: %+v", data[0])
+		return nil
+	}
+
+	frontendBaseUrl, ok := data[0]["frontend_base_url"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert frontend_base_url to string type Item: %+v", data[0])
+		return nil
+	}
+
+	smsMessage := leadsService.SmsAppointmentDeclined.WithData(leadsService.SmsDataAppointmentDeclined{
+		LeadId:        int64(leadsId),
+		LeadFirstName: firstName,
+		LeadLastName:  lastName,
+		UserName:      creatorName,
+	})
+
+	emailTmplData := emailClient.TemplateDataLeadStatusChanged{
+		UserName:        creatorName,
+		LeadId:          int64(leadsId),
+		LeadFirstName:   firstName,
+		LeadLastName:    lastName,
+		LeadEmailId:     leadEmail,
+		LeadPhoneNumber: phoneNo,
+		NewStatus:       "APT_DECLINED",
+		ViewUrl:         fmt.Sprintf("%s/leadmng-dashboard?view=%d", frontendBaseUrl, leadsId),
+	}
+
+	err = sendSms(creatorPhone, smsMessage)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to send sms to lead creator err %v", err)
+	}
+
+	err = emailClient.SendEmail(emailClient.SendEmailRequest{
+		ToName:       creatorName,
+		ToEmail:      creatorEmail,
+		Subject:      "Appointment Declined",
+		TemplateData: emailTmplData,
+	})
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to send email to lead creator err %v", err)
 	}
 
 	return nil
@@ -271,7 +500,7 @@ func sendSms(phoneNumber string, message string) error {
 	// Form data
 	data := url.Values{}
 	data.Set("From", leadsService.LeadAppCfg.TwilioFromPhone)
-	data.Set("To", phoneNumber)
+	data.Set("To", "+"+phoneNumber)
 	data.Set("Body", message)
 	// Create the request
 	req, err = http.NewRequest("POST", apiUrl, bytes.NewBufferString(data.Encode()))
@@ -303,6 +532,98 @@ func sendSms(phoneNumber string, message string) error {
 		log.FuncErrorTrace(0, "%v", err)
 		return err
 	}
-	log.FuncDebugTrace(0, "Message sent successfully: %s with response %+v", apiUrl)
+	log.FuncDebugTrace(0, "Message sent successfully: %s with response %+v", apiUrl, resp.StatusCode)
 	return nil
+}
+
+// get aurora proposal pdf url
+// NOTE: This is a long running & blocking process
+func getAuroraProposalPdfUrl(designId string) (string, error) {
+	var (
+		err                               error
+		retrieveProposalPdfGenerationResp *auroraclient.RetrieveProposalPdfGenerationApiResponse
+		runProposalPdfGenerationResp      *auroraclient.RunProposalPdfGenerationApiResponse
+	)
+
+	log.EnterFn(0, "getAuroraProposalPdfUrl")
+	defer func() { log.ExitFn(0, "getAuroraProposalPdfUrl", err) }()
+
+	// aurora api calls to generate pdf
+	runProposalPdfGenerationApi := auroraclient.RunProposalPdfGenerationApi{
+		DesignId: designId,
+	}
+
+	runProposalPdfGenerationResp, err = runProposalPdfGenerationApi.Call()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to call aurora api err %v", err)
+		return "", err
+	}
+
+	jobId, ok := runProposalPdfGenerationResp.ProposalPdfGenerationJob["job_id"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get job_id from run pdf generation: %+v", runProposalPdfGenerationResp.ProposalPdfGenerationJob)
+		return "", errors.New("Failed to get job_id from run pdf generation")
+	}
+
+	pdfGenUrl, ok := runProposalPdfGenerationResp.ProposalPdfGenerationJob["url"].(string)
+	if ok {
+		log.FuncDebugTrace(0, "Got URL from run pdf generation: %s", pdfGenUrl)
+		return pdfGenUrl, nil
+	}
+
+	// If the job is not done, we will poll the status of the job
+	startTimeUnix := time.Now().Unix()
+	for {
+		<-time.After(time.Second * 5)
+		log.FuncDebugTrace(0, "PDF generation: Checking PDF generation status")
+
+		retrieveProposalPdfGenerationApi := auroraclient.RetrieveProposalPdfGenerationApi{
+			DesignId: designId,
+			JobId:    jobId,
+		}
+
+		retrieveProposalPdfGenerationResp, err = retrieveProposalPdfGenerationApi.Call()
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to call aurora api err %v", err)
+			return "", err
+		}
+
+		pdfGenerationJobStatus, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["status"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get status from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
+			return "", err
+		}
+
+		if pdfGenerationJobStatus == "running" {
+			log.FuncDebugTrace(0, "PDF generation: PDF generation still running")
+			continue
+		}
+
+		if pdfGenerationJobStatus == "failed" {
+			pdfGenerationError, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["error"].(map[string]string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get error from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
+				return "", errors.New("PDF generation failed")
+			}
+			log.FuncErrorTrace(0, "PDF generation: PDF generation failed with error: %s", pdfGenerationError["message"])
+			return "", errors.New("PDF generation failed")
+		}
+
+		if pdfGenerationJobStatus == "succeeded" {
+			log.FuncDebugTrace(0, "PDF generation: PDF generation completed")
+			pdfGenerationUrl, ok := retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob["url"].(string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get url from retrieve pdf generation: %+v", retrieveProposalPdfGenerationResp.ProposalPdfGenerationJob)
+				return "", errors.New("PDF generation failed")
+			}
+			log.FuncDebugTrace(0, "PDF generation: Got URL from retrieve pdf generation: %s", pdfGenerationUrl)
+			return pdfGenerationUrl, nil
+		}
+
+		// timeout after 10 minutes
+		if time.Now().Unix()-startTimeUnix > 1200 {
+			log.FuncErrorTrace(0, "PDF generation: PDF generation timed out")
+			return "", errors.New("PDF generation timed out")
+		}
+	}
 }

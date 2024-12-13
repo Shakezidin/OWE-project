@@ -22,7 +22,7 @@ const HistoryRedirect = () => {
 
   const ArchivesTable = () => {
     // setArchive(true);
-    navigate('/leadmng-dashboard/lead-dashboard-archieves');
+    navigate('/leadmng-dashboard/lead-dashboard-archives');
   };
 
   const HistoryButtonCalled = () => {
@@ -79,13 +79,13 @@ const HistoryRedirect = () => {
         offset={8}
         delayShow={800}
         id="More Pages"
-        place="bottom"
+        place="top"
         content="More Pages"
       />
       {modenIsOpenX && (
         <div
-          id="dropdowninHistoryRedirect"
-          className="pr-dropdown editedinParent"
+          id="dropdowninHistoryRedirectXR"
+          className="pr-dropdown editedinParentXR"
         // className={`${classes.prdropdownX} editedinParent`}
         >
           <ul>

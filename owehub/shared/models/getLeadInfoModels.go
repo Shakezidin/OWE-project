@@ -20,7 +20,8 @@ type GetLeadInfoRes struct {
 	FinanceType                string     `json:"finance_type"`
 	FinanceCompany             string     `json:"finance_company"`
 	SaleSubmissionTriggered    bool       `json:"sale_submission_triggered"`
-	QCAudit                    string     `json:"qc_audit"`
+	QCAudit                    bool       `json:"qc_audit"`
+	ProposalPdfUrl             string     `json:"proposal_pdf_url"`
 	ProposalSigned             bool       `json:"proposal_signed"`
 	AppointmentDisposition     string     `json:"appointment_disposition"`
 	AppointmentDispositionNote string     `json:"appointment_disposition_note"`
@@ -39,4 +40,5 @@ type GetLeadInfoRes struct {
 	ProposalType               string     `json:"proposal_type"`
 	SalesRepName               string     `json:"sales_rep_name"`
 	LeadSource                 string     `json:"lead_source"`
+	SetterName                 string     `json:"setter_name"`
 }

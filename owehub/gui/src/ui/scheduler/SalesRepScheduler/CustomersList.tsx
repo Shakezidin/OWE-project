@@ -28,6 +28,7 @@ import { HiSortDescending } from 'react-icons/hi';
 import Sort from './components/Sort';
 import useEscapeKey from '../../../hooks/useEscape';
 import Pagination from '../../components/pagination/Pagination';
+import { Tooltip } from 'react-tooltip';
 
 
 interface ITimeSlot {
@@ -383,13 +384,13 @@ const handleClose = () => {
     console.log('Selected sort order:', sortOrder);
   };
 
-  useEscapeKey(() => setIsDrawerOpen(false));
+  // useEscapeKey(() => setIsDrawerOpen(false));
   useEscapeKey(() => setCollapse(-1));
 
   return (
     <div className={`${styles.schedule_page_wrapper}`}>
       <div
-        className={`flex items-center justify-between ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
+        className={`flex items-center justify-end ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
       >
      {isSmallScreen && (
           <div className={styles.filtericon} onClick={toggleCalendar}>
@@ -412,7 +413,7 @@ const handleClose = () => {
             <div className={styles.pending}>
               <>
                 <div className={styles.notification}>
-                  <span>25</span>
+                  <span>{totalRecords}</span>
                 </div>
                 <h3>Pending Schedule</h3>
               </>
@@ -424,12 +425,44 @@ const handleClose = () => {
                 selectedValue={selectedSort}
                 onChange={handleSortChange}
               />
-              <div className={styles.filtericon} onClick={handleScheduleRepeat}>
+              
+              <div className={styles.filtericon} onClick={handleScheduleRepeat} data-tooltip-id="Scheduled Activity">
                 <img src={ICONS.ScheduleRepeat} alt="" />
               </div>
-              <div className={styles.filtericon} onClick={handleAddClick}>
+              <Tooltip
+        style={{
+          zIndex: 20,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: "400"
+        }}
+        className={styles.tooltip}
+        offset={5}
+        delayShow={300}
+        id="Scheduled Activity"
+        place="bottom"
+        content="Scheduled Activity"
+      />
+              <div data-tooltip-id="Add New" className={styles.filtericon} onClick={handleAddClick} >
                 <MdOutlineAdd size={23} />
               </div>
+              <Tooltip
+        style={{
+          zIndex: 20,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: "400"
+        }}
+        offset={5}
+        delayShow={300}
+        id="Add New"
+        place="bottom"
+        content="Add New"
+      />
             </div>
           </div>
 
@@ -606,7 +639,7 @@ const handleClose = () => {
   <>
     <div className="flex items-center justify-between mb3">
       <h5
-        style={{ color: "#292B2E", fontWeight: 600, fontSize: 16, marginLeft: '20px', paddingTop:'7px' }}
+        style={{ color: "#292B2E", fontWeight: 600, fontSize: 16, marginLeft: '20px', paddingTop:'7px', cursor:'default' }}
         className="ml2"
       >
         Select Date & Time
@@ -651,7 +684,7 @@ const handleClose = () => {
         dayWithProgress={transformedCalendarData}
       />
       {selectedDate && isTimeSlotsOpen && (
-        <div className={`${styles.slotContainer}`} style={{ width: '100%' }}>
+        <div className={`${styles.slotContainer}`} style={{ width: '100%', cursor:'default' }}>
           <h5 className={`mb2 ${styles.time_slot_label}`}>
             Select time slot
           </h5>

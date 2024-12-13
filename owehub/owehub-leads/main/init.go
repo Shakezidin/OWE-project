@@ -64,6 +64,13 @@ var apiRoutes = appserver.ApiRoutes{
 
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_users_under",
+		apiHandler.HandleGetUsersUnderRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/create_leads",
 		apiHandler.HandleCreateLeadsRequest,
 		true,
@@ -226,6 +233,14 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-leads-service/v1/aurora_generate_pdf",
 		apiHandler.HandleAuroraGeneratePdfRequest,
 		false,
+		leadsRoleGroup,
+	},
+
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_update_project",
+		apiHandler.HandleAuroraUpdateProjectRequest,
+		true,
 		leadsRoleGroup,
 	},
 

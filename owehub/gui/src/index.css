@@ -156,7 +156,7 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
 /* Style the highlighted text inside each item */
 .pac-item .pac-item-query {
   font-weight: 400px !important;
-  color: #263747 !important;
+  color: var(--input-border-color) !important;
 }
 
 /* scheduler calendar css  */
@@ -209,7 +209,7 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
   --border-color: #eaecf0;
   --btn-text-color: #344054;
   --check-border-color: #ccc;
-  --page-heading-color: #263747;
+  --page-heading-color: var(--input-border-color);
   --secondary-text-color: #565656;
   --active-text-color: #04a5e8;
   --input-border-color: #d5d5d5;
@@ -248,6 +248,7 @@ div[style*="display: inline-flex"][style*="position: absolute"][style*="right: 0
   --button-hover-color: #4062CA;
   --delete-btn-color: #D91515;
   --delete-btn-hover: #AD1313;
+  --select-Context-Menu:#F5E9D7
 
 }
 
@@ -460,7 +461,7 @@ input[type='password']::-ms-clear {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
-  padding: 10px 10px 0 0px;
+  padding: 16px 16px 0 0px;
   cursor: pointer;
 }
 
@@ -719,6 +720,10 @@ br {
 }
 
 @media (max-width: 1024px) {
+  .pagination-tooltip{
+    display: none;
+  }
+  
   .modal {
     max-width: 750px;
   }
@@ -732,6 +737,9 @@ br {
 @media (max-width: 767px) {
   .scrollbar::-webkit-scrollbar {
     display: none !important;
+  }
+  .createProfileText{
+    margin-left: 18px;
   }
 }
 
@@ -768,4 +776,10 @@ br {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.react-tel-input .selected-flag:hover, .react-tel-input .selected-flag:focus {
+  background-color: #fff;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }

@@ -31,7 +31,6 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		updateFields []string
 		dataReq      models.EditLeadsDataReq
 		query        string
-		data         []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleEditLeadsRequest")
@@ -66,59 +65,50 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if len(dataReq.FirstName) > 0 {
+		whereEleList = append(whereEleList, dataReq.FirstName)
+		updateFields = append(updateFields, fmt.Sprintf("first_name = $%d", len(whereEleList)))
+	}
+
+	if len(dataReq.LastName) > 0 {
+		whereEleList = append(whereEleList, dataReq.LastName)
+		updateFields = append(updateFields, fmt.Sprintf("last_name = $%d", len(whereEleList)))
+	}
+
 	if len(dataReq.PhoneNumber) > 0 {
 		whereEleList = append(whereEleList, dataReq.PhoneNumber)
 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
-
-		// Check if new phone_number already exists
-		phoneCheckQuery := "SELECT 1 FROM leads_info WHERE phone_number = $1 AND leads_id != $2"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, phoneCheckQuery, []interface{}{dataReq.PhoneNumber, dataReq.LeadId})
-
-		if err != nil {
-			log.FuncErrorTrace(0, "Error querying phone number in database: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Database error", http.StatusInternalServerError, nil)
-			return
-		}
-
-		if len(data) > 0 {
-			log.FuncErrorTrace(0, "Phone number already exists in the system")
-			appserver.FormAndSendHttpResp(resp, "Phone number already exists", http.StatusConflict, nil)
-			return
-		}
 
 	}
 	if len(dataReq.EmailId) > 0 {
 		whereEleList = append(whereEleList, dataReq.EmailId)
 		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
 
-		// Check if new email_id already exists
-		emailCheckQuery := "SELECT 1 FROM leads_info WHERE email_id = $1 AND leads_id != $2"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, emailCheckQuery, []interface{}{dataReq.EmailId, dataReq.LeadId})
-
-		if err != nil {
-			log.FuncErrorTrace(0, "Error querying email in database: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Database error", http.StatusInternalServerError, nil)
-			return
-		}
-
-		if len(data) > 0 {
-			log.FuncErrorTrace(0, "Email already exists in the system")
-			appserver.FormAndSendHttpResp(resp, "Email already exists", http.StatusConflict, nil)
-			return
-		}
 	}
+
 	if len(dataReq.StreetAddress) > 0 {
 		whereEleList = append(whereEleList, dataReq.StreetAddress)
 		updateFields = append(updateFields, fmt.Sprintf("street_address = $%d", len(whereEleList)))
 	}
 
-	if len(dataReq.SalesRepName) > 0 {
-		whereEleList = append(whereEleList, dataReq.SalesRepName)
-		updateFields = append(updateFields, fmt.Sprintf("sales_rep_name = $%d", len(whereEleList)))
+	if len(dataReq.Notes) > 0 {
+		whereEleList = append(whereEleList, dataReq.Notes)
+		updateFields = append(updateFields, fmt.Sprintf("notes = $%d", len(whereEleList)))
 	}
+
+	if dataReq.SalerepID > 0 {
+		whereEleList = append(whereEleList, dataReq.SalerepID)
+		updateFields = append(updateFields, fmt.Sprintf("salerep_id = $%d", len(whereEleList)))
+	}
+
 	if len(dataReq.LeadSource) > 0 {
 		whereEleList = append(whereEleList, dataReq.LeadSource)
 		updateFields = append(updateFields, fmt.Sprintf("lead_source = $%d", len(whereEleList)))
+	}
+
+	if dataReq.SetterID > 0 {
+		whereEleList = append(whereEleList, dataReq.SetterID)
+		updateFields = append(updateFields, fmt.Sprintf("setter_id = $%d", len(whereEleList)))
 	}
 
 	if len(updateFields) == 0 {
@@ -144,6 +134,5 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
 		return
 	}
-
-	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully.", http.StatusOK, nil)
 }

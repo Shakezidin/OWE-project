@@ -37,15 +37,19 @@ export const LeadColumn = [
     displayName: 'Docusign Status',
   },
   {
-    id: 'finance_type',
-    displayName: 'Finance Type',
+    id: 'Setter',
+    displayName: 'Setter Name',
   },
-  {
-    id: 'finance_company',
-    displayName: 'Finance Company',
-  },
-  {
-    id: 'qc_audit',
-    displayName: 'QC Audit',
-  },
+  // {
+  //   id: 'finance_type',
+  //   displayName: 'Finance Type',
+  // },
+  // {
+  //   id: 'finance_company',
+  //   displayName: 'Finance Company',
+  // },
+  // {
+  //   id: 'qc_audit',
+  //   displayName: 'QC Audit',
+  // },
 ];

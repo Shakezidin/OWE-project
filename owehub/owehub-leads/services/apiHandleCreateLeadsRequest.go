@@ -1,12 +1,13 @@
 /**************************************************************************
 * File			: apiHandleCreateLeadsRequest.go
-* DESCRIPTION	: This file contains functions for creating  new leads
+* DESCRIPTION	: This file contains functions for creating new leads
 * DATE			: 11-sept-2024
 **************************************************************************/
 
 package services
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -62,19 +63,21 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if len(CreateLeadsReq.FirstName) <= 0 || len(CreateLeadsReq.LastName) <= 0 ||
 		len(CreateLeadsReq.EmailId) <= 0 || len(CreateLeadsReq.PhoneNumber) <= 0 ||
-		len(CreateLeadsReq.SalesRepName) <= 0 || len(CreateLeadsReq.LeadSource) <= 0 {
+		len(CreateLeadsReq.LeadSource) <= 0 || CreateLeadsReq.SalerepID <= 0 || CreateLeadsReq.SetterID <= 0 {
 		log.FuncErrorTrace(0, "invalid data provided")
 		appserver.FormAndSendHttpResp(resp, "Empty fields are not allowed in Api", http.StatusBadRequest, nil)
 		return
 	}
 
-	// get   the user email from the context
+	// get the user email from the context
 	userEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "failed to retrieve user email from context %v", err)
 		appserver.FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
 		return
 	}
+
+	frontendBaseURL, _ := strings.CutSuffix(CreateLeadsReq.BaseURL, "/")
 
 	queryParameters = append(queryParameters,
 		userEmail,
@@ -83,10 +86,11 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		CreateLeadsReq.EmailId,
 		CreateLeadsReq.PhoneNumber,
 		CreateLeadsReq.StreetAddress,
-		CreateLeadsReq.Zipcode,
 		CreateLeadsReq.Notes,
-		CreateLeadsReq.SalesRepName,
+		CreateLeadsReq.SalerepID,
+		frontendBaseURL,
 		CreateLeadsReq.LeadSource,
+		CreateLeadsReq.SetterID,
 	)
 
 	// Insert the lead details into the database using function CallDBFunction
@@ -96,6 +100,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 			appserver.FormAndSendHttpResp(resp, "Email id or phone number already exists", http.StatusBadRequest, nil)
 			return
 		}
+
 		log.FuncErrorTrace(0, "Failed to Add Leads in DB with err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to Create Lead ", http.StatusInternalServerError, nil)
 		return
@@ -103,4 +108,13 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Sending success response
 	appserver.FormAndSendHttpResp(resp, "Lead Created Successfully", http.StatusOK, nil)
+	smsbody := leadsService.SmsHomeOwner.WithData(leadsService.SmsDataHomeOwner{
+		LeadFirstName: CreateLeadsReq.FirstName,
+		LeadLastName:  CreateLeadsReq.LastName,
+		Message:       "Thank You for showing interest in Our World Energy",
+	})
+	err = sendSms(CreateLeadsReq.PhoneNumber, smsbody)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error while sending sms: %v", err)
+	}
 }

@@ -57,15 +57,7 @@ const DealerOverRides: React.FC = () => {
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
-  useEffect(() => {
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-      archived: viewArchived ? true : undefined,
-      filters,
-    };
-    dispatch(fetchDealer(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  
 
 
   const handleExportOpen = () => {
@@ -150,11 +142,10 @@ const DealerOverRides: React.FC = () => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
-      setSortKey(key);
       setSortDirection('asc');
     }
+    setSortKey(key);
   };
-
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];

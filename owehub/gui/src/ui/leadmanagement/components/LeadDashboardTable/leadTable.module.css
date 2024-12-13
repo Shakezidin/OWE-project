@@ -7,7 +7,7 @@
 
 .FixedColumn {
   position: sticky;
-  right: 0;
+  right: -1px;
   background-color: var(--white-color);
 }
 
@@ -212,6 +212,7 @@
   color: #fff;
   font-size: 12px;
   border-radius: 6px;
+  min-height: 36px;
   padding: 8px;
   border: none;
   cursor: pointer;
@@ -255,20 +256,25 @@
 }
 
 @media (max-width: 600px) {
+
+  .infoIcon {
+    padding: 6px 6px;
+    border-radius: 50%;
+    border: 1px solid #377cf6;
+    color: #377cf6;
+    display: flex;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
   .FixedColumnMobile {
     position: sticky;
-    right: 0;
-    background-color: var(--white-color);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    display: flex;
-    width: 130px;
-    flex-direction: column;
-    padding: 0 !important;
-    border-left: 1px solid #d5d5d7;
+    right: -1px;
+    display: table-cell;
+    padding: 10px 5px 0 5px !important;
+    border-left: 1.5px solid #E5E5E5;
+    border-bottom: 0.7px solid #E5E5E5; 
+ 
   }
   .RowMobile {
     display: flex;
@@ -276,12 +282,11 @@
     right: 0;
   }
   .RowMobileTwo {
-    padding-top: 3px;
-    margin-top: 0px;
+    padding-top: 8px;
     display: flex;
     flex-direction: row;
     right: 0;
-    gap: 8px;
+    gap: 12px;
     padding-bottom: 7px;
     padding-left: 5px;
     justify-content: center;
@@ -296,6 +301,7 @@
     border-radius: 6px;
     padding: 6px 12px;
     min-width: 91px;
+    
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -328,4 +334,38 @@
 }
 .dropdownContainerModal input:focus {
   outline: none;
+}
+
+.qcbuttoncont{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: #F3F3F3;
+  width: 53px;
+  height: 21px;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 4px;
+  margin-top: 2px;
+  transition: all 0.3s ease;
+}
+.qcbuttoncont p{
+  font-size: 12px;
+  font-weight: 500;
+}
+.qcstaus{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qcactstatus{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #EB3434;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
 }

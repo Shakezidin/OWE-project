@@ -87,13 +87,14 @@ const SelectOption: React.FC<Props> = ({
 }) => {
   const scrollRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <div
       className="select-container"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => { setIsHovered(true)}}
+      onMouseLeave={() => { setIsHovered(false)}}
     >
       <Select
         options={options}
@@ -108,6 +109,11 @@ const SelectOption: React.FC<Props> = ({
         isDisabled={disabled}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        onMenuOpen={() => setIsOpen(true)}
+        onMenuClose={() => { 
+          setIsOpen(false);     
+          setIsFocused(false); 
+        }}
         styles={{
           control: (baseStyles, state) => ({
             ...baseStyles,
@@ -149,6 +155,7 @@ const SelectOption: React.FC<Props> = ({
             border: "1px solid #292B2E",
             boxShadow: "0px 4px 10px rgba(43, 42, 42, 0.3)",
             borderRadius: "8px",
+            padding: "4px"
           }),
           menuList: (base) => ({
             ...base,
@@ -180,7 +187,7 @@ const SelectOption: React.FC<Props> = ({
             ...dropdownIndicatorStyles,
             '& svg': {
               fill: (isHovered || isFocused) ? '#377CF6' : "#292B2E",
-              transform: isFocused ? 'rotate(180deg)' : 'rotate(0deg)',
+              transform: isOpen ? (isFocused ? 'rotate(180deg)' : 'rotate(0deg)') : 'rotate(0deg)',
               transition: "transform 550ms ease"
             },
           }),

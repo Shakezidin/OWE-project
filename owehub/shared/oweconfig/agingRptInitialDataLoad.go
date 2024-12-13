@@ -66,7 +66,7 @@ func LoadAgngRpInitialData(uniqueIds []string) (InitialDataa InitialAgngRPDataLi
 	log.EnterFn(0, "LoadAgngRpInitialData")
 	defer func() { log.ExitFn(0, "LoadAgngRpInitialData", err) }()
 	query = `
-	SELECT
+SELECT
     customers_customers_schema.unique_id,
     customers_customers_schema.project_status,
     customers_customers_schema.customer_name,
@@ -100,7 +100,7 @@ func LoadAgngRpInitialData(uniqueIds []string) (InitialDataa InitialAgngRPDataLi
     fin_permits_fin_schema.approved_date AS fin_pass_date,
     system_customers_schema.install_scheduled_date,
     customers_customers_schema.install_eta_date,
-    -- Install Complete (to be included if required)
+    pv_install_install_subcontracting_schema.pv_completion_date as install_complete,
     customers_customers_schema.primary_sales_rep,
     customers_customers_schema.pre_post_install,
     customers_customers_schema.tier_one_status,
@@ -135,7 +135,7 @@ LEFT JOIN
     project_mgmt_metrics_schema ON project_mgmt_metrics_schema.unique_id = customers_customers_schema.unique_id
 
 WHERE
-    customers_customers_schema.project_status = 'ACTIVE' AND customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
+ customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
 `
 
 	if len(uniqueIds) > 0 {
@@ -354,6 +354,12 @@ WHERE
 			InitialData.Install_ETA = val.(time.Time)
 		} else {
 			InitialData.Install_ETA = time.Time{}
+		}
+
+		if val, ok := checkField(data["install_complete"], "install_complete", "time.Time"); ok {
+			InitialData.Install_Complete = val.(time.Time)
+		} else {
+			InitialData.Install_Complete = time.Time{}
 		}
 
 		if val, ok := checkField(data["primary_sales_rep"], "primary_sales_rep", "string"); ok {

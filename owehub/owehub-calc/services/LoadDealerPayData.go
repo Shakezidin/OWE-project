@@ -6,6 +6,7 @@ import (
 	"OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -44,18 +45,6 @@ func ExecDlrPayInitialCalculation(uniqueIds string, hookType string) error {
 	for _, data := range InitailData.InitialDataList {
 		var dlrPayData map[string]interface{}
 		dlrPayData, err = CalculateDlrPayProject(data, financeSchedule, dealerCredit, dealerPayments, dealerOvrd, partnerPaySchedule)
-
-		// if err != nil || dlrPayData == nil {
-		// 	if len(data.UniqueId) > 0 {
-		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", data.UniqueId, err)
-		// 	} else {
-		// 		log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
-		// 	}
-		// } else if operaiton == "create" {
-		// 	dlrPayDataList = append(dlrPayDataList, dlrPayData)
-		// } else {
-		// 	updateDlrPayData = append(updateDlrPayData, dlrPayData)
-		// }
 
 		if hookType == "update" {
 			// Build the update query
@@ -103,67 +92,64 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	DealerCode := dlrPayData.DealerCode
 	SystemSize := dlrPayData.SystemSize
 	ContractDolDol := dlrPayData.ContractDolDol
-	OtherAdders := dlrPayData.OtherAdders
 	Rep1 := dlrPayData.Rep1
 	Rep2 := dlrPayData.Rep2
 	Setter := dlrPayData.Setter
 	ST := dlrPayData.ST
-	ContractDate := dlrPayData.ContractDate
-	NetEpc := dlrPayData.NetEpc
-	financeType := dlrPayData.FinanceType
-	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
-
-	mktFeeStr := getString(adderBreakDown, "marketing_fee")
-	Referral := getString(adderBreakDown, "referral")
-	Rebate := getString(adderBreakDown, "rebate")
-
-	mktFee, err := strconv.ParseFloat(mktFeeStr, 64)
-	if err != nil {
-		mktFee = 0.0
-	} //pemding from Colten sice
-	DrawAmt, drawMax, Rl := CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeType, ST, ContractDate) // draw %
-	NtpCompleteDate := dlrPayData.NtpCompleteDate
-	PvComplettionDate := dlrPayData.PvComplettionDate
-	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
-	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, DealerCode, uniqueID)
-	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
-	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
-	financeCompany := dlrPayData.FinanceCompany
-	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST, time.Time{})
-	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, mktFee, amt_paid)
-	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawAmt, drawMax)
-	amount := CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate, m1Payment, m2Payment)
-	balance := totalNetCommission - amt_paid
-	// here i have some doubts
-
 	if len(ST) > 6 {
 		ST = ST[6:]
 	}
+	year, month, day := dlrPayData.ContractDate.Date()
+	ContractDate := time.Date(year, month, day, 0, 0, 0, 0, dlrPayData.ContractDate.Location())
+	epc := ContractDolDol / (SystemSize * 1000)
+	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
+	OtherAdderStr := getString(adderBreakDown, "Total")
+	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
+	NetEpc := (ContractDolDol - OtherAdder) / (SystemSize * 1000)
+	financeType := dlrPayData.FinanceType
+	financeCompany := dlrPayData.FinanceCompany
+	NtpCompleteDate := dlrPayData.NtpCompleteDate
+	Referral := getString(adderBreakDown, "referral") //have doubts
+	Rebate := getString(adderBreakDown, "rebate")     //have doubts
+	drawMax, Rl := CalcDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeCompany, ST, ContractDate)
+	DrawPerc := CalcDrawPercCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, ContractDate)
+	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
+	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, uniqueID)
+	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
+	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
+	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST)
+	totalNetCommission := CalcTotalNetCommissionsDealerPay(totalGrossCommission, dlrOvrdAmount, SystemSize, amt_paid)
+	m1Payment, m2Payment := CalcPaymentsDealerPay(totalNetCommission, DrawPerc, drawMax, amt_paid)
+	amount := CalcAmountDealerPay(dealerPayments.DealerPaymentsData, uniqueID)
+	balance := totalNetCommission - amt_paid
+	// here i have some doubts
+
 	outData["home_owner"] = HomeOwner
 	outData["current_status"] = CurrectStatus
 	outData["unique_id"] = uniqueID
 	outData["dealer_code"] = DealerCode
 	outData["today"] = time.Now()
 	outData["amount"] = amount
-	outData["sys_size"] = SystemSize
-	outData["rl"] = Rl
-	outData["contract_dol_dol"] = ContractDolDol
-	outData["loan_fee"] = LoanFee
-	outData["epc"] = ContractDolDol / (SystemSize * 1000)
-	outData["net_epc"] = NetEpc
-	outData["other_adders"] = OtherAdders
+	outData["sys_size"] = CheckFloat(SystemSize)
+	outData["rl"] = CheckFloat(Rl)
+	outData["contract_dol_dol"] = CheckFloat(ContractDolDol)
+	outData["loan_fee"] = CheckFloat(LoanFee)
+	outData["epc"] = CheckFloat(epc)
+	outData["net_epc"] = CheckFloat(NetEpc)
+	outData["other_adders"] = CheckFloat(OtherAdder)
 	outData["credit"] = credit
 	outData["rep_1"] = Rep1
 	outData["rep_2"] = Rep2
 	outData["setter"] = Setter
-	outData["draw_amt"] = DrawAmt
-	outData["amt_paid"] = amt_paid
-	outData["balance"] = balance
+	outData["draw_perc"] = CheckFloat(DrawPerc)
+	outData["amt_paid"] = CheckFloat(amt_paid)
+	outData["balance"] = CheckFloat(balance)
 	outData["st"] = ST
 	outData["contract_date"] = ContractDate
 	outData["finance_type"] = financeType
 	outData["ntp_date"] = NtpCompleteDate
-	outData["marketing_fee"] = mktFee
+	outData["m1_payment"] = m1Payment
+	outData["m2_payment"] = m2Payment
 	outData["referral"] = Referral
 	outData["rebate"] = Rebate
 
@@ -278,4 +264,24 @@ func getString(item map[string]string, key string) string {
 		return value
 	}
 	return ""
+}
+
+func parseDollarStringToFloat(dollarStr string) float64 {
+	// Remove any "$" symbols and whitespace
+	cleanStr := strings.ReplaceAll(dollarStr, "$", "")
+	cleanStr = strings.TrimSpace(cleanStr)
+
+	// Parse to float
+	val, err := strconv.ParseFloat(cleanStr, 64)
+	if err != nil {
+		return 0.0
+	}
+	return val
+}
+
+func CheckFloat(value float64) float64 {
+	if math.IsInf(value, 1) || math.IsInf(value, -1) || math.IsNaN(value) {
+		return 0
+	}
+	return value
 }

@@ -25,7 +25,7 @@ func getInt64(item map[string]interface{}, key string) int64 {
 func getString(item map[string]interface{}, key string) string {
 	if value, ok := item[key].(string); ok {
 		// Check if the key is "state" and if the value contains "::"
-		if key == "state" && strings.Contains(value, "::") {
+		if (key == "state" || key == "state_3") && strings.Contains(value, "::") {
 			// Split the value by "::" and take the second part
 			parts := strings.SplitN(value, "::", 2)
 			if len(parts) > 1 {
@@ -133,9 +133,19 @@ func prepareConfigFilters(tableName string, dataFilter models.DataRequestBody, f
 			case "credit_date":
 				filtersBuilder.WriteString(fmt.Sprintf("credit_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "redline":
+				filtersBuilder.WriteString(fmt.Sprintf("CAST(redline AS FLOAT) %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "state":
 				filtersBuilder.WriteString(fmt.Sprintf(
 					"LOWER(TRIM(SUBSTRING(state FROM POSITION('::' IN state) + 2 FOR LENGTH(state)))) %s $%d",
+					operator,
+					len(whereEleList)+1,
+				))
+				whereEleList = append(whereEleList, strings.ToLower(value.(string)))
+			case "state_3", " state_3":
+				filtersBuilder.WriteString(fmt.Sprintf(
+					"LOWER(TRIM(SUBSTRING(state_3 FROM POSITION('::' IN state_3) + 2 FOR LENGTH(state_3)))) %s $%d",
 					operator,
 					len(whereEleList)+1,
 				))

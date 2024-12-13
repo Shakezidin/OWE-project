@@ -9,7 +9,8 @@ import MicroLoader from "../../components/loader/MicroLoader";
 import DataNotFound from "../../components/loader/DataNotFound";
 import { format, parseISO } from "date-fns";
 import { Tooltip } from "react-tooltip";
-import {  } from "date-fns-tz";
+import { } from "date-fns-tz";
+import { useLocation } from 'react-router-dom';
 
 interface EditModalProps {
     isOpen1: boolean;
@@ -29,7 +30,8 @@ interface LeadData {
     finance_type: string;
     finance_company: string;
     sale_submission_triggered: boolean;
-    qc_audit: string;
+    qc_audit: boolean;
+    proposal_pdf_url: string;
     proposal_signed: boolean;
     appointment_disposition: string;
     appointment_accepted_date: string | null;
@@ -45,6 +47,9 @@ interface LeadData {
     status_id: number;
     updated_at: string;
     proposal_created_date: string | null;
+    sales_rep_name: string | null;
+    lead_source: string | null;
+    setter_name:string | null;
 }
 
 const Profile: React.FC<EditModalProps> = ({
@@ -59,6 +64,8 @@ const Profile: React.FC<EditModalProps> = ({
     const RedirectMainDashboard = () => {
         navigate('/leadmng-dashboard')
     }
+    const location = useLocation();
+    const showDownloadProposal = location.pathname.includes('leadmng-records');
 
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
@@ -71,6 +78,7 @@ const Profile: React.FC<EditModalProps> = ({
         setAuthenticated(isPasswordChangeRequired === 'false');
     }, [authData]);
 
+    
     useEffect(() => {
         if (isAuthenticated && isOpen1) {
             const fetchData = async () => {
@@ -113,7 +121,7 @@ const Profile: React.FC<EditModalProps> = ({
         };
     }, []);
 
-    
+
     return <div>
         {isOpen1 && <div className="transparent-model">
             <div className={classes.customer_wrapper_list_mob_inner}>
@@ -199,15 +207,14 @@ const Profile: React.FC<EditModalProps> = ({
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td className={classes.leftAlign}>City</td>
-                                            <td
-                                                style={{
-                                                    whiteSpace: 'pre-wrap',
-                                                    overflowWrap: 'break-word',
-                                                    maxWidth: '200px',
-                                                    lineHeight: "16px"
-                                                }}
-                                                className={classes.rightAlign}>{leadData?.city}</td>
+                                            <td className={classes.leftAlign}>Created At</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.created_at ? format((parseISO(leadData.created_at)), 'dd-MM-yyyy')
+                                                : "....."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Updated At</td>
+                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.updated_at ? format((parseISO(leadData.updated_at)), 'dd-MM-yyyy')
+                                                : "....."}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Proposal type</td>
@@ -228,23 +235,15 @@ const Profile: React.FC<EditModalProps> = ({
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>QC Audit</td>
-                                            <td className={classes.rightAlign}>{leadData?.qc_audit}</td>
+                                            <td className={classes.rightAlign}>{leadData?.qc_audit ? "true" : "false"}</td>
                                         </tr>
                                         <tr>
                                             <td className={classes.leftAlign}>Proposal Signed</td>
                                             <td className={classes.rightAlign}>{leadData?.proposal_signed.toString()}</td>
                                         </tr>
-                                        <tr>
-                                            <td className={classes.leftAlign}
-                                                style={{
-                                                    lineHeight: "16px",
-                                                    whiteSpace: 'pre-wrap',
-                                                    overflowWrap: 'break-word',
-                                                    maxWidth: '150px',
-                                                }}
-                                            >Appointment Disposition</td>
-                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.appointment_disposition}</td>
-                                        </tr>
+
+                                       
+
 
 
 
@@ -300,16 +299,8 @@ const Profile: React.FC<EditModalProps> = ({
                                                 )}
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td className={classes.leftAlign}>Created At</td>
-                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.created_at ? format((parseISO(leadData.created_at)), 'dd-MM-yyyy')
-                                                : "....."}</td>
-                                        </tr>
-                                        <tr>
-                                            <td className={classes.leftAlign}>Updated At</td>
-                                            <td className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.updated_at ? format((parseISO(leadData.updated_at)), 'dd-MM-yyyy')
-                                                : "....."}</td>
-                                        </tr>
+                                        
+                                        
                                         <tr>
                                             <td className={classes.leftAlign}>Appointment Scheduled Date</td>
                                             <td className={`${classes.rightAlign} ${classes.specialfont}`}
@@ -375,6 +366,52 @@ const Profile: React.FC<EditModalProps> = ({
                                                 className={`${classes.rightAlign} ${classes.specialfont}`}
                                             >{leadData?.created_by || '.....'}</td>
                                         </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Sales Rep</td>
+                                            <td
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowWrap: 'break-word',
+                                                    maxWidth: '200px',
+                                                    lineHeight: "16px"
+                                                }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}
+                                            >{leadData?.sales_rep_name || '.....'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className={classes.leftAlign}>Setter</td>
+                                            <td className={classes.rightAlign}>{leadData?.setter_name ? leadData?.setter_name : "....."}</td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td className={classes.leftAlign}
+
+                                            >Lead Source</td>
+                                            <td style={{
+                                                lineHeight: "16px",
+                                                whiteSpace: 'pre-wrap',
+                                                overflowWrap: 'break-word',
+                                                maxWidth: '150px',
+                                            }}
+                                                className={`${classes.rightAlign} ${classes.specialfont}`}>{leadData?.lead_source}</td>
+                                        </tr>
+                                        {showDownloadProposal && (
+                                            <tr>
+                                                <td className={classes.leftAlign}>Download Proposal</td>
+                                                <td className={`${classes.rightAlign} ${classes.specialfont}`}>
+                                                    <a
+                                                        style={{
+                                                            pointerEvents: leadData?.proposal_pdf_url === "" ? 'none' : 'auto',
+                                                            opacity: leadData?.proposal_pdf_url === "" ? 0.6 : 1,
+                                                            cursor: leadData?.proposal_pdf_url === "" ? 'not-allowed' : 'pointer',
+                                                        }}
+                                                        href={leadData?.proposal_pdf_url}
+                                                    >
+                                                        Click here
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        )}
 
                                     </tbody>
                                 </table>

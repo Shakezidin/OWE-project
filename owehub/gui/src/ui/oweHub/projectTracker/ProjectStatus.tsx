@@ -59,6 +59,12 @@ const ProjectStatus = () => {
   const projectId = new URLSearchParams(location.search).get('project_id');
   const projectName = new URLSearchParams(location.search).get('customer-name');
 
+  useEffect(()=>{
+    window.scrollTo({
+      top:0,
+      behavior: 'smooth'
+    })    
+  },[location.pathname])
   const getStatus = (arr: string[]) => {
     return arr.every(
       (item) => projectDetail[item as keyof typeof projectDetail]
@@ -67,6 +73,9 @@ const ProjectStatus = () => {
   const [search, setSearch] = useState('OUR22645');
   const [searchValue, setSearchValue] = useState('OUR22645');
   const [active, setActive] = useState(false);
+
+
+  
   const filtered = [
     // {
     //   name: 'Sales',
@@ -508,8 +517,11 @@ const ProjectStatus = () => {
 
   useEffect(() => {
     if (projectId) {
+      const anotheropt = projectOption.filter((item) => item.value === projectId)
       const opt = { label: projectId, value: projectId };
-      setSelectedProject(opt);
+      console.log(anotheropt, "kjgfh")
+      setSelectedProject(anotheropt[0])
+
     } else if (projectOption.length) {
       const val = {
         label: projectOption[0].label || '',
@@ -521,12 +533,12 @@ const ProjectStatus = () => {
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
-    if (selectedProject.value) {
-      dispatch(getProjectDetail(selectedProject.value));
+    if (selectedProject?.value) {
+      dispatch(getProjectDetail(selectedProject?.value));
     } else if (projectOption.length) {
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
-  }, [selectedProject.value]);
+  }, [selectedProject?.value]);
 
   useEffect(() => {
     if (projectId) {
@@ -594,6 +606,7 @@ const ProjectStatus = () => {
 
   const [isHovered, setIsHovered] = useState(-1);
 
+ console.log(selectedProject, 'fhfh')
   return (
     <>
       <QCModal
@@ -622,11 +635,12 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className="cust-name">
-                      Customer name:<pre> {projectDetail.home_owner}</pre>
+                    Customer name: <pre>{selectedProject?.label?.split('-')[1]}</pre>
                     </span>
                     <SelectOption
                       options={projectOption}
                       value={selectedProject}
+                      disabled={isLoading}
                       lazyRender
                       onChange={(val) => {
                         if (val) {
@@ -634,6 +648,11 @@ const ProjectStatus = () => {
                         }
                       }}
                       width="190px"
+                      optionStyles={{
+                        overflowX: "hidden",
+                        textOverflow: "ellipsis",
+                        textWrap: "nowrap",
+                      }}
                     />
                   </div>
                 </div>
@@ -669,7 +688,7 @@ const ProjectStatus = () => {
                           style={{
                             width: '100%',
                             textAlign: 'center',
-                            color: isHovered === i ? '#fff' : '#263747',
+                            color: isHovered === i ? '#fff' : 'var(--input-border-color)',
                           }}
                         >
                           <p className="para-head text-white-color">

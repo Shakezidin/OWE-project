@@ -18,7 +18,7 @@ import (
 * - sysSize: System Size
  */
 func CalcTotalGrossCommissionDealerPay(netEPC float64, rl float64, sysSize float64) float64 {
-	totalGrossCommission := netEPC - rl*(sysSize*1000)
+	totalGrossCommission := (netEPC - rl) * (sysSize * 1000)
 	return totalGrossCommission
 }
 
@@ -31,8 +31,8 @@ func CalcTotalGrossCommissionDealerPay(netEPC float64, rl float64, sysSize float
 * - mktFee: Marketing Fee
 * - payments: Total Payments (single value)
  */
-func CalcTotalNetCommissionsDealerPay(totalGrossCommissions float64, dlrOverdAmount float64, sysSize float64, mktFee float64, payments float64) float64 {
-	totalNetCommissions := totalGrossCommissions - (dlrOverdAmount * sysSize) - mktFee - payments
+func CalcTotalNetCommissionsDealerPay(totalGrossCommissions float64, dlrOverdAmount float64, sysSize float64, amt_paid float64) float64 {
+	totalNetCommissions := totalGrossCommissions - (dlrOverdAmount * sysSize) - amt_paid
 	return totalNetCommissions
 }
 
@@ -43,7 +43,7 @@ func CalcTotalNetCommissionsDealerPay(totalGrossCommissions float64, dlrOverdAmo
 * - drawPercent: Draw percentage (as a decimal)
 * - drawMax: Maximum allowable draw
  */
-func CalcPaymentsDealerPay(totalNetCommissions float64, drawPercent float64, drawMax float64) (float64, float64) {
+func CalcPaymentsDealerPay(totalNetCommissions float64, drawPercent float64, drawMax float64, amtpaid float64) (float64, float64) {
 	/* Calculate M1 Payment */
 	m1Payment := totalNetCommissions * drawPercent
 
@@ -53,16 +53,28 @@ func CalcPaymentsDealerPay(totalNetCommissions float64, drawPercent float64, dra
 	}
 
 	/* Calculate M2 Payment */
-	m2Payment := totalNetCommissions - m1Payment
+	m2Payment := totalNetCommissions - amtpaid
 
 	return m1Payment, m2Payment
 }
 
-func CalcAmountDealerPay(NtpCompleteDate, PvComplettionDate time.Time, m1Payment, m2Payment float64) (amount float64) {
-	if !NtpCompleteDate.IsZero() {
-		amount = m1Payment
-	} else if !PvComplettionDate.IsZero() {
-		amount = m2Payment
+func CalcAmountDealerPay(dealerPayments []oweconfig.DealerPaymentsStruct, uniqueId string) (amount float64) {
+	for _, entry := range dealerPayments {
+		if entry.UniqueId == uniqueId {
+			// Handle currency prefix if present (e.g., "USD ")
+			paymentAmountStr := entry.PaymentAmount
+			if len(paymentAmountStr) > 4 && paymentAmountStr[:4] == "USD " {
+				paymentAmountStr = paymentAmountStr[4:] // Remove "USD " prefix
+			}
+
+			// Convert cleaned payment amount string to float64
+			paymentAmount, err := strconv.ParseFloat(paymentAmountStr, 64)
+			if err != nil {
+				log.FuncErrorTrace(0, "error while converting string to float with err %v", err)
+				continue // Skip this entry if conversion fails
+			}
+			amount += paymentAmount
+		}
 	}
 	return amount
 }
@@ -76,7 +88,7 @@ func GetCreditByUniqueID(dealerCredit []oweconfig.DealerCreditsStruct, UniqueId 
 	return ""
 }
 
-func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleStruct, financeType, financeCompany, state string, saleDate time.Time) (loanfee float64) {
+func CalcLoanFeeCommissionDealerPay(financeSchedule []oweconfig.FinanceScheduleStruct, financeType, financeCompany, state string) (loanfee float64) {
 	for _, entry := range financeSchedule {
 		if entry.FinanceType == financeType && entry.FinanceCompany == financeCompany && entry.State3 == state {
 			loanfee += entry.FinanceFee
@@ -99,9 +111,9 @@ func CalcAmtPaidByDealer(dealerPayments []oweconfig.DealerPaymentsStruct, dealer
 	return amtPaid
 }
 
-func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, dealer string, uniqueId string) (amtPaid float64) {
+func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, uniqueId string) (amtPaid float64) {
 	for _, entry := range dealerPayments {
-		if entry.SalesPartner == dealer && entry.UniqueId == uniqueId {
+		if entry.UniqueId == uniqueId {
 			// Handle currency prefix if present (e.g., "USD ")
 			paymentAmountStr := entry.PaymentAmount
 			if len(paymentAmountStr) > 4 && paymentAmountStr[:4] == "USD " {
@@ -129,7 +141,7 @@ func CalcDealerOvrdCommissionDealerPay(dealerOvrd []oweconfig.DealerOverrideStru
 	return dealerovrd
 }
 
-func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer, financePartner, state string, contractDate time.Time) (drawPerc, drawMax, redline float64) {
+func CalcDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer, financePartner, state string, contractDate time.Time) (drawMax, redline float64) {
 	partnerRegex := regexp.MustCompile(`^(.*?)(?: -|-)`)
 	for _, entry := range partnerPaySchedule {
 		matches := partnerRegex.FindStringSubmatch(entry.Finance_partner)
@@ -138,14 +150,6 @@ func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfi
 			partnerName = matches[1] // Capture the portion before " -" or "-"
 		}
 		if entry.Sales_partner == dealer && entry.State == state && partnerName == financePartner && entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
-			// Convert M1SalesPartnerDrawPercentage from string to float64
-			percentage, err := strconv.ParseFloat(entry.M1SalesPartnerDrawPercentage, 64)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error converting M1SalesPartnerDrawPercentage to float: %v", err)
-				continue // Skip this entry if there's a conversion error
-			}
-			drawPerc += percentage
-
 			// Convert M1SalesPartnerNotToExceed from string to float64
 			M1SalesPartnerNotToExceed := entry.M1SalesPartnerNotToExceed
 			if len(M1SalesPartnerNotToExceed) > 4 && M1SalesPartnerNotToExceed[:4] == "USD " {
@@ -157,15 +161,29 @@ func CalcDrawPercDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfi
 				log.FuncErrorTrace(0, "Error converting M1SalesPartnerNotToExceed to float: %v", err)
 				continue // Skip this entry if there's a conversion error
 			}
-			drawMax += notToExceed
+			drawMax = notToExceed
 
 			redLine, err := strconv.ParseFloat(entry.Redline, 64)
 			if err != nil {
 				log.FuncErrorTrace(0, "Error converting redline to float: %v", err)
 				continue // Skip this entry if there's a conversion error
 			}
-			redline += redLine
+			redline = redLine
 		}
 	}
-	return drawPerc, drawMax, redline
+	return drawMax, redline
+}
+func CalcDrawPercCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer string, contractDate time.Time) (drawPerc float64) {
+	for _, entry := range partnerPaySchedule {
+		if entry.Sales_partner == dealer && entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
+			// Convert M1SalesPartnerDrawPercentage from string to float64
+			percentage, err := strconv.ParseFloat(entry.M1SalesPartnerDrawPercentage, 64)
+			if err != nil {
+				log.FuncErrorTrace(0, "Error converting M1SalesPartnerDrawPercentage to float: %v", err)
+				continue // Skip this entry if there's a conversion error
+			}
+			drawPerc = percentage
+		}
+	}
+	return drawPerc
 }

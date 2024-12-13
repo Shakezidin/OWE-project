@@ -158,7 +158,7 @@
   transition: all 500ms ease;
 }
 
-.leaderboard-data__btn:not([disabled]):hover{
+.leaderboard-data__btn:not([disabled]):hover {
   transform: scale(1.05);
 }
 
@@ -284,7 +284,7 @@
   grid-template-columns: repeat(2, 1fr);
   width: 128px;
   border: 1px solid var(--orange-color);
-  border-radius: 8px;
+  border-radius: 9px;
 }
 
 .leaderbord-tab-container .tab {
@@ -296,7 +296,8 @@
   color: var(--orange-color);
 }
 
-.leaderbord-tab-container .tab:first-child, .leaderbord-tab-container .tab:last-child {
+.leaderbord-tab-container .tab:first-child,
+.leaderbord-tab-container .tab:last-child {
   border-radius: 8px;
 }
 
@@ -339,11 +340,9 @@
   width: 408px;
   min-height: 100vh;
   overflow-y: auto;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 148, 205, 1) 30%,
-    rgba(255, 255, 255, 100%)
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 148, 205, 1) 30%,
+      rgba(255, 255, 255, 100%));
   padding-inline: 10px;
   padding-top: 45px;
 }
@@ -453,6 +452,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  height: 36px;
 }
 
 .export-trigger:hover {
@@ -510,6 +510,7 @@
   justify-content: space-between;
   margin-bottom: 1rem;
 }
+
 .export-btn {
   background: transparent;
   display: flex;
@@ -530,9 +531,16 @@
 }
 
 @media (max-width: 1024px) {
+
   .leaderboard-data__btn-group,
   .leaderboard-data__select-filter {
     display: none;
+  }
+
+  .leaderborder_filter-slect-wrapper .css-c0ggs4-control,
+  .leaderborder_filter-slect-wrapper .css-78cu09-control,
+  .leaderborder_filter-slect-wrapper .css-vdyxa5-control {
+    height: 36px !important;
   }
 
   .leaderboard-table thead tr th {
@@ -582,11 +590,8 @@
 }
 
 @media screen and (max-width: 767px) {
-  .leaderborder_filter-slect-wrapper .css-b62m3t-container .css-c0ggs4-control{
-    height: 36px !important;
-  }
 
-  .leaderboard-main{
+  .leaderboard-main {
     margin: 10px;
   }
 
@@ -601,6 +606,10 @@
 
   .mobile-card-wrapper {
     display: block;
+  }
+
+  .leaderboard-table-wrapper {
+    display: none;
   }
 
   .mobile-rank-card {
@@ -628,12 +637,14 @@
   .rank-card-stats {
     margin-top: 13px;
     gap: 36px;
+    overflow-x: scroll;
   }
 
   .rank-card-statss {
     margin-top: 13px;
     gap: 36px;
     margin-right: 10px;
+    overflow-x: scroll;
   }
 
   .rank-card-statss .rank-stats-num {
@@ -711,11 +722,5 @@
 
   .leaderboard-table-container::-webkit-scrollbar-corner {
     background-color: transparent;
-  }
-}
-
-@media (max-width: 400px) {
-  .leaderboard-data__datepicker-content {
-    right: -20px;
   }
 }

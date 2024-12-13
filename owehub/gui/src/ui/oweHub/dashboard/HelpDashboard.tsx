@@ -13,20 +13,27 @@ interface ButtonProps {
 const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-
-
   const [selectedFileName, setSelectedFileName] = useState('');
   const [fileSizeError, setFileSizeError] = useState('');
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState<any>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
 
     if (file) {
-      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf', '.doc', '.docx', '.docm', '.xls', '.xlsx'];
+      const allowedExtensions = [
+        '.png',
+        '.jpg',
+        '.jpeg',
+        '.pdf',
+        '.doc',
+        '.docx',
+        '.docm',
+        '.xls',
+        '.xlsx',
+      ];
       const fileExtension = file.name
         .toLowerCase()
         .substring(file.name.lastIndexOf('.'));
@@ -55,8 +62,6 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     }
   };
 
-
-
   const [state, setState] = useState({
     project_id: data?.unique_id || 'N/A',
     dealer_name: data?.dealer_code || '',
@@ -72,27 +77,28 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setState((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
 
   const validateFields = () => {
-    const newErrors: any = {};
-    newErrors.dealer_name = state.dealer_name ? '' : 'Dealer name is required';
-    newErrors.sale_rep = state.sale_rep ? '' : 'Sale rep is required';
-    newErrors.customer_name = state.customer_name ? '' : 'Customer name is required';
-    newErrors.message = state.message ? '' : 'Message is required';
+    const newErrors: any = {
+      dealer_name: state.dealer_name ? '' : 'Dealer name is required',
+      sale_rep: state.sale_rep ? '' : 'Sale rep is required',
+      customer_name: state.customer_name ? '' : 'Customer name is required',
+      message: state.message ? '' : 'Message is required',
+    };
     return newErrors;
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +153,8 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     }
   };
 
+  console.log(errors, 'errors');
+
   return (
     <>
       <div className="transparent-model-down">
@@ -162,10 +170,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
           <div className="modal-body">
             <div className="help-input-container">
               <div
-                className="create-input-container"
+                className="create-input-container help-projId"
                 style={{ width: '1740px' }}
               >
-                <div className="create-input-field" style={{}}>
+                <div className="create-input-field help-proj-input" style={{}}>
                   <Input
                     type={'text'}
                     label="Project ID"
@@ -187,6 +195,9 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
+                  {errors?.dealer_name && (
+                    <span className="error">{errors.dealer_name}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field-help">
@@ -198,6 +209,9 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
+                  {errors?.sale_rep && (
+                    <span className="error">{errors.sale_rep}</span>
+                  )}
                 </div>
                 <div className="create-input-field-help">
                   <Input
@@ -208,6 +222,9 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
+                  {errors?.customer_name && (
+                    <span className="error">{errors.customer_name}</span>
+                  )}
                 </div>
               </div>
 
@@ -267,7 +284,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                   />
                 </div>
 
-                <div className="create-input-field-help">
+                <div className="create-input-field-help attach-help-mob">
                   <label className="inputLabel">
                     <p>Attach File</p>
                   </label>
@@ -294,7 +311,6 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                     <span className="error">{fileSizeError}</span>
                   )}
                 </div>
-
               </div>
 
               <div className="create-input-field-note" style={{}}>
@@ -309,12 +325,20 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
                   value={state.message}
                   placeholder="Type here..."
                 ></textarea>
+                {errors?.message && (
+                  <span className="error">{errors.message}</span>
+                )}
               </div>
             </div>
           </div>
-          <div className="createUserActionButton" style={{ marginTop: '1rem' }}>
+          <div
+            className="createUserActionButton"
+            style={{ marginTop: '1rem', paddingTop: '1rem' }}
+          >
             <ActionButton title={'Cancel'} type="reset" onClick={handleClose} />
-            <button className='help-submit' onClick={handleSubmit}>Submit</button>
+            <button className="help-submit" onClick={handleSubmit}>
+              Submit
+            </button>
           </div>
         </div>
       </div>
@@ -323,4 +347,3 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
 };
 
 export default HelpDashboard;
-
