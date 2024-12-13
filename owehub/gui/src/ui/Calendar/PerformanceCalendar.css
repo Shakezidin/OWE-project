@@ -13,6 +13,10 @@
   gap: 3rem;
 }
 
+.calendar-cls-mob{
+  display: none;
+}
+
 .calendar-close {
   font-size: 25px;
   cursor: pointer;
@@ -376,6 +380,19 @@
     display: none;
   }
 
+  .calendar-cls-mob{
+    display: block;
+    background-color: #377cf6 !important;
+    border: none;
+    border-radius: 8px;
+    color: #f1f1f1;
+    height: 36px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 8px 24px;
+  }
+
   .calendar-date {
     width: unset;
     gap: 2rem;
@@ -454,6 +471,6 @@
     position: absolute;
     top: 88%;
     margin-top: 14px;
-    gap: 0;
+    gap: 0.3rem;
   }
 }
