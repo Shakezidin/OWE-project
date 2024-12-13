@@ -63,7 +63,7 @@
 .link-url {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .link-tab {
