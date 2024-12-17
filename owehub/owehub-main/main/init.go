@@ -503,6 +503,14 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	// import user csv
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/import_user_csv",
+		apiHandler.HandleImportUsersCsvRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 }
 
 /******************************************************************************
