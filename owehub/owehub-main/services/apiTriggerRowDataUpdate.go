@@ -56,15 +56,16 @@ func HandleTriggerRowDataUpdateRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// validate reqBody.Action
-	if reqBody.Action != "insert" && reqBody.Action != "update" && reqBody.Action != "delete" {
+	if reqBody.Action != "insert" && reqBody.Action != "update" &&
+		reqBody.Action != "delete" && reqBody.Action != "refresh" {
 		err = fmt.Errorf("invalid action \"%s\" in trigger row data update request", reqBody.Action)
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Invalid action", http.StatusBadRequest, nil)
 		return
 	}
 
-	// validate reqBody.RecordIds
-	if len(reqBody.RecordIds) <= 0 {
+	// validate reqBody.RecordIds (not applicable for refresh)
+	if reqBody.Action != "refresh" && len(reqBody.RecordIds) <= 0 {
 		err = fmt.Errorf("empty record ids in trigger row data update request")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Empty record ids", http.StatusBadRequest, nil)
@@ -80,6 +81,24 @@ func HandleTriggerRowDataUpdateRequest(resp http.ResponseWriter, req *http.Reque
 			err = UpsertSalesPartnersFromOweDb(reqBody.RecordIds...)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to upsert: %v", err)
+				appserver.FormAndSendHttpResp(resp, "Internal server error", http.StatusInternalServerError, nil)
+				return
+			}
+		}
+
+		// refresh
+		if reqBody.Action == "refresh" {
+			query := fmt.Sprintf("TRUNCATE TABLE %s", reqBody.TableName)
+			err = db.ExecQueryDB(db.OweHubDbIndex, query)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to truncate table: %v", err)
+				appserver.FormAndSendHttpResp(resp, "Internal server error", http.StatusInternalServerError, nil)
+				return
+			}
+
+			err = UpsertSalesPartnersFromOweDb()
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to refresh: %v", err)
 				appserver.FormAndSendHttpResp(resp, "Internal server error", http.StatusInternalServerError, nil)
 				return
 			}
