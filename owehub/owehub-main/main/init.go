@@ -98,6 +98,13 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-main-service/v1/import_user_csv",
+		apiHandler.HandleImportUsersCsvRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-main-service/v1/db_tables",
 		apiHandler.HandleGetTableRequest,
 		true,
@@ -459,7 +466,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/trigger_row_data_update",
+		apiHandler.HandleTriggerRowDataUpdateRequest,
+		false,
+		[]types.UserGroup{},
+	},
 	/************ Battery Backup Calculator API *******************/
 	{
 		strings.ToUpper("POST"),
@@ -502,14 +515,6 @@ var apiRoutes = appserver.ApiRoutes{
 		apiHandler.SendMailtoITfromUser,
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
-	},
-	// import user csv
-	{
-		strings.ToUpper("POST"),
-		"/owe-main-service/v1/import_user_csv",
-		apiHandler.HandleImportUsersCsvRequest,
-		false,
-		[]types.UserGroup{types.GroupAdminDealer},
 	},
 }
 
