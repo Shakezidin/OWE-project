@@ -48,12 +48,12 @@ func HandleTriggerRowDataUpdateRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// validate secret key to prevent api abuse
-	// if reqBody.SecretKey != types.CommGlbCfg.RowDataUpdateSecretKey {
-	// 	err = fmt.Errorf("invalid secret key in trigger row data update request")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Invalid secret key", http.StatusUnauthorized, nil)
-	// 	return
-	// }
+	if reqBody.SecretKey != db.RowDataApiSecret {
+		err = fmt.Errorf("invalid secret key in trigger row data update request")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Invalid secret key", http.StatusUnauthorized, nil)
+		return
+	}
 
 	// validate reqBody.Action
 	if reqBody.Action != "insert" && reqBody.Action != "update" && reqBody.Action != "delete" {
