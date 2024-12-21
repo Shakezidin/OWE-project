@@ -1,0 +1,8 @@
+{
+         "httpDialTimeOut":30,
+         "httpDialRetryCount":0,
+         "httpDialWaitTime":5,
+         "httpReadTimeOut":10,
+         "httpWriteTimeOut":10,
+         "httpIdleTimeOut":10
+}
