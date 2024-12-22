@@ -6,6 +6,7 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
 import useAuth from '../../../hooks/useAuth';
+import ReportMenu from '../../reporting/ReportMenu';
 
 interface Child {
   path: string;
@@ -286,112 +287,115 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           <div className="" key={i}>
             {isMobile && (
               <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
-                {el.mob?.map((oth: any, index: number) => (
-                  <Link
-                    key={index}
-                    style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
-                    to={oth.path}
-                    onClick={() => isTablet && setToggleOpen((prev) => !prev)}
-                    onMouseEnter={(e) =>
-                      toggleOpen &&
-                      !isTablet &&
-                      handleMouseover(
-                        e,
-                        oth.sidebarProps.displayText,
-                        [],
-                        index + 8
-                      )
+                {el.mob?.map((oth: any, index: number) => {
+                  if(oth.sidebarProps.displayText==='Reports') return <ReportMenu/>
+                  return <Link
+                  key={index}
+                  style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
+                  to={oth.path}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
+                  onMouseEnter={(e) =>
+                    toggleOpen &&
+                    !isTablet &&
+                    handleMouseover(
+                      e,
+                      oth.sidebarProps.displayText,
+                      [],
+                      index + 8
+                    )
+                  }
+                  onMouseLeave={() => {
+                    timeOut.current = setTimeout(() => {
+                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                    }, 500);
+                  }}
+                  className={`side-icon-container ${location.pathname.includes(oth.path)
+                    ? 'active-link-bg'
+                    : 'not-active-link'
+                    }`}
+                >
+                  <div
+                    className={
+                      location.pathname.includes(oth.path)
+                        ? 'sidebaricon'
+                        : 'sidebariconn'
                     }
-                    onMouseLeave={() => {
-                      timeOut.current = setTimeout(() => {
-                        setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
-                      }, 500);
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      marginLeft: !toggleOpen ? '' : '-1px',
+                      background:
+                        toggleOpen && location.pathname.includes(oth.path)
+                          ? ''
+                          : toggleOpen
+                            ? 'transparent'
+                            : 'transparent',
                     }}
-                    className={`side-icon-container ${location.pathname.includes(oth.path)
-                      ? 'active-link-bg'
-                      : 'not-active-link'
-                      }`}
                   >
-                    <div
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}
+                  </div>
+
+                  {toggleOpen && !isTablet ? null : (
+                    <p
                       className={
                         location.pathname.includes(oth.path)
-                          ? 'sidebaricon'
-                          : 'sidebariconn'
+                          ? 'tablink'
+                          : 'tablinkk'
                       }
+                    >
+                      {oth.sidebarProps.displayText}
+                    </p>
+                  )}
+                  <div
+                    className="tip"
+                    style={{
+                      backgroundColor: '#fff',
+                      position: 'fixed',
+                      top: cords.top,
+                      left: cords.left,
+                      display:
+                        cords.opacity && cords.id === index + 8
+                          ? 'block'
+                          : 'none',
+
+                      maxHeight: '300px',
+                      minWidth: '150px',
+                      overflowY: 'scroll',
+                      borderBottomRightRadius: '4px',
+                      borderTopRightRadius: '4px',
+                      borderLeft: '1px solid #D9D9D9',
+                      color: '#292B2E',
+                    }}
+                  >
+                    <span
+                      className=""
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        width: 24,
-                        height: 24,
-                        borderRadius: 4,
-                        marginLeft: !toggleOpen ? '' : '-1px',
-                        background:
-                          toggleOpen && location.pathname.includes(oth.path)
-                            ? ''
-                            : toggleOpen
-                              ? 'transparent'
-                              : 'transparent',
+                        display: 'block',
+                        background: '#377CF6',
+                        padding: '11px 12px',
+                        color: 'white',
+                        width: '100%',
+                        fontWeight: '500',
+                        borderBottom: '1px solid #E8E8E8',
+                        fontSize: '13px',
+                        // borderRight: "3px solid #377CF6",
+                        cursor: 'default',
+                        pointerEvents: 'none',
                       }}
                     >
-                      {oth.sidebarProps.icon && oth.sidebarProps.icon}
-                    </div>
-
-                    {toggleOpen && !isTablet ? null : (
-                      <p
-                        className={
-                          location.pathname.includes(oth.path)
-                            ? 'tablink'
-                            : 'tablinkk'
-                        }
-                      >
-                        {oth.sidebarProps.displayText}
-                      </p>
-                    )}
-                    <div
-                      className="tip"
-                      style={{
-                        backgroundColor: '#fff',
-                        position: 'fixed',
-                        top: cords.top,
-                        left: cords.left,
-                        display:
-                          cords.opacity && cords.id === index + 8
-                            ? 'block'
-                            : 'none',
-
-                        maxHeight: '300px',
-                        minWidth: '150px',
-                        overflowY: 'scroll',
-                        borderBottomRightRadius: '4px',
-                        borderTopRightRadius: '4px',
-                        borderLeft: '1px solid #D9D9D9',
-                        color: '#292B2E',
-                      }}
-                    >
-                      <span
-                        className=""
-                        style={{
-                          display: 'block',
-                          background: '#377CF6',
-                          padding: '11px 12px',
-                          color: 'white',
-                          width: '100%',
-                          fontWeight: '500',
-                          borderBottom: '1px solid #E8E8E8',
-                          fontSize: '13px',
-                          // borderRight: "3px solid #377CF6",
-                          cursor: 'default',
-                          pointerEvents: 'none',
-                        }}
-                      >
-                        {' '}
-                        {cords.text}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
+                      {' '}
+                      {cords.text}
+                    </span>
+                  </div>
+                </Link>
+                }
+                  
+                )}
               </div>
             )}
           </div>

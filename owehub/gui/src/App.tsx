@@ -48,6 +48,14 @@ import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
 import TotalCount from './ui/TotalCount/TotalCount';
+import Layout from './ui/reporting/ReportMenu';
+import Production from './ui/reporting/Production';
+import Quality from './ui/reporting/Quality';
+import SpeedOverall from './ui/reporting/SpeedOverall';
+import SalesToInstall from './ui/reporting/SalesToInstall';
+import ReasonOfIncomplete from './ui/reporting/ReasonOfIncomplete';
+import QualityPerOffice from './ui/reporting/QualityPerOffice';
+import ReportingLayout from './ui/reporting/ReportingLayout';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -129,7 +137,18 @@ function App() {
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
           <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
-          <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
+         
+          {/* reporting */}
+          <Route path={ROUTES.REPORTING} element={<ReportingLayout />}>
+            <Route path={ROUTES.REPORTING_PRODUCTION} element={<Production />} />
+            <Route path={ROUTES.REPORTING_QUALITY} element={<Quality />} />
+            <Route path={ROUTES.REPORTING_SPEED_OVERALL} element={<SpeedOverall />} />
+            <Route path={ROUTES.REPORTING_SALES_TO_INSTALL} element={<SalesToInstall />} />
+            <Route path={ROUTES.REPORTING_QUALITY_PER_OFFICE} element={<QualityPerOffice />} />
+            <Route path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE} element={<ReasonOfIncomplete />} />
+            <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
+          </Route>
+
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
