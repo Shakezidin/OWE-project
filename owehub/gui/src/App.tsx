@@ -156,6 +156,12 @@ function App() {
             <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
             <Route path = {ROUTES.NO_PTO} element={<NoPto/>} />
             <Route path={ROUTES.TIMELINES} element={<Timelines />} />
+
+            {/* TODO: Component need to change, ADDING ROUTES AND DEFAULT components */}
+            <Route path={ROUTES.SITE_COMPLETION} element={<Timelines />} />
+            <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<Timelines />} />
+            <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
+            <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
