@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, PureComponent } from 'react';
 import Papa from 'papaparse';
 import SelectOption from '../components/selectOption/SelectOption';
+import './ReasonOfIncomplete.css';
 import {
   ResponsiveContainer,
   XAxis,
@@ -9,6 +10,13 @@ import {
   Tooltip,
   Area,
   AreaChart,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+  Legend,
 } from 'recharts';
 import {
   startOfWeek,
@@ -42,6 +50,16 @@ import { ROUTES } from '../../routes/routes';
 interface DataPoint {
   name: string;
   pv: number;
+}
+
+interface LabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  index: number;
 }
 
 interface GraphProps {
@@ -259,6 +277,56 @@ const ReasonOfIncomplete: React.FC = () => {
     } else {
       console.log('Report option was cleared or set to null');
     }
+  };
+  const barData = Array.from({ length: 52 }, (_, index) => ({
+    week: `Week ${index + 1}`,
+    percent: Math.round(Math.random() * 100), // Random percentage value for each week
+    nullBar: 100 - Math.round(Math.random() * 100), // Null value to fill the space below the bar with black
+  }));
+
+  const pieData = [
+    { name: 'Change SOW', value: 400 },
+    { name: 'Customer Cancel', value: 300 },
+    { name: 'Customer is not okay', value: 300 },
+    { name: 'Missed Photos', value: 200 },
+    { name: 'Over Scheduling', value: 100 },
+    { name: 'Tech is not available', value: 300 },
+    { name: 'Lack of equipment', value: 900 },
+    { name: 'Missed Photos', value: 700 },
+    { name: 'Lack of equipment', value: 50 },
+  ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }: LabelProps): JSX.Element | null => {
+    if (percent < 0.1) {
+      // If percentage is less than 10%, return null (no label)
+      return null;
+    }
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="black"
+        fontSize={12}
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
   };
 
   const handleStateOptionChange = (newValue: Option | null) => {
@@ -548,12 +616,13 @@ const ReasonOfIncomplete: React.FC = () => {
   console.log(mappedPeriodOptions, 'optionssss');
   console.log(selectedReportOption, 'dateeeee');
   console.log(selectedOption, 'day month');
+
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
         {/* TODO */}
 
-        <h4 className="reports-title">ReasonOfIncomplete</h4>
+        <h4 className="reports-title">Reason Of Incomplete</h4>
         <div className="report-header-dropdown flex-wrap">
           <div>
             <SelectOption
@@ -665,69 +734,89 @@ const ReasonOfIncomplete: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="report-graphs">
-        {graphs.map((graph, index) => (
-          <div key={index} className="report-graph">
-            <h5 className="graph-title">{graph.title}</h5>
+      <div className="time-completions">
+        <div className="time-bar">
+          <p>Survey (Weekly)</p>
+          <ResponsiveContainer width={850} height={300}>
+            <BarChart
+              data={barData}
+              margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
+            >
+              {/* X-Axis */}
+              <XAxis
+                dataKey="week"
+                interval={0}
+                tick={{ fontSize: 10, fill: '#555' }}
+                angle={-45}
+                dy={10}
+              />
 
-            {isLoading ? (
-              <div
-                className="flex items-center"
-                style={{ justifyContent: 'center' }}
+              {/* Y-Axis */}
+              <YAxis
+                tickFormatter={(tick) => `${tick}%`}
+                tick={{ fontSize: 10, fill: '#555' }}
+                domain={[0, 100]}
+              />
+
+              {/* Tooltip */}
+              <Tooltip formatter={(value) => `${value}%`} />
+
+              {/* Bars */}
+              <Bar
+                dataKey="percent"
+                fill="#CA3D01" // Main color for the filled part of the bar
+                background={{ fill: '#CFE621' }} // Background color for the bar
+                barSize={15}
+                isAnimationActive={false} // Disable hover animation
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="line"></div>
+        <div className="time-radialbar">
+          <p>Reason for Incompletion</p>
+          <ResponsiveContainer height={300}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="40%"
+                cy="50%"
+                outerRadius={110}
+                fill="#8884d8"
+                label={renderCustomizedLabel} // Add label rendering here
+                labelLine={false} // Optionally hide the label line
               >
-                {' '}
-                <MicroLoader />{' '}
-              </div>
-            ) : (
-              <div className="main-graph" style={stylesGraph}>
-                <ResponsiveContainer
-                  width="100%"
-                  height="100%"
-                  className={'graph-container'}
-                >
-                  <AreaChart data={graph.data}>
-                    <defs>
-                      <linearGradient
-                        id={`colorPv-${index}`}
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="12%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="88%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.1}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area
-                      type="monotone"
-                      dataKey="pv"
-                      stroke={graph.stopColor}
-                      strokeWidth={3}
-                      fill={`url(#colorPv-${index})`}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </div>
-        ))}
+                {pieData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend
+                layout="vertical" // Arrange legend items vertically
+                align="right" // Center the legend horizontally
+                verticalAlign="middle" // Center the legend vertically
+                iconType="circle" // Make the legend items circular
+                iconSize={10} // Set the size of the circle
+                formatter={(value) => value} // Optional: customize text if needed
+                wrapperStyle={{
+                  fontSize: '12px', // Reduce font size
+                  marginTop: -25, // Optional: spacing between chart and legend
+                }}
+                height={100} // Adjust legend height if necessary
+                payload={pieData.map((entry, index) => ({
+                  value: entry.name,
+                  type: 'circle',
+                  color: COLORS[index % COLORS.length],
+                }))}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
