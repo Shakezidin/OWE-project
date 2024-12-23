@@ -42,3 +42,7 @@
 :where(.css-dev-only-do-not-override-1kf000u).ant-menu-inline .ant-menu-item, :where(.css-dev-only-do-not-override-1kf000u).ant-menu-vertical .ant-menu-item, :where(.css-dev-only-do-not-override-1kf000u).ant-menu-inline .ant-menu-submenu-title, :where(.css-dev-only-do-not-override-1kf000u).ant-menu-vertical .ant-menu-submenu-title {
   padding-inline: 10px!important;
 }
+
+.install-table thead.ant-table-thead tr {
+  position: static !important; /* Ensure header is not sticky */
+}
