@@ -40,6 +40,8 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 	columns = []string{
 		"partner_id",
 		"sales_partner_name",
+		"account_manager2",
+		"account_executive",
 	}
 
 	for _, recordId := range recordIds {
