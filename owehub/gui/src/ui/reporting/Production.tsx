@@ -467,7 +467,7 @@ const Production: React.FC = () => {
 
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
-    height: '285px',
+    height: '325px',
   };
 
   return (
