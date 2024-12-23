@@ -79,7 +79,7 @@ const items: MenuProps['items'] = [
               },
               {
                 key: 'No PTO Granted Date',
-                label: 'No PTO Granted Date',
+                label: <Link to={ROUTES.NO_PTO}>No PTO Granted Date</Link>,
               },
             ],
           },

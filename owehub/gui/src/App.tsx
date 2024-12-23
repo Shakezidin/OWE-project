@@ -58,6 +58,8 @@ import QualityPerOffice from './ui/reporting/QualityPerOffice';
 import ReportingLayout from './ui/reporting/ReportingLayout';
 import CompletionsPerOffice from './ui/reporting/CompletionsPerOffice';
 import CompletionsPerTeams from './ui/reporting/CompletionsPerTeam';
+import NoPto from './ui/reporting/NoPto';
+
 
 function App() {
   const dispatch = useAppDispatch();
@@ -151,6 +153,7 @@ function App() {
             <Route path={ROUTES.COMPLETIONS_PER_OFFICE} element={<CompletionsPerOffice />} />
             <Route path={ROUTES.COMPLETIONS_PER_TEAM} element={<CompletionsPerTeams />} />
             <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
+            <Route path = {ROUTES.NO_PTO} element={<NoPto/>} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}

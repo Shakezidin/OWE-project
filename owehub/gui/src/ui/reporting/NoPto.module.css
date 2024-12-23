@@ -1,0 +1,9 @@
+.main_container{
+    width: 100%;
+    background-color: white;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 18px;
+}

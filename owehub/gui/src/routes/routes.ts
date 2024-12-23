@@ -68,6 +68,8 @@ export const ROUTES = {
   REPORTING_REASON_FOR_INCOMPLETE: '/reporting/reason-for-incomplete',
   COMPLETIONS_PER_OFFICE: '/reporting/completions-per-office',
   COMPLETIONS_PER_TEAM: '/reporting/completions-per-team',
+  NO_PTO: '/reporting/no-pto',
+
 
 
   // other routes
