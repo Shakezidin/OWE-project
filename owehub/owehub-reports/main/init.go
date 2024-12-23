@@ -60,7 +60,7 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-calc-service/v1/get_productionsummaryreport",
+		"/owe-reports-service/v1/get_productionsummaryreport",
 		apiHandler.HandleGetProductionSummaryReportRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
