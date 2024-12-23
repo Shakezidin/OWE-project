@@ -36,7 +36,7 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 
 	tableName = "sales_partner_dbhub_schema"
 
-	// columns to sync (excluding item_id)
+	// columns to sync (excluding item_id/record_id)
 	columns = []string{
 		"partner_id",
 		"sales_partner_name",
@@ -51,11 +51,11 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 
 	// don't use where clause if recordIds not provided
 	if len(whereEleList) > 0 {
-		whereClause = fmt.Sprintf("WHERE item_id IN (%s)", strings.Join(wherePlaceholders, ","))
+		whereClause = fmt.Sprintf("WHERE record_id IN (%s)", strings.Join(wherePlaceholders, ","))
 	}
 
 	// query owe db
-	query = fmt.Sprintf("SELECT item_id, %s FROM %s %s", strings.Join(columns, ","), tableName, whereClause)
+	query = fmt.Sprintf("SELECT record_id, %s FROM %s %s", strings.Join(columns, ","), tableName, whereClause)
 
 	oweDbData, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
@@ -81,7 +81,7 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 	//
 
 	for _, item := range oweDbData {
-		tupleItems := []string{fmt.Sprintf("%v", item["item_id"])}
+		tupleItems := []string{fmt.Sprintf("%v", item["record_id"])}
 
 		for _, column := range columns {
 			switch val := item[column].(type) {
