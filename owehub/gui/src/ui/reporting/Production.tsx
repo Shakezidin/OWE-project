@@ -38,6 +38,10 @@ import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import TableData from './TableData';
+import LineGraph from './components/LineGraph';
+import ChartBar from './components/BarChart';
+import BarChartExample from './components/BarChart';
+import TableCustom from './components/Tables/CustomTable';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -62,22 +66,7 @@ interface DateRangeWithLabel {
   end: Date;
 }
 
-// Custom tooltip component
-const CustomTooltip: React.FC<{
-  active?: boolean;
-  payload?: { value: number }[];
-  label?: string;
-}> = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="tooltip_stats">
-        <p>{label}</p>
-        <p>{`Count: ${payload[0].value}`}</p>
-      </div>
-    );
-  }
-  return null;
-};
+
 
 const Production: React.FC = () => {
   const [newFormData, setNewFormData] = useState({});
@@ -88,10 +77,16 @@ const Production: React.FC = () => {
   const [data, setData] = useState('');
   const [isExportingData, setIsExporting] = useState(false);
   const [graphs, setGraphs] = useState<GraphProps[]>([
-    { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
-    { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+    { title: 'Scheduled', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
+    { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
     {
-      title: 'Installs',
+      title: 'Completed',
+      stopColor: '#377CF6',
+      borderColor: '#377CF6',
+      data: [],
+    },
+    {
+      title: 'Fix Completed',
       stopColor: '#377CF6',
       borderColor: '#377CF6',
       data: [],
@@ -102,10 +97,12 @@ const Production: React.FC = () => {
     label: 'Daily',
     value: 'day',
   });
-  const [reportType, setReportType] = useState<Option>({
-    label: 'Install',
-    value: 'install',
-  });
+  const [reportType, setReportType] = useState<Option>(
+    {
+      label: 'Install',
+      value: 'install',
+    }
+  );
   const [selectedStateOption, setSelectedStateOption] = useState<Option>({
     label: 'All State',
     value: 'All',
@@ -436,105 +433,28 @@ const Production: React.FC = () => {
   });
 
   useEffect(() => {
-    // Clear previous graph data to reset the state for fresh data
     setGraphs([
       {
-        title: 'Sales',
+        title: 'Scheduled',
         stopColor: '#0096D3',
         borderColor: '#0096D3',
         data: [],
       },
-      { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+      { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
       {
-        title: 'Installs',
+        title: 'Completed',
+        stopColor: '#377CF6',
+        borderColor: '#377CF6',
+        data: [],
+      },
+      {
+        title: 'Fix Completed',
         stopColor: '#377CF6',
         borderColor: '#377CF6',
         data: [],
       },
     ]);
-
-    const partnerNames = selectedDealer.map((dealer) => dealer.value);
-
-    if (selectedReportOption?.value && selectedOption.value) {
-      (async () => {
-        try {
-          setIsLoading(true);
-
-          const formatDate = (dateString: string): string => {
-            if (!dateString) return '';
-            const [day, month, year] = dateString.split('-');
-            return `${day}-${month}-${year}`; // Return in DD-MM-YYYY format
-          };
-
-          // Split and validate dates
-          const dateRange = selectedReportOption.value.split(' - ');
-          if (dateRange.length !== 2) {
-            console.error(
-              'Invalid date range format:',
-              selectedReportOption.value
-            );
-            return;
-          }
-
-          const [start_date, end_date] = dateRange.map(formatDate);
-          console.log(start_date, end_date, 'start_Date');
-
-          const response = await postCaller('get_milestone_data', {
-            dealer_names: partnerNames,
-            start_date,
-            end_date,
-            date_by: selectedOption.value,
-            state:
-              selectedStateOption.value === 'All'
-                ? ''
-                : selectedStateOption.value === ''
-                  ? ''
-                  : selectedStateOption.value,
-          });
-
-          if (response.status > 201) {
-            toast.error(response.message);
-            setData(''); // Clear data if error
-            setGraphs([]); // Clear graphs if error
-            return;
-          }
-
-          setData(response.data);
-          const { ntp_data, sale_data, install_data } = response.data;
-
-          setGraphs([
-            {
-              title: 'Sales',
-              stopColor: '#0096D3',
-              borderColor: '#0096D3',
-              data: mapDataToGraph(sale_data),
-            },
-            {
-              title: 'NTP',
-              stopColor: '#A6CE50',
-              borderColor: '#A6CE50',
-              data: mapDataToGraph(ntp_data),
-            },
-            {
-              title: 'Installs',
-              stopColor: '#377CF6',
-              borderColor: '#377CF6',
-              data: mapDataToGraph(install_data),
-            },
-          ]);
-        } catch (error) {
-          console.error('Error fetching milestone data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-    }
-  }, [
-    selectedOption,
-    selectedStateOption,
-    selectedReportOption,
-    selectedDealer,
-  ]);
+  });
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -547,7 +467,7 @@ const Production: React.FC = () => {
 
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
-    height: '236px',
+    height: '285px',
   };
 
   return (
@@ -593,27 +513,31 @@ const Production: React.FC = () => {
 
           <div>
             <SelectOption
-              options={mappedPeriodOptions}
-              onChange={handleReportOptionChange}
-              value={selectedReportOption}
-              controlStyles={{ marginTop: 0, minHeight: 30 }}
-              // menuStyles={{
-              //   minWidth: 150
-              // }}
-              menuListStyles={{
-                fontWeight: 400,
-              }}
-              singleValueStyles={{ fontWeight: 400 }}
-            />
-          </div>
-
-          <div>
-            <SelectOption
               options={[
-                { label: 'Daily', value: 'day' },
-                { label: 'Weekly', value: 'week' },
-                { label: 'Monthly', value: 'month' },
-                { label: 'Yearly', value: 'year' },
+                {
+                  label: 'Day 1',
+                  value: 'install',
+                },
+                {
+                  label: 'Day 2',
+                  value: 'battery',
+                },
+                {
+                  label: 'Day 3',
+                  value: 'service',
+                },
+                {
+                  label: 'Day 4',
+                  value: 'mpu',
+                },
+                {
+                  label: 'Day 5',
+                  value: 'derate',
+                },
+                {
+                  label: 'Day 6',
+                  value: 'der_lst_sub_panel',
+                },
               ]}
               onChange={handleWeeklyOption}
               controlStyles={{ marginTop: 0, minHeight: 30 }}
@@ -627,33 +551,7 @@ const Production: React.FC = () => {
             />
           </div>
 
-          <div className="perf-export-btn order-mob-1 relative pipline-export-btn ">
-            <button
-              data-tooltip-id="export-tooltip" // Match with ReactTooltip's id
-              data-tooltip-content="Export" // Add content directly here
-              onClick={exportCsv}
-              disabled={isExportingData}
-              className={`performance-exportbtn flex items-center justify-center totalcount-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-            >
-              {isExportingData ? (
-                <MdDownloading className="downloading-animation" size={20} />
-              ) : (
-                <LuImport size={20} />
-              )}
-            </button>
-            <ReactTooltip
-              id="export-tooltip" // Make sure this id matches the button's data-tooltip-id
-              place="bottom"
-              style={{
-                zIndex: 20,
-                background: '#f7f7f7',
-                color: '#000',
-                fontSize: 12,
-                paddingBlock: 4,
-              }}
-              offset={8}
-            />
-          </div>
+        
         </div>
       </div>
       <div
@@ -665,7 +563,7 @@ const Production: React.FC = () => {
           alignItems: 'center',
           borderRadius: 5,
           width: '100%',
-          margin:'10px 0'
+          margin: '10px 0'
         }}
       >
         {reportType.label}
@@ -673,6 +571,7 @@ const Production: React.FC = () => {
 
       <div className="report-graphs">
         {graphs.map((graph, index) => (
+
           <div
             key={index}
             className="report-graph"
@@ -683,7 +582,7 @@ const Production: React.FC = () => {
               marginBottom: 50,
             }}
           >
-            
+
             {isLoading ? (
               <div
                 className="flex items-center"
@@ -694,66 +593,64 @@ const Production: React.FC = () => {
               </div>
             ) : (
               <>
-              <TableData
-              reportType={reportType}
-              data={[
-                { column1: 'Tucson', column2: '44' },
-                { column1: 'India', column2: '45' },
-                { column1: 'USA', column2: '100' },
-              ]}
-            />
-              <div className="main-graph" style={stylesGraph}>
-                <h3 style={{ textAlign: 'center' }}>{graph.title}</h3>
-                <ResponsiveContainer
-                  width="100%"
-                  height="100%"
-                  className={'graph-container'}
-                >
-                  <AreaChart data={graph.data}>
-                    <defs>
-                      <linearGradient
-                        id={`colorPv-${index}`}
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="12%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="88%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.1}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area
-                      type="monotone"
-                      dataKey="pv"
-                      stroke={graph.stopColor}
-                      strokeWidth={3}
-                      fill={`url(#colorPv-${index})`}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+                <TableCustom
+                  reportType={reportType}
+                  middleName={graph.title}
+                  data={[
+                    { column1: 'Tucson', column2: '44' },
+                    { column1: 'India', column2: '45' },
+                    { column1: 'USA', column2: '1' },
+                  ]}
+                />
+                <div className="main-graph" style={stylesGraph}>
+                  <h3 style={{ textAlign: 'center' }}>{reportType.label} {graph.title}</h3>
+                  <LineGraph />
+                </div>
               </>
             )}
           </div>
         ))}
       </div>
+
+      <div className="report-graphs">
+        <div
+          className="report-graph"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 50,
+          }}
+        >
+          {isLoading ? (
+            <div
+              className="flex items-center"
+              style={{ justifyContent: 'center' }}
+            >
+              {' '}
+              <MicroLoader />{' '}
+            </div>
+          ) : (
+            <>
+              <TableCustom
+                  reportType={reportType}
+                  middleName="Pending"
+                  data={[
+                    { column1: 'Tucson', column2: '44' },
+                    { column1: 'India', column2: '45' },
+                    { column1: 'USA', column2: '1' },
+                  ]}
+                />
+              <div className="main-graph" style={stylesGraph}>
+                <h3 style={{ textAlign: 'center' }}>Pending {reportType.label}</h3>
+                  <BarChartExample/>
+              </div>
+            </>
+          )}
+        </div>
+
+      </div>
+
     </div>
   );
 };

@@ -1,0 +1,42 @@
+.qualty-top-div{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.qual-sec-1{
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    gap: 10px;
+    width: 100%;
+}
+
+
+.approved-sec{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.approved-sec h1{
+    font-size: 14px;
+    font-weight: 500;
+}
+.main-graph{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.main-graph h1{
+    font-weight: 500;
+    font-size: 14px;
+}
+.qual-sec-2{
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    gap: 10px;
+    width: 100%;
+}
