@@ -94,6 +94,29 @@ const items: MenuProps['items'] = [
           },
         ],
       },
+      {
+        key: 'Site Survey',
+        label: 'Site Survey',
+        children: [
+          {
+            key: 'All Completions',
+            label: <Link to={ROUTES.SITE_COMPLETION}>All Completions</Link>,
+          },
+
+          {
+            key: 'Timelines',
+            label: <Link to={ROUTES.SITE_TIMELINES}>Timelines</Link>,
+          },
+          {
+            key: '1st Time Completions',
+            label: <Link to={ROUTES.SITE_FIRST_COMPLETION}>1st Time Completions</Link>,
+          },
+          {
+            key: 'Outside SLA',
+            label: <Link to={ROUTES.SITE_OUTSIDE_SLA}>Outside SLA</Link>,
+          },
+        ],
+      },
     ],
   },
 ];

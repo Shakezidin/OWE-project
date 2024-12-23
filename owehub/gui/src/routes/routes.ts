@@ -70,6 +70,10 @@ export const ROUTES = {
   COMPLETIONS_PER_TEAM: '/reporting/completions-per-team',
   NO_PTO: '/reporting/no-pto',
   TIMELINES: '/reporting/timelines',
+  SITE_COMPLETION: '/reporting/site-completion',
+  SITE_TIMELINES: '/reporting/site-timelines',
+  SITE_FIRST_COMPLETION: '/reporting/site-first_completion',
+  SITE_OUTSIDE_SLA: '/reporting/site-outise-sla',
 
 
 
