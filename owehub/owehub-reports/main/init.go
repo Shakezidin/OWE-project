@@ -65,6 +65,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_overallspeedummaryreport",
+		apiHandler.HandleGetOverallSpeedSummaryReportRequest,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

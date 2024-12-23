@@ -8,16 +8,12 @@ package models
 
 import "time"
 
-type ProductionSummaryReportRequest struct {
-	Filters    []Filter `json:"filters"`
-	PageNumber int      `json:"page_number"`
-	PageSize   int      `json:"page_size"`
+type SummaryReportRequest struct {
 	Year       string   `json:"year"`
 	Week       string   `json:"week"`
 	Day        string   `json:"day"`
 	ReportType string   `json:"report_type"`
-	Office     string   `json:"office"`
-	Paginate   bool     `json:"paginate"`
+	Office     []string `json:"office"`
 }
 
 type ProductionSummaryReportResponse struct {
@@ -48,4 +44,12 @@ type ProductionSummaryReportResponse struct {
 	Watt           float64   `json:"watt"`
 	Commissions    float64   `json:"commissions"`
 	Paid           float64   `json:"paid"`
+}
+
+type DataPoint struct {
+	Value map[string]float64 `json:"value"`
+}
+
+type OverallSpeedSummaryReportResponse struct {
+	Data map[string][]DataPoint `json:"data"`
 }
