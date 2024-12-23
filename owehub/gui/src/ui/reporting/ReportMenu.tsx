@@ -55,7 +55,7 @@ const items: MenuProps['items'] = [
               },
               {
                 key: 'Reason for Incompletion',
-                label: 'Reason for Incompletion',
+                label: <Link to={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}>Reason for Incompletion</Link>,
               },
             ],
           },
