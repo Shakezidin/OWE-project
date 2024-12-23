@@ -75,11 +75,11 @@ const items: MenuProps['items'] = [
               },
               {
                 key: 'Completions per Team',
-                label: 'Completions per Team',
+                label: <Link to={ROUTES.COMPLETIONS_PER_TEAM}>Completions per team</Link>,
               },
               {
                 key: 'No PTO Granted Date',
-                label: 'No PTO Granted Date',
+                label: <Link to={ROUTES.NO_PTO}>No PTO Granted Date</Link>,
               },
             ],
           },

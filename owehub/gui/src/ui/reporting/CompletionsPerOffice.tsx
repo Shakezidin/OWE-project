@@ -21,7 +21,14 @@ const CODE_COLORS = {
   'CODEN1': '#87CEEB',
   'NMABQ01': '#F0E68C',
   'TXDAL01': '#3CB371',
-  'AZKING01': '#00CED1'
+  'AZKING01': '#00CED1',
+  'COGJ1': '#4682B4',      
+  'TXELP01': '#F9C0D6',    
+  'null': '#F9B7B0',       
+  'TXAU01': '#C0C0C0',     
+  'TXSAN01': '#F08080',    
+  'TXHOU01': '#D3F5D3',    
+  'NoOffice': '#B0C4DE'    
 };
 
 // At the top of the file, add these types
@@ -62,7 +69,7 @@ const CompletionsPerOffice: React.FC = () => {
       key: `week${i}`,
       render: (weeks: number[]) => weeks[i]
     })),
-    { 
+    {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
@@ -75,19 +82,36 @@ const CompletionsPerOffice: React.FC = () => {
     week: `Week ${i + 1}`,
     'Tucson': Math.random() * 500,
     'Colorado': Math.random() * 300,
-    'Albuquerque/El Paso': Math.random() * 400
+    'Albuquerque/El Paso': Math.random() * 400,
+    'Texas': Math.random() * 400,
+    'Tempe': Math.random() * 400,
+    'Peoria/Kingman': Math.random() * 400,
+    '#N/A': Math.random() * 400,
+    // 'null': Math.random() * 400,
   }));
 
   const lineChartData = Array.from({ length: 52 }, (_, i) => ({
     week: `Week ${i + 1}`,
-    'AZPECO1': Math.random() * 800,
-    'AZTUC01': Math.random() * 300,
-    'AZTEM01': Math.random() * 400
+    'AZPECO1': parseFloat((Math.random() * 7).toFixed(2)),
+    'AZTUC01': parseFloat((Math.random() * 1).toFixed(2)),
+    'AZTEM01': parseFloat((Math.random() * 1.1).toFixed(2)),
+    'CODEN1': parseFloat((Math.random() * 1.2).toFixed(2)),
+    'NMABQ01': parseFloat((Math.random() * 1.3).toFixed(2)),
+    'TXDAL01': parseFloat((Math.random() * 1.5).toFixed(2)),
+    'AZKING01': parseFloat((Math.random() * 1).toFixed(2)),
+    'COGJ1': parseFloat((Math.random() * 1.5).toFixed(2)),
+    'TXELP01': parseFloat((Math.random() * 1.9).toFixed(2)),
+    'null': parseFloat((Math.random() * 1.6).toFixed(2)),
+    'TXAU01': parseFloat((Math.random() * 1.8).toFixed(2)),
+    'TXSAN01': parseFloat((Math.random() * 1).toFixed(2)),
+    'TXHOU01': parseFloat((Math.random() * 1.2).toFixed(2)),
+    'NoOffice': parseFloat((Math.random() * 1.5).toFixed(2))
   }));
 
 
-   // Real data for the count table
-   const countTableData = [
+
+  // Real data for the count table
+  const countTableData = [
     {
       key: '1',
       year: 2024,
@@ -203,7 +227,7 @@ const CompletionsPerOffice: React.FC = () => {
   const averageSizeTableData = systemSizeTableData.map(sizeRow => {
     // Find matching count row
     const countRow = countTableData.find(count => count.office === sizeRow.office);
-    
+
     return {
       key: sizeRow.key,
       year: sizeRow.year,
@@ -226,7 +250,7 @@ const CompletionsPerOffice: React.FC = () => {
       key: `week${i}`,
       render: (weeks: any) => weeks[i]?.toFixed(2) || '-'
     })),
-    { 
+    {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
@@ -242,13 +266,13 @@ const CompletionsPerOffice: React.FC = () => {
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
       key: `week${i}`,
-      render: (weeks:any) => weeks[i]
+      render: (weeks: any) => weeks[i]
     })),
-    { 
+    {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value:any) => <span className="font-bold">{value.toLocaleString()}</span>
+      render: (value: any) => <span className="font-bold">{value.toLocaleString()}</span>
     }
   ];
 
@@ -260,85 +284,118 @@ const CompletionsPerOffice: React.FC = () => {
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
       key: `week${i}`,
-      render: (weeks:any) => weeks[i]?.toFixed(2) || '0.00'
+      render: (weeks: any) => weeks[i]?.toFixed(2) || '0.00'
     })),
-    { 
+    {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value:any) => <span className="font-bold">{value.toFixed(2)}</span>
+      render: (value: any) => <span className="font-bold">{value.toFixed(2)}</span>
     }
   ];
 
   return (
-    <div className="p-6">
+    <div className="bg-white p2">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold">PV Install Completions (Office)</h2>
+          <h3 className="text-xl font-semibold">PV Install Completions (Office)</h3>
         </div>
-        <div className="flex gap-4">
-          <Select
-            value={selectedOffice}
-            onChange={setSelectedOffice}
-            style={{ width: 200 }}
-            options={[
-              { value: 'All', label: 'All Offices' },
-              ...Object.keys(OFFICE_COLORS).map(office => ({
-                value: office,
-                label: office
-              }))
-            ]}
-          />
-          <Select
-            value={selectedTeam}
-            onChange={setSelectedTeam}
-            style={{ width: 200 }}
-            options={[
-              { value: 'All', label: 'All Teams' }
-            ]}
-          />
-          <Select
-            value={selectedPeriod}
-            onChange={setSelectedPeriod}
-            style={{ width: 200 }}
-            options={[
-              { value: 'Week/Year', label: 'Week/Year' },
-              { value: 'Month/Year', label: 'Month/Year' },
-              { value: 'Quarter/Year', label: 'Quarter/Year' }
-            ]}
-          />
+        <div className="flex">
+          <div className="mr2 ">
+            <Select
+              // mode="multiple"
+              // allowClear
+              value={selectedOffice}
+              onChange={setSelectedOffice}
+              style={{ width: 200 }}
+              options={[
+                { value: 'All', label: 'Office' },
+                ...Object.keys(OFFICE_COLORS).map((office) => ({
+                  value: office,
+                  label: office,
+                })),
+              ]}
+            />
+          </div>
+          <div className="mr2">
+            <Select
+              value={selectedTeam}
+              onChange={setSelectedTeam}
+              style={{ width: 200 }}
+              options={[
+                { value: 'All', label: 'Related Teams' },
+                { value: 'AZTEM03', label: 'AZTEM03' },
+                { value: 'AZTEM06', label: 'AZTEM06' },
+                { value: 'AZTEM04', label: 'AZTEM04' },
+                { value: 'AZPEO07', label: 'AZPEO07' },
+                { value: 'AZTEM08', label: 'AZTEM08' },
+                { value: 'AZPEO01', label: 'AZPEO01' },
+                { value: 'AZTEM01', label: 'AZTEM01' },
+                { value: 'AZTUC01', label: 'AZTUC01' },
+                { value: 'AZPEO04', label: 'AZPEO04' },
+                { value: 'AZTEM02', label: 'AZTEM02' },
+                { value: 'AZPEO06', label: 'AZPEO06' },
+                { value: 'null', label: 'null' }]}
+            />
+          </div>
+          <div>
+            <Select
+              value={selectedPeriod}
+              onChange={setSelectedPeriod}
+              style={{ width: 200 }}
+              options={[
+                { value: 'Week/Year', label: 'Completed Week/Year' },
+                { value: '2024-12-1 12:00:00', label: '2024-12-1 12:00:00' },
+                { value: '2024-11-1 12:00:00', label: '2024-11-1 12:00:00' },
+                { value: '2024-10-1 12:00:00', label: '2024-10-1 12:00:00' },
+                { value: '2024-09-1 12:00:00', label: '2024-09-1 12:00:00' },
+                { value: '2024-08-1 12:00:00', label: '2024-08-1 12:00:00' },
+                { value: '2024-07-1 12:00:00', label: '2024-07-1 12:00:00' },
+                { value: '2024-06-1 12:00:00', label: '2024-06-1 12:00:00' },
+                { value: '2024-05-1 12:00:00', label: '2024-05-1 12:00:00' },
+                { value: '2024-04-1 12:00:00', label: '2024-04-1 12:00:00' },
+                { value: '2024-03-1 12:00:00', label: '2024-03-1 12:00:00' },
+                { value: '2024-02-1 12:00:00', label: '2024-02-1 12:00:00' },
+              ]}
+            />
+          </div>
         </div>
+
       </div>
 
       <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by Count</h3>
-          <Table 
-            columns={countColumns} 
-            dataSource={countTableData}
-            pagination={false}
-            className="install-table"
-          />
-        </div>
+        <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by Count</h3>
+        <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
+        <Table
+          columns={countColumns}
+          dataSource={countTableData}
+          pagination={false}
+          className="install-table"
+          sticky={false}
+        />
+      </div>
 
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size</h3>
-          <Table 
-            columns={systemSizeColumns} 
-            dataSource={systemSizeTableData}
-            pagination={false}
-            className="install-table"
-          />
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size (Average kW)</h3>
-          <Table 
-            columns={averageSizeColumns} 
-            dataSource={averageSizeTableData}
-            pagination={false}
-            className="install-table"
-          />
-        </div>
+      <div className="bg-white rounded-lg shadow p2">
+        <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size</h3>
+        <div className="flex justify-end h5 bold pr3" style={{ background: "#b2ebf2" }} title="Week / Customer">Week / System Size </div>
+        <Table
+          columns={systemSizeColumns}
+          dataSource={systemSizeTableData}
+          pagination={false}
+          className="install-table"
+        />
+      </div>
+
+      <div className="bg-white rounded-lg shadow p2">
+        <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size (Average kW)</h3>
+        <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / System Size </div>
+        <Table
+          columns={averageSizeColumns}
+          dataSource={averageSizeTableData}
+          pagination={false}
+          className="install-table"
+        />
+      </div>
 
       <div className="bg-white rounded-lg shadow p2 mb-6">
         <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size</h3>
@@ -350,7 +407,7 @@ const CompletionsPerOffice: React.FC = () => {
             <Tooltip />
             <Legend />
             {Object.keys(OFFICE_COLORS).map((office) => (
-              <Bar 
+              <Bar
                 key={office}
                 dataKey={office}
                 stackId="a"
@@ -376,6 +433,7 @@ const CompletionsPerOffice: React.FC = () => {
                 type="monotone"
                 dataKey={code}
                 stroke={CODE_COLORS[code as CodeColorKey]}
+                strokeWidth={3}
                 dot={false}
               />
             ))}
