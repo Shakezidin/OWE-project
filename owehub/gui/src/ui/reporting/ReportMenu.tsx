@@ -6,13 +6,15 @@ import { TbReportSearch } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import './reporting.css';
+import { ArrowDownOutlined } from '@ant-design/icons';
+import { BiChevronDown } from 'react-icons/bi';
 
 const items: MenuProps['items'] = [
   {
     key: 'Reports',
     label: 'Reports',
     icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
-    style:{margin:0,padding:0,paddingLeft:0},
+    style: { margin: 0, padding: 0, paddingLeft: 0 },
     children: [
       {
         key: 'Sales NTP Install',
@@ -55,7 +57,11 @@ const items: MenuProps['items'] = [
               },
               {
                 key: 'Reason for Incompletion',
-                label: <Link to={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}>Reason for Incompletion</Link>,
+                label: (
+                  <Link to={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}>
+                    Reason for Incompletion
+                  </Link>
+                ),
               },
             ],
           },
@@ -71,11 +77,19 @@ const items: MenuProps['items'] = [
             children: [
               {
                 key: 'Completions per office',
-                label: <Link to={ROUTES.COMPLETIONS_PER_OFFICE}>Completions per office</Link>,
+                label: (
+                  <Link to={ROUTES.COMPLETIONS_PER_OFFICE}>
+                    Completions per office
+                  </Link>
+                ),
               },
               {
                 key: 'Completions per Team',
-                label: <Link to={ROUTES.COMPLETIONS_PER_TEAM}>Completions per team</Link>,
+                label: (
+                  <Link to={ROUTES.COMPLETIONS_PER_TEAM}>
+                    Completions per team
+                  </Link>
+                ),
               },
               {
                 key: 'No PTO Granted Date',
@@ -109,7 +123,11 @@ const items: MenuProps['items'] = [
           },
           {
             key: '1st Time Completions',
-            label: <Link to={ROUTES.SITE_FIRST_COMPLETION}>1st Time Completions</Link>,
+            label: (
+              <Link to={ROUTES.SITE_FIRST_COMPLETION}>
+                1st Time Completions
+              </Link>
+            ),
           },
           {
             key: 'Outside SLA',
@@ -121,13 +139,16 @@ const items: MenuProps['items'] = [
   },
 ];
 
-const ReportMenu: React.FC = () => {
+const ReportMenu = ({ toggleOpen }: any) => {
+  let props: any = {};
+  if (toggleOpen) props.expandIcon = null;
   return (
     <Menu
-      mode="inline"
+      mode={toggleOpen ? 'vertical' : 'inline'}
+      {...props}
       // defaultSelectedKeys={['1']}
       // defaultOpenKeys={['sub1']}
-      style={{ margin:0, borderRight: 0, padding:0 }}
+      style={{ margin: 0, borderRight: 0, padding: 0 }}
       items={items}
     />
   );

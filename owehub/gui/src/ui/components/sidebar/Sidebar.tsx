@@ -288,7 +288,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             {isMobile && (
               <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
                 {el.mob?.map((oth: any, index: number) => {
-                  if(oth.sidebarProps.displayText==='Reports') return <ReportMenu/>
+                  if(oth.sidebarProps.displayText==='Reports') return <ReportMenu toggleOpen={toggleOpen}/>
                   return <Link
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
