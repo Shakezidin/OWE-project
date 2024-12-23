@@ -68,46 +68,46 @@ const AZPEO_COLORS = {
 // Generate sample data for AZPEO chart (weeks 1-52)
 const azpeoData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'AZPEO01': Math.random() * 15 + 5,
-  'AZPEO02': Math.random() * 15 + 5,
-  'AZPEO03': Math.random() * 15 + 5,
-  'AZPEO04': Math.random() * 15 + 5,
-  'AZPEO05': Math.random() * 15 + 5,
-  'AZPEO06': Math.random() * 15 + 5,
-  'AZPEO07': Math.random() * 15 + 5,
-  'AZPEO08': Math.random() * 15 + 5,
-  'AZPEO09': Math.random() * 15 + 5,
-  'AZPEO10': Math.random() * 15 + 5,
-  'AZPEO11': Math.random() * 15 + 5,
-  'AZPEO12': Math.random() * 15 + 5,
-  'AZPEO13': Math.random() * 15 + 5,
-  'AZPEO14': Math.random() * 15 + 5,
-  'AZPEO15': Math.random() * 15 + 5
+  'AZPEO01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  'AZPEO02': Math.floor(Math.random() * 100) + 1,
+  'AZPEO03': Math.floor(Math.random() * 100) + 1,
+  'AZPEO04': Math.floor(Math.random() * 100) + 1,
+  'AZPEO05': Math.floor(Math.random() * 100) + 1,
+  'AZPEO06': Math.floor(Math.random() * 100) + 1,
+  'AZPEO07': Math.floor(Math.random() * 100) + 1,
+  'AZPEO08': Math.floor(Math.random() * 100) + 1,
+  'AZPEO09': Math.floor(Math.random() * 100) + 1,
+  'AZPEO10': Math.floor(Math.random() * 100) + 1,
+  'AZPEO11': Math.floor(Math.random() * 100) + 1,
+  'AZPEO12': Math.floor(Math.random() * 100) + 1,
+  'AZPEO13': Math.floor(Math.random() * 100) + 1,
+  'AZPEO14': Math.floor(Math.random() * 100) + 1,
+  'AZPEO15': Math.floor(Math.random() * 100) + 1,
 }));
 
 // Generate sample data for AZTEM chart (weeks 1-52)
 const aztemData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'AZTEM01': Math.random() * 15 + 10,
-  'AZTEM02': Math.random() * 15 + 10,
-  'AZTEM03': Math.random() * 15 + 10,
-  'AZTEM04': Math.random() * 15 + 10,
-  'AZTEM05': Math.random() * 15 + 10,
-  'AZTEM06': Math.random() * 15 + 10,
-  'AZTEM07': Math.random() * 15 + 10,
-  'AZTEM08': Math.random() * 15 + 10,
-  'AZTEM09': Math.random() * 15 + 10,
-  'AZTEM10': Math.random() * 15 + 10
+  'AZTEM01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  'AZTEM02': Math.floor(Math.random() * 100) + 1,
+  'AZTEM03': Math.floor(Math.random() * 100) + 1,
+  'AZTEM04': Math.floor(Math.random() * 100) + 1,
+  'AZTEM05': Math.floor(Math.random() * 100) + 1,
+  'AZTEM06': Math.floor(Math.random() * 100) + 1,
+  'AZTEM07': Math.floor(Math.random() * 100) + 1,
+  'AZTEM08': Math.floor(Math.random() * 100) + 1,
+  'AZTEM09': Math.floor(Math.random() * 100) + 1,
+  'AZTEM10': Math.floor(Math.random() * 100) + 1,
 }));
 
 // Generate sample data for AZTUC chart (weeks 1-52)
 const aztucData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'AZTUC01': Math.random() * 10 + 5,
-  'AZTUC02': Math.random() * 10 + 5,
-  'AZTUC03': Math.random() * 10 + 5,
-  'AZTUC04': Math.random() * 10 + 5,
-  'AZTUC05': Math.random() * 10 + 5
+  'AZTUC01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  'AZTUC02': Math.floor(Math.random() * 100) + 1,
+  'AZTUC03': Math.floor(Math.random() * 100) + 1,
+  'AZTUC04': Math.floor(Math.random() * 100) + 1,
+  'AZTUC05': Math.floor(Math.random() * 100) + 1,
 }));
 
 // Update CODEN colors to match the image (approximate) - Same as before
@@ -127,16 +127,16 @@ const CODEN_COLORS = {
 // Generate sample data for CODEN chart (weeks 1-52) - DYNAMIC
 const codenData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  CODENON: Math.random() * 15 + 5, // Values between 5 and 20
-  CODENOT: Math.random() * 12 + 3, // Values between 3 and 15 - Adjusted range
-  CODENG: Math.random() * 10 + 2,   // Values between 2 and 12 - Adjusted range
-  CODENST: Math.random() * 8 + 1,    // Values between 1 and 9 - Adjusted range
-  CODENOS: Math.random() * 5 + 1,
-  CODENDR: Math.random() * 8 + 1,
-  CODENDL: Math.random() * 10 + 2,
-  CODENGS: Math.random() * 12 + 3,
-  CODENDS: Math.random() * 15 + 5,
-  CODENDE: Math.random() * 5 + 1
+  CODENON: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  CODENOT: Math.floor(Math.random() * 100) + 1,
+  CODENG: Math.floor(Math.random() * 100) + 1,
+  CODENST: Math.floor(Math.random() * 100) + 1,
+  CODENOS: Math.floor(Math.random() * 100) + 1,
+  CODENDR: Math.floor(Math.random() * 100) + 1,
+  CODENDL: Math.floor(Math.random() * 100) + 1,
+  CODENGS: Math.floor(Math.random() * 100) + 1,
+  CODENDS: Math.floor(Math.random() * 100) + 1,
+  CODENDE: Math.floor(Math.random() * 100) + 1,
 }));
 
 // Update COGJT colors to match the image (approximate) - Same as before
@@ -153,13 +153,13 @@ const COGJT_COLORS = {
 // Generate sample data for COGJT chart (weeks 1-52) - DYNAMIC
 const cogjtData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  COGITOT: Math.random() * 10 + 2,   // Values between 2 and 12
-  COGITO1: Math.random() * 8 + 1,    // Values between 1 and 9
-  ODGJTEI: Math.random() * 12 + 3,
-  COGITOZ: Math.random() * 15 + 5,
-  COGITOO: Math.random() * 5 + 1,
-  COGITOR: Math.random() * 8 + 1,
-  NMARGOT: Math.random() * 10 + 2
+  COGITOT: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  COGITO1: Math.floor(Math.random() * 100) + 1,
+  ODGJTEI: Math.floor(Math.random() * 100) + 1,
+  COGITOZ: Math.floor(Math.random() * 100) + 1,
+  COGITO0: Math.floor(Math.random() * 100) + 1,
+  COGITOR: Math.floor(Math.random() * 100) + 1,
+  NMARGOT: Math.floor(Math.random() * 100) + 1,
 }));
 
 const NMABQ_COLORS = {
@@ -187,34 +187,36 @@ const TXELP_COLORS = {
   'TXELP02': '#32CD32'  // Lime green
 };
 
+// Generate sample data for NMABQ chart (weeks 1-52)
 const nmabqData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'NMABQ01': Math.random() * 15 + 5,
-  'NMABQ02': Math.random() * 15 + 5,
-  'NMABQ03': Math.random() * 15 + 5,
-  'NMABQ04': Math.random() * 15 + 5,
-  'NMABQ05': Math.random() * 15 + 5,
-  'NMABQ06': Math.random() * 15 + 5,
-  'NMABQ07': Math.random() * 15 + 5,
-  'NMABQ08': Math.random() * 15 + 5,
-  'NMABQ09': Math.random() * 15 + 5,
-  'NMABQ10': Math.random() * 15 + 5
+  'NMABQ01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  'NMABQ02': Math.floor(Math.random() * 100) + 1,
+  'NMABQ03': Math.floor(Math.random() * 100) + 1,
+  'NMABQ04': Math.floor(Math.random() * 100) + 1,
+  'NMABQ05': Math.floor(Math.random() * 100) + 1,
+  'NMABQ06': Math.floor(Math.random() * 100) + 1,
+  'NMABQ07': Math.floor(Math.random() * 100) + 1,
+  'NMABQ08': Math.floor(Math.random() * 100) + 1,
+  'NMABQ09': Math.floor(Math.random() * 100) + 1,
+  'NMABQ10': Math.floor(Math.random() * 100) + 1,
 }));
 
+// Generate sample data for TXDAL chart (weeks 1-52)
 const txdalData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'TXDAL01': Math.random() * 20 + 10,
-  'TXDAL02': Math.random() * 20 + 10,
-  'TXDAL03': Math.random() * 20 + 10,
-  'TXDAL04': Math.random() * 20 + 10
+  'TXDAL01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  'TXDAL02': Math.floor(Math.random() * 100) + 1,
+  'TXDAL03': Math.floor(Math.random() * 100) + 1,
+  'TXDAL04': Math.floor(Math.random() * 100) + 1,
 }));
 
+// Generate sample data for TXELP chart (weeks 1-52)
 const txelData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'TXELP01': Math.random() * 10 + 2,
-  'TXELP02': Math.random() * 10 + 2
+  'TXELP01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  'TXELP02': Math.floor(Math.random() * 100) + 1,
 }));
-
 
 
 // At the top of the file, add these types
@@ -255,123 +257,124 @@ const CompletionsPerTeams: React.FC = () => {
     {
       key: '1',
       year: 2024,
-      office: 'Peoria/Kingman',
+      team: 'AZTUC01', // Replace 'office' with 'team'
       weeks: [49, 60, 65, 72, 65, 68, 87],
-      grandTotal: 2692
+      grandTotal: 2692,
     },
     {
       key: '2',
       year: 2024,
-      office: 'Tucson',
+      team: 'AZTUC02', // Replace 'office' with 'team'
       weeks: [17, 17, 18, 17, 20, 20, 33],
-      grandTotal: 1003
+      grandTotal: 1003,
     },
     {
       key: '3',
       year: 2024,
-      office: 'Colorado',
+      team: 'AZTEM03', // Replace 'office' with 'team'
       weeks: [3, 7, 8, 9, 6, 14, 14],
-      grandTotal: 977
+      grandTotal: 977,
     },
     {
       key: '4',
       year: 2024,
-      office: 'Albuquerque/El Paso',
+      team: 'AZTEM04', // Replace 'office' with 'team'
       weeks: [25, 24, 33, 28, 24, 11, 11],
-      grandTotal: 822
+      grandTotal: 822,
     },
     {
       key: '5',
       year: 2024,
-      office: 'Tempe',
+      team: 'AZPEO01', // Replace 'office' with 'team'
       weeks: [0, 0, 0, 0, 0, 0, 0],
-      grandTotal: 592
+      grandTotal: 592,
     },
     {
       key: '6',
       year: 2024,
-      office: 'Texas',
+      team: 'AZPEO02', // Replace 'office' with 'team'
       weeks: [5, 6, 6, 1, 4, 5, 5],
-      grandTotal: 391
+      grandTotal: 391,
     },
     {
       key: '7',
       year: 2024,
-      office: '#N/A',
+      team: 'AZTEM06', // Replace 'office' with 'team'
       weeks: [0, 0, 0, 0, 0, 0, 0],
-      grandTotal: 49
+      grandTotal: 49,
     },
     {
       key: '8',
       year: 2024,
-      office: 'null',
+      team: 'AZTEM08', // Replace 'office' with 'team'
       weeks: [0, 0, 0, 0, 0, 0, 0],
-      grandTotal: 0
-    }
+      grandTotal: 0,
+    },
   ];
 
   // Real data for the system size table
-  const systemSizeTableData = [
-    {
-      key: '1',
-      year: 2024,
-      office: '#N/A',
-      weeks: [0, 0, 0, 0, 0, 0, 0],
-      grandTotal: 303.22
-    },
-    {
-      key: '2',
-      year: 2024,
-      office: 'Albuquerque/El Paso',
-      weeks: [187.64, 153.8, 219.41, 190.99, 186.14, 86.49, 71.54],
-      grandTotal: 5470.56
-    },
-    {
-      key: '3',
-      year: 2024,
-      office: 'Colorado',
-      weeks: [23.81, 39.37, 50.4, 58.49, 47.7, 84.1, 83.46],
-      grandTotal: 6333.3
-    },
-    {
-      key: '4',
-      year: 2024,
-      office: 'Peoria/Kingman',
-      weeks: [451.79, 582.79, 632.15, 723.54, 608.52, 649.68, 834.18],
-      grandTotal: 25391.63
-    },
-    {
-      key: '5',
-      year: 2024,
-      office: 'Tempe',
-      weeks: [0, 0, 0, 0, 0, 0, 0],
-      grandTotal: 5327
-    },
-    {
-      key: '6',
-      year: 2024,
-      office: 'Texas',
-      weeks: [55.68, 67.13, 58.62, 8.5, 45.75, 50.62, 55.1],
-      grandTotal: 3861.47
-    },
-    {
-      key: '7',
-      year: 2024,
-      office: 'Tucson',
-      weeks: [171.26, 136.27, 185.63, 152.71, 190.45, 174.13, 267.78],
-      grandTotal: 8859.71
-    }
-  ];
+// Real data for the system size table
+const systemSizeTableData = [
+  {
+    key: '1',
+    year: 2024,
+    team: '#N/A', // Replace 'office' with 'team'
+    weeks: [0, 0, 0, 0, 0, 0, 0],
+    grandTotal: 303.22,
+  },
+  {
+    key: '2',
+    year: 2024,
+    team: 'AZTEM04', // Replace 'office' with 'team'
+    weeks: [187.64, 153.8, 219.41, 190.99, 186.14, 86.49, 71.54],
+    grandTotal: 5470.56,
+  },
+  {
+    key: '3',
+    year: 2024,
+    team: 'AZTEM03', // Replace 'office' with 'team'
+    weeks: [23.81, 39.37, 50.4, 58.49, 47.7, 84.1, 83.46],
+    grandTotal: 6333.3,
+  },
+  {
+    key: '4',
+    year: 2024,
+    team: 'AZTUC01', // Replace 'office' with 'team'
+    weeks: [451.79, 582.79, 632.15, 723.54, 608.52, 649.68, 834.18],
+    grandTotal: 25391.63,
+  },
+  {
+    key: '5',
+    year: 2024,
+    team: 'AZPEO01', // Replace 'office' with 'team'
+    weeks: [0, 0, 0, 0, 0, 0, 0],
+    grandTotal: 5327,
+  },
+  {
+    key: '6',
+    year: 2024,
+    team: 'AZPEO02', // Replace 'office' with 'team'
+    weeks: [55.68, 67.13, 58.62, 8.5, 45.75, 50.62, 55.1],
+    grandTotal: 3861.47,
+  },
+  {
+    key: '7',
+    year: 2024,
+    team: 'AZTUC02', // Replace 'office' with 'team'
+    weeks: [171.26, 136.27, 185.63, 152.71, 190.45, 174.13, 267.78],
+    grandTotal: 8859.71,
+  },
+];
 
   // Calculate average system size data
   const averageSizeTableData = systemSizeTableData.map(sizeRow => {
     // Find matching count row
-    const countRow = countTableData.find(count => count.office === sizeRow.office);
+    const countRow = countTableData.find(count => count.team === sizeRow.team);
 
     return {
       key: sizeRow.key,
       year: sizeRow.year,
-      office: sizeRow.office,
+      team: sizeRow.team,
       weeks: sizeRow.weeks.map((size, index) => {
         const count = countRow?.weeks[index] || 0;
         return count === 0 ? 0 : size / count;
@@ -383,7 +386,7 @@ const CompletionsPerTeams: React.FC = () => {
   // Column configuration for average system size
   const averageSizeColumns = [
     { title: 'Year', dataIndex: 'year', key: 'year' },
-    { title: 'Office', dataIndex: 'office', key: 'office' },
+    { title: 'Related Team', dataIndex: 'team', key: 'team' }, // Change 'Office' to 'Related Team'
     ...Array.from({ length: 7 }, (_, i) => ({
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
@@ -398,28 +401,26 @@ const CompletionsPerTeams: React.FC = () => {
     }
   ];
 
-  // Column configurations for the count table
   const countColumns = [
     { title: 'Year', dataIndex: 'year', key: 'year' },
-    { title: 'Office', dataIndex: 'office', key: 'office' },
+    { title: 'Related Team', dataIndex: 'team', key: 'team' }, // Change 'Office' to 'Related Team'
     ...Array.from({ length: 7 }, (_, i) => ({
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
       key: `week${i}`,
-      render: (weeks: any) => weeks[i]
+      render: (weeks: any) => weeks[i],
     })),
     {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value: any) => <span className="font-bold">{value.toLocaleString()}</span>
-    }
+      render: (value: any) => <span className="font-bold">{value.toLocaleString()}</span>,
+    },
   ];
-
   // Column configurations for the system size table
   const systemSizeColumns = [
     { title: 'Year', dataIndex: 'year', key: 'year' },
-    { title: 'Office', dataIndex: 'office', key: 'office' },
+    { title: 'Related Team', dataIndex: 'team', key: 'team' }, // Change 'Office' to 'Related Team'
     ...Array.from({ length: 7 }, (_, i) => ({
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
@@ -504,6 +505,7 @@ const CompletionsPerTeams: React.FC = () => {
 
       <div className="bg-white rounded-lg shadow p2">
         <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by Count</h3>
+        <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
         <Table
           columns={countColumns}
           dataSource={countTableData}
@@ -514,6 +516,7 @@ const CompletionsPerTeams: React.FC = () => {
 
       <div className="bg-white rounded-lg shadow p2">
         <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size</h3>
+        <div className="flex justify-end h5 bold pr3" style={{ background: "#b2ebf2" }} title="Week / Customer">Week / System Size </div>
         <Table
           columns={systemSizeColumns}
           dataSource={systemSizeTableData}
@@ -524,6 +527,7 @@ const CompletionsPerTeams: React.FC = () => {
 
       <div className="bg-white rounded-lg shadow p2">
         <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size (Average kW)</h3>
+        <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
         <Table
           columns={averageSizeColumns}
           dataSource={averageSizeTableData}
