@@ -8,6 +8,7 @@
 package main
 
 import (
+	apiHandler "OWEApp/owehub-reports/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
 	"encoding/json"
@@ -56,6 +57,13 @@ var apiRoutes = appserver.ApiRoutes{
 		handleDynamicHttpConf,
 		false,
 		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_productionsummaryreport",
+		apiHandler.HandleGetProductionSummaryReportRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
 	},
 }
 
