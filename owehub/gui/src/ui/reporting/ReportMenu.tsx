@@ -71,7 +71,7 @@ const items: MenuProps['items'] = [
             children: [
               {
                 key: 'Completions per office',
-                label: 'Completions per office',
+                label: <Link to={ROUTES.COMPLETIONS_PER_OFFICE}>Completions per office</Link>,
               },
               {
                 key: 'Completions per Team',

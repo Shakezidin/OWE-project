@@ -66,6 +66,7 @@ export const ROUTES = {
   REPORTING_SALES_TO_INSTALL: '/reporting/sales-install',
   REPORTING_QUALITY_PER_OFFICE: '/reporting/quality-per-office',
   REPORTING_REASON_FOR_INCOMPLETE: '/reporting/reason-for-incomplete',
+  COMPLETIONS_PER_OFFICE: '/reporting/completions-per-office',
 
 
   // other routes

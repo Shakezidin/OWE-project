@@ -56,6 +56,7 @@ import SalesToInstall from './ui/reporting/SalesToInstall';
 import ReasonOfIncomplete from './ui/reporting/ReasonOfIncomplete';
 import QualityPerOffice from './ui/reporting/QualityPerOffice';
 import ReportingLayout from './ui/reporting/ReportingLayout';
+import CompletionsPerOffice from './ui/reporting/CompletionsPerOffice';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -146,6 +147,7 @@ function App() {
             <Route path={ROUTES.REPORTING_SALES_TO_INSTALL} element={<SalesToInstall />} />
             <Route path={ROUTES.REPORTING_QUALITY_PER_OFFICE} element={<QualityPerOffice />} />
             <Route path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE} element={<ReasonOfIncomplete />} />
+            <Route path={ROUTES.COMPLETIONS_PER_OFFICE} element={<CompletionsPerOffice />} />
             <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
           </Route>
 
