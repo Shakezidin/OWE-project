@@ -58,7 +58,15 @@ export const ROUTES = {
   CALENDAR: '/calendar',
   LIBRARY: '/library',
   SS_ONBOARDING: '/config/ss-onboarding',
-  TOTAL_COUNT: '/reports',
+  REPORTING: '/reporting',
+  TOTAL_COUNT: '/reporting/report',
+  REPORTING_PRODUCTION: '/reporting/production',
+  REPORTING_QUALITY: '/reporting/quality',
+  REPORTING_SPEED_OVERALL: '/reporting/speed-overall',
+  REPORTING_SALES_TO_INSTALL: '/reporting/sales-install',
+  REPORTING_QUALITY_PER_OFFICE: '/reporting/quality-per-office',
+  REPORTING_REASON_FOR_INCOMPLETE: '/reporting/reason-for-incomplete',
+  COMPLETIONS_PER_OFFICE: '/reporting/completions-per-office',
 
 
   // other routes

@@ -100,6 +100,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Reports',
         icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
+
       },
     },
     {
