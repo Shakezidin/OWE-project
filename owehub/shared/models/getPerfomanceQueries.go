@@ -256,7 +256,6 @@ func ProjectMngmntRetrieveQueryFunc() string {
         ntp_ntp_schema.pending_ntp_date AS ntp_working_date, 
         ntp_ntp_schema.ntp_complete_date AS ntp_date, 
         survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
-        internal_ops_metrics_schema.site_survey_rescheduled_date AS site_survey_rescheduled_date, 
         survey_survey_schema.survey_completion_date AS site_survey_completed_date, 
         roofing_request_install_subcontracting_schema.work_scheduled_date AS roofing_scheduled_date, 
         roofing_request_install_subcontracting_schema.created_on AS roofing_created_date,
@@ -340,8 +339,6 @@ func ProjectMngmntRetrieveQueryFunc() string {
         --ON planset_cad_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN batteries_service_electrical_schema
         ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN internal_ops_metrics_schema 
-           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN sales_metrics_schema
             ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN planset_cad_schema 
