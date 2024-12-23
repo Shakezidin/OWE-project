@@ -29,7 +29,7 @@ import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import { handleCreateProposal, generateWebProposal, retrieveWebProposal } from './api/auroraApi';
-import { addMinutes,endOfWeek,format,parseISO,startOfMonth,startOfWeek,startOfYear, subDays,} from 'date-fns';
+import { addMinutes, endOfWeek, format, parseISO, startOfMonth, startOfWeek, startOfYear, subDays, } from 'date-fns';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -41,10 +41,10 @@ const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date( today.getFullYear(), today.getMonth() - 2, 1);
+const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1,});
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1,});
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1, });
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1, });
 
 const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Week', start: startOfThisWeek, end: today },
@@ -78,7 +78,7 @@ const LeadManagementDashboard = () => {
   const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [side, setSide] = useState<"left" | "right">('left');
   const [selectedRanges, setSelectedRanges] = useState([{ startDate: startOfThisWeek, endDate: today, key: 'selection' },]);
-  const [selectedDates, setSelectedDates] = useState<{startDate: Date | null;endDate: Date | null;}>({startDate: startOfThisWeek,endDate: today,});
+  const [selectedDates, setSelectedDates] = useState<{ startDate: Date | null; endDate: Date | null; }>({ startDate: startOfThisWeek, endDate: today, });
   const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(periodFilterOptions.find((option) => option.label === 'This Week') || null);
 
   const handleRangeChange = (ranges: any) => {
@@ -183,29 +183,29 @@ const LeadManagementDashboard = () => {
     const generateHandler = generateWebProposal(leadId, dispatch);
     await generateHandler();
   };
-  
+
   const retrieveProposalWrapper = async (leadId: number) => {
     const retrieveHandler = retrieveWebProposal(leadId, dispatch);
     await retrieveHandler();
- };
-useEffect(() => {
-  if (pieData.length > 0) {
-    const pieName = pieData[activeIndex].name;
-    const newFilter = statusMap[pieName as keyof typeof statusMap];
-    setCurrentFilter(newFilter);
-    setPage(1);
-  }
-}, [activeIndex]);
-
-useEffect(() => {
-  document.addEventListener('mousedown', handleClickOutside);
-  document.addEventListener('touchstart', handleClickOutside);
-
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-    document.removeEventListener('touchstart', handleClickOutside);
   };
-}, []);
+  useEffect(() => {
+    if (pieData.length > 0) {
+      const pieName = pieData[activeIndex].name;
+      const newFilter = statusMap[pieName as keyof typeof statusMap];
+      setCurrentFilter(newFilter);
+      setPage(1);
+    }
+  }, [activeIndex]);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -248,6 +248,7 @@ useEffect(() => {
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
+
         try {
           setIsLoading(true);
           const response = await postCaller(
@@ -283,7 +284,7 @@ useEffect(() => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates]);
+  }, [isAuthenticated, selectedDates, refresh]);
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -357,7 +358,7 @@ useEffect(() => {
         page_number: archive ? 1 : page,
       };
 
-        dispatch(getLeads(data));
+      dispatch(getLeads(data));
     }
   }, [
     searchTerm,
@@ -641,7 +642,7 @@ useEffect(() => {
                     }
                   </div>
                 )}
-                {isToggledX && 
+                {isToggledX &&
                   <CustomSelect<DateRangeWithLabel>
                     value={selectedPeriod}
                     onChange={(newValue) => handlePeriodChange(newValue, {} as ActionMeta<DateRangeWithLabel>)}
@@ -719,10 +720,10 @@ useEffect(() => {
               </div>
             ) : totalValue > 0 ? (
               <>
-                <CustomPieChart 
-                  activeIndex={activeIndex} 
-                  pieData={pieData} 
-                  handlePieClick={handlePieClick} 
+                <CustomPieChart
+                  activeIndex={activeIndex}
+                  pieData={pieData}
+                  handlePieClick={handlePieClick}
                 />
                 <div className={styles.legend}>
                   {pieData.map((item) => (
