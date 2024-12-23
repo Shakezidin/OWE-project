@@ -1,0 +1,87 @@
+
+/* Example of scoped custom CSS */
+.pv-install-dashboard {
+    padding: 24px;
+  }
+  
+  .pv-install-dashboard .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .pv-install-dashboard .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .pv-install-dashboard .header-right {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .pv-install-dashboard .select {
+    padding: 8px 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .pv-install-dashboard .section {
+    margin-bottom: 48px;
+  }
+  
+  .pv-install-dashboard .section-header {
+    /* margin-bottom: 24px; */
+  }
+  
+  .pv-install-dashboard .section-title {
+    /* font-size: 1.25rem;
+    font-weight: 500; */
+  }
+  
+  .pv-install-dashboard .flex {
+    display: flex;
+    /* gap: 24px;
+    margin-bottom: 24px; */
+  }
+  
+  .pv-install-dashboard .grid {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .pv-install-dashboard .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .pv-install-dashboard .table th,
+  .pv-install-dashboard .table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+  }
+  
+  .pv-install-dashboard .table th {
+    background: #fafafa;
+    font-weight: 500;
+  }
+  
+  .pv-install-dashboard .chart-container {
+    flex: 1;
+    min-height: 300px;
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    padding: 16px;
+  }
+  
+  .mt-8 {
+    margin-top: 32px;
+  }
+  

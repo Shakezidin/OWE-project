@@ -56,9 +56,10 @@ import SalesToInstall from './ui/reporting/SalesToInstall';
 import ReasonOfIncomplete from './ui/reporting/ReasonOfIncomplete';
 import QualityPerOffice from './ui/reporting/QualityPerOffice';
 import ReportingLayout from './ui/reporting/ReportingLayout';
-import CompletionsPerOffice from './ui/reporting/CompletionsPerOffice';
-import CompletionsPerTeams from './ui/reporting/CompletionsPerTeam';
+import CompletionsPerOffice from './ui/reporting/pvInstall/completionsPerOffice';
+import CompletionsPerTeams from './ui/reporting/pvInstall/completionsPerTeam';
 import NoPto from './ui/reporting/NoPto';
+import Timelines from './ui/reporting/pvInstall/timelines';
 
 
 function App() {
@@ -154,6 +155,7 @@ function App() {
             <Route path={ROUTES.COMPLETIONS_PER_TEAM} element={<CompletionsPerTeams />} />
             <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
             <Route path = {ROUTES.NO_PTO} element={<NoPto/>} />
+            <Route path={ROUTES.TIMELINES} element={<Timelines />} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}

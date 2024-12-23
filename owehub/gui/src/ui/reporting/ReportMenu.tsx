@@ -86,7 +86,7 @@ const items: MenuProps['items'] = [
 
           {
             key: 'Timelines',
-            label: 'Timelines',
+            label: <Link to={ROUTES.TIMELINES}>Timelines</Link>,
           },
           {
             key: '1st Time Completions',

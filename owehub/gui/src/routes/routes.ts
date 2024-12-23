@@ -69,6 +69,7 @@ export const ROUTES = {
   COMPLETIONS_PER_OFFICE: '/reporting/completions-per-office',
   COMPLETIONS_PER_TEAM: '/reporting/completions-per-team',
   NO_PTO: '/reporting/no-pto',
+  TIMELINES: '/reporting/timelines',
 
 
 

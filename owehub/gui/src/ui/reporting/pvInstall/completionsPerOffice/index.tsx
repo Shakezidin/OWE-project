@@ -93,18 +93,18 @@ const CompletionsPerOffice: React.FC = () => {
   const lineChartData = Array.from({ length: 52 }, (_, i) => ({
     week: `Week ${i + 1}`,
     'AZPECO1': parseFloat((Math.random() * 7).toFixed(2)),
-    'AZTUC01': parseFloat((Math.random() * 1).toFixed(2)),
-    'AZTEM01': parseFloat((Math.random() * 1.1).toFixed(2)),
-    'CODEN1': parseFloat((Math.random() * 1.2).toFixed(2)),
-    'NMABQ01': parseFloat((Math.random() * 1.3).toFixed(2)),
+    // 'AZTUC01': parseFloat((Math.random() * 1).toFixed(2)),
+    // 'AZTEM01': parseFloat((Math.random() * 1.1).toFixed(2)),
+    // 'CODEN1': parseFloat((Math.random() * 1.2).toFixed(2)),
+    // 'NMABQ01': parseFloat((Math.random() * 1.3).toFixed(2)),
     'TXDAL01': parseFloat((Math.random() * 1.5).toFixed(2)),
-    'AZKING01': parseFloat((Math.random() * 1).toFixed(2)),
-    'COGJ1': parseFloat((Math.random() * 1.5).toFixed(2)),
-    'TXELP01': parseFloat((Math.random() * 1.9).toFixed(2)),
-    'null': parseFloat((Math.random() * 1.6).toFixed(2)),
-    'TXAU01': parseFloat((Math.random() * 1.8).toFixed(2)),
-    'TXSAN01': parseFloat((Math.random() * 1).toFixed(2)),
-    'TXHOU01': parseFloat((Math.random() * 1.2).toFixed(2)),
+    // 'AZKING01': parseFloat((Math.random() * 1).toFixed(2)),
+    // 'COGJ1': parseFloat((Math.random() * 1.5).toFixed(2)),
+    // 'TXELP01': parseFloat((Math.random() * 1.9).toFixed(2)),
+    // 'null': parseFloat((Math.random() * 1.6).toFixed(2)),
+    // 'TXAU01': parseFloat((Math.random() * 1.8).toFixed(2)),
+    // 'TXSAN01': parseFloat((Math.random() * 1).toFixed(2)),
+    // 'TXHOU01': parseFloat((Math.random() * 1.2).toFixed(2)),
     'NoOffice': parseFloat((Math.random() * 1.5).toFixed(2))
   }));
 
@@ -433,7 +433,7 @@ const CompletionsPerOffice: React.FC = () => {
                 type="monotone"
                 dataKey={code}
                 stroke={CODE_COLORS[code as CodeColorKey]}
-                strokeWidth={3}
+                strokeWidth={2}
                 dot={false}
               />
             ))}
