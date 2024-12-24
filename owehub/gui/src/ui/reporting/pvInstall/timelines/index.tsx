@@ -118,6 +118,11 @@ const Timelines = () => {
     };
   };
 
+  const tooltipStyle = {
+    fontSize: '8px',
+    padding: '6px',
+  };
+
   return (
     <div className="pv-install-dashboard bg-white p2">
       <div className="headingcount flex justify-between items-center">
@@ -240,7 +245,7 @@ const Timelines = () => {
                 <YAxis
                   tick={{ fontSize: 10, fill: '#555' }}
                 />
-                <Tooltip />
+               <Tooltip contentStyle={tooltipStyle} />
                 <Legend
                   verticalAlign="top"
                   align="left"
@@ -278,7 +283,7 @@ const Timelines = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#555' }} />
               <YAxis domain={[-290, -265]} tick={{ fontSize: 12, fill: '#555' }} />
-              <Tooltip />
+              <Tooltip contentStyle={tooltipStyle} />
               <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
               {installCreatedData
                 .filter(office => office.name !== '#N/A')
@@ -373,7 +378,7 @@ const Timelines = () => {
                   tick={{ fontSize: 10, fill: '#555' }}
                   ticks={[0, 2.5, 5, 7.5, 10]}
                 />
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Legend
                   verticalAlign="top"
                   align="left"
@@ -414,7 +419,7 @@ const Timelines = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#555' }} />
               <YAxis domain={[0, 3]} tick={{ fontSize: 12, fill: '#555' }} />
-              <Tooltip />
+              <Tooltip contentStyle={tooltipStyle} />
               <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
               {installCompletedData.map((office, index) => (
                 <Line

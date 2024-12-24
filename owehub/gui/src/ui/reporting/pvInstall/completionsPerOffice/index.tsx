@@ -423,6 +423,12 @@ const formatNumber = (value: number): string => {
     };
   });
 
+  const tooltipStyle = {
+    fontSize: '8px',
+    padding: '6px',
+  };
+
+
 
   return (
     <div className="bg-white p2">
@@ -526,7 +532,7 @@ const formatNumber = (value: number): string => {
               height={60}
             />
             <YAxis tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip />
+            <Tooltip contentStyle={tooltipStyle} />
             <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(OFFICE_COLORS).map((office) => (
               <Bar
@@ -558,7 +564,7 @@ const formatNumber = (value: number): string => {
               height={60}
             />
             <YAxis tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip />
+            <Tooltip contentStyle={tooltipStyle} />
             <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(CODE_COLORS).map((code) => (
               <Line
