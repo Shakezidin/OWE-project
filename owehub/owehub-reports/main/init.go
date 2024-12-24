@@ -93,6 +93,20 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_timeline_ahj_fifteen",
+		apiHandler.HandleGetTimelineAhjFifteenReportRequest,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_timeline_install_to_fin",
+		apiHandler.HandleGetTimelineInstallToFinReportRequest,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

@@ -13,6 +13,14 @@ type SummaryReportRequest struct {
 	Office     []string `json:"office"`
 }
 
+type AhfFifteenReportRequest struct {
+	Year    string   `json:"year"`
+	Quarter []string `json:"quarter"`
+	State   string   `json:"state"`
+	Ahj     string   `json:"ahj"`
+	Office  []string `json:"office"`
+}
+
 type SaleToInstallSpeedSummaryReportRequest struct {
 	Year            string   `json:"year"`
 	Week            string   `json:"week"`
