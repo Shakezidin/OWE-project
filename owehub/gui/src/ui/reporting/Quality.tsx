@@ -6,6 +6,8 @@ import LineGraph from './components/LineGraph';
 import TableCustom from './components/Tables/CustomTable';
 import QualityTable from './components/Tables/QualityTable';
 import QualityTable2 from './components/Tables/QualityTable2';
+import QualityTable3 from './components/Tables/QualityTable3';
+import BarChartQuality from './components/BarChartQuality';
 
 interface Option {
   value: string;
@@ -113,6 +115,7 @@ const Quality = () => {
           <div className="main-graph" style={stylesGraph}>
             <h1>{reportType.label} Approved</h1>
             <LineGraph />
+            <p className='chart-info-report'>Week</p>
           </div>
         </div>
         <div className='qual-sec-2'>
@@ -142,6 +145,27 @@ const Quality = () => {
           <div className="main-graph" style={stylesGraph}>
             <h1>{reportType.label} Failed</h1>
             <LineGraph />
+            <p className='chart-info-report'>Week</p>
+          </div>
+        </div>
+        <div className='qual-sec-2'>
+         
+          <div className='approved-sec'>
+            <h1>Install Funding - Pass Rate</h1>
+            <QualityTable3
+              reportType=""
+              middleName=""
+              data={[
+                { column1: 'Week 1', column2: '44', column3: '44', column4: 'Tucson', column5: '44', column6: '44', column7:'90' },
+                { column1: 'Week 2', column2: '45', column3: '44', column4: 'Tucson', column5: '44', column6: '44', column7:'90' },
+                { column1: 'Week 3', column2: '1', column3: '44', column4: 'Tucson', column5: '44', column6: '44', column7:'90' },
+              ]}
+            />
+          </div>
+          <div className="main-graph" style={stylesGraph}>
+            <h1>Install Funding - Pass Rate</h1>
+            <BarChartQuality />
+            <p className='chart-info-report'>Week</p>
           </div>
         </div>
       </div>

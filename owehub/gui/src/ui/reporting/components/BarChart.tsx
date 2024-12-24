@@ -1,5 +1,19 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList, TooltipProps } from 'recharts';
+
+
+type Data = {
+    name: string;
+    'Pending Reschedule': number;
+    'Pending Customer': number;
+    'Pending NTP': number;
+    'Ready for NCA Review': number;
+    'Pending Roof': number;
+    'Pending Confirmation': number;
+    'Pending Review - Pre-Install': number;
+    'Completed day 1/2': number;
+    'Install Scheduled - Confirmed': number;
+  };
 
 const data = [
     {
@@ -98,24 +112,36 @@ const data = [
         'Completed day 1/2': 12,
         'Install Scheduled - Confirmed': 28,
     },
-    
+
     // Add more data for other locations...
 ];
+
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{`${label}`}</p>
+          <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
+        </div>
+      );
+    }
+  
+    return null;
+  };
 
 const BarChartExample: React.FC = () => {
     return (
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
+            <BarChart data={data as Data[]}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                {/* <Tooltip /> */}
                 <Legend
                     align="right"
                     layout="vertical"
                     verticalAlign="top"
                     height={3}
-                    wrapperStyle={{ right: -12,fontSize: 10 }}
+                    wrapperStyle={{ right: -12, fontSize: 10 }}
                 />
                 <Bar dataKey="Pending Reschedule" stackId="a" fill="#8884d8" />
                 <Bar dataKey="Pending Customer" stackId="a" fill="#82ca9d" />
@@ -126,6 +152,7 @@ const BarChartExample: React.FC = () => {
                 <Bar dataKey="Pending Review - Pre-Install" stackId="a" fill="#d0743c" />
                 <Bar dataKey="Completed day 1/2" stackId="a" fill="#ff9b54" />
                 <Bar dataKey="Install Scheduled - Confirmed" stackId="a" fill="#c27ba0" />
+                {/* <Tooltip content={<CustomTooltip />} /> */}
             </BarChart>
         </ResponsiveContainer>
     );
