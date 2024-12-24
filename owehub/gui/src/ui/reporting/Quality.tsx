@@ -157,7 +157,7 @@ const Quality = () => {
           <div className='qual-sec-2'>
 
             <div className='approved-sec'>
-              <h1>Install Funding - Pass Rate</h1>
+              <h1>{reportType.label} - Pass Rate</h1>
               <QualityTable3
                 reportType=""
                 middleName=""
@@ -169,7 +169,7 @@ const Quality = () => {
               />
             </div>
             <div className="main-graph" style={stylesGraph}>
-              <h1>Install Funding - Pass Rate</h1>
+              <h1>{reportType.label} - Pass Rate</h1>
               <BarChartQuality />
               <p className='chart-info-report'>Week</p>
             </div>

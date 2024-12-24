@@ -1,36 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Papa from 'papaparse';
 import SelectOption from '../components/selectOption/SelectOption';
-import {
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-  subDays,
-  startOfQuarter,
-  endOfQuarter,
-  startOfYear,
-  endOfYear,
-  subYears,
-  format,
-} from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
-import { toast } from 'react-toastify';
-import ReportsSelectOption from '../components/selectOption/ReportsSelectOption';
-import { availableStates } from '../../core/models/data_models/SelectDataModel';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
-import DropdownCheckBox from '../components/DropdownCheckBox';
-import { MdDownloading } from 'react-icons/md';
-import { LuImport } from 'react-icons/lu';
 import MicroLoader from '../components/loader/MicroLoader';
-import DataNotFound from '../components/loader/DataNotFound';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
-import { Link } from 'react-router-dom';
-import { ROUTES } from '../../routes/routes';
-import TableData from './TableData';
 import LineGraph from './components/LineGraph';
-import ChartBar from './components/BarChart';
 import BarChartExample from './components/BarChart';
 import TableCustom from './components/Tables/CustomTable';
 import WeekSelect from './components/Dropdowns/WeekSelect';
@@ -53,12 +24,6 @@ interface GraphProps {
 interface Option {
   value: string;
   label: string;
-}
-
-interface DateRangeWithLabel {
-  label?: string;
-  start: Date;
-  end: Date;
 }
 
 
