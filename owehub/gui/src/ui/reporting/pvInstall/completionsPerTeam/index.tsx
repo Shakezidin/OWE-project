@@ -500,7 +500,7 @@ const CompletionsPerTeams: React.FC = () => {
   return (
     <div className="bg-white p2">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">PV Install Completions (Office)</h4>
+        <h4 className="reports-title">PV Install Completions (Team)</h4>
         <div className="report-header-dropdown flex-wrap">
           <div><YearSelect /></div>
           <div><WeekSelect /></div>

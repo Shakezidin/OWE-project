@@ -61,7 +61,7 @@ import CompletionsPerTeams from './ui/reporting/pvInstall/completionsPerTeam';
 import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
-import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
+// import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 
 function App() {
@@ -161,7 +161,7 @@ function App() {
 
             {/* TODO: Component need to change, ADDING ROUTES AND DEFAULT components */}
             <Route path={ROUTES.SITE_COMPLETION} element={<Timelines />} />
-            <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} />
+            {/* <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} /> */}
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
             <Route path={ROUTES.OVERALL} element={<OverAll/>} />
