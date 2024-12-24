@@ -9,9 +9,15 @@ package models
 type SummaryReportRequest struct {
 	Year       string   `json:"year"`
 	Week       string   `json:"week"`
-	Day        string   `json:"day"`
 	ReportType string   `json:"report_type"`
 	Office     []string `json:"office"`
+}
+
+type SaleToInstallSpeedSummaryReportRequest struct {
+	Year            string   `json:"year"`
+	Week            string   `json:"week"`
+	BatteryIncluded string   `json:"batteryincluded"`
+	Office          []string `json:"office"`
 }
 
 type DataPoint struct {
