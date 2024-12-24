@@ -26,14 +26,20 @@ interface Option {
   label: string;
 }
 
-
-
 const Production: React.FC = () => {
- 
-  
   const [graphs, setGraphs] = useState<GraphProps[]>([
-    { title: 'Scheduled', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
-    { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+    {
+      title: 'Scheduled',
+      stopColor: '#0096D3',
+      borderColor: '#0096D3',
+      data: [],
+    },
+    {
+      title: 'Fixed Scheduled',
+      stopColor: '#A6CE50',
+      borderColor: '#A6CE50',
+      data: [],
+    },
     {
       title: 'Completed',
       stopColor: '#377CF6',
@@ -48,13 +54,10 @@ const Production: React.FC = () => {
     },
   ]);
 
-  const [reportType, setReportType] = useState<Option>(
-    {
-      label: 'Install',
-      value: 'install',
-    }
-  );
-  
+  const [reportType, setReportType] = useState<Option>({
+    label: 'Install',
+    value: 'install',
+  });
 
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
@@ -66,18 +69,14 @@ const Production: React.FC = () => {
     tableNames: ['available_states', 'dealer_name'],
   };
 
-
   const [data, setData] = useState([
     { column1: 'Row 1 Data', column2: 'Row 1 Data' },
     { column1: 'Row 2 Data', column2: 'Row 2 Data' },
     // ... more data
   ]);
-  
-
- 
 
   useEffect(() => {
-    if(reportType.label==='Install'){
+    if (reportType.label === 'Install') {
       setGraphs([
         {
           title: 'Scheduled - Day 1',
@@ -97,7 +96,12 @@ const Production: React.FC = () => {
           borderColor: '#0096D3',
           data: [],
         },
-        { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+        {
+          title: 'Fixed Scheduled',
+          stopColor: '#A6CE50',
+          borderColor: '#A6CE50',
+          data: [],
+        },
         {
           title: 'Completed',
           stopColor: '#377CF6',
@@ -111,7 +115,7 @@ const Production: React.FC = () => {
           data: [],
         },
       ]);
-    }else{
+    } else {
       setGraphs([
         {
           title: 'Scheduled',
@@ -119,7 +123,12 @@ const Production: React.FC = () => {
           borderColor: '#0096D3',
           data: [],
         },
-        { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+        {
+          title: 'Fixed Scheduled',
+          stopColor: '#A6CE50',
+          borderColor: '#A6CE50',
+          data: [],
+        },
         {
           title: 'Completed',
           stopColor: '#377CF6',
@@ -134,7 +143,7 @@ const Production: React.FC = () => {
         },
       ]);
     }
-  },[reportType]);
+  }, [reportType]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -155,7 +164,6 @@ const Production: React.FC = () => {
       <div className="headingcount flex justify-between items-center">
         <h4 className="reports-title">Production</h4>
         <div className="report-header-dropdown flex-wrap">
-         
           {/* <div><DaySelect /></div> */}
           <div>
             <SelectOption
@@ -192,9 +200,15 @@ const Production: React.FC = () => {
               singleValueStyles={{ fontWeight: 400 }}
             />
           </div>
-          <div><CompanySelect /></div>
-          <div><YearSelect /></div>
-          <div><WeekSelect /></div>
+          <div>
+            <CompanySelect />
+          </div>
+          <div>
+            <YearSelect />
+          </div>
+          <div>
+            <WeekSelect />
+          </div>
         </div>
       </div>
       <div
@@ -206,7 +220,7 @@ const Production: React.FC = () => {
           alignItems: 'center',
           borderRadius: 5,
           width: '100%',
-          margin: '10px 0'
+          margin: '10px 0',
         }}
       >
         {reportType.label}
@@ -214,7 +228,6 @@ const Production: React.FC = () => {
 
       <div className="report-graphs">
         {graphs.map((graph, index) => (
-
           <div
             key={index}
             className="report-graph"
@@ -225,7 +238,6 @@ const Production: React.FC = () => {
               marginBottom: 50,
             }}
           >
-
             {false ? (
               <div
                 className="flex items-center"
@@ -243,9 +255,11 @@ const Production: React.FC = () => {
                   setData={setData}
                 />
                 <div className="main-graph" style={stylesGraph}>
-                  <h3 style={{ textAlign: 'center' }}>{reportType.label} {graph.title}</h3>
+                  <h3 style={{ textAlign: 'center' }}>
+                    {reportType.label} {graph.title}
+                  </h3>
                   <LineGraph />
-                  <p className='chart-info-report'>Week</p>
+                  <p className="chart-info-report">Week</p>
                 </div>
               </>
             )}
@@ -280,15 +294,15 @@ const Production: React.FC = () => {
                 setData={setData}
               />
               <div className="main-graph" style={stylesGraph}>
-                <h3 style={{ textAlign: 'center' }}>Pending {reportType.label}</h3>
+                <h3 style={{ textAlign: 'center' }}>
+                  Pending {reportType.label}
+                </h3>
                 <BarChartExample />
               </div>
             </>
           )}
         </div>
-
       </div>
-
     </div>
   );
 };

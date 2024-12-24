@@ -26,14 +26,22 @@ import {
 import { toZonedTime } from 'date-fns-tz';
 import { toast } from 'react-toastify';
 import { availableStates } from '../../core/models/data_models/SelectDataModel';
-import {  postCaller, reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
+import {
+  postCaller,
+  reportingCaller,
+} from '../../infrastructure/web_api/services/apiUrl';
 
 import DropdownCheckBox from '../components/DropdownCheckBox';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import MicroLoader from '../components/loader/MicroLoader';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-
+import CompanySelect from './components/Dropdowns/CompanySelect';
+import YearSelect from './components/Dropdowns/YearSelect';
+import WeekSelect from './components/Dropdowns/WeekSelect';
+import TableCustom from './components/Tables/CustomTable';
+import LineGraph from './components/LineGraph';
+import BarChartExample from './components/BarChart';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -81,7 +89,7 @@ const SpeedOverall: React.FC = () => {
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState('');
+  const [data, setData] = useState([]);
   const [isExportingData, setIsExporting] = useState(false);
   const [graphs, setGraphs] = useState<GraphProps[]>([
     { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
@@ -93,6 +101,11 @@ const SpeedOverall: React.FC = () => {
       data: [],
     },
   ]);
+
+  const [batteryIncluded, setBatterIncluded] = useState<Option>({
+    label: 'Yes',
+    value: 'Yes',
+  });
 
   const [selectedOption, setSelectedOption] = useState<Option>({
     label: 'Daily',
@@ -185,16 +198,13 @@ const SpeedOverall: React.FC = () => {
       year: '2024',
       week: '12',
       batteryincluded: 'Yes',
-      office: ['Tucson', 'Texas', 'Tempe', 'Peoria/Kingman', 'Colorado'],
+      office: ['Tucson'],
     });
     if (res.status > 200) {
       return;
     }
-    setNewFormData((prev) => ({ ...prev, ...res.data }));
-    if (res.data?.dealer_name) {
-      setSelectedDealer(leaderDealer(res.data));
-      setDealerOption(leaderDealer(res.data));
-    }
+    console.log(Object.keys(res.data.data));
+    // setNewFormData((prev) => ({ ...prev, ...res.data }));
   };
 
   useEffect(() => {
@@ -436,14 +446,19 @@ const SpeedOverall: React.FC = () => {
     // Clear previous graph data to reset the state for fresh data
     setGraphs([
       {
-        title: 'Sales',
+        title: 'Sales To Install',
         stopColor: '#0096D3',
         borderColor: '#0096D3',
         data: [],
       },
-      { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
       {
-        title: 'Installs',
+        title: 'Sales To MPU',
+        stopColor: '#A6CE50',
+        borderColor: '#A6CE50',
+        data: [],
+      },
+      {
+        title: 'Sales To Battery',
         stopColor: '#377CF6',
         borderColor: '#377CF6',
         data: [],
@@ -491,12 +506,12 @@ const SpeedOverall: React.FC = () => {
 
           if (response.status > 201) {
             toast.error(response.message);
-            setData(''); // Clear data if error
+            setData([]); // Clear data if error
             setGraphs([]); // Clear graphs if error
             return;
           }
 
-          setData(response.data);
+          // setData(response.data);
           const { ntp_data, sale_data, install_data } = response.data;
 
           setGraphs([
@@ -553,126 +568,67 @@ const SpeedOverall: React.FC = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        {/* TODO */}
-
-        <h4 className="reports-title">SpeedOverall</h4>
+        <h4 className="reports-title">Overall</h4>
         <div className="report-header-dropdown flex-wrap">
+          {/* <div><DaySelect /></div> */}
           <div>
             <SelectOption
               options={[
-                { label: 'Daily', value: 'day' },
-                { label: 'Weekly', value: 'week' },
-                { label: 'Monthly', value: 'month' },
-                { label: 'Yearly', value: 'year' },
+                {
+                  label: 'Yes',
+                  value: 'Yes',
+                },
+                {
+                  label: 'No',
+                  value: 'No',
+                },
               ]}
-              onChange={handleWeeklyOption}
-              controlStyles={{ marginTop: 0, minHeight: 30 }}
-              value={selectedOption}
-              menuListStyles={{
-                fontWeight: 400,
-              }}
-              singleValueStyles={{
-                fontWeight: 400,
-              }}
+              onChange={(value: any) => setBatterIncluded(value)}
+              value={batteryIncluded}
+              controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+              menuListStyles={{ fontWeight: 400 }}
+              singleValueStyles={{ fontWeight: 400 }}
             />
           </div>
           <div>
-            <SelectOption
-              options={mappedPeriodOptions}
-              onChange={handleReportOptionChange}
-              value={selectedReportOption}
-              controlStyles={{ marginTop: 0, minHeight: 30 }}
-              // menuStyles={{
-              //   minWidth: 150
-              // }}
-              menuListStyles={{
-                fontWeight: 400,
-              }}
-              singleValueStyles={{
-                fontWeight: 400,
-              }}
-            />
+            <CompanySelect />
           </div>
-
-          <div className="order-mob-2  flex">
-            <SelectOption
-              options={[
-                { label: 'All State', value: 'All' }, // Default "All State" option
-                ...(availableStates(newFormData) || []), // Other states
-              ]}
-              controlStyles={{
-                marginTop: 0,
-                minHeight: 30,
-                '@media (min-width: 768px)': {
-                  flex: 1,
-                },
-              }}
-              onChange={handleStateOptionChange}
-              value={selectedStateOption}
-              menuStyles={{
-                minWidth: 135,
-                flexBasis: 115,
-                '@media (min-width: 768px)': {
-                  flex: 1,
-                },
-              }}
-              menuListStyles={{
-                fontWeight: 400,
-              }}
-              singleValueStyles={{
-                fontWeight: 400,
-              }}
-              width="130px"
-            />
+          <div>
+            <YearSelect />
           </div>
-
-          <div className="order-mob-3">
-            <DropdownCheckBox
-              label={selectedDealer.length === 1 ? 'Partner' : 'Partners'}
-              placeholder={'Search Partners'}
-              selectedOptions={selectedDealer}
-              options={dealerOption}
-              onChange={(val) => {
-                setSelectedDealer(val);
-              }}
-            />
-          </div>
-
-          <div className="perf-export-btn order-mob-1 relative pipline-export-btn ">
-            <button
-              data-tooltip-id="export-tooltip" // Match with ReactTooltip's id
-              data-tooltip-content="Export" // Add content directly here
-              onClick={exportCsv}
-              disabled={isExportingData}
-              className={`performance-exportbtn flex items-center justify-center totalcount-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-            >
-              {isExportingData ? (
-                <MdDownloading className="downloading-animation" size={20} />
-              ) : (
-                <LuImport size={20} />
-              )}
-            </button>
-            <ReactTooltip
-              id="export-tooltip" // Make sure this id matches the button's data-tooltip-id
-              place="bottom"
-              style={{
-                zIndex: 20,
-                background: '#f7f7f7',
-                color: '#000',
-                fontSize: 12,
-                paddingBlock: 4,
-              }}
-              offset={8}
-            />
+          <div>
+            <WeekSelect />
           </div>
         </div>
       </div>
+      <div
+        style={{
+          background: '#ddd',
+          height: 50,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 5,
+          width: '100%',
+          margin: '10px 0',
+        }}
+      >
+        Speed - Overall
+      </div>
+
       <div className="report-graphs">
         {graphs.map((graph, index) => (
-          <div key={index} className="report-graph">
-            <h5 className="graph-title">{graph.title}</h5>
-
-            {isLoading ? (
+          <div
+            key={index}
+            className="report-graph"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 50,
+            }}
+          >
+            {false ? (
               <div
                 className="flex items-center"
                 style={{ justifyContent: 'center' }}
@@ -681,52 +637,17 @@ const SpeedOverall: React.FC = () => {
                 <MicroLoader />{' '}
               </div>
             ) : (
-              <div className="main-graph" style={stylesGraph}>
-                <ResponsiveContainer
-                  width="100%"
-                  height="100%"
-                  className={'graph-container'}
-                >
-                  <AreaChart data={graph.data}>
-                    <defs>
-                      <linearGradient
-                        id={`colorPv-${index}`}
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="12%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="88%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.1}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area
-                      type="monotone"
-                      dataKey="pv"
-                      stroke={graph.stopColor}
-                      strokeWidth={3}
-                      fill={`url(#colorPv-${index})`}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+              <>
+                <TableCustom
+                  middleName={graph.title}
+                  data={data}
+                  setData={setData}
+                />
+                <div className="main-graph" style={stylesGraph}>
+                  <LineGraph />
+                  <p className="chart-info-report">Week</p>
+                </div>
+              </>
             )}
           </div>
         ))}
