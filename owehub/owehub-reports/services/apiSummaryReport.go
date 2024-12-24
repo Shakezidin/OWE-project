@@ -276,34 +276,34 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
             //WeeklyData: generateWeeklyData(),
             BarGraphData: generateBarGraphData("pending_battery"),
         })
-        subReports = append(subReports, models.ProductionSummarySubReport{
-            SubReportName: "Service Scheduled",
-            Fields:        []string{"Office", "Customer"},
-            Data: []map[string]interface{}{
-                {"Office": "Peoria/Kingman", "Customer": 67},
-                {"Office": "Tucson", "Customer": 40},
-                {"Office": "Colorado", "Customer": 34},
-                {"Office": "Albuquerque/El Paso", "Customer": 31},
-                {"Office": "Tempe", "Customer": 20},
-                {"Office": "Texas", "Customer": 17},
-                {"Office": "#N/A", "Customer": 10},
-            },
-            WeeklyData: generateWeeklyData(),
-        })
-        subReports = append(subReports, models.ProductionSummarySubReport{
-            SubReportName: "Service Completed",
-            Fields:        []string{"Office", "Customer"},
-            Data: []map[string]interface{}{
-                {"Office": "Peoria/Kingman", "Customer": 49},
-                {"Office": "Tucson", "Customer": 37},
-                {"Office": "Albuquerque/El Paso", "Customer": 30},
-                {"Office": "Colorado", "Customer": 17},
-                {"Office": "Tempe", "Customer": 11},
-                {"Office": "#N/A", "Customer": 8},
-                {"Office": "Texas", "Customer": 6},
-            },
-            WeeklyData: generateWeeklyData(),
-        })
+        // subReports = append(subReports, models.ProductionSummarySubReport{
+        //     SubReportName: "Service Scheduled",
+        //     Fields:        []string{"Office", "Customer"},
+        //     Data: []map[string]interface{}{
+        //         {"Office": "Peoria/Kingman", "Customer": 67},
+        //         {"Office": "Tucson", "Customer": 40},
+        //         {"Office": "Colorado", "Customer": 34},
+        //         {"Office": "Albuquerque/El Paso", "Customer": 31},
+        //         {"Office": "Tempe", "Customer": 20},
+        //         {"Office": "Texas", "Customer": 17},
+        //         {"Office": "#N/A", "Customer": 10},
+        //     },
+        //     WeeklyData: generateWeeklyData(),
+        // })
+        // subReports = append(subReports, models.ProductionSummarySubReport{
+        //     SubReportName: "Service Completed",
+        //     Fields:        []string{"Office", "Customer"},
+        //     Data: []map[string]interface{}{
+        //         {"Office": "Peoria/Kingman", "Customer": 49},
+        //         {"Office": "Tucson", "Customer": 37},
+        //         {"Office": "Albuquerque/El Paso", "Customer": 30},
+        //         {"Office": "Colorado", "Customer": 17},
+        //         {"Office": "Tempe", "Customer": 11},
+        //         {"Office": "#N/A", "Customer": 8},
+        //         {"Office": "Texas", "Customer": 6},
+        //     },
+        //     WeeklyData: generateWeeklyData(),
+        // })
 
 
 				case "service":
