@@ -74,6 +74,7 @@ export const ROUTES = {
   SITE_TIMELINES: '/reporting/site-timelines',
   SITE_FIRST_COMPLETION: '/reporting/site-first_completion',
   SITE_OUTSIDE_SLA: '/reporting/site-outise-sla',
+  OVERALL: '/reporting/overall',
 
 
 
