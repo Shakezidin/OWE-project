@@ -15,10 +15,10 @@
   font-size: 14px;
 }
 .time-bar{
-    width: 100%;
+    width: 60vw;
 }
 .time-radialbar {
-  width: 100%;
+  width: 40vw;
 }
 .line {
   width: 3px;
