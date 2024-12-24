@@ -24,6 +24,6 @@ type DataPoint struct {
 	Value map[string]float64 `json:"value"`
 }
 
-type OverallSpeedSummaryReportResponse struct {
+type SummaryReportResponse struct {
 	Data map[string][]DataPoint `json:"data"`
 }
