@@ -19,7 +19,7 @@ interface GraphData {
 
 const data: DataPoint[] = [
     {
-        name: 'Day 1',
+        name: '1',
         'Peoria/Kingman': 2400,
         'Tucson': 1398,
         'Colorado': 9800,
@@ -29,7 +29,7 @@ const data: DataPoint[] = [
         '#N/A': 1,
     },
     {
-        name: 'Day 2',
+        name: '2',
         'Peoria/Kingman': 500,
         'Tucson': 100,
         'Colorado': 1,
@@ -39,7 +39,7 @@ const data: DataPoint[] = [
         '#N/A': 1200,
     },
     {
-        name: 'Day 3',
+        name: '3',
         'Peoria/Kingman': 2300,
         'Tucson': 1500,
         'Colorado': 9500,
