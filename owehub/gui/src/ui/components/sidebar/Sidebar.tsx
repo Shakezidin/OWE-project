@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './sidebar.css';
-import { Link, Routes, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { createSideMenuList } from '../../../routes/SideMenuOption';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
-import useAuth from '../../../hooks/useAuth';
-import ReportMenu from '../../reporting/ReportMenu';
 
 interface Child {
   path: string;
@@ -51,8 +49,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-           
-            item.path === ROUTES.LEAD_MANAGEMENT) 
+            item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -63,14 +60,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          (isStaging !== 'staging' &&
-            (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE ||
-             
-              item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT))
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
-        } else if (item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.CALCULATOR) {
+        } else if (
+          item.path !== ROUTES.CONFIG_PAGE &&
+          item.path !== ROUTES.CALCULATOR
+        ) {
           newArr[0].mob.push(item);
         }
       });
@@ -82,7 +81,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
-           
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
@@ -103,13 +101,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          (isStaging !== 'staging' &&
-            (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE ||
-             
-              item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT))
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
@@ -124,14 +121,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (item.path !== ROUTES.USER_MANAEMENT ) {
+        if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            (isStaging !== 'staging' &&
-              (item.path === ROUTES.COMMISSION_DASHBOARD ||
-                item.path === ROUTES.CONFIG_PAGE ||
-               
-                item.path === ROUTES.SALES_REP_SCHEDULER||
-            item.path === ROUTES.LEAD_MANAGEMENT))
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -144,13 +140,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT 
+          item.path !== ROUTES.USER_MANAEMENT
         ) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
@@ -173,17 +168,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            (isStaging !== 'staging' &&
-              (item.path === ROUTES.COMMISSION_DASHBOARD ||
-                item.path === ROUTES.CONFIG_PAGE ||
-               
-                item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT))
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD 
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD
           ) {
             newArr[0].mob.push(item);
           }
@@ -201,12 +195,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.LEAD_MANAGEMENT
         ) {
           if (
-            (isStaging !== 'staging' &&
-              (item.path === ROUTES.COMMISSION_DASHBOARD ||
-                item.path === ROUTES.CONFIG_PAGE ||
-               
-                item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT))
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -222,7 +215,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
@@ -279,8 +271,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
-        className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''
-          }`}
+        className={`side-bar-content ${
+          toggleOpen ? 'side-bar-content-active' : ''
+        }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         {filteredList().map((el: any, i: number) => (
@@ -288,140 +281,142 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             {isMobile && (
               <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
                 {el.mob?.map((oth: any, index: number) => {
-                  if(oth.sidebarProps.displayText==='Reports') return <ReportMenu toggleOpen={toggleOpen}/>
-                  return <Link
-                  key={index}
-                  style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
-                  to={oth.path}
-                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
-                  onMouseEnter={(e) =>
-                    toggleOpen &&
-                    !isTablet &&
-                    handleMouseover(
-                      e,
-                      oth.sidebarProps.displayText,
-                      [],
-                      index + 8
-                    )
-                  }
-                  onMouseLeave={() => {
-                    timeOut.current = setTimeout(() => {
-                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
-                    }, 500);
-                  }}
-                  className={`side-icon-container ${location.pathname.includes(oth.path)
-                    ? 'active-link-bg'
-                    : 'not-active-link'
-                    }`}
-                >
-                  <div
-                    className={
-                      location.pathname.includes(oth.path)
-                        ? 'sidebaricon'
-                        : 'sidebariconn'
-                    }
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      width: 24,
-                      height: 24,
-                      borderRadius: 4,
-                      marginLeft: !toggleOpen ? '' : '-1px',
-                      background:
-                        toggleOpen && location.pathname.includes(oth.path)
-                          ? ''
-                          : toggleOpen
-                            ? 'transparent'
-                            : 'transparent',
-                    }}
-                  >
-                    {oth.sidebarProps.icon && oth.sidebarProps.icon}
-                  </div>
-
-                  {toggleOpen && !isTablet ? null : (
-                    <p
-                      className={
-                        location.pathname.includes(oth.path)
-                          ? 'tablink'
-                          : 'tablinkk'
+                  return (
+                    <Link
+                      key={index}
+                      style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
+                      to={oth.path}
+                      onClick={() => isTablet && setToggleOpen((prev) => !prev)}
+                      onMouseEnter={(e) =>
+                        toggleOpen &&
+                        !isTablet &&
+                        handleMouseover(
+                          e,
+                          oth.sidebarProps.displayText,
+                          [],
+                          index + 8
+                        )
                       }
-                    >
-                      {oth.sidebarProps.displayText}
-                    </p>
-                  )}
-                  <div
-                    className="tip"
-                    style={{
-                      backgroundColor: '#fff',
-                      position: 'fixed',
-                      top: cords.top,
-                      left: cords.left,
-                      display:
-                        cords.opacity && cords.id === index + 8
-                          ? 'block'
-                          : 'none',
-
-                      maxHeight: '300px',
-                      minWidth: '150px',
-                      overflowY: 'scroll',
-                      borderBottomRightRadius: '4px',
-                      borderTopRightRadius: '4px',
-                      borderLeft: '1px solid #D9D9D9',
-                      color: '#292B2E',
-                    }}
-                  >
-                    <span
-                      className=""
-                      style={{
-                        display: 'block',
-                        background: '#377CF6',
-                        padding: '11px 12px',
-                        color: 'white',
-                        width: '100%',
-                        fontWeight: '500',
-                        borderBottom: '1px solid #E8E8E8',
-                        fontSize: '13px',
-                        // borderRight: "3px solid #377CF6",
-                        cursor: 'default',
-                        pointerEvents: 'none',
+                      onMouseLeave={() => {
+                        timeOut.current = setTimeout(() => {
+                          setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                        }, 500);
                       }}
+                      className={`side-icon-container ${
+                        location.pathname.includes(oth.path)
+                          ? 'active-link-bg'
+                          : 'not-active-link'
+                      }`}
                     >
-                      {' '}
-                      {cords.text}
-                    </span>
-                  </div>
-                </Link>
-                }
-                  
-                )}
+                      <div
+                        className={
+                          location.pathname.includes(oth.path)
+                            ? 'sidebaricon'
+                            : 'sidebariconn'
+                        }
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          width: 24,
+                          height: 24,
+                          borderRadius: 4,
+                          marginLeft: !toggleOpen ? '' : '-1px',
+                          background:
+                            toggleOpen && location.pathname.includes(oth.path)
+                              ? ''
+                              : toggleOpen
+                                ? 'transparent'
+                                : 'transparent',
+                        }}
+                      >
+                        {oth.sidebarProps.icon && oth.sidebarProps.icon}
+                      </div>
+
+                      {toggleOpen && !isTablet ? null : (
+                        <p
+                          className={
+                            location.pathname.includes(oth.path)
+                              ? 'tablink'
+                              : 'tablinkk'
+                          }
+                        >
+                          {oth.sidebarProps.displayText}
+                        </p>
+                      )}
+                      <div
+                        className="tip"
+                        style={{
+                          backgroundColor: '#fff',
+                          position: 'fixed',
+                          top: cords.top,
+                          left: cords.left,
+                          display:
+                            cords.opacity && cords.id === index + 8
+                              ? 'block'
+                              : 'none',
+
+                          maxHeight: '300px',
+                          minWidth: '150px',
+                          overflowY: 'scroll',
+                          borderBottomRightRadius: '4px',
+                          borderTopRightRadius: '4px',
+                          borderLeft: '1px solid #D9D9D9',
+                          color: '#292B2E',
+                        }}
+                      >
+                        <span
+                          className=""
+                          style={{
+                            display: 'block',
+                            background: '#377CF6',
+                            padding: '11px 12px',
+                            color: 'white',
+                            width: '100%',
+                            fontWeight: '500',
+                            borderBottom: '1px solid #E8E8E8',
+                            fontSize: '13px',
+                            // borderRight: "3px solid #377CF6",
+                            cursor: 'default',
+                            pointerEvents: 'none',
+                          }}
+                        >
+                          {' '}
+                          {cords.text}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
         ))}
-     {!toggleOpen &&   <div style={{ marginTop: 32 }}>
-          <p
-            style={{
-              fontSize: '12px',
-              textAlign: 'center',
-              fontWeight: 500,
-              color: '#80848B',
-            }}
-          >
-            © 2024 by Our World Energy.
-          </p>
-          <p
-            style={{
-              fontSize: '10px',
-              textAlign: 'center',
-              fontWeight: 500,
-              color: '#80848B',
-            }}
-          >
-            All rights reserved. eOS: v1.5
-          </p>
-        </div>}
+        {!toggleOpen && (
+          <div style={{ marginTop: 32 }}>
+            <p
+              style={{
+                fontSize: '12px',
+                textAlign: 'center',
+                fontWeight: 500,
+                color: '#80848B',
+              }}
+            >
+              © 2024 by Our World Energy.
+            </p>
+            <p
+              style={{
+                fontSize: '10px',
+                textAlign: 'center',
+                fontWeight: 500,
+                color: '#80848B',
+              }}
+            >
+              All rights reserved. eOS: v1.5
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
