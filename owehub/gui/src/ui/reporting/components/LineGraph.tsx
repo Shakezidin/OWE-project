@@ -78,8 +78,8 @@ const LineGraph: React.FC = () => {
     return (
         <ResponsiveContainer width="95%" height="100%" className={'graph-container'}>
 
-            <LineChart data={data}>
-                <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
+            <LineChart data={data}  margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+                <Legend verticalAlign="top"  wrapperStyle={{ paddingBottom: 20,fontSize: 10 }} />
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
                 <YAxis tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
