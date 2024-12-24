@@ -107,6 +107,41 @@ export const configPostCaller = async (
   }
 };
 
+
+export const reportingCaller = async (
+  endpoint: string,
+  postData: any,
+  hasChangedBaseUrl: boolean = false
+): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      Authorization: `${localStorage.getItem('token')}`,
+      // 'Content-Type': 'application/json',
+    },
+  };
+
+  try {
+    const response: AxiosResponse = await axios.post(
+      `http://155.138.239.170:31024/owe-reports-service/v1/${endpoint}`,
+      postData,
+      config
+    );
+    return response.data; // Return the data from the response
+  } catch (error) {
+    console.log('axios error', error);
+
+    if (isAxiosError(error)) {
+      if (error.response) return error.response.data;
+
+      // handle network error
+      if (error.message === 'Network Error')
+        return new Error('No internet connection');
+    }
+
+    throw new Error('Failed to fetch data');
+  }
+};
+
 export const getCaller = async (endpoint: string): Promise<any> => {
   const config: AxiosRequestConfig = {
     headers: {

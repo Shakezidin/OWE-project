@@ -77,28 +77,64 @@ const Production: React.FC = () => {
  
 
   useEffect(() => {
-    setGraphs([
-      {
-        title: 'Scheduled',
-        stopColor: '#0096D3',
-        borderColor: '#0096D3',
-        data: [],
-      },
-      { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
-      {
-        title: 'Completed',
-        stopColor: '#377CF6',
-        borderColor: '#377CF6',
-        data: [],
-      },
-      {
-        title: 'Fix Completed',
-        stopColor: '#377CF6',
-        borderColor: '#377CF6',
-        data: [],
-      },
-    ]);
-  });
+    if(reportType.label==='Install'){
+      setGraphs([
+        {
+          title: 'Scheduled - Day 1',
+          stopColor: '#0096D3',
+          borderColor: '#0096D3',
+          data: [],
+        },
+        {
+          title: 'Scheduled - Day 2',
+          stopColor: '#0096D3',
+          borderColor: '#0096D3',
+          data: [],
+        },
+        {
+          title: 'Scheduled - Day 3',
+          stopColor: '#0096D3',
+          borderColor: '#0096D3',
+          data: [],
+        },
+        { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+        {
+          title: 'Completed',
+          stopColor: '#377CF6',
+          borderColor: '#377CF6',
+          data: [],
+        },
+        {
+          title: 'Fix Completed',
+          stopColor: '#377CF6',
+          borderColor: '#377CF6',
+          data: [],
+        },
+      ]);
+    }else{
+      setGraphs([
+        {
+          title: 'Scheduled',
+          stopColor: '#0096D3',
+          borderColor: '#0096D3',
+          data: [],
+        },
+        { title: 'Fixed Scheduled', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
+        {
+          title: 'Completed',
+          stopColor: '#377CF6',
+          borderColor: '#377CF6',
+          data: [],
+        },
+        {
+          title: 'Fix Completed',
+          stopColor: '#377CF6',
+          borderColor: '#377CF6',
+          data: [],
+        },
+      ]);
+    }
+  },[reportType]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -119,9 +155,8 @@ const Production: React.FC = () => {
       <div className="headingcount flex justify-between items-center">
         <h4 className="reports-title">Production</h4>
         <div className="report-header-dropdown flex-wrap">
-          <div><YearSelect /></div>
-          <div><WeekSelect /></div>
-          <div><DaySelect /></div>
+         
+          {/* <div><DaySelect /></div> */}
           <div>
             <SelectOption
               options={[
@@ -158,6 +193,8 @@ const Production: React.FC = () => {
             />
           </div>
           <div><CompanySelect /></div>
+          <div><YearSelect /></div>
+          <div><WeekSelect /></div>
         </div>
       </div>
       <div

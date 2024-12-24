@@ -25,18 +25,15 @@ import {
 } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { toast } from 'react-toastify';
-import ReportsSelectOption from '../components/selectOption/ReportsSelectOption';
 import { availableStates } from '../../core/models/data_models/SelectDataModel';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import {  postCaller, reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
+
 import DropdownCheckBox from '../components/DropdownCheckBox';
 import { MdDownloading } from 'react-icons/md';
 import { LuImport } from 'react-icons/lu';
 import MicroLoader from '../components/loader/MicroLoader';
-import DataNotFound from '../components/loader/DataNotFound';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-import { Link } from 'react-router-dom';
-import { ROUTES } from '../../routes/routes';
+
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -184,7 +181,12 @@ const SpeedOverall: React.FC = () => {
     }
   };
   const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    const res = await reportingCaller('get_overallspeedsummaryreport', {
+      year: '2024',
+      week: '12',
+      batteryincluded: 'Yes',
+      office: ['Tucson', 'Texas', 'Tempe', 'Peoria/Kingman', 'Colorado'],
+    });
     if (res.status > 200) {
       return;
     }
