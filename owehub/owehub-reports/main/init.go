@@ -72,6 +72,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_ftc_qualityperoffice_summaryreport",
+		apiHandler.HandleGetFTCQualityPerOfficeSummaryReportRequest,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

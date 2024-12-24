@@ -31,7 +31,7 @@ func HandleGetOverallSpeedSummaryReportRequest(resp http.ResponseWriter, req *ht
 		err         error
 		dataReq     models.SummaryReportRequest
 		RecordCount int = 0
-		reportResp  models.OverallSpeedSummaryReportResponse
+		reportResp  models.SummaryReportResponse
 	)
 
 	log.EnterFn(0, "HandleGetOverallSpeedSummaryReportRequest")
@@ -107,14 +107,14 @@ func HandleGetSpeedSaleToInstallSummaryReportRequest(resp http.ResponseWriter, r
 		err         error
 		dataReq     models.SaleToInstallSpeedSummaryReportRequest
 		RecordCount int = 0
-		reportResp  models.OverallSpeedSummaryReportResponse
+		reportResp  models.SummaryReportResponse
 	)
 
 	log.EnterFn(0, "HandleGetSpeedSaleToInstallSummaryReportRequest")
 	defer func() { log.ExitFn(0, "HandleGetSpeedSaleToInstallSummaryReportRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get overall speed summary")
+		err = fmt.Errorf("HTTP Request body is null in get sale to install speed summary")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -170,6 +170,75 @@ func HandleGetSpeedSaleToInstallSummaryReportRequest(resp http.ResponseWriter, r
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Speed Sale To Install Summary", http.StatusOK, reportResp, int64(RecordCount))
+}
+
+/******************************************************************************
+ * FUNCTION:		HandleGetFTCQualityPerOfficeSummaryReportRequest
+ * DESCRIPTION:     handler for get speed sale to isntall summary request
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func HandleGetFTCQualityPerOfficeSummaryReportRequest(resp http.ResponseWriter, req *http.Request) {
+	var (
+		err         error
+		dataReq     models.SummaryReportRequest
+		RecordCount int = 0
+		reportResp  models.SummaryReportResponse
+	)
+
+	log.EnterFn(0, "HandleGetFTCQualityPerOfficeSummaryReportRequest")
+	defer func() { log.ExitFn(0, "HandleGetFTCQualityPerOfficeSummaryReportRequest", err) }()
+
+	if req.Body == nil {
+		err = fmt.Errorf("HTTP Request body is null in get quality per office first time completion summary")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		return
+	}
+
+	reqBody, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get quality per office first time completion summary err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal get quality per office first time completion summary err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal quality per office first time completion summary", http.StatusBadRequest, nil)
+		return
+	}
+
+	/* Dummy Data Sent to API */
+	rand.Seed(time.Now().UnixNano())
+	categories := []string{"Overall"}
+	categories = append(categories, dataReq.Office...)
+	reportResp.Data = make(map[string][]models.DataPoint)
+
+	for _, category := range categories {
+		var data []models.DataPoint = make([]models.DataPoint, 52)
+		for i := 0; i < 52; i++ {
+			data[i].Value = make(map[string]float64)
+
+			data[i].Value["Survey - Completed First Time"] = rand.Float64()
+			data[i].Value["Install - Completed First Time"] = rand.Float64()
+			data[i].Value["Service - Completed First Time"] = rand.Float64()
+			data[i].Value["MPU - Completed First Time"] = rand.Float64()
+			data[i].Value["Derate - Completed First Time"] = rand.Float64()
+			data[i].Value["Battery - Completed First Time"] = rand.Float64()
+
+			data[i].Value["Survey - Incompleted First Time"] = rand.Float64()
+			data[i].Value["Install - Incompleted First Time"] = rand.Float64()
+			data[i].Value["Service - Incompleted First Time"] = rand.Float64()
+			data[i].Value["MPU - Incompleted First Time"] = rand.Float64()
+			data[i].Value["Derate - Incompleted First Time"] = rand.Float64()
+			data[i].Value["Battery - Incompleted First Time"] = rand.Float64()
+		}
+		reportResp.Data[category] = data
+	}
+
+	appserver.FormAndSendHttpResp(resp, "First Time Completion Quality Per Office Summary", http.StatusOK, reportResp, int64(RecordCount))
 }
 
 func contains(arr []string, target string) bool {
