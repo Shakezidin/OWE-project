@@ -93,13 +93,13 @@ const CompletionsPerOffice: React.FC = () => {
   // Sample data for charts
   const stackedBarData = Array.from({ length: 52 }, (_, i) => ({
     week: `Week ${i + 1}`,
-    'Tucson': Math.random() * 500,
-    'Colorado': Math.random() * 300,
-    'Albuquerque/El Paso': Math.random() * 400,
-    'Texas': Math.random() * 400,
-    'Tempe': Math.random() * 400,
-    'Peoria/Kingman': Math.random() * 400,
-    '#N/A': Math.random() * 400,
+    'Tucson': Math.floor(Math.random() * 500),
+    'Colorado': Math.floor(Math.random() * 300),
+    'Albuquerque/El Paso': Math.floor(Math.random() * 400),
+    'Texas': Math.floor(Math.random() * 400),
+    'Tempe': Math.floor(Math.random() * 400),
+    'Peoria/Kingman': Math.floor(Math.random() * 400),
+    '#N/A': Math.floor(Math.random() * 400),
     // 'null': Math.random() * 400,
   }));
 
@@ -513,10 +513,21 @@ const formatNumber = (value: number): string => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={stackedBarData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(OFFICE_COLORS).map((office) => (
               <Bar
                 key={office}
@@ -534,10 +545,21 @@ const formatNumber = (value: number): string => {
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={lineChartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(CODE_COLORS).map((code) => (
               <Line
                 key={code}

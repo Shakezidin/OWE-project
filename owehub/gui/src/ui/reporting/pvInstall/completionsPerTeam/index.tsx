@@ -584,10 +584,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={azpeoData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 150]} />
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 150]} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(AZPEO_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -608,10 +619,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={aztemData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 125]} />
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 125]} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(AZTEM_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -632,10 +654,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={aztucData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 50]} />
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 50]} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(AZTUC_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -656,10 +689,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={codenData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 'dataMax + 10']} /> {/* Dynamic Y-axis domain */}
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(CODEN_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -680,10 +724,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={cogjtData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 'dataMax + 10']} /> {/* Dynamic Y-axis domain */}
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(COGJT_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -704,10 +759,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={nmabqData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 'dataMax + 10']} /> {/* Dynamic Y-axis domain */}
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(NMABQ_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -727,10 +793,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={txdalData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 'dataMax + 10']} /> {/* Dynamic Y-axis domain */}
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(TXDAL_COLORS).map((team) => (
               <Bar
                 key={team}
@@ -750,10 +827,21 @@ const CompletionsPerTeams: React.FC = () => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={txelData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis domain={[0, 'dataMax + 10']} /> {/* Dynamic Y-axis domain */}
+            <XAxis 
+              dataKey="week" 
+              tick={{ 
+                fontSize: 10,
+                fill: '#555' 
+              }}
+              angle={-45}
+              dy={20}
+              dx={-8}
+              interval={0}
+              height={60}
+            />
+            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20,fontSize: 10 }} />
             {Object.keys(TXELP_COLORS).map((team) => (
               <Bar
                 key={team}

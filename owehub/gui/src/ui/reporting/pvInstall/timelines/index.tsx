@@ -13,6 +13,11 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import './style.css';
+import YearSelect from '../../components/Dropdowns/YearSelect';
+import WeekSelect from '../../components/Dropdowns/WeekSelect';
+import DaySelect from '../../components/Dropdowns/DaySelect';
+import SelectOption from '../../../components/selectOption/SelectOption';
+import CompanySelect from '../../components/Dropdowns/CompanySelect';
 
 interface InstallData {
   name: string;
@@ -35,128 +40,128 @@ const OFFICE_COLORS = {
   'Tucson': '#00CED1'
 };
 
+interface Option {
+  value: string;
+  label: string;
+}
+
 const Timelines = () => {
-  const [selectedOffice, setSelectedOffice] = useState<string>('All');
-  const [selectedTeam, setSelectedTeam] = useState<string>('All');
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('Week/Year');
+  const [reportType, setReportType] = useState<Option>(
+    {
+      label: 'Install',
+      value: 'install',
+    }
+  );
+
   const installCreatedData = [
-    { name: 'Tucson', week1: -288.32, week2: -282.28, week3: -274.69, week4: -267.59, total: -124.44 },
-    { name: 'Texas', week1: -287.67, week2: -281.98, week3: -273.75, week4: -266.20, total: -93.53 },
-    { name: 'Tempe', week1: null, week2: null, week3: null, week4: null, total: -38.42 },
-    { name: 'Peoria/Kingm..', week1: -288.70, week2: -282.23, week3: -274.94, week4: -267.78, total: -134.27 },
-    { name: 'Colorado', week1: -286.83, week2: -282.43, week3: -274.63, week4: -268.53, total: -78.42 },
-    { name: 'Albuquerque', week1: -289.39, week2: -281.87, week3: -274.99, week4: -268.20, total: -153.94 },
-    { name: '#N/A', week1: null, week2: null, week3: null, week4: null, total: -3.25 }
+    { name: 'Tucson', week1: -288.32, week2: -282.28, week3: -274.98, week4: -267.59, week5: -267.59, total: -124.44 },
+    { name: 'Texas', week1: -287.67, week2: -281.98, week3: -273.75, week4: -266.20, week5: -266.20, total: -93.53 },
+    { name: 'Tempe', week1: null, week2: null, week3: null, week4: null, week5: null, total: -38.42 },
+    { name: 'Peoria/Kingm..', week1: -288.70, week2: -282.23, week3: -274.94, week4: -267.78, week5: -267.78, total: -134.27 },
+    { name: 'Colorado', week1: -286.83, week2: -282.93, week3: -276.63, week4: -268.53, week5: -268.53, total: -78.42 },
+    { name: 'Albuquerque/El Paso', week1: -289.39, week2: -281.87, week3: -274.99, week4: -268.20, week5: -268.20, total: -133.94 },
+    { name: '#N/A', week1: null, week2: null, week3: null, week4: null, week5: null, total: -3.25 }
   ];
+
+
+  const overallData = [
+    { date: '27/2024', value: -150 },
+    { date: '26/2024', value: -145 },
+    { date: '25/2024', value: -140 },
+    { date: '24/2024', value: -135 },
+    { date: '23/2024', value: -130 },
+    { date: '22/2024', value: -125 },
+    { date: '21/2024', value: -120 },
+    { date: '20/2024', value: -115 },
+    { date: '19/2024', value: -110 },
+    { date: '18/2024', value: -105 },
+    { date: '17/2024', value: -100 },
+    { date: '16/2024', value: -95 },
+    { date: '15/2024', value: -93 }
+  ];
+
+
 
   const installCompletedData = [
-    { name: 'Tucson', week1: 0.96, week2: 1.52, week3: 1.41, week4: 3.36, total: 1.55 },
-    { name: 'Texas', week1: 0.98, week2: 0.67, week3: 0.9, week4: 0.46, total: 6.52 },
-    { name: 'Tempe', week1: null, week2: null, week3: null, week4: null, total: 1.57 },
-    { name: 'Peoria/Kingm..', week1: 0.88, week2: 1.7, week3: 1.08, week4: 1.11, total: 2.14 },
-    { name: 'Colorado', week1: 0.35, week2: 2.19, week3: 2.02, week4: 2.52, total: 4.4 },
-    { name: 'Albuquerque', week1: 6.06, week2: 11.42, week3: 4.76, week4: 20.93, total: 1.68 }
+    { name: 'Tucson', week1: 0.26, week2: 0.64, week3: 0.46, week4: -0.04, total: 1.86 },
+    { name: 'Peoria/Kingm..', week1: 0.90, week2: 0.75, week3: 2.74, week4: 0.11, total: 1.93 },
+    { name: 'Albuquerque/El Paso', week1: null, week2: null, week3: null, week4: null, total: -10.33 },
+    { name: '#N/A', week1: 0.96, week2: -0.04, week3: 0.04, week4: null, total: 1.00 },
+    { name: 'null', week1: null, week2: null, week3: null, week4: null, total: 0.04 }
   ];
 
-  const overallData = Array.from({ length: 20 }, (_, i) => ({
-    date: `Q3-${2024 - i}`,
-    value: -150 + Math.random() * 50
-  })).reverse();
-
-  const headerSelectors = [
-    { defaultValue: 'Quarter - Year', options: ['Quarter - Year'] },
-    { defaultValue: 'Week - Year', options: ['Week - Year'] },
-    { defaultValue: 'Office', options: ['Office'] }
+  const overallDataCompleted = [
+    { date: '27-2024', value: 1.98 },
+    { date: '28-2024', value: 5.26 },
+    { date: '29-2024', value: 2.56 },
+    { date: '30-2024', value: 2.96 },
+    { date: '31-2024', value: 2.74 },
+    { date: '32-2024', value: 3.21 },
+    { date: '33-2024', value: 3.35 },
+    { date: '34-2024', value: 4.00 },
+    { date: '35-2024', value: 3.84 },
+    { date: '36-2024', value: 4.99 },
+    { date: '37-2024', value: 3.35 },
+    { date: '38-2024', value: 4.30 },
+    { date: '39-2024', value: 3.78 },
+    { date: '40-2024', value: 8.40 }
   ];
 
-  const tableHeaders = [
-    'Year', 'Office (2)', 'Week 1', 'Week 2', 'Week 3', 'Week 4', 'W', 'Grand total'
-  ];
-
-  const chartStyles = {
-    lineChart: {
-      height: 300,
-      gridLines: true,
-      yAxisDomain: [-300, 0],
-      secondYAxisDomain: [0, 25]
-    },
-    barChart: {
-      height: 200,
-      fill: '#1f77b4',
-      secondFill: '#2ca02c'
-    }
-  };
-
-  const tableStyles = {
-    firstSection: { background: '#f8ffd7' },
-    secondSection: { background: '#e1f5fe' }
+  // Add this constant for the totals row
+  const calculateTotals = (data: InstallData[]) => {
+    return {
+      week1: data.reduce((sum, row) => sum + (row.week1 || 0), 0),
+      week2: data.reduce((sum, row) => sum + (row.week2 || 0), 0),
+      week3: data.reduce((sum, row) => sum + (row.week3 || 0), 0),
+      week4: data.reduce((sum, row) => sum + (row.week4 || 0), 0),
+      total: data.reduce((sum, row) => sum + row.total, 0)
+    };
   };
 
   return (
     <div className="pv-install-dashboard bg-white p2">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-          <h3 className="text-xl font-semibold">PV Install Timelines</h3>
-        </div>
-        <div className="flex">
-          <div className="mr2 ">
-            <Select
-              // mode="multiple"
-              // allowClear
-              value={selectedOffice}
-              onChange={setSelectedOffice}
-              style={{ width: 200 }}
-              options={[
-                { value: 'All', label: 'Office' },
-                ...Object.keys(OFFICE_COLORS).map((office) => ({
-                  value: office,
-                  label: office,
-                })),
-              ]}
-            />
-          </div>
-          <div className="mr2">
-            <Select
-              value={selectedTeam}
-              onChange={setSelectedTeam}
-              style={{ width: 200 }}
-              options={[
-                { value: 'All', label: 'Related Teams' },
-                { value: 'AZTEM03', label: 'AZTEM03' },
-                { value: 'AZTEM06', label: 'AZTEM06' },
-                { value: 'AZTEM04', label: 'AZTEM04' },
-                { value: 'AZPEO07', label: 'AZPEO07' },
-                { value: 'AZTEM08', label: 'AZTEM08' },
-                { value: 'AZPEO01', label: 'AZPEO01' },
-                { value: 'AZTEM01', label: 'AZTEM01' },
-                { value: 'AZTUC01', label: 'AZTUC01' },
-                { value: 'AZPEO04', label: 'AZPEO04' },
-                { value: 'AZTEM02', label: 'AZTEM02' },
-                { value: 'AZPEO06', label: 'AZPEO06' },
-                { value: 'null', label: 'null' }]}
-            />
-          </div>
+      <div className="headingcount flex justify-between items-center">
+        <h4 className="reports-title">PV Install Timelines</h4>
+        <div className="report-header-dropdown flex-wrap">
+          <div><YearSelect /></div>
+          <div><WeekSelect /></div>
+          <div><DaySelect /></div>
           <div>
-            <Select
-              value={selectedPeriod}
-              onChange={setSelectedPeriod}
-              style={{ width: 200 }}
+            <SelectOption
               options={[
-                { value: 'Week/Year', label: 'Completed Week/Year' },
-                { value: '2024-12-1 12:00:00', label: '2024-12-1 12:00:00' },
-                { value: '2024-11-1 12:00:00', label: '2024-11-1 12:00:00' },
-                { value: '2024-10-1 12:00:00', label: '2024-10-1 12:00:00' },
-                { value: '2024-09-1 12:00:00', label: '2024-09-1 12:00:00' },
-                { value: '2024-08-1 12:00:00', label: '2024-08-1 12:00:00' },
-                { value: '2024-07-1 12:00:00', label: '2024-07-1 12:00:00' },
-                { value: '2024-06-1 12:00:00', label: '2024-06-1 12:00:00' },
-                { value: '2024-05-1 12:00:00', label: '2024-05-1 12:00:00' },
-                { value: '2024-04-1 12:00:00', label: '2024-04-1 12:00:00' },
-                { value: '2024-03-1 12:00:00', label: '2024-03-1 12:00:00' },
-                { value: '2024-02-1 12:00:00', label: '2024-02-1 12:00:00' },
+                {
+                  label: 'Install',
+                  value: 'install',
+                },
+                {
+                  label: 'Battery',
+                  value: 'battery',
+                },
+                {
+                  label: 'Service',
+                  value: 'service',
+                },
+                {
+                  label: 'MPU',
+                  value: 'mpu',
+                },
+                {
+                  label: 'Derate',
+                  value: 'derate',
+                },
+                {
+                  label: 'DER/LST/Sub-Panel',
+                  value: 'der_lst_sub_panel',
+                },
               ]}
+              onChange={(value: any) => setReportType(value)}
+              value={reportType}
+              controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+              menuListStyles={{ fontWeight: 400 }}
+              singleValueStyles={{ fontWeight: 400 }}
             />
           </div>
+          <div><CompanySelect /></div>
         </div>
       </div>
 
@@ -165,11 +170,11 @@ const Timelines = () => {
         <div className="section-header">
           <h3 className="section-title">Install Created to Install Completed Timeline</h3>
         </div>
-        
-        <div className="grid">
+
+        <div className="grid timeline-grid">
           {/* Table */}
           <div className="table-container">
-          <div className="flex justify-end h5 bold" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Created Date to Completion in Days</div>
+            <div className="flex justify-end h5 bold" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Created Date to Completion in Days</div>
             <table className="table">
               <thead>
                 <tr>
@@ -194,40 +199,87 @@ const Timelines = () => {
                     <td>{row.total.toFixed(2)}</td>
                   </tr>
                 ))}
+                <tr className="grand-total-row">
+                  <td>Grand total</td>
+                  <td></td>
+                  {Object.values(calculateTotals(installCreatedData)).map((value, idx) => (
+                    <td key={idx}>{value.toFixed(2)}</td>
+                  ))}
+                </tr>
               </tbody>
             </table>
           </div>
 
           {/* Bar Chart */}
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={overallData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <div className="center mb-2 text-sm font-medium">Overall (Q3)</div>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart
+                data={overallData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
+                <XAxis
+                  dataKey="date"
+                  tick={{
+                    fontSize: 10,
+                    fill: '#555'
+                  }}
+                  angle={-45}
+                  dy={20}
+                  dx={-8}
+                  interval={0}
+                  height={60}
+                  label={{
+                    value: "Week of Completion",
+                    position: "bottom",
+                    offset: 20,
+                    fontSize: 12
+                  }}
+                />
+                <YAxis
+                  tick={{ fontSize: 10, fill: '#555' }}
+                />
                 <Tooltip />
-                <Bar dataKey="value" fill="#1f77b4" name="Created Date to Completion in Days" />
+                <Legend
+                  verticalAlign="top"
+                  align="left"
+                  height={36}
+                  wrapperStyle={{
+                    // paddingTop: '10px',
+                    paddingLeft: '40px',
+                    fontSize: 10,
+                  }}
+                />
+                <Bar
+                  dataKey="value"
+                  fill="rgb(0, 114, 240)"
+                  name="Created Date to Completion in Days"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Line Chart for Install Created */}
-        <div className="chart-container mt-8">
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={[1, 2, 3, 4].map(week => ({
-              week,
-              ...Object.fromEntries(
-                installCreatedData
-                  .filter(office => office.name !== '#N/A')
-                  .map(office => [office.name, office[`week${week}` as keyof InstallData]])
-              )
-            }))}>
+        <div className="mt-6 bg-white rounded-lg shadow-sm p-4">
+          <div className="center mb-4 font-medium">Per Office</div>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={[1, 2, 3, 4, 5].map(week => ({
+                week,
+                ...Object.fromEntries(
+                  installCreatedData
+                    .filter(office => office.name !== '#N/A')
+                    .map(office => [office.name, office[`week${week}` as keyof InstallData]])
+                )
+              }))}
+            >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis domain={[-400, 100]} />
+              <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#555' }} />
+              <YAxis domain={[-290, -265]} tick={{ fontSize: 12, fill: '#555' }} />
               <Tooltip />
-              <Legend />
+              <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
               {installCreatedData
                 .filter(office => office.name !== '#N/A')
                 .map((office, index) => (
@@ -235,8 +287,9 @@ const Timelines = () => {
                     key={office.name}
                     type="monotone"
                     dataKey={office.name}
-                    name={office.name}
                     stroke={`hsl(${index * 40}, 70%, 50%)`}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 6 }}
                   />
                 ))}
             </LineChart>
@@ -249,11 +302,11 @@ const Timelines = () => {
         <div className="section-header">
           <h3 className="section-title">Install Date to Install Completed Timeline</h3>
         </div>
-        
-        <div className="grid">
+
+        <div className="grid timeline-grid">
           {/* Table */}
-          <div className="table-container">
-          <div className="flex justify-end h5 bold" style={{ background: "#b2ebf2" }} title="Week / Customer">Week / Install Date to Completion in Days</div>
+          <div className="table-container mt0">
+            <div className="flex justify-end h5 bold" style={{ background: "#b2ebf2" }} title="Week / Customer">Week / Install Date to Completion in Days</div>
             <table className="table">
               <thead>
                 <tr>
@@ -278,19 +331,70 @@ const Timelines = () => {
                     <td>{row.total.toFixed(2)}</td>
                   </tr>
                 ))}
+                <tr className="grand-total-row">
+                  <td>Grand total</td>
+                  <td></td>
+                  {Object.values(calculateTotals(installCompletedData)).map((value, idx) => (
+                    <td key={idx}>{value.toFixed(2)}</td>
+                  ))}
+                </tr>
               </tbody>
             </table>
           </div>
 
           {/* Bar Chart */}
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={overallData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <div className="center mb-2 text-sm font-medium">Overall (Q3)</div>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={overallDataCompleted}
+                margin={{ top: 10, right: 30, left: 0, bottom: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[0, 10]} />
+                <XAxis
+                  dataKey="date"
+                  tick={{
+                    fontSize: 10,
+                    fill: '#555'
+                  }}
+                  angle={-45}
+                  dy={20}
+                  dx={-8}
+                  interval={0}
+                  height={60}
+                  label={{
+                    value: "Week of Completion",
+                    position: "bottom",
+                    offset: 20,
+                    fontSize: 12
+                  }}
+                />
+                <YAxis
+                  domain={[0, 10]}
+                  tick={{ fontSize: 10, fill: '#555' }}
+                  ticks={[0, 2.5, 5, 7.5, 10]}
+                />
                 <Tooltip />
-                <Bar dataKey="value" fill="#2ca02c" name="Install Date to Completion in Days" />
+                <Legend
+                  verticalAlign="top"
+                  align="left"
+                  height={36}
+                  wrapperStyle={{
+                    // paddingTop: '10px',
+                    paddingLeft: '40px',
+                    fontSize: 10,
+                  }}
+                />
+                <Bar
+                  dataKey="value"
+                  fill="rgb(0, 114, 240)"
+                  name="Install Date to Completion in Days"
+                  label={{
+                    position: 'top',
+                    fill: '#555',
+                    fontSize: 12,
+                    formatter: (value: any) => value.toFixed(2)
+                  }}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -298,7 +402,8 @@ const Timelines = () => {
 
         {/* Line Chart for Install Completed */}
         <div className="chart-container mt-8">
-          <ResponsiveContainer width="100%" height={400}>
+          <div className="center mb-4 font-medium">Per Office</div>
+          <ResponsiveContainer width="100%" height={300}>
             <LineChart data={[1, 2, 3, 4].map(week => ({
               week,
               ...Object.fromEntries(
@@ -307,10 +412,10 @@ const Timelines = () => {
               )
             }))}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis domain={[0, 25]} />
+              <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#555' }} />
+              <YAxis domain={[0, 3]} tick={{ fontSize: 12, fill: '#555' }} />
               <Tooltip />
-              <Legend />
+              <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
               {installCompletedData.map((office, index) => (
                 <Line
                   key={office.name}
