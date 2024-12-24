@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 
-const TableCustom = ({ data,reportType, middleName,setData }: any) => {
+const TableCustom = ({ data,reportType, middleName,setData, th1, th2 }: any) => {
 
   const [reverse, setReverse] = useState(false);
 
@@ -22,9 +22,10 @@ const TableCustom = ({ data,reportType, middleName,setData }: any) => {
       <div className="grey-table-container">
         <table className="grey-custom-table">
           <thead>
+            
             <tr>
-              <th onClick={handleOfficeClick} style={{cursor:"pointer"}}>Office (2) <FaCaretDown size={20} style={{fontWeight:"500",marginBottom:"-5px",transform: reverse ? "rotate(180deg)" : ""}}/> </th>
-              <th>Scheduled-kW</th>
+              <th onClick={handleOfficeClick} style={{cursor:"pointer", whiteSpace:"nowrap"}}>{th1 ? th1 : "Office (2)"} <FaCaretDown size={20} style={{fontWeight:"500",marginBottom:"-5px",transform: reverse ? "rotate(180deg)" : ""}}/> </th>
+              <th>{th2 ? th2 : "Scheduled-kW"}</th>
             </tr>
           </thead>
           <tbody>
