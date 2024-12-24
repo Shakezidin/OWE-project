@@ -86,6 +86,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_ftc_reasonforincomplete_summaryreport",
+		apiHandler.HandleGetFTCReasonForIncompleteSummaryReportRequest,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************
