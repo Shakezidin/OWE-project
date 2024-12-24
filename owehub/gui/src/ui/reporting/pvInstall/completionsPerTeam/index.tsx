@@ -1,28 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Table } from 'antd';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-// Constants for colors
-const OFFICE_COLORS = {
-  'null': '#e2e535',
-  '#N/A': '#90EE90',
-  'Albuquerque/El Paso': '#20B2AA',
-  'Colorado': '#87CEEB',
-  'Peoria/Kingman': '#FFD700',
-  'Tempe': '#9ACD32',
-  'Texas': '#3CB371',
-  'Tucson': '#00CED1'
-};
-
-const CODE_COLORS = {
-  'AZPECO1': '#6B8E23',
-  'AZTUC01': '#98FB98',
-  'AZTEM01': '#B0E0E6',
-  'CODEN1': '#87CEEB',
-  'NMABQ01': '#F0E68C',
-  'TXDAL01': '#3CB371',
-  'AZKING01': '#00CED1'
-};
+import YearSelect from '../../components/Dropdowns/YearSelect';
+import WeekSelect from '../../components/Dropdowns/WeekSelect';
+import DaySelect from '../../components/Dropdowns/DaySelect';
+import SelectOption from '../../../components/selectOption/SelectOption';
+import CompanySelect from '../../components/Dropdowns/CompanySelect';
 
 
 // Add new color constants for AZTEM and AZTUC teams
@@ -218,38 +201,18 @@ const txelData = Array.from({ length: 52 }, (_, i) => ({
   'TXELP02': Math.floor(Math.random() * 100) + 1,
 }));
 
-
-// At the top of the file, add these types
-type OfficeColorKey = keyof typeof OFFICE_COLORS;
-type CodeColorKey = keyof typeof CODE_COLORS;
-
-// Sample data structure
-interface TableData {
-  year: number;
-  office: string;
-  weeks: number[];
-  grandTotal: number;
+interface Option {
+  value: string;
+  label: string;
 }
 
 const CompletionsPerTeams: React.FC = () => {
-  const [selectedOffice, setSelectedOffice] = useState<string>('All');
-  const [selectedTeam, setSelectedTeam] = useState<string>('All');
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('Week/Year');
-
-  // Sample data for charts
-  const stackedBarData = Array.from({ length: 52 }, (_, i) => ({
-    week: `Week ${i + 1}`,
-    'Tucson': Math.random() * 500,
-    'Colorado': Math.random() * 300,
-    'Albuquerque/El Paso': Math.random() * 400
-  }));
-
-  const lineChartData = Array.from({ length: 52 }, (_, i) => ({
-    week: `Week ${i + 1}`,
-    'AZPECO1': Math.random() * 800,
-    'AZTUC01': Math.random() * 300,
-    'AZTEM01': Math.random() * 400
-  }));
+  const [reportType, setReportType] = useState<Option>(
+    {
+      label: 'Install',
+      value: 'install',
+    }
+  );
 
 
   // Real data for the count table
@@ -313,64 +276,61 @@ const CompletionsPerTeams: React.FC = () => {
   ];
 
   // Real data for the system size table
-// Real data for the system size table
-const systemSizeTableData = [
-  {
-    key: '1',
-    year: 2024,
-    team: '#N/A', // Replace 'office' with 'team'
-    weeks: [0, 0, 0, 0, 0, 0, 0],
-    grandTotal: 303.22,
-  },
-  {
-    key: '2',
-    year: 2024,
-    team: 'AZTEM04', // Replace 'office' with 'team'
-    weeks: [187.64, 153.8, 219.41, 190.99, 186.14, 86.49, 71.54],
-    grandTotal: 5470.56,
-  },
-  {
-    key: '3',
-    year: 2024,
-    team: 'AZTEM03', // Replace 'office' with 'team'
-    weeks: [23.81, 39.37, 50.4, 58.49, 47.7, 84.1, 83.46],
-    grandTotal: 6333.3,
-  },
-  {
-    key: '4',
-    year: 2024,
-    team: 'AZTUC01', // Replace 'office' with 'team'
-    weeks: [451.79, 582.79, 632.15, 723.54, 608.52, 649.68, 834.18],
-    grandTotal: 25391.63,
-  },
-  {
-    key: '5',
-    year: 2024,
-    team: 'AZPEO01', // Replace 'office' with 'team'
-    weeks: [0, 0, 0, 0, 0, 0, 0],
-    grandTotal: 5327,
-  },
-  {
-    key: '6',
-    year: 2024,
-    team: 'AZPEO02', // Replace 'office' with 'team'
-    weeks: [55.68, 67.13, 58.62, 8.5, 45.75, 50.62, 55.1],
-    grandTotal: 3861.47,
-  },
-  {
-    key: '7',
-    year: 2024,
-    team: 'AZTUC02', // Replace 'office' with 'team'
-    weeks: [171.26, 136.27, 185.63, 152.71, 190.45, 174.13, 267.78],
-    grandTotal: 8859.71,
-  },
-];
+  const systemSizeTableData = [
+    {
+      key: '1',
+      year: 2024,
+      team: '#N/A', // Replace 'office' with 'team'
+      weeks: [0, 0, 0, 0, 0, 0, 0],
+      grandTotal: 303.22,
+    },
+    {
+      key: '2',
+      year: 2024,
+      team: 'AZTEM04', // Replace 'office' with 'team'
+      weeks: [187.64, 153.8, 219.41, 190.99, 186.14, 86.49, 71.54],
+      grandTotal: 5470.56,
+    },
+    {
+      key: '3',
+      year: 2024,
+      team: 'AZTEM03', // Replace 'office' with 'team'
+      weeks: [23.81, 39.37, 50.4, 58.49, 47.7, 84.1, 83.46],
+      grandTotal: 6333.3,
+    },
+    {
+      key: '4',
+      year: 2024,
+      team: 'AZTUC01', // Replace 'office' with 'team'
+      weeks: [451.79, 582.79, 632.15, 723.54, 608.52, 649.68, 834.18],
+      grandTotal: 25391.63,
+    },
+    {
+      key: '5',
+      year: 2024,
+      team: 'AZPEO01', // Replace 'office' with 'team'
+      weeks: [0, 0, 0, 0, 0, 0, 0],
+      grandTotal: 5327,
+    },
+    {
+      key: '6',
+      year: 2024,
+      team: 'AZPEO02', // Replace 'office' with 'team'
+      weeks: [55.68, 67.13, 58.62, 8.5, 45.75, 50.62, 55.1],
+      grandTotal: 3861.47,
+    },
+    {
+      key: '7',
+      year: 2024,
+      team: 'AZTUC02', // Replace 'office' with 'team'
+      weeks: [171.26, 136.27, 185.63, 152.71, 190.45, 174.13, 267.78],
+      grandTotal: 8859.71,
+    },
+  ];
 
   // Calculate average system size data
   const averageSizeTableData = systemSizeTableData.map(sizeRow => {
-    // Find matching count row
     const countRow = countTableData.find(count => count.team === sizeRow.team);
-
     return {
       key: sizeRow.key,
       year: sizeRow.year,
@@ -379,25 +339,40 @@ const systemSizeTableData = [
         const count = countRow?.weeks[index] || 0;
         return count === 0 ? 0 : size / count;
       }),
-      grandTotal: (!countRow || countRow.grandTotal === 0) ? 0 : sizeRow.grandTotal / countRow.grandTotal
+      grandTotal: (!countRow || countRow.grandTotal === 0)
+        ? 0
+        : sizeRow.grandTotal / countRow.grandTotal
     };
   });
 
   // Column configuration for average system size
   const averageSizeColumns = [
-    { title: 'Year', dataIndex: 'year', key: 'year' },
+    {
+      title: 'Year',
+      dataIndex: 'year',
+      key: 'year',
+      render: (text: string) => text === 'Grand total' ? <span className="font-bold">{text}</span> : text
+    },
     { title: 'Related Team', dataIndex: 'team', key: 'team' }, // Change 'Office' to 'Related Team'
     ...Array.from({ length: 7 }, (_, i) => ({
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
       key: `week${i}`,
-      render: (weeks: any) => weeks[i]?.toFixed(2) || '-'
+      render: (weeks: any) => {
+        const value = typeof weeks[i] === 'number' ? formatNumber(weeks[i]) : weeks[i];
+        return value || '0.00';
+      }
     })),
     {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value: any) => <span className="font-bold">{value.toFixed(2)}</span>
+      render: (value: any) => {
+        if (React.isValidElement(value)) {
+          return value;
+        }
+        return <span className="font-bold">{formatNumber(value)}</span>;
+      }
     }
   ];
 
@@ -420,7 +395,7 @@ const systemSizeTableData = [
   // Column configurations for the system size table
   const systemSizeColumns = [
     { title: 'Year', dataIndex: 'year', key: 'year' },
-    { title: 'Related Team', dataIndex: 'team', key: 'team' }, // Change 'Office' to 'Related Team'
+    { title: 'Office', dataIndex: 'office', key: 'office' },
     ...Array.from({ length: 7 }, (_, i) => ({
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
@@ -428,78 +403,139 @@ const systemSizeTableData = [
       render: (weeks: any) => weeks[i]?.toFixed(2) || '0.00'
     })),
     {
-      title: 'Grand Total',
+      title: <span className="font-bold">Grand Total</span>,
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value: any) => <span className="font-bold">{value.toFixed(2)}</span>
+      render: (value: any) => <span className="font-bold">{typeof value === 'number' ? value.toFixed(2) : value}</span>
     }
   ];
 
+  // Add a function to calculate grand totals
+  const calculateGrandTotals = (data: any[]) => {
+    const weekTotals = Array(7).fill(0);
+    let grandTotal = 0;
+
+    data.forEach(row => {
+      row.weeks.forEach((val: number, idx: number) => {
+        weekTotals[idx] += val;
+      });
+      grandTotal += row.grandTotal;
+    });
+
+    return {
+      key: 'grand-total',
+      year: <span className="font-bold">Grand total</span>,
+      office: '',
+      weeks: weekTotals,
+      grandTotal: grandTotal
+    };
+  };
+
+  // Add the calculateSystemSizeGrandTotals function
+  const calculateSystemSizeGrandTotals = (data: any[]) => {
+    const weekTotals = Array(7).fill(0);
+    let grandTotal = 0;
+
+    data.forEach(row => {
+      row.weeks.forEach((val: number, idx: number) => {
+        weekTotals[idx] += val;
+      });
+      grandTotal += row.grandTotal;
+    });
+
+    return {
+      key: 'grand-total',
+      year: <span className="font-bold">Grand total</span>,
+      office: '',
+      weeks: weekTotals.map(val => val || '-'),
+      grandTotal: <span className="font-bold">{grandTotal.toFixed(2)}</span>  // Using toFixed(2) for system size values
+    };
+  };
+
+  // Helper function to format numbers consistently
+  const formatNumber = (value: number): string => {
+    if (value === 0) return '0.00';
+    return value.toFixed(2);
+  };
+
+  const calculateAverageSizeGrandTotals = (data: any[]) => {
+    const weekTotals = Array(7).fill(0);
+    let overallTotal = 0;
+    let weekCounts = Array(7).fill(0);
+    let totalCount = 0;
+
+    data.forEach(row => {
+      row.weeks.forEach((val: number, idx: number) => {
+        if (val > 0) {
+          weekTotals[idx] += val;
+          weekCounts[idx]++;
+        }
+      });
+      if (row.grandTotal > 0) {
+        overallTotal += row.grandTotal;
+        totalCount++;
+      }
+    });
+
+    const averageWeeks = weekTotals.map((total, idx) =>
+      weekCounts[idx] > 0 ? total / weekCounts[idx] : 0
+    );
+
+    return {
+      key: 'grand-total',
+      year: <span className="font-bold">Grand total</span>,
+      office: '',
+      weeks: averageWeeks.map(val => formatNumber(val)),
+      grandTotal: <span className="font-bold">
+        {formatNumber(totalCount > 0 ? overallTotal / totalCount : 0)}
+      </span>
+    };
+  };
+
   return (
     <div className="bg-white p2">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-          <h3 className="text-xl font-semibold">PV Install Completions (Team)</h3>
-        </div>
-        <div className="flex">
-          <div className="mr2 ">
-            <Select
-              // mode="multiple"
-              // allowClear
-              value={selectedOffice}
-              onChange={setSelectedOffice}
-              style={{ width: 200 }}
-              options={[
-                { value: 'All', label: 'Office' },
-                ...Object.keys(OFFICE_COLORS).map((office) => ({
-                  value: office,
-                  label: office,
-                })),
-              ]}
-            />
-          </div>
-          <div className="mr2">
-            <Select
-              value={selectedTeam}
-              onChange={setSelectedTeam}
-              style={{ width: 200 }}
-              options={[
-                { value: 'All', label: 'Related Teams' },
-                { value: 'AZTEM03', label: 'AZTEM03' },
-                { value: 'AZTEM06', label: 'AZTEM06' },
-                { value: 'AZTEM04', label: 'AZTEM04' },
-                { value: 'AZPEO07', label: 'AZPEO07' },
-                { value: 'AZTEM08', label: 'AZTEM08' },
-                { value: 'AZPEO01', label: 'AZPEO01' },
-                { value: 'AZTEM01', label: 'AZTEM01' },
-                { value: 'AZTUC01', label: 'AZTUC01' },
-                { value: 'AZPEO04', label: 'AZPEO04' },
-                { value: 'AZTEM02', label: 'AZTEM02' },
-                { value: 'AZPEO06', label: 'AZPEO06' },
-                { value: 'null', label: 'null' }]}
-            />
-          </div>
+      <div className="headingcount flex justify-between items-center">
+        <h4 className="reports-title">PV Install Completions (Office)</h4>
+        <div className="report-header-dropdown flex-wrap">
+          <div><YearSelect /></div>
+          <div><WeekSelect /></div>
+          <div><DaySelect /></div>
           <div>
-            <Select
-              value={selectedPeriod}
-              onChange={setSelectedPeriod}
-              style={{ width: 200 }}
+            <SelectOption
               options={[
-                { value: 'Week/Year', label: 'Completed Week/Year' },
-                { value: '2024-12-1 12:00:00', label: '2024-12-1 12:00:00' },
-                { value: '2024-11-1 12:00:00', label: '2024-11-1 12:00:00' },
-                { value: '2024-10-1 12:00:00', label: '2024-10-1 12:00:00' },
-                { value: '2024-09-1 12:00:00', label: '2024-09-1 12:00:00' },
-                { value: '2024-08-1 12:00:00', label: '2024-08-1 12:00:00' },
-                { value: '2024-07-1 12:00:00', label: '2024-07-1 12:00:00' },
-                { value: '2024-06-1 12:00:00', label: '2024-06-1 12:00:00' },
-                { value: '2024-05-1 12:00:00', label: '2024-05-1 12:00:00' },
-                { value: '2024-04-1 12:00:00', label: '2024-04-1 12:00:00' },
-                { value: '2024-03-1 12:00:00', label: '2024-03-1 12:00:00' },
-                { value: '2024-02-1 12:00:00', label: '2024-02-1 12:00:00' },
+                {
+                  label: 'Install',
+                  value: 'install',
+                },
+                {
+                  label: 'Battery',
+                  value: 'battery',
+                },
+                {
+                  label: 'Service',
+                  value: 'service',
+                },
+                {
+                  label: 'MPU',
+                  value: 'mpu',
+                },
+                {
+                  label: 'Derate',
+                  value: 'derate',
+                },
+                {
+                  label: 'DER/LST/Sub-Panel',
+                  value: 'der_lst_sub_panel',
+                },
               ]}
+              onChange={(value: any) => setReportType(value)}
+              value={reportType}
+              controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+              menuListStyles={{ fontWeight: 400 }}
+              singleValueStyles={{ fontWeight: 400 }}
             />
           </div>
+          <div><CompanySelect /></div>
         </div>
       </div>
 
@@ -508,9 +544,10 @@ const systemSizeTableData = [
         <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
         <Table
           columns={countColumns}
-          dataSource={countTableData}
+          dataSource={[...countTableData, calculateGrandTotals(countTableData)]}
           pagination={false}
           className="install-table"
+          sticky={false}
         />
       </div>
 
@@ -519,7 +556,10 @@ const systemSizeTableData = [
         <div className="flex justify-end h5 bold pr3" style={{ background: "#b2ebf2" }} title="Week / Customer">Week / System Size </div>
         <Table
           columns={systemSizeColumns}
-          dataSource={systemSizeTableData}
+          dataSource={[...systemSizeTableData.map(row => ({
+            ...row,
+            grandTotal: <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
+          })), calculateSystemSizeGrandTotals(systemSizeTableData)]}
           pagination={false}
           className="install-table"
         />
@@ -530,7 +570,7 @@ const systemSizeTableData = [
         <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
         <Table
           columns={averageSizeColumns}
-          dataSource={averageSizeTableData}
+          dataSource={[...averageSizeTableData, calculateAverageSizeGrandTotals(averageSizeTableData)]}
           pagination={false}
           className="install-table"
         />

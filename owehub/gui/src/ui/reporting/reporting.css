@@ -46,3 +46,9 @@
 .install-table thead.ant-table-thead tr {
   position: static !important; /* Ensure header is not sticky */
 }
+.install-table .font-bold{
+  font-weight: 600;
+}
+.install-table tr.ant-table-row.ant-table-row-level-0:nth-last-child(1) {
+  font-weight: 600;
+}
