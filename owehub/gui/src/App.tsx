@@ -60,6 +60,7 @@ import CompletionsPerOffice from './ui/reporting/pvInstall/completionsPerOffice'
 import CompletionsPerTeams from './ui/reporting/pvInstall/completionsPerTeam';
 import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
+import OverAll from './ui/reporting/Overall/OverAll';
 
 
 function App() {
@@ -162,6 +163,7 @@ function App() {
             <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<Timelines />} />
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
+            <Route path={ROUTES.OVERALL} element={<OverAll/>} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}

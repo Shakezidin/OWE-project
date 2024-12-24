@@ -39,7 +39,7 @@ const items: MenuProps['items'] = [
             children: [
               {
                 key: 'Overall',
-                label: 'Overall',
+                label: <Link to={ROUTES.OVERALL}>Overall</Link>,
               },
               {
                 key: 'Sales to Install',
