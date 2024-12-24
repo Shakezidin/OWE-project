@@ -104,7 +104,7 @@ const items: MenuProps['items'] = [
           },
           {
             key: '1st Time Completions',
-            label: '1st Time Completions',
+            label: <Link to={ROUTES.SITE_FIRST_COMPLETION}>1st Time Completions</Link>,
           },
         ],
       },
