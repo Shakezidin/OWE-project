@@ -272,17 +272,27 @@ const Timelines = () => {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
               data={[1, 2, 3, 4, 5].map(week => ({
-                week,
+                week: `Week ${week}`,
                 ...Object.fromEntries(
                   installCreatedData
                     .filter(office => office.name !== '#N/A')
                     .map(office => [office.name, office[`week${week}` as keyof InstallData]])
                 )
               }))}
+              margin={{ top: 10, right: 30, left: 0, bottom: 25 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#555' }} />
-              <YAxis domain={[-290, -265]} tick={{ fontSize: 12, fill: '#555' }} />
+              <XAxis 
+                dataKey="week" 
+                tick={{ fontSize: 10, fill: '#555' }}
+                label={{
+                  value: "Week",
+                  position: "bottom",
+                  offset: 15,
+                  fontSize: 12
+                }}
+              />
+              <YAxis domain={[-290, -265]} tick={{ fontSize: 10, fill: '#555' }} />
               <Tooltip contentStyle={tooltipStyle} />
               <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
               {installCreatedData
@@ -409,16 +419,28 @@ const Timelines = () => {
         <div className="chart-container mt-8">
           <div className="center mb-4 font-medium">Per Office</div>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={[1, 2, 3, 4].map(week => ({
-              week,
-              ...Object.fromEntries(
-                installCompletedData
-                  .map(office => [office.name, office[`week${week}` as keyof InstallData]])
-              )
-            }))}>
+            <LineChart 
+              data={[1, 2, 3, 4].map(week => ({
+                week: `Week ${week}`,
+                ...Object.fromEntries(
+                  installCompletedData
+                    .map(office => [office.name, office[`week${week}` as keyof InstallData]])
+                )
+              }))}
+              margin={{ top: 10, right: 30, left: 0, bottom: 25 }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#555' }} />
-              <YAxis domain={[0, 3]} tick={{ fontSize: 12, fill: '#555' }} />
+              <XAxis 
+                dataKey="week" 
+                tick={{ fontSize: 10, fill: '#555' }}
+                label={{
+                  value: "Week",
+                  position: "bottom",
+                  offset: 15,
+                  fontSize: 12
+                }}
+              />
+              <YAxis domain={[0, 3]} tick={{ fontSize: 10, fill: '#555' }} />
               <Tooltip contentStyle={tooltipStyle} />
               <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
               {installCompletedData.map((office, index) => (
