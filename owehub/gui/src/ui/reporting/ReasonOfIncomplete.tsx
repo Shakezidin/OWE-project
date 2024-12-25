@@ -13,6 +13,7 @@ import {
   Legend,
 } from 'recharts';
 import CompanySelect from './components/Dropdowns/CompanySelect';
+import WeekSelect from './components/Dropdowns/WeekSelect';
 
 interface LabelProps {
   cx: number;
@@ -23,7 +24,6 @@ interface LabelProps {
   percent: number;
   index: number;
 }
-
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -68,12 +68,15 @@ const ReasonOfIncomplete = () => {
     'Battery (Weekly)',
     'DER/LST/Sub-Panel (Weekly)',
   ];
-  
+
   const chartDataSets = [
     {
       barData: Array.from({ length: 52 }, (_, index) => ({
         week: `Week ${index + 1}`,
         percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
       })),
       pieData: [
         { name: 'Change SOW', value: 30 },
@@ -90,6 +93,9 @@ const ReasonOfIncomplete = () => {
       barData: Array.from({ length: 50 }, (_, index) => ({
         week: `Week ${index + 1}`,
         percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
       })),
       pieData: [
         { name: 'Customer Reschedule', value: 25 },
@@ -106,6 +112,9 @@ const ReasonOfIncomplete = () => {
       barData: Array.from({ length: 52 }, (_, index) => ({
         week: `Week ${index + 1}`,
         percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
       })),
       pieData: [
         { name: 'Over Scheduling', value: 40 },
@@ -122,6 +131,9 @@ const ReasonOfIncomplete = () => {
       barData: Array.from({ length: 50 }, (_, index) => ({
         week: `Week ${index + 1}`,
         percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
       })),
       pieData: [
         { name: 'Customer Reschedule', value: 30 },
@@ -138,6 +150,47 @@ const ReasonOfIncomplete = () => {
       barData: Array.from({ length: 51 }, (_, index) => ({
         week: `Week ${index + 1}`,
         percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
+      })),
+      pieData: [
+        { name: 'Customer Cancel', value: 50 },
+        { name: 'Customer Is Not Okay…', value: 25 },
+        { name: 'Lack of Equipment', value: 15 },
+        { name: 'Missed Photos', value: 10 },
+        { name: 'Customer Cancel', value: 50 },
+        { name: 'Customer Is Not Okay…', value: 25 },
+        { name: 'Lack of Equipment', value: 15 },
+        { name: 'Missed Photos', value: 10 },
+      ],
+    },
+    {
+      barData: Array.from({ length: 52 }, (_, index) => ({
+        week: `Week ${index + 1}`,
+        percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
+      })),
+      pieData: [
+        { name: 'Customer Cancel', value: 50 },
+        { name: 'Customer Is Not Okay…', value: 25 },
+        { name: 'Lack of Equipment', value: 15 },
+        { name: 'Missed Photos', value: 10 },
+        { name: 'Customer Cancel', value: 50 },
+        { name: 'Customer Is Not Okay…', value: 25 },
+        { name: 'Lack of Equipment', value: 15 },
+        { name: 'Missed Photos', value: 10 },
+      ],
+    },
+    {
+      barData: Array.from({ length: 52 }, (_, index) => ({
+        week: `Week ${index + 1}`,
+        percent: Math.floor(Math.random() * 101), // Random percent between 0 and 100
+        null: Math.floor(Math.random() * 50), // Random values for `null`
+        no: Math.floor(Math.random() * 50), // Random values for `no`
+        yes: '100%',
       })),
       pieData: [
         { name: 'Customer Cancel', value: 50 },
@@ -151,16 +204,27 @@ const ReasonOfIncomplete = () => {
       ],
     },
   ];
-  
+
+  const timeColors = {
+    null: '#FBF9BD',
+    no: '#CA3D01',
+    yes: '#CFE621',
+  };
+
+  const tooltipStyle = {
+    fontSize: '10px',
+    padding: '6px',
+  };
 
   return (
-    <div className='total-main-container'>
-       <div className="headingcount flex justify-between items-center">
-          <h4 className="reports-title">Reason Of Incomplete</h4>
-          <div>
-            <CompanySelect />
-          </div>
+    <div className="total-main-container">
+      <div className="headingcount flex justify-between items-center">
+        <h4 className="reports-title">Reason Of Incomplete</h4>
+        <div className="incomplete-dropdowns">
+          <WeekSelect />
+          <CompanySelect />
         </div>
+      </div>
       {chartDataSets.map((dataSet, index) => (
         <div key={index} className="time-completions">
           <div className="time-bar">
@@ -185,14 +249,32 @@ const ReasonOfIncomplete = () => {
                   tick={{ fontSize: 10, fill: '#555' }}
                   domain={[0, 100]}
                 />
-                <Tooltip formatter={(value) => `${value}%`} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value) => `${value}%`} />
+                <Legend
+                  height={32}
+                  verticalAlign="top"
+                  wrapperStyle={{ fontSize: 10, gap: 20, color: '#555' }}
+                  payload={[
+                    { value: 'Null', type: 'square', color: timeColors.null },
+                    { value: 'No', type: 'square', color: timeColors.no },
+                    { value: 'Yes', type: 'square', color: timeColors.yes },
+                  ]}
+                />
+                <Bar dataKey="null" fill={timeColors.null} stackId="a" />
+                <Bar dataKey="no" fill={timeColors.no} stackId="a" />
                 <Bar
+                  dataKey="yes"
+                  fill={timeColors.yes}
+                  stackId="a"
+                  isAnimationActive={false}
+                />
+                {/* <Bar
                   dataKey="percent"
                   fill="#CA3D01"
                   background={{ fill: '#CFE621' }}
                   barSize={15}
                   isAnimationActive={false}
-                />
+                /> */}
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -216,7 +298,7 @@ const ReasonOfIncomplete = () => {
                     <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Legend
                   layout="vertical"
                   align="right"
@@ -225,7 +307,6 @@ const ReasonOfIncomplete = () => {
                   iconSize={10}
                   wrapperStyle={{
                     fontSize: '10px',
-                    marginTop: -25,
                     marginRight: 50,
                   }}
                   height={100}
