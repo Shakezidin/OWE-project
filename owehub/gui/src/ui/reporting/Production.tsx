@@ -8,6 +8,7 @@ import WeekSelect from './components/Dropdowns/WeekSelect';
 import YearSelect from './components/Dropdowns/YearSelect';
 import DaySelect from './components/Dropdowns/DaySelect';
 import CompanySelect from './components/Dropdowns/CompanySelect';
+import BackButtom from './components/BackButtom';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -165,7 +166,7 @@ const Production: React.FC = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">Production</h4>
+        <BackButtom heading = "Production"/>
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>
