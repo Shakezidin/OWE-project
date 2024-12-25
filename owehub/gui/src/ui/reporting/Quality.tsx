@@ -10,6 +10,7 @@ import QualityTable3 from './components/Tables/QualityTable3';
 import BarChartQuality from './components/BarChartQuality';
 import YearSelect from './components/Dropdowns/YearSelect';
 import WeekSelect from './components/Dropdowns/WeekSelect';
+import BackButtom from './components/BackButtom';
 
 interface Option {
   value: string;
@@ -23,14 +24,20 @@ const Quality = () => {
       value: 'FIN',
     }
   );
+  // const stylesGraph = {
+  //   width: '100%',
+  //   height: '280px',
+  // };
   const stylesGraph = {
     width: '100%',
-    height: '280px',
+    height: '300px',
+    marginTop:'10px'
   };
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">Quality</h4>
+        {/* <h4 className="reports-title">Quality</h4> */}
+        <BackButtom heading = "Quality"/>
         <div className="report-header-dropdown flex-wrap">
           <div>
             <SelectOption
@@ -86,23 +93,24 @@ const Quality = () => {
           <div className='approved-sec'>
             <h1>{reportType.label} Approved</h1>
             <TableGrey data={[
-              { column1: 'Tucson', column2: '44' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
-              { column1: 'Tucson', column2: '44' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
+              { column1: 'Peoria/Kingman', column2: '4400' },
+              { column1: 'Tempe', column2: '45' },
+              { column1: 'Tucson', column2: '1' },
+              { column1: 'Albuquerque/El Paso', column2: '44' },
+              { column1: 'Texas', column2: '45' },
+              { column1: 'Colorado', column2: '1' },
+              
             ]} /></div>
           <div className='approved-sec'>
             <h1>{reportType.label} Pass Rate</h1>
             <TableGrey data={[
-              { column1: 'Tucson', column2: '44' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
+              { column1: 'Peoria/Kingman', column2: '445' },
+              { column1: 'Tempe', column2: '45' },
+              { column1: 'Tucson', column2: '1' },
+              { column1: 'Albuquerque/El Paso', column2: '44' },
+              { column1: 'Texas', column2: '45' },
+              { column1: 'Colorado', column2: '1' },
+             
             ]} />
           </div>
           <div className='approved-sec'>
@@ -111,9 +119,13 @@ const Quality = () => {
               reportType=""
               middleName=""
               data={[
-                { column1: 'Tucson', column2: '44', column3: '44' },
-                { column1: 'India', column2: '45', column3: '44' },
-                { column1: 'USA', column2: '1', column3: '44' },
+                { column1: 'Peoria/Kingman', column2: '44', column3:'10' },
+                { column1: 'Tempe', column2: '45', column3:'10'},
+                { column1: 'Tucson', column2: '1', column3:'10'},
+                { column1: 'Albuquerque/El Paso', column2: '44', column3: '44'},
+                { column1: 'Texas', column2: '45', column3:'10' },
+                { column1: 'Colorado', column2: '1', column3:'10' },
+                
               ]}
             />
           </div>
@@ -127,12 +139,13 @@ const Quality = () => {
           <div className='approved-sec'>
             <h1>{reportType.label} Failed</h1>
             <TableGrey data={[
-              { column1: 'Tucson', column2: '44' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
-              { column1: 'Tucson', column2: '44' },
-              { column1: 'India', column2: '45' },
-              { column1: 'USA', column2: '1' },
+              { column1: 'Peoria/Kingman', column2: '44' },
+              { column1: 'Tempe', column2: '45' },
+              { column1: 'Tucson', column2: '1' },
+              { column1: 'Albuquerque/El Paso', column2: '44' },
+              { column1: 'Texas', column2: '45' },
+              { column1: 'Colorado', column2: '1' },
+             
             ]} />
           </div>
           <div className='approved-sec'>
@@ -141,9 +154,13 @@ const Quality = () => {
               reportType=""
               middleName=""
               data={[
-                { column1: 'Tucson', column2: '44', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
-                { column1: 'India', column2: '45', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
-                { column1: 'USA', column2: '1', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+                { column1: 'Peoria/Kingman', column2: '44', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+                { column1: 'Tempe', column2: '45', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+                { column1: 'Tucson', column2: '1', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+                { column1: 'Albuquerque/El Paso', column2: '44', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+                { column1: 'Texas', column2: '45', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+                { column1: 'Colorado', column2: '1', column3: '44', column4: 'Tucson', column5: '44', column6: '44' },
+               
               ]}
             />
           </div>
