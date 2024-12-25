@@ -42,6 +42,12 @@ import WeekSelect from './components/Dropdowns/WeekSelect';
 import TableCustom from './components/Tables/CustomTable';
 import LineGraph from './components/LineGraph';
 import BarChartExample from './components/BarChart';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { Option as WeekOption } from './components/Dropdowns/WeekSelect';
+import { fetchSpeedSummaryReport } from '../../redux/apiActions/reportingAction/reportingAction';
+import { TableData, SpeedData, TransformedGraphData } from './types/speedTypes';
+import { transformGraphData, transformTableData } from './utils/dataTransformer';
+import MetricSection from './components/MetricSection';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -87,9 +93,21 @@ const SpeedOverall: React.FC = () => {
   const [newFormData, setNewFormData] = useState({});
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
+  const [graphData, setGraphData] = useState<TransformedGraphData[]>([]);
+  const [tableData, setTableData] = useState<TableData[]>([]);
+  const [selectedOffices, setSelectedOffices] = useState<string[]>(['Tucson']);
+
+
+  const metrics = ['Sale To Battery', 'Sale To Install', 'Sale To MPU'];
+  const [metricData, setMetricData] = useState<{
+    [key: string]: {
+      graphData: TransformedGraphData[];
+      tableData: TableData[];
+    };
+  }>({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<TableData[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
   const [graphs, setGraphs] = useState<GraphProps[]>([
     { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
@@ -122,9 +140,9 @@ const SpeedOverall: React.FC = () => {
       label: value,
     }));
 
-  const tableData = {
-    tableNames: ['available_states', 'dealer_name'],
-  };
+  // const tableData = {
+  //   tableNames: ['available_states', 'dealer_name'],
+  // };
 
   const exportCsv = async () => {
     try {
@@ -193,23 +211,64 @@ const SpeedOverall: React.FC = () => {
       toast.error((error as Error).message as string);
     }
   };
+
+  const dispatch = useAppDispatch();
+  const { data: speedSummaryData, loading: speedSummaryLoading, error: speedSummaryError } =
+    useAppSelector((state) => state.reportingSlice.speedSummaryData);
+
+  const [selectedWeek, setSelectedWeek] = useState<WeekOption>({
+    label: 'Week 1',
+    value: '1'
+  });
+
+  const [selectedYear, setSelectedYear] = useState<Option>({
+    label: '2024',
+    value: '2024'
+  });
+
   const getNewFormData = async () => {
-    const res = await reportingCaller('get_overallspeedsummaryreport', {
-      year: '2024',
-      week: '12',
-      batteryincluded: 'Yes',
-      office: ['Tucson'],
-    });
-    if (res.status > 200) {
-      return;
+    setIsLoading(true);
+    try {
+      await dispatch(fetchSpeedSummaryReport({
+        year: selectedYear.value,
+        week: selectedWeek.value,
+        batteryincluded: batteryIncluded.value,
+        office: selectedOffices,
+      }));
+    } finally {
+      setIsLoading(false);
     }
-    console.log(Object.keys(res.data.data));
-    // setNewFormData((prev) => ({ ...prev, ...res.data }));
   };
 
   useEffect(() => {
     getNewFormData();
-  }, []);
+  }, [dispatch, batteryIncluded, selectedWeek.value, selectedYear.value, selectedOffices]);
+
+
+
+  useEffect(() => {
+    if (speedSummaryData?.data) {
+      console.log('speedSummaryData', speedSummaryData.data)
+      const data = speedSummaryData.data as SpeedData;
+
+      if (Object.keys(data).length > 0) {
+        const newMetricData: typeof metricData = {};
+
+        metrics.forEach(metric => {
+          newMetricData[metric] = {
+            graphData: transformGraphData(data, metric),
+            tableData: transformTableData(data, metric)
+          };
+        });
+
+        setMetricData(newMetricData);
+      }
+    }
+
+    if (speedSummaryError) {
+      toast.error(speedSummaryError);
+    }
+  }, [speedSummaryData, speedSummaryError]);
 
   const handleReportOptionChange = (newValue: Option | null) => {
     if (newValue) {
@@ -565,12 +624,24 @@ const SpeedOverall: React.FC = () => {
   console.log(mappedPeriodOptions, 'optionssss');
   console.log(selectedReportOption, 'dateeeee');
   console.log(selectedOption, 'day month');
+
+  const handleWeekChange = (value: WeekOption | null) => {
+    if (value) {
+      setSelectedWeek(value);
+    }
+  };
+
+  const handleYearChange = (value: Option | null) => {
+    if (value) {
+      setSelectedYear(value);
+    }
+  };
+
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
         <h4 className="reports-title">Overall</h4>
         <div className="report-header-dropdown flex-wrap">
-          {/* <div><DaySelect /></div> */}
           <div>
             <SelectOption
               options={[
@@ -591,13 +662,18 @@ const SpeedOverall: React.FC = () => {
             />
           </div>
           <div>
-            <CompanySelect />
+            <CompanySelect onOfficeChange={(values) => setSelectedOffices(values)} />          </div>
+          <div>
+            <YearSelect
+              value={selectedYear}
+              onChange={handleYearChange}
+            />
           </div>
           <div>
-            <YearSelect />
-          </div>
-          <div>
-            <WeekSelect />
+            <WeekSelect
+              value={selectedWeek}
+              onChange={handleWeekChange}
+            />
           </div>
         </div>
       </div>
@@ -617,40 +693,41 @@ const SpeedOverall: React.FC = () => {
       </div>
 
       <div className="report-graphs">
-        {graphs.map((graph, index) => (
+        {isLoading ? (
           <div
-            key={index}
-            className="report-graph"
             style={{
               display: 'flex',
-              justifyContent: 'center',
               alignItems: 'center',
-              marginBottom: 50,
+              justifyContent: 'center',
             }}
           >
-            {false ? (
-              <div
-                className="flex items-center"
-                style={{ justifyContent: 'center' }}
-              >
-                {' '}
-                <MicroLoader />{' '}
-              </div>
-            ) : (
-              <>
-                <TableCustom
-                  middleName={graph.title}
-                  data={data}
-                  setData={setData}
-                />
-                <div className="main-graph" style={stylesGraph}>
-                  <LineGraph />
-                  <p className="chart-info-report">Week</p>
-                </div>
-              </>
-            )}
+            <MicroLoader />
           </div>
-        ))}
+        ) : (
+          // graphs.map((graph, index) => (
+            <div
+              // key={index}
+              className="report-graph"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                // alignItems: 'center',
+                marginBottom: 50,
+                flexDirection:'column'
+              }}
+            >
+              {metrics.map(metric => (
+                <MetricSection
+                  key={metric}
+                  title={metric}
+                  graphData={metricData[metric]?.graphData || []}
+                  tableData={metricData[metric]?.tableData || []}
+                />
+              ))}
+            </div>
+        //   ))
+        )
+        }
       </div>
     </div>
   );
