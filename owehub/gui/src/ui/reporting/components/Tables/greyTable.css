@@ -1,7 +1,5 @@
 .grey-table-container {
-  max-width: 1200px;
-  min-width: 200px;
-  max-height: 430px;
+  width: 300px;
   margin: auto;
   overflow-x: auto;
   border: 1px solid #ddd;
@@ -10,7 +8,7 @@
 }
 .grey-table-container::-webkit-scrollbar {
   width: 10px;
-  height: 2px;
+  height: 10px;
 }
 .grey-table-container::-webkit-scrollbar {
   display: initial;
