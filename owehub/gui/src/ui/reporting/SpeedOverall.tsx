@@ -2,15 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Papa from 'papaparse';
 import SelectOption from '../components/selectOption/SelectOption';
 import {
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Area,
-  AreaChart,
-} from 'recharts';
-import {
   startOfWeek,
   endOfWeek,
   startOfMonth,
@@ -25,29 +16,21 @@ import {
 } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { toast } from 'react-toastify';
-import { availableStates } from '../../core/models/data_models/SelectDataModel';
-import {
-  postCaller,
-  reportingCaller,
-} from '../../infrastructure/web_api/services/apiUrl';
-
-import DropdownCheckBox from '../components/DropdownCheckBox';
-import { MdDownloading } from 'react-icons/md';
-import { LuImport } from 'react-icons/lu';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../components/loader/MicroLoader';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
 import CompanySelect from './components/Dropdowns/CompanySelect';
 import YearSelect from './components/Dropdowns/YearSelect';
 import WeekSelect from './components/Dropdowns/WeekSelect';
 import TableCustom from './components/Tables/CustomTable';
 import LineGraph from './components/LineGraph';
-import BarChartExample from './components/BarChart';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { Option as WeekOption } from './components/Dropdowns/WeekSelect';
 import { fetchSpeedSummaryReport } from '../../redux/apiActions/reportingAction/reportingAction';
 import { TableData, SpeedData, TransformedGraphData } from './types/speedTypes';
-import { transformGraphData, transformTableData } from './utils/dataTransformer';
-import MetricSection from './components/MetricSection';
+import {
+  transformGraphData,
+  transformTableData,
+} from './utils/dataTransformer';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -96,7 +79,6 @@ const SpeedOverall: React.FC = () => {
   const [graphData, setGraphData] = useState<TransformedGraphData[]>([]);
   const [tableData, setTableData] = useState<TableData[]>([]);
   const [selectedOffices, setSelectedOffices] = useState<string[]>(['Tucson']);
-
 
   const metrics = ['Sale To Battery', 'Sale To Install', 'Sale To MPU'];
   const [metricData, setMetricData] = useState<{
@@ -213,28 +195,33 @@ const SpeedOverall: React.FC = () => {
   };
 
   const dispatch = useAppDispatch();
-  const { data: speedSummaryData, loading: speedSummaryLoading, error: speedSummaryError } =
-    useAppSelector((state) => state.reportingSlice.speedSummaryData);
+  const {
+    data: speedSummaryData,
+    loading: speedSummaryLoading,
+    error: speedSummaryError,
+  } = useAppSelector((state) => state.reportingSlice.speedSummaryData);
 
   const [selectedWeek, setSelectedWeek] = useState<WeekOption>({
     label: 'Week 1',
-    value: '1'
+    value: '1',
   });
 
   const [selectedYear, setSelectedYear] = useState<Option>({
     label: '2024',
-    value: '2024'
+    value: '2024',
   });
 
   const getNewFormData = async () => {
     setIsLoading(true);
     try {
-      await dispatch(fetchSpeedSummaryReport({
-        year: selectedYear.value,
-        week: selectedWeek.value,
-        batteryincluded: batteryIncluded.value,
-        office: selectedOffices,
-      }));
+      await dispatch(
+        fetchSpeedSummaryReport({
+          year: selectedYear.value,
+          week: selectedWeek.value,
+          batteryincluded: batteryIncluded.value,
+          office: selectedOffices,
+        })
+      );
     } finally {
       setIsLoading(false);
     }
@@ -242,22 +229,26 @@ const SpeedOverall: React.FC = () => {
 
   useEffect(() => {
     getNewFormData();
-  }, [dispatch, batteryIncluded, selectedWeek.value, selectedYear.value, selectedOffices]);
-
-
+  }, [
+    dispatch,
+    batteryIncluded,
+    selectedWeek.value,
+    selectedYear.value,
+    selectedOffices,
+  ]);
 
   useEffect(() => {
     if (speedSummaryData?.data) {
-      console.log('speedSummaryData', speedSummaryData.data)
+      console.log('speedSummaryData', speedSummaryData.data);
       const data = speedSummaryData.data as SpeedData;
 
       if (Object.keys(data).length > 0) {
         const newMetricData: typeof metricData = {};
 
-        metrics.forEach(metric => {
+        metrics.forEach((metric) => {
           newMetricData[metric] = {
             graphData: transformGraphData(data, metric),
-            tableData: transformTableData(data, metric)
+            tableData: transformTableData(data, metric),
           };
         });
 
@@ -662,18 +653,15 @@ const SpeedOverall: React.FC = () => {
             />
           </div>
           <div>
-            <CompanySelect onOfficeChange={(values) => setSelectedOffices(values)} />          </div>
-          <div>
-            <YearSelect
-              value={selectedYear}
-              onChange={handleYearChange}
-            />
+            <CompanySelect
+              onOfficeChange={(values) => setSelectedOffices(values)}
+            />{' '}
           </div>
           <div>
-            <WeekSelect
-              value={selectedWeek}
-              onChange={handleWeekChange}
-            />
+            <YearSelect value={selectedYear} onChange={handleYearChange} />
+          </div>
+          <div>
+            <WeekSelect value={selectedWeek} onChange={handleWeekChange} />
           </div>
         </div>
       </div>
@@ -705,29 +693,45 @@ const SpeedOverall: React.FC = () => {
           </div>
         ) : (
           // graphs.map((graph, index) => (
-            <div
-              // key={index}
-              className="report-graph"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                // alignItems: 'center',
-                marginBottom: 50,
-                flexDirection:'column'
-              }}
-            >
-              {metrics.map(metric => (
-                <MetricSection
-                  key={metric}
-                  title={metric}
-                  graphData={metricData[metric]?.graphData || []}
-                  tableData={metricData[metric]?.tableData || []}
-                />
-              ))}
-            </div>
-        //   ))
-        )
-        }
+          <div className="report-graphs">
+            {metrics?.map((graph, index) => (
+              <div
+                key={index}
+                className="report-graph"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 50,
+                }}
+              >
+                {false ? (
+                  <div
+                    className="flex items-center"
+                    style={{ justifyContent: 'center' }}
+                  >
+                    {' '}
+                    <MicroLoader />{' '}
+                  </div>
+                ) : (
+                  <>
+                    <TableCustom
+                      middleName={graph}
+                      data={metricData[graph]?.tableData}
+                      setData={setData}
+                    />
+                    <div className="main-graph" style={stylesGraph}>
+                      <h3 style={{ textAlign: 'center' }}>{graph}</h3>
+                      <LineGraph />
+                      <p className="chart-info-report">Week</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+          //   ))
+        )}
       </div>
     </div>
   );

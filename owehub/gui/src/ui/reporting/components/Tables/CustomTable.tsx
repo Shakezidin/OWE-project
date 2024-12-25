@@ -54,7 +54,7 @@ const TableCustom = ({
             </tr>
           </thead>
           <tbody>
-            {data.map((row: any, index: any) => (
+            {data?.map((row: any, index: any) => (
               <tr key={index}>
                 <td>{row.column1}</td>
                 <td>{row.column2}</td>
