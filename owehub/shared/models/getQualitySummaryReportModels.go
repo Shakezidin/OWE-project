@@ -6,13 +6,68 @@
 
 package models
 
-// for quality summary report
+import "time"
+
 type QualitySummaryReportRequest struct {
 	ReportType string   `json:"report_type"`
 	Year       int64    `json:"year"`
 	Week       string   `json:"week"`
 	Office     []string `json:"office"`
 }
+
+type FinSummaryReport struct {
+	SourceOfFail        string    `json:"source_of_fail"`
+	EmployeeResponsible string    `json:"employee_responsible"`
+	Office              string    `json:"office"`
+	AppStatus           string    `json:"app_status"`
+	ProjectStatus       string    `json:"project_status"`
+	PvRedlinedDate      time.Time `json:"pv_redlined_date"`
+	PvFinDate           time.Time `json:"pv_fin_date"`
+	FinRedlineReason    string    `json:"fin_redline_reason"`
+	CustomerUniqueID    string    `json:"customer_unique_id"`
+	Customer            string    `json:"customer"`
+}
+
+type PtoSummaryReport struct {
+	PtoGranted          time.Time `json:"pto_granted"`           // Date when PTO was granted
+	UtilityRedlinedDate time.Time `json:"utility_redlined_date"` // Date when utility was redlined
+	Office              string    `json:"office"`                // Office name
+	PtoAppStatus        string    `json:"pto_app_status"`        // PTO application status
+	ProjectStatus       string    `json:"project_status"`        // Project status
+	SourceOfFail        string    `json:"source_of_fail"`        // Source of failure
+	EmployeeResponsible string    `json:"employee_responsible"`  // Employee responsible for the PTO
+	RedlinedReason      string    `json:"redlined_reason"`       // Reason for redlining
+	CustomerUniqueID    string    `json:"customer_unique_id"`    // Unique ID for the customer
+	Customer            string    `json:"customer"`              // Customer name
+}
+
+type InstallFundingReport struct {
+	ApprovedDate                  time.Time `json:"approved_date"`                    // Date when the installation was approved
+	RedlinedDate                  time.Time `json:"redlined_date"`                    // Date when the installation was redlined
+	Office                        string    `json:"office"`                           // Office name
+	AppStatus                     string    `json:"app_status"`                       // Application status
+	ProjectStatus                 string    `json:"project_status"`                   // Project status
+	SourceOfFail                  string    `json:"source_of_fail"`                   // Source of failure
+	EmployeeResponsibleForRedline string    `json:"employee_responsible_for_redline"` // Employee responsible for redlining
+	RedlineReason                 string    `json:"redline_reason"`                   // Reason for redlining
+	CustomerUniqueID              string    `json:"customer_unique_id"`               // Unique ID for the customer
+	Customer                      string    `json:"customer"`                         // Customer name
+}
+
+type FinalFundingReport struct {
+	Approved            time.Time `json:"approved"`             // Date when the funding was approved
+	Redlined            time.Time `json:"redlined"`             // Date when the funding was redlined
+	Office              string    `json:"office"`               // Office name
+	AppStatus           string    `json:"app_status"`           // Application status
+	ProjectStatus       string    `json:"project_status"`       // Project status
+	SourceOfFail        string    `json:"source_of_fail"`       // Source of failure
+	EmployeeResponsible string    `json:"employee_responsible"` // Employee responsible for redlining
+	RedlineNotes        string    `json:"redline_notes"`        // Notes regarding redlining
+	CustomerUniqueID    string    `json:"customer_unique_id"`   // Unique ID for the customer
+	Customer            string    `json:"customer"`             // Customer name
+}
+
+//*===========
 
 type QualitySummaryReportRequestResponse struct {
 	Metrics []ResponseMetric `json:"metrics"`
