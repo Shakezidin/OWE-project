@@ -4,12 +4,12 @@ import React from 'react';
 const QualityTable = ({ data, reportType, middleName }: any) => {
   return (
     <div className="grey-table-main-container">
-      <div className="grey-table-container">
-        <table className="grey-custom-table">
+      <div className="grey-table-container" style={{height:"247px"}}>
+        <table className="grey-custom-table" >
           <thead>
             <tr>
               <th>Office (2)</th>
-              <th>Scheduled-kW</th>
+              <th>App Status</th>
               
                 <th>Pending</th>
            
@@ -28,7 +28,7 @@ const QualityTable = ({ data, reportType, middleName }: any) => {
             ))}
           </tbody>
           <tfoot>
-            <tr>
+            <tr style={{position:"sticky", bottom:"0"}}>
               <th></th>
               <th>Grand Total</th>
               <th>195</th>

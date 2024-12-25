@@ -4,7 +4,7 @@ import React from 'react';
 const QualityTable3 = ({ data, reportType, middleName }: any) => {
     return (
         <div className="grey-table-main-container">
-            <div className="grey-table-container">
+            <div className="grey-table-container" style={{height:"247px"}}>
                 <table className="grey-custom-table">
                     <thead>
                         <tr>
@@ -31,7 +31,7 @@ const QualityTable3 = ({ data, reportType, middleName }: any) => {
                         ))}
                     </tbody>
                     <tfoot>
-                        <tr>
+                        <tr style={{ position: "sticky", bottom: "0" }}>
                             <th>Week 1</th>
                             <th>32</th>
                             <th>32</th>

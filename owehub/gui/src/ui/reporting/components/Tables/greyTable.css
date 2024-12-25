@@ -1,7 +1,5 @@
 .grey-table-container {
-  max-width: 1200px;
-  min-width: 275px;
-  max-height: 260px;
+  width: 300px;
   margin: auto;
   overflow-x: auto;
   border: 1px solid #ddd;
@@ -10,7 +8,7 @@
 }
 .grey-table-container::-webkit-scrollbar {
   width: 10px;
-  height: 2px;
+  height: 10px;
 }
 .grey-table-container::-webkit-scrollbar {
   display: initial;
@@ -40,12 +38,15 @@
   width: 100%;
   border-collapse: collapse;
 }
+.grey-custom-table table tbody tr td{
+  min-width: 20px;
+}
 
 .grey-custom-table th,
 .grey-custom-table td {
   
-  padding: 12px 16px;
-  text-align: left;
+  padding: 8px 8px;
+  text-align: center;
   border-bottom: 1px solid #696969;
 }
 
@@ -54,6 +55,7 @@
   background-color: #f4f4f4;
   font-weight: 700;
   font-size: 12px;
+ 
 }
 
 .grey-custom-table tr:nth-child(even) {
@@ -74,4 +76,15 @@
   font-size: 12px;
   font-weight: 500;
   margin-top: -10px;
+}
+.some-margin{
+  margin-left: 24px;
+  margin-top: 19px;
+}
+.backButton-reporting{
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
 }

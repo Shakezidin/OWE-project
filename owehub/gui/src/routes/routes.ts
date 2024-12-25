@@ -74,6 +74,7 @@ export const ROUTES = {
   SITE_TIMELINES: '/reporting/site-timelines',
   SITE_FIRST_COMPLETION: '/reporting/site-first_completion',
   SITE_OUTSIDE_SLA: '/reporting/site-outise-sla',
+  INSTALL_TO_FIN:'/reporting/install-to-fin',
 
 
 
@@ -112,6 +113,7 @@ export const ROUTES = {
   FOLDER_DETAIL:"/library/*",
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
   CALCULATOR:'/calculator',
-  SIGN_DOCUMENT:'digital-signature-portal'
+  SIGN_DOCUMENT:'digital-signature-portal',
+  AHJ:'/reporting/ahj'
 
 };

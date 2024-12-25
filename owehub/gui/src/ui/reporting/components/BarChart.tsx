@@ -13,7 +13,7 @@ type Data = {
     'Pending Review - Pre-Install': number;
     'Completed day 1/2': number;
     'Install Scheduled - Confirmed': number;
-  };
+};
 
 const data = [
     {
@@ -112,36 +112,74 @@ const data = [
         'Completed day 1/2': 12,
         'Install Scheduled - Confirmed': 28,
     },
-
-    // Add more data for other locations...
+    {
+        name: 'Tucson',
+        'Pending Reschedule': 25,
+        'Pending Customer': 35,
+        'Pending NTP': 15,
+        'Ready for NCA Review': 20,
+        'Pending Roof': 30,
+        'Pending Confirmation': 18,
+        'Pending Review - Pre-Install': 22,
+        'Completed day 1/2': 12,
+        'Install Scheduled - Confirmed': 28,
+    },
+    {
+        name: 'Texas',
+        'Pending Reschedule': 25,
+        'Pending Customer': 35,
+        'Pending NTP': 15,
+        'Ready for NCA Review': 20,
+        'Pending Roof': 30,
+        'Pending Confirmation': 18,
+        'Pending Review - Pre-Install': 22,
+        'Completed day 1/2': 12,
+        'Install Scheduled - Confirmed': 28,
+    },
+    {
+        name: 'Tucson',
+        'Pending Reschedule': 25,
+        'Pending Customer': 35,
+        'Pending NTP': 15,
+        'Ready for NCA Review': 20,
+        'Pending Roof': 30,
+        'Pending Confirmation': 18,
+        'Pending Review - Pre-Install': 22,
+        'Completed day 1/2': 12,
+        'Install Scheduled - Confirmed': 28,
+    },
 ];
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${label}`}</p>
-          <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
-        </div>
-      );
+        return (
+            <div className="custom-tooltip">
+                <p className="label">{`${label}`}</p>
+                <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
+            </div>
+        );
     }
-  
+
     return null;
-  };
+};
 
 const BarChartExample: React.FC = () => {
     return (
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data as Data[]}>
+            <BarChart data={data as Data[]} margin={{ top: 22, right: 10, left: 10, bottom: 6 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
+                <YAxis tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
                 <Legend
-                    align="right"
-                    layout="vertical"
-                    verticalAlign="top"
-                    height={3}
-                    wrapperStyle={{ right: -12, fontSize: 10 }}
+                    align="center"
+                    layout="horizontal"
+                    verticalAlign="bottom"
+                    wrapperStyle={{
+                        fontSize: 10,
+                        marginTop: 10,
+                        paddingBottom: 10
+                    }}
+                    iconSize={10}
                 />
                 <Bar dataKey="Pending Reschedule" stackId="a" fill="#8884d8" />
                 <Bar dataKey="Pending Customer" stackId="a" fill="#82ca9d" />

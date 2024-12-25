@@ -7,158 +7,14 @@ import WeekSelect from './components/Dropdowns/WeekSelect';
 import DaySelect from './components/Dropdowns/DaySelect';
 import CompanySelect from './components/Dropdowns/CompanySelect';
 import PTOStatus from './components/Dropdowns/PtoStatus';
+import NoPtoTable from './components/Tables/NoPtoTable';
 
 interface Option {
   label: string;
   value: string;
 }
 
-const TableData = ({ 
-  data, 
-  title, 
-  isSummary = false,
-  isPtoTable = false 
-}: { 
-  data: any[]; 
-  title: string; 
-  isSummary?: boolean;
-  isPtoTable?: boolean;
-}) => {
-  // Calculate totals based on table type
-  const customerTotal = data.reduce((sum, item) => sum + item.customer, 0);
-  const customerQuantityTotal = data.reduce((sum, item) => sum + (item.customerQuantity || 0), 0);
-  const ptoSubmissionTotal = data.reduce((sum, item) => sum + (item.ptoSubmission || 0), 0);
-  const ptoGrantedTotal = data.reduce((sum, item) => sum + (item.ptoGranted || 0), 0);
-
-  return (
-    <div style={{ marginBottom: '20px' }}>
-      <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>{title}</h3>
-      <div style={{
-        height: '400px',
-        overflowY: 'auto',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-      }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-          <thead>
-            <tr>
-              {isSummary ? (
-                <>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Office
-                  </th>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Customer Name
-                  </th>
-                </>
-              ) : (
-                <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                  Week of Completion
-                </th>
-              )}
-              {isPtoTable ? (
-                <>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Install Complete to PTO Submission Date
-                  </th>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Install Complete to PTO
-                  </th>
-                </>
-              ) : !isSummary ? (
-                <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                  Customer
-                </th>
-              ) : (
-                <>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Customer Unique ID
-                  </th>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Project Status
-                  </th>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    PTO Status
-                  </th>
-                  <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}>
-                    Customer Quantity
-                  </th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                {isSummary ? (
-                  <>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.office}</td>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.customerName}</td>
-                  </>
-                ) : (
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>Week {item.week}</td>
-                )}
-                {isPtoTable ? (
-                  <>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.ptoSubmission}</td>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.ptoGranted}</td>
-                  </>
-                ) : !isSummary ? (
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.customer}</td>
-                ) : (
-                  <>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.customerUniqueId}</td>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.projectStatus}</td>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.ptoStatus}</td>
-                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.customerQuantity}</td>
-                  </>
-                )}
-              </tr>
-            ))}
-            <tr>
-              {isSummary ? (
-                <>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-                    Grand Total
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}></td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}></td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}></td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f9f9f9' }}></td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-                    {customerQuantityTotal}
-                  </td>
-                </>
-              ) : (
-                <>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-                    Grand Total
-                  </td>
-                  {isPtoTable ? (
-                    <>
-                      <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-                        {ptoSubmissionTotal}
-                      </td>
-                      <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-                        {ptoGrantedTotal}
-                      </td>
-                    </>
-                  ) : (
-                    <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-                      {customerTotal}
-                    </td>
-                  )}
-                </>
-              )}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-function NoPto() {
+const NoPto = () => {
   // Generate dummy data for weekly tables
   const generateWeeklyData = (multiplier: number) =>
     Array.from({ length: 51 }, (_, index) => ({
@@ -212,42 +68,83 @@ function NoPto() {
     // ... rest of the options
   ];
 
+  // Function to calculate grand totals for the columns
+  const calculateGrandTotal = (data: any[], columns: { key: string }[]) => {
+    return columns.map((col) => {
+      if (typeof data[0]?.[col.key] === 'number') {
+        return data.reduce((total, row) => total + row[col.key], 0);
+      }
+      return null;
+    });
+  };
+
+  const weeklyGrandTotal = calculateGrandTotal(weeklyData, [
+    { key: 'customer' }
+  ]);
+
+  const officeGrandTotal = calculateGrandTotal(officeData, [
+    { key: 'customer' }
+  ]);
+
+  const ptoSubmissionGrandTotal = calculateGrandTotal(ptoSubmissionData, [
+    { key: 'ptoSubmission' },
+    { key: 'ptoGranted' }
+  ]);
+
+  const ptoGrantedGrandTotal = calculateGrandTotal(ptoGrantedData, [
+    { key: 'ptoSubmission' },
+    { key: 'ptoGranted' }
+  ]);
+
   return (
     <div className={styles.main_container} style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ margin: 0 }}>Install Completed (No PTO Granted Date within 30 Days)</h2>
         <div style={{ display: 'flex', gap: '10px' }}>
-          {/* <SelectOption
-            options={statusOptions}
-            value={statusValue}
-            onChange={(newValue: Option | null) => setStatusValue(newValue ?? undefined)}
-          />
-          <SelectOption
-            options={weekOptions}
-            value={weekValue}
-            onChange={(newValue: Option | null) => setWeekValue(newValue ?? undefined)}
-          />
-          <SelectOption
-            options={officeOptions}
-            value={officeValue}
-            onChange={(newValue: Option | null) => setOfficeValue(newValue ?? undefined)}
-          /> */}
           <div><YearSelect /></div>
           <div><WeekSelect /></div>
           {/* <div><DaySelect /></div> */}
           <div><CompanySelect /></div>
           <div><PTOStatus /></div>
-
         </div>
       </div>
 
       {/* Weekly sections */}
-      {[
-        { title: 'Weekly (Overall)', data: weeklyData, isPtoTable: false },
-        { title: 'Weekly (Office)', data: officeData, isPtoTable: false },
-        { title: 'Install Complete to PTO Submission', data: ptoSubmissionData, isPtoTable: true },
-        { title: 'Install Complete to PTO Granted', data: ptoGrantedData, isPtoTable: true },
-      ].map((section, index) => (
+      {[{
+        title: 'Weekly (Overall)',
+        data: weeklyData,
+        columns: [
+          { key: 'week', label: 'Week of Completion' },
+          { key: 'customer', label: 'Customer' }
+        ],
+        grandTotal: weeklyGrandTotal
+      }, {
+        title: 'Weekly (Office)',
+        data: officeData,
+        columns: [
+          { key: 'week', label: 'Week of Completion' },
+          { key: 'customer', label: 'Customer' }
+        ],
+        grandTotal: officeGrandTotal
+      }, {
+        title: 'Install Complete to PTO Submission',
+        data: ptoSubmissionData,
+        columns: [
+          { key: 'week', label: 'Week of Completion' },
+          { key: 'ptoSubmission', label: 'Install Complete to PTO Submission Date' },
+          { key: 'ptoGranted', label: 'Install Complete to PTO' }
+        ],
+        grandTotal: ptoSubmissionGrandTotal
+      }, {
+        title: 'Install Complete to PTO Granted',
+        data: ptoGrantedData,
+        columns: [
+          { key: 'week', label: 'Week of Completion' },
+          { key: 'ptoSubmission', label: 'Install Complete to PTO Submission Date' },
+          { key: 'ptoGranted', label: 'Install Complete to PTO' }
+        ],
+        grandTotal: ptoGrantedGrandTotal
+      }].map((section, index) => (
         <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
           <div style={{ flex: 2, marginRight: '20px' }}>
             <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>{section.title}</h3>
@@ -261,11 +158,11 @@ function NoPto() {
                 />
                 <YAxis
                   domain={[0, 'auto']}
-                  label={{ value: section.isPtoTable ? 'Days' : 'Customer', angle: -90, position: 'insideLeft' }}
+                  label={{ value: section.columns.some(col => col.key === 'ptoSubmission') ? 'Days' : 'Customer', angle: -90, position: 'insideLeft' }}
                 />
                 <Tooltip />
                 <Legend />
-                {section.isPtoTable ? (
+                {section.columns.some(col => col.key === 'ptoSubmission') ? (
                   <>
                     <Line type="monotone" dataKey="ptoSubmission" stroke="#4285F4" name="PTO Submission" activeDot={{ r: 8 }} />
                     <Line type="monotone" dataKey="ptoGranted" stroke="#34A853" name="PTO Granted" activeDot={{ r: 8 }} />
@@ -277,25 +174,32 @@ function NoPto() {
             </ResponsiveContainer>
           </div>
           <div style={{ flex: 1 }}>
-            <TableData 
-              title={section.title} 
-              data={section.data} 
-              isPtoTable={section.isPtoTable}
+            <NoPtoTable
+              title={section.title}
+              data={section.data}
+              columns={section.columns}
+              showFooter={true}  // Display the footer with grand total
             />
           </div>
         </div>
       ))}
 
       {/* Overall Summary Table */}
-      <div style={{ width: '100%', marginTop: '20px', borderTop: '1px solid #ddd', paddingTop: '20px' }}>
-        <TableData 
-          title="Overall Summary" 
-          data={overallSummaryData} 
-          isSummary={true}
-        />
-      </div>
+      <NoPtoTable
+        title="Overall Summary"
+        data={overallSummaryData}
+        columns={[
+          { key: 'office', label: 'Office' },
+          { key: 'customerName', label: 'Customer Name' },
+          { key: 'customerUniqueId', label: 'Customer Unique ID' },
+          { key: 'projectStatus', label: 'Project Status' },
+          { key: 'ptoStatus', label: 'PTO Status' },
+          { key: 'customerQuantity', label: 'Customer Quantity' }
+        ]}
+        showFooter={true}  // Show grand total for overall summary table
+      />
     </div>
   );
-}
+};
 
 export default NoPto;

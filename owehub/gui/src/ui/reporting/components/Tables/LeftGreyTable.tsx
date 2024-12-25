@@ -15,6 +15,12 @@ const TableGrey = ({ data }: any) => {
               </tr>
             ))}
           </tbody>
+          <tfoot>
+            <tr>
+              <th>Overall</th>
+              <th>0</th>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
