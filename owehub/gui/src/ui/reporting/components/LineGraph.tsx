@@ -76,7 +76,7 @@ const LineGraph: React.FC = () => {
     };
 
     return (
-        <ResponsiveContainer width="95%" height="100%" className={'graph-container'}>
+        <ResponsiveContainer width="95%" height="97%" className={'graph-container'}>
 
             <LineChart data={data}  margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                 <Legend verticalAlign="top"  wrapperStyle={{ paddingBottom: 20,fontSize: 10 }} />
