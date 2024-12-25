@@ -66,7 +66,7 @@ func HandleGetOverallSpeedSummaryReportRequest(resp http.ResponseWriter, req *ht
 	for _, category := range categories {
 		var data []models.DataPoint = make([]models.DataPoint, 52)
 		for i := 0; i < 52; i++ {
-			data[i].Value = make(map[string]float64)
+			data[i].Value = make(map[string]interface{})
 
 			if contains(dataReq.Office, "Tempe") {
 				data[i].Value["Tempe"] = rand.Float64()
@@ -142,7 +142,7 @@ func HandleGetSpeedSaleToInstallSummaryReportRequest(resp http.ResponseWriter, r
 	for _, category := range categories {
 		var data []models.DataPoint = make([]models.DataPoint, 52)
 		for i := 0; i < 52; i++ {
-			data[i].Value = make(map[string]float64)
+			data[i].Value = make(map[string]interface{})
 
 			if contains(dataReq.Office, "Tempe") {
 				data[i].Value["Tempe"] = rand.Float64()
@@ -219,7 +219,7 @@ func HandleGetFTCQualityPerOfficeSummaryReportRequest(resp http.ResponseWriter, 
 	for _, category := range categories {
 		var data []models.DataPoint = make([]models.DataPoint, 52)
 		for i := 0; i < 52; i++ {
-			data[i].Value = make(map[string]float64)
+			data[i].Value = make(map[string]interface{})
 
 			data[i].Value["Survey - Completed First Time"] = rand.Float64()
 			data[i].Value["Install - Completed First Time"] = rand.Float64()
@@ -287,7 +287,7 @@ func HandleGetFTCReasonForIncompleteSummaryReportRequest(resp http.ResponseWrite
 	for _, category := range categories {
 		var data []models.DataPoint = make([]models.DataPoint, 52)
 		for i := 0; i < 52; i++ {
-			data[i].Value = make(map[string]float64)
+			data[i].Value = make(map[string]interface{})
 
 			data[i].Value["Yes"] = rand.Float64()
 			data[i].Value["No"] = rand.Float64()
