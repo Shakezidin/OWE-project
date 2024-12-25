@@ -106,7 +106,7 @@ const Dashboard: React.FC = () => {
       title: 'Others',
       data: [
         { title: 'Install to FIN', route: ROUTES.INSTALL_TO_FIN },
-        { title: 'AJH', route: ROUTES.INSTALL_TO_FIN },
+        { title: 'AJH', route: ROUTES.AHJ },
       ],
       state: useState<boolean>(true),
     },

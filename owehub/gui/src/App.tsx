@@ -195,16 +195,18 @@ function App() {
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}
             />
-         <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
+            <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
+
+            <Route
+              path={ROUTES.AHJ}
+              element={<Ahj />}
+            />
 
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
 
-          <Route
-            path={ROUTES.AHJ}
-            element={<Ahj />}
-          />
+
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
           <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
