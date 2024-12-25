@@ -61,6 +61,7 @@ import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
+import Ahj from './ui/reporting/Ahj/Ahj';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 function App() {
@@ -159,6 +160,7 @@ function App() {
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<SpeedOverall />}
             />
+
             <Route
               path={ROUTES.REPORTING_SALES_TO_INSTALL}
               element={<SalesToInstall />}
@@ -192,9 +194,15 @@ function App() {
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}
             />
+
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
+
+          <Route
+            path={ROUTES.AHJ}
+            element={<Ahj />}
+          />
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
           <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
