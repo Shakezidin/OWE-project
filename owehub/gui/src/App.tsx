@@ -62,6 +62,7 @@ import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
 import InstalltoFin from './ui/reporting/InstallToFin';
+import Ahj from './ui/reporting/Ahj/Ahj';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 function App() {
@@ -160,6 +161,7 @@ function App() {
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<SpeedOverall />}
             />
+
             <Route
               path={ROUTES.REPORTING_SALES_TO_INSTALL}
               element={<SalesToInstall />}
@@ -193,10 +195,18 @@ function App() {
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}
             />
-         <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
+            <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
+
+            <Route
+              path={ROUTES.AHJ}
+              element={<Ahj />}
+            />
+
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
+
+
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
           <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
