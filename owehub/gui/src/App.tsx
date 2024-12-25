@@ -61,6 +61,7 @@ import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
+import InstalltoFin from './ui/reporting/InstallToFin';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 function App() {
@@ -192,6 +193,7 @@ function App() {
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}
             />
+         <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}

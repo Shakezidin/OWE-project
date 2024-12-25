@@ -102,6 +102,14 @@ const Dashboard: React.FC = () => {
       ],
       state: useState<boolean>(true),
     },
+    {
+      title: 'Others',
+      data: [
+        { title: 'Install to FIN', route: ROUTES.INSTALL_TO_FIN },
+        { title: 'AJH', route: ROUTES.INSTALL_TO_FIN },
+      ],
+      state: useState<boolean>(true),
+    },
   ];
 
   const toggleAccordion =
