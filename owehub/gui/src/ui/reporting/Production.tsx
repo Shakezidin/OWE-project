@@ -65,13 +65,15 @@ const Production: React.FC = () => {
       label: value,
     }));
 
-  const tableData = {
-    tableNames: ['available_states', 'dealer_name'],
-  };
 
   const [data, setData] = useState([
-    { column1: 'Row 1 Data', column2: 'Row 1 Data' },
-    { column1: 'Row 2 Data', column2: 'Row 2 Data' },
+    { column1: 'Tucson', column2: '0' },
+    { column1: 'Texas', column2: '0' },
+    { column1: 'Tempe', column2: '0' },
+    { column1: 'Peoria/Kingman', column2: '0' },
+    { column1: 'Colarado', column2: '0' },
+    { column1: 'Albuquerque/El Paso', column2: '0' },
+    { column1: '#N/A', column2: '0' },
     // ... more data
   ]);
 
@@ -156,7 +158,8 @@ const Production: React.FC = () => {
 
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
-    height: '325px',
+    height: '463px',
+    marginTop:'10px'
   };
 
   return (
@@ -293,7 +296,7 @@ const Production: React.FC = () => {
                 data={data}
                 setData={setData}
               />
-              <div className="main-graph" style={stylesGraph}>
+              <div className="main-graph some-margin" style={stylesGraph}>
                 <h3 style={{ textAlign: 'center' }}>
                   Pending {reportType.label}
                 </h3>
