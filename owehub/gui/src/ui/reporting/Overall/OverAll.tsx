@@ -41,12 +41,14 @@ const OverAll = () => {
 
 
     const [data, setData] = useState([
-        { column1: 'Row 1 Data', column2: 'Row 1 Data' },
-        { column1: 'Row 2 Data', column2: 'Row 2 Data' },
-        { column1: 'Row 1 Data', column2: 'Row 1 Data' },
-        { column1: 'Row 2 Data', column2: 'Row 2 Data' },
-        // ... more data
-    ]);
+        { column1: 'Tucson', column2: '0' },
+        { column1: 'Texas', column2: '0' },
+        { column1: 'Tempe', column2: '0' },
+        { column1: 'Peoria/Kingman', column2: '0' },
+        { column1: 'Colarado', column2: '0' },
+        { column1: 'Albuquerque/El Paso', column2: '0' },
+        { column1: '#N/A', column2: '0' },
+      ]);
 
     const stylesGraph = {
         width: '100%',

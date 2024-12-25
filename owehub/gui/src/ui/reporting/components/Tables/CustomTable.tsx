@@ -64,7 +64,7 @@ const TableCustom = ({
           <tfoot>
             <tr>
               <th>Grand Total</th>
-              <th>195</th>
+              <th>0</th>
             </tr>
           </tfoot>
         </table>

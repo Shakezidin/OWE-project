@@ -79,11 +79,11 @@ const OverAllBarGraph = () => {
                 <Tooltip />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Bar dataKey="Below 7 Days" fill="#7cb342">
-                    {/* <LabelList dataKey="Below 7 Days" position="top" fontSize={12} fill="#333" /> */}
+                    <LabelList dataKey="Below 7 Days" position="top" fontSize={12} fill="#333" />
                 </Bar>
 
                 <Bar dataKey="More Than 7 Days" fill="#f10000">
-                    {/* <LabelList dataKey="More Than 7 Days" position="top" fontSize={12} fill="#333" /> */}
+                    <LabelList dataKey="More Than 7 Days" position="top" fontSize={12} fill="#333" />
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
