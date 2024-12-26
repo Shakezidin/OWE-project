@@ -70,9 +70,19 @@ func HandleGetQualitySummaryReportRequest(resp http.ResponseWriter, req *http.Re
 		summaryCalcResponse, err = calculateInstallFundingSummaryReport(dataReq)
 	case "FINAL_FUNDING":
 		summaryCalcResponse, err = calculateFinalFundingSummaryReport(dataReq)
+	default:
+		log.FuncErrorTrace(0, "Choose correct report type")
+		appserver.FormAndSendHttpResp(resp, "Choose correct report type", http.StatusInternalServerError, nil)
+		return
+	}
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to compute quality summary report data request %v err: %v", dataReq.ReportType, err)
+		appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Failed to compute quality summary report data request %v", dataReq.ReportType), http.StatusInternalServerError, nil)
+		return
 	}
 
 	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%v Data", dataReq.ReportType), http.StatusOK, summaryCalcResponse, 0)
-	appserver.FormAndSendHttpResp(resp, "Chart Data", http.StatusOK, summaryCalcResponse, 0)
+	// appserver.FormAndSendHttpResp(resp, "Chart Data", http.StatusOK, summaryCalcResponse, 0)
 
 }
