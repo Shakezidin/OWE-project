@@ -104,8 +104,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 	whereEleList = nil
 
-	query = `SELECT COUNT(contracted_system_size) AS weekly_sale FROM customers_customers_schema cs LEFT JOIN consolidated_data_view  cdv ON 
-			cdv.unique_id = cs.unique_id WHERE `
+	query = `SELECT COUNT(contracted_system_size) AS weekly_sale FROM customers_customers_schema cs WHERE `
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -172,8 +171,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	}
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id `)
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id `)
 	filtersBuilder.WriteString(" WHERE ")
 
 	switch dataReq.DataType {
