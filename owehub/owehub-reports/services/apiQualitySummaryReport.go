@@ -77,8 +77,8 @@ func HandleGetQualitySummaryReportRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to computer quality summary report data request %v err: %v", dataReq.ReportType, err)
-		appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Failed to computer quality summary report data request %v", dataReq.ReportType), http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to compute quality summary report data request %v err: %v", dataReq.ReportType, err)
+		appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Failed to compute quality summary report data request %v", dataReq.ReportType), http.StatusInternalServerError, nil)
 		return
 	}
 
