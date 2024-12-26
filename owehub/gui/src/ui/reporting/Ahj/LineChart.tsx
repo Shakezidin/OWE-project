@@ -128,6 +128,7 @@ const BelowUpChartAhj: React.FC = () => {
         <Legend
           verticalAlign="top"
           wrapperStyle={{ paddingBottom: 20, fontSize: 12 }}
+          iconSize={12}
         />
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -148,7 +149,7 @@ const BelowUpChartAhj: React.FC = () => {
             borderRadius: 4,
             padding: 8,
             boxShadow: 'none',
-            fontSize: 10
+            fontSize: 10,
           }}
           formatter={(value) => `${value}%`}
           content={<CustomTooltip />}
