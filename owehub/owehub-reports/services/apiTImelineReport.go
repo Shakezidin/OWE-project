@@ -11,10 +11,8 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"math/rand"
 	"strconv"
 	"strings"
-	"time"
 
 	"encoding/json"
 	"fmt"
@@ -30,10 +28,11 @@ import (
  ******************************************************************************/
 func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.SummaryReportRequest
-		RecordCount int = 0
-		reportResp  models.SummaryReportResponse
+		err          error
+		dataReq      models.TimelineReportRequest
+		RecordCount  int = 0
+		reportResp   models.SummaryReportResponse
+		whereEleList []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetTimelineAhjFifteenReportRequest")
@@ -60,40 +59,102 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		return
 	}
 
-	/* Dummy Data Sent to API */
-	rand.Seed(time.Now().UnixNano())
-	//categories := []string{"AHJ +15 Days SLA"}
+	escapedOffices := make([]string, len(dataReq.Office))
+	for i, name := range dataReq.Office {
+		escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	}
+	Offices := strings.Join(escapedOffices, ", ")
+
+	escapedAhj := make([]string, len(dataReq.Ahj))
+	for i, name := range dataReq.Ahj {
+		escapedAhj[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	}
+	ahj := strings.Join(escapedAhj, ", ")
+
+	escapedStates := make([]string, len(dataReq.State))
+	for i, name := range dataReq.State {
+		escapedStates[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	}
+	states := strings.Join(escapedStates, ", ")
+
+	query := fmt.Sprintf(`SELECT 
+							install_week,
+							SLA_Status,
+							COUNT(*) AS count,
+							ROUND((COUNT(*) * 100.0) / SUM(COUNT(*)) OVER (PARTITION BY install_week), 2) AS percentage
+						FROM (
+							SELECT 
+								DATE_PART('week', pv.pv_completion_date) AS install_week,
+								CASE 
+									WHEN DATE_PART('day', pv.pv_completion_date - cu.sale_date) < (CAST(ah.ahj_timeline AS INT) + 15) THEN 'Within SLA'
+									ELSE 'Out of SLA'
+								END AS SLA_Status
+							FROM 
+								pv_install_install_subcontracting_schema AS pv
+							JOIN 
+								customers_customers_schema AS cu
+								ON cu.unique_id = pv.customer_unique_id
+							JOIN 
+								ahj_db_database_hub_schema AS ah
+								ON pv.ahj = ah.title
+							WHERE 
+								DATE_PART('year', pv.pv_completion_date) = $1
+								AND (pv.office IN (%s))
+								AND (pv.ahj IN (%s))
+								AND (pv.state IN (%s))
+								AND ah.ahj_timeline IS NOT NULL
+								AND ah.ahj_timeline != ''
+						) subquery
+						GROUP BY 
+							install_week, SLA_Status
+						ORDER BY 
+							install_week, SLA_Status;
+						;
+				`, Offices, ahj, states)
+
+	whereEleList = append(whereEleList, dataReq.Year)
+
+	dbData, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		err = fmt.Errorf("failed to get table data from db err: %v", err)
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get the AHJ+15 Report", http.StatusInternalServerError, nil)
+		return
+	}
+
+	log.FuncErrorTrace(0, "dbData: %+v", dbData)
+
+	categories := []string{"Percentage AHJ +15 Days SLA", "Total AHJ +15 Days SLA"}
 	reportResp.Data = make(map[string][]models.DataPoint)
 
-	/*for _, category := range categories {
-		var data []models.DataPoint = make([]models.DataPoint, 52)
-		for i := 0; i < 52; i++ {
-			data[i].Value = make(map[string]float64)
+	var dataTotal []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataTotal[i].Value = make(map[string]interface{})
+	}
 
-			if contains(dataReq.Office, "Tempe") {
-				data[i].Value["Tempe"] = rand.Float64()
-			}
-			if contains(dataReq.Office, "Colorado") {
-				data[i].Value["Colorado"] = rand.Float64()
-			}
-			if contains(dataReq.Office, "Texas") {
-				data[i].Value["Texas"] = rand.Float64()
-			}
-			if contains(dataReq.Office, "#N/A") {
-				data[i].Value["#N/A"] = rand.Float64()
-			}
-			if contains(dataReq.Office, "Tucson") {
-				data[i].Value["Tucson"] = rand.Float64()
-			}
-			if contains(dataReq.Office, "Albuquerque/El Paso") {
-				data[i].Value["Albuquerque/El Paso"] = rand.Float64()
-			}
-			if contains(dataReq.Office, "Peoria/Kingman") {
-				data[i].Value["Peoria/Kingman"] = rand.Float64()
-			}
+	var dataPercentage []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataPercentage[i].Value = make(map[string]interface{})
+	}
+
+	for _, item := range dbData {
+		install_week := int(item["install_week"].(float64))
+		sla_status := item["sla_status"].(string)
+		count := item["count"].(int64)
+
+		byteArray := item["percentage"].([]uint8)
+		strValue := string(byteArray)
+		percentage, err := strconv.ParseFloat(strValue, 64)
+		if err != nil {
+			fmt.Println("Error parsing float:", err)
+			return
 		}
-		reportResp.Data[category] = data
-	}*/
+
+		dataTotal[install_week].Value[sla_status] = count
+		dataPercentage[install_week].Value[sla_status] = percentage
+	}
+	reportResp.Data[categories[0]] = dataPercentage
+	reportResp.Data[categories[1]] = dataTotal
 
 	appserver.FormAndSendHttpResp(resp, "AHJ+15 Report", http.StatusOK, reportResp, int64(RecordCount))
 }
