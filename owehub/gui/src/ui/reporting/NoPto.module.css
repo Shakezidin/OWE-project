@@ -1,0 +1,64 @@
+.main_container{
+    width: 100%;
+    background-color: white;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 18px;
+}
+
+/* Table Css */
+
+.tableContainer {
+    margin: 20px;
+  }
+  
+  .tableTitle {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .tableWrapper {
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 400px; /* Set a fixed height for scrolling */
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .headerCell {
+    position: sticky;
+    top: 0;
+    background-color: #f1f1f1;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    z-index: 1; /* Ensure headers are above the body */
+  }
+  
+  .dataCell {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  
+  .footerCell {
+    position: sticky;
+    bottom: 0;
+    background-color: #f9f9f9;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    z-index: 1; /* Ensure footer stays above the body */
+  }
+  
+  tfoot {
+    position: sticky;
+    bottom: 0;
+  }
+  

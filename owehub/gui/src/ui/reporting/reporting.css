@@ -9,9 +9,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.table-main-container h3{
-    margin-bottom: 8px;
-    text-align: center;
+.table-main-container h3 {
+  margin-bottom: 8px;
+  text-align: center;
 }
 
 .custom-table {
@@ -39,6 +39,36 @@
   background-color: #f1f1f1;
 }
 
-:where(.css-dev-only-do-not-override-1kf000u).ant-menu-inline .ant-menu-item, :where(.css-dev-only-do-not-override-1kf000u).ant-menu-vertical .ant-menu-item, :where(.css-dev-only-do-not-override-1kf000u).ant-menu-inline .ant-menu-submenu-title, :where(.css-dev-only-do-not-override-1kf000u).ant-menu-vertical .ant-menu-submenu-title {
-  padding-inline: 10px!important;
+:where(.css-dev-only-do-not-override-1kf000u).ant-menu-inline .ant-menu-item,
+:where(.css-dev-only-do-not-override-1kf000u).ant-menu-vertical .ant-menu-item,
+:where(.css-dev-only-do-not-override-1kf000u).ant-menu-inline
+  .ant-menu-submenu-title,
+:where(.css-dev-only-do-not-override-1kf000u).ant-menu-vertical
+  .ant-menu-submenu-title {
+  padding-inline: 10px !important;
+}
+
+.install-table thead.ant-table-thead tr {
+  position: static !important; /* Ensure header is not sticky */
+}
+.install-table .font-bold {
+  font-weight: 600;
+}
+.install-table tr.ant-table-row.ant-table-row-level-0:nth-last-child(1) {
+  font-weight: 600;
+}
+.reporting-card-heading {
+  font-size: 12px!important;
+  font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--coloumn-text-color);
+  width: 150px;
+}
+
+.con-fle small{
+  font-size: 10px!important;
+  color: var(--coloumn-text-color);
+  line-height: 0;
+  margin-top: 5px;
 }

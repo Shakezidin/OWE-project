@@ -149,7 +149,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
           transition: 'all 0.3s ease',
         }}
       >
-        <span>{`${selectedOptions.length} ${label}`}</span>
+        <span>{`${label}`}</span>
         <BiChevronDown
           className="ml1"
           size={22}

@@ -48,7 +48,6 @@ import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
 import TotalCount from './ui/TotalCount/TotalCount';
-import Layout from './ui/reporting/ReportMenu';
 import Production from './ui/reporting/Production';
 import Quality from './ui/reporting/Quality';
 import SpeedOverall from './ui/reporting/SpeedOverall';
@@ -56,7 +55,15 @@ import SalesToInstall from './ui/reporting/SalesToInstall';
 import ReasonOfIncomplete from './ui/reporting/ReasonOfIncomplete';
 import QualityPerOffice from './ui/reporting/QualityPerOffice';
 import ReportingLayout from './ui/reporting/ReportingLayout';
-import CompletionsPerOffice from './ui/reporting/CompletionsPerOffice';
+import CompletionsPerOffice from './ui/reporting/pvInstall/completionsPerOffice';
+import CompletionsPerTeams from './ui/reporting/pvInstall/completionsPerTeam';
+import NoPto from './ui/reporting/NoPto';
+import Timelines from './ui/reporting/pvInstall/timelines';
+import OverAll from './ui/reporting/Overall/OverAll';
+import Dashboard from './ui/reporting/Dashboard';
+import InstalltoFin from './ui/reporting/InstallToFin';
+import Ahj from './ui/reporting/Ahj/Ahj';
+// import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -77,9 +84,12 @@ function App() {
       { path: ROUTES.CONFIG_SLACK, element: <Slack /> },
       { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
       { path: ROUTES.CONFIG_FINANCE_SCHEDULE, element: <FinanceSchedule /> },
-      { path: ROUTES.CONFIG_SALES_PARTNER_PAY, element: <SalesPartnerSchedule /> },
+      {
+        path: ROUTES.CONFIG_SALES_PARTNER_PAY,
+        element: <SalesPartnerSchedule />,
+      },
       { path: ROUTES.CONFIG_FINANCE_TYPES, element: <FinanceTypes /> },
-      { path: ROUTES.SS_ONBOARDING, element: <SsOnboarding/> },
+      { path: ROUTES.SS_ONBOARDING, element: <SsOnboarding /> },
     ];
   };
 
@@ -137,21 +147,66 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
-          <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
-         
+          <Route path={ROUTES.CALCULATOR} element={<LoanCalculator />} />
+
           {/* reporting */}
           <Route path={ROUTES.REPORTING} element={<ReportingLayout />}>
-            <Route path={ROUTES.REPORTING_PRODUCTION} element={<Production />} />
+            <Route path={''} element={<Dashboard />} />
+            <Route
+              path={ROUTES.REPORTING_PRODUCTION}
+              element={<Production />}
+            />
             <Route path={ROUTES.REPORTING_QUALITY} element={<Quality />} />
-            <Route path={ROUTES.REPORTING_SPEED_OVERALL} element={<SpeedOverall />} />
-            <Route path={ROUTES.REPORTING_SALES_TO_INSTALL} element={<SalesToInstall />} />
-            <Route path={ROUTES.REPORTING_QUALITY_PER_OFFICE} element={<QualityPerOffice />} />
-            <Route path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE} element={<ReasonOfIncomplete />} />
-            <Route path={ROUTES.COMPLETIONS_PER_OFFICE} element={<CompletionsPerOffice />} />
-            <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
+            <Route
+              path={ROUTES.REPORTING_SPEED_OVERALL}
+              element={<SpeedOverall />}
+            />
+
+            <Route
+              path={ROUTES.REPORTING_SALES_TO_INSTALL}
+              element={<SalesToInstall />}
+            />
+            <Route
+              path={ROUTES.REPORTING_QUALITY_PER_OFFICE}
+              element={<QualityPerOffice />}
+            />
+            <Route
+              path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}
+              element={<ReasonOfIncomplete />}
+            />
+            <Route
+              path={ROUTES.COMPLETIONS_PER_OFFICE}
+              element={<CompletionsPerOffice />}
+            />
+            <Route
+              path={ROUTES.COMPLETIONS_PER_TEAM}
+              element={<CompletionsPerTeams />}
+            />
+            <Route path={ROUTES.TOTAL_COUNT} element={<TotalCount />} />
+            <Route path={ROUTES.NO_PTO} element={<NoPto />} />
+            <Route path={ROUTES.TIMELINES} element={<Timelines />} />
+
+            {/* TODO: Component need to change, ADDING ROUTES AND DEFAULT components */}
+            <Route path={ROUTES.SITE_COMPLETION} element={<Timelines />} />
+            {/* <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} /> */}
+            <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
+            <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
+            <Route
+              path={ROUTES.REPORTING_SPEED_OVERALL}
+              element={<OverAll />}
+            />
+            <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
+
+            <Route
+              path={ROUTES.AHJ}
+              element={<Ahj />}
+            />
+
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
+
+
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
           <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
@@ -175,7 +230,10 @@ function App() {
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIVES} element={<ArchivedPages   />} />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_ARCHIVES}
+            element={<ArchivedPages />}
+          />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
@@ -190,7 +248,6 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
-        
       </Routes>
     </BrowserRouter>
   );

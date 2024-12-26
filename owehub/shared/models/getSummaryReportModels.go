@@ -4,26 +4,34 @@
  *	DATE        : 22-Dec-2024
  **************************************************************************/
 
- package models
+package models
 
- type SummaryReportRequest struct {
-	 Year       string   `json:"year"`
-	 Week       string   `json:"week"`
-	 ReportType string   `json:"report_type"`
-	 Office     []string `json:"office"`
- }
+type SummaryReportRequest struct {
+	Year       string   `json:"year"`
+	Week       string   `json:"week"`
+	ReportType string   `json:"report_type"`
+	Office     []string `json:"office"`
+}
 
- type SaleToInstallSpeedSummaryReportRequest struct {
-	 Year            string   `json:"year"`
-	 Week            string   `json:"week"`
-	 BatteryIncluded string   `json:"batteryincluded"`
-	 Office          []string `json:"office"`
- }
+type TimelineReportRequest struct {
+	Year    string   `json:"year"`
+	Quarter []string `json:"quarter"`
+	State   []string `json:"state"`
+	Ahj     []string `json:"ahj"`
+	Office  []string `json:"office"`
+}
 
- type DataPoint struct {
-	 Value map[string]float64 `json:"value"`
- }
+type SaleToInstallSpeedSummaryReportRequest struct {
+	Year            string   `json:"year"`
+	Week            string   `json:"week"`
+	BatteryIncluded string   `json:"batteryincluded"`
+	Office          []string `json:"office"`
+}
 
- type OverallSpeedSummaryReportResponse struct {
-	 Data map[string][]DataPoint `json:"data"`
- }
+type DataPoint struct {
+	Value map[string]interface{} `json:"value"`
+}
+
+type SummaryReportResponse struct {
+	Data map[string][]DataPoint `json:"data"`
+}

@@ -1,0 +1,32 @@
+.time-completions {
+  display: flex;
+  margin: 1rem 0;
+}
+.time-completions span {
+  height: 100%;
+  width: 20px;
+  color: black;
+}
+.time-completions p {
+  text-align: center;
+  background-color: #e0e0e0;
+  padding: 5px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.time-bar{
+    width: 60vw;
+}
+.time-radialbar {
+  width: 40vw;
+}
+.line {
+  width: 3px;
+  background-color: #e0e0e0;
+  margin: 0 10px;
+}
+.incomplete-dropdowns{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
