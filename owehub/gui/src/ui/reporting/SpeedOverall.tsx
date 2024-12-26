@@ -615,7 +615,7 @@ const SpeedOverall: React.FC = () => {
     width: isMobile ? 'auto' : '100%',
     height: '236px',
     justifyContent: 'unset',
-    alignItems: 'unset'
+    alignItems: 'unset',
   };
 
   console.log(mappedPeriodOptions, 'optionssss');
@@ -639,7 +639,7 @@ const SpeedOverall: React.FC = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-      <BackButtom heading="Overall" />
+        <BackButtom heading="Overall" />
         <div className="report-header-dropdown flex-wrap">
           <div>
             <SelectOption
@@ -673,72 +673,73 @@ const SpeedOverall: React.FC = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          background: '#ddd',
-          height: 50,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5,
-          width: '100%',
-          margin: '10px 0',
-        }}
-      >
-        Speed - Overall
-      </div>
+      <div className="reports-yscroll">
+        <div
+          style={{
+            background: '#ddd',
+            height: 50,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 5,
+            width: '100%',
+            margin: '10px 0',
+          }}
+        >
+          Speed - Overall
+        </div>
 
-      <div className="report-graphs">
-        {isLoading ? (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <MicroLoader />
-          </div>
-        ) : (
-          <div className='speed-overall-parent'>
-            {/* // graphs.map((graph, index) => ( */}
-            <div className="table">
-              {metrics?.map((table, index) => (
-                <div
-                  key={index}
-                  className="report-table"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 30,
-                    height:300
-                  }}
-                >
-                  <div className='test'>
-                    <TableCustom
-                      middleName={table}
-                      data={metricData[table]?.tableData}
-                      setData={setData}
-                    />
+        <div className="report-graphs">
+          {isLoading ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MicroLoader />
+            </div>
+          ) : (
+            <div className="speed-overall-parent">
+              {/* // graphs.map((graph, index) => ( */}
+              <div className="table">
+                {metrics?.map((table, index) => (
+                  <div
+                    key={index}
+                    className="report-table"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: 30,
+                      height: 300,
+                    }}
+                  >
+                    <div className="test">
+                      <TableCustom
+                        middleName={table}
+                        data={metricData[table]?.tableData}
+                        setData={setData}
+                      />
+                    </div>
                   </div>
+                ))}
+              </div>
 
-                </div>
-              ))}
+              <div className="main-graph" style={stylesGraph}>
+                {/* <h3 style={{ textAlign: 'center' }}>{graph}</h3> */}
+                <LineGraph
+                  batteryData={speedSummaryData?.data['Sale To Battery']}
+                  installData={speedSummaryData?.data['Sale To Install']}
+                  mpuData={speedSummaryData?.data['Sale To MPU']}
+                />
+                {/* <p className="chart-info-report">Week</p> */}
+              </div>
             </div>
-
-            <div className="main-graph" style={stylesGraph}>
-              {/* <h3 style={{ textAlign: 'center' }}>{graph}</h3> */}
-              <LineGraph
-                batteryData={speedSummaryData?.data['Sale To Battery']}
-                installData={speedSummaryData?.data['Sale To Install']}
-                mpuData={speedSummaryData?.data['Sale To MPU']}
-              />
-              {/* <p className="chart-info-report">Week</p> */}
-            </div>
-          </div>
-          //   ))
-        )}
+            //   ))
+          )}
+        </div>
       </div>
     </div>
   );

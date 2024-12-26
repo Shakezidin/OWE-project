@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-  LabelList
+  LabelList,
 } from 'recharts';
 import styles from './styles/InstalltoFin.module.css';
 import CustomSelect from './components/Dropdowns/CustomSelect';
@@ -36,61 +36,531 @@ interface ChartData {
 }
 
 const InstalltoFin = () => {
-  const [highlightedLegend, setHighlightedLegend] = useState<string | null>(null);
+  const [highlightedLegend, setHighlightedLegend] = useState<string | null>(
+    null
+  );
 
   const data = [
-    { week: 1, low: 10, medium: 5, high: 4, veryHigh: 7, ultraHigh: 10, extreme: 3, totalDays: 39 },
-    { week: 2, low: 12, medium: 6, high: 3, veryHigh: 5, ultraHigh: 11, extreme: 4, totalDays: 41 },
-    { week: 3, low: 15, medium: 8, high: 6, veryHigh: 4, ultraHigh: 9, extreme: 2, totalDays: 44 },
-    { week: 4, low: 11, medium: 9, high: 7, veryHigh: 6, ultraHigh: 8, extreme: 3, totalDays: 44 },
-    { week: 5, low: 13, medium: 7, high: 5, veryHigh: 4, ultraHigh: 10, extreme: 2, totalDays: 41 },
-    { week: 6, low: 14, medium: 6, high: 4, veryHigh: 8, ultraHigh: 9, extreme: 3, totalDays: 44 },
-    { week: 7, low: 9, medium: 12, high: 5, veryHigh: 6, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 8, low: 8, medium: 9, high: 6, veryHigh: 5, ultraHigh: 11, extreme: 4, totalDays: 43 },
-    { week: 9, low: 10, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 10, low: 12, medium: 7, high: 8, veryHigh: 5, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 11, low: 13, medium: 9, high: 6, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 47 },
-    { week: 12, low: 11, medium: 6, high: 5, veryHigh: 8, ultraHigh: 9, extreme: 4, totalDays: 43 },
-    { week: 13, low: 15, medium: 5, high: 4, veryHigh: 7, ultraHigh: 8, extreme: 3, totalDays: 42 },
-    { week: 14, low: 14, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 3, totalDays: 47 },
-    { week: 15, low: 10, medium: 10, high: 6, veryHigh: 5, ultraHigh: 7, extreme: 3, totalDays: 41 },
-    { week: 16, low: 12, medium: 9, high: 5, veryHigh: 4, ultraHigh: 8, extreme: 5, totalDays: 43 },
-    { week: 17, low: 11, medium: 10, high: 7, veryHigh: 6, ultraHigh: 7, extreme: 3, totalDays: 44 },
-    { week: 18, low: 14, medium: 6, high: 8, veryHigh: 5, ultraHigh: 9, extreme: 3, totalDays: 45 },
-    { week: 19, low: 13, medium: 7, high: 6, veryHigh: 5, ultraHigh: 10, extreme: 4, totalDays: 45 },
-    { week: 20, low: 11, medium: 8, high: 7, veryHigh: 6, ultraHigh: 8, extreme: 3, totalDays: 43 },
-    { week: 21, low: 12, medium: 6, high: 5, veryHigh: 9, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 22, low: 15, medium: 9, high: 7, veryHigh: 5, ultraHigh: 6, extreme: 3, totalDays: 45 },
-    { week: 23, low: 10, medium: 10, high: 6, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 45 },
-    { week: 24, low: 9, medium: 7, high: 8, veryHigh: 6, ultraHigh: 9, extreme: 5, totalDays: 44 },
-    { week: 25, low: 13, medium: 6, high: 7, veryHigh: 5, ultraHigh: 11, extreme: 3, totalDays: 45 },
-    { week: 26, low: 11, medium: 10, high: 6, veryHigh: 4, ultraHigh: 8, extreme: 4, totalDays: 43 },
-    { week: 27, low: 10, medium: 8, high: 6, veryHigh: 7, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 28, low: 12, medium: 7, high: 5, veryHigh: 8, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 29, low: 14, medium: 9, high: 4, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 46 },
-    { week: 30, low: 15, medium: 6, high: 5, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 45 },
-    { week: 31, low: 11, medium: 10, high: 6, veryHigh: 7, ultraHigh: 10, extreme: 3, totalDays: 47 },
-    { week: 32, low: 13, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 3, totalDays: 46 },
-    { week: 33, low: 12, medium: 6, high: 8, veryHigh: 5, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 34, low: 14, medium: 7, high: 6, veryHigh: 6, ultraHigh: 8, extreme: 4, totalDays: 45 },
-    { week: 35, low: 13, medium: 9, high: 5, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 46 },
-    { week: 36, low: 10, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 37, low: 9, medium: 10, high: 5, veryHigh: 7, ultraHigh: 8, extreme: 5, totalDays: 44 },
-    { week: 38, low: 13, medium: 6, high: 8, veryHigh: 5, ultraHigh: 9, extreme: 4, totalDays: 45 },
-    { week: 39, low: 10, medium: 9, high: 6, veryHigh: 8, ultraHigh: 7, extreme: 4, totalDays: 44 },
-    { week: 40, low: 12, medium: 7, high: 8, veryHigh: 5, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 41, low: 11, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 45 },
-    { week: 42, low: 14, medium: 5, high: 9, veryHigh: 4, ultraHigh: 10, extreme: 4, totalDays: 46 },
-    { week: 43, low: 13, medium: 9, high: 6, veryHigh: 5, ultraHigh: 8, extreme: 3, totalDays: 44 },
-    { week: 44, low: 12, medium: 7, high: 8, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 46 },
-    { week: 45, low: 14, medium: 6, high: 7, veryHigh: 8, ultraHigh: 7, extreme: 3, totalDays: 45 },
-    { week: 46, low: 13, medium: 8, high: 5, veryHigh: 6, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 47, low: 12, medium: 7, high: 6, veryHigh: 8, ultraHigh: 9, extreme: 4, totalDays: 46 },
-    { week: 48, low: 10, medium: 9, high: 8, veryHigh: 5, ultraHigh: 11, extreme: 3, totalDays: 46 },
-    { week: 49, low: 14, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 3, totalDays: 47 },
-    { week: 50, low: 11, medium: 9, high: 6, veryHigh: 7, ultraHigh: 10, extreme: 4, totalDays: 47 },
-    { week: 51, low: 13, medium: 8, high: 5, veryHigh: 6, ultraHigh: 8, extreme: 4, totalDays: 44 },
-    { week: 52, low: 9, medium: 7, high: 6, veryHigh: 5, ultraHigh: 11, extreme: 4, totalDays: 42 },
+    {
+      week: 1,
+      low: 10,
+      medium: 5,
+      high: 4,
+      veryHigh: 7,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 39,
+    },
+    {
+      week: 2,
+      low: 12,
+      medium: 6,
+      high: 3,
+      veryHigh: 5,
+      ultraHigh: 11,
+      extreme: 4,
+      totalDays: 41,
+    },
+    {
+      week: 3,
+      low: 15,
+      medium: 8,
+      high: 6,
+      veryHigh: 4,
+      ultraHigh: 9,
+      extreme: 2,
+      totalDays: 44,
+    },
+    {
+      week: 4,
+      low: 11,
+      medium: 9,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 8,
+      extreme: 3,
+      totalDays: 44,
+    },
+    {
+      week: 5,
+      low: 13,
+      medium: 7,
+      high: 5,
+      veryHigh: 4,
+      ultraHigh: 10,
+      extreme: 2,
+      totalDays: 41,
+    },
+    {
+      week: 6,
+      low: 14,
+      medium: 6,
+      high: 4,
+      veryHigh: 8,
+      ultraHigh: 9,
+      extreme: 3,
+      totalDays: 44,
+    },
+    {
+      week: 7,
+      low: 9,
+      medium: 12,
+      high: 5,
+      veryHigh: 6,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 8,
+      low: 8,
+      medium: 9,
+      high: 6,
+      veryHigh: 5,
+      ultraHigh: 11,
+      extreme: 4,
+      totalDays: 43,
+    },
+    {
+      week: 9,
+      low: 10,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 44,
+    },
+    {
+      week: 10,
+      low: 12,
+      medium: 7,
+      high: 8,
+      veryHigh: 5,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 11,
+      low: 13,
+      medium: 9,
+      high: 6,
+      veryHigh: 7,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 47,
+    },
+    {
+      week: 12,
+      low: 11,
+      medium: 6,
+      high: 5,
+      veryHigh: 8,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 43,
+    },
+    {
+      week: 13,
+      low: 15,
+      medium: 5,
+      high: 4,
+      veryHigh: 7,
+      ultraHigh: 8,
+      extreme: 3,
+      totalDays: 42,
+    },
+    {
+      week: 14,
+      low: 14,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 3,
+      totalDays: 47,
+    },
+    {
+      week: 15,
+      low: 10,
+      medium: 10,
+      high: 6,
+      veryHigh: 5,
+      ultraHigh: 7,
+      extreme: 3,
+      totalDays: 41,
+    },
+    {
+      week: 16,
+      low: 12,
+      medium: 9,
+      high: 5,
+      veryHigh: 4,
+      ultraHigh: 8,
+      extreme: 5,
+      totalDays: 43,
+    },
+    {
+      week: 17,
+      low: 11,
+      medium: 10,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 7,
+      extreme: 3,
+      totalDays: 44,
+    },
+    {
+      week: 18,
+      low: 14,
+      medium: 6,
+      high: 8,
+      veryHigh: 5,
+      ultraHigh: 9,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 19,
+      low: 13,
+      medium: 7,
+      high: 6,
+      veryHigh: 5,
+      ultraHigh: 10,
+      extreme: 4,
+      totalDays: 45,
+    },
+    {
+      week: 20,
+      low: 11,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 8,
+      extreme: 3,
+      totalDays: 43,
+    },
+    {
+      week: 21,
+      low: 12,
+      medium: 6,
+      high: 5,
+      veryHigh: 9,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 22,
+      low: 15,
+      medium: 9,
+      high: 7,
+      veryHigh: 5,
+      ultraHigh: 6,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 23,
+      low: 10,
+      medium: 10,
+      high: 6,
+      veryHigh: 7,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 45,
+    },
+    {
+      week: 24,
+      low: 9,
+      medium: 7,
+      high: 8,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 5,
+      totalDays: 44,
+    },
+    {
+      week: 25,
+      low: 13,
+      medium: 6,
+      high: 7,
+      veryHigh: 5,
+      ultraHigh: 11,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 26,
+      low: 11,
+      medium: 10,
+      high: 6,
+      veryHigh: 4,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 43,
+    },
+    {
+      week: 27,
+      low: 10,
+      medium: 8,
+      high: 6,
+      veryHigh: 7,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 44,
+    },
+    {
+      week: 28,
+      low: 12,
+      medium: 7,
+      high: 5,
+      veryHigh: 8,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 29,
+      low: 14,
+      medium: 9,
+      high: 4,
+      veryHigh: 7,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 46,
+    },
+    {
+      week: 30,
+      low: 15,
+      medium: 6,
+      high: 5,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 45,
+    },
+    {
+      week: 31,
+      low: 11,
+      medium: 10,
+      high: 6,
+      veryHigh: 7,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 47,
+    },
+    {
+      week: 32,
+      low: 13,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 3,
+      totalDays: 46,
+    },
+    {
+      week: 33,
+      low: 12,
+      medium: 6,
+      high: 8,
+      veryHigh: 5,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 44,
+    },
+    {
+      week: 34,
+      low: 14,
+      medium: 7,
+      high: 6,
+      veryHigh: 6,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 45,
+    },
+    {
+      week: 35,
+      low: 13,
+      medium: 9,
+      high: 5,
+      veryHigh: 7,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 46,
+    },
+    {
+      week: 36,
+      low: 10,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 44,
+    },
+    {
+      week: 37,
+      low: 9,
+      medium: 10,
+      high: 5,
+      veryHigh: 7,
+      ultraHigh: 8,
+      extreme: 5,
+      totalDays: 44,
+    },
+    {
+      week: 38,
+      low: 13,
+      medium: 6,
+      high: 8,
+      veryHigh: 5,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 45,
+    },
+    {
+      week: 39,
+      low: 10,
+      medium: 9,
+      high: 6,
+      veryHigh: 8,
+      ultraHigh: 7,
+      extreme: 4,
+      totalDays: 44,
+    },
+    {
+      week: 40,
+      low: 12,
+      medium: 7,
+      high: 8,
+      veryHigh: 5,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 41,
+      low: 11,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 45,
+    },
+    {
+      week: 42,
+      low: 14,
+      medium: 5,
+      high: 9,
+      veryHigh: 4,
+      ultraHigh: 10,
+      extreme: 4,
+      totalDays: 46,
+    },
+    {
+      week: 43,
+      low: 13,
+      medium: 9,
+      high: 6,
+      veryHigh: 5,
+      ultraHigh: 8,
+      extreme: 3,
+      totalDays: 44,
+    },
+    {
+      week: 44,
+      low: 12,
+      medium: 7,
+      high: 8,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 46,
+    },
+    {
+      week: 45,
+      low: 14,
+      medium: 6,
+      high: 7,
+      veryHigh: 8,
+      ultraHigh: 7,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 46,
+      low: 13,
+      medium: 8,
+      high: 5,
+      veryHigh: 6,
+      ultraHigh: 10,
+      extreme: 3,
+      totalDays: 45,
+    },
+    {
+      week: 47,
+      low: 12,
+      medium: 7,
+      high: 6,
+      veryHigh: 8,
+      ultraHigh: 9,
+      extreme: 4,
+      totalDays: 46,
+    },
+    {
+      week: 48,
+      low: 10,
+      medium: 9,
+      high: 8,
+      veryHigh: 5,
+      ultraHigh: 11,
+      extreme: 3,
+      totalDays: 46,
+    },
+    {
+      week: 49,
+      low: 14,
+      medium: 8,
+      high: 7,
+      veryHigh: 6,
+      ultraHigh: 9,
+      extreme: 3,
+      totalDays: 47,
+    },
+    {
+      week: 50,
+      low: 11,
+      medium: 9,
+      high: 6,
+      veryHigh: 7,
+      ultraHigh: 10,
+      extreme: 4,
+      totalDays: 47,
+    },
+    {
+      week: 51,
+      low: 13,
+      medium: 8,
+      high: 5,
+      veryHigh: 6,
+      ultraHigh: 8,
+      extreme: 4,
+      totalDays: 44,
+    },
+    {
+      week: 52,
+      low: 9,
+      medium: 7,
+      high: 6,
+      veryHigh: 5,
+      ultraHigh: 11,
+      extreme: 4,
+      totalDays: 42,
+    },
   ];
 
   const handleLegendClick = (dataKey: string) => {
@@ -132,152 +602,196 @@ const InstalltoFin = () => {
     }
   };
 
-//   const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
-//       if (active && payload && payload.length) {
-//           return (
-//               <div className="custom-tooltip">
-//                   <p className="label">{`${label}`}</p>
-//                   <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
-//               </div>
-//           );
-//       }
-  
-//       return null;
-//   };
+  //   const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+  //       if (active && payload && payload.length) {
+  //           return (
+  //               <div className="custom-tooltip">
+  //                   <p className="label">{`${label}`}</p>
+  //                   <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
+  //               </div>
+  //           );
+  //       }
+
+  //       return null;
+  //   };
 
   return (
-    <div className={styles.chartContainer}>
-        <div className="headingcount flex justify-between items-center">
-                <BackButtom heading="Install to FIN" />
-                <div className="report-header-dropdown flex-wrap">
-                    {/* <div><DaySelect /></div> */}
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="Office"
-        />
-                    </div>
-
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="Office"
-        />
-                    </div>
-
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="State"
-        />
-                    </div>
-
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="Quarter"
-        />
-                    </div>
-
-                </div>
-            </div>
-
-      {/* Bar Chart */}
-
-      <div className={styles.chartWrapper}>
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          data={data}
-          barCategoryGap="5%"
-          className={styles.barChart}
-          margin={{ right: 70, top:20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" className={styles.grid} />
-          <XAxis 
-            dataKey="week" 
-            className={styles.axis} 
-            tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
-            height={50}  // Adding space for the "Week" label below tickmarks
-          />
-          <YAxis className={styles.axis} />
-          <Tooltip     wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}
- wrapperClassName={styles.tooltip} />
-
-          {/* Bars with customized labels */}
-          {['low', 'medium', 'high', 'veryHigh', 'ultraHigh', 'extreme'].map((dataKey) => (
-            <Bar
-              key={dataKey}
-              dataKey={dataKey}
-              stackId="a"
-              fill={highlightedLegend === dataKey ? getBarColor(dataKey) : getBarColor(dataKey)}
-              opacity={highlightedLegend && highlightedLegend !== dataKey ? 0.1 : 1}
-              className={styles.bar}
-              label={dataKey === 'extreme' ? renderCustomizedLabel : undefined} // Label only for 'extreme' bar
+    <div className="total-main-container">
+      <div className="headingcount flex justify-between items-center">
+        <BackButtom heading="Install to FIN" />
+        <div className="report-header-dropdown flex-wrap">
+          {/* <div><DaySelect /></div> */}
+          <div>
+            <CustomSelect
+              options={data.map((item) => ({
+                value: item.week.toString(),
+                label: `Week ${item.week}`,
+              }))}
+              label="Office"
             />
-          ))}
-          <Legend
-            layout="horizontal"
-            align="center"
-            verticalAlign="top"
-            onClick={({ dataKey }) => handleLegendClick(dataKey as string)}
-            className={styles.legend}
-            wrapperStyle={{ paddingBottom: "20px", fontSize:'10px', fontFamily:'poppins' }}
-            formatter={getLegendLabel}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+          </div>
 
+          <div>
+            <CustomSelect
+              options={data.map((item) => ({
+                value: item.week.toString(),
+                label: `Week ${item.week}`,
+              }))}
+              label="Office"
+            />
+          </div>
+
+          <div>
+            <CustomSelect
+              options={data.map((item) => ({
+                value: item.week.toString(),
+                label: `Week ${item.week}`,
+              }))}
+              label="State"
+            />
+          </div>
+
+          <div>
+            <CustomSelect
+              options={data.map((item) => ({
+                value: item.week.toString(),
+                label: `Week ${item.week}`,
+              }))}
+              label="Quarter"
+            />
+          </div>
+        </div>
       </div>
 
+      <div className="reports-yscroll">
+        {/* Bar Chart */}
 
+        <div className={styles.chartWrapper}>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart
+              data={data}
+              barCategoryGap="5%"
+              className={styles.barChart}
+              margin={{ right: 70, top: 20 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" className={styles.grid} />
+              <XAxis
+                dataKey="week"
+                className={styles.axis}
+                tickFormatter={(value) => `Week ${value}`} // Show Week number below tickmarks
+                height={50} // Adding space for the "Week" label below tickmarks
+              />
+              <YAxis className={styles.axis} />
+              <Tooltip
+                wrapperStyle={{
+                  outline: 'none',
+                  borderRadius: 0,
+                  padding: 0,
+                  boxShadow: 'none',
+                }}
+                wrapperClassName={styles.tooltip}
+              />
 
-      {/* Line Chart */}
-      <div className={styles.chartWrapper}>
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart data={data} margin={{ right: 70 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            className={styles.axis} 
-            dataKey="week" 
-            tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
-            height={50} 
-          />
-          <YAxis  className={styles.axis} 
-          />
-          <Tooltip wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}/>
-          <Line
-            type="monotone"
-            dataKey="totalDays"
-            stroke="rgb(76, 175, 80)"  // Updated line color
-            activeDot={{ r: 8 }}
-            fill="rgb(76, 175, 80)"
+              {/* Bars with customized labels */}
+              {[
+                'low',
+                'medium',
+                'high',
+                'veryHigh',
+                'ultraHigh',
+                'extreme',
+              ].map((dataKey) => (
+                <Bar
+                  key={dataKey}
+                  dataKey={dataKey}
+                  stackId="a"
+                  fill={
+                    highlightedLegend === dataKey
+                      ? getBarColor(dataKey)
+                      : getBarColor(dataKey)
+                  }
+                  opacity={
+                    highlightedLegend && highlightedLegend !== dataKey ? 0.1 : 1
+                  }
+                  className={styles.bar}
+                  label={
+                    dataKey === 'extreme' ? renderCustomizedLabel : undefined
+                  } // Label only for 'extreme' bar
+                />
+              ))}
+              <Legend
+                layout="horizontal"
+                align="center"
+                verticalAlign="top"
+                onClick={({ dataKey }) => handleLegendClick(dataKey as string)}
+                className={styles.legend}
+                wrapperStyle={{
+                  paddingBottom: '20px',
+                  fontSize: '10px',
+                  fontFamily: 'poppins',
+                }}
+                formatter={getLegendLabel}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-          >
-            <LabelList
-              dataKey="totalDays"
-              position="top"
-              fill="rgb(76, 175, 80)"
-              fontSize={12}
-              offset={5}
-              formatter={(value: any) => value}
-            />
-          </Line>
-          <Legend
-            layout="horizontal"
-            align="center"
-            verticalAlign="top"
-            className={styles.legend}
-            wrapperStyle={{ padding: "20px", fontSize:'10px', fontFamily:'poppins' }}
-            formatter={getLegendLabel}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-      </div>
+        {/* Line Chart */}
+        <div className={styles.chartWrapper}>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={data} margin={{ right: 70 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                className={styles.axis}
+                dataKey="week"
+                tickFormatter={(value) => `Week ${value}`} // Show Week number below tickmarks
+                height={50}
+              />
+              <YAxis className={styles.axis} />
+              <Tooltip
+                wrapperStyle={{
+                  outline: 'none',
+                  borderRadius: 0,
+                  padding: 0,
+                  boxShadow: 'none',
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="totalDays"
+                stroke="rgb(76, 175, 80)" // Updated line color
+                activeDot={{ r: 8 }}
+                fill="rgb(76, 175, 80)"
+              >
+                <LabelList
+                  dataKey="totalDays"
+                  position="top"
+                  fill="rgb(76, 175, 80)"
+                  fontSize={12}
+                  offset={5}
+                  formatter={(value: any) => value}
+                />
+              </Line>
+              <Legend
+                layout="horizontal"
+                align="center"
+                verticalAlign="top"
+                className={styles.legend}
+                wrapperStyle={{
+                  padding: '20px',
+                  fontSize: '10px',
+                  fontFamily: 'poppins',
+                }}
+                formatter={getLegendLabel}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* <div style={{ width: '100%', height: '400px' }} className={styles.chartWrapper}>
+        {/* <div style={{ width: '100%', height: '400px' }} className={styles.chartWrapper}>
         <StackedBarChart/>
       </div> */}
-      
+      </div>
     </div>
   );
 };
