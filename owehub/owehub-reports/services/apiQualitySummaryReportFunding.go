@@ -5,6 +5,8 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"math"
+
+	"github.com/lib/pq"
 )
 
 func calculateInstallFundingSummaryReport(dataReq models.QualitySummaryReportRequest) (interface{}, error) {
@@ -26,11 +28,15 @@ func calculateInstallFundingSummaryReport(dataReq models.QualitySummaryReportReq
             customer_unique_id,
             customer
         FROM install_funding_finance_schema
-        WHERE EXTRACT(YEAR FROM approved_date) = $1
-           OR EXTRACT(YEAR FROM redlined_date) = $1
+        WHERE (EXTRACT(YEAR FROM approved_date) = $1
+           OR EXTRACT(YEAR FROM redlined_date) = $1)
     `
 
 	whereEleList = append(whereEleList, dataReq.Year)
+	if len(dataReq.Office) > 0 {
+		query += " AND office = ANY($2)"
+		whereEleList = append(whereEleList, pq.Array(dataReq.Office))
+	}
 
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
