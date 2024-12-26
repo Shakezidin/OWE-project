@@ -327,7 +327,7 @@ const AhjBarChart: React.FC = () => {
         />
         <YAxis
           tickSize={10}
-          tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
+          tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }}
           tickFormatter={(value) => `${value}%`}
           domain={[0, 100]}
         />
@@ -347,9 +347,9 @@ const AhjBarChart: React.FC = () => {
           verticalAlign="top"
           wrapperStyle={{
             fontSize: 12,
-            marginTop: -14,
+            marginTop: -18,
           }}
-          iconSize={10}
+          iconSize={12}
         />
         <Bar dataKey="Within SLA (%)" stackId="a" fill="#81C784" />
         <Bar dataKey="Out of SLA (%)" stackId="a" fill="#E64A19" />
