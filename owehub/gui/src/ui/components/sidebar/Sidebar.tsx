@@ -413,7 +413,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 color: '#80848B',
               }}
             >
-              All rights reserved. eOS: v1.5
+              All rights reserved. eOS: v1.6
             </p>
           </div>
         )}

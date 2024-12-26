@@ -1,29 +1,38 @@
-// TableData.js
 import React, { useState } from 'react';
 import { FaCaretDown } from 'react-icons/fa';
+import { TableData } from '../../types/speedTypes';
 
-const TableCustom = ({
-  data,
+interface TableCustomProps {
+  data?: TableData[]; // Make `data` optional
+  reportType?: { label: string };
+  middleName?: string;
+  setData?: (data: TableData[]) => void;
+  th1?: string;
+  th2?: string;
+}
+
+const TableCustom: React.FC<TableCustomProps> = ({
+  data = [], // Provide a default empty array
   reportType,
   middleName,
   setData,
   th1,
   th2,
-}: any) => {
+}) => {
   const [reverse, setReverse] = useState(false);
 
   const handleOfficeClick = () => {
-    setData((prevData: any) => {
-      const midIndex = Math.floor(prevData.length / 2);
-      const topRows = prevData.slice(0, midIndex);
-      const bottomRows = prevData.slice(midIndex);
-      return [...bottomRows, ...topRows];
-    });
+    if (!setData) return;
+
+    const midIndex = Math.floor(data.length / 2);
+    const topRows = data.slice(0, midIndex);
+    const bottomRows = data.slice(midIndex);
     setReverse(!reverse);
+    setData([...bottomRows, ...topRows]);
   };
 
-  const total = (data || []).reduce((acc: number, row: any) => acc + (Number(row.column2) || 0), 0);
-
+  // Safely convert column2 to number for calculations
+  const total = data.reduce((acc, row) => acc + (Number(row.column2) || 0), 0);
 
   return (
     <div className="grey-table-main-container">
@@ -43,7 +52,7 @@ const TableCustom = ({
                 onClick={handleOfficeClick}
                 style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
-                {th1 ? th1 : 'Office (2)'}{' '}
+                {th1 ? th1 : 'Office'}{' '}
                 <FaCaretDown
                   size={20}
                   style={{
@@ -51,16 +60,16 @@ const TableCustom = ({
                     marginBottom: '-5px',
                     transform: reverse ? 'rotate(180deg)' : '',
                   }}
-                />{' '}
+                />
               </th>
-              <th>{th2 ? th2 : 'Scheduled-kW'}</th>
+              <th>{th2 ? th2 : 'Count'}</th>
             </tr>
           </thead>
           <tbody>
-            {data?.map((row: any, index: any) => (
+            {data.map((row, index) => (
               <tr key={index}>
                 <td>{row.column1}</td>
-                <td>{row.column2}</td>
+                <td>{Number(row.column2) || 0}</td> {/* Safely convert to number */}
               </tr>
             ))}
           </tbody>

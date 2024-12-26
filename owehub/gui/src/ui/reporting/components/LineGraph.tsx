@@ -1,98 +1,139 @@
 import React from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Legend } from 'recharts';
-import './linechart.css'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
+// Type definitions
+interface MetricEntry {
+    value: {
+        [key: string]: number; // Allow any metric name
+    };
+}
+
+interface TransformedDataPoint {
+    name: string;
+    [key: string]: number | string; // Allow any metric name
+}
 
 interface DataPoint {
-    name: string;
-    'Peoria/Kingman': number;
-    'Tucson': number;
-    'Colorado': number;
-    'Albuquerque/El Paso': number;
-    'Tempe': number;
-    'Texas': number;
-    '#N/A': number;
-}
-interface GraphData {
-    data: DataPoint[];
-    lineColor: string;
+    value: {
+        [key: string]: number; // Allow any metric name
+    };
 }
 
-const data: DataPoint[] = [
-    {
-        name: '1',
-        'Peoria/Kingman': 2400,
-        'Tucson': 1398,
-        'Colorado': 9800,
-        'Albuquerque/El Paso': 3908,
-        'Tempe': 4800,
-        'Texas': 3800,
-        '#N/A': 1,
-    },
-    {
-        name: '2',
-        'Peoria/Kingman': 500,
-        'Tucson': 100,
-        'Colorado': 1,
-        'Albuquerque/El Paso': 500,
-        'Tempe': 200,
-        'Texas': 89,
-        '#N/A': 1200,
-    },
-    {
-        name: '3',
-        'Peoria/Kingman': 2300,
-        'Tucson': 1500,
-        'Colorado': 9500,
-        'Albuquerque/El Paso': 3800,
-        'Tempe': 5100,
-        'Texas': 4200,
-        '#N/A': 4500,
-    },
-];
+const transformData = (data: MetricEntry[]): TransformedDataPoint[] => {
+    return data.map((entry, index) => {
+        const transformedEntry: TransformedDataPoint = { name: `Week ${index + 1}` };
+        for (const key in entry.value) {
+            transformedEntry[key] = Number((entry.value[key] * 100).toFixed(2)); // Convert to percentage
+        }
+        return transformedEntry;
+    });
+};
 
-const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
-        const data = payload[0].payload;
         return (
-            <div>
-                <p className="label">{`Peoria/Kingman: ${data['Peoria/Kingman']}`}</p>
-                <p className="label">{`Tucson: ${data['Tucson']}`}</p>
-                <p className="label">{`Colorado: ${data['Colorado']}`}</p>
-                <p className="label">{`Albuquerque/El Paso: ${data['Albuquerque/El Paso']}`}</p>
-                <p className="label">{`Tempe: ${data['Tempe']}`}</p>
-                <p className="label">{`Texas: ${data['Texas']}`}</p>
-                <p className="label">{`#N/A: ${data['#N/A']}`}</p>
+            <div className="bg-white p-4 border rounded shadow">
+                <p className="font-semibold">{label}</p>
+                {payload.map((entry: any) => (
+                    <p key={entry.name} style={{ color: entry.color }}>
+                        {`${entry.name}: ${entry.value}%`}
+                    </p>
+                ))}
             </div>
         );
     }
-
     return null;
 };
 
-const LineGraph: React.FC = () => {
-    const graph: GraphData = {
-        data: data,
-        lineColor: '#ff7300', // Specify the desired color for the line
+interface LineGraphProps {
+    batteryData?: MetricEntry[];
+    installData?: MetricEntry[];
+    mpuData?: MetricEntry[];
+}
+
+const LineGraph: React.FC<LineGraphProps> = ({ batteryData, installData, mpuData }) => {
+    const transformAndGetKeys = (data: DataPoint[]) => {
+        if (!data) return { transformedData: [], uniqueKeys: [] };
+
+        const transformedData = transformData(data); // Transform data
+        const uniqueKeys = Array.from(
+            new Set(
+                transformedData.flatMap((point) => Object.keys(point).filter((key) => key !== "name"))
+            )
+        );
+        return { transformedData, uniqueKeys };
     };
 
-    return (
-        <ResponsiveContainer width="95%" height="100%" className={'graph-container'}>
+    const battery = transformAndGetKeys(batteryData || []);
+    const install = transformAndGetKeys(installData || []);
+    const mpu = transformAndGetKeys(mpuData || []);
 
-            <LineChart data={data}  margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-                <Legend verticalAlign="top"  wrapperStyle={{ paddingBottom: 20,fontSize: 10 }} />
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
-                <YAxis tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Line type="monotone" dataKey="Peoria/Kingman" stroke="#8884d8" strokeWidth={2} dot={{ r: 3, fill: '#8884d8' }} activeDot={{ r: 4, fill: '#8884d8' }} />
-                <Line type="monotone" dataKey="Tucson" stroke="#82ca9d" strokeWidth={2} dot={{ r: 3, fill: '#82ca9d' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="Colorado" stroke="#ffc658" strokeWidth={2} dot={{ r: 3, fill: '#ffc658' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="Albuquerque/El Paso" stroke="#ff7300" strokeWidth={2} dot={{ r: 3, fill: '#ff7300' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="Tempe" stroke="#6b486b" strokeWidth={2} dot={{ r: 3, fill: '#6b486b' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="Texas" stroke="#a05d56" strokeWidth={2} dot={{ r: 3, fill: '#a05d56' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="#N/A" stroke="#d0743c" strokeWidth={2} dot={{ r: 3, fill: '#d0743c' }} activeDot={{ r: 4 }} />
-            </LineChart>
-        </ResponsiveContainer>
+    const renderChart = (data: TransformedDataPoint[], keys: string[], title: string) => (
+        <div className="mb-8">
+            <h3 className="text-lg font-semibold mb-4">{title}</h3>
+            <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    {keys.map((key) => {
+                        let strokeColor;
+                        switch (key) {
+                            case "Peoria/Kingman":
+                                strokeColor = "#8884d8";
+                                break;
+                            case "Tucson":
+                                strokeColor = "#82ca9d";
+                                break;
+                            case "Colorado":
+                                strokeColor = "#ffc658";
+                                break;
+                            case "Albuquerque/El Paso":
+                                strokeColor = "#ff7300";
+                                break;
+                            case "Tempe":
+                                strokeColor = "#6b486b";
+                                break;
+                            case "Texas":
+                                strokeColor = "#a05d56";
+                                break;
+                            case "#N/A":
+                                strokeColor = "#d0743c";
+                                break;
+                            default:
+                                strokeColor = "#000"; // Fallback color
+                        }
+                        return (
+                            <Line
+                                key={key}
+                                type="monotone"
+                                dataKey={key}
+                                stroke={strokeColor}
+                                strokeWidth={2}
+                                dot={{ r: 3, fill: strokeColor }}
+                                activeDot={{ r: 4, fill: strokeColor }}
+                            />
+                        );
+                    })}
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    );
+
+    return (
+        <div className="w-full">
+            {battery.transformedData.length > 0 &&
+                renderChart(battery.transformedData, battery.uniqueKeys, "Battery Data")}
+            {install.transformedData.length > 0 &&
+                renderChart(install.transformedData, install.uniqueKeys, "Install Data")}
+            {mpu.transformedData.length > 0 &&
+                renderChart(mpu.transformedData, mpu.uniqueKeys, "MPU Data")}
+        </div>
     );
 };
 
