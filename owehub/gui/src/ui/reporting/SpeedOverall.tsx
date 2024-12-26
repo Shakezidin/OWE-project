@@ -32,6 +32,8 @@ import {
   transformTableData,
 } from './utils/dataTransformer';
 
+import './speedOverall.css';
+
 // Define types for data and graph properties
 interface DataPoint {
   name: string;
@@ -83,7 +85,7 @@ const SpeedOverall: React.FC = () => {
   const metrics = ['Sale To Battery', 'Sale To Install', 'Sale To MPU'];
   const [metricData, setMetricData] = useState<{
     [key: string]: {
-      graphData: TransformedGraphData[];
+      graphData: any[];
       tableData: TableData[];
     };
   }>({});
@@ -247,7 +249,7 @@ const SpeedOverall: React.FC = () => {
 
         metrics.forEach((metric) => {
           newMetricData[metric] = {
-            graphData: transformGraphData(data, metric),
+            graphData: data.datapoints,
             tableData: transformTableData(data, metric),
           };
         });
@@ -610,6 +612,8 @@ const SpeedOverall: React.FC = () => {
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
     height: '236px',
+    justifyContent: 'unset',
+    alignItems: 'unset'
   };
 
   console.log(mappedPeriodOptions, 'optionssss');
@@ -694,47 +698,42 @@ const SpeedOverall: React.FC = () => {
             <MicroLoader />
           </div>
         ) : (
-          // graphs.map((graph, index) => (
-          <div className="report-graphs">
-            {metrics?.map((graph, index) => (
-              <div
-                key={index}
-                className="report-graph"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: 50,
-                }}
-              >
-                {false ? (
-                  <div
-                    className="flex items-center"
-                    style={{ justifyContent: 'center' }}
-                  >
-                    {' '}
-                    <MicroLoader />{' '}
-                  </div>
-                ) : (
-                  <>
+          <div className='speed-overall-parent'>
+            {/* // graphs.map((graph, index) => ( */}
+            <div className="table">
+              {metrics?.map((table, index) => (
+                <div
+                  key={index}
+                  className="report-table"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: 30,
+                    height:300
+                  }}
+                >
+                  <div className='test'>
                     <TableCustom
-                      middleName={graph}
-                      data={metricData[graph]?.tableData}
+                      middleName={table}
+                      data={metricData[table]?.tableData}
                       setData={setData}
                     />
-                    <div className="main-graph" style={stylesGraph}>
-                      <h3 style={{ textAlign: 'center' }}>{graph}</h3>
-                      <LineGraph 
-                        batteryData={speedSummaryData?.data['Sale To Battery']} 
-                        installData={speedSummaryData?.data['Sale To Install']} 
-                        mpuData={speedSummaryData?.data['Sale To MPU']} 
-                      />
-                      <p className="chart-info-report">Week</p>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
+                  </div>
+
+                </div>
+              ))}
+            </div>
+
+            <div className="main-graph" style={stylesGraph}>
+              {/* <h3 style={{ textAlign: 'center' }}>{graph}</h3> */}
+              <LineGraph
+                batteryData={speedSummaryData?.data['Sale To Battery']}
+                installData={speedSummaryData?.data['Sale To Install']}
+                mpuData={speedSummaryData?.data['Sale To MPU']}
+              />
+              <p className="chart-info-report">Week</p>
+            </div>
           </div>
           //   ))
         )}
