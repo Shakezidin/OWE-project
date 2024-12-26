@@ -22,6 +22,9 @@ const TableCustom = ({
     setReverse(!reverse);
   };
 
+  const total = (data || []).reduce((acc: number, row: any) => acc + (Number(row.column2) || 0), 0);
+
+
   return (
     <div className="grey-table-main-container">
       {reportType?.label ? (
@@ -64,7 +67,7 @@ const TableCustom = ({
           <tfoot>
             <tr>
               <th>Grand Total</th>
-              <th>0</th>
+              <th>{Number(total.toFixed(2))}</th>
             </tr>
           </tfoot>
         </table>

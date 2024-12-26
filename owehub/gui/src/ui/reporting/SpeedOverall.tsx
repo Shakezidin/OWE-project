@@ -628,6 +628,8 @@ const SpeedOverall: React.FC = () => {
     }
   };
 
+  console.log(graphs, 'Graph Data'); // Log the graph data to check its structure
+
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
@@ -722,7 +724,11 @@ const SpeedOverall: React.FC = () => {
                     />
                     <div className="main-graph" style={stylesGraph}>
                       <h3 style={{ textAlign: 'center' }}>{graph}</h3>
-                      <LineGraph />
+                      <LineGraph 
+                        batteryData={speedSummaryData?.data['Sale To Battery']} 
+                        installData={speedSummaryData?.data['Sale To Install']} 
+                        mpuData={speedSummaryData?.data['Sale To MPU']} 
+                      />
                       <p className="chart-info-report">Week</p>
                     </div>
                   </>
