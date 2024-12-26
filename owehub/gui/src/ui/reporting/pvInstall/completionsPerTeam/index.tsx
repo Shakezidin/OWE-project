@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Table } from 'antd';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 import YearSelect from '../../components/Dropdowns/YearSelect';
 import WeekSelect from '../../components/Dropdowns/WeekSelect';
 import DaySelect from '../../components/Dropdowns/DaySelect';
@@ -8,104 +19,103 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import CompanySelect from '../../components/Dropdowns/CompanySelect';
 import BackButtom from '../../components/BackButtom';
 
-
 // Add new color constants for AZTEM and AZTUC teams
 const AZTEM_COLORS = {
-  'AZTEM01': '#9ECA3B', // Light green
-  'AZTEM02': '#4CAF50', // Green
-  'AZTEM03': '#795548', // Brown
-  'AZTEM04': '#2196F3', // Blue
-  'AZTEM05': '#FFC107', // Yellow
-  'AZTEM06': '#8BC34A', // Light green
-  'AZTEM07': '#009688', // Teal
-  'AZTEM08': '#00BCD4', // Cyan
-  'AZTEM09': '#E91E63', // Pink
-  'AZTEM10': '#FF5722'  // Deep orange
+  AZTEM01: '#9ECA3B', // Light green
+  AZTEM02: '#4CAF50', // Green
+  AZTEM03: '#795548', // Brown
+  AZTEM04: '#2196F3', // Blue
+  AZTEM05: '#FFC107', // Yellow
+  AZTEM06: '#8BC34A', // Light green
+  AZTEM07: '#009688', // Teal
+  AZTEM08: '#00BCD4', // Cyan
+  AZTEM09: '#E91E63', // Pink
+  AZTEM10: '#FF5722', // Deep orange
 };
 
 const AZTUC_COLORS = {
-  'AZTUC01': '#CDDC39', // Lime
-  'AZTUC02': '#4CAF50', // Green
-  'AZTUC03': '#795548', // Brown
-  'AZTUC04': '#2196F3', // Blue
-  'AZTUC05': '#FFC107'  // Yellow
+  AZTUC01: '#CDDC39', // Lime
+  AZTUC02: '#4CAF50', // Green
+  AZTUC03: '#795548', // Brown
+  AZTUC04: '#2196F3', // Blue
+  AZTUC05: '#FFC107', // Yellow
 };
 
 // Update AZPEO colors to match the image
 const AZPEO_COLORS = {
-  'AZPEO01': '#E2E535', // Light yellow
-  'AZPEO02': '#90EE90', // Light green
-  'AZPEO03': '#87CEEB', // Sky blue
-  'AZPEO04': '#4169E1', // Royal blue
-  'AZPEO05': '#FFD700', // Gold
-  'AZPEO06': '#228B22', // Forest green
-  'AZPEO07': '#32CD32', // Lime green
-  'AZPEO08': '#20B2AA', // Light sea green
-  'AZPEO09': '#FF6B6B', // Light red
-  'AZPEO10': '#FF8C00', // Dark orange
-  'AZPEO11': '#FF69B4', // Hot pink
-  'AZPEO12': '#98FB98', // Pale green
-  'AZPEO13': '#9370DB', // Medium purple
-  'AZPEO14': '#CD853F', // Peru
-  'AZPEO15': '#4682B4'  // Steel blue
+  AZPEO01: '#E2E535', // Light yellow
+  AZPEO02: '#90EE90', // Light green
+  AZPEO03: '#87CEEB', // Sky blue
+  AZPEO04: '#4169E1', // Royal blue
+  AZPEO05: '#FFD700', // Gold
+  AZPEO06: '#228B22', // Forest green
+  AZPEO07: '#32CD32', // Lime green
+  AZPEO08: '#20B2AA', // Light sea green
+  AZPEO09: '#FF6B6B', // Light red
+  AZPEO10: '#FF8C00', // Dark orange
+  AZPEO11: '#FF69B4', // Hot pink
+  AZPEO12: '#98FB98', // Pale green
+  AZPEO13: '#9370DB', // Medium purple
+  AZPEO14: '#CD853F', // Peru
+  AZPEO15: '#4682B4', // Steel blue
 };
 // Generate sample data for AZPEO chart (weeks 1-52)
 const azpeoData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'AZPEO01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
-  'AZPEO02': Math.floor(Math.random() * 100) + 1,
-  'AZPEO03': Math.floor(Math.random() * 100) + 1,
-  'AZPEO04': Math.floor(Math.random() * 100) + 1,
-  'AZPEO05': Math.floor(Math.random() * 100) + 1,
-  'AZPEO06': Math.floor(Math.random() * 100) + 1,
-  'AZPEO07': Math.floor(Math.random() * 100) + 1,
-  'AZPEO08': Math.floor(Math.random() * 100) + 1,
-  'AZPEO09': Math.floor(Math.random() * 100) + 1,
-  'AZPEO10': Math.floor(Math.random() * 100) + 1,
-  'AZPEO11': Math.floor(Math.random() * 100) + 1,
-  'AZPEO12': Math.floor(Math.random() * 100) + 1,
-  'AZPEO13': Math.floor(Math.random() * 100) + 1,
-  'AZPEO14': Math.floor(Math.random() * 100) + 1,
-  'AZPEO15': Math.floor(Math.random() * 100) + 1,
+  AZPEO01: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  AZPEO02: Math.floor(Math.random() * 100) + 1,
+  AZPEO03: Math.floor(Math.random() * 100) + 1,
+  AZPEO04: Math.floor(Math.random() * 100) + 1,
+  AZPEO05: Math.floor(Math.random() * 100) + 1,
+  AZPEO06: Math.floor(Math.random() * 100) + 1,
+  AZPEO07: Math.floor(Math.random() * 100) + 1,
+  AZPEO08: Math.floor(Math.random() * 100) + 1,
+  AZPEO09: Math.floor(Math.random() * 100) + 1,
+  AZPEO10: Math.floor(Math.random() * 100) + 1,
+  AZPEO11: Math.floor(Math.random() * 100) + 1,
+  AZPEO12: Math.floor(Math.random() * 100) + 1,
+  AZPEO13: Math.floor(Math.random() * 100) + 1,
+  AZPEO14: Math.floor(Math.random() * 100) + 1,
+  AZPEO15: Math.floor(Math.random() * 100) + 1,
 }));
 
 // Generate sample data for AZTEM chart (weeks 1-52)
 const aztemData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'AZTEM01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
-  'AZTEM02': Math.floor(Math.random() * 100) + 1,
-  'AZTEM03': Math.floor(Math.random() * 100) + 1,
-  'AZTEM04': Math.floor(Math.random() * 100) + 1,
-  'AZTEM05': Math.floor(Math.random() * 100) + 1,
-  'AZTEM06': Math.floor(Math.random() * 100) + 1,
-  'AZTEM07': Math.floor(Math.random() * 100) + 1,
-  'AZTEM08': Math.floor(Math.random() * 100) + 1,
-  'AZTEM09': Math.floor(Math.random() * 100) + 1,
-  'AZTEM10': Math.floor(Math.random() * 100) + 1,
+  AZTEM01: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  AZTEM02: Math.floor(Math.random() * 100) + 1,
+  AZTEM03: Math.floor(Math.random() * 100) + 1,
+  AZTEM04: Math.floor(Math.random() * 100) + 1,
+  AZTEM05: Math.floor(Math.random() * 100) + 1,
+  AZTEM06: Math.floor(Math.random() * 100) + 1,
+  AZTEM07: Math.floor(Math.random() * 100) + 1,
+  AZTEM08: Math.floor(Math.random() * 100) + 1,
+  AZTEM09: Math.floor(Math.random() * 100) + 1,
+  AZTEM10: Math.floor(Math.random() * 100) + 1,
 }));
 
 // Generate sample data for AZTUC chart (weeks 1-52)
 const aztucData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'AZTUC01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
-  'AZTUC02': Math.floor(Math.random() * 100) + 1,
-  'AZTUC03': Math.floor(Math.random() * 100) + 1,
-  'AZTUC04': Math.floor(Math.random() * 100) + 1,
-  'AZTUC05': Math.floor(Math.random() * 100) + 1,
+  AZTUC01: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  AZTUC02: Math.floor(Math.random() * 100) + 1,
+  AZTUC03: Math.floor(Math.random() * 100) + 1,
+  AZTUC04: Math.floor(Math.random() * 100) + 1,
+  AZTUC05: Math.floor(Math.random() * 100) + 1,
 }));
 
 // Update CODEN colors to match the image (approximate) - Same as before
 const CODEN_COLORS = {
-  'CODENON': '#1f77b4', // Blue
-  'CODENOT': '#ff7f0e', // Orange
-  'CODENG': '#2ca02c', // Green
-  'CODENST': '#d62728', // Red
-  'CODENOS': '#9467bd', // Purple
-  'CODENDR': '#8c564b', // Brown
-  'CODENDL': '#e377c2', // Pink
-  'CODENGS': '#7f7f7f', // Gray
-  'CODENDS': '#bcbd22', // Olive/Lime
-  'CODENDE': '#17becf'  // Cyan
+  CODENON: '#1f77b4', // Blue
+  CODENOT: '#ff7f0e', // Orange
+  CODENG: '#2ca02c', // Green
+  CODENST: '#d62728', // Red
+  CODENOS: '#9467bd', // Purple
+  CODENDR: '#8c564b', // Brown
+  CODENDL: '#e377c2', // Pink
+  CODENGS: '#7f7f7f', // Gray
+  CODENDS: '#bcbd22', // Olive/Lime
+  CODENDE: '#17becf', // Cyan
 };
 
 // Generate sample data for CODEN chart (weeks 1-52) - DYNAMIC
@@ -125,13 +135,13 @@ const codenData = Array.from({ length: 52 }, (_, i) => ({
 
 // Update COGJT colors to match the image (approximate) - Same as before
 const COGJT_COLORS = {
-  'COGITOT': '#1f77b4', // Blue
-  'COGITO1': '#ff7f0e', // Orange
-  'ODGJTEI': '#2ca02c', // Green
-  'COGITOZ': '#d62728', // Red
-  'COGITOO': '#9467bd', // Purple
-  'COGITOR': '#8c564b', // Brown
-  'NMARGOT': '#e377c2'  // Pink
+  COGITOT: '#1f77b4', // Blue
+  COGITO1: '#ff7f0e', // Orange
+  ODGJTEI: '#2ca02c', // Green
+  COGITOZ: '#d62728', // Red
+  COGITOO: '#9467bd', // Purple
+  COGITOR: '#8c564b', // Brown
+  NMARGOT: '#e377c2', // Pink
 };
 
 // Generate sample data for COGJT chart (weeks 1-52) - DYNAMIC
@@ -147,59 +157,59 @@ const cogjtData = Array.from({ length: 52 }, (_, i) => ({
 }));
 
 const NMABQ_COLORS = {
-  'NMABQ01': '#FFD700', // Gold
-  'NMABQ02': '#90EE90', // Light green
-  'NMABQ03': '#87CEEB', // Sky blue
-  'NMABQ04': '#FF69B4', // Hot pink
-  'NMABQ05': '#9370DB', // Medium purple
-  'NMABQ06': '#20B2AA', // Light sea green
-  'NMABQ07': '#FF8C00', // Dark orange
-  'NMABQ08': '#98FB98', // Pale green
-  'NMABQ09': '#CD853F', // Peru
-  'NMABQ10': '#4682B4'  // Steel blue
+  NMABQ01: '#FFD700', // Gold
+  NMABQ02: '#90EE90', // Light green
+  NMABQ03: '#87CEEB', // Sky blue
+  NMABQ04: '#FF69B4', // Hot pink
+  NMABQ05: '#9370DB', // Medium purple
+  NMABQ06: '#20B2AA', // Light sea green
+  NMABQ07: '#FF8C00', // Dark orange
+  NMABQ08: '#98FB98', // Pale green
+  NMABQ09: '#CD853F', // Peru
+  NMABQ10: '#4682B4', // Steel blue
 };
 
 const TXDAL_COLORS = {
-  'TXDAL01': '#1f77b4', // Blue
-  'TXDAL02': '#2ca02c', // Green
-  'TXDAL03': '#ff7f0e', // Orange
-  'TXSAN01': '#d62728'  // Red
+  TXDAL01: '#1f77b4', // Blue
+  TXDAL02: '#2ca02c', // Green
+  TXDAL03: '#ff7f0e', // Orange
+  TXSAN01: '#d62728', // Red
 };
 
 const TXELP_COLORS = {
-  'TXELP01': '#FFD700', // Gold
-  'TXELP02': '#32CD32'  // Lime green
+  TXELP01: '#FFD700', // Gold
+  TXELP02: '#32CD32', // Lime green
 };
 
 // Generate sample data for NMABQ chart (weeks 1-52)
 const nmabqData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'NMABQ01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
-  'NMABQ02': Math.floor(Math.random() * 100) + 1,
-  'NMABQ03': Math.floor(Math.random() * 100) + 1,
-  'NMABQ04': Math.floor(Math.random() * 100) + 1,
-  'NMABQ05': Math.floor(Math.random() * 100) + 1,
-  'NMABQ06': Math.floor(Math.random() * 100) + 1,
-  'NMABQ07': Math.floor(Math.random() * 100) + 1,
-  'NMABQ08': Math.floor(Math.random() * 100) + 1,
-  'NMABQ09': Math.floor(Math.random() * 100) + 1,
-  'NMABQ10': Math.floor(Math.random() * 100) + 1,
+  NMABQ01: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  NMABQ02: Math.floor(Math.random() * 100) + 1,
+  NMABQ03: Math.floor(Math.random() * 100) + 1,
+  NMABQ04: Math.floor(Math.random() * 100) + 1,
+  NMABQ05: Math.floor(Math.random() * 100) + 1,
+  NMABQ06: Math.floor(Math.random() * 100) + 1,
+  NMABQ07: Math.floor(Math.random() * 100) + 1,
+  NMABQ08: Math.floor(Math.random() * 100) + 1,
+  NMABQ09: Math.floor(Math.random() * 100) + 1,
+  NMABQ10: Math.floor(Math.random() * 100) + 1,
 }));
 
 // Generate sample data for TXDAL chart (weeks 1-52)
 const txdalData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'TXDAL01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
-  'TXDAL02': Math.floor(Math.random() * 100) + 1,
-  'TXDAL03': Math.floor(Math.random() * 100) + 1,
-  'TXDAL04': Math.floor(Math.random() * 100) + 1,
+  TXDAL01: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  TXDAL02: Math.floor(Math.random() * 100) + 1,
+  TXDAL03: Math.floor(Math.random() * 100) + 1,
+  TXDAL04: Math.floor(Math.random() * 100) + 1,
 }));
 
 // Generate sample data for TXELP chart (weeks 1-52)
 const txelData = Array.from({ length: 52 }, (_, i) => ({
   week: `Week ${i + 1}`,
-  'TXELP01': Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
-  'TXELP02': Math.floor(Math.random() * 100) + 1,
+  TXELP01: Math.floor(Math.random() * 100) + 1, // Generate random integer between 1 and 100
+  TXELP02: Math.floor(Math.random() * 100) + 1,
 }));
 
 interface Option {
@@ -208,13 +218,10 @@ interface Option {
 }
 
 const CompletionsPerTeams: React.FC = () => {
-  const [reportType, setReportType] = useState<Option>(
-    {
-      label: 'Install',
-      value: 'install',
-    }
-  );
-
+  const [reportType, setReportType] = useState<Option>({
+    label: 'Install',
+    value: 'install',
+  });
 
   // Real data for the count table
   const countTableData = [
@@ -330,8 +337,10 @@ const CompletionsPerTeams: React.FC = () => {
   ];
 
   // Calculate average system size data
-  const averageSizeTableData = systemSizeTableData.map(sizeRow => {
-    const countRow = countTableData.find(count => count.team === sizeRow.team);
+  const averageSizeTableData = systemSizeTableData.map((sizeRow) => {
+    const countRow = countTableData.find(
+      (count) => count.team === sizeRow.team
+    );
     return {
       key: sizeRow.key,
       year: sizeRow.year,
@@ -340,9 +349,10 @@ const CompletionsPerTeams: React.FC = () => {
         const count = countRow?.weeks[index] || 0;
         return count === 0 ? 0 : size / count;
       }),
-      grandTotal: (!countRow || countRow.grandTotal === 0)
-        ? 0
-        : sizeRow.grandTotal / countRow.grandTotal
+      grandTotal:
+        !countRow || countRow.grandTotal === 0
+          ? 0
+          : sizeRow.grandTotal / countRow.grandTotal,
     };
   });
 
@@ -352,7 +362,12 @@ const CompletionsPerTeams: React.FC = () => {
       title: 'Year',
       dataIndex: 'year',
       key: 'year',
-      render: (text: string) => text === 'Grand total' ? <span className="font-bold">{text}</span> : text
+      render: (text: string) =>
+        text === 'Grand total' ? (
+          <span className="font-bold">{text}</span>
+        ) : (
+          text
+        ),
     },
     { title: 'Related Team', dataIndex: 'team', key: 'team' }, // Change 'Office' to 'Related Team'
     ...Array.from({ length: 7 }, (_, i) => ({
@@ -360,9 +375,10 @@ const CompletionsPerTeams: React.FC = () => {
       dataIndex: 'weeks',
       key: `week${i}`,
       render: (weeks: any) => {
-        const value = typeof weeks[i] === 'number' ? formatNumber(weeks[i]) : weeks[i];
+        const value =
+          typeof weeks[i] === 'number' ? formatNumber(weeks[i]) : weeks[i];
         return value || '0.00';
-      }
+      },
     })),
     {
       title: 'Grand Total',
@@ -373,8 +389,8 @@ const CompletionsPerTeams: React.FC = () => {
           return value;
         }
         return <span className="font-bold">{formatNumber(value)}</span>;
-      }
-    }
+      },
+    },
   ];
 
   const countColumns = [
@@ -390,7 +406,9 @@ const CompletionsPerTeams: React.FC = () => {
       title: 'Grand Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value: any) => <span className="font-bold">{value.toLocaleString()}</span>,
+      render: (value: any) => (
+        <span className="font-bold">{value.toLocaleString()}</span>
+      ),
     },
   ];
   // Column configurations for the system size table
@@ -401,14 +419,18 @@ const CompletionsPerTeams: React.FC = () => {
       title: `Week ${i + 1}`,
       dataIndex: 'weeks',
       key: `week${i}`,
-      render: (weeks: any) => weeks[i]?.toFixed(2) || '0.00'
+      render: (weeks: any) => weeks[i]?.toFixed(2) || '0.00',
     })),
     {
       title: <span className="font-bold">Grand Total</span>,
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: (value: any) => <span className="font-bold">{typeof value === 'number' ? value.toFixed(2) : value}</span>
-    }
+      render: (value: any) => (
+        <span className="font-bold">
+          {typeof value === 'number' ? value.toFixed(2) : value}
+        </span>
+      ),
+    },
   ];
 
   // Add a function to calculate grand totals
@@ -416,7 +438,7 @@ const CompletionsPerTeams: React.FC = () => {
     const weekTotals = Array(7).fill(0);
     let grandTotal = 0;
 
-    data.forEach(row => {
+    data.forEach((row) => {
       row.weeks.forEach((val: number, idx: number) => {
         weekTotals[idx] += val;
       });
@@ -428,7 +450,7 @@ const CompletionsPerTeams: React.FC = () => {
       year: <span className="font-bold">Grand total</span>,
       office: '',
       weeks: weekTotals,
-      grandTotal: grandTotal
+      grandTotal: grandTotal,
     };
   };
 
@@ -437,7 +459,7 @@ const CompletionsPerTeams: React.FC = () => {
     const weekTotals = Array(7).fill(0);
     let grandTotal = 0;
 
-    data.forEach(row => {
+    data.forEach((row) => {
       row.weeks.forEach((val: number, idx: number) => {
         weekTotals[idx] += val;
       });
@@ -448,8 +470,8 @@ const CompletionsPerTeams: React.FC = () => {
       key: 'grand-total',
       year: <span className="font-bold">Grand total</span>,
       office: '',
-      weeks: weekTotals.map(val => val || '-'),
-      grandTotal: <span className="font-bold">{grandTotal.toFixed(2)}</span>  // Using toFixed(2) for system size values
+      weeks: weekTotals.map((val) => val || '-'),
+      grandTotal: <span className="font-bold">{grandTotal.toFixed(2)}</span>, // Using toFixed(2) for system size values
     };
   };
 
@@ -465,7 +487,7 @@ const CompletionsPerTeams: React.FC = () => {
     let weekCounts = Array(7).fill(0);
     let totalCount = 0;
 
-    data.forEach(row => {
+    data.forEach((row) => {
       row.weeks.forEach((val: number, idx: number) => {
         if (val > 0) {
           weekTotals[idx] += val;
@@ -486,10 +508,12 @@ const CompletionsPerTeams: React.FC = () => {
       key: 'grand-total',
       year: <span className="font-bold">Grand total</span>,
       office: '',
-      weeks: averageWeeks.map(val => formatNumber(val)),
-      grandTotal: <span className="font-bold">
-        {formatNumber(totalCount > 0 ? overallTotal / totalCount : 0)}
-      </span>
+      weeks: averageWeeks.map((val) => formatNumber(val)),
+      grandTotal: (
+        <span className="font-bold">
+          {formatNumber(totalCount > 0 ? overallTotal / totalCount : 0)}
+        </span>
+      ),
     };
   };
 
@@ -499,14 +523,20 @@ const CompletionsPerTeams: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p2">
+    <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-      <BackButtom heading="PV Install Completions (Team)" />
+        <BackButtom heading="PV Install Completions (Team)" />
         {/* <h4 className="reports-title">PV Install Completions (Team)</h4> */}
         <div className="report-header-dropdown flex-wrap">
-          <div><YearSelect /></div>
-          <div><WeekSelect /></div>
-          <div><DaySelect /></div>
+          <div>
+            <YearSelect />
+          </div>
+          <div>
+            <WeekSelect />
+          </div>
+          <div>
+            <DaySelect />
+          </div>
           <div>
             <SelectOption
               options={[
@@ -542,323 +572,418 @@ const CompletionsPerTeams: React.FC = () => {
               singleValueStyles={{ fontWeight: 400 }}
             />
           </div>
-          <div><CompanySelect /></div>
+          <div>
+            <CompanySelect />
+          </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p2">
-        <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by Count</h3>
-        <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
-        <Table
-          columns={countColumns}
-          dataSource={[...countTableData, calculateGrandTotals(countTableData)]}
-          pagination={false}
-          className="install-table"
-          sticky={false}
-        />
-      </div>
+      <div className="reports-yscroll">
+        <div className="bg-white rounded-lg shadow p2">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Office by Count
+          </h3>
+          <div
+            className="flex justify-end h5 bold pr3"
+            style={{ background: '#f0f4c3' }}
+            title="Week / Customer"
+          >
+            Week / Customer
+          </div>
+          <Table
+            columns={countColumns}
+            dataSource={[
+              ...countTableData,
+              calculateGrandTotals(countTableData),
+            ]}
+            pagination={false}
+            className="install-table"
+            sticky={false}
+          />
+        </div>
 
-      <div className="bg-white rounded-lg shadow p2">
-        <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size</h3>
-        <div className="flex justify-end h5 bold pr3" style={{ background: "#b2ebf2" }} title="Week / Customer">Week / System Size </div>
-        <Table
-          columns={systemSizeColumns}
-          dataSource={[...systemSizeTableData.map(row => ({
-            ...row,
-            grandTotal: <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
-          })), calculateSystemSizeGrandTotals(systemSizeTableData)]}
-          pagination={false}
-          className="install-table"
-        />
-      </div>
+        <div className="bg-white rounded-lg shadow p2">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Office by System Size
+          </h3>
+          <div
+            className="flex justify-end h5 bold pr3"
+            style={{ background: '#b2ebf2' }}
+            title="Week / Customer"
+          >
+            Week / System Size{' '}
+          </div>
+          <Table
+            columns={systemSizeColumns}
+            dataSource={[
+              ...systemSizeTableData.map((row) => ({
+                ...row,
+                grandTotal: (
+                  <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
+                ),
+              })),
+              calculateSystemSizeGrandTotals(systemSizeTableData),
+            ]}
+            pagination={false}
+            className="install-table"
+          />
+        </div>
 
-      <div className="bg-white rounded-lg shadow p2">
-        <h3 className="text-lg font-semibold mb-4">Installs Completed per Office by System Size (Average kW)</h3>
-        <div className="flex justify-end h5 bold pr3" style={{ background: "#f0f4c3" }} title="Week / Customer">Week / Customer</div>
-        <Table
-          columns={averageSizeColumns}
-          dataSource={[...averageSizeTableData, calculateAverageSizeGrandTotals(averageSizeTableData)]}
-          pagination={false}
-          className="install-table"
-        />
-      </div>
+        <div className="bg-white rounded-lg shadow p2">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Office by System Size (Average kW)
+          </h3>
+          <div
+            className="flex justify-end h5 bold pr3"
+            style={{ background: '#f0f4c3' }}
+            title="Week / Customer"
+          >
+            Week / Customer
+          </div>
+          <Table
+            columns={averageSizeColumns}
+            dataSource={[
+              ...averageSizeTableData,
+              calculateAverageSizeGrandTotals(averageSizeTableData),
+            ]}
+            pagination={false}
+            className="install-table"
+          />
+        </div>
 
-      {/* AZPEO Chart */}
-      <div className="bg-white rounded-lg shadow p2 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - AZPEO
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={azpeoData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 150]} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(AZPEO_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={AZPEO_COLORS[team as keyof typeof AZPEO_COLORS]}
+        {/* AZPEO Chart */}
+        <div className="bg-white rounded-lg shadow p2 mb-6">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - AZPEO
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={azpeoData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* AZTEM Chart */}
-      <div className="bg-white rounded-lg shadow p2 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - AZTEM
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={aztemData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 125]} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(AZTEM_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={AZTEM_COLORS[team as keyof typeof AZTEM_COLORS]}
+              <YAxis domain={[0, 150]} tick={{ fontSize: 10, fill: '#555' }} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              {Object.keys(AZPEO_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={AZPEO_COLORS[team as keyof typeof AZPEO_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* AZTUC Chart */}
-      <div className="bg-white rounded-lg shadow p2 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - AZTUC
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={aztucData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 50]} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(AZTUC_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={AZTUC_COLORS[team as keyof typeof AZTUC_COLORS]}
+        {/* AZTEM Chart */}
+        <div className="bg-white rounded-lg shadow p2 mb-6">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - AZTEM
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={aztemData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              <YAxis domain={[0, 125]} tick={{ fontSize: 10, fill: '#555' }} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(AZTEM_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={AZTEM_COLORS[team as keyof typeof AZTEM_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* CODEN Chart */}
-      <div className="bg-white rounded-lg shadow p2 mb-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - CODEN
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={codenData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(CODEN_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={CODEN_COLORS[team as keyof typeof CODEN_COLORS]}
+        {/* AZTUC Chart */}
+        <div className="bg-white rounded-lg shadow p2 mb-6">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - AZTUC
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={aztucData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              <YAxis domain={[0, 50]} tick={{ fontSize: 10, fill: '#555' }} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(AZTUC_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={AZTUC_COLORS[team as keyof typeof AZTUC_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* COGJT Chart */}
-      <div className="bg-white rounded-lg shadow p2"> {/* Removed mb-6 from the last chart */}
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - COGJT
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={cogjtData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(COGJT_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={COGJT_COLORS[team as keyof typeof COGJT_COLORS]}
+        {/* CODEN Chart */}
+        <div className="bg-white rounded-lg shadow p2 mb-6">
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - CODEN
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={codenData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              <YAxis
+                domain={[0, 'dataMax + 10']}
+                tick={{ fontSize: 10, fill: '#555' }}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(CODEN_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={CODEN_COLORS[team as keyof typeof CODEN_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* nmabq Chart */}
-      <div className="bg-white rounded-lg shadow p2"> {/* Removed mb-6 from the last chart */}
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - NMABQ
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={nmabqData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(NMABQ_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={NMABQ_COLORS[team as keyof typeof NMABQ_COLORS]}
+        {/* COGJT Chart */}
+        <div className="bg-white rounded-lg shadow p2">
+          {' '}
+          {/* Removed mb-6 from the last chart */}
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - COGJT
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={cogjtData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              <YAxis
+                domain={[0, 'dataMax + 10']}
+                tick={{ fontSize: 10, fill: '#555' }}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(COGJT_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={COGJT_COLORS[team as keyof typeof COGJT_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      <div className="bg-white rounded-lg shadow p2"> {/* Removed mb-6 from the last chart */}
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - TXDAL, TXSAN
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={txdalData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(TXDAL_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={TXDAL_COLORS[team as keyof typeof TXDAL_COLORS]}
+        {/* nmabq Chart */}
+        <div className="bg-white rounded-lg shadow p2">
+          {' '}
+          {/* Removed mb-6 from the last chart */}
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - NMABQ
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={nmabqData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              <YAxis
+                domain={[0, 'dataMax + 10']}
+                tick={{ fontSize: 10, fill: '#555' }}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(NMABQ_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={NMABQ_COLORS[team as keyof typeof NMABQ_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      <div className="bg-white rounded-lg shadow p2"> {/* Removed mb-6 from the last chart */}
-        <h3 className="text-lg font-semibold mb-4">
-          Installs Completed per Team by System Size (Average kW) - TXELP
-        </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={txelData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="week"
-              tick={{
-                fontSize: 10,
-                fill: '#555'
-              }}
-              angle={-45}
-              dy={20}
-              dx={-8}
-              interval={0}
-              height={60}
-            />
-            <YAxis domain={[0, 'dataMax + 10']} tick={{ fontSize: 10, fill: '#555' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="top" height={32} wrapperStyle={{ gap: 20, fontSize: 10 }} />
-            {Object.keys(TXELP_COLORS).map((team) => (
-              <Bar
-                key={team}
-                dataKey={team}
-                stackId="a"
-                fill={TXELP_COLORS[team as keyof typeof TXELP_COLORS]}
+        <div className="bg-white rounded-lg shadow p2">
+          {' '}
+          {/* Removed mb-6 from the last chart */}
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - TXDAL,
+            TXSAN
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={txdalData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+              <YAxis
+                domain={[0, 'dataMax + 10']}
+                tick={{ fontSize: 10, fill: '#555' }}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(TXDAL_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={TXDAL_COLORS[team as keyof typeof TXDAL_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p2">
+          {' '}
+          {/* Removed mb-6 from the last chart */}
+          <h3 className="text-lg font-semibold mb-4">
+            Installs Completed per Team by System Size (Average kW) - TXELP
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={txelData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="week"
+                tick={{
+                  fontSize: 10,
+                  fill: '#555',
+                }}
+                angle={-45}
+                dy={20}
+                dx={-8}
+                interval={0}
+                height={60}
+              />
+              <YAxis
+                domain={[0, 'dataMax + 10']}
+                tick={{ fontSize: 10, fill: '#555' }}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                verticalAlign="top"
+                height={32}
+                wrapperStyle={{ gap: 20, fontSize: 10 }}
+              />
+              {Object.keys(TXELP_COLORS).map((team) => (
+                <Bar
+                  key={team}
+                  dataKey={team}
+                  stackId="a"
+                  fill={TXELP_COLORS[team as keyof typeof TXELP_COLORS]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

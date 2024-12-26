@@ -33,7 +33,6 @@ interface Option {
   label: string;
 }
 
-
 interface SubReport {
   sub_report_name: string;
   table_data: {
@@ -45,9 +44,6 @@ interface SubReport {
     [key: string]: number;
   }[];
 }
-
-
-
 
 const Production: React.FC = () => {
   const [graphs, setGraphs] = useState<GraphProps[]>([
@@ -87,7 +83,6 @@ const Production: React.FC = () => {
       value,
       label: value,
     }));
-
 
   const [data, setData] = useState([
     { column1: 'Tucson', column2: '0' },
@@ -184,7 +179,7 @@ const Production: React.FC = () => {
     height: '286px',
     marginBottom: '-41px',
     boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-    border: "1px solid rgba(0, 0, 0, 0.1)"
+    border: '1px solid rgba(0, 0, 0, 0.1)',
   };
 
   //////////////////////
@@ -209,25 +204,27 @@ const Production: React.FC = () => {
   };
 
   const [selectedOffices, setSelectedOffices] = useState<string[]>(['Tucson']);
-  
-
 
   const [subReports, setSubReports] = useState<SubReport[]>([]);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await reportingCaller(
-          'get_productionsummaryreport',
-          {
-            "year": parseInt(selectedYear.value),
-            "report_type": reportType.value,
-            "office": ["TXHOUS01", "AZTEM01", "TXDAL01", "NMABQ01", "COGJT1", "CODEN1"]
-          }
-        );
+        const response = await reportingCaller('get_productionsummaryreport', {
+          year: parseInt(selectedYear.value),
+          report_type: reportType.value,
+          office: [
+            'TXHOUS01',
+            'AZTEM01',
+            'TXDAL01',
+            'NMABQ01',
+            'COGJT1',
+            'CODEN1',
+          ],
+        });
 
         if (response.status === 200) {
           setSubReports(response.data.sub_reports);
@@ -244,9 +241,6 @@ const Production: React.FC = () => {
     };
     fetchData();
   }, [selectedYear, reportType]);
-
-
-
 
   return (
     <div className="total-main-container">
@@ -290,7 +284,9 @@ const Production: React.FC = () => {
             />
           </div>
           <div>
-            <CompanySelect onOfficeChange={(values) => setSelectedOffices(values)}/>
+            <CompanySelect
+              onOfficeChange={(values) => setSelectedOffices(values)}
+            />
           </div>
           <div>
             <YearSelect value={selectedYear} onChange={handleYearChange} />
@@ -300,180 +296,189 @@ const Production: React.FC = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          background: '#ddd',
-          height: 50,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5,
-          width: '100%',
-          margin: '10px 0',
-        }}
-      >
-        {reportType.label}
+      <div className="reports-yscroll">
+        <div
+          style={{
+            background: '#ddd',
+            height: 50,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 5,
+            width: '100%',
+            margin: '10px 0',
+          }}
+        >
+          {reportType.label}
+        </div>
+
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <MicroLoader />
+          </div>
+        ) : subReports ? (
+          <>
+            <div className="report-graphs">
+              {subReports &&
+                subReports
+                  .filter(
+                    (subReport) =>
+                      subReport.sub_report_name ===
+                        'Install Scheduled - Day 1' ||
+                      subReport.sub_report_name ===
+                        'Install Scheduled - Day 2' ||
+                      subReport.sub_report_name ===
+                        'Install Scheduled - Day 3' ||
+                      subReport.sub_report_name === 'Install Fix Scheduled'
+                  )
+                  .map((subReport, index) => (
+                    <div
+                      key={index}
+                      className="report-graph"
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: 50,
+                        gap: '16px',
+                      }}
+                    >
+                      {false ? (
+                        <div
+                          className="flex items-center"
+                          style={{
+                            justifyContent: 'center',
+                            minHeight: '400px',
+                          }}
+                        >
+                          {' '}
+                          <MicroLoader />{' '}
+                        </div>
+                      ) : (
+                        <>
+                          <TableProd1
+                            reportType={reportType}
+                            middleName={subReport.sub_report_name}
+                            data={subReport.table_data}
+                            setData={setData}
+                          />
+                          <div className="main-graph" style={stylesGraph}>
+                            <h3 style={{ textAlign: 'center' }}>
+                              {/* {reportType.label} {graph.title} */}
+                            </h3>
+                            <LineGraphProd data={subReport.chart_data} />
+                            <p className="chart-info-report">Week</p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+            </div>
+
+            <div className="report-graphs">
+              {subReports &&
+                subReports
+                  .filter(
+                    (subReport) =>
+                      subReport.sub_report_name === 'Install Completed' ||
+                      subReport.sub_report_name === 'Install Fix Completed'
+                  )
+                  .map((subReport, index) => (
+                    <div
+                      key={index}
+                      className="report-graph"
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: 50,
+                        gap: '16px',
+                      }}
+                    >
+                      {false ? (
+                        <div
+                          className="flex items-center"
+                          style={{ justifyContent: 'center' }}
+                        >
+                          {' '}
+                          <MicroLoader />{' '}
+                        </div>
+                      ) : (
+                        <>
+                          <MulCol
+                            reportType={reportType}
+                            middleName={subReport.sub_report_name}
+                            data={subReport.table_data}
+                            setData={setData}
+                          />
+                          <div className="main-graph" style={stylesGraph}>
+                            <h3 style={{ textAlign: 'center' }}>
+                              {/* {reportType.label} {graph.title} */}
+                            </h3>
+                            <LineGraphProd data={subReport.chart_data} />
+                            <p className="chart-info-report">Week</p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+            </div>
+
+            <div className="report-graphs">
+              {subReports &&
+                subReports
+                  .filter(
+                    (subReport) =>
+                      subReport.sub_report_name === 'Pending Installs'
+                  )
+                  .map((subReport, index) => (
+                    <div
+                      className="report-graph"
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: 50,
+                        gap: '16px',
+                      }}
+                    >
+                      {false ? (
+                        <div
+                          className="flex items-center"
+                          style={{ justifyContent: 'center' }}
+                        >
+                          {' '}
+                          <MicroLoader />{' '}
+                        </div>
+                      ) : (
+                        <>
+                          <TableProd1
+                            reportType={reportType}
+                            middleName={subReport.sub_report_name}
+                            data={subReport.table_data}
+                            setData={setData}
+                          />
+                          <div
+                            className="main-graph some-margin"
+                            style={stylesGraph}
+                          >
+                            <h3 style={{ textAlign: 'center' }}>
+                              Pending {reportType.label}
+                            </h3>
+                            <ProductionBar data={subReport.chart_data} />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+            </div>
+          </>
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <DataNotFound />
+          </div>
+        )}
       </div>
-
-      {loading ? (
-         <div style={{ display: 'flex', justifyContent: 'center' }}>
-         <MicroLoader />
-       </div>
-      ) : subReports ? (
-        <>
-          <div className="report-graphs">
-            {subReports && subReports
-              .filter(
-                (subReport) =>
-                ((subReport.sub_report_name === 'Install Scheduled - Day 1' ||
-                  subReport.sub_report_name === 'Install Scheduled - Day 2' ||
-                  subReport.sub_report_name === 'Install Scheduled - Day 3' ||
-                  subReport.sub_report_name === 'Install Fix Scheduled')
-                )
-              )
-              .map((subReport, index) => (
-                <div
-                  key={index}
-                  className="report-graph"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 50,
-                    gap:'16px'
-                  }}
-                >
-                  {false ? (
-                    <div
-                      className="flex items-center"
-                      style={{ justifyContent: 'center', minHeight:"400px" }}
-                    >
-                      {' '}
-                      <MicroLoader />{' '}
-                    </div>
-                  ) : (
-                    <>
-
-                      <TableProd1
-                        reportType={reportType}
-                        middleName={subReport.sub_report_name}
-                        data={subReport.table_data}
-                        setData={setData}
-                      />
-                      <div className="main-graph" style={stylesGraph}>
-                        <h3 style={{ textAlign: 'center' }}>
-                          {/* {reportType.label} {graph.title} */}
-
-                        </h3>
-                        <LineGraphProd data={subReport.chart_data} />
-                        <p className="chart-info-report">Week</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-          </div>
-
-          <div className="report-graphs">
-            {subReports && subReports
-              .filter(
-                (subReport) =>
-                ((subReport.sub_report_name === 'Install Completed' ||
-                  subReport.sub_report_name === 'Install Fix Completed')
-                )
-              )
-              .map((subReport, index) => (
-                <div
-                  key={index}
-                  className="report-graph"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 50,
-                    gap:'16px'
-                  }}
-                >
-                  {false ? (
-                    <div
-                      className="flex items-center"
-                      style={{ justifyContent: 'center' }}
-                    >
-                      {' '}
-                      <MicroLoader />{' '}
-                    </div>
-                  ) : (
-                    <>
-
-                      <MulCol
-                        reportType={reportType}
-                        middleName={subReport.sub_report_name}
-                        data={subReport.table_data}
-                        setData={setData}
-                      />
-                      <div className="main-graph" style={stylesGraph}>
-                        <h3 style={{ textAlign: 'center' }}>
-                          {/* {reportType.label} {graph.title} */}
-
-                        </h3>
-                        <LineGraphProd data={subReport.chart_data} />
-                        <p className="chart-info-report">Week</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-          </div>
-
-          <div className="report-graphs">
-            {subReports && subReports
-              .filter(
-                (subReport) =>
-                ((subReport.sub_report_name === 'Pending Installs')
-                )
-              )
-              .map((subReport, index) => (
-                <div
-                  className="report-graph"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 50,
-                    gap:'16px'
-                  }}
-                >
-                  {false ? (
-                    <div
-                      className="flex items-center"
-                      style={{ justifyContent: 'center' }}
-                    >
-                      {' '}
-                      <MicroLoader />{' '}
-                    </div>
-                  ) : (
-                    <>
-                      <TableProd1
-                        reportType={reportType}
-                        middleName={subReport.sub_report_name}
-                        data={subReport.table_data}
-                        setData={setData}
-                      />
-                      <div className="main-graph some-margin" style={stylesGraph}>
-                        <h3 style={{ textAlign: 'center' }}>
-                          Pending {reportType.label}
-                        </h3>
-                        <ProductionBar data={subReport.chart_data} />
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-          </div>
-        </>
-      ) : (
-        <div style={{ display: 'flex', justifyContent: 'center' }}><DataNotFound/></div>
-      )}
     </div>
   );
 };

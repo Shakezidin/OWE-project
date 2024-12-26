@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -10,12 +10,14 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-  LabelList
+  LabelList,
 } from 'recharts';
-import styles from './styles/InstalltoFin.module.css';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getTimelineInstallToFinData } from '../../redux/apiActions/reportingAction/reportingAction';
 import CustomSelect from './components/Dropdowns/CustomSelect';
 import BackButtom from './components/BackButtom';
-import StackedBarChart from './InstallToFIN/StackedBarChart';
+import styles from './styles/InstalltoFin.module.css';
+import MicroLoader from '../components/loader/MicroLoader';
 
 interface LabelProps {
   x: number;
@@ -35,64 +37,113 @@ interface ChartData {
   totalDays: number;
 }
 
+interface Option {
+  value: string;
+  label: string;
+}
+
 const InstalltoFin = () => {
-  const [highlightedLegend, setHighlightedLegend] = useState<string | null>(null);
+  // State Management
+  const [highlightedLegend, setHighlightedLegend] = useState<string | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
-  const data = [
-    { week: 1, low: 10, medium: 5, high: 4, veryHigh: 7, ultraHigh: 10, extreme: 3, totalDays: 39 },
-    { week: 2, low: 12, medium: 6, high: 3, veryHigh: 5, ultraHigh: 11, extreme: 4, totalDays: 41 },
-    { week: 3, low: 15, medium: 8, high: 6, veryHigh: 4, ultraHigh: 9, extreme: 2, totalDays: 44 },
-    { week: 4, low: 11, medium: 9, high: 7, veryHigh: 6, ultraHigh: 8, extreme: 3, totalDays: 44 },
-    { week: 5, low: 13, medium: 7, high: 5, veryHigh: 4, ultraHigh: 10, extreme: 2, totalDays: 41 },
-    { week: 6, low: 14, medium: 6, high: 4, veryHigh: 8, ultraHigh: 9, extreme: 3, totalDays: 44 },
-    { week: 7, low: 9, medium: 12, high: 5, veryHigh: 6, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 8, low: 8, medium: 9, high: 6, veryHigh: 5, ultraHigh: 11, extreme: 4, totalDays: 43 },
-    { week: 9, low: 10, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 10, low: 12, medium: 7, high: 8, veryHigh: 5, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 11, low: 13, medium: 9, high: 6, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 47 },
-    { week: 12, low: 11, medium: 6, high: 5, veryHigh: 8, ultraHigh: 9, extreme: 4, totalDays: 43 },
-    { week: 13, low: 15, medium: 5, high: 4, veryHigh: 7, ultraHigh: 8, extreme: 3, totalDays: 42 },
-    { week: 14, low: 14, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 3, totalDays: 47 },
-    { week: 15, low: 10, medium: 10, high: 6, veryHigh: 5, ultraHigh: 7, extreme: 3, totalDays: 41 },
-    { week: 16, low: 12, medium: 9, high: 5, veryHigh: 4, ultraHigh: 8, extreme: 5, totalDays: 43 },
-    { week: 17, low: 11, medium: 10, high: 7, veryHigh: 6, ultraHigh: 7, extreme: 3, totalDays: 44 },
-    { week: 18, low: 14, medium: 6, high: 8, veryHigh: 5, ultraHigh: 9, extreme: 3, totalDays: 45 },
-    { week: 19, low: 13, medium: 7, high: 6, veryHigh: 5, ultraHigh: 10, extreme: 4, totalDays: 45 },
-    { week: 20, low: 11, medium: 8, high: 7, veryHigh: 6, ultraHigh: 8, extreme: 3, totalDays: 43 },
-    { week: 21, low: 12, medium: 6, high: 5, veryHigh: 9, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 22, low: 15, medium: 9, high: 7, veryHigh: 5, ultraHigh: 6, extreme: 3, totalDays: 45 },
-    { week: 23, low: 10, medium: 10, high: 6, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 45 },
-    { week: 24, low: 9, medium: 7, high: 8, veryHigh: 6, ultraHigh: 9, extreme: 5, totalDays: 44 },
-    { week: 25, low: 13, medium: 6, high: 7, veryHigh: 5, ultraHigh: 11, extreme: 3, totalDays: 45 },
-    { week: 26, low: 11, medium: 10, high: 6, veryHigh: 4, ultraHigh: 8, extreme: 4, totalDays: 43 },
-    { week: 27, low: 10, medium: 8, high: 6, veryHigh: 7, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 28, low: 12, medium: 7, high: 5, veryHigh: 8, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 29, low: 14, medium: 9, high: 4, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 46 },
-    { week: 30, low: 15, medium: 6, high: 5, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 45 },
-    { week: 31, low: 11, medium: 10, high: 6, veryHigh: 7, ultraHigh: 10, extreme: 3, totalDays: 47 },
-    { week: 32, low: 13, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 3, totalDays: 46 },
-    { week: 33, low: 12, medium: 6, high: 8, veryHigh: 5, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 34, low: 14, medium: 7, high: 6, veryHigh: 6, ultraHigh: 8, extreme: 4, totalDays: 45 },
-    { week: 35, low: 13, medium: 9, high: 5, veryHigh: 7, ultraHigh: 8, extreme: 4, totalDays: 46 },
-    { week: 36, low: 10, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 44 },
-    { week: 37, low: 9, medium: 10, high: 5, veryHigh: 7, ultraHigh: 8, extreme: 5, totalDays: 44 },
-    { week: 38, low: 13, medium: 6, high: 8, veryHigh: 5, ultraHigh: 9, extreme: 4, totalDays: 45 },
-    { week: 39, low: 10, medium: 9, high: 6, veryHigh: 8, ultraHigh: 7, extreme: 4, totalDays: 44 },
-    { week: 40, low: 12, medium: 7, high: 8, veryHigh: 5, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 41, low: 11, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 45 },
-    { week: 42, low: 14, medium: 5, high: 9, veryHigh: 4, ultraHigh: 10, extreme: 4, totalDays: 46 },
-    { week: 43, low: 13, medium: 9, high: 6, veryHigh: 5, ultraHigh: 8, extreme: 3, totalDays: 44 },
-    { week: 44, low: 12, medium: 7, high: 8, veryHigh: 6, ultraHigh: 9, extreme: 4, totalDays: 46 },
-    { week: 45, low: 14, medium: 6, high: 7, veryHigh: 8, ultraHigh: 7, extreme: 3, totalDays: 45 },
-    { week: 46, low: 13, medium: 8, high: 5, veryHigh: 6, ultraHigh: 10, extreme: 3, totalDays: 45 },
-    { week: 47, low: 12, medium: 7, high: 6, veryHigh: 8, ultraHigh: 9, extreme: 4, totalDays: 46 },
-    { week: 48, low: 10, medium: 9, high: 8, veryHigh: 5, ultraHigh: 11, extreme: 3, totalDays: 46 },
-    { week: 49, low: 14, medium: 8, high: 7, veryHigh: 6, ultraHigh: 9, extreme: 3, totalDays: 47 },
-    { week: 50, low: 11, medium: 9, high: 6, veryHigh: 7, ultraHigh: 10, extreme: 4, totalDays: 47 },
-    { week: 51, low: 13, medium: 8, high: 5, veryHigh: 6, ultraHigh: 8, extreme: 4, totalDays: 44 },
-    { week: 52, low: 9, medium: 7, high: 6, veryHigh: 5, ultraHigh: 11, extreme: 4, totalDays: 42 },
-  ];
+  // Initial states matching API request
+  const [selectedStates, setSelectedState] = useState<string[]>([
+    'TX :: Texas',
+    'AZ :: Arizona',
+    'NM :: New Mexico',
+    'TX :: Texas',
+  ]);
+  const [selectedOffices, setSelectedOffices] = useState<string[]>([
+    'TXDAL01',
+    'AZTUC01',
+    'NMABQ01',
+    'TXDAL01',
+  ]);
+  const [selectedAhj, setSelectedAhj] = useState<string[]>([
+    'City of Midlothian (TX)',
+    'Sierra Vista, City of (AZ)',
+    'City of Carrizozo (NM)',
+    'Rosenberg, City of (TX)',
+  ]);
+  const [selectedQuarter, setSelectedQuarter] = useState<string[]>([]);
+  const [selectedYear, setSelectedYear] = useState<Option>({
+    label: '2024',
+    value: '2024',
+  });
 
+  const dispatch = useAppDispatch();
+  const {
+    data: installToFinData,
+    loading: installToFinLoading,
+    error: installToFinDataError,
+  } = useAppSelector((state) => state.reportingSlice.installToFinData);
+
+  // Data Mapping Function
+  const mapApiDataToChartData = (apiData: any) => {
+    const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
+    const averageDaysData =
+      apiData?.data?.['Average Days From Install to FIN'] || [];
+
+    return dayRangeData.map((item: any, index: number) => ({
+      week: index + 1,
+      low: item.value?.['0-15 days'] || 0,
+      medium: item.value?.['16-30 days'] || 0,
+      high: item.value?.['31-45 days'] || 0,
+      veryHigh: item.value?.['46-60 days'] || 0,
+      ultraHigh: item.value?.['61-90 days'] || 0,
+      extreme: item.value?.['>90 days'] || 0,
+      totalDays: averageDaysData[index]?.value?.average || 0,
+    }));
+  };
+
+  // API Call Function
+  const getNewFormData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await dispatch(
+        getTimelineInstallToFinData({
+          year: selectedYear.value,
+          state: selectedStates,
+          office: selectedOffices,
+          ahj: selectedAhj,
+          quarter: selectedQuarter,
+        })
+      ).unwrap();
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+    } catch (error) {
+      console.error('Error fetching install to fin data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Update chart data when API data changes
+  useEffect(() => {
+    if (installToFinData) {
+      const mappedData = mapApiDataToChartData(installToFinData);
+      setChartData(mappedData);
+    }
+  }, [installToFinData]);
+
+  // Fetch data when filters change
+  useEffect(() => {
+    getNewFormData(); // Trigger API call on change
+  }, [
+    selectedYear.value,
+    selectedStates,
+    selectedOffices,
+    selectedAhj,
+    selectedQuarter,
+  ]);
+
+  // Chart Helper Functions
   const handleLegendClick = (dataKey: string) => {
     setHighlightedLegend((prev) => (prev === dataKey ? null : dataKey));
   };
@@ -112,7 +163,6 @@ const InstalltoFin = () => {
     );
   };
 
-  // Format the data for the legend (day ranges)
   const getLegendLabel = (dataKey: string) => {
     switch (dataKey) {
       case 'low':
@@ -132,181 +182,291 @@ const InstalltoFin = () => {
     }
   };
 
-//   const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
-//       if (active && payload && payload.length) {
-//           return (
-//               <div className="custom-tooltip">
-//                   <p className="label">{`${label}`}</p>
-//                   <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
-//               </div>
-//           );
-//       }
-  
-//       return null;
-//   };
+  const getBarColor = (dataKey: string) => {
+    switch (dataKey) {
+      case 'low':
+        return 'rgb(51, 140, 0)';
+      case 'medium':
+        return 'rgb(124, 179, 66)';
+      case 'high':
+        return 'rgb(255, 168, 0)';
+      case 'veryHigh':
+        return 'rgb(246, 109, 0)';
+      case 'ultraHigh':
+        return 'rgb(242, 68, 45)';
+      case 'extreme':
+        return 'rgb(238, 0, 0)';
+      default:
+        return 'rgb(0, 0, 0)';
+    }
+  };
 
   return (
-    <div className={styles.chartContainer}>
-        <div className="headingcount flex justify-between items-center">
-                <BackButtom heading="Install to FIN" />
-                <div className="report-header-dropdown flex-wrap">
-                    {/* <div><DaySelect /></div> */}
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="Office"
-        />
-                    </div>
+    <div className="total-main-container">
+      <div className="headingcount flex justify-between items-center">
+        <BackButtom heading="Install to FIN" />
+        <div className="report-header-dropdown flex-wrap">
+          <div>
+            <CustomSelect
+              options={[
+                { value: 'AZKING01', label: 'AZKING01' },
+                { value: 'AZPEO01', label: 'AZPEO01' },
+                { value: 'AZTEM01', label: 'AZTEM01' },
+                { value: 'AZTUC01', label: 'AZTUC01' },
+                { value: 'CODEN1', label: 'CODEN1' },
+                { value: 'COGJT1', label: 'COGJT1' },
+                { value: 'NMABQ01', label: 'NMABQ01' },
+                { value: 'No Office', label: 'No Office' },
+                { value: 'TXAUS01', label: 'TXAUS01' },
+                { value: 'TXDAL01', label: 'TXDAL01' },
+                { value: 'TXELP01', label: 'TXELP01' },
+              ]}
+              label="Office"
+              value={selectedOffices} // Bind selected value
+              onChange={(value) => setSelectedOffices(value)} // Update state on change
+            />
+          </div>
 
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="AHJ"
-        />
-                    </div>
+          <div>
+            <CustomSelect
+              options={[
+                { value: 'null', label: 'null' },
+                { value: 'AHJ', label: 'AHJ' },
+                {
+                  value: 'Abilene, City of (TX)',
+                  label: 'Abilene, City of (TX)',
+                },
+                { value: 'Adams County (CO)', label: 'Adams County (CO)' },
+                {
+                  value: 'Alamogordo, City of (NM)',
+                  label: 'Alamogordo, City of (NM)',
+                },
+                { value: 'Alamosa City (CO)', label: 'Alamosa City (CO)' },
+                { value: 'Alamosa County (CO)', label: 'Alamosa County (CO)' },
+                {
+                  value: 'Albuquerque, City of (NM)',
+                  label: 'Albuquerque, City of (NM)',
+                },
+                { value: 'Alice, City of (TX)', label: 'Alice, City of (TX)' },
+                { value: 'Allen, City of (TX)', label: 'Allen, City of (TX)' },
+                {
+                  value: 'Amarillo, City of (TX)',
+                  label: 'Amarillo, City of (TX)',
+                },
+                {
+                  value: 'Andrews, City of(TX)',
+                  label: 'Andrews, City of(TX)',
+                },
+                {
+                  value: 'Angelina County (TX)',
+                  label: 'Angelina County (TX)',
+                },
+                { value: 'Anna, City of (TX)', label: 'Anna, City of (TX)' },
+              ]}
+              label="AHJ"
+              value={selectedAhj}
+              onChange={setSelectedAhj}
+            />
+          </div>
 
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="State"
-        />
-                    </div>
+          <div>
+            <CustomSelect
+              options={[
+                { value: 'AZ :: Arizona', label: 'AZ' },
+                { value: 'CO :: Colorado', label: 'CO' },
+                { value: 'NM :: New Mexico', label: 'NM' },
+                { value: 'NV :: Nevada', label: 'NV' },
+                { value: 'ST :: South Dakota', label: 'ST' },
+                { value: 'TX :: Texas', label: 'TX' },
+              ]}
+              label="State"
+              value={selectedStates}
+              onChange={setSelectedState}
+            />
+          </div>
 
-                    <div>
-                    <CustomSelect 
-          options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="Quarter"
-        />
-                    </div>
+          <div>
+            <CustomSelect
+              options={[
+                { value: 'Q1 2024', label: 'Q1 2024' },
+                { value: 'Q2 2024', label: 'Q2 2024' },
+                { value: 'Q3 2024', label: 'Q3 2024' },
+                { value: 'Q4 2024', label: 'Q4 2024' },
+              ]}
+              label="Quarter"
+              value={selectedQuarter}
+              onChange={setSelectedQuarter}
+            />
+          </div>
+        </div>
+      </div>
 
-                </div>
+      <div className="reports-yscroll">
+        {isLoading ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <MicroLoader />
+          </div>
+        ) : (
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: "1.2rem" }}
+          >
+            {/* Bar Chart */}
+            <div className={styles.chartWrapper}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={chartData}
+                  barCategoryGap="5%"
+                  className={styles.barChart}
+                  margin={{ right: 70, top: 20 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className={styles.grid}
+                  />
+                  <XAxis
+                    dataKey="week"
+                    className={styles.axis}
+                    tickFormatter={(value) => `Week ${value}`}
+                    height={50}
+                    tickSize={10}
+                    angle={-45}
+                    dy={12}
+                    interval={0}
+                  />
+                  <YAxis className={styles.axis} tickSize={10} />
+                  <Tooltip
+                    wrapperStyle={{
+                      outline: 'none',
+                      borderRadius: 4,
+                      padding: 0,
+                      boxShadow: 'none',
+                    }}
+                    wrapperClassName={styles.tooltip}
+                    formatter={(value, name) => {
+                      const legendLabels: { [key: string]: string } = {
+                        low: '0-15 days',
+                        medium: '16-30 days',
+                        high: '31-45 days',
+                        veryHigh: '46-60 days',
+                        ultraHigh: '61-90 days',
+                        extreme: '91+ days',
+                      };
+                      return [value, legendLabels[name]]; // Return value and custom label
+                    }}
+                  />
+
+                  {[
+                    'low',
+                    'medium',
+                    'high',
+                    'veryHigh',
+                    'ultraHigh',
+                    'extreme',
+                  ].map((dataKey) => (
+                    <Bar
+                      key={dataKey}
+                      dataKey={dataKey}
+                      stackId="a"
+                      fill={getBarColor(dataKey)}
+                      opacity={
+                        highlightedLegend && highlightedLegend !== dataKey
+                          ? 0.1
+                          : 1
+                      }
+                      className={styles.bar}
+                      label={
+                        dataKey === 'extreme'
+                          ? renderCustomizedLabel
+                          : undefined
+                      }
+                    />
+                  ))}
+                  <Legend
+                    layout="horizontal"
+                    align="center"
+                    verticalAlign="top"
+                    onClick={({ dataKey }) =>
+                      handleLegendClick(dataKey as string)
+                    }
+                    className={styles.legend}
+                    wrapperStyle={{
+                      paddingBottom: '20px',
+                      fontSize: '12px',
+                      fontFamily: 'poppins',
+                    }}
+                    formatter={getLegendLabel}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
 
-
-<div style={{display:'flex', flexDirection:'column', gap:"60px"}}>
-
-
-      {/* Bar Chart */}
-
-      <div className={styles.chartWrapper}>
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          data={data}
-          barCategoryGap="5%"
-          className={styles.barChart}
-          margin={{ right: 70, top:20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" className={styles.grid} />
-          <XAxis 
-            dataKey="week" 
-            className={styles.axis} 
-            tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
-            height={50}  // Adding space for the "Week" label below tickmarks
-            tickSize={10}
-          />
-          <YAxis className={styles.axis} tickSize={10} />
-          <Tooltip     wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}
- wrapperClassName={styles.tooltip} />
-
-          {/* Bars with customized labels */}
-          {['low', 'medium', 'high', 'veryHigh', 'ultraHigh', 'extreme'].map((dataKey) => (
-            <Bar
-              key={dataKey}
-              dataKey={dataKey}
-              stackId="a"
-              fill={highlightedLegend === dataKey ? getBarColor(dataKey) : getBarColor(dataKey)}
-              opacity={highlightedLegend && highlightedLegend !== dataKey ? 0.1 : 1}
-              className={styles.bar}
-              label={dataKey === 'extreme' ? renderCustomizedLabel : undefined} // Label only for 'extreme' bar
-            />
-          ))}
-          <Legend
-            layout="horizontal"
-            align="center"
-            verticalAlign="top"
-            onClick={({ dataKey }) => handleLegendClick(dataKey as string)}
-            className={styles.legend}
-            wrapperStyle={{ paddingBottom: "20px", fontSize:'10px', fontFamily:'poppins' }}
-            formatter={getLegendLabel}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-
+            {/* Line Chart */}
+            <div className={styles.chartWrapper}>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData} margin={{ right: 70 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    className={styles.axis}
+                    dataKey="week"
+                    tickFormatter={(value) => `Week ${value}`} // Show Week number below tickmarks
+                    height={50}
+                    tickSize={10}
+                    angle={-45}
+                    dy={12}
+                    interval={0}
+                  />
+                  <YAxis className={styles.axis} tickSize={10} />
+                  <Tooltip
+                    wrapperStyle={{
+                      outline: 'none',
+                      borderRadius: 4,
+                      padding: 0,
+                      boxShadow: 'none',
+                      fontSize: 12,
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="totalDays"
+                    stroke="rgb(76, 175, 80)" // Updated line color
+                    activeDot={{ r: 8 }}
+                    fill="rgb(76, 175, 80)"
+                  >
+                    <LabelList
+                      dataKey="totalDays"
+                      position="top"
+                      fill="rgb(76, 175, 80)"
+                      fontSize={12}
+                      offset={5}
+                      formatter={(value: any) => value}
+                    />
+                  </Line>
+                  <Legend
+                    layout="horizontal"
+                    align="center"
+                    verticalAlign="top"
+                    className={styles.legend}
+                    wrapperStyle={{
+                      padding: '20px',
+                      fontSize: '12px',
+                      fontFamily: 'poppins',
+                    }}
+                    formatter={getLegendLabel}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
       </div>
-
-
-
-      {/* Line Chart */}
-      <div className={styles.chartWrapper}>
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart data={data} margin={{ right: 70 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            className={styles.axis} 
-            dataKey="week" 
-            tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
-            height={50} 
-            tickSize={10}
-          />
-          <YAxis  className={styles.axis} tickSize={10} 
-          />
-          <Tooltip wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}/>
-          <Line
-            type="monotone"
-            dataKey="totalDays"
-            stroke="rgb(76, 175, 80)"  // Updated line color
-            activeDot={{ r: 8 }}
-            fill="rgb(76, 175, 80)"
-
-          >
-            <LabelList
-              dataKey="totalDays"
-              position="top"
-              fill="rgb(76, 175, 80)"
-              fontSize={12}
-              offset={5}
-              formatter={(value: any) => value}
-            />
-          </Line>
-          <Legend
-            layout="horizontal"
-            align="center"
-            verticalAlign="top"
-            className={styles.legend}
-            wrapperStyle={{ padding: "20px", fontSize:'10px', fontFamily:'poppins' }}
-            formatter={getLegendLabel}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-      </div>
-
-</div>
-
-      {/* <div style={{ width: '100%', height: '400px' }} className={styles.chartWrapper}>
-        <StackedBarChart/>
-      </div> */}
-      
     </div>
   );
-};
-
-const getBarColor = (dataKey: string) => {
-  switch (dataKey) {
-    case 'low':
-      return 'rgb(51, 140, 0)';
-    case 'medium':
-      return 'rgb(124, 179, 66)';
-    case 'high':
-      return 'rgb(255, 168, 0)';
-    case 'veryHigh':
-      return 'rgb(246, 109, 0)';
-    case 'ultraHigh':
-      return 'rgb(242, 68, 45)';
-    case 'extreme':
-      return 'rgb(238, 0, 0)';
-    default:
-      return 'rgb(0, 0, 0)';
-  }
 };
 
 export default InstalltoFin;
