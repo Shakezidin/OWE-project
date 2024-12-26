@@ -200,7 +200,8 @@ const InstalltoFin = () => {
             height={50}  // Adding space for the "Week" label below tickmarks
           />
           <YAxis className={styles.axis} />
-          <Tooltip wrapperClassName={styles.tooltip} />
+          <Tooltip     wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}
+ wrapperClassName={styles.tooltip} />
 
           {/* Bars with customized labels */}
           {['low', 'medium', 'high', 'veryHigh', 'ultraHigh', 'extreme'].map((dataKey) => (
@@ -215,12 +216,12 @@ const InstalltoFin = () => {
             />
           ))}
           <Legend
-            layout="vertical"
-            align="right"
+            layout="horizontal"
+            align="center"
             verticalAlign="top"
             onClick={({ dataKey }) => handleLegendClick(dataKey as string)}
             className={styles.legend}
-            wrapperStyle={{ padding: "20px" }}
+            wrapperStyle={{ paddingBottom: "20px", fontSize:'10px', fontFamily:'poppins' }}
             formatter={getLegendLabel}
           />
         </BarChart>
@@ -236,17 +237,21 @@ const InstalltoFin = () => {
         <LineChart data={data} margin={{ right: 70 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
+            className={styles.axis} 
             dataKey="week" 
             tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
             height={50} 
           />
-          <YAxis />
-          <Tooltip />
+          <YAxis  className={styles.axis} 
+          />
+          <Tooltip wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}/>
           <Line
             type="monotone"
             dataKey="totalDays"
             stroke="rgb(76, 175, 80)"  // Updated line color
             activeDot={{ r: 8 }}
+            fill="rgb(76, 175, 80)"
+
           >
             <LabelList
               dataKey="totalDays"
@@ -258,11 +263,11 @@ const InstalltoFin = () => {
             />
           </Line>
           <Legend
-            layout="vertical"
-            align="right"
+            layout="horizontal"
+            align="center"
             verticalAlign="top"
             className={styles.legend}
-            wrapperStyle={{ padding: "20px" }}
+            wrapperStyle={{ padding: "20px", fontSize:'10px', fontFamily:'poppins' }}
             formatter={getLegendLabel}
           />
         </LineChart>

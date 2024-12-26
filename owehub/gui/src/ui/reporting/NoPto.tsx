@@ -8,6 +8,7 @@ import DaySelect from './components/Dropdowns/DaySelect';
 import CompanySelect from './components/Dropdowns/CompanySelect';
 import PTOStatus from './components/Dropdowns/PtoStatus';
 import NoPtoTable from './components/Tables/NoPtoTable';
+import BackButtom from './components/BackButtom';
 
 interface Option {
   label: string;
@@ -99,7 +100,7 @@ const NoPto = () => {
   return (
     <div className={styles.main_container} style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ margin: 0 }}>Install Completed (No PTO Granted Date within 30 Days)</h2>
+      <BackButtom heading="Install Completed (No PTO Granted Date within 30 Days)" />
         <div style={{ display: 'flex', gap: '10px' }}>
           <div><YearSelect /></div>
           <div><WeekSelect /></div>

@@ -6,6 +6,7 @@ import WeekSelect from '../../components/Dropdowns/WeekSelect';
 import DaySelect from '../../components/Dropdowns/DaySelect';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import CompanySelect from '../../components/Dropdowns/CompanySelect';
+import BackButtom from '../../components/BackButtom';
 
 
 // Add new color constants for AZTEM and AZTUC teams
@@ -500,7 +501,8 @@ const CompletionsPerTeams: React.FC = () => {
   return (
     <div className="bg-white p2">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">PV Install Completions (Team)</h4>
+      <BackButtom heading="PV Install Completions (Team)" />
+        {/* <h4 className="reports-title">PV Install Completions (Team)</h4> */}
         <div className="report-header-dropdown flex-wrap">
           <div><YearSelect /></div>
           <div><WeekSelect /></div>

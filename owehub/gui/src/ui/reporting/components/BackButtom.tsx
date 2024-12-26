@@ -10,8 +10,8 @@ const BackButtom = ({ heading }: any) => {
     }
   return (
     <div className='backButton-reporting'>
-      <IoMdArrowRoundBack style={{cursor:"pointer"}} onClick={handleClick}/>
-      <h4 className="reports-title">{heading ? heading : ""}</h4>
+  <IoMdArrowRoundBack style={{cursor: "pointer", fontSize: "17px"}} onClick={handleClick} />
+  <h4 className="reports-title">{heading ? heading : ""}</h4>
     </div>
   )
 }

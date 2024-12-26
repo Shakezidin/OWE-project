@@ -42,6 +42,7 @@ import WeekSelect from './components/Dropdowns/WeekSelect';
 import TableCustom from './components/Tables/CustomTable';
 import LineGraph from './components/LineGraph';
 import BarChartExample from './components/BarChart';
+import BackButtom from './components/BackButtom';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -568,7 +569,7 @@ const SpeedOverall: React.FC = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">Overall</h4>
+      <BackButtom heading="Overall" />
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>

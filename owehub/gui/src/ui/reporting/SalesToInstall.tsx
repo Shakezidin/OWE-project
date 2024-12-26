@@ -37,6 +37,7 @@ import DataNotFound from '../components/loader/DataNotFound';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
+import BackButtom from './components/BackButtom';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -553,7 +554,7 @@ const SalesToInstall: React.FC = () => {
       <div className="headingcount flex justify-between items-center">
         {/* TODO */}
 
-        <h4 className="reports-title">SalesToInstall</h4>
+        <BackButtom heading="Sales to Install" />
         <div className="report-header-dropdown flex-wrap">
           <div>
             <SelectOption
