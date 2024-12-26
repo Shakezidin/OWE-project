@@ -4,6 +4,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"math"
 )
 
 func calculateInstallFundingSummaryReport(dataReq models.QualitySummaryReportRequest) (interface{}, error) {
@@ -56,17 +57,17 @@ func calculateInstallFundingSummaryReport(dataReq models.QualitySummaryReportReq
 
 	approvedCounts := calculateInstallFundingApprovals(summaryReport, int(dataReq.Year))
 	failedCounts := calculateInstallFundingFails(summaryReport, int(dataReq.Year))
-	// passRates := calculateInstallFundingPassRate(approvedCounts, failedCounts)
+	passRates := calculateInstallFundingPassRate(approvedCounts, failedCounts)
 	appStatusCounts := countInstallFundingAppStatus(summaryReport)
 	sourceOfFails := getInstallFundingSourceOfFail(summaryReport)
 
 	// Create the response map containing all calculated metrics
 	response := make(map[string]interface{})
-	response["install_funding_approved"] = approvedCounts
-	response["install_funding_fails"] = failedCounts
-	// response["install_funding_pass_rate"] = passRates
-	response["install_funding_app_status_counts"] = appStatusCounts
-	response["install_funding_source_of_fail"] = sourceOfFails
+	response["approved"] = approvedCounts
+	response["failed"] = failedCounts
+	response["pass_rate"] = passRates
+	response["app_status"] = appStatusCounts
+	response["source_of_fail"] = sourceOfFails
 
 	return response, nil
 }
@@ -188,4 +189,27 @@ func getInstallFundingSourceOfFail(data []models.InstallFundingReport) map[int][
 	}
 
 	return result
+}
+
+func calculateInstallFundingPassRate(approvedCounts, failedCounts map[int]map[string]int) map[int]map[string]float64 {
+	passRates := make(map[int]map[string]float64)
+
+	for week := 1; week <= 52; week++ {
+		passRates[week] = make(map[string]float64)
+
+		for office := range approvedCounts[week] {
+			approved := approvedCounts[week][office]
+			failed := failedCounts[week][office]
+			total := approved + failed
+
+			if total > 0 {
+				passRate := float64(approved) / float64(total) * 100
+				passRates[week][office] = math.Round(passRate*100) / 100 // Round to two decimal places
+			} else {
+				passRates[week][office] = 0
+			}
+		}
+	}
+
+	return passRates
 }

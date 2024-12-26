@@ -68,11 +68,11 @@ func calculateFinSummaryReport(dataReq models.QualitySummaryReportRequest) (inte
 	finSourceOfFail := getFinSourceOfFail(summaryReport)
 
 	response := make(map[string]interface{})
-	response["fin_approved"] = finApproves
-	response["fin_fails"] = finFails
-	response["fin_pass_rate"] = finPassRates
-	response["app_status_counts"] = appStatusCounts
-	response["fin_source_of_fail"] = finSourceOfFail
+	response["approved"] = finApproves
+	response["failed"] = finFails
+	response["pass_rate"] = finPassRates
+	response["app_status"] = appStatusCounts
+	response["source_of_fail"] = finSourceOfFail
 
 	return response, nil
 }

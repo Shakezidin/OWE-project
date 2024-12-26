@@ -63,11 +63,11 @@ func calculatePtoSummaryReport(dataReq models.QualitySummaryReportRequest) (inte
 
 	// Create the response map containing all calculated metrics
 	response := make(map[string]interface{})
-	response["pto_approved"] = ptoApproves
-	response["pto_fails"] = ptoFails
-	response["pto_pass_rate"] = ptoPassRates
-	response["pto_pending"] = appStatusCounts
-	response["pto_source_of_fail"] = ptoSourceOfFail
+	response["approved"] = ptoApproves
+	response["failed"] = ptoFails
+	response["pass_rate"] = ptoPassRates
+	response["app_status"] = appStatusCounts
+	response["source_of_fail"] = ptoSourceOfFail
 
 	return response, nil
 }

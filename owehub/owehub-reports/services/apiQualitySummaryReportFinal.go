@@ -4,6 +4,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"math"
 )
 
 func calculateFinalFundingSummaryReport(dataReq models.QualitySummaryReportRequest) (interface{}, error) {
@@ -56,16 +57,16 @@ func calculateFinalFundingSummaryReport(dataReq models.QualitySummaryReportReque
 
 	approvedCounts := calculateFinalFundingApprovals(summaryReport, int(dataReq.Year))
 	failedCounts := calculateFinalFundingFails(summaryReport, int(dataReq.Year))
-	// passRates := calculateFinalFundingPassRate(approvedCounts, failedCounts)
+	passRates := calculateFinalFundingPassRate(approvedCounts, failedCounts)
 	appStatusCounts := countFinalFundingAppStatus(summaryReport)
 	sourceOfFails := getFinalFundingSourceOfFail(summaryReport)
 
 	response := make(map[string]interface{})
-	response["final_funding_approved"] = approvedCounts
-	response["final_funding_fails"] = failedCounts
-	// response["final_funding_pass_rate"] = passRates
-	response["final_funding_app_status_counts"] = appStatusCounts
-	response["final_funding_source_of_fail"] = sourceOfFails
+	response["approved"] = approvedCounts
+	response["failed"] = failedCounts
+	response["pass_rate"] = passRates
+	response["app_status"] = appStatusCounts
+	response["source_of_fail"] = sourceOfFails
 
 	return response, nil
 }
@@ -193,4 +194,27 @@ func getFinalFundingSourceOfFail(data []models.FinalFundingReport) map[int][][]i
 	}
 
 	return result
+}
+
+func calculateFinalFundingPassRate(approvedCounts, failedCounts map[int]map[string]int) map[int]map[string]float64 {
+	passRates := make(map[int]map[string]float64)
+
+	for week := 1; week <= 52; week++ {
+		passRates[week] = make(map[string]float64)
+
+		for office := range approvedCounts[week] {
+			approved := approvedCounts[week][office]
+			failed := failedCounts[week][office]
+			total := approved + failed
+
+			if total > 0 {
+				passRate := float64(approved) / float64(total) * 100
+				passRates[week][office] = math.Round(passRate*100) / 100 // Round to two decimal places
+			} else {
+				passRates[week][office] = 0
+			}
+		}
+	}
+
+	return passRates
 }
