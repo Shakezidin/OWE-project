@@ -2,15 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
     fetchSpeedSummaryReport,
-    fetchInstallReportData
+    fetchInstallReportData,
+    getTimelineInstallToFinData
 } from '../../apiActions/reportingAction/reportingAction';
-
-interface SpeedSummaryParams {
-    year: string;
-    week: string;
-    batteryincluded: string;
-    office: string[];
-}
 
 interface ReportingState {
     isLoading: boolean;
@@ -22,6 +16,11 @@ interface ReportingState {
     speedSummaryData: {
         data: any;
         loading: boolean;
+        error: string | null;
+    };
+    installToFinData:{
+        data: any,
+        loading: boolean,
         error: string | null;
     };
     loading: boolean;
@@ -40,6 +39,11 @@ const initialState: ReportingState = {
         loading: false,
         error: null
     },
+    installToFinData:{
+        data: null,
+        loading: false,
+        error: null,
+    },
     loading: false,
     error: null
 };
@@ -54,6 +58,13 @@ const reportingSlice = createSlice({
         },
         clearSpeedSummaryData: (state) => {
             state.speedSummaryData = {
+                data: null,
+                loading: false,
+                error: null
+            };
+        },
+        clearInstallToFinData: (state) => {
+            state.installToFinData = {
                 data: null,
                 loading: false,
                 error: null
@@ -94,9 +105,25 @@ const reportingSlice = createSlice({
                 state.speedSummaryData.error = action.payload as string;
                 toast.error(action.payload as string);
 
-            });
+            })
+
+            // Install to FIN cases
+            .addCase(getTimelineInstallToFinData.pending, (state) => {
+                state.installToFinData.loading = true;
+                state.installToFinData.error = null;
+              })
+              .addCase(getTimelineInstallToFinData.fulfilled, (state, action) => {
+                state.installToFinData.loading = false;
+                state.installToFinData.data = action.payload;
+                toast.success(action.payload.message)
+              })
+              .addCase(getTimelineInstallToFinData.rejected, (state, action) => {
+                state.installToFinData.loading = false;
+                state.installToFinData.error = action.payload as string;
+                toast.error(action.payload as string);
+              });
     }
 });
 
-export const { clearReportingData, clearSpeedSummaryData } = reportingSlice.actions;
+export const { clearReportingData, clearSpeedSummaryData, clearInstallToFinData } = reportingSlice.actions;
 export default reportingSlice.reducer; 
