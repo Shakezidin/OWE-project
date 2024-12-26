@@ -14,6 +14,8 @@ import {
 } from 'recharts';
 import styles from './styles/InstalltoFin.module.css';
 import CustomSelect from './components/Dropdowns/CustomSelect';
+import BackButtom from './components/BackButtom';
+import StackedBarChart from './InstallToFIN/StackedBarChart';
 
 interface LabelProps {
   x: number;
@@ -130,34 +132,65 @@ const InstalltoFin = () => {
     }
   };
 
+//   const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+//       if (active && payload && payload.length) {
+//           return (
+//               <div className="custom-tooltip">
+//                   <p className="label">{`${label}`}</p>
+//                   <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
+//               </div>
+//           );
+//       }
+  
+//       return null;
+//   };
+
   return (
     <div className={styles.chartContainer}>
-      <div className={styles.selectWrapper}>
-        <CustomSelect 
+        <div className="headingcount flex justify-between items-center">
+                <BackButtom heading="Install to FIN" />
+                <div className="report-header-dropdown flex-wrap">
+                    {/* <div><DaySelect /></div> */}
+                    <div>
+                    <CustomSelect 
           options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
           label="Office"
         />
-        <CustomSelect 
+                    </div>
+
+                    <div>
+                    <CustomSelect 
           options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="AHJ"
+          label="Office"
         />
-        <CustomSelect 
+                    </div>
+
+                    <div>
+                    <CustomSelect 
           options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
           label="State"
         />
-        <CustomSelect 
+                    </div>
+
+                    <div>
+                    <CustomSelect 
           options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
           label="Quarter"
         />
-      </div>
+                    </div>
+
+                </div>
+            </div>
 
       {/* Bar Chart */}
+
+      <div className={styles.chartWrapper}>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={data}
           barCategoryGap="5%"
           className={styles.barChart}
-          margin={{ right: 70 }}
+          margin={{ right: 70, top:20 }}
         >
           <CartesianGrid strokeDasharray="3 3" className={styles.grid} />
           <XAxis 
@@ -193,7 +226,12 @@ const InstalltoFin = () => {
         </BarChart>
       </ResponsiveContainer>
 
+      </div>
+
+
+
       {/* Line Chart */}
+      <div className={styles.chartWrapper}>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={data} margin={{ right: 70 }}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -229,6 +267,12 @@ const InstalltoFin = () => {
           />
         </LineChart>
       </ResponsiveContainer>
+      </div>
+
+      {/* <div style={{ width: '100%', height: '400px' }} className={styles.chartWrapper}>
+        <StackedBarChart/>
+      </div> */}
+      
     </div>
   );
 };

@@ -13,11 +13,11 @@ type SummaryReportRequest struct {
 	Office     []string `json:"office"`
 }
 
-type AhfFifteenReportRequest struct {
+type TimelineReportRequest struct {
 	Year    string   `json:"year"`
 	Quarter []string `json:"quarter"`
-	State   string   `json:"state"`
-	Ahj     string   `json:"ahj"`
+	State   []string `json:"state"`
+	Ahj     []string `json:"ahj"`
 	Office  []string `json:"office"`
 }
 
@@ -29,7 +29,7 @@ type SaleToInstallSpeedSummaryReportRequest struct {
 }
 
 type DataPoint struct {
-	Value map[string]float64 `json:"value"`
+	Value map[string]interface{} `json:"value"`
 }
 
 type SummaryReportResponse struct {
