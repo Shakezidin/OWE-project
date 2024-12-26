@@ -59,23 +59,38 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		return
 	}
 
-	escapedOffices := make([]string, len(dataReq.Office))
-	for i, name := range dataReq.Office {
-		escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	Offices := ""
+	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
+		Offices = "'ALL' = 'ALL'"
+	} else {
+		escapedOffices := make([]string, len(dataReq.Office))
+		for i, name := range dataReq.Office {
+			escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		Offices = "pv.office IN (" + strings.Join(escapedOffices, ", ") + ")"
 	}
-	Offices := strings.Join(escapedOffices, ", ")
 
-	escapedAhj := make([]string, len(dataReq.Ahj))
-	for i, name := range dataReq.Ahj {
-		escapedAhj[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	ahj := ""
+	if (len(dataReq.Ahj) > 0) && (dataReq.Ahj[0] == "ALL") {
+		ahj = "'ALL' = 'ALL'"
+	} else {
+		escapedAhj := make([]string, len(dataReq.Ahj))
+		for i, name := range dataReq.Ahj {
+			escapedAhj[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		ahj = "pv.ahj IN (" + strings.Join(escapedAhj, ", ") + ")"
 	}
-	ahj := strings.Join(escapedAhj, ", ")
 
-	escapedStates := make([]string, len(dataReq.State))
-	for i, name := range dataReq.State {
-		escapedStates[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	states := ""
+	if (len(dataReq.State) > 0) && (dataReq.State[0] == "ALL") {
+		states = "'ALL' = 'ALL'"
+	} else {
+		escapedStates := make([]string, len(dataReq.State))
+		for i, name := range dataReq.State {
+			escapedStates[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		states = "pv.state IN (" + strings.Join(escapedStates, ", ") + ")"
 	}
-	states := strings.Join(escapedStates, ", ")
 
 	query := fmt.Sprintf(`SELECT 
 							install_week,
@@ -99,9 +114,9 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 								ON pv.ahj = ah.title
 							WHERE 
 								DATE_PART('year', pv.pv_completion_date) = $1
-								AND (pv.office IN (%s))
-								AND (pv.ahj IN (%s))
-								AND (pv.state IN (%s))
+								AND (%s)
+								AND (%s)
+								AND (%s)
 								AND ah.ahj_timeline IS NOT NULL
 								AND ah.ahj_timeline != ''
 						) subquery
@@ -122,8 +137,6 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		return
 	}
 
-	log.FuncErrorTrace(0, "dbData: %+v", dbData)
-
 	categories := []string{"Percentage AHJ +15 Days SLA", "Total AHJ +15 Days SLA"}
 	reportResp.Data = make(map[string][]models.DataPoint)
 
@@ -139,6 +152,8 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 
 	for _, item := range dbData {
 		install_week := int(item["install_week"].(float64))
+		install_week -= 1
+
 		sla_status := item["sla_status"].(string)
 		count := item["count"].(int64)
 
@@ -198,23 +213,38 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		return
 	}
 
-	escapedOffices := make([]string, len(dataReq.Office))
-	for i, name := range dataReq.Office {
-		escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	Offices := ""
+	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
+		Offices = "'ALL' = 'ALL'"
+	} else {
+		escapedOffices := make([]string, len(dataReq.Office))
+		for i, name := range dataReq.Office {
+			escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		Offices = "pvi.office IN (" + strings.Join(escapedOffices, ", ") + ")"
 	}
-	Offices := strings.Join(escapedOffices, ", ")
 
-	escapedAhj := make([]string, len(dataReq.Ahj))
-	for i, name := range dataReq.Ahj {
-		escapedAhj[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	ahj := ""
+	if (len(dataReq.Ahj) > 0) && (dataReq.Ahj[0] == "ALL") {
+		ahj = "'ALL' = 'ALL'"
+	} else {
+		escapedAhj := make([]string, len(dataReq.Ahj))
+		for i, name := range dataReq.Ahj {
+			escapedAhj[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		ahj = "pvi.ahj IN (" + strings.Join(escapedAhj, ", ") + ")"
 	}
-	ahj := strings.Join(escapedAhj, ", ")
 
-	escapedStates := make([]string, len(dataReq.State))
-	for i, name := range dataReq.State {
-		escapedStates[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+	states := ""
+	if (len(dataReq.State) > 0) && (dataReq.State[0] == "ALL") {
+		states = "'ALL' = 'ALL'"
+	} else {
+		escapedStates := make([]string, len(dataReq.State))
+		for i, name := range dataReq.State {
+			escapedStates[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		states = "pvi.state IN (" + strings.Join(escapedStates, ", ") + ")"
 	}
-	states := strings.Join(escapedStates, ", ")
 
 	query := fmt.Sprintf(`SELECT
     		DATE_PART('week', fin.pv_fin_date) AS install_week,
@@ -224,7 +254,7 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
         		WHEN EXTRACT(DAY FROM (fin.pv_fin_date - pvi.pv_completion_date)) BETWEEN 31 AND 45 THEN '31-45 days'
         		WHEN EXTRACT(DAY FROM (fin.pv_fin_date - pvi.pv_completion_date)) BETWEEN 46 AND 60 THEN '46-60 days'
         		WHEN EXTRACT(DAY FROM (fin.pv_fin_date - pvi.pv_completion_date)) BETWEEN 61 AND 90 THEN '61-90 days'
-        		WHEN EXTRACT(DAY FROM (fin.pv_fin_date - pvi.pv_completion_date)) > 91 THEN '>90 days'
+        		ELSE '>90 days'
     		END AS day_range,
     		COUNT(*) AS project_count
 		FROM 
@@ -235,9 +265,9 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
     		pvi.customer_unique_id = fin.customer_unique_id
 		WHERE
     		DATE_PART('year', fin.pv_fin_date) = $1
-    		AND (pvi.office IN (%s))
-    		AND (pvi.ahj IN (%s))
-    		AND (pvi.state IN (%s))
+    		AND (%s)
+    		AND (%s)
+    		AND (%s)
 		GROUP BY 
     		install_week, day_range
 		ORDER BY 
@@ -264,7 +294,10 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 	}
 
 	for _, item := range dbData {
+		log.FuncErrorTrace(0, "item: %+v", item)
 		install_week := int(item["install_week"].(float64))
+		install_week -= 1
+
 		days_range := item["day_range"].(string)
 		project_count := item["project_count"].(int64)
 
@@ -285,9 +318,9 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
     						pvi.customer_unique_id = fin.customer_unique_id
 						WHERE
 							DATE_PART('year', fin.pv_fin_date) = $1
-							AND (pvi.office IN (%s))
-							AND (pvi.ahj IN (%s))
-							AND (pvi.state IN (%s))
+							AND (%s)
+							AND (%s)
+							AND (%s)
 						GROUP BY
     						install_week
 						ORDER BY
@@ -311,6 +344,7 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 
 	for _, item := range dbDataAverage {
 		install_week := int(item["install_week"].(float64))
+		install_week -= 1
 
 		byteArray := item["avg_day_diff"].([]uint8)
 		strValue := string(byteArray)
