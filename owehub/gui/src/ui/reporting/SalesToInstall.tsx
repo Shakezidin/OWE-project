@@ -666,69 +666,79 @@ const SalesToInstall: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="report-graphs">
-        {graphs.map((graph, index) => (
-          <div key={index} className="report-graph">
-            <h5 className="graph-title">{graph.title}</h5>
+      <div className="reports-yscroll">
+        <div className="report-graphs">
+          {graphs.map((graph, index) => (
+            <div key={index} className="report-graph">
+              <h5 className="graph-title">{graph.title}</h5>
 
-            {isLoading ? (
-              <div
-                className="flex items-center"
-                style={{ justifyContent: 'center' }}
-              >
-                {' '}
-                <MicroLoader />{' '}
-              </div>
-            ) : (
-              <div className="main-graph" style={stylesGraph}>
-                <ResponsiveContainer
-                  width="100%"
-                  height="100%"
-                  className={'graph-container'}
+              {isLoading ? (
+                <div
+                  className="flex items-center"
+                  style={{ justifyContent: 'center' }}
                 >
-                  <AreaChart data={graph.data}>
-                    <defs>
-                      <linearGradient
-                        id={`colorPv-${index}`}
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="12%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="88%"
-                          stopColor={graph.stopColor}
-                          stopOpacity={0.1}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area
-                      type="monotone"
-                      dataKey="pv"
-                      stroke={graph.stopColor}
-                      strokeWidth={3}
-                      fill={`url(#colorPv-${index})`}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </div>
-        ))}
+                  {' '}
+                  <MicroLoader />{' '}
+                </div>
+              ) : (
+                <div className="main-graph" style={stylesGraph}>
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    className={'graph-container'}
+                  >
+                    <AreaChart data={graph.data}>
+                      <defs>
+                        <linearGradient
+                          id={`colorPv-${index}`}
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="12%"
+                            stopColor={graph.stopColor}
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="88%"
+                            stopColor={graph.stopColor}
+                            stopOpacity={0.1}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="name"
+                        tick={{
+                          fontSize: 12,
+                          fontWeight: 500,
+                          fill: '#818181',
+                        }}
+                      />
+                      <YAxis
+                        tick={{
+                          fontSize: 12,
+                          fontWeight: 500,
+                          fill: '#818181',
+                        }}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area
+                        type="monotone"
+                        dataKey="pv"
+                        stroke={graph.stopColor}
+                        strokeWidth={3}
+                        fill={`url(#colorPv-${index})`}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

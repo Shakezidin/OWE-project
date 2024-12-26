@@ -9,6 +9,41 @@
   border-radius: 6px;
 }
 
+.reports-yscroll{
+  height: 75vh;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  padding: 1.2rem;
+}
+
+.reports-yscroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.reports-yscroll::-webkit-scrollbar {
+  display: initial;
+}
+
+.reports-yscroll::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.reports-yscroll::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.reports-yscroll::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.reports-yscroll::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+
 .total-card-count {
   display: flex;
   flex-direction: column;
@@ -53,10 +88,6 @@
 .total-main-container {
   width: 100%;
   background-color: white;
-  padding-left: 13px;
-  padding-right: 13px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border-radius: 18px;
   margin-bottom: 10px;
 }
@@ -74,8 +105,15 @@
 }
 
 .headingcount {
-  padding: 10px 8px;
+  padding: 1rem;
   align-items: center;
+  /* border-bottom: 1px solid #f0f0f0; */
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--white-color);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  position: relative;
+  z-index: 99;
 }
 
 .graph-title {
