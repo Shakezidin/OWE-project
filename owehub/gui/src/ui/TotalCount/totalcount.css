@@ -13,7 +13,7 @@
   height: 75vh;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  padding: 1rem;
+  padding: 1.2rem;
 }
 
 .reports-yscroll::-webkit-scrollbar {

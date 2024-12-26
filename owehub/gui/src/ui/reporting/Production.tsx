@@ -202,25 +202,70 @@ const Production: React.FC = () => {
           <WeekSelect />
         </div>
       </div>
-      <div
-        style={{
-          background: '#ddd',
-          height: 50,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5,
-          width: '100%',
-          margin: '10px 0',
-        }}
-      >
-        {reportType.label}
-      </div>
+      <div className="reports-yscroll">
+        <div
+          style={{
+            background: '#ddd',
+            height: 50,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 5,
+            width: '100%',
+            margin: '10px 0',
+          }}
+        >
+          {reportType.label}
+        </div>
 
-      <div className="report-graphs">
-        {graphs.map((graph, index) => (
+        <div className="report-graphs">
+          {graphs.map((graph, index) => (
+            <div
+              key={index}
+              className="report-graph"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 50,
+                gap: '30px',
+              }}
+            >
+              {false ? (
+                <div
+                  className="flex items-center"
+                  style={{ justifyContent: 'center' }}
+                >
+                  <MicroLoader />
+                </div>
+              ) : (
+                <>
+                  <TableCustom
+                    reportType={reportType}
+                    middleName={graph.title}
+                    data={data}
+                    setData={setData}
+                  />
+                  <div
+                    className="main-graph"
+                    style={{ width: '100%', textAlign: 'center' }}
+                  >
+                    <h3 style={{ textAlign: 'center', marginBottom: '8px' }}>
+                      {reportType.label} {graph.title}
+                    </h3>
+                    <div style={stylesGraph}>
+                      <LineGraph />
+                      <p className="chart-info-report">Week</p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="report-graphs">
           <div
-            key={index}
             className="report-graph"
             style={{
               display: 'flex',
@@ -241,69 +286,26 @@ const Production: React.FC = () => {
               <>
                 <TableCustom
                   reportType={reportType}
-                  middleName={graph.title}
+                  middleName="Pending"
                   data={data}
                   setData={setData}
                 />
+
                 <div
                   className="main-graph"
                   style={{ width: '100%', textAlign: 'center' }}
                 >
                   <h3 style={{ textAlign: 'center', marginBottom: '8px' }}>
-                    {reportType.label} {graph.title}
+                    Pending {reportType.label}
                   </h3>
                   <div style={stylesGraph}>
-                    <LineGraph />
+                    <BarChartExample />
                     <p className="chart-info-report">Week</p>
                   </div>
                 </div>
               </>
             )}
           </div>
-        ))}
-      </div>
-
-      <div className="report-graphs">
-        <div
-          className="report-graph"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 50,
-            gap: '30px',
-          }}
-        >
-          {false ? (
-            <div
-              className="flex items-center"
-              style={{ justifyContent: 'center' }}
-            >
-              <MicroLoader />
-            </div>
-          ) : (
-            <>
-              <TableCustom
-                reportType={reportType}
-                middleName="Pending"
-                data={data}
-                setData={setData}
-              />
-              
-              <div
-                className="main-graph"
-                style={{ width: '100%', textAlign: 'center' }}
-              >
-                <h3 style={{ textAlign: 'center', marginBottom: '8px' }}>
-                  Pending {reportType.label}
-                </h3>
-                <div style={stylesGraph}>
-                  <BarChartExample />
-                  <p className="chart-info-report">Week</p>
-                </div>
-              </div>
-            </>
-          )}
         </div>
       </div>
     </div>

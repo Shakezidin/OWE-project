@@ -253,6 +253,7 @@ const ReasonOfIncomplete = () => {
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
+                    wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}
                     formatter={(value) => `${value}%`}
                   />
                   <Legend
@@ -306,7 +307,7 @@ const ReasonOfIncomplete = () => {
                       />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={tooltipStyle} />
+                  <Tooltip wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }} contentStyle={tooltipStyle} />
                   <Legend
                     layout="vertical"
                     align="right"

@@ -15,7 +15,8 @@
 }
 
 .axis {
-  font-size: 12px;
+  font-size: 8px;
+  font-weight: 500;
   color: #666666;
 }
 
@@ -32,7 +33,7 @@
 }
 
 .barLabel {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   fill: #666666;
 }
@@ -54,6 +55,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   padding: 8px !important;
   border: none !important;
+  font-size: 12px;
 }
 
 .tooltip :global(.recharts-tooltip-item) {
@@ -73,11 +75,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 50px;
   box-shadow: rgba(0, 0, 0, 0.1) 2px 4px 8px -1px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-left: 50px;
-  margin-right: 50px;
+  border-radius: 12px;
+  padding-bottom: 10px;
 }
 .recharts-surface{
     padding-top: 20px;
@@ -90,15 +91,16 @@
 .chartContainer {
   width: 100%;
   background-color: white;
-  padding-left: 13px;
+  /* padding-left: 13px;
   padding-right: 13px;
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 10px; */
+  padding: 10px 13px;
   border-radius: 18px;
   height: max-content;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 30px;
 }
 
 .selectWrapper {

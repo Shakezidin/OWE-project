@@ -20,7 +20,7 @@ const Ahj = () => {
   const stylesGraph = {
     width: '100%',
     height: '463px',
-    marginTop: '10px',
+    padding: "1rem"
   };
 
   const officeSelect = [
@@ -155,42 +155,44 @@ const Ahj = () => {
           </div>
         </div>
 
-        <div className="report-graphs" style={{ paddingInline: '50px' }}>
-          <h3 className="rep-graph-heading">Percentage</h3>
-          <div
-            className="report-graph"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 50,
-              boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <div className="main-graph" style={stylesGraph}>
-              <AhjBarChart />
-              <p className="chart-info-report">Week</p>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="report-graphs" >
+            <p className="rep-graph-heading">Percentage</p>
+            <div
+              className="report-graph"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
+                borderRadius: '12px',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <div className="main-graph" style={stylesGraph}>
+                <AhjBarChart />
+                <p className="chart-info-report">Week</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="report-graphs" style={{ paddingInline: '50px' }}>
-          <h3 className="rep-graph-heading">Total</h3>
-          <div
-            className="report-graph"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 50,
-              boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <div className="main-graph" style={stylesGraph}>
-              <BelowUpChartAhj />
-              <p className="chart-info-report">Week Install</p>
+          <div className="report-graphs">
+            <p className="rep-graph-heading">Total</p>
+            <div
+              className="report-graph"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
+                borderRadius: '12px',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <div className="main-graph" style={stylesGraph}>
+                <BelowUpChartAhj />
+                <p className="chart-info-report">Week Install</p>
+              </div>
             </div>
           </div>
         </div>
