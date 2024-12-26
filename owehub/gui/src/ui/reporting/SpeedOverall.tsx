@@ -734,7 +734,7 @@ const SpeedOverall: React.FC = () => {
                 installData={speedSummaryData?.data['Sale To Install']}
                 mpuData={speedSummaryData?.data['Sale To MPU']}
               />
-              <p className="chart-info-report">Week</p>
+              {/* <p className="chart-info-report">Week</p> */}
             </div>
           </div>
           //   ))

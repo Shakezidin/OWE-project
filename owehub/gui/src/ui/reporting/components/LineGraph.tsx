@@ -9,8 +9,14 @@ interface MetricEntry {
 }
 
 interface TransformedDataPoint {
-    name: string; // Explicitly define name as a string
-    [key: string]: number | string; // Allow any metric name, but ensure it can also be a string
+    name: string;
+    [key: string]: number | string; // Allow any metric name
+}
+
+interface DataPoint {
+    value: {
+        [key: string]: number; // Allow any metric name
+    };
 }
 
 const transformData = (data: MetricEntry[]): TransformedDataPoint[] => {
@@ -45,91 +51,88 @@ interface LineGraphProps {
     mpuData?: MetricEntry[];
 }
 
-
-
-
 const LineGraph: React.FC<LineGraphProps> = ({ batteryData, installData, mpuData }) => {
-    const transformedBatteryData = batteryData ? transformData(batteryData) : [];
-    const transformedInstallData = installData ? transformData(installData) : [];
-    const transformedMpuData = mpuData ? transformData(mpuData) : [];
+    const transformAndGetKeys = (data: DataPoint[]) => {
+        if (!data) return { transformedData: [], uniqueKeys: [] };
 
-    console.log("batteryData", batteryData)
-    console.log("installData", installData)
-    console.log("mpuData", mpuData)
+        const transformedData = transformData(data); // Transform data
+        const uniqueKeys = Array.from(
+            new Set(
+                transformedData.flatMap((point) => Object.keys(point).filter((key) => key !== "name"))
+            )
+        );
+        return { transformedData, uniqueKeys };
+    };
 
-    // Get unique keys from the first dataset for dynamic rendering
-    const allKeys = new Set<string>();
-    transformedBatteryData.forEach(dataPoint => Object.keys(dataPoint).forEach(key => allKeys.add(key)));
-    transformedInstallData.forEach(dataPoint => Object.keys(dataPoint).forEach(key => allKeys.add(key)));
-    transformedMpuData.forEach(dataPoint => Object.keys(dataPoint).forEach(key => allKeys.add(key)));
+    const battery = transformAndGetKeys(batteryData || []);
+    const install = transformAndGetKeys(installData || []);
+    const mpu = transformAndGetKeys(mpuData || []);
 
-    console.log("transformedBatteryData", transformedBatteryData)
-    console.log("transformedInstallData", transformedInstallData)
-    console.log("transformedMpuData", transformedMpuData)
+    const renderChart = (data: TransformedDataPoint[], keys: string[], title: string) => (
+        <div className="mb-8">
+            <h3 className="text-lg font-semibold mb-4">{title}</h3>
+            <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    {keys.map((key) => {
+                        let strokeColor;
+                        switch (key) {
+                            case "Peoria/Kingman":
+                                strokeColor = "#8884d8";
+                                break;
+                            case "Tucson":
+                                strokeColor = "#82ca9d";
+                                break;
+                            case "Colorado":
+                                strokeColor = "#ffc658";
+                                break;
+                            case "Albuquerque/El Paso":
+                                strokeColor = "#ff7300";
+                                break;
+                            case "Tempe":
+                                strokeColor = "#6b486b";
+                                break;
+                            case "Texas":
+                                strokeColor = "#a05d56";
+                                break;
+                            case "#N/A":
+                                strokeColor = "#d0743c";
+                                break;
+                            default:
+                                strokeColor = "#000"; // Fallback color
+                        }
+                        return (
+                            <Line
+                                key={key}
+                                type="monotone"
+                                dataKey={key}
+                                stroke={strokeColor}
+                                strokeWidth={2}
+                                dot={{ r: 3, fill: strokeColor }}
+                                activeDot={{ r: 4, fill: strokeColor }}
+                            />
+                        );
+                    })}
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    );
 
     return (
-        <div className="w-full h-96 mb-8">
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={transformedBatteryData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    {[...Array.from(allKeys)].map((key) => (
-                        <Line
-                            key={key}
-                            type="monotone"
-                            dataKey={key}
-                            stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} // Random color for each line
-                            strokeWidth={2}
-                            dot={{ r: 3 }}
-                            activeDot={{ r: 5 }}
-                        />
-                    ))}
-                </LineChart>
-            </ResponsiveContainer>
-            {/* Repeat for installData and mpuData */}
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={transformedInstallData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    {[...Array.from(allKeys)].map((key) => (
-                        <Line
-                            key={key}
-                            type="monotone"
-                            dataKey={key}
-                            stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} // Random color for each line
-                            strokeWidth={2}
-                            dot={{ r: 3 }}
-                            activeDot={{ r: 5 }}
-                        />
-                    ))}
-                </LineChart>
-            </ResponsiveContainer>
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={transformedMpuData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    {[...Array.from(allKeys)].map((key) => (
-                        <Line
-                            key={key}
-                            type="monotone"
-                            dataKey={key}
-                            stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} // Random color for each line
-                            strokeWidth={2}
-                            dot={{ r: 3 }}
-                            activeDot={{ r: 5 }}
-                        />
-                    ))}
-                </LineChart>
-            </ResponsiveContainer>
+        <div className="w-full">
+            {battery.transformedData.length > 0 &&
+                renderChart(battery.transformedData, battery.uniqueKeys, "Battery Data")}
+            {install.transformedData.length > 0 &&
+                renderChart(install.transformedData, install.uniqueKeys, "Install Data")}
+            {mpu.transformedData.length > 0 &&
+                renderChart(mpu.transformedData, mpu.uniqueKeys, "MPU Data")}
         </div>
     );
 };
