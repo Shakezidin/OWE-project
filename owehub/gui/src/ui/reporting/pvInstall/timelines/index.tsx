@@ -18,6 +18,7 @@ import WeekSelect from '../../components/Dropdowns/WeekSelect';
 import DaySelect from '../../components/Dropdowns/DaySelect';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import CompanySelect from '../../components/Dropdowns/CompanySelect';
+import BackButtom from '../../components/BackButtom';
 
 interface InstallData {
   name: string;
@@ -126,7 +127,7 @@ const Timelines = () => {
   return (
     <div className="pv-install-dashboard bg-white p2">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">PV Install Timelines</h4>
+      <BackButtom heading="PV Install Timelines" />
         <div className="report-header-dropdown flex-wrap">
           <div><YearSelect /></div>
           <div><WeekSelect /></div>

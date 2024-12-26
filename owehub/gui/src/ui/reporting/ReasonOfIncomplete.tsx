@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import CompanySelect from './components/Dropdowns/CompanySelect';
 import WeekSelect from './components/Dropdowns/WeekSelect';
+import BackButtom from './components/BackButtom';
 
 interface LabelProps {
   cx: number;
@@ -219,7 +220,7 @@ const ReasonOfIncomplete = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">Reason Of Incomplete</h4>
+      <BackButtom heading="Reason of Incomplete" />
         <div className="incomplete-dropdowns">
           <WeekSelect />
           <CompanySelect />

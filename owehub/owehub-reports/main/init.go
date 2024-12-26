@@ -109,7 +109,7 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-calc-service/v1/get_qualitysummaryreport",
+		"/owe-reports-service/v1/get_qualitysummaryreport",
 		apiHandler.HandleGetQualitySummaryReportRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},

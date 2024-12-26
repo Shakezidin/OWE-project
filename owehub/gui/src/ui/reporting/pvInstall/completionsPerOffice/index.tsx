@@ -6,6 +6,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import DaySelect from '../../components/Dropdowns/DaySelect';
 import WeekSelect from '../../components/Dropdowns/WeekSelect';
 import YearSelect from '../../components/Dropdowns/YearSelect';
+import BackButtom from '../../components/BackButtom';
 
 // Constants for colors
 const OFFICE_COLORS = {
@@ -433,7 +434,7 @@ const formatNumber = (value: number): string => {
   return (
     <div className="bg-white p2">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">PV Install Completions (Office)</h4>
+      <BackButtom heading="PV Install Completions (Office)" />
         <div className="report-header-dropdown flex-wrap">
           <div><YearSelect /></div>
           <div><WeekSelect /></div>
