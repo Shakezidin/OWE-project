@@ -37,6 +37,7 @@ import { LuImport } from 'react-icons/lu';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+import BackButtom from '../reporting/components/BackButtom';
 
 // Define types for data and graph properties
 interface DataPoint {
@@ -596,8 +597,7 @@ const TotalCount: React.FC = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">Reports</h4>
-        <div className="report-header-dropdown flex-wrap">
+      <BackButtom heading="Reports" />        <div className="report-header-dropdown flex-wrap">
           <div>
             <SelectOption
               options={[

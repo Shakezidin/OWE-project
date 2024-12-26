@@ -109,8 +109,10 @@ const AhjBarChart: React.FC = () => {
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data as Data[]} margin={{ top: 22, right: 10, left: 10, bottom: 6 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
-                <YAxis tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} tickFormatter={(value) => `${value}%`} domain={[0, 100]}  />
+                <XAxis             tickSize={10}
+ dataKey="name" tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }} />
+                <YAxis             tickSize={10}
+ tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }} tickFormatter={(value) => `${value}%`} domain={[0, 100]}  />
                 <Legend
                     align="center"
                     layout="horizontal"

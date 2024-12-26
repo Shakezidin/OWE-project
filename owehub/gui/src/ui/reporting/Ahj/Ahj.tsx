@@ -157,8 +157,9 @@ const Ahj = () => {
             </div>
 
 
-            <div className="report-graphs" style={{ paddingInline: "50px" }}>
-                <h3 className='rep-graph-heading'>Percentage</h3>
+            <div style={{ display:'flex', flexDirection:'column' }}>
+            <div className="report-graphs" style={{ padding:'0px 18px' }}>
+                <p className='rep-graph-heading'>Percentage</p>
                 <div
                     className="report-graph"
                     style={{
@@ -167,7 +168,8 @@ const Ahj = () => {
                         alignItems: 'center',
                         marginBottom: 50,
                         boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-                        border: "1px solid rgba(0, 0, 0, 0.1)"
+                        borderRadius:'12px',
+                        border: "1px solid rgba(0, 0, 0, 0.1)",
                     }}
                 >
 
@@ -179,16 +181,17 @@ const Ahj = () => {
 
             </div>
 
-            <div className="report-graphs" style={{ paddingInline: "50px" }}>
-                <h3 className='rep-graph-heading'>Total</h3>
+            <div className="report-graphs" style={{ padding:'0px 18px' }}>
+                <p className='rep-graph-heading'>Total</p>
                 <div
                     className="report-graph"
                     style={{
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: 50,
+                        // marginBottom: 50,
                         boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
+                        borderRadius:'12px',
                         border: "1px solid rgba(0, 0, 0, 0.1)"
                     }}
                 >
@@ -199,6 +202,7 @@ const Ahj = () => {
                     </div>
                 </div>
 
+            </div>
             </div>
 
 

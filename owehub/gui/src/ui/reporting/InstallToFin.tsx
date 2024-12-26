@@ -161,7 +161,7 @@ const InstalltoFin = () => {
                     <div>
                     <CustomSelect 
           options={data.map(item => ({ value: item.week.toString(), label: `Week ${item.week}` }))}
-          label="Office"
+          label="AHJ"
         />
                     </div>
 
@@ -182,6 +182,10 @@ const InstalltoFin = () => {
                 </div>
             </div>
 
+
+<div style={{display:'flex', flexDirection:'column', gap:"60px"}}>
+
+
       {/* Bar Chart */}
 
       <div className={styles.chartWrapper}>
@@ -198,8 +202,9 @@ const InstalltoFin = () => {
             className={styles.axis} 
             tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
             height={50}  // Adding space for the "Week" label below tickmarks
+            tickSize={10}
           />
-          <YAxis className={styles.axis} />
+          <YAxis className={styles.axis} tickSize={10} />
           <Tooltip     wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}
  wrapperClassName={styles.tooltip} />
 
@@ -241,8 +246,9 @@ const InstalltoFin = () => {
             dataKey="week" 
             tickFormatter={(value) => `Week ${value}`}  // Show Week number below tickmarks
             height={50} 
+            tickSize={10}
           />
-          <YAxis  className={styles.axis} 
+          <YAxis  className={styles.axis} tickSize={10} 
           />
           <Tooltip wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}/>
           <Line
@@ -273,6 +279,8 @@ const InstalltoFin = () => {
         </LineChart>
       </ResponsiveContainer>
       </div>
+
+</div>
 
       {/* <div style={{ width: '100%', height: '400px' }} className={styles.chartWrapper}>
         <StackedBarChart/>
