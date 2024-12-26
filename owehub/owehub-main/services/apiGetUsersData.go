@@ -348,9 +348,9 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 SELECT DISTINCT
 			 primary_sales_rep AS active_sales_representative
 		 FROM
-			 consolidated_data_view
+			 customers_customers_schema
 		 WHERE
-			 contract_date BETWEEN current_date - interval '90 day' AND current_date
+			 sale_date BETWEEN current_date - interval '90 day' AND current_date
 		 `
 
 		if role == string(types.RoleDealerOwner) {
