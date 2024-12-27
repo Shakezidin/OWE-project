@@ -33,6 +33,8 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		data      []map[string]interface{}
 		subReport models.ProductionSummarySubReport
 		apiResp   models.ProductionSummaryReportResponse
+		dbOffices []string
+		tableName string
 	)
 
 	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
@@ -59,10 +61,17 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	// Convert report office names to db office names
+	dbOffices = make([]string, len(dataReq.Office))
+	for i, reportOffice := range dataReq.Office {
+		dbOffices[i] = getDBOfficeName(reportOffice)
+	}
+
 	if dataReq.ReportType == "install" {
+		tableName = "pv_install_install_subcontracting_schema"
 
 		// 1. Install Scheduled - Day 1
-		data, err = queryProductionWeeklySystemSizes("pv_install_day_window", dataReq.Office, dataReq.Year)
+		data, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window", dbOffices, dataReq.Year)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -89,7 +98,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		// 2. Install Scheduled - Day 2
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
-		data, err = queryProductionWeeklySystemSizes("pv_install_day_window_day_2", dataReq.Office, dataReq.Year)
+		data, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_2", dbOffices, dataReq.Year)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -115,7 +124,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 3. Install Scheduled - Day 3
-		data, err = queryProductionWeeklySystemSizes("pv_install_day_window_day_3", dataReq.Office, dataReq.Year)
+		data, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_3", dbOffices, dataReq.Year)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -140,7 +149,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		}
 
 		// 4. Install Fix Scheduled
-		data, err = queryProductionWeeklySystemSizes("install_fix_scheduled_date", dataReq.Office, dataReq.Year)
+		data, err = queryProductionWeeklySystemSizes(tableName, "install_fix_scheduled_date", dbOffices, dataReq.Year)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -167,7 +176,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 5. Install Completed
-		data, err = queryProductionWeeklySystemSizes("pv_completion_date", dataReq.Office, dataReq.Year)
+		data, err = queryProductionWeeklySystemSizes(tableName, "pv_completion_date", dbOffices, dataReq.Year)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
@@ -180,7 +189,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 
 		if len(data) >= 2 {
 			secondLastWeek := data[len(data)-2]["week"].(int64)
-			data, err = queryProductionWeekSummary("pv_completion_date", secondLastWeek, dataReq.Year, dataReq.Office)
+			data, err = queryProductionWeekSummary("pv_completion_date", secondLastWeek, dataReq.Year, dbOffices)
 			if err != nil {
 				appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 				return
@@ -190,7 +199,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 6. Install Fix Completed
-		data, err = queryProductionWeeklySystemSizes("install_fix_complete_date", dataReq.Office, dataReq.Year)
+		data, err = queryProductionWeeklySystemSizes(tableName, "install_fix_complete_date", dbOffices, dataReq.Year)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
@@ -203,7 +212,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 
 		if len(data) >= 2 {
 			secondLastWeek := data[len(data)-2]["week"].(int64)
-			data, err = queryProductionWeekSummary("install_fix_complete_date", secondLastWeek, dataReq.Year, dataReq.Office)
+			data, err = queryProductionWeekSummary("install_fix_complete_date", secondLastWeek, dataReq.Year, dbOffices)
 			if err != nil {
 				appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 				return
@@ -213,7 +222,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 7. Pending Installs
-		data, err = queryProductionStatusGrouping(dataReq.Office)
+		data, err = queryProductionStatusGrouping(dbOffices)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
@@ -252,8 +261,9 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 //   - Grouping by week number (week in an year)
 //   - Grouping by office
 //   - Filtering by year and office
+//   - TableName decides which table to query
 //   - DateCol decides date column to group weeks by
-func queryProductionWeeklySystemSizes(dateCol string, offices []string, year int) ([]map[string]interface{}, error) {
+func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices []string, year int) ([]map[string]interface{}, error) {
 	var (
 		err         error
 		query       string
@@ -271,8 +281,7 @@ func queryProductionWeeklySystemSizes(dateCol string, offices []string, year int
             CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
             office AS office,
             CAST(EXTRACT('WEEK' FROM %s) AS INT) AS week_number
-        FROM
-            pv_install_install_subcontracting_schema
+        FROM %s
         WHERE
             system_size != ''
             AND OFFICE IS NOT NULL
@@ -280,7 +289,7 @@ func queryProductionWeeklySystemSizes(dateCol string, offices []string, year int
             AND OFFICE = ANY($2)
         GROUP BY week_number, office
         ORDER BY week_number
-    `, dateCol, dateCol)
+    `, dateCol, tableName, dateCol)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, []interface{}{year, pq.Array(offices)})
 	if err != nil {
@@ -329,13 +338,13 @@ func queryProductionWeeklySystemSizes(dateCol string, offices []string, year int
 				continue
 			}
 			officesFound[office] = true
-			weekDataAccumulated[office] = sysSize
+			weekDataAccumulated[getReportOfficeName(office)] = sysSize
 		}
 
 		// for all offices that were not found, add a row with zero
 		for _, office := range offices {
 			if _, ok := officesFound[office]; !ok {
-				weekDataAccumulated[office] = 0.0
+				weekDataAccumulated[getReportOfficeName(office)] = 0.0
 			}
 		}
 
@@ -344,7 +353,7 @@ func queryProductionWeeklySystemSizes(dateCol string, offices []string, year int
 			zeroWeekData := make(map[string]interface{})
 			zeroWeekData["week"] = i
 			for _, office := range offices {
-				zeroWeekData[office] = 0.0
+				zeroWeekData[getReportOfficeName(office)] = 0.0
 			}
 			data = append(data, zeroWeekData)
 		}
@@ -362,19 +371,20 @@ func queryProductionWeeklySystemSizes(dateCol string, offices []string, year int
 //   - DateCol decides date column to group weeks by
 func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offices []string) ([]map[string]interface{}, error) {
 	var (
-		err   error
-		query string
-		data  []map[string]interface{}
+		err     error
+		query   string
+		data    []map[string]interface{}
+		outData []map[string]interface{}
 	)
 	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
 	defer func() { log.ExitFn(0, "HandleGetProductionSummaryReportRequest", err) }()
 
 	query = fmt.Sprintf(`
         SELECT
-            office AS "Office",
-            CAST(SUM(system_size::DECIMAL) AS FLOAT) AS "System Size",
-            COUNT(DISTINCT customer_unique_id) AS "Customers",
-            CAST(AVG(system_size::DECIMAL) AS FLOAT) AS "Average System Size"
+            office,
+            CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
+            COUNT(DISTINCT customer_unique_id) AS customers_count,
+            CAST(AVG(system_size::DECIMAL) AS FLOAT) AS system_size_avg
         FROM pv_install_install_subcontracting_schema
         WHERE system_size != ''
         AND EXTRACT('WEEK' FROM %s) = $1
@@ -389,7 +399,17 @@ func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offi
 		log.FuncErrorTrace(0, "Failed to retrieve data from DB err: %v", err)
 		return nil, fmt.Errorf("failed to retrieve data from DB")
 	}
-	return data, nil
+
+	for _, item := range data {
+		officeName := getReportOfficeName(item["office"].(string))
+		outData = append(outData, map[string]interface{}{
+			"Office":              officeName,
+			"System Size":         item["system_size_sum"],
+			"Customers":           item["customers_count"],
+			"Average System Size": item["system_size_avg"],
+		})
+	}
+	return outData, nil
 }
 
 // Query Production Reports:
@@ -414,6 +434,7 @@ func queryProductionStatusGrouping(offices []string) ([]map[string]interface{}, 
 		"JEOPARDY",
 	}
 	appStatusExceptions = []string{
+		"",
 		"Install Complete",
 		"CANCEL",
 		"DUPLICATE",
@@ -465,7 +486,7 @@ func queryProductionStatusGrouping(offices []string) ([]map[string]interface{}, 
 	for office, officeData := range officeGrps {
 		officeDataAccumulated := make(map[string]interface{})
 
-		officeDataAccumulated["office"] = office
+		officeDataAccumulated["office"] = getReportOfficeName(office)
 		for _, row := range officeData {
 			sysSize, ok := row["system_size_sum"].(float64)
 			if !ok {

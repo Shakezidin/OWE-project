@@ -1,0 +1,58 @@
+[
+    {
+        "db_office_name": "TXHOUS01",
+        "report_office_name": "Texas"
+    },
+    {
+        "db_office_name": "TXSAN01",
+        "report_office_name": "Texas"
+    },
+    {
+        "db_office_name": "AZTEM01",
+        "report_office_name": "Tempe"
+    },
+    {
+        "db_office_name": "TXDAL01",
+        "report_office_name": "Texas"
+    },
+    {
+        "db_office_name": "NMABQ01",
+        "report_office_name": "Albuquerque/El Paso"
+    },
+    {
+        "db_office_name": "COGJT1",
+        "report_office_name": "Colorado"
+    },
+    {
+        "db_office_name": "CODEN1",
+        "report_office_name": "Colorado"
+    },
+    {
+        "db_office_name": "",
+        "report_office_name": "N/A"
+    },
+    {
+        "db_office_name": "No Office",
+        "report_office_name": "N/A"
+    },
+    {
+        "db_office_name": "TXELP01",
+        "report_office_name": "Albuquerque/El Paso"
+    },
+    {
+        "db_office_name": "TXAUS01",
+        "report_office_name": "Texas"
+    },
+    {
+        "db_office_name": "AZKING01",
+        "report_office_name": "Peoria/Kingman"
+    },
+    {
+        "db_office_name": "AZPEO01",
+        "report_office_name": "Peoria/Kingman"
+    },
+    {
+        "db_office_name": "AZTUC01",
+        "report_office_name": "Tucson"
+    }
+]

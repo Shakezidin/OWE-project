@@ -33,6 +33,7 @@ type CfgFilePaths struct {
 	LoggingConfJsonPath string
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
+	OfficeMapJsonPath   string
 }
 
 var (
@@ -295,6 +296,12 @@ func InitConfigFromFiles() (err error) {
 		return err
 	}
 
+	/* Read and Initialize Office Mapping from cfg */
+	if err := FetchOfficeMapping(); err != nil {
+		log.ConfErrorTrace(0, "FetchOfficeMapping failed %+v", err)
+		return err
+	}
+
 	/* Set HTTP Callback paths*/
 	InitHttpCallbackPath()
 
@@ -316,6 +323,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
+	gCfgFilePaths.OfficeMapJsonPath = gCfgFilePaths.CfgJsonDir + "officeMapping.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
@@ -402,6 +410,45 @@ func FetchDbCfg() (err error) {
 	types.CommGlbCfg.DbConfList = dbCfgList
 	log.ConfDebugTrace(0, "Database Configurations: %+v", types.CommGlbCfg.DbConfList)
 	return err
+}
+
+/******************************************************************************
+ * FUNCTION:     FetchOfficeMapping
+ * DESCRIPTION:  function is used to get the office mapping configuration
+ * RETURNS:      error
+ ******************************************************************************/
+func FetchOfficeMapping() (err error) {
+	log.EnterFn(0, "FetchOfficeMapping")
+	defer func() { log.ExitFn(0, "FetchOfficeMapping", err) }()
+
+	var officeMappingCfg []models.ReportsOfficeMappingItem
+
+	log.ConfDebugTrace(0, "Reading Office Mapping Config from: %+v", gCfgFilePaths.OfficeMapJsonPath)
+	file, err := os.Open(gCfgFilePaths.OfficeMapJsonPath)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.OfficeMapJsonPath, err)
+		return err
+	}
+
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &officeMappingCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.OfficeMapJsonPath, err)
+		return err
+	}
+
+	officeMappingParsed := models.ReportsOfficeMapping{
+		DbToReportMap: make(map[string]string),
+		ReportToDbMap: make(map[string]string),
+	}
+	for _, item := range officeMappingCfg {
+		officeMappingParsed.DbToReportMap[item.DBOfficeName] = item.ReportOfficeName
+		officeMappingParsed.ReportToDbMap[item.ReportOfficeName] = item.DBOfficeName
+	}
+
+	types.CommGlbCfg.ReportsOfficeMapping = officeMappingParsed
+	log.ConfDebugTrace(0, "Office Mapping Configurations: %+v", officeMappingCfg)
+	return nil
 }
 
 /******************************************************************************
