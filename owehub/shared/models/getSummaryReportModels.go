@@ -30,7 +30,7 @@ type SaleToInstallSpeedSummaryReportRequest struct {
 
 type DataPoint struct {
 	Value map[string]interface{} `json:"value"`
-	Index int                    `json:"index"`
+	Index int                    `json:"index,omitempty"`
 }
 
 type SummaryReportResponse struct {

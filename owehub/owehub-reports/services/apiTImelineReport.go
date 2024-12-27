@@ -192,6 +192,7 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 				"out":    0,
 			}
 		}
+		qtrToCountMaping[quarter][status] += int64(count)
 
 		slaStatusSlabel := "Within SLA"
 		if status == "out" {
@@ -210,13 +211,19 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 
 	for qtr, countMap := range qtrToCountMaping {
 		total := countMap["within"] + countMap["out"]
-		qtrStr := fmt.Sprintf("Q%2.f", qtr)
+
+		withinSlaPercentage := 0.0
+		outSideSlaPercentage := 0.0
+		if total > 0 {
+			withinSlaPercentage = float64(countMap["within"]) / float64(total) * 100.00
+			outSideSlaPercentage = float64(countMap["out"]) / float64(total) * 100.00
+		}
 
 		qtrSummaryItem := map[string]float64{
-			"Within SLA Count":               float64(countMap["within"]),
-			"Within SLA Percentage":          float64(countMap["within"]) / float64(total) * 100,
-			"Out of SLA Count":               float64(countMap["out"]),
-			"Out of SLA Percentage" + qtrStr: float64(countMap["out"]) / float64(total) * 100,
+			"Within SLA Count":      float64(countMap["within"]),
+			"Within SLA Percentage": withinSlaPercentage,
+			"Out of SLA Count":      float64(countMap["out"]),
+			"Out of SLA Percentage": outSideSlaPercentage,
 		}
 		qtrSummary[fmt.Sprintf("q%.0f", qtr)] = qtrSummaryItem
 	}
@@ -304,6 +311,20 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		states = "pvi.state IN (" + strings.Join(escapedStates, ", ") + ")"
 	}
 
+	quarter := ""
+	if len(dataReq.Quarter) == 0 {
+		quarter = "'ALL' = 'ALL'"
+	} else {
+		for i, q := range dataReq.Quarter {
+			if i == 0 {
+				quarter = fmt.Sprintf("%d", q)
+				continue
+			}
+			quarter = fmt.Sprintf("%s, %d", quarter, q)
+		}
+		quarter = fmt.Sprintf("DATE_PART('quarter', fin.pv_fin_date) IN (%s)", quarter)
+	}
+
 	query := fmt.Sprintf(`SELECT
     		DATE_PART('week', fin.pv_fin_date) AS install_week,
     		CASE 
@@ -323,14 +344,15 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
     		pvi.customer_unique_id = fin.customer_unique_id
 		WHERE
     		DATE_PART('year', fin.pv_fin_date) = $1
-    		AND (%s)
+			AND (%s)
+			AND (%s)
     		AND (%s)
     		AND (%s)
 		GROUP BY 
     		install_week, day_range
 		ORDER BY 
     		install_week, day_range;
-	`, Offices, ahj, states)
+	`, Offices, ahj, states, quarter)
 
 	whereEleList = append(whereEleList, dataReq.Year)
 
@@ -352,7 +374,6 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 	}
 
 	for _, item := range dbData {
-		log.FuncErrorTrace(0, "item: %+v", item)
 		install_week := int(item["install_week"].(float64))
 		install_week -= 1
 
@@ -360,6 +381,7 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		project_count := item["project_count"].(int64)
 
 		data[install_week].Value[days_range] = project_count
+		data[install_week].Index = install_week + 1
 	}
 	reportResp.Data[categories[0]] = data
 
@@ -379,11 +401,12 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 							AND (%s)
 							AND (%s)
 							AND (%s)
+							AND (%s)
 						GROUP BY
     						install_week
 						ORDER BY
     						install_week;
-					`, Offices, ahj, states)
+					`, quarter, Offices, ahj, states)
 
 	dbDataAverage, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
@@ -392,8 +415,6 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		appserver.FormAndSendHttpResp(resp, "Failed to get the Install to Fin Report", http.StatusInternalServerError, nil)
 		return
 	}
-
-	log.FuncErrorTrace(0, "dbDataAverage: %+v", dbDataAverage)
 
 	var dataAverage []models.DataPoint = make([]models.DataPoint, 52)
 	for i := 0; i < 52; i++ {
@@ -413,8 +434,8 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 			fmt.Println("Error parsing float:", err)
 			return
 		}
-
 		dataAverage[install_week].Value["average"] = avgDayDiff
+		dataAverage[install_week].Index = install_week + 1
 	}
 	reportResp.Data[categories[1]] = dataAverage
 
