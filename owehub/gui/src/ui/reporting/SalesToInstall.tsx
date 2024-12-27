@@ -712,14 +712,15 @@ const SalesToInstall: React.FC = () => {
                       <XAxis
                         dataKey="name"
                         tick={{
-                          fontSize: 12,
+                          fontSize: 8,
                           fontWeight: 500,
                           fill: '#818181',
                         }}
+                        dy={5}
                       />
                       <YAxis
                         tick={{
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: 500,
                           fill: '#818181',
                         }}

@@ -215,6 +215,7 @@ const ReasonOfIncomplete = () => {
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',
+    borderRadius: "4px"
   };
 
   return (
@@ -230,7 +231,7 @@ const ReasonOfIncomplete = () => {
         {chartDataSets.map((dataSet, index) => (
           <div key={index} className="time-completions">
             <div className="time-bar">
-              <p>{titles[index]}</p>
+              <p className="time-bar-p">{titles[index]}</p>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={dataSet.barData}
@@ -274,19 +275,12 @@ const ReasonOfIncomplete = () => {
                     stackId="a"
                     isAnimationActive={false}
                   />
-                  {/* <Bar
-                  dataKey="percent"
-                  fill="#CA3D01"
-                  background={{ fill: '#CFE621' }}
-                  barSize={15}
-                  isAnimationActive={false}
-                /> */}
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <div className="line"></div>
             <div className="time-radialbar">
-              <p>Reason for Incompletion</p>
+              <p className='time-radialbar-p'>Reason for Incompletion</p>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -307,16 +301,17 @@ const ReasonOfIncomplete = () => {
                       />
                     ))}
                   </Pie>
-                  <Tooltip wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }} contentStyle={tooltipStyle} />
+                  <Tooltip wrapperStyle={{fontSize: 12, outline: "none", borderRadius:0, padding:0, boxShadow:'none' }} contentStyle={tooltipStyle} />
                   <Legend
                     layout="vertical"
                     align="right"
-                    verticalAlign="middle"
+                    verticalAlign="top"
                     iconType="circle"
                     iconSize={10}
                     wrapperStyle={{
                       fontSize: '10px',
                       marginRight: 50,
+                      marginTop: 50
                     }}
                     height={100}
                     payload={dataSet.pieData.map((entry, i) => ({

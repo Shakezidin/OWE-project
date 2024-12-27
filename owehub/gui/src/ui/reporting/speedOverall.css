@@ -1,11 +1,11 @@
 .speed-overall-parent {
     display: flex;
+    justify-content: space-between;
 }
 
 .speed-overall-parent .main-graph {
     flex: 0 0 75%;
     max-width: 75%;
-    padding: 15px;
 }
 
 .speed-overall-parent .table {

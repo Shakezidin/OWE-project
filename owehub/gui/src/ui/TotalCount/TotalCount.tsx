@@ -715,7 +715,7 @@ const TotalCount: React.FC = () => {
         <div className="report-graphs">
           {graphs.map((graph, index) => (
             <div key={index} className="report-graph">
-              <h5 className="graph-title">{graph.title}</h5>
+              <p className="graph-title">{graph.title}</p>
 
               {isLoading ? (
                 <div
@@ -757,14 +757,15 @@ const TotalCount: React.FC = () => {
                       <XAxis
                         dataKey="name"
                         tick={{
-                          fontSize: 12,
+                          fontSize: 8,
                           fontWeight: 500,
                           fill: '#818181',
                         }}
+                        dy={5}
                       />
                       <YAxis
                         tick={{
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: 500,
                           fill: '#818181',
                         }}
