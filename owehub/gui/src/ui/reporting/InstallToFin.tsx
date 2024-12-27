@@ -22,6 +22,9 @@ import OfficeSelect from './components/Dropdowns/OfficeSelect';
 import AHJSelect from './components/Dropdowns/AHJSelect';
 import StateSelect from './components/Dropdowns/StateSelect';
 import QuarterSelect from './components/Dropdowns/QuarterSelect';
+import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
+import DropdownCheckBox from '../components/DropdownCheckBox';
+import YearSelect from './components/Dropdowns/YearSelect';
 
 interface LabelProps {
   x: number;
@@ -48,50 +51,18 @@ interface Option {
 
 const InstalltoFin = () => {
   // State Management
+  const [selectedOffices, setSelectedOffices] = useState<Option[]>([]);
+  const [selectedAhj, setSelectedAhj] = useState<Option[]>([]);
+  const [selectedState, setSelectedState] = useState<Option[]>([]);
+  const [selectedQuarter, setSelectedQuarter] = useState<Option[]>([]);
+
   const [highlightedLegend, setHighlightedLegend] = useState<string | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
   const [chartData, setChartData] = useState<ChartData[]>([]);
 
-  // Initial states matching API request
-  const [selectedStates, setSelectedState] = useState<string[]>([
-    'TX :: Texas',
-    'AZ :: Arizona',
-    'NM :: New Mexico',
-    'TX :: Texas',
-  ]);
-  const [selectedOffices, setSelectedOffices] = useState<string[]>([
-    'AZKING01',
-    'AZPEO01',
-    'AZTEM01',
-    'AZTUC01',
-    'CODEN1',
-    'COGJT1',
-    'NMABQ01',
-    'No Office',
-    'TXAUS01',
-    'TXDAL01',
-    'TXELP01',
-  ]);
-  const [selectedAhj, setSelectedAhj] = useState<string[]>([
-    'null',
-    'AHJ',
-    'Abilene, City of (TX)',
-    'Adams County (CO)',
-    'Alamogordo, City of (NM)',
-    'Alamosa City (CO)',
-    'Alamosa County (CO)',
-    'Albuquerque, City of (NM)',
-    'Alice, City of (TX)',
-    'Allen, City of (TX)',
-    'Amarillo, City of (TX)',
-    'Andrews, City of (TX)',
-    'Angelina County (TX)',
-    'Anna, City of (TX)',
-    // Add more options as needed
-]);
-  const [selectedQuarter, setSelectedQuarter] = useState<string[]>([]);
+  
   const [selectedYear, setSelectedYear] = useState<Option>({
     label: '2024',
     value: '2024',
@@ -104,45 +75,88 @@ const InstalltoFin = () => {
     error: installToFinDataError,
   } = useAppSelector((state) => state.reportingSlice.installToFinData);
 
-  // Data Mapping Function
-  const mapApiDataToChartData = (apiData: any) => {
-  const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
-    const averageDaysData =
-      apiData?.data?.['Average Days From Install to FIN'] || [];
+  // data mapping function for Install to FIN charts
+  const mapApiDataToChartData = (apiData: any): ChartData[] => {
+    const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
+    const averageDaysData = apiData?.data?.['Average Days From Install to FIN'] || [];
+    
+    // Create a map of all weeks and their data
+    const weekMap = new Map();
+    
+    // Initialize all weeks from 1 to max index found
+    const maxWeek = Math.max(
+      ...dayRangeData.map((item: any) => item.index || 0),
+      ...averageDaysData.map((item: any) => item.index || 0)
+    );
+    
+    // Initialize all weeks with default values
+    for (let week = 1; week <= maxWeek; week++) {
+      weekMap.set(week, {
+        week,
+        low: 0,        // 0-15 days
+        medium: 0,     // 16-30 days
+        high: 0,       // 31-45 days
+        veryHigh: 0,   // 46-60 days
+        ultraHigh: 0,  // 61-90 days
+        extreme: 0,    // >90 days
+        totalDays: 0
+      });
+    }
   
-    return dayRangeData.map((item: any, index: number) => ({
-      week: index + 1,
-      low: item.value?.['0-15 days'] || 0,
-      medium: item.value?.['16-30 days'] || 0,
-      high: item.value?.['31-45 days'] || 0,
-      veryHigh: item.value?.['46-60 days'] || 0,
-      ultraHigh: item.value?.['61-90 days'] || 0,
-      extreme: item.value?.['>90 days'] || 0,
-      totalDays: averageDaysData[index]?.value?.average || 0,
-    }));
-};
+  
+     // Map day ranges to their corresponding properties
+     const rangeToProperty = {
+      '0-15 days': 'low',
+      '16-30 days': 'medium',
+      '31-45 days': 'high',
+      '46-60 days': 'veryHigh',
+      '61-90 days': 'ultraHigh',
+      '>90 days': 'extreme'
+    };
+    
+    // Process day range data
+    dayRangeData.forEach((item: any) => {
+      if (item.index && item.value) {
+        const weekData = weekMap.get(item.index);
+        if (weekData) {
+          // Add counts for each range
+          Object.entries(item.value).forEach(([range, count]) => {
+            const property = rangeToProperty[range as keyof typeof rangeToProperty];
+            if (property) {
+              weekData[property] = (weekData[property] || 0) + (count as number);
+            }
+          });
+        }
+      }
+    });
+    
+    // Process average days data
+    averageDaysData.forEach((item: any) => {
+      if (item.index && item.value?.average !== undefined) {
+        const weekData = weekMap.get(item.index);
+        if (weekData) {
+          weekData.totalDays = item.value.average;
+        }
+      }
+    });
+    
+    // Convert map to array and sort by week
+    return Array.from(weekMap.values())
+      .sort((a, b) => a.week - b.week);
+  };
 
 // API Call Function 
 const getNewFormData = async () => {
   setIsLoading(true);
   try {
-      const numericQuarters = selectedQuarter.map((qtr) => {
-          switch (qtr) {
-              case 'qtr1': return 1;
-              case 'qtr2': return 2;
-              case 'qtr3': return 3;
-              case 'qtr4': return 4;
-              default: return null; // Handle unexpected cases
-          }
-      }).filter((qtr) => qtr !== null); // Filter out any null values
 
       const response = await dispatch(
           getTimelineInstallToFinData({
               year: selectedYear.value,
-              state: selectedStates,
-              office: selectedOffices,
-              ahj: selectedAhj,
-              quarter: numericQuarters, // Pass the numeric quarters
+              state: selectedState.map((item) => item.value),
+              office: selectedOffices.map((item) => item.value),
+              ahj: selectedAhj.map((item) => item.value),
+              quarter: selectedQuarter.map((item) => Number(item.value)), // Pass the numeric quarters
           })
       ).unwrap();
 
@@ -170,7 +184,7 @@ const getNewFormData = async () => {
     getNewFormData(); // Trigger API call on change
   }, [
     selectedYear.value,
-    selectedStates,
+    selectedState,
     selectedOffices,
     selectedAhj,
     selectedQuarter,
@@ -234,32 +248,140 @@ const getNewFormData = async () => {
     }
   };
 
+  const [officeSelect, setOfficeSelect] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectloading, setSelectLoading] = useState(false);
+
+
+  const [stateSet, setStateSet] = useState([]);
+  const [ahj, setAhj] = useState([]);
+  const QuarterSet = [
+    {
+      label: `Quarter 1`,
+      value: `1`,
+    },
+    {
+      label: `Quarter 2`,
+      value: `2`,
+    },
+    {
+      label: `Quarter 3`,
+      value: `3`,
+    },
+    {
+      label: `Quarter 4`,
+      value: `4`,
+    },
+  ];
+
+  const [isFetch, setIsFetch] = useState(false);
+  const handleYearChange = (value: Option | null) => {
+    if (value) {
+      setSelectedYear(value);
+    }
+  };
+
+  
+
+  useEffect(() => {
+    setSelectedQuarter(QuarterSet)
+    setSelectLoading(true);
+    const fetchData = async () => {
+      try {
+        const response = await reportingCaller('get_offices_list', {});
+
+
+        if (response.status === 200) {
+
+          const officeData = response.data.offices.map((office: any) => ({
+            label: office,
+            value: office,
+          }));
+          setOfficeSelect(officeData);
+          setSelectedOffices(officeData);
+          const stateData = response.data.states.map((state: any) => ({
+            label: state,
+            value: state,
+          }));
+          setSelectedState(stateData)
+          setStateSet(stateData)
+          const ahjData = response.data.ahj.map((ahj: any) => ({
+            label: ahj,
+            value: ahj,
+          }));
+          setSelectedAhj(ahjData)
+          setAhj(ahjData)
+          setIsFetch(true)
+        } else {
+          console.error('Error fetching data:', response.data.message);
+          setSelectLoading(false);
+        }
+      } catch (error) {
+        console.error('Error making API request:', error);
+        setSelectLoading(false);
+      }
+      setSelectLoading(false);
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
         <BackButtom heading="Install to FIN" />
         <div className="report-header-dropdown flex-wrap">
+          {/* <div><DaySelect /></div> */}
           <div>
-            <OfficeSelect
-              onOfficeChange={setSelectedOffices}
+            <DropdownCheckBox
+              label={"Offices"}
+              placeholder={'Search Offices'}
+              selectedOptions={selectedOffices}
+              options={officeSelect}
+              onChange={(val) => {
+                setSelectedOffices(val);
+              }}
+              disabled={selectloading|| loading}
             />
           </div>
 
           <div>
-            <AHJSelect
-              onAhjChange={setSelectedAhj}
+            <DropdownCheckBox
+              label={"State"}
+              placeholder={'Search States'}
+              selectedOptions={selectedState}
+              options={stateSet}
+              onChange={(val) => {
+                setSelectedState(val);
+              }}
+              disabled={selectloading|| loading}
+            />
+          </div>
+
+          <div><YearSelect value={selectedYear} onChange={handleYearChange} disabled={selectloading || loading}/></div>
+
+          <div>
+            <DropdownCheckBox
+              label={"Quarter"}
+              placeholder={'Search Quarter'}
+              selectedOptions={selectedQuarter}
+              options={QuarterSet}
+              onChange={(val) => {
+                setSelectedQuarter(val);
+              }}
+              disabled={selectloading || loading}
             />
           </div>
 
           <div>
-            <StateSelect
-              onStateChange={setSelectedState}
-            />
-          </div>
-
-          <div>
-            <QuarterSelect
-              onQuarterChange={setSelectedQuarter}
+            <DropdownCheckBox
+              label={"AHJ"}
+              placeholder={'Search AHJ'}
+              selectedOptions={selectedAhj}
+              options={ahj}
+              onChange={(val) => {
+                setSelectedAhj(val);
+              }}
+              disabled={selectloading || loading}
             />
           </div>
         </div>
