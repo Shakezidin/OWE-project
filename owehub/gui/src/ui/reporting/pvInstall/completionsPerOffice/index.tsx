@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Table } from 'antd';
+import styles from '../../styles/CompletionsPerOffice.module.css';
 import {
   BarChart,
   Bar,
@@ -450,13 +451,13 @@ const CompletionsPerOffice: React.FC = () => {
   });
 
   const tooltipStyle = {
-    fontSize: '8px',
+    fontSize: '10px',
     padding: '6px',
   };
 
   return (
-    <div className="total-main-container">
-      <div className="headingcount flex justify-between items-center">
+<div className={` total-main-container`}>
+<div className="headingcount flex justify-between items-center">
         <BackButtom heading="PV Install Completions (Office)" />
         <div className="report-header-dropdown flex-wrap">
           <div>
@@ -509,14 +510,17 @@ const CompletionsPerOffice: React.FC = () => {
         </div>
       </div>
 
-      <div className="reports-yscroll">
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Office by Count
-          </h3>
+      <div className={`${styles.container} reports-yscroll`}>
+      <div>
+      <p className={`${styles.tableHeading}`}>
+        Installs Completed per Office by Count
+          </p>
+        <div className={styles.wrapper}>
+        <div className="">
+       
           <div
             className="flex justify-end h5 bold pr3"
-            style={{ background: '#f0f4c3' }}
+            style={{ background: '#f0f4c3', padding:'10px 15px',borderRadius: '12px 12px 0 0' }}
             title="Week / Customer"
           >
             Week / Customer
@@ -532,41 +536,49 @@ const CompletionsPerOffice: React.FC = () => {
             sticky={false}
           />
         </div>
+        </div>
+      </div>
 
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Office by System Size
-          </h3>
+       
+        <div>
+        <p className={`${styles.tableHeading}`}>
+        Installs Completed per Office by Count
+          </p>
+        <div className={styles.wrapper}>
+        <div className="">
+       
           <div
             className="flex justify-end h5 bold pr3"
-            style={{ background: '#b2ebf2' }}
+            style={{ background: '#f0f4c3', padding:'10px 15px',borderRadius: '12px 12px 0 0' }}
             title="Week / Customer"
           >
-            Week / System Size{' '}
+            Week / Customer
           </div>
           <Table
-            columns={systemSizeColumns}
+            columns={countColumns}
             dataSource={[
-              ...systemSizeTableData.map((row) => ({
-                ...row,
-                grandTotal: (
-                  <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
-                ),
-              })),
-              calculateSystemSizeGrandTotals(systemSizeTableData),
+              ...countTableData,
+              calculateGrandTotals(countTableData),
             ]}
             pagination={false}
             className="install-table"
+            sticky={false}
           />
         </div>
+        </div>
+        </div>
 
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">
+        
+        <div>
+        <p className={`${styles.tableHeading}`}>
             Installs Completed per Office by System Size (Average kW)
-          </h3>
+          </p>
+        <div className={styles.wrapper}>
+        <div className="">
+        
           <div
             className="flex justify-end h5 bold pr3"
-            style={{ background: '#f0f4c3' }}
+            style={{ background: '#f0f4c3',padding:'10px 15px' }}
             title="Week / Customer"
           >
             Week / System Size{' '}
@@ -581,18 +593,23 @@ const CompletionsPerOffice: React.FC = () => {
             className="install-table"
           />
         </div>
+        </div>
+        </div>
 
-        <div className="bg-white rounded-lg shadow p2 mb-6">
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Office by System Size
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+
+        <div className="">
+        <p className={`${styles.tableHeading}`}>
+        Installs Completed per Office by System Size
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={stackedBarData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
                 angle={-45}
@@ -600,13 +617,26 @@ const CompletionsPerOffice: React.FC = () => {
                 dx={-8}
                 interval={0}
                 height={60}
+                tickSize={10}
+
               />
-              <YAxis tick={{ fontSize: 10, fill: '#555' }} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <YAxis tick={{ fontSize: 8, fill: '#555' }}
+                                  tickSize={10}
+                                  />
+              <Tooltip  wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+          formatter={(value) => `${value}%`}
+         contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(OFFICE_COLORS).map((office) => (
                 <Bar
@@ -618,31 +648,50 @@ const CompletionsPerOffice: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
+
         </div>
 
-        <div className="bg-white rounded-lg shadow p2">
-          {/* <h3 className="text-lg font-semibold mb-4">Install Completion Trends by Office Code</h3> */}
-          <ResponsiveContainer width="100%" height={400}>
+        
+
+
+        <div className="">
+          <p className={styles.tableHeading}>Install Completion Trends by Office Code</p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <LineChart data={lineChartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
                 interval={0}
                 height={60}
               />
-              <YAxis tick={{ fontSize: 10, fill: '#555' }} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <YAxis tick={{ fontSize: 8, fill: '#555' }}
+              tickSize={10} />
+              <Tooltip  wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+          formatter={(value) => `${value}%`}
+         contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(CODE_COLORS).map((code) => (
                 <Line
@@ -656,7 +705,11 @@ const CompletionsPerOffice: React.FC = () => {
               ))}
             </LineChart>
           </ResponsiveContainer>
+            </div>
+          </div>
+
         </div>
+
       </div>
     </div>
   );
