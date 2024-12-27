@@ -107,3 +107,10 @@ type WeekData struct {
 	TexasApproved             int `json:"Texas_Approved"`
 	ColoradoApproved          int `json:"Colorado_Approved"`
 }
+
+// Office list Response
+type GetOfficesListResponse struct {
+	Offices []string `json:"offices"` // List of distinct office names
+	States  []string `json:"states"`  // List of distinct states names
+	Ahj     []string `json:"ahj"`     // List of distinct ahj names
+}
