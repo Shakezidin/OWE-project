@@ -11,9 +11,10 @@ const CustomMultiSelect = ({ data,disable, placeholder,onOfficeChange = ()=>{ } 
     
       const handleChange = (val: Option[]) => {
         setSelectedOption(val);
-        // Extract values and send to parent
         onOfficeChange(val.map(option => option.value));
       };
+
+      console.log(selectedOption, "response.message")
 
     return (
         <div>

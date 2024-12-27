@@ -45,8 +45,11 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
 }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
+    const weekNumber = parseInt(payload[0].payload.name, 10) + 1;
+    const week = `Week ${weekNumber}`;
     return (
       <div>
+        <p className="label">{`${week}`}</p>
         <p className="label">{`OUTOF SLA: ${data['Out of SLA']}`}</p>
         <p className="label">{`WITHIN SLA: ${data['Within SLA']}`}</p>
       </div>
@@ -90,6 +93,10 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
           tick={{ fontSize: 8, fontWeight: 500, fill: '#818181' }}
           angle={-45}
           dy={10}
+          tickFormatter={(value) => {
+            const weekNumber = parseInt(value, 10) + 1;
+            return `${weekNumber}`;
+          }}
         />
         <YAxis
           tickSize={10}

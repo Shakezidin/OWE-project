@@ -7,10 +7,11 @@ export interface Option {
 }
 interface YearSelectProps {
     onChange?: (value: Option | null) => void;
-    value?: Option; // Make value optional
+    value?: Option;
+    disabled?:boolean
 }
 
-const YearSelect: React.FC<YearSelectProps> = ({ onChange = () => {}, value }) => {
+const YearSelect: React.FC<YearSelectProps> = ({disabled, onChange = () => {}, value }) => {
     const generateYearOptions = () => {
         const currentYear = new Date().getFullYear();
         const options = [];
@@ -31,6 +32,7 @@ const YearSelect: React.FC<YearSelectProps> = ({ onChange = () => {}, value }) =
             controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
             menuListStyles={{ fontWeight: 400 }}
             singleValueStyles={{ fontWeight: 400 }}
+            disabled={disabled}
         />
     )
 }

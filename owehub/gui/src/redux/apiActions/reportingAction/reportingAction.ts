@@ -14,7 +14,7 @@ interface SpeedSummaryParams {
     state: string[]; 
     office: string[]; 
     ahj: string[]
-    quarter: string[]
+    quarter: number[]
    }
 
 // Async thunk for fetching reporting data
@@ -51,7 +51,7 @@ export const fetchInstallReportData = createAsyncThunk(
 
   export const getTimelineInstallToFinData = createAsyncThunk(
     'reporting/getTimelineInstallToFinData',
-    async (params: InstallToFinParams, { rejectWithValue } ) => {
+    async (params: {}, { rejectWithValue } ) => {
       try {
         const response = await reportingCaller('get_timeline_install_to_fin', params);
         if (response.status > 200) {
