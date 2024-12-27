@@ -135,16 +135,16 @@ const reportingSlice = createSlice({
               })
 
                // Dropdown cases
-            .addCase(getDropDownData.pending, (state) => {
+               .addCase(getDropDownData.pending, (state) => {
                 state.dropdownData.loading = true;
                 state.dropdownData.error = null;
               })
-              .addCase(getTimelineInstallToFinData.fulfilled, (state, action) => {
+              .addCase(getDropDownData.fulfilled, (state, action) => {
                 state.dropdownData.loading = false;
                 state.dropdownData.data = action.payload;
-                toast.success(action.payload.message)
+                toast.success(action.payload.message);
               })
-              .addCase(getTimelineInstallToFinData.rejected, (state, action) => {
+              .addCase(getDropDownData.rejected, (state, action) => {
                 state.dropdownData.loading = false;
                 state.dropdownData.error = action.payload as string;
                 toast.error(action.payload as string);
