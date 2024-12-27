@@ -15,7 +15,7 @@ type SummaryReportRequest struct {
 
 type TimelineReportRequest struct {
 	Year    string   `json:"year"`
-	Quarter []string `json:"quarter"`
+	Quarter []int    `json:"quarter"`
 	State   []string `json:"state"`
 	Ahj     []string `json:"ahj"`
 	Office  []string `json:"office"`
@@ -30,8 +30,10 @@ type SaleToInstallSpeedSummaryReportRequest struct {
 
 type DataPoint struct {
 	Value map[string]interface{} `json:"value"`
+	Index int                    `json:"index"`
 }
 
 type SummaryReportResponse struct {
-	Data map[string][]DataPoint `json:"data"`
+	Data    map[string][]DataPoint `json:"data"`
+	Summary interface{}            `json:"summary,omitempty"`
 }

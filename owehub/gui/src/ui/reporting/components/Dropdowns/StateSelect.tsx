@@ -33,7 +33,7 @@ interface StateSelectProps {
     return (
         <div>
             <DropdownCheckBox
-                label="Quarter" // Label for the dropdown
+                label="State" // Label for the dropdown
                 selectedOptions={selectedStates} // Bind selected value
                 options={stateOptions} // Options for the dropdown
                 onChange={handleChange} // Update state on change

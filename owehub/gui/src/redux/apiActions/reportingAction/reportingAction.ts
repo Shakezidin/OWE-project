@@ -65,3 +65,21 @@ export const fetchInstallReportData = createAsyncThunk(
       }
     }
   );
+
+
+  export const getDropDownData = createAsyncThunk(
+    'reporting/get_offices_list',
+    async (params: {}, { rejectWithValue } ) => {
+      try {
+        const response = await reportingCaller('get_offices_list', params);
+        if (response.status > 200) {
+          return rejectWithValue('Failed to fetch speed summary data');
+        }
+        console.log(response.data, "in action dropdown data")
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error; // Pass the error to the reducer to handle
+      }
+    }
+  );

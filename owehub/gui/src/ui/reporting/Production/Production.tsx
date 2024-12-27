@@ -205,7 +205,7 @@ const Production: React.FC = () => {
     }
   };
 
-  const [selectedOffices, setSelectedOffices] = useState<string[]>(['Tucson']);
+  const [selectedOffices, setSelectedOffices] = useState<string[]>(["Albuquerque/El Paso",'Tucson', 'Texas','Tempe','Colorado','Peoria/Kingman','N/A']);
 
   const [subReports, setSubReports] = useState<SubReport[]>([]);
 
@@ -218,14 +218,8 @@ const Production: React.FC = () => {
         const response = await reportingCaller('get_productionsummaryreport', {
           year: parseInt(selectedYear.value),
           report_type: reportType.value,
-          office: [
-            'TXHOUS01',
-            'AZTEM01',
-            'TXDAL01',
-            'NMABQ01',
-            'COGJT1',
-            'CODEN1',
-          ],
+          office: selectedOffices,
+          week:parseInt(selectedWeek.value)
         });
 
         if (response.status === 200) {
@@ -242,7 +236,7 @@ const Production: React.FC = () => {
       setLoading(false);
     };
     fetchData();
-  }, [selectedYear, reportType]);
+  }, [selectedYear, reportType,selectedOffices,selectedWeek]);
 
   return (
     <div className="total-main-container">
