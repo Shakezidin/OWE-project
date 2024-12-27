@@ -34,12 +34,13 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
         const data = payload[0].payload;
         return (
             <div>
-                <p className="label">{`AZTEM01: ${data['AZTEM01']}`}</p>
-                <p className="label">{`CODEN1: ${data['CODEN1']}`}</p>
-                <p className="label">{`COGJT1: ${data['COGJT1']}`}</p>
-                <p className="label">{`NMABQ01: ${data['NMABQ01']}`}</p>
-                <p className="label">{`TXDAL01: ${data['TXDAL01']}`}</p>
-                <p className="label">{`TXHOUS01: ${data['TXHOUS01']}`}</p>
+                <p className="label">{`Albuquerque/El Paso: ${data['Albuquerque/El Paso']}`}</p>
+                <p className="label">{`Colorado: ${data['Colorado']}`}</p>
+                <p className="label">{`N/A: ${data['N/A']}`}</p>
+                <p className="label">{`Peoria/Kingman: ${data['Peoria/Kingman']}`}</p>
+                <p className="label">{`Tempe: ${data['Tempe']}`}</p>
+                <p className="label">{`Texas: ${data['Texas']}`}</p>
+                <p className="label">{`Tucson: ${data['Tucson']}`}</p>
                 <p className="label">{`Week: ${data['week']}`}</p>
             </div>
         );
@@ -66,13 +67,13 @@ const LineGraphProd: React.FC<LineGraphProps> = ({ data }) => {
                 <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
                 <YAxis tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Line type="monotone" dataKey="AZTEM01" stroke="#8884d8" strokeWidth={2} dot={{ r: 3, fill: '#8884d8' }} activeDot={{ r: 4, fill: '#8884d8' }} />
-                <Line type="monotone" dataKey="CODEN1" stroke="#82ca9d" strokeWidth={2} dot={{ r: 3, fill: '#82ca9d' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="COGJT1" stroke="#ffc658" strokeWidth={2} dot={{ r: 3, fill: '#ffc658' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="NMABQ01" stroke="#ff7300" strokeWidth={2} dot={{ r: 3, fill: '#ff7300' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="TXDAL01" stroke="#6b486b" strokeWidth={2} dot={{ r: 3, fill: '#6b486b' }} activeDot={{ r: 4 }} />
-                <Line type="monotone" dataKey="TXHOUS01" stroke="#a05d56" strokeWidth={2} dot={{ r: 3, fill: '#a05d56' }} activeDot={{ r: 4 }} />
-                {/* <Line type="monotone" dataKey="#N/A" stroke="#d0743c" strokeWidth={2} dot={{ r: 3, fill: '#d0743c' }} activeDot={{ r: 4 }} /> */}
+                <Line type="monotone" dataKey="Albuquerque/El Paso" stroke="#8884d8" strokeWidth={2} dot={{ r: 3, fill: '#8884d8' }} activeDot={{ r: 4, fill: '#8884d8' }} />
+                <Line type="monotone" dataKey="Colorado" stroke="#82ca9d" strokeWidth={2} dot={{ r: 3, fill: '#82ca9d' }} activeDot={{ r: 4 }} />
+                <Line type="monotone" dataKey="N/A" stroke="#ffc658" strokeWidth={2} dot={{ r: 3, fill: '#ffc658' }} activeDot={{ r: 4 }} />
+                <Line type="monotone" dataKey="Peoria/Kingman" stroke="#ff7300" strokeWidth={2} dot={{ r: 3, fill: '#ff7300' }} activeDot={{ r: 4 }} />
+                <Line type="monotone" dataKey="Tempe" stroke="#6b486b" strokeWidth={2} dot={{ r: 3, fill: '#6b486b' }} activeDot={{ r: 4 }} />
+                <Line type="monotone" dataKey="Texas" stroke="#a05d56" strokeWidth={2} dot={{ r: 3, fill: '#a05d56' }} activeDot={{ r: 4 }} />
+                <Line type="monotone" dataKey="Tucson" stroke="#d0743c" strokeWidth={2} dot={{ r: 3, fill: '#d0743c' }} activeDot={{ r: 4 }} />
             </LineChart>
         </ResponsiveContainer>
     );
