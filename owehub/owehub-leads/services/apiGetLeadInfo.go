@@ -1,23 +1,21 @@
 /**************************************************************************
- * File       	   : apiGetLeadsHistory.go // 🔴🔴
- * DESCRIPTION     : This file contains functions for get LeadsHistory data handler
+ * File       	   : apiGetLeadsInfo.go
+ * DESCRIPTION     : This file contains functions for getLeadsInfo data handler
  * DATE            : 21-Sept-2024
  **************************************************************************/
 
 package services
 
 import (
-	//"OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/auroraclient"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"errors"
 	"time"
 
-	// "OWEApp/shared/types"
-	// "sort"
-	// "strings"
-	//"time"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -25,18 +23,18 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetLeadInfo// 🔴🔴
- * DESCRIPTION:     handler for get LeadsHistoy data request
+ * FUNCTION:		HandleGetLeadInfo
+ * DESCRIPTION:     handler for get LeadsInfo data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
-		whereClause  string
 		whereEleList []interface{}
-		dataReq      models.GetLeadInfoRequest
-		data         []map[string]interface{}
+
+		dataReq models.GetLeadInfoRequest
+		data    []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleGetLeadInfo")
@@ -65,15 +63,47 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	// Construct the query to fetch lead data by lead_id
-	whereClause = "WHERE li.leads_id = $2" //
-	query := fmt.Sprintf(`
-			SELECT
-				li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id,
-				li.created_at, li.appointment_date, li.appointment_scheduled_date, li.appointment_accepted_date, li.appointment_declined_date
-			FROM
-				get_leads_info_hierarchy($1) li
-			%s
-			`, whereClause)
+	query := `
+				SELECT
+					li.leads_id,
+					li.first_name,
+					li.last_name,
+					li.email_id,
+					li.proposal_type,
+					li.phone_number,
+					li.street_address,
+					li.city,
+					li.finance_type,
+					li.finance_company,
+					li.sale_submission_triggered,
+					li.qc_audit,
+					li.proposal_signed,
+					li.appointment_disposition,
+					li.appointment_disposition_note,
+					li.notes,
+					li.created_at,
+					li.updated_at,
+					li.appointment_scheduled_date,
+					li.appointment_accepted_date,
+					li.appointment_declined_date,
+					li.lead_won_date,
+					li.appointment_date,
+					li.lead_lost_date,
+					li.proposal_created_date,
+					li.status_id,
+					li.aurora_design_id,
+					li.lead_source,
+					li.proposal_pdf_key,
+					ud_creator.name as created_by_name,
+					salerep.name as salerep_name,
+					setter.name as setter_name
+				FROM
+					get_leads_info_hierarchy($1) li
+				INNER JOIN user_details ud_creator ON ud_creator.user_id = li.created_by
+				LEFT JOIN user_details salerep ON salerep.user_id = li.salerep_id
+				LEFT JOIN user_details setter ON setter.user_id = li.setter_id
+				WHERE li.leads_id = $2
+			`
 
 	whereEleList = append(whereEleList, authenticatedUserEmail, dataReq.LeadsID)
 
@@ -93,66 +123,237 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	// Access the first result (assuming one lead will be returned for the given ID)
 	leadData := data[0]
 
+	apiResponse := models.GetLeadInfoRes{}
+
 	streetAddress, ok := leadData["street_address"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert street_address to string type Item: %+v", leadData)
-		streetAddress = ""
+	if ok {
+		apiResponse.StreetAddress = streetAddress
 	}
 
-	// Type assertion with proper handling of types
-	leadResponse := models.GetLeadInfoRes{
-		LeadsID:       leadData["leads_id"].(int64),      // LeadsID is asserted as int64
-		FirstName:     leadData["first_name"].(string),   // FirstName as string
-		LastName:      leadData["last_name"].(string),    // LastName as string
-		EmailId:       leadData["email_id"].(string),     // EmailId as string
-		PhoneNumber:   leadData["phone_number"].(string), // PhoneNumber as string
-		StreetAddress: streetAddress,                     // StreetAddress as string
-		StatusID:      leadData["status_id"].(int64),     // StatusID as int64
+	city, ok := leadData["city"].(string)
+	if ok {
+		apiResponse.City = city
 	}
 
-	switch leadResponse.StatusID {
-	case 0: // PENDING
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-	case 1: // SENT
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-			leadResponse.AppointmentDate = &appointmentDate
-		}
-		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-		}
-	case 2: // ACCEPTED
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-			leadResponse.AppointmentDate = &appointmentDate
-		}
-		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-		}
-		if appointmentAcceptedDate, ok := leadData["appointment_accepted_date"].(time.Time); ok {
-			leadResponse.AppointmentAcceptedDate = &appointmentAcceptedDate
-		}
-	case 3: // DECLINED
-		if createdAt, ok := leadData["created_at"].(time.Time); ok {
-			leadResponse.CreatedAt = &createdAt
-		}
-		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-			leadResponse.AppointmentDate = &appointmentDate
-		}
-		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-		}
-		if appointmentDeclinedDate, ok := leadData["appointment_declined_date"].(time.Time); ok {
-			leadResponse.AppointmentDeclinedDate = &appointmentDeclinedDate
+	financeType, ok := leadData["finance_type"].(string)
+	if ok {
+		apiResponse.FinanceType = financeType
+	}
+
+	financeCompany, ok := leadData["finance_company"].(string)
+	if ok {
+		apiResponse.FinanceCompany = financeCompany
+	}
+
+	saleSubmissionTriggered, ok := leadData["sale_submission_triggered"].(bool)
+	if ok {
+		apiResponse.SaleSubmissionTriggered = saleSubmissionTriggered
+	}
+
+	qcAudit, ok := leadData["qc_audit"].(bool)
+	if ok {
+		apiResponse.QCAudit = qcAudit
+	}
+
+	proposalSigned, ok := leadData["proposal_signed"].(bool)
+	if ok {
+		apiResponse.ProposalSigned = proposalSigned
+	}
+
+	appointmentDisposition, ok := leadData["appointment_disposition"].(string)
+	if ok {
+		apiResponse.AppointmentDisposition = appointmentDisposition
+	}
+
+	appointmentDispositionNote, ok := leadData["appointment_disposition_note"].(string)
+	if ok {
+		apiResponse.AppointmentDispositionNote = appointmentDispositionNote
+	}
+
+	notes, ok := leadData["notes"].(string)
+	if ok {
+		apiResponse.Notes = notes
+	}
+
+	proposalType, ok := leadData["proposal_type"].(string)
+	if ok {
+		apiResponse.ProposalType = proposalType
+	}
+
+	createdAt, ok := leadData["created_at"].(time.Time)
+	if ok {
+		apiResponse.CreatedAt = &createdAt
+	}
+
+	updatedAt, ok := leadData["updated_at"].(time.Time)
+	if ok {
+		apiResponse.UpdatedAt = &updatedAt
+	}
+
+	appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentScheduledDate = &appointmentScheduledDate
+	}
+
+	appointmentAcceptedDate, ok := leadData["appointment_accepted_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentAcceptedDate = &appointmentAcceptedDate
+	}
+	appointmentDeclinedDate, ok := leadData["appointment_declined_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentDeclinedDate = &appointmentDeclinedDate
+	}
+	leadWonDate, ok := leadData["lead_won_date"].(time.Time)
+	if ok {
+		apiResponse.LeadWonDate = &leadWonDate
+	}
+
+	appointmentDate, ok := leadData["appointment_date"].(time.Time)
+	if ok {
+		apiResponse.AppointmentDate = &appointmentDate
+	}
+
+	leadLostDate, ok := leadData["lead_lost_date"].(time.Time)
+	if ok {
+		apiResponse.LeadLostDate = &leadLostDate
+	}
+
+	proposalCreatedDate, ok := leadData["proposal_created_date"].(time.Time)
+	if ok {
+		apiResponse.ProposalCreatedDate = &proposalCreatedDate
+	}
+
+	statusId, ok := leadData["status_id"].(int64)
+	if ok {
+		apiResponse.StatusID = statusId
+	}
+
+	salesRepName, ok := leadData["salerep_name"].(string)
+	if ok {
+		apiResponse.SalesRepName = salesRepName
+	}
+
+	setterName, ok := leadData["setter_name"].(string)
+	if ok {
+		apiResponse.SetterName = setterName
+	}
+
+	leadSource, ok := leadData["lead_source"].(string)
+	if ok {
+		apiResponse.LeadSource = leadSource
+	}
+
+	proposalPdfKey, ok := leadData["proposal_pdf_key"].(string)
+	if ok {
+		apiResponse.ProposalPdfUrl = leadsService.S3GetObjectUrl(proposalPdfKey)
+	}
+
+	// if aurora_design_id is present in the db, then get & update the finance type and company
+	auroraDesignId, ok := leadData["aurora_design_id"].(string)
+	if ok {
+		if financeCompany == "" || financeType == "" {
+			financeType, financeCompany, err := getLeadFinanceTypeAndCompany(auroraDesignId, dataReq.LeadsID)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to retreive lead finance type and company err: %v", err)
+			}
+			if financeCompany != "" {
+				apiResponse.FinanceCompany = financeCompany
+			}
+			if financeType != "" {
+				apiResponse.FinanceType = financeType
+			}
 		}
 	}
+
+	apiResponse.LeadsID = leadData["leads_id"].(int64) // LeadsID is asserted as int64
+	apiResponse.FirstName = leadData["first_name"].(string)
+	apiResponse.LastName = leadData["last_name"].(string)
+	apiResponse.EmailId = leadData["email_id"].(string)
+	apiResponse.PhoneNumber = leadData["phone_number"].(string)
+	apiResponse.CreatedByName = leadData["created_by_name"].(string)
 
 	// Send the response
-	appserver.FormAndSendHttpResp(resp, "Lead Info Data", http.StatusOK, leadResponse, 1)
+	appserver.FormAndSendHttpResp(resp, "Lead Info Data", http.StatusOK, apiResponse, 1)
+}
+
+/******************************************************************************
+ * FUNCTION:        retreiveLeadFinanceTypeAndCompany
+ *
+ * DESCRIPTION:     This function is used to retreive financing type and company
+ * INPUT:			designId, leadsId
+ * RETURNS:         string, string, error
+ ******************************************************************************/
+func getLeadFinanceTypeAndCompany(designId string, leadsId int64) (string, string, error) {
+	var (
+		err                             error
+		auroraListFinancingsApiResponse *auroraclient.ListFinancingsApiResponse
+		auroraGetFinancingApiResponse   *auroraclient.RetreiveFinancingApiResponse
+	)
+
+	log.EnterFn(0, "retreiveLeadFinanceTypeAndCompany")
+	defer log.ExitFn(0, "retreiveLeadFinanceTypeAndCompany", err)
+
+	// Construct the api to list financings
+	auroraListFinancingsApi := auroraclient.ListFinancingsApi{
+		DesignId: designId,
+	}
+
+	auroraListFinancingsApiResponse, err = auroraListFinancingsApi.Call()
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to list financings from aurora api err: %v", err)
+		return "", "", err
+	}
+
+	if len(auroraListFinancingsApiResponse.Financings) == 0 {
+		log.FuncErrorTrace(0, "No financings found for given design id")
+		return "", "", errors.New("No financings found for given design id")
+	}
+
+	finId, ok := auroraListFinancingsApiResponse.Financings[0]["id"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "No financing id found for given design id")
+		return "", "", errors.New("Financing id not found for given design id")
+	}
+
+	finOption, ok := auroraListFinancingsApiResponse.Financings[0]["financing_option"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "No financing option found for given design id")
+		return "", "", errors.New("Financing option not found for given design id")
+	}
+
+	auroraGetFinancingApi := auroraclient.RetreiveFinancingApi{
+		DesignId:    designId,
+		FinancingId: finId,
+	}
+
+	auroraGetFinancingApiResponse, err = auroraGetFinancingApi.Call()
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retreive financing from aurora api err: %v", err)
+		return "", "", err
+	}
+
+	financier, ok := auroraGetFinancingApiResponse.Financing["financier"].(map[string]interface{})
+	if !ok {
+		log.FuncErrorTrace(0, "No financier found for given financing id")
+		return "", "", errors.New("Financier not found for given financing id")
+	}
+
+	financierProvider, ok := financier["provider"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "No financier provider found for given financing id")
+		return "", "", errors.New("Financier provider not found for given financing id")
+	}
+
+	// update the db with finance type and financier provider
+	query := "UPDATE leads_info SET finance_type = $1, finance_company = $2 WHERE leads_id = $3"
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, []interface{}{finOption, financierProvider, leadsId}) //
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update finance type and financier provider in db err: %v", err)
+		return finOption, financierProvider, err
+	}
+
+	return finOption, financierProvider, nil
 }

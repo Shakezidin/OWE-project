@@ -406,6 +406,8 @@ func convertToType(value interface{}, columnType *sql.ColumnType) (interface{}, 
 		return value.(float64), nil
 	case reflect.String:
 		return value.(string), nil
+	case reflect.Bool:
+		return value.(bool), nil
 	// Add more cases for other types as needed
 	default:
 		return nil, fmt.Errorf("unsupported column type: %v", columnType.ScanType().Kind())

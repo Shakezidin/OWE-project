@@ -10,7 +10,6 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
 import Switch from '../../components/Switch';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
@@ -48,8 +47,8 @@ const PendingQueue = () => {
       setLoading(true);
       try {
         const data = await postCaller('get_pendingqueuesdata', {
-          page_size: itemsPerPage,
-          page_number: page,
+          page_size: debouncedSearch ? 10 : itemsPerPage,
+          page_number: debouncedSearch ? 1 : page,
           selected_pending_stage: active,
           unique_ids: [debouncedSearch],
         });
@@ -91,17 +90,8 @@ const PendingQueue = () => {
 
   return (
     <>
-      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-        <Breadcrumb
-          head=""
-          linkPara="Pending Actions"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
-      </div>
       <div
-        style={{ borderRadius: 6 }}
+        style={{ borderRadius: 16 }}
         className="flex items-center bg-white px2 justify-between"
       >
         {/* <div className="flex items-center">
@@ -185,10 +175,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                          setActive('qc');
-                          setPage(1);
-                          setSearch('');
-                        }
+                        setActive('qc');
+                        setPage(1);
+                        setSearch('');
+                      }
                       : undefined
                   }
                 >
@@ -220,8 +210,8 @@ const PendingQueue = () => {
       }
 
       <div
-        className="project-container"
-        style={{ marginTop: '1rem', padding: 0 }}
+        className="project-container pend-actions-cont"
+        style={{ marginTop: '1.2rem', padding: 0 }}
       >
         <div className="performance-table-heading">
           <div
@@ -240,7 +230,7 @@ const PendingQueue = () => {
               </h3>
               <div
                 className={`performance-box-container ${styles.pendingBoxContainer}`}
-                style={{ padding: '0.6rem 1rem' }}
+                style={{ padding: '0.7rem 1rem' }}
               >
                 <p className="status-indicator">Checklist Indicators</p>
                 <div className="progress-box-body">
@@ -285,7 +275,7 @@ const PendingQueue = () => {
           </div>
         </div>
 
-        <div className="performance-milestone-table">
+        <div className="performance-milestone-table pendingActionTable">
           <table>
             <thead>
               <tr>
@@ -314,7 +304,7 @@ const PendingQueue = () => {
                 dataPending.map((item: any, index: number) => (
                   <tr key={index}>
                     <td style={{ padding: '0px' }}>
-                      <div className="milestone-data">
+                      <div className="milestone-data" style={{paddingBottom: "1.5rem"}}>
                         <Link
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
@@ -383,7 +373,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                      'Pending (Action Required)'
+                                        'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'
@@ -422,27 +412,27 @@ const PendingQueue = () => {
               )}
             </tbody>
           </table>
-          <div className="page-heading-container">
-            {dataPending?.length > 0 ? (
-              <>
-                <p className="page-heading">
-                  Showing {startIndex} -{' '}
-                  {endIndex > totalcount ? totalcount : endIndex} of{' '}
-                  {totalcount} item
-                </p>
+        </div>
+        <div className="page-heading-container">
+          {dataPending?.length > 0 ? (
+            <>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalcount ? totalcount : endIndex} of{' '}
+                {totalcount} item
+              </p>
 
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPages} // You need to calculate total pages
-                  paginate={(num) => setPage(num)}
-                  currentPageData={dataPending}
-                  goToNextPage={() => setPage(page + 1)}
-                  goToPrevPage={() => setPage(page - 1)}
-                  perPage={itemsPerPage}
-                />
-              </>
-            ) : null}
-          </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={(num) => setPage(num)}
+                currentPageData={dataPending}
+                goToNextPage={() => setPage(page + 1)}
+                goToPrevPage={() => setPage(page - 1)}
+                perPage={itemsPerPage}
+              />
+            </>
+          ) : null}
         </div>
       </div>
     </>

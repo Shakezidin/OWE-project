@@ -14,7 +14,7 @@
   padding: 10px;
   z-index: 999;
   margin-top: -22px;
-  border-radius: 8px;
+  /* border-radius: 8px; */
 }
 
 .pr-dropdown ul {
@@ -27,28 +27,32 @@
   cursor: pointer;
   font-size: 12px;
   padding: 5px 0;
+
   transition:
     color 0.3s ease,
     transform 0.3s ease;
 }
 
 .pr-dropdown li:hover {
-  color: #2b63f1;
-  transform: scale(1.04);
+ color: #4062CA;
+  transform: scale(1.05);
 }
 
-.sort_btn {
-  background-color: #4372e9;
+.sort_btn1 {
+  background-color: #377cf6;
   border: none;
+  height: 36px;
+  width: 36px;
   border-radius: 8px;
   padding: 5px;
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.sort_btn:hover {
-  transform: scale(1.04);
-  background-color: #00298f;
+.sort_btn1:hover {
+  transform: scale(1.05);
+  background-color: #4062CA;
+
 }
 
 .active_sorting {
@@ -109,12 +113,13 @@
   transition: all 0.3s ease;
 }
 .lead-reset-calender:hover {
-  transform: scale(1.06);
-  background-color: #1a44ae;
+  transform: scale(1.05);
+  background-color: #4062CA;
+
 }
 
 .lead-apply-calender {
-  background-color: #2b63f1;
+  background-color: #377cf6;
   color: #fff;
   font-size: 12px;
   font-weight: 500;
@@ -125,8 +130,9 @@
   transition: all 0.3s ease;
 }
 .lead-apply-calender:hover {
-  transform: scale(1.06);
-  background-color: #1a44ae;
+  transform: scale(1.05);
+  background-color: #4062CA;
+
 }
 
 @media screen and (max-width: 767px) {
@@ -137,4 +143,23 @@
     top: 125px;
     right: 5px;
   }
+  .sort_btn {
+    background-color: #4372e9;
+    border: none;
+    height: 30.5px;
+    width: 30.5px;
+    border-radius: 8px;
+    padding: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+}
+@media (max-width:968px) {
+  
+  .mobile_tooltip{
+    display: none !important;
+  }
+
+  
 }

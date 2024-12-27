@@ -39,7 +39,7 @@ import { RiMapPinLine } from 'react-icons/ri';
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
   height: '100%',
-  borderRadius: '14px',
+  borderRadius: '16px',
 };
 
 interface LocationInfo {
@@ -212,10 +212,12 @@ const MyMapComponent: React.FC = () => {
     { miles: 10 },
     { miles: 20 },
     { miles: 50 },
-    {miles:100},
+    { miles: 100 },
   ];
 
   const [selectedMiles, setSelectedMiles] = useState<any>(1); // Default to 10 miles
+  const [isInputFocused, setInputFocused] = useState(false);
+
 
   // Handle change function
   const handleChange = (newValue: any) => {
@@ -235,7 +237,7 @@ const MyMapComponent: React.FC = () => {
     }
   }, [createRePayData.state]);
 
-  console.log(createRePayData.state, 'all');
+
 
   // Function to calculate the distance between two points in miles
   const calculateDistanceInMiles = (
@@ -250,9 +252,9 @@ const MyMapComponent: React.FC = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in miles
   };
@@ -322,30 +324,42 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    // Ensure the state field exists before proceeding
-    if (createRePayData.state !== 'All') {
-      const geocoder = new window.google.maps.Geocoder();
-      const stateName = createRePayData.state; // Assuming `createPayData.state` holds the state's name or label
+    // Ensure the map is initialized before proceeding
+    if (mapRef.current) {
+      // Check if the state is not 'All'
+      if (createRePayData.state && createRePayData.state !== 'All') {
+        const geocoder = new window.google.maps.Geocoder();
+        const stateName = createRePayData.state;
 
-      console.log(stateName, 'stateName');
+        console.log(stateName, 'stateName');
 
-      // Perform geocoding to get the new state's coordinates and update the map
-      geocoder.geocode({ address: stateName }, (results, status) => {
-        if (status === 'OK' && results && results.length > 0) {
-          const stateBounds = results[0].geometry.viewport;
-          const stateCenter = results[0].geometry.location;
+        // Perform geocoding to get the state's coordinates
+        geocoder.geocode({ address: stateName }, (results, status) => {
+          if (status === 'OK' && results && results.length > 0) {
+            const stateBounds = results[0].geometry.viewport;
+            const stateCenter = results[0].geometry.location;
 
-          if (mapRef.current) {
-            // Update the map center and bounds with the new state's location
+            // Update the map center and fit bounds to the new state's location
             setCenter({ lat: stateCenter.lat(), lng: stateCenter.lng() });
-            mapRef.current.fitBounds(stateBounds);
+            mapRef.current?.fitBounds(stateBounds); // Use optional chaining to safely access fitBounds
+          } else {
+            console.log('Failed to find state location.', status);
           }
-        } else {
-          console.log('Failed to find state location.');
-        }
-      });
+        });
+      } else {
+        // If state is 'All', fit the map to the bounds of all locations
+        const bounds = new window.google.maps.LatLngBounds();
+        const locationsToShow = filteredLocations.length > 0 ? filteredLocations : locations;
+
+        locationsToShow.forEach((location) => {
+          bounds.extend({ lat: location.lat, lng: location.lng });
+        });
+
+        mapRef.current?.fitBounds(bounds); // Use optional chaining to safely access fitBounds
+      }
     }
-  }, [createRePayData.state]); // Trigger effect whenever `createPayData.state` changes
+  }, [createRePayData.state, filteredLocations, locations, mapRef]);
+
 
   const onMarkerHover = useCallback(
     (location: LocationInfo) => {
@@ -532,6 +546,7 @@ const MyMapComponent: React.FC = () => {
     autocompleteRef.current = autocomplete;
   };
 
+
   return (
     <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
@@ -549,8 +564,8 @@ const MyMapComponent: React.FC = () => {
                   value={
                     createRePayData.state // Dynamically show the selected state
                       ? (availableStates(newFormData) || []).find(
-                          (option) => option.value === createRePayData.state
-                        ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
+                        (option) => option.value === createRePayData.state
+                      ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
                       : { label: '-', value: '' }
                   }
                   menuStyles={{
@@ -558,7 +573,7 @@ const MyMapComponent: React.FC = () => {
                   }}
                   menuListStyles={{
                     fontWeight: 400,
-                    width: 150,
+                    width: 140,
                   }}
                   singleValueStyles={{
                     fontWeight: 400,
@@ -573,14 +588,13 @@ const MyMapComponent: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Search for an address"
-                      className={styles.inputsearch}
+                      className={`${styles.inputsearch} ${isInputFocused ? styles.focused : ''}`}
                       maxLength={100}
+                      onFocus={() => setInputFocused(true)}
+                      onBlur={() => setInputFocused(false)}
                       onInput={(e) => {
-                        const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
-                        input.value = input.value.replace(
-                          /[^a-zA-Z0-9\s]/g,
-                          ''
-                        ); // Replace non-alphanumeric characters
+                        const input = e.target as HTMLInputElement;
+                        input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, '');
                       }}
                       style={{
                         width: '100%',
@@ -588,31 +602,20 @@ const MyMapComponent: React.FC = () => {
                       }}
                       onChange={handleInputChange}
                       value={searchValue}
-                      // disabled={isSearchDisabled} // Disable search when a state is selected
                     />
                     {searchValue && (
                       <button
                         type="button"
                         onClick={() => {
-                          setSearchValue(''); // Clear the search value
+                          setSearchValue('');
                           setFilteredLocations(locations);
                           setSearchedLocation(null);
-                          setSelectedMiles(1); // Reset to show all locations
-
+                          setSelectedMiles(1);
                           if (mapRef.current) {
                             const bounds = new google.maps.LatLngBounds();
-
-                            // Loop through all the locations and extend the bounds to include each marker's position
                             locations.forEach((location) => {
-                              bounds.extend(
-                                new google.maps.LatLng(
-                                  location.lat,
-                                  location.lng
-                                )
-                              );
+                              bounds.extend(new google.maps.LatLng(location.lat, location.lng));
                             });
-
-                            // Adjust the map to fit the bounds of all markers
                             mapRef.current.fitBounds(bounds);
                           }
                         }}
@@ -629,7 +632,7 @@ const MyMapComponent: React.FC = () => {
                         <IoClose size={16} style={{ marginTop: '4px' }} />
                       </button>
                     )}
-                    <RiMapPinLine className={styles.inputMap} />
+                    <RiMapPinLine className={`${styles.inputMap} ${isInputFocused ? styles.focused : ''}`} />
                   </div>
                 </Autocomplete>
               </div>
@@ -654,7 +657,7 @@ const MyMapComponent: React.FC = () => {
                     }}
                     menuListStyles={{
                       fontWeight: 400,
-                      width: 150,
+                      width: 140,
                     }}
                     singleValueStyles={{
                       fontWeight: 400,

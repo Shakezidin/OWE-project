@@ -8,14 +8,16 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import useAuth from '../../../../hooks/useAuth';
-import { useAppDispatch } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
+import { MdOutlineLockReset } from 'react-icons/md';
+import { Tooltip } from 'react-tooltip';
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
-
+  handlePasswordReset: (id?: string) => void;
   selectAllChecked: boolean;
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
@@ -31,6 +33,7 @@ const UserTable: React.FC<UserTableProps> = ({
   setSelectedRows,
   setSelectAllChecked,
   selectedValue,
+  handlePasswordReset,
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -39,7 +42,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const [email, setEmail] = useState('');
   const { authData } = useAuth();
   const dispatch = useAppDispatch();
-
+  const { role_name } = useAppSelector((state) => state.auth);
   const handleSort = (key: string) => {
     const direction =
       sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc';
@@ -106,6 +109,7 @@ const UserTable: React.FC<UserTableProps> = ({
   }, [authData]);
 
   console.log(selectedValue, 'ghjsfghsdf');
+
   return (
     <div
       className="UserManageTable"
@@ -171,7 +175,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
-                  <td>{el.dealer_owner ? el.dealer_owner : 'NA'}</td>
+                  <td>{el.dealer ? el.dealer : 'NA'}</td>
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
@@ -180,7 +184,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   {el.description ? el.description : 'NA'}
                 </td>
                 <td>
-                  <div className="action-icon">
+                  <div className="action-icon" style={{ gap: 4 }}>
                     <div
                       className=""
                       style={{
@@ -193,12 +197,56 @@ const UserTable: React.FC<UserTableProps> = ({
                         }
                       }}
                     >
-                      <img
-                        src={ICONS.deleteIcon}
-                        alt=""
-                        style={{ marginRight: '15px' }}
+                      <Tooltip
+                        style={{
+                          zIndex: 103,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: '400',
+                        }}
+                        offset={8}
+                        id="user_delete"
+                        place="left"
+                        content="Delete"
+                        delayShow={200}
+                        className='pagination-tooltip'
                       />
+                      <img src={ICONS.deleteIcon} alt="" data-tooltip-id='user_delete' />
                     </div>
+
+                    {(role_name === TYPE_OF_USER.ADMIN ||
+                      role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                      <div
+                        className="reset_hover_btn"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handlePasswordReset(el.email_id)}
+                      >
+                        <Tooltip
+                          style={{
+                            zIndex: 103,
+                            background: '#f7f7f7',
+                            color: '#000',
+                            fontSize: 12,
+                            paddingBlock: 4,
+                            fontWeight: '400',
+                          }}
+                          offset={8}
+                          id="user_reset"
+                          place="left"
+                          content="Reset"
+                          delayShow={200}
+                          className='pagination-tooltip'
+                        />
+                        <MdOutlineLockReset
+                          color="#667085"
+                          size={24}
+                          style={{ paddingLeft: '5px' }}
+                          data-tooltip-id="user_reset"
+                        />
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>

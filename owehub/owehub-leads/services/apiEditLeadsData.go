@@ -65,17 +65,50 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if len(dataReq.FirstName) > 0 {
+		whereEleList = append(whereEleList, dataReq.FirstName)
+		updateFields = append(updateFields, fmt.Sprintf("first_name = $%d", len(whereEleList)))
+	}
+
+	if len(dataReq.LastName) > 0 {
+		whereEleList = append(whereEleList, dataReq.LastName)
+		updateFields = append(updateFields, fmt.Sprintf("last_name = $%d", len(whereEleList)))
+	}
+
 	if len(dataReq.PhoneNumber) > 0 {
 		whereEleList = append(whereEleList, dataReq.PhoneNumber)
 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
+
 	}
 	if len(dataReq.EmailId) > 0 {
 		whereEleList = append(whereEleList, dataReq.EmailId)
 		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
+
 	}
+
 	if len(dataReq.StreetAddress) > 0 {
 		whereEleList = append(whereEleList, dataReq.StreetAddress)
 		updateFields = append(updateFields, fmt.Sprintf("street_address = $%d", len(whereEleList)))
+	}
+
+	if len(dataReq.Notes) > 0 {
+		whereEleList = append(whereEleList, dataReq.Notes)
+		updateFields = append(updateFields, fmt.Sprintf("notes = $%d", len(whereEleList)))
+	}
+
+	if dataReq.SalerepID > 0 {
+		whereEleList = append(whereEleList, dataReq.SalerepID)
+		updateFields = append(updateFields, fmt.Sprintf("salerep_id = $%d", len(whereEleList)))
+	}
+
+	if len(dataReq.LeadSource) > 0 {
+		whereEleList = append(whereEleList, dataReq.LeadSource)
+		updateFields = append(updateFields, fmt.Sprintf("lead_source = $%d", len(whereEleList)))
+	}
+
+	if dataReq.SetterID > 0 {
+		whereEleList = append(whereEleList, dataReq.SetterID)
+		updateFields = append(updateFields, fmt.Sprintf("setter_id = $%d", len(whereEleList)))
 	}
 
 	if len(updateFields) == 0 {
@@ -101,6 +134,5 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
 		return
 	}
-
-	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully.", http.StatusOK, nil)
 }

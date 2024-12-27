@@ -20,7 +20,6 @@ import QCModal from './PopUp';
 import NtpModal from './NtpPopUp';
 import Input from '../../components/text_input/Input';
 import { debounce } from '../../../utiles/debounce';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface ActivePopups {
   [key: number]: number | null;
@@ -60,6 +59,12 @@ const ProjectStatus = () => {
   const projectId = new URLSearchParams(location.search).get('project_id');
   const projectName = new URLSearchParams(location.search).get('customer-name');
 
+  useEffect(()=>{
+    window.scrollTo({
+      top:0,
+      behavior: 'smooth'
+    })    
+  },[location.pathname])
   const getStatus = (arr: string[]) => {
     return arr.every(
       (item) => projectDetail[item as keyof typeof projectDetail]
@@ -68,6 +73,9 @@ const ProjectStatus = () => {
   const [search, setSearch] = useState('OUR22645');
   const [searchValue, setSearchValue] = useState('OUR22645');
   const [active, setActive] = useState(false);
+
+
+  
   const filtered = [
     // {
     //   name: 'Sales',
@@ -509,8 +517,11 @@ const ProjectStatus = () => {
 
   useEffect(() => {
     if (projectId) {
+      const anotheropt = projectOption.filter((item) => item.value === projectId)
       const opt = { label: projectId, value: projectId };
-      setSelectedProject(opt);
+      console.log(anotheropt, "kjgfh")
+      setSelectedProject(anotheropt[0])
+
     } else if (projectOption.length) {
       const val = {
         label: projectOption[0].label || '',
@@ -518,21 +529,16 @@ const ProjectStatus = () => {
       };
       console.log('val', val);
       setSelectedProject(val);
-      
-     
     }
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
-    if (selectedProject.value) {
-      dispatch(getProjectDetail(selectedProject.value));
-       
-    } else if(projectOption.length) {
+    if (selectedProject?.value) {
+      dispatch(getProjectDetail(selectedProject?.value));
+    } else if (projectOption.length) {
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
-
-    
-  }, [selectedProject.value]);
+  }, [selectedProject?.value]);
 
   useEffect(() => {
     if (projectId) {
@@ -600,6 +606,7 @@ const ProjectStatus = () => {
 
   const [isHovered, setIsHovered] = useState(-1);
 
+ console.log(selectedProject, 'fhfh')
   return (
     <>
       <QCModal
@@ -615,17 +622,8 @@ const ProjectStatus = () => {
       />
 
       <div className="">
-        <div style={{ marginLeft: '6px', marginTop: '6px' }}>
-          <Breadcrumb
-            head=""
-            linkPara="Project Manager"
-            route={''}
-            linkparaSecond=""
-            marginLeftMobile="12px"
-          />
-        </div>
         <div style={{ padding: '0px' }}>
-          <div className="flex mt1 top-project-cards">
+          <div className="flex top-project-cards">
             <div
               className="px1 project-card-wrapper  bg-white rounded-16"
               style={{ paddingInline: 16, paddingBottom: 16 }}
@@ -637,11 +635,12 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className="cust-name">
-                      Customer name:<pre> {projectDetail.home_owner}</pre>
+                    Customer name: <pre>{selectedProject?.label?.split('-')[1]}</pre>
                     </span>
                     <SelectOption
                       options={projectOption}
                       value={selectedProject}
+                      disabled={isLoading}
                       lazyRender
                       onChange={(val) => {
                         if (val) {
@@ -649,17 +648,12 @@ const ProjectStatus = () => {
                         }
                       }}
                       width="190px"
-                    />
-                    {/* <Input
-                      type="text"
-                      placeholder="Search for Unique ID or Name"
-                      value={search}
-                      name="Search for Unique ID or Name"
-                      onChange={(e) => {
-                        handleSearchChange(e);
-                        setSearch(e.target.value);
+                      optionStyles={{
+                        overflowX: "hidden",
+                        textOverflow: "ellipsis",
+                        textWrap: "nowrap",
                       }}
-                    /> */}
+                    />
                   </div>
                 </div>
               </div>
@@ -694,7 +688,7 @@ const ProjectStatus = () => {
                           style={{
                             width: '100%',
                             textAlign: 'center',
-                            color: isHovered === i ? '#fff' : '#263747',
+                            color: isHovered === i ? '#fff' : 'var(--input-border-color)',
                           }}
                         >
                           <p className="para-head text-white-color">
@@ -702,7 +696,7 @@ const ProjectStatus = () => {
                           </p>
                           <span className="span-para">
                             {el.key === 'adders_total' ||
-                            el.key === 'contract_amount'
+                              el.key === 'contract_amount'
                               ? '$'
                               : ''}
 
@@ -736,23 +730,20 @@ const ProjectStatus = () => {
                               {
                                 // @ts-ignore
                                 projectDetail.adder_breakdown_and_total &&
-                                  Object.keys(
-                                    // @ts-ignore
-                                    projectDetail.adder_breakdown_and_total
-                                  ).map((item, ind) => {
-                                    // @ts-ignore
-                                    return (
-                                      <li key={ind} className="order-list-name">
-                                        {' '}
-                                        {item} :{' '}
-                                        {
-                                          // @ts-ignore
-                                          projectDetail
-                                            .adder_breakdown_and_total[item]
-                                        }{' '}
-                                      </li>
-                                    );
-                                  })
+                                Object.keys(
+                                  // @ts-ignore
+                                  projectDetail.adder_breakdown_and_total
+                                ).map((item, ind) => {
+                                  // @ts-ignore
+                                  return (
+                                    <li key={ind} className="order-list-name">
+                                      {' '}
+                                      {item} :{' '}
+                                      {(projectDetail as any).adder_breakdown_and_total[item]
+                                      }{' '}
+                                    </li>
+                                  );
+                                })
                               }
                             </ol>
                           </div>
@@ -763,7 +754,7 @@ const ProjectStatus = () => {
                 ))}
               </div>
             </div>
-            <div className="pl2 flex-auto second-project-card">
+            <div className="flex-auto second-project-card" style={{paddingLeft: "1.2rem"}}>
               <div
                 className="bg-white rounded-16 flex relative"
                 style={{
@@ -780,8 +771,8 @@ const ProjectStatus = () => {
 
           <div className="bg-white rounded-16 project-table-wrapper">
             <div
-              className="project-heading project-status-heading mt2"
-              style={{ padding: '22px' }}
+              className="project-heading project-status-heading"
+              style={{ padding: '22px', marginTop: "1.2rem" }}
             >
               <p className="mob-projhead">Project Stages</p>
 
@@ -792,7 +783,7 @@ const ProjectStatus = () => {
                       className="progress-box"
                       style={{
                         background: '#4191C9',
-                        borderRadius: 0,
+                        borderRadius: 2,
                         width: 12,
                         height: 12,
                       }}
@@ -804,7 +795,7 @@ const ProjectStatus = () => {
                       className="progress-box"
                       style={{
                         background: '#63ACA3',
-                        borderRadius: 0,
+                        borderRadius: 2,
                         width: 12,
                         height: 12,
                       }}
@@ -816,7 +807,7 @@ const ProjectStatus = () => {
                       className="progress-box"
                       style={{
                         background: '#E9E9E9',
-                        borderRadius: 0,
+                        borderRadius: 2,
                         width: 12,
                         height: 12,
                       }}
@@ -895,7 +886,7 @@ const ProjectStatus = () => {
                         ) : (
                           filteredStatusData.map((item: any, i: any) => (
                             <>
-                              <div className="project-status-table">
+                              <div key={item.id || i} className="project-status-table">
                                 <div
                                   className="project-status-card"
                                   style={{
@@ -930,6 +921,7 @@ const ProjectStatus = () => {
                                 {item.childStatusData.map(
                                   (el: any, index: any) => (
                                     <div
+                                      key={el.key || i}
                                       className="notch-corner"
                                       style={{
                                         background: el.bgColor,
@@ -949,19 +941,19 @@ const ProjectStatus = () => {
                                         {!(
                                           el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ]
                                         ) && (
-                                          <span
-                                            className="date-para"
-                                            style={{
-                                              color: el.color,
-                                              fontSize: '9px',
-                                            }}
-                                          >
-                                            ETA
-                                          </span>
-                                        )}
+                                            <span
+                                              className="date-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '9px',
+                                              }}
+                                            >
+                                              ETA
+                                            </span>
+                                          )}
                                         <p
                                           style={{
                                             color: el.color,
@@ -969,22 +961,22 @@ const ProjectStatus = () => {
                                           }}
                                         >
                                           {el.key &&
-                                          projectDetail[
+                                            projectDetail[
                                             el.key as keyof typeof projectDetail
-                                          ]
+                                            ]
                                             ? format(
-                                                new Date(
-                                                  projectDetail[
-                                                    el.key as keyof typeof projectDetail
-                                                  ]
-                                                ),
-                                                'dd MMMM'
-                                              ).slice(0, 6)
+                                              new Date(
+                                                projectDetail[
+                                                el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)
                                             : 'N/A'}
                                         </p>
                                         {el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ] && (
                                             <p
                                               className="stage-1-para"
@@ -997,7 +989,7 @@ const ProjectStatus = () => {
                                               {format(
                                                 new Date(
                                                   projectDetail[
-                                                    el.key as keyof typeof projectDetail
+                                                  el.key as keyof typeof projectDetail
                                                   ]
                                                 ),
                                                 'yyyy'

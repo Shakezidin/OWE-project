@@ -7,9 +7,15 @@
 package models
 
 type UpdateLeadStatusRequest struct {
-	LeadsId         int64  `json:"leads_id"`
-	StatusId        int64  `json:"status_id"`
-	Reason          string `json:"reason"`
-	AppointmentDate string `json:"appointment_date"`
-	AppointmentTime string `json:"appointment_time"`
+	LeadsId               int64  `json:"leads_id"`
+	StatusId              int64  `json:"status_id"`
+	Reason                string `json:"reason"`
+	AppointmentDateTime   string `json:"appointment_date_time"`
+	IsAppointmentRequired bool   `json:"is_appointment_required"`
+	IsManualWin           bool   `json:"is_manual_win"`
+	QC                    bool   `json:"qc,omitempty"`
+}
+
+type UpdateLeadStatusResponse struct {
+	AppointmentDateTime string `json:"appointment_date_time"`
 }

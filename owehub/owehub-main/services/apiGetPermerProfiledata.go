@@ -63,9 +63,9 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	query = `SELECT tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email, ud.user_code as user_code
 			FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 			LEFT JOIN teams tm ON ud.team_id = tm.team_id
-			WHERE vd.dealer_name = $1 AND ud.name = $2`
+			WHERE sp.sales_partner_name = $1 AND ud.name = $2`
 
 	//* adding personal details for only sale rep
 	if dataReq.DataType == "sale_rep" {
@@ -104,8 +104,8 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 	whereEleList = nil
 
-	query = `SELECT COUNT(contracted_system_size) AS weekly_sale FROM customers_customers_schema cs LEFT JOIN consolidated_data_view  cdv ON 
-			cdv.unique_id = cs.unique_id WHERE `
+	query = `SELECT COUNT(contracted_system_size) AS weekly_sale FROM customers_customers_schema cs 
+	LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id WHERE `
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -136,13 +136,13 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 	case "sale_rep":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v' AND cs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" cdv.team = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 1) = '%v' AS team AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.state = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" cdv.region = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AS region AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
@@ -163,7 +163,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 
 	if dataReq.CountKwSelection {
 		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size END) AS total_sales,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN cdv.ntp_date IS NOT NULL THEN cs.contracted_system_size END) AS total_ntp,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN ns.ntp_complete_date AS ntp_date IS NOT NULL THEN cs.contracted_system_size END) AS total_ntp,")
 		filtersBuilder.WriteString(" COUNT(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size END) AS total_installs")
 	} else {
 		filtersBuilder.WriteString("SELECT SUM(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_sales,")
@@ -173,20 +173,20 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id `)
+								LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id`)
 	filtersBuilder.WriteString(" WHERE ")
 
 	switch dataReq.DataType {
 	case "sale_rep":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v' AND cs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" cdv.team = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 1) = '%v' AS team AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.state = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" cdv.region = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AS region AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}

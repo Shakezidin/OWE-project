@@ -62,7 +62,7 @@
 }
 .self:hover {
   background-color: #377cf6;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .other {
@@ -73,7 +73,7 @@
 }
 .other:hover {
   background-color: #fff;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .createUserCrossButton {
@@ -153,11 +153,52 @@
     height: 550px;
   }
 
+  .emailStyle{
+    width: 250px !important;
+  }
+
+
+  .survey_button button {
+    width: 300px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(125, 125, 125, 1);
+    cursor: pointer;
+  }
+  
+  
+.Column2Details {
+ 
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-basis: auto;
+  padding: 14px;
+  font-size: 14px;
+  width: 100px !important;
+  margin-bottom: 1.5%;
+}
+
+.Column1Details {
+
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100px !important;
+  flex-basis: auto;
+  padding: 14px;
+  font-size: 14px;
+  margin-bottom: 1.5%;
+}
+
+
   .DetailsMcontainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center ;
+    /* align-items: left !important; */
     width: 100%;
     height: auto;
     padding: 16px;
@@ -171,17 +212,18 @@
   .main_name {
     font-weight: 600;
     font-size: 18px;
+    width: 250px !important;
     margin-top: -13px;
     margin-bottom: 3.7%;
-    margin-left: -139px;
+   
   }
 
   .mobileNumber {
     text-align: left;
-    margin-left: -139px;
+    width: 250px !important;
   }
   .addresshead {
-    margin-bottom: 3.7%;
-    margin-top: -15px;
+    margin-top: -15px !important;
+    width: 250px !important;
   }
 }

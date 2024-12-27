@@ -53,7 +53,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
       );
       if (response.status === 200) {
         toast.success('Leads Archieved successfully');
-        setActiveIndex((prev) => (prev + 1));
+        setActiveIndex((prev) => prev + 1);
         onArcClose();
       } else {
         toast.warn(response.message);
@@ -76,7 +76,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
   }, [authData]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isArcOpen) {
       const fetchData = async () => {
         try {
           setIsLoading(true);
@@ -102,9 +102,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
 
       fetchData();
     }
-  }, [isAuthenticated, leadId]);
-
-
+  }, [isAuthenticated, leadId, isArcOpen]);
 
   return (
     <div>
@@ -112,18 +110,29 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
         <div className="transparent-model">
           <div className={classes.customer_wrapper_list}>
             {loading ? (
-              <div style={{ marginTop: "30px", display: 'flex', justifyContent: 'center' }}>
+              <div
+                style={{
+                  marginTop: '30px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
             ) : leadData ? (
               <div className={classes.DetailsMcontainer}>
                 <div className={classes.Column1Details}>
-                  <span className={classes.main_name}> {leadData?.first_name} {leadData?.last_name}{' '}</span>
-                  <span className={classes.mobileNumber}>{leadData?.phone_number}</span>
+                  <span className={classes.main_name}>
+                    {' '}
+                    {leadData?.first_name} {leadData?.last_name}{' '}
+                  </span>
+                  <span className={classes.mobileNumber}>
+                    {leadData?.phone_number}
+                  </span>
                 </div>
                 <div className={classes.Column2Details}>
                   <span className={classes.addresshead}>
-                  {leadData?.street_address
+                    {leadData?.street_address
                       ? leadData.street_address.length > 20
                         ? `${leadData.street_address.slice(0, 20)}...`
                         : leadData.street_address
@@ -131,38 +140,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
                   </span>
                   <span className={classes.emailStyle}>
                     {leadData?.email_id}{' '}
-                    {/* <span className={classes.verified}> */}
-                      {/* <svg
-                        className={classes.verifiedMarked}
-                        width="13"
-                        height="13"
-                        viewBox="0 0 13 13"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clip-path="url(#clip0_6615_16896)">
-                          <path
-                            d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
-                            fill="#20963A"
-                          />
-                          <path
-                            d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
-                            fill="white"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_6615_16896">
-                            <rect
-                              width="12.16"
-                              height="12.16"
-                              fill="white"
-                              transform="translate(0 0.421875)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>{' '} */}
-                      {/* Verified
-                    </span> */}
+                   
                   </span>
                 </div>
               </div>
@@ -207,8 +185,7 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
               <div className={classes.survey_button}>
                 <button
                   className={classes.self}
-                  style=
-                  {{
+                  style={{
                     color: '#fff',
                     border: 'none',
                     pointerEvents: load ? 'none' : 'auto',
@@ -216,9 +193,8 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
                     cursor: load ? 'not-allowed' : 'pointer',
                   }}
                   onClick={handleArchiveSelected}
-
                 >
-                  {load ? "Archiving..." : "Yes"}
+                  {load ? 'Archiving...' : 'Yes'}
                 </button>
                 <button
                   id="otherButtonId"

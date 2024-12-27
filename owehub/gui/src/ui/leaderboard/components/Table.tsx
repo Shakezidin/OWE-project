@@ -38,6 +38,8 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import { toZonedTime } from 'date-fns-tz';
 import { MdDownloading } from 'react-icons/md';
+import { monthDateFormat } from '../../../utiles/formatDate';
+import { Tooltip } from 'react-tooltip';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -328,12 +330,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -504,7 +506,23 @@ const DateFilter = ({
           }}
         />
       </div>
-      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
+      <Tooltip
+        style={{
+          zIndex: 103,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: '400',
+        }}
+        offset={8}
+        id="lead-calendar"
+        place="top"
+        content="Calendar"
+        delayShow={200}
+        className='pagination-tooltip'
+      />
+      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper" data-tooltip-id="lead-calendar">
         <span
           role="button"
           onClick={() => setShowCalendar((prev) => !prev)}
@@ -513,7 +531,7 @@ const DateFilter = ({
           <Calendar disabled={disabled} />
         </span>
         {showCalendar && !disabled && (
-          <div className="leaderboard-data__datepicker-content">
+          <div className="leaderboard-data__datepicker-content" >
             <DateRange
               editableDateInputs={true}
               onChange={(item) => {
@@ -615,7 +633,8 @@ const Table = ({
       // setLeaderTable(tableData.data.leader_board_list
       // );
       setLeaderTable(tableData?.data?.leader_board_list);
-      setTotalCount(tableData?.data?.dbRecCount);
+      setTotalCount(tableData?.dbRecCount);
+      setTotalStats(tableData?.data);
     }
   }, [
     activeHead,
@@ -761,6 +780,11 @@ const Table = ({
 
   const exportCsv = async () => {
     // Define the headers for the CSV
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
+    };
 
     setIsExporting(true);
     const headers = [
@@ -786,6 +810,7 @@ const Table = ({
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,
+      sort_by: active,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -794,17 +819,17 @@ const Table = ({
     const csvData = getAllLeaders?.data?.map?.((item: any) => [
       item.unique_id,
       item.home_owner,
-      item.customer_email,
-      item.customer_phone_number,
+      item.email_address,
+      item.phone_number,
       item.address,
       item.state,
-      item.contract_total,
-      item.system_size,
-      item.contract_date,
-      item.ntp_date,
-      item.pv_install_completed_date,
-      item.pto_date,
-      item.canceled_date,
+      removeHtmlTags(item.contract_total),
+      item.contracted_system_size_parent,
+      monthDateFormat(item.sale_date),
+      monthDateFormat(item.ntp_complete_date),
+      monthDateFormat(item.pv_completion_date),
+      monthDateFormat(item.pto_date),
+      monthDateFormat(item.cancelled_date),
       item.primary_sales_rep,
       item.secondary_sales_rep,
     ]);
@@ -851,49 +876,61 @@ const Table = ({
       return 'Partner Name';
     }
   }, [role, authData, groupBy]);
+
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
-      <div className="relative exportt" ref={wrapperReff}>
-        <div
-          className="export-trigger overflow-hidden"
-          onClick={() => !isExporting && !isExportingData && toggleExportShow()}
-        >
-          {isExporting || isExportingData ? (
-            <MdDownloading className="downloading-animation" size={20} />
-          ) : (
-            <FaUpload size={12} className="mr1" />
-          )}
-          <span>
-            {' '}
-            {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
-          </span>
-        </div>
-        {exportShow && (
-          <div className="export-opt">
-            <button
-              className="export-btn"
-              disabled={isExporting || isExportingData}
-              onClick={() => {
-                exportPdf();
-                setExportShow(false);
-              }}
-            >
-              <span>Pdf</span>
-            </button>
-            <button
-              disabled={isExportingData}
-              className="export-btn export-btnn"
-              onClick={() => {
-                exportCsv();
-                setExportShow(false);
-              }}
-            >
-              <span>Csv</span>
-            </button>
+      {groupBy === 'dealer' ? null : (
+        <div className="relative exportt" ref={wrapperReff}>
+          <div className="leaderboard-data__title">
+            <img src={award} alt="" />
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#292B2E' }}>
+              Leaderboard
+            </h2>
           </div>
-        )}
-      </div>
+          <div
+            className="export-trigger overflow-hidden"
+            onClick={() =>
+              !isExporting && !isExportingData && toggleExportShow()
+            }
+          >
+            {isExporting || isExportingData ? (
+              <MdDownloading className="downloading-animation" size={20} />
+            ) : (
+              <FaUpload size={12} />
+            )}
+            <span>
+              {' '}
+              {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
+            </span>
+          </div>
+
+          {exportShow && (
+            <div className="export-opt">
+              <button
+                className="export-btn"
+                disabled={isExporting || isExportingData}
+                onClick={() => {
+                  exportPdf();
+                  setExportShow(false);
+                }}
+              >
+                <span>Pdf</span>
+              </button>
+              <button
+                disabled={isExportingData}
+                className="export-btn export-btnn"
+                onClick={() => {
+                  exportCsv();
+                  setExportShow(false);
+                }}
+              >
+                <span>Csv</span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
       {/* <div className="leaderboard-data__export">
         <Select
           options={exportOptions}
@@ -948,12 +985,6 @@ const Table = ({
       </div> */}
 
       <div>
-        <div className="leaderboard-data__title">
-          <img src={award} alt="" />
-          <h2 className="h3" style={{ fontWeight: 600 }}>
-            Leaderboard
-          </h2>
-        </div>
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Rank by:"
@@ -991,10 +1022,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                role === TYPE_OF_USER.ACCOUNT_MANAGER
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -1012,7 +1043,7 @@ const Table = ({
               KW
             </div>
             <div
-              onClick={() => isLoading && setActiveHead('count')}
+              onClick={() => !isLoading && setActiveHead('count')}
               className={`tab ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count

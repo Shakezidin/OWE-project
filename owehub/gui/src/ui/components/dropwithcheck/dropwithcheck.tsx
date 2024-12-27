@@ -13,10 +13,14 @@ interface DropWithCheckProps {
   setSelectedOptions: React.Dispatch<SetStateAction<string[]>>;
 }
 
-const DropIcon = () => {
+interface DropIconProps {
+  style?: React.CSSProperties;
+}
+
+const DropIcon: React.FC<DropIconProps> = ({ style }) => {
   return (
     <svg
-      style={{ flexShrink: 0 }}
+      style={{ flexShrink: 0, ...style }} // Apply custom styles passed via props
       height="20"
       width="20"
       viewBox="0 0 20 20"
@@ -36,14 +40,20 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [dropDownOptions, setDropDownOptions] = useState<Option[]>(options); // Set initial options as default
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropDownOptions, setDropDownOptions] = useState<Option[]>([]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        setSearch(''); // Reset search when closing dropdown
+        setDropDownOptions(options); // Reset dropdown options when closing
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
         setIsOpen(false);
         setSearch('');
         setDropDownOptions(options);
@@ -51,9 +61,10 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
+    document.addEventListener('keydown', handleEscapeKey);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [options]);
 
@@ -63,18 +74,33 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
       setDropDownOptions(options);
     }
   };
+
   useEffect(() => {
     setDropDownOptions(options);
   }, [options]);
 
-  useEffect(() => {
-    if (search.trim()) {
-      setDropDownOptions((prev) =>
-        prev.filter((prev) => prev.value !== 'all' && prev.value !== 'All')
-      );
-    }
-  }, [search]);
+ 
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inputValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Prevent special characters
+  
+    if (inputValue.length > 50) {
+      inputValue = inputValue.slice(0, 50); // Limit input to 50 characters
+    }
+  
+    setSearch(inputValue);
+  
+    if (inputValue.trim()) {
+      setDropDownOptions(
+        options
+          .filter((item) => item.value.toLowerCase().includes(inputValue.toLowerCase().trim()))
+          .slice(0, 50) // Limit search results to 50 items
+      );
+    } else {
+      setDropDownOptions(options.slice(0, 50)); // Show first 50 items if no search
+    }
+  };
+  
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
       if (option === 'All') {
@@ -85,23 +111,22 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
         }
       } else {
         const updatedOptions = prevSelectedOptions.filter((o) => o !== 'All');
-
         if (updatedOptions.includes(option)) {
           return updatedOptions.filter((o) => o !== option);
         } else {
-          let arr = [...updatedOptions, option];
-          if (arr.length + 1 === options.length && !arr.includes('All')) {
-            arr.push('All');
+          let newSelection = [...updatedOptions, option];
+          if (newSelection.length + 1 === options.length && !newSelection.includes('All')) {
+            newSelection.push('All');
           }
-          return arr;
+          return newSelection;
         }
       }
     });
   };
-  console.log(options.filter((opt) => opt.value.toLowerCase() === 'untd'));
+
   return (
-    <div className="comm-dropdown-container" ref={dropdownRef}>
-      <div className="comm-dropdown-toggle" onClick={toggleDropdown}>
+    <div className={`comm-dropdown-container ${isOpen ? 'active' : ''}`} ref={dropdownRef}>
+      <div className={`comm-dropdown-toggle ${isOpen ? 'active' : ''}`} onClick={toggleDropdown}>
         <span className="comm-toggle-text">
           {selectedOptions.length > 0 ? (
             selectedOptions.includes('All') ? (
@@ -116,30 +141,23 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
             'Select Dealer'
           )}
         </span>
-        <DropIcon />
+        <DropIcon
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 550ms ease',
+          }}
+        />
       </div>
       {isOpen && (
         <div className="scrollbar comm-dropdown-menu">
-          <div className="searchBox">
+          <div className="searchBox team-input-wrap">
             <input
               type="text"
               className="input"
               placeholder="Search Dealers"
               style={{ width: '100%' }}
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                if (e.target.value.trim()) {
-                  const filtered = options.filter((item) =>
-                    item.value
-                      .toLocaleLowerCase()
-                      .includes(e.target.value.toLowerCase().trim())
-                  );
-                  setDropDownOptions([...filtered]);
-                } else {
-                  setDropDownOptions([...options]);
-                }
-              }}
+              onChange={handleSearchChange}
             />
           </div>
           {dropDownOptions.map((option, ind) => (
@@ -150,7 +168,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
                 checked={selectedOptions.includes(option.value)}
                 onChange={() => handleOptionChange(option.value)}
               />
-              {option.label}
+              <p>{option.label}</p>
             </div>
           ))}
         </div>

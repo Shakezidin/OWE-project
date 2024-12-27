@@ -1,0 +1,25 @@
+{
+  "auroraTenantId": "cf6dc6cc-0784-49aa-9246-c7a09b68a09c",
+  "auroraBearerToken": "sk_sand_5a12a3d6bb1964b970e20858",
+  "auroraApiBaseUrl": "https://api-sandbox.aurorasolar.com",
+  "appointmentSenderEmail": "shivam.petwal@ourworldenergy.com",
+  "awsS3Bucket": "owe-assets",
+  "awsS3Region": "ap-southeast-2",
+  "awsS3AccessKeyId": "AKIAZ3MGNJPKYMV53JNU",
+  "awsS3SecretKey": "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",
+  "docusignApiBaseUrl": "https://na3.docusign.net",
+  "docusignOauthBaseUrl": "https://account.docusign.com/oauth",
+  "docusignAccountId": "649d4dd4-f186-4e4d-8654-2c5db440e126",
+  "docusignIntegrationKey": "a6d883f2-df53-4915-a170-f5c7cf6f9bcc",
+  "docusignSecretKey": "990a5e16-d498-4a51-bd75-9bd4d91828f7",
+  "docusignUserId": "8127cc7e-3a17-4427-99d5-42efc73cf145",
+  "docusignRsaPrivateKey": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpQIBAAKCAQEAs/nbTYSfUJxDMIcOOvpmOLJAzqW8PFv/mBtT5x6gb2wZ699E\n0VHTOliyynXemCPt3slrDT2wsZ1wGYmqDpwh0cPn+cOZQwzfB5Ng7Fr+84pjzumC\nC/wurjnM8kuFm0JHFThK9OtZWYst4Be8Kxbl1QtMueHdj4ffu8jqVd/aAxX4l0hW\nEuCJcRsO1bWK+fCFDCXmUYljtXrgSkizeY3yKIXQiqNjgm5xZjL2Mdpt6KOXicdO\n1IpB4fZ/T/k+1Lbuo2VlMxzdwwn2CZFxmN7N4Oazt+H7+4iNtvMaJpFhNlNEkFl3\niDf2B0ybPmWhAS8o4MmTKGdsn4DQYie1sTcQGQIDAQABAoIBABoTTBCV85vIcBGo\nAkn4PSGKGJ/4B5GP218XLSz8qnj05r0ztXLwUdQPxXkA4oBqIDdu45mLrmh6wM2V\nEkmYmcEcYE/huiL/9TunQNvYWTzsItwicnWNvYOqRdp1p69gHGVjfl9azoYN3KvY\nNH/iYD021xB4EX4595KWSvaofpvYml4uKxu74DLLqIXqDyrFRyCYHY90wLeN9r7B\npwA9idZlbrfFVW0tEPzCLJ61InACUx3RMPrHqeCE6Y4BESVLVrTE/LIL1lUF35IK\nRspX+BGVw92XK7TkaSfpgKk28xJhoWnw3AM65YAY9Rj5zfMfyw/jF2y+deQHM2mP\nddO4NcMCgYEA2V3RoQcxOL36tAr8SZXsZ8ibPrJuw2lWzdM78tO4BFIFgOt34fth\nX4WKLByUruRVIkApwwz6K5ZEKAmE78MgZwGQoBM12vV3WYYTFYQ0s7sZByRRMuvT\nSJHPcxMAHKQRZoKdy05zanS44ObitlzlRg5q0H5e4GKiZtuKOdaw7CsCgYEA0/bF\nHaFdPRAcK+1Uml8Q0fp76EpMZ7c+UdTE8ZgTUT2dl5kOsDAcWQ4ZDwH/VVftnpoC\ncuihmTx7mC1i393woj1lWGTnZpJg62nBHrIyEbrYIuh0wFedWGeRLhnGRk0nsr0d\n2ARcPExTm/MTM2lhjq0EE87aEn7LkEMKZ7acXssCgYEAh95Z+2KohMRTohi/zCtX\ngyPkzlLwY1tD9BIWhdmLS8ANSqFk5S+hlPi+/oW69nspL+iVciN5eKdL4Q7aNphs\nd5aF1VlMr5oByUbCRQ/HdZT8tvcffknkXpct6cs1pbF0YvRAN+XIxQFC0unfSohU\nk+7NG5fyLCXbR5nxE+g73NMCgYEA0PthVxhsnDLRA8JIAreuFsj294yhjjSN3hKA\nZo6ApT2xrfD7GV0l5evPawuWGifKIPBJb8/K3BFU7jH5ZS0l/l+4FxHNUEUMB67J\n+CDK2s40IR69VZJMkQfzjNdetJuHg2OQFBYgdlburDhZevvwcsJE3d65BTk8LKzc\nimrx+0cCgYEAnAEkkwy6HDJaKl0cft8bVU33hBogUxOoQiJ/tabMC2LbCxgI0HZx\nEBblx4FGKt5pddXbgD9sEY6mvQ+ybDHJdtfCdM6zLK00LxE2AD1Peq1gnMm89C+2\ne25eHVNn+fpEpA5wyUHH2VpDH0R2NncNkKJ8TchbdESyeXcA/55WHyw=\n-----END RSA PRIVATE KEY-----",
+  "docusignRsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs/nbTYSfUJxDMIcOOvp\nOLJAzqW8PFv/mBtT5x6gb2wZ699E0VHTOliyynXemCPt3slrDT2wsZ1wGYmqDpw\n0cPn+cOZQwzfB5Ng7Fr+84pjzumCC/wurjnM8kuFm0JHFThK9OtZWYst4Be8Kxb\n1QtMueHdj4ffu8jqVd/aAxX4l0hWEuCJcRsO1bWK+fCFDCXmUYljtXrgSkizeY3\nKIXQiqNjgm5xZjL2Mdpt6KOXicdO1IpB4fZ/T/k+1Lbuo2VlMxzdwwn2CZFxmN7\n4Oazt+H7+4iNtvMaJpFhNlNEkFl3iDf2B0ybPmWhAS8o4MmTKGdsn4DQYie1sTc\nGQIDAQA\n-----END PUBLIC KEY-----",
+  "outlookSubscriptionEndpoints": [
+    "https://staging.owe-hub.com/api/owe-leads-service/v1/receive_graph_notification"
+  ],
+  "twilioAccountSid": "AC6dd9eb2e703b9503c20f6cde82336e9a",
+  "twilioAuthToken": "41fcd2c05e28333d2af19caadb9a79bd",
+  "twilioFromPhone": "+15005550006",
+  "twilioApiUrl": "https://api.twilio.com/2010-04-01/Accounts/{accounts_id}/Messages.json"
+}

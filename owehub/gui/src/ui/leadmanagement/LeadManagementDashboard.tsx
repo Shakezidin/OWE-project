@@ -1,93 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Sector,
-} from 'recharts';
-import Select, { SingleValue, ActionMeta } from 'react-select';
-import styles from './styles/dashboard.module.css';
-import './styles/mediaQuery.css';
-import { ICONS } from '../../resources/icons/Icons';
-import { useNavigate } from 'react-router-dom';
-import Pagination from '../components/pagination/Pagination';
-import ArchiveModal from './Modals/LeaderManamentSucessModel';
-import ConfirmModel from './Modals/ConfirmModel';
-import useWindowWidth from '../../hooks/useWindowWidth';
-import ThreeDotsImage from '../Library/stylesFolder/ThreeDots.svg';
-
-// shams start
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Papa from 'papaparse';
+import { toast } from 'react-toastify';
+import useAuth from '../../hooks/useAuth';
+import { LuImport } from 'react-icons/lu';
 import { DateRange } from 'react-date-range';
+import { useNavigate } from 'react-router-dom';
+import HistoryRedirect from './HistoryRedirect';
+import { debounce } from '../../utiles/debounce';
+import useEscapeKey from '../../hooks/useEscape';
+import { ICONS } from '../../resources/icons/Icons';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import { MdDownloading, MdHeight } from 'react-icons/md';
+import MicroLoader from '../components/loader/MicroLoader';
+import Pagination from '../components/pagination/Pagination';
+import DataNotFound from '../components/loader/DataNotFound';
+import Select, { SingleValue, ActionMeta } from 'react-select';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
+import LeadTable from './components/LeadDashboardTable/leadTable';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import './styles/mediaQuery.css';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { toZonedTime } from 'date-fns-tz';
-import {
-  endOfWeek,
-  format,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
-  subDays,
-} from 'date-fns';
-import HistoryRedirect from '../Library/HistoryRedirect';
-import useAuth from '../../hooks/useAuth';
+import styles from './styles/dashboard.module.css';
+import CustomPieChart from './components/CustomPieChart';
+import CustomLineChart from './components/CustomLineChart';
+import CustomSelect from './components/CustomSelect';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { toast } from 'react-toastify';
-import MicroLoader from '../components/loader/MicroLoader';
-import DataNotFound from '../components/loader/DataNotFound';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import ArchivedPages from './ArchievedPages';
-import useMatchMedia from '../../hooks/useMatchMedia';
-// import { Select } from 'react-day-picker';
-// import styles from './styles/lmhistory.module.css';
+import { handleCreateProposal, generateWebProposal, retrieveWebProposal } from './api/auroraApi';
+import { addMinutes, endOfWeek, format, parseISO, startOfMonth, startOfWeek, startOfYear, subDays, } from 'date-fns';
 
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
-interface StatusData {
-  name: string;
-  value: number;
-  color: string;
-}
-
-function getUserTimezone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
-}
-
-function getCurrentDateInUserTimezone() {
-  const now = new Date();
-  const userTimezone = getUserTimezone();
-  return toZonedTime(now, userTimezone);
-}
-
-const today = getCurrentDateInUserTimezone();
+const today = new Date();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(
-  today.getFullYear(),
-  today.getMonth() - 2,
-  1
-);
+const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
-  weekStartsOn: 1,
-});
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
-  weekStartsOn: 1,
-});
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1, });
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1, });
 
 const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Week', start: startOfThisWeek, end: today },
@@ -97,433 +54,79 @@ const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Quarter', start: startOfThreeMonthsAgo, end: today },
   { label: 'This Year', start: startOfThisYear, end: today },
 ];
-// shams end
-
-type Lead = {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  status: string;
-};
-
-const leads = [
-  {
-    id: '1',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '2',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '3',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '4',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '5',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '6',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '7',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '8',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '9',
-    name: 'Rabindra Kumar Sharma',
-    phone: '+00 876472822',
-    email: 'rabindr718@gmail.com',
-    address: 'Patel Nagar, Dehradun, UK',
-    status: 'Accepted',
-  },
-  {
-    id: '10',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Declined',
-  },
-  {
-    id: '11',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '12',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Accepted',
-  },
-  {
-    id: '13',
-    name: 'XYZ Name',
-    phone: '+00 876472822',
-    email: 'xyz8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '14',
-    name: 'Virendra Sehwag',
-    phone: '+00 876472822',
-    email: 'sehwag8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '15',
-    name: 'Bhuvneshwar Kumar',
-    phone: '+00 876472822',
-    email: 'bhuvi8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'No Response',
-  },
-  {
-    id: '16',
-    name: 'Jasprit Bumrah',
-    phone: '+00 876472822',
-    email: 'jasprit8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Update Status',
-  },
-  {
-    id: '17',
-    name: 'Risabh Pant',
-    phone: '+00 876472822',
-    email: 'rp8772@gmail.com',
-    address: 'haridwar, Delhi',
-    status: 'No Response',
-  },
-  {
-    id: '18',
-    name: 'Virat Kohli',
-    phone: '+00 876472822',
-    email: 'king8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Deal Won',
-  },
-];
-
-const renderActiveShape = (props: any) => {
-  const RADIAN = Math.PI / 180;
-  const {
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-    payload,
-    percent,
-    value,
-  } = props;
-  const sin = Math.sin(-RADIAN * midAngle);
-  const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
-  const mx = cx + (outerRadius + 30) * cos;
-  const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-  const ey = my;
-  const textAnchor = cos >= 0 ? 'start' : 'end';
-
-  // Center text in pie chart
-
-  const splitText = (text: string, width: number) => {
-    const words = text.split(' ');
-    const lines = [];
-    let line = '';
-
-    words.forEach((word: string) => {
-      const testLine = line + word + ' ';
-      if (testLine.length > width) {
-        lines.push(line.trim());
-        line = word + ' ';
-      } else {
-        line = testLine;
-      }
-    });
-    lines.push(line.trim());
-    return lines;
-  };
-
-  const lines = splitText(payload.name, 15);
-
-  return (
-    <g>
-      <text
-        x={cx}
-        y={cy - (lines.length - 1) * 6}
-        textAnchor="middle"
-        fill={fill}
-      >
-        {lines.map((line, index) => (
-          <tspan
-            key={index}
-            x={cx}
-            dy={index ? 15 : 0}
-            style={{
-              fontSize: '12.07px',
-              wordBreak: 'break-word',
-              fontWeight: 550,
-            }}
-          >
-            {line}
-          </tspan>
-        ))}
-      </text>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={outerRadius + 6}
-        outerRadius={outerRadius + 10}
-        fill={fill}
-      />
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
-        fill="none"
-      />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        textAnchor={textAnchor}
-        fill="#333"
-        style={{ fontSize: '12.07px' }}
-      >
-        {`${value}`}
-      </text>
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill="#999"
-        style={{ fontSize: '12.07px' }}
-      >
-        {`(${(percent * 100).toFixed(2)}%)`}
-      </text>
-    </g>
-  );
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Pending':
-      return '#FF832A';
-    case 'Sent':
-      return '#81A6E7';
-    case 'Accepted':
-      return '#52B650';
-    case 'Declined':
-      return '#CD4040';
-    case 'Action Needed':
-      return '#63ACA3';
-    default:
-      return '#000000';
-  }
-};
-
-// const ActionNeeded={
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-// }
-const statusMap = {
-  'Pending leads': 'Pending',
-  'Appointment accepted': 'Accepted',
-  'Appointment sent': 'Sent',
-  'Appointment declined': 'Declined',
-  'Action Needed': 'Action Needed',
-};
-
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: any[];
-  label?: string;
-}) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        style={{
-          backgroundColor: 'white',
-          padding: '5px 10px',
-          // border: '1px solid #f0f0f0',
-          borderRadius: '4px',
-          // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
-      >
-        <p
-          style={{
-            margin: '2px 0',
-            color: '#57B93A',
-            fontWeight: 'bold',
-            fontSize: 11,
-          }}
-        >{`${payload[0].value} Closed Won`}</p>
-        <p
-          style={{
-            margin: '2px 0',
-            color: '#CD4040',
-            fontWeight: 'bold',
-            fontSize: 11,
-          }}
-        >{`${payload[1].value} Closed Lost`}</p>
-      </div>
-    );
-  }
-  return null;
-};
 
 const LeadManagementDashboard = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [currentFilter, setCurrentFilter] = useState('Pending');
-  const [filteredLeads, setFilteredLeads] = useState(leads);
-  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
-  const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
-
   const width = useWindowWidth();
   const isTablet = width <= 1024;
-  // shams start
-  const [selectedPeriod, setSelectedPeriod] =
-    useState<DateRangeWithLabel | null>(
-      periodFilterOptions.find((option) => option.label === 'This Week') || null
-    );
-  const [selectedRanges, setSelectedRanges] = useState([
-    { startDate: new Date(), endDate: new Date(), key: 'selection' },
-  ]);
-
-  const [selectedDates, setSelectedDates] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
-  }>({
-    startDate: startOfThisWeek,
-    endDate: today,
-  });
+  const [page, setPage] = useState(1);
+  const [refresh, setRefresh] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const toggleRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const [archived, setArchived] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isToggledX, setIsToggledX] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const [selectedValue, setSelectedValue] = useState('ALL');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [currentFilter, setCurrentFilter] = useState('New Leads');
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
+  const [isNewButtonActive, setIsNewButtonActive] = useState(false);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
+  const [side, setSide] = useState<"left" | "right">('left');
+  const [selectedRanges, setSelectedRanges] = useState([{ startDate: startOfThisWeek, endDate: today, key: 'selection' },]);
+  const [selectedDates, setSelectedDates] = useState<{ startDate: Date | null; endDate: Date | null; }>({ startDate: startOfThisWeek, endDate: today, });
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(periodFilterOptions.find((option) => option.label === 'This Week') || null);
 
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
   };
-
   const onReset = () => {
-    setSelectedDates({ startDate: new Date(), endDate: new Date() });
+    const currentDate = new Date();
+    setSelectedDates({ startDate: startOfThisWeek, endDate: today });
+    setSelectedPeriod(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
+    setSelectedRanges([
+      {
+        startDate: currentDate,
+        endDate: currentDate,
+        key: 'selection',
+      },
+    ]);
     setIsCalendarOpen(false);
   };
-
   const onApply = () => {
     const startDate = selectedRanges[0].startDate;
     const endDate = selectedRanges[0].endDate;
     setSelectedDates({ startDate, endDate });
+    setSelectedPeriod(null);
     setIsCalendarOpen(false);
   };
-
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const dateRangeRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLDivElement>(null);
-  const [toggledId, setToggledId] = useState<number[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(1);
-  const [itemsPerPage, setItemPerPage] = useState(10);
-  const startIndex = (page - 1) * itemsPerPage + 1;
-  const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
-  const [refresh, setRefresh] = useState(1);
-  const [archived, setArchived] = useState(false);
-  const [leadId, setLeadId] = useState(0);
-  const isMobile = useMatchMedia('(max-width: 1024px)');
-  const [reschedule, setReschedule] = useState(false);
-
-
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
   };
-
   const goToNextPage = () => {
     setPage(page + 1);
   };
-
   const goToPrevPage = () => {
     setPage(page - 1);
   };
-
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1);
+  };
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+  const handleCalenderClose = () => {
+    setIsCalendarOpen(false);
+  }
+  useEscapeKey(handleCalenderClose);
 
-  //CALLING FOR RANGE PICK IN USING SELECT CODE
   const handlePeriodChange = (
     newValue: SingleValue<DateRangeWithLabel>,
     actionMeta: ActionMeta<DateRangeWithLabel>
@@ -538,8 +141,6 @@ const LeadManagementDashboard = () => {
       setSelectedDates({ startDate: null, endDate: null });
     }
   };
-  //CALLING FOR HISTORY
-
   const handleClickOutside = (event: Event) => {
     if (
       calendarRef.current &&
@@ -550,6 +151,51 @@ const LeadManagementDashboard = () => {
       setIsCalendarOpen(false);
     }
   };
+  const navigate = useNavigate();
+  const handleAddLead = () => {
+    navigate('/leadmng-dashboard/leadmgt-addnew');
+  };
+  const statusMap = {
+    'NEW': 'New Leads',
+    'PROGRESS': 'In Progress',
+    'DECLINED': 'Declined',
+    'ACTION_NEEDED': 'Action Needed',
+  };
+  const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
+    setActiveIndex(index);
+  };
+  const handleFilterClick = (filter: string) => {
+    setCurrentFilter(filter);
+    setBackup(filter);
+    setPage(1);
+    setSide("left")
+    setActiveIndex(
+      pieData.findIndex(
+        (item) => statusMap[item.name as keyof typeof statusMap] === filter
+      )
+    );
+  };
+  const createProposal = async (leadId: number) => {
+    const createHandler = handleCreateProposal(leadId, setRefresh, dispatch);
+    await createHandler();
+  };
+  const generateProposalWrapper = async (leadId: number) => {
+    const generateHandler = generateWebProposal(leadId, dispatch);
+    await generateHandler();
+  };
+
+  const retrieveProposalWrapper = async (leadId: number) => {
+    const retrieveHandler = retrieveWebProposal(leadId, dispatch);
+    await retrieveHandler();
+  };
+  useEffect(() => {
+    if (pieData.length > 0) {
+      const pieName = pieData[activeIndex].name;
+      const newFilter = statusMap[pieName as keyof typeof statusMap];
+      setCurrentFilter(newFilter);
+      setPage(1);
+    }
+  }, [activeIndex]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -560,109 +206,59 @@ const LeadManagementDashboard = () => {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
-  // shams end
-  // const itemsPerPage = 10;
-  const navigate = useNavigate();
-
-  const handleAddLead = () => {
-    navigate('/leadmgt-addnew');
-  };
-
-  useEffect(() => {
-    if (pieData.length > 0) {
-      const pieName = pieData[activeIndex].name;
-      const newFilter = statusMap[pieName as keyof typeof statusMap];
-      setCurrentFilter(newFilter);
-      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
-    }
-  }, [activeIndex]);
-
-  const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
-    setActiveIndex(index);
-  };
-
-  const handleFilterClick = (filter: string) => {
-    setCurrentFilter(filter);
-    setFilteredLeads(leads.filter((lead) => lead.status === filter));
-    setActiveIndex(
-      pieData.findIndex(
-        (item) => statusMap[item.name as keyof typeof statusMap] === filter
-      )
-    );
-  };
-
-  const handleLeadSelection = (leadId: number) => {
-    setSelectedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
-    );
-  };
-
-  const handleReschedule = (lead: any) => {
-    setShowConfirmModal(true);
-  };
-
-  const handleArchive = (lead: Lead) => {
-    setLeadToArchive(lead); // Store the lead to be archived
-    setShowArchiveModal(true); // Show the modal
-  };
-
-  const handleDetailModal = (lead: Lead) => {
-    setShowConfirmModal(true); // Show detail modal
-  };
-
-  const handleChevronClick = (itemId: number) => {
-    console.log(itemId);
-    setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId) ? [] : [itemId]
-    );
-  };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
-  const handleOpenArcModal = () => {
-    console.log("click on arch")
-    setIsArcModalOpen(true);
-    console.log(isArcModalOpen)
-  };
-
-  const handleCloseArcModal = () => {
-    setIsArcModalOpen(false);
-  };
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   const [loading, setIsLoading] = useState(false);
+  const [pieData, setPieData] = useState<StatusData[]>([]);
+  const [totalValue, setTotalValue] = useState<number>(0);
+  const [archive, setArchive] = useState(false);
+  const [ref, setRef] = useState(0);
+  const [exporting, setIsExporting] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
+  const [backup, setBackup] = useState('New Leads');
+  const [lineData, setLineData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('');
+
+  interface DefaultData {
+    [key: string]: StatusData;
+  }
+  interface StatusData {
+    name: string;
+    value: number;
+    color: string;
+  }
+  const defaultData: DefaultData = {
+    NEW: { name: 'NEW', value: 0, color: '#21BC27' },
+    PROGRESS: { name: 'PROGRESS', value: 0, color: '#377CF6' },
+    DECLINED: { name: 'DECLINED', value: 0, color: '#D91515' },
+    ACTION: { name: 'ACTION_NEEDED', value: 0, color: '#EC9311' },
+  };
+  const dispatch = useAppDispatch();
+  const { isLoading, leadsData, statusData1, totalcount } = useAppSelector(
+    (state) => state.leadManagmentSlice
+  );
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
-
-  const [lineData, setLineData] = useState([]);
-
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
+
         try {
           setIsLoading(true);
           const response = await postCaller(
             'get_periodic_won_lost_leads',
             {
               start_date: selectedDates.startDate
-                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
                 : '',
               end_date: selectedDates.endDate
-                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
                 : '',
             },
             true
@@ -688,78 +284,7 @@ const LeadManagementDashboard = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates]);
-
-  const defaultData: DefaultData = {
-    PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
-    SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
-    ACCEPTED: { name: 'Appointment accepted', value: 0, color: '#52B650' },
-    DECLINED: { name: 'Appointment declined', value: 0, color: '#CD4040' },
-    'ACTION NEEDED': { name: 'Action Needed', value: 0, color: '#63ACA3' },
-  };
-  interface DefaultData {
-    [key: string]: StatusData;
-  }
-  interface StatusData {
-    name: string;
-    value: number;
-    color: string;
-  }
-  const [pieData, setPieData] = useState<StatusData[]>([]);
-  const [totalValue, setTotalValue] = useState<number>(0);
-  const [archive, setArchive] = useState(false);
-  const [ref, setRef] = useState(0);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-          const response = await postCaller(
-            'get_leads_count_by_status',
-            {
-              start_date: selectedDates.startDate
-                ? format(selectedDates.startDate, 'dd-MM-yyyy')
-                : '',
-              end_date: selectedDates.endDate
-                ? format(selectedDates.endDate, 'dd-MM-yyyy')
-                : '',
-            },
-            true
-          );
-
-          if (response.status === 200) {
-            const apiData = response.data.leads;
-            const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => {
-                acc[item.status_name] = {
-                  name: defaultData[item.status_name].name,
-                  value: item.count,
-                  color: defaultData[item.status_name].color,
-                };
-                return acc;
-              },
-              {} as DefaultData
-            );
-            const mergedData = Object.values({
-              ...defaultData,
-              ...formattedData,
-            }) as StatusData[];
-            setPieData(mergedData);
-          } else if (response.status > 201) {
-            toast.error(response.data.message);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchData();
-    }
   }, [isAuthenticated, selectedDates, refresh]);
-
   useEffect(() => {
     const calculateTotalValue = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
@@ -768,51 +293,75 @@ const LeadManagementDashboard = () => {
 
     calculateTotalValue();
   }, [pieData]);
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const apiData = statusData1;
+      const formattedData = apiData.reduce(
+        (acc: DefaultData, item: any) => {
+          const statusName = item.status_name;
+          const defaultDataKey = Object.keys(defaultData).find(
+            (key) => key === statusName || defaultData[key].name === statusName
+          );
 
-  const dispatch = useAppDispatch();
-  const { isLoading, leadsData, totalcount } = useAppSelector(
-    (state) => state.leadManagmentSlice
-  );
+          if (defaultDataKey) {
+            acc[defaultDataKey] = {
+              ...defaultData[defaultDataKey],
+              value: item.count,
+            };
+          }
 
+          return acc;
+        },
+        { ...defaultData }
+      );
+
+      const mergedData = Object.values(formattedData) as StatusData[];
+      setPieData(mergedData);
+
+    }
+  }, [statusData1])
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
       switch (currentFilter) {
         case 'Action Needed':
-          statusId = 4;
+          statusId = 'ACTION_NEEDED';
           break;
-        case 'Pending':
-          statusId = 0;
+        case 'New Leads':
+          statusId = 'NEW';
           break;
-        case 'Sent':
-          statusId = 1;
-          break;
-        case 'Accepted':
-          statusId = 2;
+        case 'In Progress':
+          statusId = 'PROGRESS';
           break;
         case 'Declined':
-          statusId = 3;
+          statusId = 'DECLINED';
+          break;
+        case 'Projects':
+          statusId = 5;
           break;
         default:
-          statusId = 0;
+          statusId = '';
       }
 
       const data = {
         start_date: selectedDates.startDate
-          ? format(selectedDates.startDate, 'dd-MM-yyyy')
+          ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
           : '',
         end_date: selectedDates.endDate
-          ? format(selectedDates.endDate, 'dd-MM-yyyy')
+          ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
           : '',
-        status_id: statusId,
+        "status": statusId,
         is_archived: archive,
-        page_size: 10,
+        progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
+        search: searchTerm,
+        page_size: itemsPerPage,
         page_number: archive ? 1 : page,
       };
 
       dispatch(getLeads(data));
     }
   }, [
+    searchTerm,
     selectedDates,
     isModalOpen,
     archive,
@@ -820,16 +369,35 @@ const LeadManagementDashboard = () => {
     itemsPerPage,
     page,
     currentFilter,
+    selectedValue,
     refresh,
-    ref
+    ref,
   ]);
-
+  useEffect(() => {
+    if (currentFilter !== 'In Progress') {
+      setSelectedValue('ALL');
+    }
+  }, [currentFilter])
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
     }
   }, [leadsData]);
-
+  useEffect(() => {
+    setPage(1);
+  }, [selectedDates, selectedValue]);
+  useEffect(() => {
+    if (searchTerm === '') {
+      setCurrentFilter(backup);
+      setPage(1);
+    }
+  }, [searchTerm]);
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 800),
+    []
+  );
   const handleArchiveSelected = async () => {
     setArchived(true);
     try {
@@ -843,7 +411,7 @@ const LeadManagementDashboard = () => {
       );
 
       if (response.status === 200) {
-        toast.success('Leads Archieved successfully');
+        toast.success('Leads Archived Successfully');
         setSelectedLeads([]);
         setRefresh((prev) => prev + 1);
         setArchived(false);
@@ -857,51 +425,289 @@ const LeadManagementDashboard = () => {
     }
     setArchived(false);
   };
+  const handleNewButtonClick = () => {
+    setCurrentFilter('Projects'); // Example filter name
+    setIsNewButtonActive(true);
+  };
+  const OpenWindowClick = () => {
+    setIsToggledX((prev) => !prev);
+  };
+  const exportCsv = async () => {
+    setShowTooltip(false);
+    setIsExporting(true);
+    const headers = [
+      'Lead ID',
+      // 'Status ID',
+      'First Name',
+      'Last Name',
+      'Email',
+      'Phone Number',
+      'Street Address',
+      'Appointment Status',
+      'Appointment Status Date',
+      'Deal Status',
+      'Deal Date',
+      'Finance Company',
+      'Finance Type',
+      'QC Audit',
+      'Proposal ID',
+      'Proposal Status',
+      'Proposal Link',
+      'Proposal Created Date',
+      'Sales Rep',
+      'Lead Source',
+      'Setter'
+    ];
 
-  //************************************************************************************************ */
+    let statusId;
+    switch (currentFilter) {
+      case 'Action Needed':
+        statusId = 'ACTION_NEEDED';
+        break;
+      case 'New Leads':
+        statusId = 'NEW';
+        break;
+      case 'In Progress':
+        statusId = 'PROGRESS';
+        break;
+      case 'Declined':
+        statusId = 'DECLINED';
+        break;
+      case 'Projects':
+        statusId = 5;
+        break;
+      default:
+        statusId = 'NEW';
+    }
+
+    const data = {
+      start_date: selectedDates.startDate
+        ? `${format(selectedDates.startDate, 'dd-MM-yyy')}`
+        : '',
+      end_date: selectedDates.endDate
+        ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
+        : '',
+      "status": statusId,
+      is_archived: archive,
+      progress_filter: selectedValue ? selectedValue : "ALL",
+      page_size: 0,
+      page_number: 0,
+    };
+
+    try {
+      const response = await postCaller(
+        'get_leads_home_page',
+        data,
+        true
+      );
+
+      if (response.status > 201) {
+        toast.error(response.data.message);
+        setIsExporting(false);
+        return;
+      }
+
+
+
+      const csvData = response.data?.leads_data?.map?.((item: any) => [
+        `OWE${item.leads_id}`,
+        // item.status_id,
+        item.first_name,
+        item.last_name,
+        item.email_id,
+        `'${item.phone_number}'`,
+        item.street_address,
+        item.appointment_status_label,
+        item.appointment_status_date ? `${format(parseISO(item.appointment_status_date), 'dd-MM-yyyy')}` : '',
+        item.won_lost_label,
+        item.won_lost_date ? `${format(parseISO(item.won_lost_date), 'dd-MM-yyyy')}` : '',
+        item.finance_company,
+        item.finance_type,
+        item.qc_audit,
+        item.proposal_id,
+        item.proposal_status,
+        item.proposal_link,
+        item.proposal_updated_at ? `${format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy')}` : '',
+        item.sales_rep_name,
+        item.lead_source,
+        item.setter_name ? item.setter_name : "",
+      ]);
+
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'leads.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      toast.error('No Data Found');
+    } finally {
+      setIsExporting(false);
+    }
+    setShowTooltip(true);
+  };
+  const handleCrossIcon = () => {
+    setCurrentFilter(backup);
+    setSearchTerm('');
+    setSearch('');
+  }
+  const isMobileDevice = () => {
+    return (
+      typeof window !== 'undefined' &&
+      (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+    );
+  };
+  //*************************************************************************************************//
   return (
     <div className={styles.dashboard}>
-      <div style={{ marginLeft: 6, marginTop: 6 }}>
-        <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
-          <div className="bread-link">
-            <div className="" style={{ cursor: 'pointer' }}>
-              <h3>Lead Management</h3>
+      <div className={styles.chartGrid}>
+        <div className={styles.horizontal}>
+
+          <div className={styles.FirstColHead}>
+            {/* HERE FOR TOGGLE VIEW WHEN HIDE OTHER BOTTONS */}
+
+            {isToggledX && (
+              <div className={styles.customLeftRRR}>
+                Overview
+              </div>
+            )}
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              Total leads : {totalValue ? totalValue : '0'}
             </div>
-            <div className="">
-              <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
+          </div>
+          <div className={styles.SecondColHead}>
+            {
+              isToggledX == false && <div className={styles.MobileViewHide}>
+                Total leads : {totalValue ? totalValue : '0'}
+              </div>
+            }
+            {/* CARD DESIGNING STRTED */}
+            <div>
+              {isToggledX && <div className={styles.customLeftRRR}
+              >Total Won Lost</div>}
+            </div>
+            <div className={`${styles.customRight} ${styles.customFont}`}>
+              <div className={styles.date_calendar}>
+                <div className={styles.lead__datepicker_wrapper}>
+                  {isCalendarOpen && (
+                    <div
+                      ref={calendarRef}
+                      className={styles.lead__datepicker_content}
+                    >
+                      <DateRange
+                        editableDateInputs={true}
+                        onChange={handleRangeChange}
+                        moveRangeOnFirstSelection={false}
+                        ranges={selectedRanges}
+                      />
+                      <div className={styles.lead__datepicker_btns}>
+                        <button className="reset-calender" onClick={onReset}>
+                          Reset
+                        </button>
+                        <button className="apply-calender" onClick={onApply}>
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {selectedDates.startDate && selectedDates.endDate && (
+                  <div className={styles.hist_date}>
+                    {isToggledX && <span className={styles.date_display}>
+                      {selectedDates.startDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.startDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.startDate.getFullYear()}
+                      {' - '}
+                      {selectedDates.endDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                        ' ' +
+                        selectedDates.endDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                        }) +
+                        ' ' +
+                        selectedDates.endDate.getFullYear()}
+                    </span>
+                    }
+                  </div>
+                )}
+                {isToggledX &&
+                  <CustomSelect<DateRangeWithLabel>
+                    value={selectedPeriod}
+                    onChange={(newValue) => handlePeriodChange(newValue, {} as ActionMeta<DateRangeWithLabel>)}
+                    options={periodFilterOptions}
+                    isVisible={isToggledX}
+                    placeholder="Select Period"
+                    getOptionLabel={(option) => option.label || ''}
+                    getOptionValue={(option) => option.label || ''}
+                  />
+                }
+                {isToggledX && <div
+                  ref={toggleRef}
+                  className={styles.calender}
+                  onClick={toggleCalendar}
+                >
+                  <img src={ICONS.includes_icon} alt="" />
+                </div>}
+
+
+                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
+                  {isToggledX ? (
+                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DashboardNewIcon} /></div>
+                  ) : (<div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
+                    <img className={styles.ArrowDX} src={ICONS.DashboardNewIcon} />
+                  </div>
+                  )}
+                </div>
+
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+
+                    fontWeight: "400"
+                  }}
+                  offset={8}
+                  delayShow={800}
+                  id="downip"
+                  place="top"
+                  content={isToggledX ? "Minimize" : "Maximize"}
+                  className={styles.mobile_tooltip}
+                />
+
+              </div>
+
             </div>
           </div>
         </div>
-      </div>
+        {/* //HORIZONTAL ENDED */}
+        {isToggledX && <div className={styles.vertical1}>
+          <div className={styles.FirstColHeadMobile}>
 
+            <div className={`${styles.customLeftMobile} ${styles.customFont}`}>
+              Overview
+            </div>
 
-      <ConfirmModel
-        isOpen1={isModalOpen}
-        onClose1={handleCloseModal}
-        leadId={leadId}
-        refresh={refresh}
-        setRefresh={setRefresh}
-        reschedule={reschedule}
-      />
-
-
-
-      <ArchiveModal
-        isArcOpen={isArcModalOpen}
-        onArcClose={handleCloseArcModal}
-        leadId={leadId}
-        activeIndex={ref}
-        setActiveIndex={setRef}
-      />
-
-
-      <div className={styles.chartGrid}>
-        <div className={styles.card}>
-          <div className={styles.cardHeaderFirst}>
-            Overview
-            <div>Total leads: {totalValue ? totalValue : '0'}</div>
+            <div className={styles.customFont}>
+              Total leads : {totalValue ? totalValue : '0'}
+            </div>
           </div>
-          <div className={styles.cardContent}>
+
+          <div style={{ width: "120%" }}>
             {loading ? (
               <div
                 style={{
@@ -912,28 +718,13 @@ const LeadManagementDashboard = () => {
               >
                 <MicroLoader />
               </div>
-            ) : lineData.length > 0 ? (
+            ) : totalValue > 0 ? (
               <>
-                <ResponsiveContainer width="100%" height={260}>
-                  <PieChart className={styles.pieChart}>
-                    <Pie
-                      activeIndex={activeIndex}
-                      activeShape={renderActiveShape}
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      onClick={handlePieClick}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+                <CustomPieChart
+                  activeIndex={activeIndex}
+                  pieData={pieData}
+                  handlePieClick={handlePieClick}
+                />
                 <div className={styles.legend}>
                   {pieData.map((item) => (
                     <div key={item.name} className={styles.legendItem}>
@@ -941,7 +732,7 @@ const LeadManagementDashboard = () => {
                         className={styles.legendColor}
                         style={{ backgroundColor: item.color }}
                       ></div>
-                      <span className={styles.legendText}>{item.name}</span>
+                      <span className={styles.legendText}>{item.name} LEADS</span>
                     </div>
                   ))}
                 </div>
@@ -950,206 +741,32 @@ const LeadManagementDashboard = () => {
               <DataNotFound />
             )}
           </div>
-        </div>
-
-        <div className={`${styles.card} ${styles.lineCard}`}>
-          {/* shams start */}
-          <div className={styles.cardHeaderSecond}>
-            <span>Total Won Lost</span>
-            <div className={styles.date_calendar}>
-              <div className={styles.lead__datepicker_wrapper}>
-                {isCalendarOpen && (
-                  <div
-                    ref={calendarRef}
-                    className={styles.lead__datepicker_content}
-                  >
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={handleRangeChange}
-                      moveRangeOnFirstSelection={false}
-                      ranges={selectedRanges}
-                    />
-                    <div className={styles.lead__datepicker_btns}>
-                      <button className="reset-calender" onClick={onReset}>
-                        Reset
-                      </button>
-                      <button className="apply-calender" onClick={onApply}>
-                        Apply
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {selectedDates.startDate && selectedDates.endDate && (
-                <div className={styles.hist_date}>
-                  <span className={styles.date_display}>
-                    {selectedDates.startDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                    }) +
-                      ' ' +
-                      selectedDates.startDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                      }) +
-                      ' ' +
-                      selectedDates.startDate.getFullYear()}
-                    {' - '}
-                    {selectedDates.endDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                    }) +
-                      ' ' +
-                      selectedDates.endDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                      }) +
-                      ' ' +
-                      selectedDates.endDate.getFullYear()}
-                  </span>
-                </div>
-              )}
-
-              {/* RABINDR718.....DATE_PICKER STARTED */}
-              <Select
-                value={selectedPeriod}
-                onChange={handlePeriodChange}
-                options={periodFilterOptions}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    marginTop: 'px',
-                    borderRadius: '8px',
-                    outline: 'none',
-                    color: '#3E3E3E',
-                    width: '140px',
-                    height: '36px',
-                    fontSize: '12px',
-                    border: '1px solid #d0d5dd',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    alignContent: 'center',
-                    backgroundColor: '#fffff',
-                    boxShadow: 'none',
-                    '&:focus-within': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                      caretColor: '#3E3E3E',
-                    },
-                    '&:hover': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                    },
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                    '&:hover': {
-                      color: '#3E3E3E',
-                    },
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                    },
-                    cursor: 'pointer',
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '140px',
-                    marginTop: '0px',
-                  }),
-                }}
-              />
-              <div
-                ref={toggleRef}
-                className={styles.calender}
-                onClick={toggleCalendar}
-              >
-                <img src={ICONS.includes_icon} alt="" />
-              </div>
+        </div>}
+        {/* VERTICAL 1 ENDED */}
+        {isToggledX && <div className={styles.vertical2}>
+          {loading ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MicroLoader />
             </div>
-          </div>
-          {/* RABINDR718.....DATE_PICKER ENDED */}
-          <div
-            className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
-          >
-            {loading ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <MicroLoader />
-              </div>
-            ) : lineData.length > 0 ? (
-              <>
-                <ResponsiveContainer
-                  className={styles.chart_main_grid}
-                  width="100%"
-                  height={300}
-                >
-                  <LineChart data={lineData}>
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend
-                      className={styles.lineChart_legend}
-                      formatter={(value) =>
-                        value === 'won' ? 'Total won' : 'Total Lost'
-                      }
-                      wrapperStyle={{
-                        fontSize: '12px',
-                        fontWeight: 550,
-                        marginBottom: -15,
-                      }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="won"
-                      stroke="#57B93A"
-                      strokeWidth={2}
-                      name="won"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="lost"
-                      stroke="#CD4040"
-                      strokeWidth={2}
-                      name="lost"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </>
-            ) : (
-              <DataNotFound />
-            )}
-          </div>
+          ) : lineData.length > 0 ? (
+            <>
+              <CustomLineChart lineData={lineData} />
+            </>
+          ) : (
+            <DataNotFound />
+          )}
         </div>
-      </div>
 
+        }
+        {/* HERE NOT ENTER BELOW CODES */}
+      </div>
       <div className={styles.card}>
-        {archive == true && (
-          <ArchivedPages
-            setArchive={setArchive}
-            activeIndex={ref}
-            setActiveIndex={setRef}
-          />
-        )}
         {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
@@ -1158,19 +775,16 @@ const LeadManagementDashboard = () => {
                   {pieData.map((data) => {
                     let displayStatus = '';
                     switch (data.name) {
-                      case 'Pending leads':
-                        displayStatus = 'Pending';
+                      case 'NEW':
+                        displayStatus = 'New Leads';
                         break;
-                      case 'Appointment sent':
-                        displayStatus = 'Sent';
+                      case 'PROGRESS':
+                        displayStatus = 'In Progress';
                         break;
-                      case 'Appointment accepted':
-                        displayStatus = 'Accepted';
-                        break;
-                      case 'Appointment declined':
+                      case 'DECLINED':
                         displayStatus = 'Declined';
                         break;
-                      case 'Action Needed':
+                      case 'ACTION_NEEDED':
                         displayStatus = 'Action Needed';
                         break;
                       default:
@@ -1181,28 +795,123 @@ const LeadManagementDashboard = () => {
                       <button
                         key={data.name}
                         className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
-                         ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                           ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
                         onClick={() => handleFilterClick(displayStatus)}
+                        style={{
+                          pointerEvents: searchTerm ? 'none' : 'auto',
+                          opacity: searchTerm ? 0.6 : 1,
+                          cursor: searchTerm ? 'not-allowed' : 'pointer',
+                        }}
                       >
                         <p
                           className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
                         >
                           {data.value}
                         </p>
-                        {displayStatus}
+                        <span className={styles.displayStatus}>{displayStatus}</span>
                       </button>
                     );
                   })}
                 </div>
 
+                <div className={styles.searchBar}>
+                  <input
+                    type="text"
+                    value={search}
+                    placeholder="Enter customer name or id"
+                    className={styles.searchInput}
+                    onChange={(e) => {
+
+                      if (e.target.value.length <= 50) {
+
+                        e.target.value = e.target.value.replace(
+                          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                          ''
+                        );
+                        handleSearchChange(e);
+                        setSearch(e.target.value);
+                        setPage(1);
+                        setCurrentFilter(e.target.value === '' ? backup : '');
+                      }
+                    }}
+                  />
+                  {searchTerm !== '' && (
+                    <div className={styles.CrossRemoveSearch}
+                      onClick={handleCrossIcon}
+                    >
+                      <img
+                        src={ICONS.crossIconUser}
+                        alt="cross"
+
+                      />
+                    </div>
+                  )}
+                </div>
                 {/* RABINDRA */}
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-                <HistoryRedirect setArchive={setArchive} />
+                <HistoryRedirect />
+                {currentFilter === 'In Progress' && (
+                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
 
+                )}
                 <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead}>
+                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
+                  <Tooltip
+                    style={{
+                      zIndex: 103,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                      fontWeight: "400"
+                    }}
+                    offset={8}
+                    id="NEW"
+                    place="top"
+                    content="Add New Lead"
+                    delayShow={800}
+                    className={styles.mobile_tooltip}
+                  />
+                  <div
+                    className={styles.export_btn}
+                    onClick={exportCsv}
+                    data-tooltip-id="export"
+                    style={{
+                      pointerEvents: exporting ? 'none' : 'auto',
+                      opacity: exporting ? 0.6 : 1,
+                      cursor: exporting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {exporting ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={26}
+                        color="white"
+                      />
+                    ) : (
+                      <LuImport size={20} color="white" />
+                    )}
+                  </div>
+                  {showTooltip &&
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: "400"
+                      }}
+                      offset={8}
+                      delayShow={800}
+                      id="export"
+                      place="top"
+                      content="Export"
+                      className={styles.mobile_tooltip}
+                    />
+                  }
                 </div>
               </>
             ) : (
@@ -1232,198 +941,200 @@ const LeadManagementDashboard = () => {
             )}
           </div>
         )}
-        <div className={styles.cardContent}>
-          {archive == false && (
-            <table className={styles.table}>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={leadsData.length}>
-                      <div
-                        style={{ display: 'flex', justifyContent: 'center' }}
-                      >
-                        <MicroLoader />
+        {/* ///HERE I NEED TO CHANGE RABINDRA */}
+        {archive == false && (
+          <div className={styles.cardHeaderForMobile}>
+            <div className={styles.FirstRowSearch}>
+              {selectedLeads.length === 0 ? (
+                <>
+                  <div className={styles.searchBarMobile}>
+                    <input
+                      value={search}
+                      type="text"
+                      placeholder="Search customer name or id"
+                      className={styles.searchInput}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 50) {
+                          e.target.value = e.target.value.replace(
+                            /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                            ''
+                          );
+                          handleSearchChange(e);
+                          setSearch(e.target.value);
+                          setCurrentFilter(e.target.value === '' ? backup : '');
+                        }
+                      }}
+                    />
+                    {searchTerm !== '' && (
+                      <div className={styles.CrossRemoveSearch} onClick={handleCrossIcon} >
+                        <img src={ICONS.crossIconUser} alt="cross" />
                       </div>
-                    </td>
-                  </tr>
-                ) : leadsData.length > 0 ? (
-                  leadsData.map((lead: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr className={styles.history_lists}>
-                        <td
-                          className={`${lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
-                            ? styles.history_list_inner_declined
-                            : styles.history_list_inner
-                            }`}
-                          onClick={(e) => {
-                            setLeadId(lead['leads_id']);
-                            if (
-                              !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
-                            ) {
-                              if (
-                                currentFilter !== 'Declined' &&
-                                currentFilter !== 'Action Needed'
-                              ) {
-                                handleOpenModal();
-                                setReschedule(false);
-                              }
+                    )}
+                  </div>
+                  <HistoryRedirect />
+                  {currentFilter === 'In Progress' && (
+                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
+                  )}
 
-                            }
-                          }}
-                        >
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={selectedLeads.includes(lead['leads_id'])}
-                              onChange={() =>
-                                handleLeadSelection(lead['leads_id'])
-                              }
-                            />
-                          </label>
-                          <div
-                            className={styles.user_name}
-                            onClick={() =>
-                              currentFilter == 'Pending' &&
-                              handleDetailModal(lead)
-                            }
-                          >
-                            <h2>
-                              {lead.first_name} {lead.last_name}
-                            </h2>
-                            <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
-                            </p>
-                          </div>
-                          <div className={styles.phone_number}>
-                            {lead.phone_number}
-                          </div>
-                          <div className={styles.email}>
-                            <span>
-                              {lead.email_id}
-                            </span>
 
-                          </div>
-                          <div className={styles.address}>
-                            {lead?.street_address
-                              ? lead.street_address.length >= 20
-                                ? `${lead.street_address.slice(0, 45)}...`
-                                : lead.street_address
-                              : 'N/A'}
-                          </div>
-                          {/* <div className={styles.ScheduleBtnNew}>
-                          <button>Schedule</button>
-                          </div>
-                          <div className={styles.ThreeDotsMinor}>
-                            <img src={ThreeDotsImage} alt='Optional-Dot'/>
-                          </div> */}
 
-                          {currentFilter === 'Declined' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  handleOpenModal();
-                                  setReschedule(true);
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                Reschedule
-                              </button>
-                              {isTablet ? (
-                                <button
-                                  onClick={() => handleArchive(lead)}
-                                  className={styles.archiveButton}
-                                >
-                                  <img src={ICONS.declinedArchive} />
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => handleOpenArcModal()}
-                                  className={styles.archiveButton}
-                                >
-                                  Archive
-                                </button>
-                              )}
-                            </div>
-                          )}
+                  <div className={styles.filterCallToActionMobile}>
+                    <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                      <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                    </div>
+                    {!isMobileDevice() && !isTablet &&
+                      <Tooltip
+                        style={{
+                          zIndex: 103,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: "400"
+                        }}
+                        offset={8}
+                        id="NEW"
+                        place="top"
+                        content="Add New Lead"
+                        delayShow={800}
+                        className={styles.mobile_tooltip}
+                      />
+                    }
 
-                          {currentFilter === 'Action Needed' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  handleOpenModal();
-                                  setReschedule(true);
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                Reschedule
-                              </button>
-                            </div>
-                          )}
-
-                          <div
-                            className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead['leads_id'])}
-                          >
-                            <img
-                              src={
-                                toggledId.includes(lead['leads_id'])
-                                  ? ICONS.chevronUp
-                                  : ICONS.chevronDown
-                              }
-                              alt={
-                                toggledId.includes(lead['leads_id'])
-                                  ? 'chevronUp-icon'
-                                  : 'chevronDown-icon'
-                              }
-                            />
-                          </div>
-                        </td>
-                      </tr>
-
-                      {toggledId.includes(lead['leads_id']) && isMobile && (
-                        <tr>
-                          <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
-                            <div className={''}>
-                              <span>
-                                {lead.email_id}
-
-                              </span>
-                            </div>
-                            <div className={''}>
-                              {lead?.street_address
-                                ? lead.street_address.length > 20
-                                  ? `${lead.street_address.slice(0, 20)}...`
-                                  : lead.street_address
-                                : 'N/A'}
-                            </div>
-                          </td>
-                        </tr>
+                    <div
+                      className={styles.export_btn}
+                      onClick={exportCsv}
+                      data-tooltip-id="export"
+                      style={{
+                        pointerEvents: exporting ? 'none' : 'auto',
+                        opacity: exporting ? 0.6 : 1,
+                        cursor: exporting ? 'not-allowed' : 'pointer',
+                      }}
+                    >
+                      {exporting ? (
+                        <MdDownloading
+                          className="downloading-animation"
+                          size={26}
+                          color="white"
+                        />
+                      ) : (
+                        <LuImport size={20} color="white" />
                       )}
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <tr style={{ border: 0 }}>
-                    <td colSpan={10}>
-                      <DataNotFound />
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          )}
+                    </div>
+                    {showTooltip &&
+                      <Tooltip
+                        style={{
+                          zIndex: 20,
+                          background: '#f7f7f7',
+                          color: '#000',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: "400"
+                        }}
+                        offset={8}
+                        delayShow={800}
+                        id="export"
+                        place="top"
+                        content="Export"
+                        className={styles.mobile_tooltip}
+                      />
+                    }
+                  </div>
+                </>
+              ) : (
+                <div className={styles.selectionHeader}>
+                  <div className={styles.selectionInfo}>
 
-          {leadsData.length > 0 && (
-            <div className={styles.leadpagination}>
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
-                  {startIndex} - {endIndex} of {totalcount} item
-                </p>
-              </div>
 
-              <div className={styles.rightitem}>
+                    <span
+                      className={styles.closeIcon}
+                      onClick={() => setSelectedLeads([])}
+                    >
+                      <img src={ICONS.cross} alt="" height="26" width="26" />
+                    </span>
+                    <span>{selectedLeads.length} Selected</span>
+                  </div>
+                  <button
+                    style={{
+                      pointerEvents: archived ? 'none' : 'auto',
+                      opacity: archived ? 0.6 : 1,
+                      cursor: archived ? 'not-allowed' : 'pointer',
+                    }}
+                    className={styles.removeButton}
+                    onClick={handleArchiveSelected}
+                    disabled={archived}
+                  >
+                    {archived ? 'Archiving...' : 'Archive'}
+                  </button>
+                </div>
+              )}</div>
+            <div className={styles.buttonGroupMobile}>
+              {pieData.map((data) => {
+                let displayStatus = '';
+                switch (data.name) {
+                  case 'NEW':
+                    displayStatus = 'New Leads';
+                    break;
+                  case 'PROGRESS':
+                    displayStatus = 'In Progress';
+                    break;
+                  case 'DECLINED':
+                    displayStatus = 'Declined';
+                    break;
+                  case 'ACTION_NEEDED':
+                    displayStatus = 'Action Needed';
+                    break;
+                  default:
+                    displayStatus = data.name;
+                }
+
+                return (
+                  <button
+                    key={data.name}
+                    className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
+                           ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                    onClick={() => handleFilterClick(displayStatus)}
+                    style={{
+                      pointerEvents: searchTerm ? 'none' : 'auto',
+                      opacity: searchTerm ? 0.6 : 1,
+                      cursor: searchTerm ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    <p
+                      className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
+                    >
+                      {data.value}
+                    </p>
+                    <span className={styles.displayStatus}>{displayStatus}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <div className={styles.cardContent}>
+
+          <LeadTable
+            selectedLeads={selectedLeads}
+            setSelectedLeads={setSelectedLeads}
+            refresh={refresh}
+            side={side}
+            setSide={setSide}
+            setRefresh={setRefresh}
+            onCreateProposal={createProposal}
+            retrieveWebProposal={retrieveProposalWrapper}
+            generateWebProposal={generateProposalWrapper}
+            currentFilter={currentFilter}
+            setCurrentFilter={setCurrentFilter}
+          />
+
+          {leadsData.length > 0 && !isLoading && (
+            <div className="page-heading-container">
+              <p className="page-heading">
+                {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+              </p>
+              <div className={styles.PaginationFont}>
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -1432,10 +1143,11 @@ const LeadManagementDashboard = () => {
                   goToNextPage={goToNextPage}
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
+                  onPerPageChange={handlePerPageChange}
                 />
-          
               </div>
             </div>
+
           )}
         </div>
       </div>

@@ -48,7 +48,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
 			FROM teams t
 			JOIN team_members tm ON tm.team_id = t.team_id
-			WHERE t.dealer_id = (SELECT dealer_id FROM user_details WHERE email_id = $1)
+			WHERE t.partner_id = (SELECT partner_id FROM user_details WHERE email_id = $1)
 			GROUP BY t.team_id
 			ORDER BY t.team_id;
 		`
@@ -91,8 +91,8 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
 				FROM teams t
 				JOIN team_members tm ON tm.team_id = t.team_id
-				WHERE t.dealer_id IN (
-					SELECT id FROM v_dealer WHERE dealer_name = ANY($1)
+				WHERE t.partner_id IN (
+					SELECT partner_id FROM sales_partner_dbhub_schema WHERE sales_partner_name = ANY($1)
 				)
 				GROUP BY t.team_id
 				ORDER BY t.team_id;

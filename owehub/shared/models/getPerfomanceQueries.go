@@ -90,8 +90,8 @@ func SalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema.unique_id,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
-            internal_ops_metrics_schema.cad_ready,
-            internal_ops_metrics_schema.cad_complete_date,
+            planset_cad_schema.item_created_on AS cad_ready,
+            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
@@ -121,8 +121,8 @@ func SalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema
         LEFT JOIN survey_survey_schema 
             ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN internal_ops_metrics_schema 
-           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN planset_cad_schema 
+           ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         LEFT JOIN permit_fin_pv_permits_schema 
             ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN ic_ic_pto_schema 
@@ -165,8 +165,8 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema.sale_date AS contract_date,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
-            internal_ops_metrics_schema.cad_ready,
-            internal_ops_metrics_schema.cad_complete_date,
+            planset_cad_schema.item_created_on AS cad_ready,
+            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
@@ -195,8 +195,8 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema
         LEFT JOIN survey_survey_schema 
             ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN internal_ops_metrics_schema 
-           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN planset_cad_schema 
+           ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         LEFT JOIN permit_fin_pv_permits_schema 
             ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN ic_ic_pto_schema 
@@ -238,10 +238,10 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 	AdminDlrSaleRepRetrieveQuery := `
     SELECT ud.name AS name,
         ur.role_name AS role_name,
-        d.dealer_name AS dealer_name
+        d.sales_partner_name AS dealer_name
     FROM user_details ud
     JOIN user_roles ur ON ud.role_id = ur.role_id
-    LEFT JOIN v_dealer d ON ud.dealer_id = d.id
+    LEFT JOIN sales_partner_dbhub_schema d ON ud.partner_id = d.partner_id
     WHERE ud.email_id = $1;
     `
 	return AdminDlrSaleRepRetrieveQuery
@@ -256,7 +256,6 @@ func ProjectMngmntRetrieveQueryFunc() string {
         ntp_ntp_schema.pending_ntp_date AS ntp_working_date, 
         ntp_ntp_schema.ntp_complete_date AS ntp_date, 
         survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
-        internal_ops_metrics_schema.site_survey_rescheduled_date AS site_survey_rescheduled_date, 
         survey_survey_schema.survey_completion_date AS site_survey_completed_date, 
         roofing_request_install_subcontracting_schema.work_scheduled_date AS roofing_scheduled_date, 
         roofing_request_install_subcontracting_schema.created_on AS roofing_created_date,
@@ -303,8 +302,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
         trenching_service_electrical_schema.completion_date AS trenching_completed,
         customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
         sales_metrics_schema.adders_total,
-        internal_ops_metrics_schema.cad_complete_date,
-        internal_ops_metrics_schema.cad_ready,
+        planset_cad_schema.item_created_on AS cad_ready,
+        planset_cad_schema.plan_set_complete_day AS cad_complete_date,
         batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
         batteries_service_electrical_schema.completion_date AS battery_complete_date,
         fin_permits_fin_schema.created_on AS fin_created_date,
@@ -340,10 +339,10 @@ func ProjectMngmntRetrieveQueryFunc() string {
         --ON planset_cad_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN batteries_service_electrical_schema
         ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN internal_ops_metrics_schema 
-           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN sales_metrics_schema
             ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN planset_cad_schema 
+           ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         `
 	return ProjectMngmntRetrieveQuery
 }
@@ -461,16 +460,17 @@ func CsvDownloadRetrieveQueryFunc() string {
 	// Build the SQL Query
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(`
-        SELECT cs.unique_id,cdv.home_owner,cs.email_address,
+        SELECT cs.unique_id,cs.customer_name as home_owner,cs.email_address,
         cs.phone_number,cs.address,cs.state,
         scs.contracted_system_size_parent, 
         cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
-        cdv.pto_date, cdv.canceled_date, cs.primary_sales_rep, 
-        cs.secondary_sales_rep FROM customers_customers_schema cs 
+        ps.pto_granted as pto_date, ss.cancelled_date, cs.primary_sales_rep, 
+        cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
-								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id 
+                                LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+                                LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id 
         `)
 
 	return filtersBuilder.String()

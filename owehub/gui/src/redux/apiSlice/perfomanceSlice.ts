@@ -70,6 +70,11 @@ export const getPerfomanceStatus = createAsyncThunk(
       selected_milestone,
       project_status,
       dealer_names,
+      fieldData,
+      minValue,
+      maxValue
+
+      
     }: {
       page: number;
       perPage: number;
@@ -79,6 +84,9 @@ export const getPerfomanceStatus = createAsyncThunk(
       selected_milestone: string;
       project_status: any;
       dealer_names: string[];
+      fieldData:string[];
+      minValue:number;
+      maxValue:number;
     },
     { rejectWithValue }
   ) => {
@@ -92,6 +100,11 @@ export const getPerfomanceStatus = createAsyncThunk(
         selected_milestone: selected_milestone,
         project_status: project_status,
         dealer_names,
+        fields:fieldData,
+ 
+        pending_start_date:minValue,
+ 
+        pending_end_date:maxValue,
       });
 
       if (data.status > 201) {

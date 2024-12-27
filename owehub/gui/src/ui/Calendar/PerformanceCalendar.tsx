@@ -60,57 +60,61 @@ const PerformanceCalendar: React.FC = () => {
   };
 
   const ExportCsv = async () => {
-    setIsExporting(true);
+    if (data.calender_data_list) {
+      setIsExporting(true);
 
-    try {
-      const headers = [
-        'UniqueId',
-        'Homeowner Name',
-        'Homeowner Contact Info',
-        'Address',
-        'State',
-        'Contract Total$',
-        'Sys Size',
-        'Sale Date',
-      ];
+      try {
+        const headers = [
+          'UniqueId',
+          'Homeowner Name',
+          'Homeowner Contact Info',
+          'Address',
+          'State',
+          'Contract Total$',
+          'Sys Size',
+          'Sale Date',
+        ];
 
-      const getAllData = await postCaller('get_calender_csv_download', {
-        start_date: '',
-        end_date: '',
-      });
+        const getAllData = await postCaller('get_calender_csv_download', {
+          start_date: '',
+          end_date: '',
+        });
 
-      if (getAllData.status > 201) {
-        toast.error(getAllData.message);
+        if (getAllData.status > 201) {
+          toast.error(getAllData.message);
+          setIsExporting(false);
+          return;
+        }
+
+        const csvData = getAllData?.data?.map?.((item: any) => [
+          item.unique_id,
+          item.home_owner,
+          item.customer_phone_number,
+          item.address,
+          item.state,
+          item.contract_total,
+          item.system_size,
+          item.contract_date,
+        ]);
+
+        const csvRows = [headers, ...csvData];
+        const csvString = Papa.unparse(csvRows);
+
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'SalesRepCalendar.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.log(error);
+      } finally {
         setIsExporting(false);
-        return;
       }
-
-      const csvData = getAllData?.data?.map?.((item: any) => [
-        item.unique_id,
-        item.home_owner,
-        item.customer_phone_number,
-        item.address,
-        item.state,
-        item.contract_total,
-        item.system_size,
-        item.contract_date,
-      ]);
-
-      const csvRows = [headers, ...csvData];
-      const csvString = Papa.unparse(csvRows);
-
-      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'SalesRepCalendar.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      toast.error('An error occurred during the CSV export.');
-    } finally {
-      setIsExporting(false);
+    } else {
+      toast.error('Data Not Available');
     }
   };
 
@@ -321,6 +325,7 @@ const PerformanceCalendar: React.FC = () => {
                   display: 'block',
                   width: '180px',
                   textAlign: 'center',
+                  color: '##292b2e',
                 }}
               >
                 {isDefaultDate
@@ -349,10 +354,22 @@ const PerformanceCalendar: React.FC = () => {
             <div onClick={handleCalcClose} style={{ height: '26px' }}>
               <IoClose className="calendar-close" />
             </div>
+            <button onClick={handleCalcClose} className='calendar-cls-mob'>
+              Close
+            </button>
           </div>
         </div>
         {showCalendar && (
           <div className="performance-cal-content" ref={calendarRef}>
+            <div
+              style={{ height: '26px' }}
+              onClick={() => setShowCalendar(false)}
+            >
+              <IoClose
+                className="calendar-close"
+                style={{ float: 'inline-end' }}
+              />
+            </div>
             <div className="dropdown-calc-container">
               <select
                 value={selectedMonth}

@@ -94,6 +94,6 @@ func HandleDeleteRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.DBTransDebugTrace(0, "Data Deleted Successfully")
-	appserver.FormAndSendHttpResp(resp, "Data Deleted Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Lead deleted successfuly")
+	appserver.FormAndSendHttpResp(resp, "Lead deleted successfuly", http.StatusOK, nil)
 }

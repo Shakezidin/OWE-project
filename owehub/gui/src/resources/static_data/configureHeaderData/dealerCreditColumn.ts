@@ -6,24 +6,26 @@ export const DealerCreditColumn: Column[] = [
     name: 'unique_id',
     displayName: 'Unique ID',
     type: 'string',
-    isCheckbox: true,
+    isCheckbox: false,
+  },
+ 
+  {
+    name: 'customer',
+    displayName: 'Customer',
+    type: 'string',
+    isCheckbox: false,
+  },
+
+  {
+    name: 'credit_amount',
+    displayName: 'Credit Amt',
+    type: 'string',
+    isCheckbox: false,
   },
   {
-    name: 'date',
-    displayName: 'Date',
+    name: 'credit_date',
+    displayName: 'Credit Date',
     type: 'date',
-    isCheckbox: false,
-  },
-  {
-    name: 'exact_amount',
-    displayName: 'Exact Amt',
-    type: 'number',
-    isCheckbox: false,
-  },
-  {
-    name: 'per_kw_amount',
-    displayName: 'Per KW Amt',
-    type: 'number',
     isCheckbox: false,
   },
 
@@ -34,16 +36,6 @@ export const DealerCreditColumn: Column[] = [
     isCheckbox: false,
   },
   { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
-  {
-    name: 'total_amount',
-    displayName: 'Total Amt.',
-    type: 'number',
-    isCheckbox: false,
-  },
-  {
-    name: 'sys_size',
-    displayName: 'Sys Size',
-    type: 'number',
-    isCheckbox: false,
-  },
+  // { name: 'podio', displayName: 'Podio Link', type: 'string', isCheckbox: false },
+ 
 ];

@@ -78,12 +78,12 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
 
   const isTablet = useMatchMedia('(max-width: 1024px)');
   return (
-    <div className="chart-view" style={{ marginTop: 12 }}>
+    <div className="chart-view">
       <div
         className="pie-section-1"
         style={{
           background: 'white',
-          borderRadius: '18px',
+          borderRadius: '16px',
           padding: '1.5rem',
           alignItems: 'center',
           justifyContent: 'center',
@@ -209,7 +209,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         className="pie-section-2 flex-auto"
         style={{
           background: 'white',
-          borderRadius: '18px',
+          borderRadius: '16px',
           padding: '1.5rem',
           alignItems: 'center',
           justifyContent: 'center',
@@ -304,7 +304,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       color:
                         isHovered || activeSalesRep === 'Active'
                           ? '#fff'
-                          : '#263747',
+                          : 'var(--input-border-color)',
                     }}
                   >
                     {userPerformanceList?.[0]?.value}
@@ -349,7 +349,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       color:
                         isHovered1 || activeSalesRep === 'InActive'
                           ? '#fff'
-                          : '#263747',
+                          : 'var(--input-border-color)',
                     }}
                   >
                     {userPerformanceList?.[1]?.value}

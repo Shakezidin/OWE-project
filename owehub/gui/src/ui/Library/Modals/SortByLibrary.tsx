@@ -3,21 +3,22 @@ import classes from './styles/sortby.module.css';
 import { FaChevronDown } from 'react-icons/fa6';
 
 interface SortByLibraryProps {
-  onSort: (option: 'none' | 'name' | 'date' | 'size') => void;
+  onSort: (option:'name' | 'date' | 'size') => void;
+  isPalceholder?: boolean;
 }
 
-const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
+const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort,isPalceholder=true }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<
-    'none' | 'name' | 'date' | 'size'
-  >('none');
+    'name' | 'date' | 'size'
+  >('date');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleClick = () => {
     setIsVisible((prev) => !prev);
   };
 
-  const handleSortChange = (option: 'none' | 'name' | 'date' | 'size') => {
+  const handleSortChange = (option:'name' | 'date' | 'size') => {
     setSelectedOption(option);
     onSort(option);
     setIsVisible(false);
@@ -45,7 +46,7 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
         onClick={handleClick}
         className={`${classes.logo_sortby_botton} ${isVisible ? classes.active : ''}`}
       >
-        Sort by
+        {isPalceholder?"Sort by":""} {selectedOption.replace(selectedOption[0], selectedOption[0].toUpperCase())}
         <FaChevronDown
           className={`${classes.icon} ${isVisible ? classes.icon_active : ''}`}
         />
@@ -53,11 +54,11 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
 
       {isVisible && (
         <ul className={classes.dropdownMenu}>
-          {['none', 'name', 'date', 'size'].map((option) => (
+          {['name', 'date'].map((option) => (
             <li
               key={option}
               onClick={() =>
-                handleSortChange(option as 'none' | 'name' | 'date' | 'size')
+                handleSortChange(option as 'name' | 'date' | 'size')
               }
               className={`${classes.dropdownItem} ${selectedOption === option ? classes.selected : ''}`}
             >

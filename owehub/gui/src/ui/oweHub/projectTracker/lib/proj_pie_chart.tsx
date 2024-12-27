@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { RiExternalLinkLine } from 'react-icons/ri';
 import './pojpie.css';
-
+import { Tooltip } from 'react-tooltip';
+ 
 interface ProjPieChartProps {
   projectDetail: any;
 }
-
+ 
 const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
   const [copied, setCopied] = useState<string | null>(null);
-
+ 
   const handleCopyLink = (url: string | undefined) => {
     if (url) {
       navigator.clipboard.writeText(url).then(() => {
@@ -18,7 +19,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
       });
     }
   };
-
+ 
   const handleClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     url: string | undefined
@@ -27,38 +28,14 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
       e.preventDefault(); // Prevent navigation if no URL or projectDetail is not present
     }
   };
-
+ 
   const isDisabled = !projectDetail;
-
+ 
   return (
     <>
       <div className="pm-doc-heading">Resources</div>
-
+ 
       <div className="pc-links">
-        {/* Podio Link */}
-        {/* <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
-          <div className="link-head">
-            <h3>Podio</h3>
-            <span>Go to Podio Document for more info</span>
-          </div>
-          <div className="link-url">
-            <div  className={`link-tab ${!projectDetail?.podio_link ? 'disable-btn' : ''}`} onClick={() => !isDisabled && handleCopyLink(projectDetail?.podio_link)}>
-              <FiLink />
-            </div>
-            <div  className={`link-tab ${!projectDetail?.podio_link ? 'disable-btn' : ''}`}>
-              <a
-                href={projectDetail?.podio_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => handleClick(e, projectDetail?.podio_link)}
-              >
-                <RiExternalLinkLine />
-              </a>
-            </div>
-          </div>
-          {copied === projectDetail?.podio_link && <span className="copy-message"> Copied!</span>}
-        </div> */}
-
         {/* CAD Link */}
         <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
           <div className="link-head">
@@ -71,12 +48,31 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               onClick={() =>
                 !isDisabled && handleCopyLink(projectDetail?.cad_link)
               }
+              data-tooltip-id={
+              projectDetail?.cad_link ? 'status-copy' : ''
+              }
             >
               <FiLink />
+              {projectDetail?.cad_link && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-copy"
+                  place="top"
+                  content="Copy"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />
+              )}
             </div>
-            <div
-              className={`link-tab ${!projectDetail?.cad_link ? 'disable-btn' : ''}`}
-            >
+            <div className={`link-tab ${!projectDetail?.cad_link ? 'disable-btn' : ''}`}  data-tooltip-id={projectDetail?.cad_link ? 'status-link' : ''}>
               <a
                 href={projectDetail?.cad_link}
                 target="_blank"
@@ -84,6 +80,24 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 onClick={(e) => handleClick(e, projectDetail?.cad_link)}
               >
                 <RiExternalLinkLine />
+                {projectDetail?.cad_link && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-link"
+                  place="top"
+                  content="Visit"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />
+              )}
               </a>
             </div>
           </div>
@@ -91,7 +105,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
             <span className="copy-message"> Copied!</span>
           )}
         </div>
-
+ 
         {/* DAT Link */}
         <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
           <div className="link-head">
@@ -104,11 +118,32 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               onClick={() =>
                 !isDisabled && handleCopyLink(projectDetail?.dat_link)
               }
+              data-tooltip-id={
+                projectDetail?.dat_link ? 'status-copy' : undefined
+              }
             >
               <FiLink />
+              {!isDisabled && projectDetail?.dat_link && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-copy"
+                  place="top"
+                  content="Copy"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />
+              )}
             </div>
             <div
-              className={`link-tab ${!projectDetail?.dat_link ? 'disable-btn' : ''}`}
+              className={`link-tab ${!projectDetail?.dat_link ? 'disable-btn' : ''}`} data-tooltip-id={projectDetail?.dat_link ? 'status-link' : ''}
             >
               <a
                 href={projectDetail?.dat_link}
@@ -117,6 +152,24 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 onClick={(e) => handleClick(e, projectDetail?.dat_link)}
               >
                 <RiExternalLinkLine />
+                {!isDisabled && projectDetail?.cad_link && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-link"
+                  place="top"
+                  content="Visit"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />)
+}
               </a>
             </div>
           </div>
@@ -124,7 +177,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
             <span className="copy-message"> Copied!</span>
           )}
         </div>
-
+ 
         {/* Contract Link */}
         <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
           <div className="link-head">
@@ -137,11 +190,34 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               onClick={() =>
                 !isDisabled && handleCopyLink(projectDetail?.includeContractUrl)
               }
+              data-tooltip-id={
+                projectDetail?.includeContractUrl
+                  ? 'status-copy'
+                  : undefined
+              }
             >
               <FiLink />
+              {!isDisabled && projectDetail?.includeContractUrl && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-copy"
+                  place="top"
+                  content="Copy"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />
+              )}
             </div>
             <div
-              className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`}
+              className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`} data-tooltip-id={projectDetail?.includeContractUrl ? 'status-link' : ''}
             >
               <a
                 href={projectDetail?.includeContractUrl}
@@ -152,6 +228,24 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
                 }
               >
                 <RiExternalLinkLine />
+                {!isDisabled && projectDetail?.includeContractUrl && (
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="status-link"
+                  place="top"
+                  content="Visit"
+                  delayShow={200}
+                  className="pagination-tooltip"
+                />)
+}
               </a>
             </div>
           </div>
@@ -163,5 +257,6 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
     </>
   );
 };
-
+ 
 export default ProjPieChart;
+ 

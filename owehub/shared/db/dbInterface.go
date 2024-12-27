@@ -25,6 +25,7 @@ const (
 	RowDataDBIndex uint8 = 1
 
 	OWEDB                            string = "owe_db"
+	RowDataApiSecret                 string = "XEBLLtt1nlfwa0uQL1tEMlGG"
 	dbDriverName                     string = "postgres"
 	CreateUserFunction               string = "create_new_user"
 	GetDbTables                      string = "get_db_tables"
@@ -75,8 +76,16 @@ const (
 	TableName_FinanceTypesCommisionsDbhub            string = "finance_types_commisions_dbhub"
 
 	/* Leads Tables and Procedures */
-	TableName_Leads_Info string = "leads_info"
-	CreateLeadFunction   string = "create_lead"
+	TableName_Leads_Info          string = "leads_info"
+	CreateLeadFunction            string = "create_lead"
+	UpdateLeadAddProposalFunction string = "update_lead_add_proposal"
+	GetUsersUnderFunction         string = "get_users_under"
+
+	/* Scheduling Tables and Procedures */
+	TableName_SchedulingProjects    string = "scheduling_projects"
+	TableName_SchedulingLocations   string = "scheduling_locations"
+	CreateSchedulingProjectFunction string = "create_scheduling_project"
+	UpdateSchedulingProjectFunction string = "update_scheduling_project"
 )
 
 /******************************************************************************

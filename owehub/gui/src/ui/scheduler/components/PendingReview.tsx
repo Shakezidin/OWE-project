@@ -1,13 +1,18 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo } from 'react';
 import '../styles/pendrev.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import SortingDropDown from './SortingDropdown/SortingDropDown';
 import PendingSurvey from './PendingSurvey';
-const PendingReview = () => {
+import useMatchMedia from '../../../hooks/useMatchMedia';
+
+const PendingReview: React.FC<{ isClicked: boolean; onToggleClick: () => void }> = ({ isClicked, onToggleClick }) => {
+  const isMobile = useMatchMedia('(max-width:450px)');
+
   return (
-    <div className="pen-rev">
-      <div className="pen-rev-top">
-        <div className="pr-namesec">
+    <div style={{ backgroundColor: isClicked ? '#fff' : '' , margin: isClicked? '0px 20px':''}} className="pen-rev">
+<div style={{ padding: isClicked ? '15px 17px' : ''}} className="pen-rev-top" >
+{/* style={{ background: isClicked && isMobile ? '#fff' : '#f5f5f5' }} */}
+<div style={{paddingTop: isMobile && !isClicked ? '5px' : ''}} onClick={isMobile ? onToggleClick : undefined} className="pr-namesec">
           <img src={ICONS.BellPr} alt="" />
           <div className="notific">
             <p>12</p>
@@ -17,11 +22,13 @@ const PendingReview = () => {
             <p>New jobs need to review</p>
           </div>
         </div>
-        <SortingDropDown />
+        <div style={{ display: !isClicked && isMobile ? 'none' : 'block' }}>
+          <SortingDropDown />
+        </div>
       </div>
-      <hr className="figma-line" />
+      {isClicked ? <hr className="figma-line" /> : ''}
 
-      <div className="pen-rev-bot">
+      <div style={{ display: !isClicked && isMobile ? 'none' : 'block' }} className="pen-rev-bot">
         <PendingSurvey />
         <PendingSurvey />
         <PendingSurvey />

@@ -1,6 +1,6 @@
 .delete-icon-container {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .user-page-heading-container {
@@ -11,21 +11,31 @@
 }
 
 button.trash-btn {
-  background-color: #377cf6;
+  background-color: var(--delete-btn-color);
   width: 36px;
   height: 36px;
 }
 
 .user_user-type {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .user-dropdown.hover-effect {
   z-index: 100;
-  padding: 1px 4px 0;
   transition: all 0.3s ease;
   margin-bottom: -4px;
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown.hover-effect .user-icon svg{
+  height: 36px;
+  width: 36px;
+}
+
+.no-border-select{
+  border: none !important;
 }
 
 /* .user-dropdown.hover-effect:hover {

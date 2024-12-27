@@ -18,7 +18,6 @@ interface DropdownCheckboxProps {
   placeholder?: string;
   label?: string;
   disabled?: boolean;
- 
 }
 
 const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
@@ -28,23 +27,24 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   placeholder = 'Search...',
   label,
   disabled,
-  
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const optionContainer = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     setFilteredOptions([...options]);
   }, [options]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent|TouchEvent) => {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement)!.closest('.react-select')
       ) {
         setIsOpen(false);
         setSearch('');
@@ -53,11 +53,15 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside);
+    };
   }, [options]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.toLowerCase().trim();
+    const searchTerm = e.target.value.toLowerCase().trimStart();
     const regex = /^[a-zA-Z0-9\s]*$/; // Alphanumeric and space only
     if (!regex.test(searchTerm)) {
       return; // Ignore input if it contains special characters
@@ -99,6 +103,23 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     onChange(updatedSelection);
   };
 
+  // Handle closing dropdown on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const handleSelectAll = () => {
     onChange(selectedOptions.length === options.length ? [] : options);
   };
@@ -120,16 +141,21 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
       <div
-        className={`dropdown-toggle flex items-center ${disabled ? 'disabled-dropdown' : ''}`}
+        className={`dropdown-toggle flex items-center ${disabled ? 'disabled-dropdown' : ''} ${isOpen ? 'active' : ''}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
+        style={{
+          padding: '7px 1rem', // Apply padding directly or from your CSS
+          border: `1px solid ${isOpen ? 'var(--primary-color)' : 'var(--input-border-color)'}`,
+          transition: 'all 0.3s ease',
+        }}
       >
-        <span>{` ${selectedOptions.length} ${label}`}</span>
+        <span>{`${selectedOptions.length} ${label}`}</span>
         <BiChevronDown
-          className="ml1 "
+          className="ml1"
           size={22}
           style={{
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'all 550ms',
+            transition: 'transform 550ms ease',
           }}
         />
       </div>
@@ -141,12 +167,14 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
         >
           <input
             type="text"
-            className="input"
+            className={`input input-drop-check ${search ? 'active' : ''}`}
             style={{ paddingInline: 0, paddingLeft: 6 }}
             placeholder={placeholder}
             value={search}
             onChange={handleSearch}
-            maxLength={50} // Set 50-character limit
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            maxLength={50}
           />
           {!!(!search && options.length) && (
             <div className="dropdown-item">

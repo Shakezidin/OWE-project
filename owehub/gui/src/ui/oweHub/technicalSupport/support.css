@@ -1,6 +1,5 @@
 .support-cont-section {
   display: flex;
-  margin-top: 1rem;
   border-radius: 16px;
   background-color: #ffff;
   flex: 1;
@@ -23,6 +22,7 @@
   font-weight: 600;
   line-height: 27px;
   text-align: left;
+  color: var(--input-border-color);
 }
 .supportImage {
   width: 100%;
@@ -49,9 +49,9 @@
 
 .vertical-support {
   border-left: 1px solid #dbdddf;
-  height: 650px;
-  margin-top: 3rem;
+  height: 78vh;
   padding: 1rem;
+  margin: 2rem 0 2rem 0;
 }
 .touch-container {
   padding: 2rem;
@@ -70,34 +70,36 @@
   font-weight: 600;
   line-height: 27px;
   text-align: left;
+  color: var(--input-border-color);
 }
-.reset-Update-support {
+/* .reset-Update-support {
   display: flex;
   margin-top: 1rem;
   transition: transform 0.3s ease;
 }
 .reset-Update-support:hover {
   transform: scale(1.03);
-}
+} */
 .reset-Update-support button {
-  width: 280px;
-  height: 48px;
-  font-size: 14px;
+  width: 150px;
+  height: 40px;
+  font-size: 12px;
   font-weight: 500;
   text-align: center;
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 12px;
   text-decoration: none;
   display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
   background-color: var(--primary-color);
   border-radius: 8px;
-  transition: background-color 0.3s ease;
+  transition: transform 0.3s ease;
 }
 .reset-Update-support button:hover {
-  background-color: #0644af;
+  background-color: #4062CA;
+  transform: scale(1.05);
 }
 
 .file-input-container {
@@ -187,11 +189,14 @@
 }
 .create-input-field-note-support textarea {
   width: 100%;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--input-border-color);
   outline: none;
   padding: 0.5rem;
-  font-size: 13px !important;
-  border-radius: 0.5rem;
+  font-size: 12px !important;
+  border-radius: 8px;
+}
+.create-input-field-note-support textarea:hover, .create-input-field-note-support textarea:focus {
+  border-color: var(--primary-color);
 }
 
 @media (max-width: 1024px) {
@@ -199,7 +204,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 10px;
   }
   .vertical-support {
     display: none;
@@ -217,22 +221,6 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 0;
-  }
-  .reset-Update-support button {
-    width: 178px;
-    height: 38px;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: center;
-    border: none;
-    color: white;
-    padding: 2px 32px;
-    text-decoration: none;
-    display: inline-block;
-    margin: 4px 2px;
-    cursor: pointer;
-    background-color: var(--primary-color);
-    border-radius: 8px;
   }
   .supportImage {
     width: 100%;
@@ -256,5 +244,9 @@
 
   .react-tel-input .country-list * {
     text-align: left !important;
+  }
+
+  .support-cont-section{
+    margin: 10px;
   }
 }

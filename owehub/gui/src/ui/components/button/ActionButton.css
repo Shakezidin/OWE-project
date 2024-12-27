@@ -3,30 +3,29 @@
   flex-shrink: 0;
   background-color: var(--primary-color);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   color: #fff;
-  font-size: 13px;
   font-style: normal;
   font-weight: 500;
   line-height: 11.962px;
-  /* 85.446% */
   cursor: pointer;
   height: 40px;
   text-transform: capitalize;
   width: 150px;
+  font-size: 12px;
   transition:
     transform 0.3s ease,
     background-color 0.3s ease !important;
 }
 
 .loginButton:hover {
-  background-color: #002970 !important;
-  transform: scale(1.07);
+  background-color: #4062CA !important;
+  transform: scale(1.05);
 }
 
 .cancel {
   border: 1px solid var(--primary-color);
-  color: #000000;
+  color: var(--input-border-color);
   background-color: transparent !important;
   transition: transform 0.3s ease;
 }
@@ -34,6 +33,7 @@
 .cancel:hover {
   transform: scale(1.05);
   background-color: #ddebff !important;
+  color: var(--primary-color);
 }
 
 .cancel:disabled {
@@ -68,7 +68,7 @@
 .iconsSection2 button {
   background: var(--primary-color);
   color: white;
-  border: 1px solid var(--primary-color);
+  border: none !important;
   transition:
     transform 0.3s ease,
     background-color 0.3s ease,
@@ -77,7 +77,7 @@
 
 .iconsSection2 button:hover {
   transform: scale(1.05);
-  background-color: #1b407f;
+  background-color: #4062CA;
   border-color: rgb(255, 255, 255);
 }
 
@@ -91,5 +91,13 @@
   }
   .iconSection2-mobile .mobileTitle {
     display: none;
+  }
+  .loginButton, .cancel{
+    width: 100px;
+  }
+  .fildelb-btn{
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
   }
 }

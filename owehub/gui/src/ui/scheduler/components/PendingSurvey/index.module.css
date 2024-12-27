@@ -60,3 +60,16 @@
   background-color: #fbfbfb !important;
   transform: scale(1.06) !important;
 }
+
+
+@media only screen and (max-width: 450px) {
+  .submit_btn{
+    font-weight: 500;
+    width: 83px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+

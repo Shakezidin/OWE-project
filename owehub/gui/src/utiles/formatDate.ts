@@ -52,12 +52,24 @@ export const getCurrentDateFormatted = (): string => {
 
 export const dateFormat = (date: string) => {
   if (!date) {
-    return 'N/A';
+    return '';
   }
   const isValid = new Date(date);
   if (isValid) {
     return format(new Date(date), 'dd-MM-yyyy');
   } else {
-    return 'N/A';
+    return '';
+  }
+};
+
+export const monthDateFormat = (date: string) => {
+  if (!date) {
+    return '';
+  }
+  const isValid = new Date(date);
+  if (isValid) {
+    return format(new Date(date), 'MM-dd-yyyy'); // Corrected format
+  } else {
+    return '';
   }
 };

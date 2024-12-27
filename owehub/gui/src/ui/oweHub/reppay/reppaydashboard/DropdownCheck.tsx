@@ -53,17 +53,20 @@ const DropdownWithCheckboxes = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   console.log(selectedOptions, 'optionssss');
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent|TouchEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        dropdownRef.current && 
+        !dropdownRef.current.closest('.dropdown-toggle') &&
+        !(event.target as HTMLElement)!.closest('.react-select')
       ) {
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
 

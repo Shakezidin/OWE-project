@@ -8,9 +8,8 @@ import { ICONS } from '../../../resources/icons/Icons';
 import './dashboard.css';
 import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Routes } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdOutlineDone } from 'react-icons/md';
@@ -199,13 +198,6 @@ const TeamTable: React.FC = () => {
   return (
     <>
       <div className="comm">
-        <Breadcrumb
-          head=""
-          linkPara="Team Management"
-          route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
-          linkparaSecond="Team Details"
-          marginLeftMobile="10px"
-        />
         {role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
         team?.logged_in_member_role === 'manager' ? (
@@ -256,7 +248,7 @@ const TeamTable: React.FC = () => {
                     <h4
                       style={{
                         fontSize: isMobile ? '1.2rem' : '1.5rem',
-                        color: '#263747',
+                        color: '#292B2E',
                         fontWeight: 600,
                       }}
                     >
@@ -294,7 +286,10 @@ const TeamTable: React.FC = () => {
                   </span>
                 )}
                 <p>
-                  {team?.manager_count} Managers, {team?.MemberCount} Member
+                  {team?.manager_count}{' '}
+                  {team?.manager_count > 1 ? 'Managers' : 'Manager'},{' '}
+                  {team?.MemberCount}{' '}
+                  {team?.MemberCount > 1 ? 'Members' : 'Member'}
                 </p>
               </div>
             </div>
@@ -524,8 +519,8 @@ const TeamTable: React.FC = () => {
                           <img
                             src={ICONS.deleteIcon}
                             style={{
-                              height: '18px',
-                              width: '16px',
+                              height: '16px',
+                              width: '15px',
                               stroke: '0.2',
                               pointerEvents:
                                 role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&

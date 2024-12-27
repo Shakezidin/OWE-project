@@ -1,7 +1,7 @@
 import { ROUTES } from './routes';
-import { BiSupport } from 'react-icons/bi';
+import { BiDollar, BiSupport } from 'react-icons/bi';
 import { RiUserSettingsLine } from 'react-icons/ri';
-import { MdOutlinePayment, MdPendingActions } from 'react-icons/md';
+import { MdPendingActions } from 'react-icons/md';
 import { GrDocumentConfig } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
@@ -9,7 +9,10 @@ import { ImStatsBars2 } from 'react-icons/im';
 import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
 import { PiMapPin } from 'react-icons/pi';
-
+import { MdOutlinePermMedia } from "react-icons/md";
+import { FaCalculator } from "react-icons/fa";
+import { ICONS } from '../resources/icons/Icons';
+import { TbReportSearch } from "react-icons/tb";
 const mob = {
   mob: [
     {
@@ -72,11 +75,8 @@ const mob = {
       sidebarProps: {
         displayText: 'Dealer Pay',
         icon: (
-          <MdOutlinePayment
-            size={20}
-            style={{ marginLeft: '5px' }}
-            className="hover-icon"
-          />
+          // <BiDollar size={20} style={{ marginLeft: '5px' }} className="hover-icon"/>
+          <img src={ICONS.MenuDealer} style={{ marginLeft: '5px' }} className="hover-icon" width={20} height={20} alt="sidebar-dealer-logo" />
         ),
       },
     },
@@ -96,11 +96,19 @@ const mob = {
       },
     },
     {
+      path: ROUTES.TOTAL_COUNT,
+      sidebarProps: {
+        displayText: 'Reports',
+        icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
       path: ROUTES.LEAD_MANAGEMENT,
       sidebarProps: {
-        displayText: 'Lead Management',
+        displayText: 'Leads',
         icon: (
-          <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
+          // <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
+          <img src={ICONS.MenuLead} style={{ marginLeft: '3px' }} className="hover-icon" width={20} height={20} alt="sidebar-menu-logo" />
         ),
       },
     },
@@ -109,7 +117,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Library',
         icon: (
-          <IoCloudUploadOutline
+          <MdOutlinePermMedia
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
@@ -130,6 +138,14 @@ const mob = {
       sidebarProps: {
         displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.CALCULATOR,
+
+      sidebarProps: {
+        displayText: 'CAGR CALCULATOR',
+        icon: <FaCalculator size={20} style={{ flexShrink: '0' }} />,
       },
     },
     {

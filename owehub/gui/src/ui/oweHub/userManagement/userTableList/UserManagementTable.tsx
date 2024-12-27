@@ -36,6 +36,10 @@ import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Input from '../../../components/text_input/Input';
+import Swal from 'sweetalert2';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import { Tooltip } from 'react-tooltip';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -142,12 +146,49 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const buttonStyle = {
     cursor: 'pointer',
     transition: 'transform 0.3s ease, background-color 0.3s ease',
-    transform: isHovered ? 'scale(1.09)' : 'scale(1)',
-    backgroundColor: isHovered ? '#002970' : '',
+    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+    backgroundColor: isHovered ? '#AD1313' : '',
   };
 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const resetPassword = async (user_emails: string) => {
+    try {
+      const data = await postCaller('reset_user_passwords', {
+        user_emails: [user_emails],
+      });
+      if (data.status > 200) {
+        toast.error(data.message);
+        return;
+      }
+      toast.success(
+        'Password reset successful! Check your email for the new password'
+      );
+    } catch (error) {
+      toast.error((error as Error).message as string);
+    }
+  };
+
+  const handlePasswordReset = async (id?: string) => {
+    const prompt = await Swal.fire({
+      title: 'Confirm Password Reset',
+      text: 'Are you sure you want to reset your password? A new password will be generated and sent to your registered email address',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#007bff',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm',
+      customClass: {
+        actions: 'flex-row-reverse',
+      },
+    });
+
+    if (prompt.isConfirmed) {
+      if (id) {
+        resetPassword(id);
+      }
+    }
+  };
 
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -166,6 +207,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.ADMIN:
@@ -182,6 +224,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.FINANCE_ADMIN:
@@ -198,6 +241,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.DB_USER:
@@ -214,6 +258,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.SUB_DEALER_OWNER:
@@ -231,6 +276,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.APPOINTMENT_SETTER:
@@ -247,6 +293,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
 
@@ -264,6 +311,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.REGIONAL_MANGER:
@@ -280,6 +328,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.DEALER_OWNER:
@@ -296,6 +345,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.SALES_REPRESENTATIVE:
@@ -312,6 +362,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.SALE_MANAGER:
@@ -328,6 +379,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.ACCOUNT_MANAGER:
@@ -344,22 +396,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
-          />
-        );
-      case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
-        return (
-          <AccountManagerTable
-            data={userRoleBasedList}
-            onClickEdit={(item: UserRoleBasedListModel) => {
-              onClickEdit(item);
-            }}
-            onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item);
-            }}
-            selectedRows={selectedRows}
-            selectAllChecked={selectAllChecked}
-            setSelectedRows={setSelectedRows}
-            setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
@@ -376,6 +413,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
+            handlePasswordReset={handlePasswordReset}
           />
         );
       default:
@@ -394,15 +432,18 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          {activeSalesRep && (
-            <img
-              style={{ cursor: 'pointer' }}
-              src={ICONS.cross}
-              onClick={handleCrossClick}
-            />
+          {activeSalesRep ? (
+            <>
+              <img
+                style={{ cursor: 'pointer' }}
+                src={ICONS.cross}
+                onClick={handleCrossClick}
+              />
+              <h3>{activeSalesRep} Sales Rep</h3>
+            </>
+          ) : (
+            <h3>{selectedOption?.label || ''}</h3>
           )}
-
-          {activeSalesRep && <h3>{activeSalesRep} Sales Rep</h3>}
         </div>
 
         <div className="delete-icon-container items-center items-start mt2 ">
@@ -432,11 +473,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}
               >
-                <div className="mr1">
+                <div className="mr1 user-icon">
                   <UserIcon />
                 </div>
 
-                <div className="relative">
+                <div className="relative user-table-dropdown">
                   <span
                     className="select-caret"
                     style={{ fontSize: 10 }}
@@ -450,18 +491,25 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     value={selectedOption}
                     menuStyles={{ width: 'fit-content', left: -30 }}
                     controlStyles={{
-                      boxShadow: 'none',
                       border: 'none',
                       margin: '0',
                       width: 'fit-content',
-                      marginTop: '1px',
+                      marginTop: '-6px !important',
+                      minHeight: '36px !important',
                     }}
-                    dropdownIndicatorStyles={{ color: '#292929', padding: 0 }}
+                    dropdownIndicatorStyles={{
+                      color: '#292B2E',
+                      padding: 0,
+                      marginTop: '7px',
+                      marginRight: '2px',
+                    }}
                     singleValueStyles={{
                       marginBlock: 0,
-                      padding: 0,
-                      color: '#292929',
+                      padding: '0 5px',
+                      color: '#292B2E',
                       fontWeight: '500',
+                      marginTop: '7px',
+                      className: 'dropdownText',
                     }}
                     valueContainerStyles={{ paddingInline: 0, marginInline: 0 }}
                     onChange={(data: any) => {
@@ -475,11 +523,26 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     menuListStyles={{
                       width: 'fit-content',
                     }}
-                    enableHoverEffect={false}
                   />
                 </div>
               </div>
             )}
+            <Tooltip
+              style={{
+                zIndex: 103,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+                fontWeight: '400',
+              }}
+              offset={8}
+              id="user-delete"
+              place="bottom"
+              content="Multi delete"
+              delayShow={200}
+              className="pagination-tooltip"
+            />
             <button
               onClick={onClickMultiDelete}
               className="trash-btn rounded-8 border-none flex items-center justify-center"
@@ -487,6 +550,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               style={buttonStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              data-tooltip-id='user-delete'
             >
               <svg
                 width="24"

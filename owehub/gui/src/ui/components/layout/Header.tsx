@@ -112,7 +112,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )
           ) : (
             <img
-              src={toggleOpen ? ICONS.sidebarLogoSquare : ICONS.sidebarLogo}
+              src={toggleOpen ? ICONS.sidebarLogoSquare : ICONS.VersionLogo}
               alt=""
               style={{
                 height: toggleOpen ? 30 : 45,
@@ -169,7 +169,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             src={ICONS.sidebarLogo}
             alt=""
             style={{
-              height: 45,
+              height: 36,
               alignSelf: 'center',
               display: isTablet ? 'flex' : 'none',
               alignItems: 'center',
@@ -180,13 +180,14 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           <></>
         </div>
         <img
-          src={ICONS.sidebarLogo}
+          src={ICONS.VersionLogo}
           alt=""
           style={{
             height: 45,
             alignSelf: 'center',
             display: isTablet ? 'flex' : 'none',
             alignItems: 'center',
+            paddingLeft: "1rem"
             // paddingLeft: toggleOpen ? 10 : '',
             // marginInline: toggleOpen ? 'auto' : undefined,
           }}
@@ -230,7 +231,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {openIcon ? (
                       <img src={ICONS.upperIcon} alt="" />
                     ) : (
-                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
+                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem', color: "#292B2E" }} />
                     )}
                   </div>
                 </div>

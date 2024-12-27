@@ -40,6 +40,14 @@ import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap';
 import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
 import ArchivedPages from './ui/leadmanagement/ArchievedPages';
 import DealerPayments from './ui/oweHub/configure/dealerPayments/DealerPayments';
+import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedule';
+import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
+import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
+import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
+import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
+import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
+import LoanCalculator from './ui/oweHub/calculator/Calculator';
+import TotalCount from './ui/TotalCount/TotalCount';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -59,6 +67,10 @@ function App() {
       { path: ROUTES.CONFIG_DEALER_CREDIT, element: <DealerCredit /> },
       { path: ROUTES.CONFIG_SLACK, element: <Slack /> },
       { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
+      { path: ROUTES.CONFIG_FINANCE_SCHEDULE, element: <FinanceSchedule /> },
+      { path: ROUTES.CONFIG_SALES_PARTNER_PAY, element: <SalesPartnerSchedule /> },
+      { path: ROUTES.CONFIG_FINANCE_TYPES, element: <FinanceTypes /> },
+      { path: ROUTES.SS_ONBOARDING, element: <SsOnboarding/> },
     ];
   };
 
@@ -116,9 +128,13 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
+          <Route path = {ROUTES.CALCULATOR} element={<LoanCalculator/>} />
+          <Route path = {ROUTES.TOTAL_COUNT} element={<TotalCount/>} />
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
+          <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
+          <Route path={ROUTES.FOLDER_DETAIL} element={<FolderDetail />} />
 
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
@@ -138,6 +154,7 @@ function App() {
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ARCHIVES} element={<ArchivedPages   />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
@@ -152,6 +169,7 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+        
       </Routes>
     </BrowserRouter>
   );

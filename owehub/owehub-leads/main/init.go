@@ -9,11 +9,14 @@ package main
 
 import (
 	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/owehub-leads/docusignclient"
 	apiHandler "OWEApp/owehub-leads/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/db"
+	emailClient "OWEApp/shared/email"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	timerHandler "OWEApp/shared/timer"
 	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
@@ -24,7 +27,9 @@ import (
 	"strconv"
 	"strings"
 
+	azidentity "github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/google/uuid"
+	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -33,7 +38,9 @@ type CfgFilePaths struct {
 	LoggingConfJsonPath string
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
-	AuroraConfJsonPath  string
+	LeadAppConfJsonPath string
+	OutlookApiConfig    string
+	EmailConfJsonPath   string
 }
 
 var (
@@ -44,7 +51,7 @@ const (
 	AppVersion = "1.0.0"
 )
 
-var leadsRoleGroup = []types.UserGroup{types.GroupAdminDealer, types.GroupSalesManagement}
+var leadsRoleGroup = []types.UserGroup{types.GroupEveryOne}
 
 var apiRoutes = appserver.ApiRoutes{
 	{
@@ -55,6 +62,13 @@ var apiRoutes = appserver.ApiRoutes{
 		[]types.UserGroup{},
 	},
 
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_users_under",
+		apiHandler.HandleGetUsersUnderRequest,
+		true,
+		leadsRoleGroup,
+	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/create_leads",
@@ -105,7 +119,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-leads-service/v1/delete_lead",
 		apiHandler.HandleDeleteRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		leadsRoleGroup,
 	},
 	{
 		strings.ToUpper("POST"),
@@ -126,7 +140,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-leads-service/v1/status_won",
 		apiHandler.HandleWonRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		leadsRoleGroup,
 	},
 	{
 		strings.ToUpper("POST"),
@@ -144,10 +158,149 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_leads_home_page",
+		apiHandler.HandleGetLeadHomePage,
+		true,
+		leadsRoleGroup,
+	},
+
+	// AURORA
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_project",
+		apiHandler.HandleAuroraCreateProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_create_design",
+		apiHandler.HandleAuroraCreateDesignRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/aurora_create_proposal",
 		apiHandler.HandleAuroraCreateProposalRequest,
 		true,
 		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_get_project",
+		apiHandler.HandleAuroraGetProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_get_proposal",
+		apiHandler.HandleAuroraGetProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_list_modules",
+		apiHandler.HandleAuroraListModulestRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_modules",
+		apiHandler.HandleAuroraRetrieveModulestRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_generate_web_proposal",
+		apiHandler.HandleAuroraGenerateWebProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_retrieve_Web_Proposal",
+		apiHandler.HandleAuroraRetrieveWebProposalRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_generate_pdf",
+		apiHandler.HandleAuroraGeneratePdfRequest,
+		false,
+		leadsRoleGroup,
+	},
+
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/aurora_update_project",
+		apiHandler.HandleAuroraUpdateProjectRequest,
+		true,
+		leadsRoleGroup,
+	},
+
+	// DOCUSIGN
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_oauth",
+		apiHandler.HandleDocusignOauth,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_create_envelope",
+		apiHandler.HandleDocusignCreateEnvelopeRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_create_recipient_view",
+		apiHandler.HandleDocusignCreateRecipientViewRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_get_document",
+		apiHandler.HandleDocusignGetDocumentRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/docusign_get_signing_url",
+		apiHandler.HandleDocusignGetSigningUrlRequest,
+		false,
+		[]types.UserGroup{},
+	},
+	// WEBHOOKS
+	{
+		strings.ToUpper("GET"),
+		"/owe-leads-service/v1/aurora_webhook",
+		apiHandler.HandleAuroraWebhookAction,
+		false,
+		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/receive_graph_notification",
+		apiHandler.HandleReceiveGraphNotificationRequest,
+		false,
+		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/docusign_connect_listener",
+		apiHandler.HandleDocusignConnectListenerRequest,
+		false,
+		[]types.UserGroup{},
 	},
 }
 
@@ -253,10 +406,50 @@ func init() {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
 	}
 
+	//*******************************************************************************************
+	/* Initializing Graph Api Connection */
+	err = FetchgraphApiCfg()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to get Graph Api Cfg error = %+v", err)
+		return
+	} else {
+		log.FuncDebugTrace(0, "Successfully Fetched Graph Api Cgf")
+	}
+
+	/* Creating outlook client */
+	err = GenerateGraphApiClient()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to get generate Graph Api Client error = %+v", err)
+		return
+	} else {
+		log.FuncDebugTrace(0, "Successfully created Graph Api Client")
+	}
+
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
 	PrintSvcGlbConfig(types.CommGlbCfg)
+
+	/* Initialize docusign client */
+	err = InitDocusignClient()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to initialize docusign client err %v", err)
+		return
+	}
+
+	/* Setup outlook webhooks */
+	err = leadsService.SetupOutlookWebhooks()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to setup outlook webhooks err %v", err)
+		return
+	}
+
+	/* Initialize email client */
+	err = emailClient.FetchEmailCfg(gCfgFilePaths.EmailConfJsonPath)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to initialize email client err %v", err)
+		return
+	}
 
 	/*Initialize logger package again with new configuraion*/
 	initLogger("OWEHUB-LEADS", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
@@ -270,6 +463,110 @@ func handleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) {
 
 func handleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) {
 	types.CommGlbCfg.HTTPCfg = HandleDynamicHttpConf(resp, req)
+}
+
+/******************************************************************************
+* FUNCTION:        FetchgraphApiCfg
+*
+* DESCRIPTION:   function is used to get the Graph Api configurations
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func FetchgraphApiCfg() (err error) {
+	log.EnterFn(0, "FetchgraphApiCfg")
+	defer func() { log.ExitFn(0, "FetchgraphApiCfg", err) }()
+
+	var graphApiCfg models.GraphApiConfInfo
+
+	log.ConfDebugTrace(0, "Reading Graph Api Config from: %+v", gCfgFilePaths.OutlookApiConfig)
+	file, err := os.Open(gCfgFilePaths.OutlookApiConfig)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.OutlookApiConfig, err)
+		panic(err)
+	}
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &graphApiCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.OutlookApiConfig, err)
+		panic(err)
+	}
+
+	types.CommGlbCfg.GraphApiCfg = graphApiCfg
+	log.ConfDebugTrace(0, "Graph Api Configurations: %+v", types.CommGlbCfg.GraphApiCfg)
+
+	return err
+}
+
+/******************************************************************************
+* FUNCTION:        GenerateGraphApiClient
+*
+* DESCRIPTION:   function is used to generate the Graph Api client
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func GenerateGraphApiClient() error {
+	cred, err := azidentity.NewClientSecretCredential(
+		types.CommGlbCfg.GraphApiCfg.TenantId,
+		types.CommGlbCfg.GraphApiCfg.ClientId,
+		types.CommGlbCfg.GraphApiCfg.ClientSecret,
+		nil,
+	)
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to GenerateGraphApiClient: %v", err)
+		return err
+	}
+
+	client, err := msgraphsdk.NewGraphServiceClientWithCredentials(cred, []string{
+		"https://graph.microsoft.com/.default",
+	})
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to create Graph client: %v", err)
+		return err
+	}
+
+	types.CommGlbCfg.ScheduleGraphApiClient = client
+	log.ConfDebugTrace(0, "Graph Client Created: %+v", types.CommGlbCfg.ScheduleGraphApiClient)
+	return nil
+}
+
+/*******************************************************************************
+ * FUNCTION:        InitDocusignClient
+ *
+ * DESCRIPTION:     This function will be used to initialize docusign client
+ *
+ * INPUT:           N/A
+ *
+ * RETURNS:         error
+ *******************************************************************************/
+func InitDocusignClient() error {
+	var err error
+
+	log.EnterFn(0, "InitDocusignClient")
+	defer func() { log.ExitFn(0, "InitDocusignClient", err) }()
+
+	err = docusignclient.RegenerateAuthToken()
+
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to initialize docusign client err %v", err)
+		return err
+	}
+
+	_, err = timerHandler.StartTimer(timerHandler.TimerData{
+		Recurring:    true,
+		TimeToExpire: 45 * 60, // 45 minutes
+		FuncHandler: func(timerType int32, data interface{}) {
+			err := docusignclient.RegenerateAuthToken()
+			if err != nil {
+				log.FuncDebugTrace(0, "Failed to regenerate Docusign Auth token: %v", err)
+				return
+			}
+			log.FuncDebugTrace(0, "Docusign Auth token regenerated")
+		},
+	})
+
+	return err
 }
 
 /******************************************************************************
@@ -357,7 +654,9 @@ func InitCfgPaths() {
 	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
-	gCfgFilePaths.AuroraConfJsonPath = gCfgFilePaths.CfgJsonDir + "auroraConfig.json"
+	gCfgFilePaths.LeadAppConfJsonPath = gCfgFilePaths.CfgJsonDir + "leadAppConfig.json"
+	gCfgFilePaths.OutlookApiConfig = gCfgFilePaths.CfgJsonDir + "outlookGraphConfig.json"
+	gCfgFilePaths.EmailConfJsonPath = gCfgFilePaths.CfgJsonDir + "emailConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
@@ -457,21 +756,21 @@ func FetchAuroraCfg() (err error) {
 	log.EnterFn(0, "FetchAuroraCfg")
 	defer func() { log.ExitFn(0, "FetchAuroraCfg", err) }()
 
-	var auroraCfg leadsService.AuroraConfig
-	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.AuroraConfJsonPath)
-	file, err := os.Open(gCfgFilePaths.AuroraConfJsonPath)
+	var auroraCfg leadsService.LeadAppConfig
+	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.LeadAppConfJsonPath)
+	file, err := os.Open(gCfgFilePaths.LeadAppConfJsonPath)
 	if err != nil {
-		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.LeadAppConfJsonPath, err)
 		panic(err)
 	}
 	bVal, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(bVal, &auroraCfg)
 	if err != nil {
-		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.LeadAppConfJsonPath, err)
 		panic(err)
 	}
-	leadsService.AuroraCfg = auroraCfg
-	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.AuroraCfg)
+	leadsService.LeadAppCfg = auroraCfg
+	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.LeadAppCfg)
 
 	return err
 }

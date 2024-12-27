@@ -45,7 +45,7 @@
 .calendar-logo p {
   margin-top: 1px;
   font-weight: 600;
-  color: #363636;
+  color: var(--input-border-color);
 }
 
 .calendar-logo:hover {
@@ -231,7 +231,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #363636;
+  background-color: var(--input-border-color);
   color: #fff;
 }
 
@@ -248,6 +248,7 @@
   text-wrap: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  color: var(--input-border-color);
 }
 
 .admin-p {
@@ -295,11 +296,23 @@
   .header-logo {
     margin-left: 6px !important;
   }
+
+  .header-logo object{
+    height: 36px !important;
+  }
+
+  .calendar-logo{
+    top: 2px !important;
+  }
 }
 
 @media (max-width: 768px) {
   .header-logo {
     margin-left: 20px !important;
+  }
+
+  .calendar-logo{
+    top: 0px !important;
   }
 
   .menu-icon {
@@ -1074,7 +1087,7 @@
 /* Chat Support CSS END */
 
 .calendar-logo {
-  top: 0;
+  top: 4px;
   height: 2.4rem;
   width: 2.4rem;
 }
@@ -1112,7 +1125,7 @@
 
 #popconfirm p {
   margin-bottom: 15px;
-  color: #333;
+  color: var(--input-border-color);
   font-size: 12px;
 }
 

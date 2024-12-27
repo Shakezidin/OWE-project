@@ -50,8 +50,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT ||
-            item.path === ROUTES.LIBRARY)
+           
+            item.path === ROUTES.LEAD_MANAGEMENT) 
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -65,11 +65,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
-              item.path === ROUTES.SALES_REP_SCHEDULER)) ||
-          item.path === ROUTES.LEAD_MANAGEMENT ||
-          item.path === ROUTES.LIBRARY
+             
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT))
         ) {
-        } else if (item.path !== ROUTES.CONFIG_PAGE) {
+        } else if (item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.CALCULATOR) {
           newArr[0].mob.push(item);
         }
       });
@@ -81,14 +81,15 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
+           
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT ||
-            item.path === ROUTES.LIBRARY)
+            item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.COMMISSION_DASHBOARD
+          item.path !== ROUTES.COMMISSION_DASHBOARD &&
+          item.path !== ROUTES.CALCULATOR
         ) {
           newArr[0].mob.push(item);
         }
@@ -104,15 +105,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.SALES_REP_SCHEDULER)) ||
-          item.path === ROUTES.LEAD_MANAGEMENT ||
-          item.path === ROUTES.LIBRARY
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT))
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.COMMISSION_DASHBOARD
+          item.path !== ROUTES.COMMISSION_DASHBOARD &&
+          item.path !== ROUTES.CALCULATOR
         ) {
           newArr[0].mob.push(item);
         }
@@ -121,14 +123,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (item.path !== ROUTES.USER_MANAEMENT) {
+        if (item.path !== ROUTES.USER_MANAEMENT ) {
           if (
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
-                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
-            item.path === ROUTES.LEAD_MANAGEMENT ||
-            item.path === ROUTES.LIBRARY
+               
+                item.path === ROUTES.SALES_REP_SCHEDULER||
+            item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -141,20 +143,21 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT
+          item.path !== ROUTES.USER_MANAEMENT 
         ) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT ||
-              item.path === ROUTES.LIBRARY)
+              item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.COMMISSION_DASHBOARD
+            item.path !== ROUTES.COMMISSION_DASHBOARD &&
+            item.path !== ROUTES.CALCULATOR
           ) {
             newArr[0].mob.push(item);
           }
@@ -172,14 +175,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
-                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
-            item.path === ROUTES.LEAD_MANAGEMENT ||
-            item.path === ROUTES.LIBRARY
+               
+                item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD 
           ) {
             newArr[0].mob.push(item);
           }
@@ -193,15 +196,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
-          item.path !== ROUTES.PROJECT_STATUS
+          item.path !== ROUTES.PROJECT_STATUS &&
+          item.path !== ROUTES.LEAD_MANAGEMENT
         ) {
           if (
             (isStaging !== 'staging' &&
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE ||
-                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
-            item.path === ROUTES.LEAD_MANAGEMENT ||
-            item.path === ROUTES.LIBRARY
+               
+                item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT))
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -217,9 +221,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
+             
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT ||
-              item.path === ROUTES.LIBRARY)
+              item.path === ROUTES.LEAD_MANAGEMENT)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -270,13 +274,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isMobile = true;
   return (
     <div
-      style={{ zIndex: '30' }}
+      style={{ zIndex: '200' }}
       className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
-        className={`side-bar-content ${
-          toggleOpen ? 'side-bar-content-active' : ''
-        }`}
+        className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''
+          }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         {filteredList().map((el: any, i: number) => (
@@ -304,15 +307,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                       }, 500);
                     }}
-                    className={`side-icon-container ${
-                      location.pathname === oth.path
-                        ? 'active-link-bg'
-                        : 'not-active-link'
-                    }`}
+                    className={`side-icon-container ${location.pathname.includes(oth.path)
+                      ? 'active-link-bg'
+                      : 'not-active-link'
+                      }`}
                   >
                     <div
                       className={
-                        location.pathname === oth.path
+                        location.pathname.includes(oth.path)
                           ? 'sidebaricon'
                           : 'sidebariconn'
                       }
@@ -326,7 +328,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         borderRadius: 4,
                         marginLeft: !toggleOpen ? '' : '-1px',
                         background:
-                          toggleOpen && location.pathname === oth.path
+                          toggleOpen && location.pathname.includes(oth.path)
                             ? ''
                             : toggleOpen
                               ? 'transparent'
@@ -339,7 +341,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {toggleOpen && !isTablet ? null : (
                       <p
                         className={
-                          location.pathname === oth.path
+                          location.pathname.includes(oth.path)
                             ? 'tablink'
                             : 'tablinkk'
                         }
@@ -365,11 +367,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         borderBottomRightRadius: '4px',
                         borderTopRightRadius: '4px',
                         borderLeft: '1px solid #D9D9D9',
-                        color: 'black',
+                        color: '#292B2E',
                       }}
                     >
-                      <Link
-                        to="#"
+                      <span
                         className=""
                         style={{
                           display: 'block',
@@ -387,7 +388,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       >
                         {' '}
                         {cords.text}
-                      </Link>
+                      </span>
                     </div>
                   </Link>
                 ))}
@@ -395,13 +396,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )}
           </div>
         ))}
-        <div style={{ marginTop: 32 }}>
+     {!toggleOpen &&   <div style={{ marginTop: 32 }}>
           <p
             style={{
               fontSize: '12px',
               textAlign: 'center',
               fontWeight: 500,
-              color: '#afadad',
+              color: '#80848B',
             }}
           >
             © 2024 by Our World Energy.
@@ -411,12 +412,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               fontSize: '10px',
               textAlign: 'center',
               fontWeight: 500,
-              color: '#afadad',
+              color: '#80848B',
             }}
           >
-            All rights reserved. eOS: v1.4
+            All rights reserved. eOS: v1.5
           </p>
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -14,7 +14,6 @@ type GetLeadsCountByStatusRequest struct {
 type GetLeadsCountByStatus struct {
 	Count      int64  `json:"count"`
 	StatusName string `json:"status_name"`
-	StatusId   int64  `json:"status_id"`
 }
 
 type GetLeadsCountByStatusList struct {

@@ -98,6 +98,13 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-main-service/v1/import_user_csv",
+		apiHandler.HandleImportUsersCsvRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-main-service/v1/db_tables",
 		apiHandler.HandleGetTableRequest,
 		true,
@@ -333,44 +340,37 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_dlrpay_tiledata",
-		apiHandler.HandleManageDlrPayTileDataRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_reppay_tiledata",
-		apiHandler.HandleManageRepPayTileDataRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_rep_type",
-		apiHandler.HandleGetRepTypeDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
 	// {
 	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_performance_tiledata",
+	// 	"/owe-main-service/v1/get_dlrpay_tiledata",
+	// 	apiHandler.HandleManageDlrPayTileDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupEveryOne},
+	// },
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-main-service/v1/get_reppay_tiledata",
+	// 	apiHandler.HandleManageRepPayTileDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupEveryOne},
+	// },
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-main-service/v1/get_rep_type",
+	// 	apiHandler.HandleGetRepTypeDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-main-service/v1/get_performance_tiledata",
 	// 	apiHandler.HandleManagePerformanceTileDataRequest,
 	// 	true,
 	// 	[]types.UserGroup{types.GroupEveryOne},
 	// },
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_perfomance_leaderboard",
-		apiHandler.HandleGetLeaderBoardRequestTemp,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_perfomance_leaderboard_data",
+		"/owe-main-service/v1/get_perfomance_leaderboard_data",
 		apiHandler.HandleGetLeaderBoardRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
@@ -440,12 +440,39 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_graph_api_access_token",
+		"/owe-main-service/v1/get_graph_api_access_token",
 		apiHandler.HandleGraphApiAccessToken,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/get_milestone_data",
+		apiHandler.HandleGetMilestoneDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/reset_user_passwords",
+		apiHandler.HandleResetPasswordRequest,
+		true,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/get_milestone_data_csv_download",
+		apiHandler.HandleGetMilestoneCsvDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/trigger_row_data_update",
+		apiHandler.HandleTriggerRowDataUpdateRequest,
+		false,
+		[]types.UserGroup{},
+	},
 	/************ Battery Backup Calculator API *******************/
 	{
 		strings.ToUpper("POST"),
@@ -595,17 +622,25 @@ func init() {
 		log.ConfDebugTrace(0, "Database Configuration fatched Successfully from file.")
 	}
 
+	/* Upsert sales partners from owe db on service start */
+	/* TODO: Uncomment this once tape owe db is ready */
+	// err = apiHandler.UpsertSalesPartnersFromOweDb()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to pull sales partners from owe db with error = %v", err)
+	// 	return
+	// }
+
 	//* Read and Initialize Podio configuration from cfg */
-	err = FetchPodioCfg()
-	if err != nil {
-		log.ConfErrorTrace(0, "FetchPodioCfg failed %+v", err)
-		return
-	} else {
-		log.ConfDebugTrace(0, "Podio Configuration fatched Successfully from file.")
-	}
+	// err = FetchPodioCfg()
+	// if err != nil {
+	// 	log.ConfErrorTrace(0, "FetchPodioCfg failed %+v", err)
+	// 	return
+	// } else {
+	// 	log.ConfDebugTrace(0, "Podio Configuration fatched Successfully from file.")
+	// }
 
 	//* For initial setting up podio
-	go apiHandler.SyncHubUsersToPodioOnInit()
+	// go apiHandler.SyncHubUsersToPodioOnInit()
 	// if err != nil {
 	// 	log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
 	// }

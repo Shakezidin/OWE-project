@@ -9,6 +9,9 @@ import { MdKeyboardBackspace } from 'react-icons/md';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoClose } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
+import { FaXmark } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
+
 const timeSlots = [
   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
   { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
@@ -36,14 +39,15 @@ const SaleRepCustomerForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    prospectId: '48594',
-    name: 'Peter Parket',
-    phoneNo: '983 4785 9298',
-    email: 'john@gmail.com',
-    address: '103, avenue street, Colorado, 267531',
-    salesRep: 'Ajay Negi',
+    prospectId: '',
+    name: '',
+    phoneNo: '',
+    email: '',
+    address: '',
+    salesRep: '',
   });
 
   const isSmallScreen = useMatchMedia('(max-width:968px)');
@@ -55,6 +59,10 @@ const SaleRepCustomerForm = () => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -77,9 +85,8 @@ const SaleRepCustomerForm = () => {
               >
                 {step > 1 && (
                   <div className={`${styles.back_btn} curosr-pointer ml3`}>
-
                     <MdKeyboardBackspace
-                      style={{ cursor: 'pointer' }}                
+                      style={{ cursor: 'pointer' }}
                       onClick={() => setStep(1)}
                     />
                   </div>
@@ -105,7 +112,7 @@ const SaleRepCustomerForm = () => {
                   style={{ flexBasis: '60%' }}
                   className={styles.date_header_label}
                 >
-                  <div className="flex items-center justify-center">
+                  <div className={`${styles.calendar_h3}flex items-center justify-center`}>
                     <h3 className="text-white text-center">
                       Select Date & Time
                     </h3>
@@ -120,19 +127,26 @@ const SaleRepCustomerForm = () => {
             className="flex items-center flex-column justify-center"
             style={{ width: '100%', height: '500px' }}
           >
-             <h5 className={` mb2  ${shardeStyles.selected_time}`} style={{fontSize:18,fontWeight:300}}>
+            <h5
+              className={` mb2  ${shardeStyles.selected_time}`}
+              style={{ fontSize: 18, fontWeight: 300 }}
+            >
               {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
               {selectedTime?.time}{' '}
             </h5>
-            <h3 className={`${shardeStyles.survey_success_message} text-center mb2`}>
+            <h3
+              className={`${shardeStyles.survey_success_message} text-center mb2`}
+            >
               Site survey appointment information submitted 👍
             </h3>
-            <p  style={{fontSize:14,textAlign:"center",fontWeight:300}}>The team will review the information and schedule the survey. 
+            <p style={{ fontSize: 14, textAlign: 'center', fontWeight: 300 }}>
+              The team will review the information and schedule the survey.
               <br />
-              You will be notified via email once the arrangements are made</p>
-             
-            <Link to="/login" className={styles.navigate_btn} >
-            Go to dashboard
+              You will be notified via email once the arrangements are made
+            </p>
+
+            <Link to="/login" className={styles.navigate_btn}>
+              Go to dashboard
             </Link>
           </div>
         )}
@@ -151,6 +165,26 @@ const SaleRepCustomerForm = () => {
               }}
               className={`${styles.form_content}  ${step === 2 ? styles.mobile_hidden : ''} py3 ${step === 2 ? 'px4' : ''} `}
             >
+              <div
+                onClick={handleBack}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  marginBottom: '10px',
+                  cursor: 'pointer',
+                }}
+              >
+                <FaXmark
+                  style={{
+                    height: '20px',
+                    width: '20px',
+                    color: '#000000',
+                    fontWeight: '600',
+                  }}
+                />
+              </div>
               <div className="mb2">
                 <Input
                   label="Prospect ID"
@@ -167,6 +201,7 @@ const SaleRepCustomerForm = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  showIsEditing={formData.name !== ''}
                 />
               </div>
               <div className="mb2">
@@ -175,6 +210,7 @@ const SaleRepCustomerForm = () => {
                   name="phoneNo"
                   value={formData.phoneNo}
                   onChange={handleChange}
+                  showIsEditing={formData.phoneNo !== ''}
                 />
               </div>
               <div className="mb2">
@@ -183,6 +219,7 @@ const SaleRepCustomerForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  showIsEditing={formData.email !== ''}
                 />
               </div>
               <div className="mb2">
@@ -191,6 +228,7 @@ const SaleRepCustomerForm = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
+                  showIsEditing={formData.address !== ''}
                 />
               </div>
               <div>

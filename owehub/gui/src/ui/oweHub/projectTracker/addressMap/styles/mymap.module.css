@@ -10,14 +10,14 @@
 .mapWrap {
   padding: 1rem;
   background-color: var(--white-color);
-  border-radius: 14px;
-  margin-top: 10px;
+  border-radius: 16px;
 }
 
 .inputWrap {
   position: relative;
   width: 300px;
 }
+
 
 .mapHeaderWrap {
   display: flex;
@@ -34,7 +34,7 @@
 .headerDropDowns {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .headerLeft {
@@ -198,28 +198,48 @@
 
 .inputsearch {
   min-width: 220px !important;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   flex: 1 1;
   height: 2.37rem;
-  color: #000;
+  color: var(--input-border-color);
   padding: 0px 14px;
-  border: 1px solid #cbcbcb;
-  border-radius: 6px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 8px;
   outline: 0;
-  transition: border-color 0.3s ease;
 }
 
 .inputsearch:hover {
   border-color: #377cf6;
-  border-width: 2px;
+  border-width: 1px;
 }
+
 
 .inputsearch:hover,
 .inputsearch:focus,
 .inputsearch:not(:placeholder-shown) {
   border-color: #377cf6;
-  border-width: 2px;
+  border-width: 1px;
+}
+
+.inputsearch::placeholder {
+  color: var(--input-border-color);
+}
+
+.inputMap {
+  fill: var(--input-border-color); 
+}
+
+.inputsearch:focus::placeholder, .inputsearch:hover::placeholder {
+  color: var(--primary-color); 
+}
+
+.inputsearch:hover + .inputMap{
+  fill: var(--primary-color);
+}
+
+.focused + .inputMap, .inputsearch.focused::placeholder {
+  fill: var(--primary-color); 
 }
 
 .dropdownselect {
@@ -519,8 +539,8 @@ table tbody tr:hover {
 }
 
 input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 100px;
   border: 1px solid #797979;
   cursor: pointer;
@@ -639,6 +659,9 @@ input[type='checkbox']:checked {
   justify-content: center;
   align-items: center;
   border-radius: 5px;
+}
+.chart_main_grid svg text{
+  color: red;
 }
 
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */

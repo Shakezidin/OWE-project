@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
+import { configPostCaller } from '../../../infrastructure/web_api/services/apiUrl';
 interface Ipaginate {
   page_number: number;
   page_size: number;
@@ -16,15 +17,16 @@ interface Ipaginate {
 
 export const getDealerPay = createAsyncThunk(
   'get/dealer-pay',
-  async (params: Ipaginate, { rejectWithValue }) => {
+  async (params: any, { rejectWithValue }) => {
     try {
-      const resp = await postCaller('get_dealerpay', params);
+      const resp = await configPostCaller('get_dealerpaycommissions', params);
       if (resp.status > 201) {
         return rejectWithValue(resp.message);
       }
       const count = resp.dbRecCount || 0;
-      const list = resp.data.dealer_pay_list || [];
-      return { count, list };
+      const tileData = resp.data
+      const list = resp.data.DealerPayComm  || [];
+      return { count, list , tileData};
     } catch (error) {
       rejectWithValue((error as Error).message);
     }

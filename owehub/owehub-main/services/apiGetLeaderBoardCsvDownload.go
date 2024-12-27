@@ -75,8 +75,8 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
 		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
 			where ud.email_id = '%v';
 		`, dataReq.Email)
 
@@ -145,6 +145,41 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
+	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
+	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
+
+	endDate = endDate.Add(24*time.Hour - time.Second)
+
+	for _, item := range data {
+		// Check sale_date
+		if saleDate, ok := item["sale_date"].(time.Time); ok {
+			if saleDate.Before(startDate) || saleDate.After(endDate) {
+				item["sale_date"] = nil // Set to null if out of range
+			}
+		}
+
+		// Check cancelled_date
+		if cancelledDate, ok := item["cancelled_date"].(time.Time); ok {
+			if cancelledDate.Before(startDate) || cancelledDate.After(endDate) {
+				item["cancelled_date"] = nil // Set to null if out of range
+			}
+		}
+
+		// Check pv_completion_date
+		if pvCompletionDate, ok := item["pv_completion_date"].(time.Time); ok {
+			if pvCompletionDate.Before(startDate) || pvCompletionDate.After(endDate) {
+				item["pv_completion_date"] = nil // Set to null if out of range
+			}
+		}
+
+		// Check ntp_complete_date
+		if ntpCompleteDate, ok := item["ntp_complete_date"].(time.Time); ok {
+			if ntpCompleteDate.Before(startDate) || ntpCompleteDate.After(endDate) {
+				item["ntp_complete_date"] = nil // Set to null if out of range
+			}
+		}
+	}
+
 	RecordCount = int64(len(data))
 	// data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
@@ -170,7 +205,10 @@ func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn stri
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" (ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -211,7 +249,7 @@ func FetchLeaderBoardDealerForAmAe(dataReq models.GetCsvDownload, userRole inter
 	var roleBase string
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
-		roleBase = "account_manager"
+		roleBase = "account_manager2"
 	} else {
 		roleBase = "account_executive"
 	}

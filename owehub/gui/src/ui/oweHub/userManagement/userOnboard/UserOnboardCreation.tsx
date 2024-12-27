@@ -127,7 +127,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { name, value } = e.target;
 
     if (name === 'first_name' || name === 'last_name') {
-      const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
+      const sanitizedValue = value.replace(/[^a-zA-Z\s'-]/g, '');
+
       dispatch(updateUserForm({ field: name, value: sanitizedValue }));
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());

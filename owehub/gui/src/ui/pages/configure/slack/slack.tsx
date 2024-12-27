@@ -211,12 +211,6 @@ const Slack = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb
-        head=""
-        linkPara="Configure"
-        route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Slack Config"
-      />
       <div className="commissionContainer">
         <TableHeader
           title="Slack Config"
@@ -241,7 +235,7 @@ const Slack = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
         >
           <table>
             <thead>

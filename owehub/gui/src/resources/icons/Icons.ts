@@ -6,13 +6,22 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import Searchbar1 from "../assets/search-bar-01.png"
+import searchbar2 from "../assets/images (1).png"
+import SignEditBotton from "../assets/SignEditBotton.png"
+import EditPenNew from "../assets/EditPenNew.png"
+import searchbar3 from "../assets/images.png"
+import SignModelConfirmation from "../../resources/assets/SignConfirnationModel.png"
+import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
 import scheduleDoor from '../../resources/assets/schedule_door.png';
+import audioPlaceholder from '../../resources/assets/audio_placeholder.svg';
 import dashIcon from '../../resources/assets/dashIcon.svg';
 import ConfigIcon from '../../resources/assets/config.svg';
 import userManIcon from '../../resources/assets/userManag.svg';
 import techIcon from '../../resources/assets/techIcon.svg';
 import accountIcon from '../../resources/assets/accountIcon.svg';
 import logoutIcon from '../../resources/assets/logoutIcon.svg';
+import DashboardHideArrow from "../assets/ArrowDashboard.svg"
 import trackerIcon from '../../resources/assets/trackerIcon.svg';
 import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
@@ -83,9 +92,12 @@ import arrowDown from '../../resources/assets/arrow-down.svg';
 import linearGraph from '../../resources/assets/linear-graph.svg';
 import curveGraph from '../../resources/assets/curvegraph.svg';
 import redcurveGraph from '../../resources/assets/perf.png';
-import rep1 from '../../resources/assets/rep1.png';
-import rep2 from '../../resources/assets/rep2.png';
-import rep3 from '../../resources/assets/rep3.png';
+import rep1 from '../../resources/assets/rep1.svg';
+import rep2 from '../../resources/assets/rep2.svg';
+import rep3 from '../../resources/assets/rep3.svg';
+import repBar1 from '../../resources/assets/repBar1.svg';
+import repBar2 from '../../resources/assets/repBar2.svg';
+import repBar3 from '../../resources/assets/repBar3.svg';
 import per2 from '../../resources/assets/per2.png';
 import per3 from '../../resources/assets/per3.png';
 import pmshadedgraph from '../../resources/assets/pmshadedgraph.png';
@@ -155,9 +167,24 @@ import folderImage from '../assets/folderimage.svg';
 import viedoImageOne from '../assets/videos-library-one.svg';
 import viedoplay from '../assets/video_play.svg';
 import DeleteICONBOX from '../assets/DeleteICONBOX.svg';
+import DownArrowDashboard from "../assets/AboverArrow.svg"
+import ChecronUpX from "../assets/UpArrowDashboard.svg"
+import videoPlayerIcon from '../assets/video_player_icon.png';
+import VersionLogo from '../assets/version_logo.svg'
+import SearchICONbyRabindra from "../assets/SearchIconByRKS.svg"
+import LogCalc1 from "../assets/log_calc_1.svg"
+import LogCalc2 from "../assets/log_calc_2.svg"
+import LogCalc3 from "../assets/log_calc_3.svg"
+import MenuDealer from "../assets/SideDealerPay.svg"
+import MenuLead from "../assets/SideLead.svg";
+import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
+import QCAudit from "../assets/QCAudit.png"
+import QcLineLead from '../../resources/assets/QcLineLead.svg';
+
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
+  videoPlayerIcon,
   LOGO: logo,
   MENU_1: require('../../resources/assets/menu_1.png'),
   sidebarLogo: require('../../resources/assets/comissionlogo.png'),
@@ -165,10 +192,17 @@ export const ICONS = {
   DOWN_ARROW: require('../../resources/assets/arrow-down.png'),
   VIEW_ARCHIVE: viewA,
   FILTER: filter,
+  DashboardNewIcon:DashboardNewIcon,
   Ellipse: ellipse,
   FILTERACTIVE: filterActive,
   ARCHIVE: archive,
+  EditPenNew:EditPenNew,
   editIcon: edit,
+  Searchbar1:Searchbar1,
+  searchbar2:searchbar2,
+  QCAudit:QCAudit,
+  
+  searchbar3:searchbar3,
   APPICON: require('../../resources/assets/appicon.png'),
   USER_IMAGE: require('../../resources/assets/user.png'),
   NOTIFICATION: require('../../resources/assets/notification.png'),
@@ -185,10 +219,15 @@ export const ICONS = {
   cutOff,
 
   groupActiveIcon: groupActive,
+  DashboardHideArrow:DashboardHideArrow,
+  ChecronUpX:ChecronUpX,
+  SignModelConfirmation:SignModelConfirmation,
   DeleteICONBOX: DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,
+  DownArrowDashboardAboveDirection:DownArrowDashboard,
   dashHead: dashHead,
+  SearchICON001:SearchICONbyRabindra,
   dashActive: dashActive,
   cross: crossIcon,
   dash: dashIcon,
@@ -200,6 +239,7 @@ export const ICONS = {
   logoutIcon: logoutIcon,
   trackerIcon: trackerIcon,
   activityIcon: activityIcon,
+  SignEditBotton:SignEditBotton,
   menuIcon: menu,
   leftArrow: leftArrow,
   editIconUser: editIconUser,
@@ -213,6 +253,7 @@ export const ICONS = {
   commIconHead: commIconHead,
   dbIconManag: dbIconManag,
   projIcon: projIcon,
+  audioPlaceholder,
   teamManag: teamManag,
   upperIcon: upperIcon,
   logoutIconLeft: logoutIconLeft,
@@ -258,6 +299,9 @@ export const ICONS = {
   rep1: rep1,
   rep2: rep2,
   rep3: rep3,
+  repBar1: repBar1,
+  repBar2: repBar2,
+  repBar3: repBar3,
   dashboardSidebar: dashboardSidebar,
   dataSidebar: dataSidebar,
   activitySidebar: activitySidebar,
@@ -328,4 +372,12 @@ export const ICONS = {
   folderImage,
   viedoImageOne,
   viedoplay,
+  VersionLogo: VersionLogo,
+  LogCalc1: LogCalc1,
+  LogCalc2: LogCalc1,
+  LogCalc3: LogCalc1,
+  MenuDealer: MenuDealer,
+  MenuLead: MenuLead,
+  ScheduleRepeat: ScheduleRepeat,
+  QcLineLead:QcLineLead,
 };

@@ -7,17 +7,14 @@
 package services
 
 import (
-	"OWEApp/owehub-leads/common"
+	leadsService "OWEApp/owehub-leads/common"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"time"
 
-	// "OWEApp/shared/types"
-	// "sort"
-	// "strings"
-	//"time"
+
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -101,36 +98,46 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	}
 	offset := (pageNumber - 1) * pageSize
 
-	// Construct the query without ORDER BY inside the whereClause
+	// if leads status is -1, show all won or lost
 	if dataReq.LeadsStatus == -1 {
-		whereClause = "WHERE li.status_id IN (5, 6)"
-	} else {
-		// Show data based on a specific status
-		whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadsStatus)
+		whereClause = `
+			WHERE (li.lead_lost_date IS NOT NULL
+				OR li.manual_won_date IS NOT NULL
+				OR li.qc_audit IS TRUE )
+			`
+	}
+
+	if dataReq.LeadsStatus == 5 {
+		whereClause = "WHERE (li.qc_audit IS TRUE OR li.manual_won_date IS NOT NULL)"
+	}
+
+	if dataReq.LeadsStatus == 6 {
+		whereClause = "WHERE li.lead_lost_date IS NOT NULL"
 	}
 
 	// Add date range and archive conditions to the whereClause
 	whereClause = fmt.Sprintf(`
-    %s
-    AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
-    AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
-    AND li.is_archived = $4
-`, whereClause)
+		%s
+		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
+		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
+		AND li.is_archived = $4
+		`, whereClause)
 
 	// Construct the final query with pagination and ORDER BY
 	leadsHistoryQuery = fmt.Sprintf(`
-    SELECT
-        li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
-        ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
-        li.appointment_scheduled_date, li.appointment_accepted_date,
-        li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
-    FROM
-        get_leads_info_hierarchy($1) li
-    JOIN
-        leads_status ls ON li.status_id = ls.status_id
-    %s
-    ORDER BY li.updated_at DESC
-`, whereClause)
+		SELECT
+			li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
+			ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
+			li.appointment_scheduled_date, li.appointment_accepted_date,
+			li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date,
+			ud.name AS setter_name
+		FROM
+			get_leads_info_hierarchy($1) li
+		INNER JOIN leads_status ls ON ls.status_id = li.status_id
+		LEFT JOIN user_details ud ON ud.user_id = li.setter_id
+		%s
+		ORDER BY li.updated_at DESC
+	`, whereClause)
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	whereEleList = append(whereEleList,
@@ -162,12 +169,43 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range data {
 		timeline := getLeadHistoryTimeline(item)
 
+		var (
+			dealDateStr *time.Time
+			dealStatus  string
+		)
+
 		streetAddress, ok := item["street_address"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get street address for Lead: %+v\n", item)
 			streetAddress = ""
 		}
+
+		// deal won if lead_won_date is not null
+		leadWonDate, ok := item["lead_won_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get lead won date from leads info Item: %+v\n", item)
+		} else {
+			dealDateStr = &leadWonDate
+			dealStatus = "Deal Won"
+		}
+
+		leadLostDate, ok := item["lead_lost_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get lead lost date from leads info Item: %+v\n", item)
+		} else {
+			dealDateStr = &leadLostDate
+			dealStatus = "Deal Loss"
+		}
+
+		setterName, ok := item["setter_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get setter name for Lead: %+v\n", item)
+			setterName = ""
+		}
+
 		LeadsHistory := models.GetLeadsHistoryResponse{
+			DealDate:      dealDateStr,
+			DealStatus:    dealStatus,
 			FirstName:     item["first_name"].(string),
 			LastName:      item["last_name"].(string),
 			EmailId:       item["email_id"].(string),
@@ -175,6 +213,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 			LeadsID:       item["leads_id"].(int64),
 			StatusID:      item["status_id"].(int64),
 			StreetAddress: streetAddress,
+			SetterName:    setterName,
 			Timeline:      timeline,
 		}
 
@@ -183,11 +222,9 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Count total records from db
 	leadsHistoryCountQuery = fmt.Sprintf(`
-        SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
-        JOIN
-            leads_status ls ON li.status_id = ls.status_id
-        %s
-        `, whereClause)
+		SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
+		%s
+		`, whereClause)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryCountQuery, whereEleList[0:4])
 	if err != nil {
@@ -212,59 +249,59 @@ func getLeadHistoryTimeline(resultItem map[string]interface{}) (timeline []model
 
 	if appointmentScheduledDate, ok := resultItem["appointment_scheduled_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelScheduled,
+			Label: string(leadsService.LeadTimelineLabelScheduled),
 			Date:  &appointmentScheduledDate,
 		})
 	} else {
 		log.FuncErrorTrace(0, "Failed to get appointment scheduled date for Lead: %+v\n", resultItem)
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelScheduled,
+			Label: string(leadsService.LeadTimelineLabelScheduled),
 			Date:  nil,
 		})
 	}
 
 	if appointmentAcceptedDate, ok := resultItem["appointment_accepted_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAccepted,
+			Label: string(leadsService.LeadTimelineLabelAccepted),
 			Date:  &appointmentAcceptedDate,
 		})
 	} else {
 		log.FuncErrorTrace(0, "Failed to get appointment accepted date for Lead: %+v\n", resultItem)
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAccepted,
+			Label: string(leadsService.LeadTimelineLabelAccepted),
 			Date:  nil,
 		})
 	}
 
 	if appointmentDate, ok := resultItem["appointment_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAppointment,
+			Label: string(leadsService.LeadTimelineLabelAppointment),
 			Date:  &appointmentDate,
 		})
 	} else {
 		log.FuncErrorTrace(0, "Failed to get appointment date for Lead: %+v\n", resultItem)
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelAppointment,
+			Label: string(leadsService.LeadTimelineLabelAppointment),
 			Date:  nil,
 		})
 	}
 
 	if leadWonDate, ok := resultItem["lead_won_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelWon,
+			Label: string(leadsService.LeadTimelineLabelWon),
 			Date:  &leadWonDate,
 		})
 
 		// if won, also append proposal created date
 		if proposalCreatedDate, ok := resultItem["proposal_created_date"].(time.Time); ok {
 			timeline = append(timeline, models.GetLeadsTimelineItem{
-				Label: common.LeadTimelineLabelProposalCreated,
+				Label: string(leadsService.LeadTimelineLabelProposalCreated),
 				Date:  &proposalCreatedDate,
 			})
 		} else {
 			log.FuncErrorTrace(0, "Failed to get proposal created date for Lead: %+v\n", resultItem)
 			timeline = append(timeline, models.GetLeadsTimelineItem{
-				Label: common.LeadTimelineLabelProposalCreated,
+				Label: string(leadsService.LeadTimelineLabelProposalCreated),
 				Date:  nil,
 			})
 		}
@@ -272,14 +309,14 @@ func getLeadHistoryTimeline(resultItem map[string]interface{}) (timeline []model
 
 	if dealLostDate, ok := resultItem["lead_lost_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
-			Label: common.LeadTimelineLabelLost,
+			Label: string(leadsService.LeadTimelineLabelLost),
 			Date:  &dealLostDate,
 		})
 
 		// if lost, also append reason (dispoition note)
 		if reason, ok := resultItem["appointment_disposition_note"].(string); ok {
 			timeline = append(timeline, models.GetLeadsTimelineItem{
-				Label: common.LeadTimelineLabel(reason),
+				Label: reason,
 				Date:  &dealLostDate,
 			})
 		} else {

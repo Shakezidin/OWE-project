@@ -89,6 +89,7 @@ const Banner: React.FC<BannerProps> = ({
       role !== TYPE_OF_USER.FINANCE_ADMIN &&
       role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
       role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+      
       isAuthenticated
     ) {
       (async () => {
@@ -111,7 +112,7 @@ const Banner: React.FC<BannerProps> = ({
         }
       })();
     }
-  }, [dealerId, role, refetch, isAuthenticated]);
+  }, [ role, refetch, isAuthenticated]);
 
   useEffect(() => {
     if (
@@ -175,20 +176,28 @@ const Banner: React.FC<BannerProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setOpts(leaderDealer(newFormData));
         setSearch('');
       }
     };
+  
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+  
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyPress);
+  
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyPress);
     };
   }, [newFormData, search]);
+  
 
   console.log('details', details);
   return (
@@ -381,19 +390,19 @@ const Banner: React.FC<BannerProps> = ({
               <div className="searchBox">
                 <input
                   type="text"
-                  className="input"
-                  placeholder="Search Dealers"
-                  style={{ width: '100%' }}
+                  className="input leaderboard-input"
+                  placeholder="Search Partners"
+                  style={{ width: '100%'}}
                   value={search}
                   disabled={isLoading}
                   onChange={(e) => {
-                    setSearch(e.target.value);
-                    if (e.target.value.trim()) {
-                      const filtered = leaderDealer(newFormData)?.filter(
-                        (item) =>
-                          item?.value
-                            .toLocaleLowerCase()
-                            .includes(e.target.value.toLowerCase().trim())
+                    // Remove any non-alphanumeric characters
+                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                    setSearch(sanitizedValue);
+                    
+                    if (sanitizedValue.trim()) {
+                      const filtered = leaderDealer(newFormData)?.filter((item) =>
+                        item?.value.toLowerCase().includes(sanitizedValue.toLowerCase().trim())
                       );
                       setOpts([...filtered]);
                     } else {
@@ -421,7 +430,7 @@ const Banner: React.FC<BannerProps> = ({
                   All
                 </div>
               )}
-              {opts?.map?.((option, ind) => (
+              {opts?.length?opts?.map?.((option, ind) => (
                 <div key={ind} className="dropdown-item">
                   <input
                     type="checkbox"
@@ -432,9 +441,9 @@ const Banner: React.FC<BannerProps> = ({
                     )}
                     onChange={() => handleChange(option)}
                   />
-                  {option.label}
+                  <span className='dropdown-text'>{option.label}</span>
                 </div>
-              ))}
+              )):<div className='text-center' style={{fontSize:14,color:"#000"}}>No Data Found</div>}
             </div>
           )}
 

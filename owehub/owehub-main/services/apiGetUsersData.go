@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"strings"
 
 	"encoding/json"
@@ -70,7 +71,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail := req.Context().Value("emailid").(string)
 	role := req.Context().Value("rolename").(string)
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT sp.sales_partner_name as dealer_name FROM user_details ud JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id WHERE ud.email_id = '%v'", userEmail)
 
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
@@ -91,37 +92,48 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-			 SELECT ud.user_id AS record_id, ud.name AS name, 
-			 ud.user_code, 
-			 ud.db_username,
-			 ud.mobile_number, 
-			 ud.email_id, 
-			 ud.password_change_required, 
-			 ud.created_at,
-			 ud.updated_at, 
-			 COALESCE(ud1.name, 'NA') AS reporting_manager, 
-			 COALESCE(vd.dealer_name, 'NA') AS dealer_owner, 
-			 ud.user_status, 
-			 ud.user_designation, 
-			 ud.description, 
-			 ud.region,
-			 ud.street_address, 
-			 ud.city, 
-			 ud.country,
-			 st.name AS state_name,
-			 ur.role_name,
-			 zc.zipcode,
-			 vd.dealer_name as dealer,
-			 vd.dealer_logo,
-			 vd.bg_colour,
-			 ud.tables_permissions
-			 FROM user_details ud
-			 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
-			 LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
-			 LEFT JOIN states st ON ud.state = st.state_id
-			 LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			 LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
-			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id`
+			 SELECT 
+				ud.user_id AS record_id, 
+				ud.name AS name, 
+				ud.user_code, 
+				ud.db_username,
+				ud.mobile_number, 
+				ud.email_id, 
+				ud.password_change_required, 
+				ud.created_at,
+				ud.updated_at, 
+				COALESCE(ud1.name, 'NA') AS reporting_manager, 
+				ud.user_status, 
+				ud.user_designation, 
+				ud.description, 
+				ud.region,
+				ud.street_address, 
+				ud.city, 
+				ud.country,
+				st.name AS state_name,
+				ur.role_name,
+				zc.zipcode,
+				sp.sales_partner_name AS dealer,
+				pd.bg_colour,
+				ud.tables_permissions,
+				-- Fields from partner_details
+				pd.partner_code, 
+				pd.partner_logo, 
+				pd.bg_colour AS partner_bg_colour
+			FROM 
+				user_details ud
+			LEFT JOIN 
+				user_details ud1 ON ud.reporting_manager = ud1.user_id
+			LEFT JOIN 
+				states st ON ud.state = st.state_id
+			LEFT JOIN 
+				user_roles ur ON ud.role_id = ur.role_id
+			LEFT JOIN 
+				zipcodes zc ON ud.zipcode = zc.id
+			LEFT JOIN 
+				sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
+			LEFT JOIN 
+				partner_details pd ON sp.partner_id = pd.partner_id `
 
 	if len(dataReq.SalesRepStatus) > 0 {
 		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false, true)
@@ -207,12 +219,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ReportingManager = ""
 		}
 
-		// DealerOwner
-		DealerOwner, dealerownerOk := item["dealer_owner"].(string)
-		if !dealerownerOk || DealerOwner == "" {
-			log.FuncErrorTrace(0, "Failed to get DealerOwner for Item: %+v\n", item)
-			DealerOwner = ""
-		}
+		// // DealerOwner
+		// DealerOwner, dealerownerOk := item["dealer_owner"].(string)
+		// if !dealerownerOk || DealerOwner == "" {
+		// 	log.FuncErrorTrace(0, "Failed to get DealerOwner for Item: %+v\n", item)
+		// 	DealerOwner = ""
+		// }
 
 		// UserStatus
 		UserStatus, statusOk := item["user_status"].(string)
@@ -270,7 +282,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Dealer
-		DealerLogo, dealerlogoOk := item["dealer_logo"].(string)
+		DealerLogo, dealerlogoOk := item["partner_logo"].(string)
 		if !dealerlogoOk || DealerLogo == "" {
 			DealerLogo = ""
 		}
@@ -280,6 +292,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if !bgcolouroOk || BgColour == "" {
 			BgColour = ""
 		}
+
+		// Dealer
+		DealerCode, dealerCodeOk := item["partner_code"].(string)
+		if !dealerCodeOk || DealerCode == "" {
+			DealerCode = ""
+		}
+
 		DBUsername, ok := item["db_username"].(string)
 		if !ok {
 			DBUsername = ""
@@ -307,7 +326,6 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			UserCode:          UserCode,
 			PasswordChangeReq: PasswordChangeReq,
 			ReportingManager:  ReportingManager,
-			DealerOwner:       DealerOwner,
 			UserStatus:        UserStatus,
 			Description:       Description,
 			Region:            Region,
@@ -319,6 +337,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Dealer:            Dealer,
 			DealerLogo:        DealerLogo,
 			BgColour:          BgColour,
+			DealerCode:        DealerCode,
 			TablePermission:   tablePermissions,
 		}
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
@@ -329,11 +348,14 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 SELECT DISTINCT
 			 primary_sales_rep AS active_sales_representative
 		 FROM
-			 consolidated_data_view
+			 customers_customers_schema
 		 WHERE
-			 contract_date BETWEEN current_date - interval '90 day' AND current_date;
+			 sale_date BETWEEN current_date - interval '90 day' AND current_date
 		 `
 
+		if role == string(types.RoleDealerOwner) {
+			activeRepQuery += fmt.Sprintf(" AND dealer = '%v'", dataReq.DealerName)
+		}
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
@@ -369,6 +391,8 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, true, false)
 		if filter != "" {
 			queryForAlldata = query + filter
+		} else {
+			queryForAlldata = query
 		}
 
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
@@ -454,9 +478,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			case "role_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ur.role_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "dealer_owner":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud2.name) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "steet_address":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.street_address) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -473,7 +494,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sp.sales_partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "db_username":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.db_username) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -486,7 +507,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if len(dataFilter.UserRoles) > 0 {
-		log.FuncErrorTrace(0, "dataaa = %v", dataFilter.UserRoles)
 		if whereAdder {
 			filtersBuilder.WriteString(" AND ")
 		} else {
@@ -508,15 +528,14 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 
 	if len(dataFilter.DealerName) > 0 {
 		if whereAdder {
-			filtersBuilder.WriteString(fmt.Sprintf(" AND vd.dealer_name = $%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf(" AND sp.sales_partner_name = $%d", len(whereEleList)+1))
 		} else {
-			filtersBuilder.WriteString(fmt.Sprintf(" WHERE vd.dealer_name = $%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf(" WHERE sp.sales_partner_name = $%d", len(whereEleList)+1))
 		}
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.db_username, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
 	} else if nameSearch {
 	} else if SalesRepStatus {
 	} else {

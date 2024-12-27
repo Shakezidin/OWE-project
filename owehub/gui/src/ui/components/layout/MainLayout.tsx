@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../sidebar/Sidebar';
 import Header from './Header';
 import './layout.css';
@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../../redux/hooks';
 import {
   activeSessionTimeout,
   logout,
+  setToken,
 } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
@@ -18,6 +19,8 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
 import useIdleTimer from '../../../hooks/useIdleTimer';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import Cookies from 'js-cookie';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -25,12 +28,34 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
-  const [toggleOpen, setToggleOpen] = useState<boolean>(false);
+  const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
+  const {pathname} = useLocation()
+
+  const getToken = async () => {
+    try {
+      const response = await postCaller("get_graph_api_access_token", {});
+      const token = await response.data.access_token;
+      const tokenDuration = await response.data.expires_in;
+      const expTime = new Date(Date.now() + 100)
+      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60))
+      Cookies.set('myToken', token, { expires: expTime, path: "/" });
+      dispatch(setToken(token))
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const token = Cookies.get('myToken');
+    if (!token) {
+      getToken()
+    }
+  }, [pathname])
 
   /** logout  */
   const logoutUser = (message?: string) => {
@@ -45,6 +70,8 @@ const MainLayout = () => {
 
   /** check idle time  */
   useIdleTimer({ onIdle: logoutUser, timeout: 900000 });
+
+
 
   /** reset paswword */
   useEffect(() => {
@@ -102,7 +129,9 @@ const MainLayout = () => {
   }, [dispatch, navigate, authData]);
 
   useEffect(() => {
-    setToggleOpen(isTablet);
+if(isTablet){
+  setToggleOpen(true);
+}
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
       localStorage.setItem('version', process.env.REACT_APP_VERSION!);
       window.location.reload();

@@ -149,11 +149,11 @@ const AddMember: React.FC<createUserProps> = ({
     const validationErrors: { [key: string]: string } = {};
 
     if (!selectedDropdown) {
-      validationErrors.user = 'User is required.';
+      validationErrors.user = 'User is required';
     }
 
     if (!selectedRole) {
-      validationErrors.role = 'Role is required.';
+      validationErrors.role = 'Role is required';
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -188,9 +188,7 @@ const AddMember: React.FC<createUserProps> = ({
     }
   };
 
-  console.log(errors, 'Errors');
-  console.log(selectedDropdown, selectedRole, selectedOptions);
-
+ 
   return (
     <div className="transparent-model">
       {loading && (
@@ -287,11 +285,10 @@ const AddMember: React.FC<createUserProps> = ({
             onClick={() => {}}
             type={'submit'}
             style={{
-              background: '#0493CE',
-              padding: '18px 100px',
-              width: 'unset',
+              background: '#377CF6',
+              width: '150px',
               textTransform: 'none',
-              height: 'unset',
+              height: '40px',
             }}
             disabled={loadingSubmit} // Disable button when loading
           />

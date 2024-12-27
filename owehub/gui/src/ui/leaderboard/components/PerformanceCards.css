@@ -13,7 +13,7 @@
 }
 
 .share-button {
-  padding: 0.4rem 1.5rem;
+  padding: 8px 24px;
   outline: none;
   border: none;
   border-radius: 1.5rem;
@@ -26,16 +26,16 @@
   transition: transform 0.3s ease;
 }
 .share-button:hover {
-  transform: scale(1.08);
+  transform: scale(1.05);
   background: #ec9d76;
 }
 
 .share-button p {
-  font-size: 1rem;
+  font-size: 14px;
 }
 
 .share-svg {
-  font-size: 1rem;
+  font-size: 14px;
   height: 16px;
   width: 16px;
 }
@@ -44,6 +44,10 @@
   text-align: center;
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+.banner-heading p {
+  color: var(--input-border-color);
 }
 
 .cards {
@@ -119,13 +123,13 @@
 }
 
 .below-des p:first-of-type {
-  color: #3b3b3b;
+  color: var(--input-border-color);
   font-weight: 500;
 }
 
 .below-des p:nth-of-type(2) {
-  color: #afafaf;
-  font-size: 0.8rem;
+  color: var(--grey-text-color);
+  font-size: 12px;
 }
 
 .card-two {
@@ -152,11 +156,16 @@
   overflow: hidden;
 }
 
+.card-title h2 {
+  font-size: 14px;
+}
+
 .card-title h2,
 .below-section p {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--input-border-color);
 }
 
 /* ------------------- */
@@ -203,8 +212,8 @@
 @media screen and (max-width: 1400px) and (min-width: 768px) {
   .performance-cards .cards {
     padding: 5rem 1.5rem;
-    column-gap: 3rem;
   }
+
 
   .performance-cards .upper-section,
   .performance-cards .below-section {
@@ -241,13 +250,16 @@
   }
   .collapse-btn {
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     background-color: #f99602;
     display: grid;
     place-items: center;
     color: #fff;
     border-radius: 50%;
+  }
+  .performance-cards .cards {
+    column-gap: 3rem;
   }
 }
 .absolute-img {
@@ -258,7 +270,15 @@
 }
 @media screen and (max-width: 767px) {
   .performance-cards {
-    margin-top: calc(1.5rem + 10px);
+    margin-top: 10px !important;
+  }
+
+  .right-button {
+    margin-bottom: 10px;
+  }
+
+  .banner-heading p {
+    font-size: 12px;
   }
 
   .performance-cards .cards {

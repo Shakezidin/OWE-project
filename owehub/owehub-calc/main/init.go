@@ -135,6 +135,29 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_dealerpaycommissions",
+		apiHandler.HandleGetDealerPayCommissionsRequest,
+		true,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/update_agrp_data",
+		apiHandler.HandleUpdateAgRpDataRequest,
+
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/update_data",
+		apiHandler.HandleUpdateDataRequest,
+
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************
@@ -238,6 +261,29 @@ func init() {
 	} else {
 		log.FuncDebugTrace(0, "Successfully Connected with Database.")
 	}
+
+	// /* To clear all existing values in install_pto_schema table */
+	// err = services.ClearInstallPto()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "error while truncating install_pto_schema with err : %v", err)
+	// }
+
+	// err = services.ExecInstalEtaInitialCalculation("", "")
+	// if err == nil {
+	// 	log.FuncInfoTrace(0, "succesfully loaded initial install eta data")
+	// } else {
+	// 	log.ConfErrorTrace(0, "Failed to update initial data to install eta. %+v", err)
+	// 	// return
+	// }
+
+	// /* init setting PTO values*/
+	// err = services.ExecPtoInitialCalculation("", "")
+	// if err == nil {
+	// 	log.FuncInfoTrace(0, "succesfully loaded initial pto data")
+	// } else {
+	// 	log.ConfErrorTrace(0, "Failed to update initial data to pto. %+v", err)
+	// 	// return
+	// }
 
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()

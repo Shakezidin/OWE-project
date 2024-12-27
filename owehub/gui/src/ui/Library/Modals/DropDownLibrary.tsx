@@ -56,17 +56,16 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.verticalDots}
-        style={{
-          backgroundColor: isHovered || isClicked ? '#EFF5FF' : '',
-          borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
-        }}
       >
-        <BsThreeDotsVertical
+        <BsThreeDotsVertical 
           style={{
+            color: isHovered? '#377CF6':'#3E3E3E',
+            
             height: '25px',
             width: '20px',
-            color: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
+            
           }}
+          className={classes.threeDots}
         />
       </div>
 
@@ -74,7 +73,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
           <li
             onClick={() => handleSelect('All')}
-            className={`${classes.dropdownItem} ${selectedType === 'All' ? classes.selected : ''}`}
+            className={`${classes.dropdownItemAll} ${selectedType === 'All' ? classes.selected : ''}`}
           >
             All
           </li>
@@ -101,6 +100,36 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
             className={`${classes.dropdownItem} ${selectedType === 'Videos' ? classes.selected : ''}`}
           >
             Videos
+          </li>
+          <li
+            onClick={() => handleSelect('Text')}
+            className={`${classes.dropdownItem} ${selectedType === 'Text' ? classes.selected : ''}`}
+          >
+            Text
+          </li>
+          <li
+            onClick={() => handleSelect('Powerpoint')}
+            className={`${classes.dropdownItem} ${selectedType === 'Powerpoint' ? classes.selected : ''}`}
+          >
+            Powerpoint
+          </li>
+          <li
+            onClick={() => handleSelect('Word')}
+            className={`${classes.dropdownItem} ${selectedType === 'Word' ? classes.selected : ''}`}
+          >
+            Word
+          </li>
+          <li
+            onClick={() => handleSelect('Audio')}
+            className={`${classes.dropdownItem} ${selectedType === 'Audio' ? classes.selected : ''}`}
+          >
+            Audio
+          </li>
+          <li
+            onClick={() => handleSelect('Others')}
+            className={`${classes.dropdownItem} ${selectedType === 'Others' ? classes.selected : ''}`}
+          >
+            Others
           </li>
         </ul>
       )}

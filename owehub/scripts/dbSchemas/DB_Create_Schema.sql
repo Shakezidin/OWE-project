@@ -37,15 +37,12 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 
 /* Insert Default Data in all the rquried tables */
 \copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
-\copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
-\copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
 
 /******************************* Adding All Stored Procedures ***********************************/
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewPartner.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewState.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateUser.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateProfile.sql';
@@ -63,3 +60,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 /* Battery Backup Calcuator Schema */
 \i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspect.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspectLoad.sql';
+
+/* Scheduling Schema */
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateSchedulingProject.sql';

@@ -29,36 +29,27 @@
 
 .monthSelect {
   padding-right: 16px;
-  /* Space on the right */
   padding-left: 30px;
-  /* Create space for the arrow on the left */
   appearance: none;
-  /* Hide the default arrow */
   -webkit-appearance: none;
   -moz-appearance: none;
   background-color: #fff;
-  /* Set background color */
   position: relative;
 }
 
 .monthSelect::after {
   content: '\25BC';
-  /* Unicode character for a down arrow */
   position: absolute;
   left: 10px;
-  /* Adjust this value to position the arrow */
   pointer-events: none;
-  /* Ensures the arrow doesn’t block clicks */
   font-size: 12px;
   color: #000;
-  /* Arrow color */
 }
 
 .monthSelectFocus:focus-visible {
   outline: none;
 }
 
-/* HistoryREDIRECT */
 .editedinParent {
   border-radius: 8px !important;
   border: 1px solid #929292 !important;
@@ -67,25 +58,115 @@
   margin-right: 14px !important;
 }
 
+div#dropdowninHistoryRedirectXR ul li:nth-child(1):hover {
+  border-radius: 6px 6px 0 0;
+}
+
+div#dropdowninHistoryRedirectXR ul li:nth-child(2):hover {
+  border-radius: 0 0 6px 6px;
+}
+
 .editedinParent ul {
   border-radius: 8px;
 }
 
 .editedinParent li {
-  font-size: 14px !important;
-  color: #000 !important;
+  font-size: 12px !important;
   font-weight: normal !important;
   padding: 9px 7px 9px 7px !important;
   height: 100% !important;
 }
 
 .editedinParent li:hover {
-  color: #000 !important;
-  font-size: 14px !important;
+ 
+  font-size: 12px !important;
   transform: none !important;
-
+  color: #000 !important;
   font-weight: normal !important;
   padding: 9px 7px 9px 7px !important;
   background-color: #ddebff;
+}
+.editedinParentXR {
   border-radius: 8px !important;
+  border: 1px solid #929292 !important;
+  width: 152px !important;
+  padding: 0 !important;
+  margin-right: 14px !important;
+}
+
+
+.editedinParentXR ul {
+  border-radius: 8px;
+}
+
+.editedinParentXR li {
+  font-size: 12px !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  height: 100% !important;
+}
+
+.editedinParentXR li:hover {
+ 
+  font-size: 12px !important;
+  transform: none !important;
+  color: #000 !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  background-color: #ddebff;
+}
+
+.editedinParentHTRY li:hover {
+  font-size: 12px !important;
+  transform: none !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  background-color: #ddebff;
+
+}
+
+.editedinParentHTRY li {
+  font-size: 12px !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  height: 100% !important;
+}
+
+.editedinParentHTRY ul {
+  border-radius: 8px;
+}
+
+.editedinParentHTRY{
+  border: 1px solid #929292 !important;
+  width: 152px !important;
+  padding: 0 !important;
+  margin-right: 14px !important;
+}
+
+.editedinParentLT_FLTR {
+  border: 1px solid #929292 !important;
+  width: 152px !important;
+  padding: 0 !important;
+  margin-right: 14px !important;
+}
+
+.editedinParentLT_FLTR ul {
+}
+
+.editedinParentLT_FLTR li {
+  font-size: 12px !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  height: 100% !important;
+}
+
+.editedinParentLT_FLTR li:hover {
+ 
+  font-size: 12px !important;
+  transform: none !important;
+  /* color: #000 !important; */
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  background-color: #ddebff;
+  /* border-radius: 8px !important; */
 }
