@@ -686,7 +686,6 @@ const SpeedOverall: React.FC = () => {
           fontWeight: 600,
           fontSize: '1rem',
           marginBottom: '1rem',
-          boxShadow: "0 1px 10px rgba(0, 0, 0, 0.1)"
         }}
       >
         Speed - Overall

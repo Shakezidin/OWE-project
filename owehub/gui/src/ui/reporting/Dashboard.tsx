@@ -41,67 +41,67 @@ const Dashboard: React.FC = () => {
       data: [{ title: 'Sales NTP Install', route: ROUTES.TOTAL_COUNT }],
       state: useState<boolean>(true),
     },
-    {
-      title: 'Summary',
-      data: [
-        { title: 'Production', route: ROUTES.REPORTING_PRODUCTION },
-        { title: 'Quality', route: ROUTES.REPORTING_QUALITY },
-        {
-          heading: 'Speed',
-          title: 'Overall',
-          route: ROUTES.REPORTING_SPEED_OVERALL,
-        },
-        {
-          heading: 'Speed',
-          title: 'Sales to Install',
-          route: ROUTES.REPORTING_SALES_TO_INSTALL,
-        },
-        {
-          heading: 'First time completions',
-          title: 'Quality per Office',
-          route: '',
-        },
-        {
-          heading: 'First time completions',
-          title: 'Reason for Incompletion',
-          route: ROUTES.REPORTING_REASON_FOR_INCOMPLETE,
-        },
-      ],
-      state: useState<boolean>(true),
-    },
-    {
-      title: 'PV Install',
-      data: [
-        {
-          heading: 'Install Completions',
-          title: 'Completions per office',
-          route: ROUTES.COMPLETIONS_PER_OFFICE,
-        },
-        {
-          heading: 'Install Completions',
-          title: 'Completions per Team',
-          route: ROUTES.COMPLETIONS_PER_TEAM,
-        },
-        {
-          heading: 'Install Completions',
-          title: 'No PTO Granted Date',
-          route: ROUTES.NO_PTO,
-        },
-        { title: 'Timelines', route: ROUTES.TIMELINES },
-        { title: '1st Time Completions', route: ROUTES.SITE_FIRST_COMPLETION },
-      ],
-      state: useState<boolean>(true),
-    },
-    {
-      title: 'Site Survey',
-      data: [
-        { title: 'All Completions', route: ROUTES.SITE_COMPLETION },
-        { title: 'Timelines', route: ROUTES.SITE_TIMELINES },
-        { title: '1st Time Completions', route: ROUTES.SITE_FIRST_COMPLETION },
-        { title: 'Outside SLA', route: ROUTES.SITE_OUTSIDE_SLA },
-      ],
-      state: useState<boolean>(true),
-    },
+    // {
+    //   title: 'Summary',
+    //   data: [
+    //     { title: 'Production', route: ROUTES.REPORTING_PRODUCTION },
+    //     { title: 'Quality', route: ROUTES.REPORTING_QUALITY },
+    //     {
+    //       heading: 'Speed',
+    //       title: 'Overall',
+    //       route: ROUTES.REPORTING_SPEED_OVERALL,
+    //     },
+    //     {
+    //       heading: 'Speed',
+    //       title: 'Sales to Install',
+    //       route: ROUTES.REPORTING_SALES_TO_INSTALL,
+    //     },
+    //     {
+    //       heading: 'First time completions',
+    //       title: 'Quality per Office',
+    //       route: '',
+    //     },
+    //     {
+    //       heading: 'First time completions',
+    //       title: 'Reason for Incompletion',
+    //       route: ROUTES.REPORTING_REASON_FOR_INCOMPLETE,
+    //     },
+    //   ],
+    //   state: useState<boolean>(true),
+    // },
+    // {
+    //   title: 'PV Install',
+    //   data: [
+    //     {
+    //       heading: 'Install Completions',
+    //       title: 'Completions per office',
+    //       route: ROUTES.COMPLETIONS_PER_OFFICE,
+    //     },
+    //     {
+    //       heading: 'Install Completions',
+    //       title: 'Completions per Team',
+    //       route: ROUTES.COMPLETIONS_PER_TEAM,
+    //     },
+    //     {
+    //       heading: 'Install Completions',
+    //       title: 'No PTO Granted Date',
+    //       route: ROUTES.NO_PTO,
+    //     },
+    //     { title: 'Timelines', route: ROUTES.TIMELINES },
+    //     { title: '1st Time Completions', route: ROUTES.SITE_FIRST_COMPLETION },
+    //   ],
+    //   state: useState<boolean>(true),
+    // },
+    // {
+    //   title: 'Site Survey',
+    //   data: [
+    //     { title: 'All Completions', route: ROUTES.SITE_COMPLETION },
+    //     { title: 'Timelines', route: ROUTES.SITE_TIMELINES },
+    //     { title: '1st Time Completions', route: ROUTES.SITE_FIRST_COMPLETION },
+    //     { title: 'Outside SLA', route: ROUTES.SITE_OUTSIDE_SLA },
+    //   ],
+    //   state: useState<boolean>(true),
+    // },
     {
       title: 'CFA Timeline',
       data: [

@@ -83,4 +83,9 @@
   gap: 6px;
   justify-content: center;
   align-items: center;
+  transform: all 0.3s ease;
+}
+
+.backButton-reporting svg:hover{
+  transform: scale(1.05);
 }
