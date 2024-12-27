@@ -305,12 +305,13 @@ const ReasonOfIncomplete = () => {
                   <Legend
                     layout="vertical"
                     align="right"
-                    verticalAlign="middle"
+                    verticalAlign="top"
                     iconType="circle"
                     iconSize={10}
                     wrapperStyle={{
                       fontSize: '10px',
                       marginRight: 50,
+                      marginTop: 50
                     }}
                     height={100}
                     payload={dataSet.pieData.map((entry, i) => ({

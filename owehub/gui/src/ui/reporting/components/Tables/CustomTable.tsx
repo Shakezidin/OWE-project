@@ -26,7 +26,7 @@ const TableCustom = ({
 
 
   return (
-    <div className="grey-table-main-container">
+    <div className="grey-table-main-container" style={{width: "500px"}}>
       {reportType?.label ? (
         <h3>
           {reportType?.label} {middleName}
@@ -35,7 +35,7 @@ const TableCustom = ({
         <h3>{middleName}</h3>
       )}
 
-      <div className="grey-table-container">
+      <div className="grey-table-container" style={{height: "260px"}}>
         <table className="grey-custom-table">
           <thead>
             <tr>
