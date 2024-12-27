@@ -25,6 +25,7 @@ const (
 	RowDataDBIndex uint8 = 1
 
 	OWEDB                            string = "owe_db"
+	RowDataApiSecret                 string = "XEBLLtt1nlfwa0uQL1tEMlGG"
 	dbDriverName                     string = "postgres"
 	CreateUserFunction               string = "create_new_user"
 	GetDbTables                      string = "get_db_tables"

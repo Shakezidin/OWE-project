@@ -98,6 +98,13 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-main-service/v1/import_user_csv",
+		apiHandler.HandleImportUsersCsvRequest,
+		false,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-main-service/v1/db_tables",
 		apiHandler.HandleGetTableRequest,
 		true,
@@ -459,7 +466,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/trigger_row_data_update",
+		apiHandler.HandleTriggerRowDataUpdateRequest,
+		false,
+		[]types.UserGroup{},
+	},
 	/************ Battery Backup Calculator API *******************/
 	{
 		strings.ToUpper("POST"),
@@ -608,6 +621,14 @@ func init() {
 	} else {
 		log.ConfDebugTrace(0, "Database Configuration fatched Successfully from file.")
 	}
+
+	/* Upsert sales partners from owe db on service start */
+	/* TODO: Uncomment this once tape owe db is ready */
+	// err = apiHandler.UpsertSalesPartnersFromOweDb()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to pull sales partners from owe db with error = %v", err)
+	// 	return
+	// }
 
 	//* Read and Initialize Podio configuration from cfg */
 	// err = FetchPodioCfg()
