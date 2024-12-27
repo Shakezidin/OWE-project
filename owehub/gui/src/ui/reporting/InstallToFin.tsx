@@ -62,17 +62,35 @@ const InstalltoFin = () => {
     'TX :: Texas',
   ]);
   const [selectedOffices, setSelectedOffices] = useState<string[]>([
-    'TXDAL01',
+    'AZKING01',
+    'AZPEO01',
+    'AZTEM01',
     'AZTUC01',
+    'CODEN1',
+    'COGJT1',
     'NMABQ01',
+    'No Office',
+    'TXAUS01',
     'TXDAL01',
+    'TXELP01',
   ]);
   const [selectedAhj, setSelectedAhj] = useState<string[]>([
-    'City of Midlothian (TX)',
-    'Sierra Vista, City of (AZ)',
-    'City of Carrizozo (NM)',
-    'Rosenberg, City of (TX)',
-  ]);
+    'null',
+    'AHJ',
+    'Abilene, City of (TX)',
+    'Adams County (CO)',
+    'Alamogordo, City of (NM)',
+    'Alamosa City (CO)',
+    'Alamosa County (CO)',
+    'Albuquerque, City of (NM)',
+    'Alice, City of (TX)',
+    'Allen, City of (TX)',
+    'Amarillo, City of (TX)',
+    'Andrews, City of (TX)',
+    'Angelina County (TX)',
+    'Anna, City of (TX)',
+    // Add more options as needed
+]);
   const [selectedQuarter, setSelectedQuarter] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<Option>({
     label: '2024',
