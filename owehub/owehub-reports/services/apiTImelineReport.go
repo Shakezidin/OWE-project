@@ -32,8 +32,6 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		dataReq        models.TimelineReportRequest
 		RecordCount    int = 0
 		reportResp     models.SummaryReportResponse
-		dataTotal      []models.DataPoint
-		dataPercentage []models.DataPoint
 		whereEleList   []interface{}
 		escapedOffices []string
 	)
@@ -160,6 +158,16 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 	categories := []string{"Percentage AHJ +15 Days SLA", "Total AHJ +15 Days SLA"}
 	reportResp.Data = make(map[string][]models.DataPoint)
 
+	var dataTotal []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataTotal[i].Value = make(map[string]interface{})
+	}
+
+	var dataPercentage []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataPercentage[i].Value = make(map[string]interface{})
+	}
+
 	qtrToCountMaping := make(map[float64]map[string]int64)
 	for _, item := range dbData {
 		install_week := int(item["install_week"].(float64))
@@ -191,19 +199,12 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 			slaStatusSlabel = "Out of SLA"
 		}
 
-		dataTotal = append(dataTotal, models.DataPoint{
-			Value: map[string]interface{}{
-				slaStatusSlabel: count,
-			},
-			Index: install_week,
-		})
+		qtrToCountMaping[quarter][slaStatusSlabel] += count
+		dataTotal[install_week].Value[slaStatusSlabel] = count
+		dataPercentage[install_week].Value[slaStatusSlabel] = percentage
 
-		dataPercentage = append(dataPercentage, models.DataPoint{
-			Value: map[string]interface{}{
-				slaStatusSlabel: percentage,
-			},
-			Index: install_week,
-		})
+		dataTotal[install_week].Index = install_week + 1
+		dataPercentage[install_week].Index = install_week + 1
 	}
 
 	qtrSummary := make(map[string]map[string]float64)
@@ -367,19 +368,20 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 	reportResp.Data = make(map[string][]models.DataPoint)
 
 	//Install to FIN Day Range
-	var data []models.DataPoint
+	var data []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		data[i].Value = make(map[string]interface{})
+	}
+
 	for _, item := range dbData {
 		install_week := int(item["install_week"].(float64))
+		install_week -= 1
 
 		days_range := item["day_range"].(string)
 		project_count := item["project_count"].(int64)
 
-		data = append(data, models.DataPoint{
-			Value: map[string]interface{}{
-				days_range: project_count,
-			},
-			Index: install_week,
-		})
+		data[install_week].Value[days_range] = project_count
+		data[install_week].Index = install_week + 1
 	}
 	reportResp.Data[categories[0]] = data
 
@@ -414,11 +416,14 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		return
 	}
 
-	log.FuncErrorTrace(0, "dbDataAverage: %+v", dbDataAverage)
+	var dataAverage []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataAverage[i].Value = make(map[string]interface{})
+	}
 
-	var dataAverage []models.DataPoint
 	for _, item := range dbDataAverage {
 		install_week := int(item["install_week"].(float64))
+		install_week -= 1
 
 		byteArray := item["avg_day_diff"].([]uint8)
 		strValue := string(byteArray)
@@ -429,12 +434,8 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 			fmt.Println("Error parsing float:", err)
 			return
 		}
-		dataAverage = append(dataAverage, models.DataPoint{
-			Index: install_week,
-			Value: map[string]interface{}{
-				"average": avgDayDiff,
-			},
-		})
+		dataAverage[install_week].Value["average"] = avgDayDiff
+		dataAverage[install_week].Index = install_week + 1
 	}
 	reportResp.Data[categories[1]] = dataAverage
 
