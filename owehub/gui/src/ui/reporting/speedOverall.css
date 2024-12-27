@@ -1,0 +1,14 @@
+.speed-overall-parent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.speed-overall-parent .main-graph {
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+
+.speed-overall-parent .table {
+    flex: 0 0 25%;
+    max-width: 25%;
+}

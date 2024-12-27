@@ -96,10 +96,11 @@ const mob = {
       },
     },
     {
-      path: ROUTES.TOTAL_COUNT,
+      path: ROUTES.REPORTING,
       sidebarProps: {
         displayText: 'Reports',
         icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
+
       },
     },
     {

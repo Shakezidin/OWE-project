@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.5.2",
     "@emailjs/browser": "^4.3.3",
     "@fontsource/poppins": "^5.0.8",
     "@popperjs/core": "^2.11.8",
@@ -23,6 +24,7 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-window": "^1.8.8",
     "@types/redux-logger": "^3.0.12",
+    "antd": "^5.22.5",
     "axios": "^1.6.5",
     "basscss": "^8.0.2",
     "date-fns": "^3.6.0",
@@ -35,7 +37,6 @@
     "jspdf-autotable": "^3.8.2",
     "lottie-react": "^2.4.0",
     "moment": "^2.30.1",
-
     "papaparse": "^5.4.1",
     "path-browserify": "^1.0.1",
     "pdf-lib": "^1.17.1",

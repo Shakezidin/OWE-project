@@ -1,0 +1,6 @@
+.graph-container .recharts-tooltip-wrapper {
+    background-color: #ffffff !important;
+    color: var(--input-border-color);
+    border-radius: 6px;
+    font-size: 12px;
+}
