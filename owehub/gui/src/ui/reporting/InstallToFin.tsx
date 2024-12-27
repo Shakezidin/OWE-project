@@ -392,8 +392,8 @@ const InstalltoFin = () => {
                             <p>
                               Average Days from Install to FIN:
                               <span style={{color:'rgb(76, 175, 80)',fontWeight:'bold', padding:5}}>
-                               {typeof payload?.[0]?.value === 'number' ? payload[0].value.toFixed(2) : 'N/A'}
-                               </span>
+                                {typeof payload?.[0]?.value === 'number' ? payload[0].value.toFixed(2) : 'N/A'}
+                              </span>
                             </p>
                           </div>
                         );
