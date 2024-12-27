@@ -140,7 +140,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-calc-service/v1/get_dealerpaycommissions",
 		apiHandler.HandleGetDealerPayCommissionsRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupAdminDealer},
 	},
 	{
 		strings.ToUpper("POST"),
