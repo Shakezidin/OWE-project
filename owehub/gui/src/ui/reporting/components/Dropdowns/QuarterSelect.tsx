@@ -16,10 +16,10 @@ interface QuarterSelectProps {
 
 
     const quarterOptions: Option[] = [
-        { value: 'Q1 2024', label: 'Q1 2024' },
-        { value: 'Q2 2024', label: 'Q2 2024' },
-        { value: 'Q3 2024', label: 'Q3 2024' },
-        { value: 'Q4 2024', label: 'Q4 2024' },
+        { value: 'qtr1', label: 'Q1 2024' },
+        { value: 'qtr2', label: 'Q2 2024' },
+        { value: 'qtr3', label: 'Q3 2024' },
+        { value: 'qtr4', label: 'Q4 2024' },
     ];
 
     const handleChange = (val: Option[]) => {

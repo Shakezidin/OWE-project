@@ -297,12 +297,12 @@ const InstalltoFin = () => {
                   />
 
                   {[
-                    'low',
-                    'medium',
-                    'high',
-                    'veryHigh',
+                    'extreme', // Red at the bottom
                     'ultraHigh',
-                    'extreme',
+                    'veryHigh',
+                    'high',
+                    'medium',
+                    'low', // Green at the top
                   ].map((dataKey) => (
                     <Bar
                       key={dataKey}
@@ -316,7 +316,7 @@ const InstalltoFin = () => {
                       }
                       className={styles.bar}
                       label={
-                        dataKey === 'extreme'
+                        dataKey === 'low'
                           ? renderCustomizedLabel
                           : undefined
                       }
@@ -336,8 +336,27 @@ const InstalltoFin = () => {
                       fontFamily: 'poppins',
                       cursor:'pointer'
                     }}
-                    formatter={getLegendLabel}
+                    formatter={(value) => {
+                      const legendLabels: { [key: string]: string } = {
+                        low: '0-15 days',
+                        medium: '16-30 days',
+                        high: '31-45 days',
+                        veryHigh: '46-60 days',
+                        ultraHigh: '61-90 days',
+                        extreme: '91+ days',
+                      };
+                      return legendLabels[value] || value; // Custom label for legend items
+                    }}
+                    payload={[
+                      { value: 'low', type: 'square', color: getBarColor('low') },
+                      { value: 'medium', type: 'square', color: getBarColor('medium') },
+                      { value: 'high', type: 'square', color: getBarColor('high') },
+                      { value: 'veryHigh', type: 'square', color: getBarColor('veryHigh') },
+                      { value: 'ultraHigh', type: 'square', color: getBarColor('ultraHigh') },
+                      { value: 'extreme', type: 'square', color: getBarColor('extreme') },
+                    ]}
                   />
+
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -357,14 +376,30 @@ const InstalltoFin = () => {
                     dy={12}
                     interval={0}
                   />
-                  <YAxis className={styles.axis} tickSize={10} />
+                  <YAxis
+                    className={styles.axis}
+                    tickSize={10}
+                  />
                   <Tooltip
-                    wrapperStyle={{
-                      outline: 'none',
-                      borderRadius: 4,
-                      padding: 0,
-                      boxShadow: 'none',
-                      fontSize: 12,
+                    content={({ payload, label }) => {
+                      if (payload && payload.length > 0) {
+                        return (
+                          <div style={{
+                            backgroundColor: 'white',
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                          }}>
+                            <p style={{fontWeight:'bold'}}>Week {label}</p>
+                            <p>
+                              Average Days from Install to FIN:
+                              <span style={{color:'rgb(76, 175, 80)',fontWeight:'bold', padding:5}}>
+                                {typeof payload?.[0]?.value === 'number' ? payload[0].value.toFixed(2) : 'N/A'}
+                              </span>
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
                     }}
                   />
                   <Line
@@ -380,7 +415,7 @@ const InstalltoFin = () => {
                       fill="rgb(76, 175, 80)"
                       fontSize={12}
                       offset={5}
-                      formatter={(value: any) => value}
+                      formatter={(value: number) => value.toFixed(2)} // Format labels on the line to 2 decimal places
                     />
                   </Line>
                   <Legend
@@ -398,6 +433,7 @@ const InstalltoFin = () => {
                 </LineChart>
               </ResponsiveContainer>
             </div>
+
           </div>
         )}
       </div>
