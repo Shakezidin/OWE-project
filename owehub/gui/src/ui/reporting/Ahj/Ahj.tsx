@@ -11,6 +11,7 @@ import { reportingCaller } from '../../../infrastructure/web_api/services/apiUrl
 import YearSelect from '../components/Dropdowns/YearSelect';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
+import DropdownCheckBox from '../../components/DropdownCheckBox';
 
 interface Option {
   value: string;
@@ -74,10 +75,10 @@ const Ahj = () => {
 
   const [apiResponse, setApiResponse] = useState<ApiData[]>([]);
   const [totalResponse, setTotalResponse] = useState<ApiData[]>([]);
-  const [selectedOffices, setSelectedOffices] = useState<string[]>(['TXDAL01", "AZTUC01", "NMABQ01", "TXDAL01']);
-  const [selectedAhj, setSelectedAhj] = useState<string[]>(["City of Midlothian (TX)", "Sierra Vista, City of (AZ)", "City of Carrizozo (NM)", "Rosenberg, City of (TX)"]);
-  const [selectedState, setSelectedState] = useState<string[]>(["TX :: Texas", "AZ :: Arizona", "NM :: New Mexico", "TX :: Texas"]);
-  const [selectedQuarter, setSelectedQuarter] = useState<string[]>(["1", "2", "3", "4"]);
+  const [selectedOffices, setSelectedOffices] = useState<Option[]>([]);
+  const [selectedAhj, setSelectedAhj] = useState<Option[]>([]);
+  const [selectedState, setSelectedState] = useState<Option[]>([]);
+  const [selectedQuarter, setSelectedQuarter] = useState<Option[]>([]);
 
   const [summaryResponse, setSummaryResponse] = useState<ApiResponse | null>(null);
 
@@ -95,42 +96,12 @@ const Ahj = () => {
   const [loading, setLoading] = useState(false);
   const [selectloading, setSelectLoading] = useState(false);
 
-  console.log(summaryResponse, "dsjgjghds")
+  const [isFetch, setIsFetch] = useState(false);
+
+
 
   useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await reportingCaller('get_timeline_ahj_fifteen', {
-          "year": selectedYear.value,
-          "state": selectedState,
-          "office": selectedOffices,
-          "ahj": selectedAhj,
-          "quarter": selectedQuarter.map(Number)
-        });
-
-
-        if (response.status === 200) {
-          setApiResponse(response.data.data['Percentage AHJ +15 Days SLA']);
-          setTotalResponse(response.data.data['Total AHJ +15 Days SLA'])
-          setSummaryResponse(response.data.summary)
-
-          setLoading(false);
-        } else {
-          console.error('Error fetching data:', response.message);
-          toast.error(response.message)
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error making API request:', error);
-        setLoading(false);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
-
-  useEffect(() => {
+    setSelectedQuarter(QuarterSet)
     setSelectLoading(true);
     const fetchData = async () => {
       try {
@@ -144,16 +115,20 @@ const Ahj = () => {
             value: office,
           }));
           setOfficeSelect(officeData);
+          setSelectedOffices(officeData);
           const stateData = response.data.states.map((state: any) => ({
             label: state,
             value: state,
           }));
+          setSelectedState(stateData)
           setStateSet(stateData)
           const ahjData = response.data.ahj.map((ahj: any) => ({
             label: ahj,
             value: ahj,
           }));
+          setSelectedAhj(ahjData)
           setAhj(ahjData)
+          setIsFetch(true)
         } else {
           console.error('Error fetching data:', response.data.message);
           setSelectLoading(false);
@@ -167,6 +142,42 @@ const Ahj = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (isFetch) {
+      setLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await reportingCaller('get_timeline_ahj_fifteen', {
+            "year": selectedYear.value,
+            "state": selectedState.map((item) => item.value),
+            "office": selectedOffices.map((item) => item.value),
+            "ahj": selectedAhj.map((item) => item.value),
+            "quarter": selectedQuarter.map((item) => Number(item.value))
+          });
+
+
+          if (response.status === 200) {
+            setApiResponse(response.data.data['Percentage AHJ +15 Days SLA']);
+            setTotalResponse(response.data.data['Total AHJ +15 Days SLA'])
+            setSummaryResponse(response.data.summary)
+
+            setLoading(false);
+          } else {
+            console.error('Error fetching data:', response.message);
+            toast.error(response.message)
+            setLoading(false);
+          }
+        } catch (error) {
+          console.error('Error making API request:', error);
+          setLoading(false);
+        }
+        setLoading(false);
+      };
+      fetchData();
+    }
+  }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
+
+  console.log(selectedOffices, "dsghjfgdjsf")
 
 
   return (
@@ -176,27 +187,63 @@ const Ahj = () => {
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>
-            <CustomMultiSelect data={officeSelect} placeholder="Office" onOfficeChange={(values: any) => setSelectedOffices(values)} disable={selectloading} />
+            <DropdownCheckBox
+              label={"Offices"}
+              placeholder={'Search Offices'}
+              selectedOptions={selectedOffices}
+              options={officeSelect}
+              onChange={(val) => {
+                setSelectedOffices(val);
+              }}
+              disabled={selectloading|| loading}
+            />
           </div>
 
           <div>
-            <CustomMultiSelect data={stateSet} placeholder="State" onOfficeChange={(values: any) => setSelectedState(values)} disable={selectloading} />
+            <DropdownCheckBox
+              label={"State"}
+              placeholder={'Search States'}
+              selectedOptions={selectedState}
+              options={stateSet}
+              onChange={(val) => {
+                setSelectedState(val);
+              }}
+              disabled={selectloading|| loading}
+            />
           </div>
 
-          <div><YearSelect value={selectedYear} onChange={handleYearChange} /></div>
+          <div><YearSelect value={selectedYear} onChange={handleYearChange} disabled={selectloading || loading}/></div>
 
           <div>
-            <CustomMultiSelect data={QuarterSet} placeholder="Quarter" onOfficeChange={(values: any) => setSelectedQuarter(values)} />
+            <DropdownCheckBox
+              label={"Quarter"}
+              placeholder={'Search Quarter'}
+              selectedOptions={selectedQuarter}
+              options={QuarterSet}
+              onChange={(val) => {
+                setSelectedQuarter(val);
+              }}
+              disabled={selectloading || loading}
+            />
           </div>
 
           <div>
-            <CustomMultiSelect data={ahj} placeholder="AHJ" onOfficeChange={(values: any) => setSelectedAhj(values)} disable={selectloading} />
+            <DropdownCheckBox
+              label={"AHJ"}
+              placeholder={'Search AHJ'}
+              selectedOptions={selectedAhj}
+              options={ahj}
+              onChange={(val) => {
+                setSelectedAhj(val);
+              }}
+              disabled={selectloading || loading}
+            />
           </div>
         </div>
       </div>
 
       <div className="reports-yscroll">
-        {loading ? (
+        {(loading || !isFetch) ? (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <MicroLoader />
           </div>
