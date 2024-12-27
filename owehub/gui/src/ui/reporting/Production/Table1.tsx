@@ -32,7 +32,7 @@ const TableProd1 = ({
 
 
   return (
-    <div className="grey-table-main-container">
+    <div className="grey-table-main-container" style={{width: "100%"}}>
       {reportType?.label ? (
         <h3>
           {middleName}
@@ -41,7 +41,7 @@ const TableProd1 = ({
         <h3>{middleName}</h3>
       )}
 
-      <div className="grey-table-container">
+      <div className="grey-table-container" style={{height: "300px"}}>
         <table className="grey-custom-table">
           <thead>
             <tr>

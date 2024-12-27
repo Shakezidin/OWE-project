@@ -176,9 +176,11 @@ const Production: React.FC = () => {
 
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
-    height: '286px',
+    height: '300px',
     marginBottom: '-41px',
+    padding: "1rem 0",
     boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
+    borderRadius: "8px",
     border: '1px solid rgba(0, 0, 0, 0.1)',
   };
 
@@ -299,14 +301,16 @@ const Production: React.FC = () => {
       <div className="reports-yscroll">
         <div
           style={{
-            background: '#ddd',
-            height: 50,
+            background: '#e0e0e0',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 5,
+            borderRadius: 4,
             width: '100%',
-            margin: '10px 0',
+            fontSize: "1rem",
+            fontWeight: "600",
+            padding: "8px",
+            marginBottom: "1rem"
           }}
         >
           {reportType.label}
@@ -339,8 +343,8 @@ const Production: React.FC = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: 50,
                         gap: '16px',
+                        marginBottom: "1.5rem"
                       }}
                     >
                       {false ? (
@@ -391,7 +395,7 @@ const Production: React.FC = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: 50,
+                        marginBottom: "1.5rem",
                         gap: '16px',
                       }}
                     >
@@ -438,7 +442,7 @@ const Production: React.FC = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: 50,
+                        marginBottom: "1.5rem",
                         gap: '16px',
                       }}
                     >
