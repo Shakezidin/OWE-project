@@ -62,17 +62,35 @@ const InstalltoFin = () => {
     'TX :: Texas',
   ]);
   const [selectedOffices, setSelectedOffices] = useState<string[]>([
-    'TXDAL01',
+    'AZKING01',
+    'AZPEO01',
+    'AZTEM01',
     'AZTUC01',
+    'CODEN1',
+    'COGJT1',
     'NMABQ01',
+    'No Office',
+    'TXAUS01',
     'TXDAL01',
+    'TXELP01',
   ]);
   const [selectedAhj, setSelectedAhj] = useState<string[]>([
-    'City of Midlothian (TX)',
-    'Sierra Vista, City of (AZ)',
-    'City of Carrizozo (NM)',
-    'Rosenberg, City of (TX)',
-  ]);
+    'null',
+    'AHJ',
+    'Abilene, City of (TX)',
+    'Adams County (CO)',
+    'Alamogordo, City of (NM)',
+    'Alamosa City (CO)',
+    'Alamosa County (CO)',
+    'Albuquerque, City of (NM)',
+    'Alice, City of (TX)',
+    'Allen, City of (TX)',
+    'Amarillo, City of (TX)',
+    'Andrews, City of (TX)',
+    'Angelina County (TX)',
+    'Anna, City of (TX)',
+    // Add more options as needed
+]);
   const [selectedQuarter, setSelectedQuarter] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<Option>({
     label: '2024',
@@ -88,10 +106,10 @@ const InstalltoFin = () => {
 
   // Data Mapping Function
   const mapApiDataToChartData = (apiData: any) => {
-    const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
+  const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
     const averageDaysData =
       apiData?.data?.['Average Days From Install to FIN'] || [];
-
+  
     return dayRangeData.map((item: any, index: number) => ({
       week: index + 1,
       low: item.value?.['0-15 days'] || 0,
@@ -102,31 +120,42 @@ const InstalltoFin = () => {
       extreme: item.value?.['>90 days'] || 0,
       totalDays: averageDaysData[index]?.value?.average || 0,
     }));
-  };
+};
 
-  // API Call Function
-  const getNewFormData = async () => {
-    setIsLoading(true);
-    try {
+// API Call Function 
+const getNewFormData = async () => {
+  setIsLoading(true);
+  try {
+      const numericQuarters = selectedQuarter.map((qtr) => {
+          switch (qtr) {
+              case 'qtr1': return 1;
+              case 'qtr2': return 2;
+              case 'qtr3': return 3;
+              case 'qtr4': return 4;
+              default: return null; // Handle unexpected cases
+          }
+      }).filter((qtr) => qtr !== null); // Filter out any null values
+
       const response = await dispatch(
-        getTimelineInstallToFinData({
-          year: selectedYear.value,
-          state: selectedStates,
-          office: selectedOffices,
-          ahj: selectedAhj,
-          quarter: selectedQuarter,
-        })
+          getTimelineInstallToFinData({
+              year: selectedYear.value,
+              state: selectedStates,
+              office: selectedOffices,
+              ahj: selectedAhj,
+              quarter: numericQuarters, // Pass the numeric quarters
+          })
       ).unwrap();
 
       if (response.error) {
-        throw new Error(response.error);
+          throw new Error(response.error);
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error fetching install to fin data:', error);
-    } finally {
+  } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
+
 
   // Update chart data when API data changes
   useEffect(() => {
