@@ -177,8 +177,6 @@ const Ahj = () => {
     }
   }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
 
-  console.log(selectedOffices, "dsghjfgdjsf")
-
 
   return (
     <div className="total-main-container">
@@ -229,7 +227,7 @@ const Ahj = () => {
 
           <div>
             <DropdownCheckBox
-              label={"AHJ"}
+              label={`${ahj.length} AHJ's`}
               placeholder={'Search AHJ'}
               selectedOptions={selectedAhj}
               options={ahj}

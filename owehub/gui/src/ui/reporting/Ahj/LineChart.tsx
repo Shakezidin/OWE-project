@@ -10,6 +10,7 @@ import {
   TooltipProps,
   Legend,
 } from 'recharts';
+import styles from '../styles/InstalltoFin.module.css';
 
 interface DataPoint {
   name: string;
@@ -23,8 +24,8 @@ interface GraphData {
 
 type ApiData = {
   value: {
-    "Within SLA"?: number;
-    "Out of SLA"?: number;
+    'Within SLA'?: number;
+    'Out of SLA'?: number;
   };
 };
 
@@ -35,32 +36,8 @@ interface AhjBarChartProps {
 }
 
 
-
-
-
-const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
-  active,
-  payload,
-  label,
-}) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    const weekNumber = parseInt(payload[0].payload.name, 10) + 1;
-    const week = `Week ${weekNumber}`;
-    return (
-      <div>
-        <p className="label">{`${week}`}</p>
-        <p className="label">{`OUTOF SLA: ${data['Out of SLA']}`}</p>
-        <p className="label">{`WITHIN SLA: ${data['Within SLA']}`}</p>
-      </div>
-    );
-  }
-
-  return null;
-};
-
 const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
-  console.log(data, "shout out")
+  console.log(data, 'shout out');
 
   const tooltipStyle = {
     fontSize: '10px',
@@ -69,15 +46,15 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
 
   return (
     <ResponsiveContainer
-      width="95%"
+      width="97%"
       height="100%"
       className={'graph-container'}
     >
       <LineChart
         data={data.map((item, index) => ({
           name: index.toString(),
-          "Out of SLA": item.value["Out of SLA"] || 0,
-          "Within SLA": item.value["Within SLA"] || 0,
+          'Out of SLA': item.value['Out of SLA'] || 0,
+          'Within SLA': item.value['Within SLA'] || 0,
         }))}
         margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
       >
@@ -88,14 +65,15 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
         />
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
-          tickSize={8}
-          dataKey="name"
-          tick={{ fontSize: 8, fontWeight: 500, fill: '#818181' }}
+          className={styles.axis}
+          height={50}
+          tickSize={10}
           angle={-45}
-          dy={10}
+          dy={12}
+          interval={0}
           tickFormatter={(value) => {
             const weekNumber = parseInt(value, 10) + 1;
-            return `${weekNumber}`;
+            return `Week ${weekNumber}`;
           }}
         />
         <YAxis
@@ -108,11 +86,11 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
             outline: 'none',
             borderRadius: 4,
             padding: 8,
-            boxShadow: 'none',
             fontSize: 10,
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
           }}
           formatter={(value) => `${value}%`}
-          content={<CustomTooltip />}
+          labelFormatter={(value) => `Week ${value}`}
         />
         <Line
           type="monotone"

@@ -10,7 +10,7 @@
 }
 
 .reports-yscroll{
-  height: 75vh;
+  height: calc(100vh - 185px);
   overflow-y: scroll;
   scroll-behavior: smooth;
   padding: 1.2rem;
@@ -95,6 +95,8 @@
   font-size: 18px;
   font-weight: 600;
   color: var(--input-border-color);
+  white-space: nowrap;
+  margin-right: 20px;
 }
 
 .report-header-dropdown {

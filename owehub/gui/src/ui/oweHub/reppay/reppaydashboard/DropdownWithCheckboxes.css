@@ -45,13 +45,13 @@
   border-radius: 8px;
   padding: 5px;
   margin-top: 7px;
-  overflow-y: auto;
+  overflow: auto;
   width: 150px;
-  height: 285px !important;
+  max-height: 285px !important;
   box-sizing: border-box;
   color: #0493ce;
   box-shadow: 0px 4px 10px rgba(43, 42, 42, 0.3); /* Add this line */
-  scrollbar-width: none;
+  height:auto!important
 }
 
 .dropdown-item {
@@ -64,11 +64,13 @@
   margin-bottom: 5px;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 10px; 
+}
 
-  white-space: nowrap;       /* Prevents text from wrapping to a new line */
-  overflow: hidden;          /* Hides any overflowing text */
-  text-overflow: ellipsis;   /* Adds "..." if the text overflows */
+.dropdown-item span{
+  white-space: nowrap;        
+  overflow: hidden;          
+  text-overflow: ellipsis;   
 }
 
 .dropdown-item input[type='checkbox'] {

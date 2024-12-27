@@ -428,6 +428,7 @@ const getNewFormData = async () => {
                       padding: 0,
                       boxShadow: 'none',
                     }}
+                    labelFormatter={(label) => `Week ${label}`}
                     wrapperClassName={styles.tooltip}
                     formatter={(value, name) => {
                       const legendLabels: { [key: string]: string } = {
