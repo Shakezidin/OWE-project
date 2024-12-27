@@ -334,6 +334,7 @@ const InstalltoFin = () => {
                       paddingBottom: '20px',
                       fontSize: '12px',
                       fontFamily: 'poppins',
+                      cursor:'pointer'
                     }}
                     formatter={(value) => {
                       const legendLabels: { [key: string]: string } = {
