@@ -31,6 +31,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		err       error
 		dataReq   models.ProductionSummaryReportRequest
 		data      []map[string]interface{}
+		weekData  map[string]interface{}
 		subReport models.ProductionSummarySubReport
 		apiResp   models.ProductionSummaryReportResponse
 		dbOffices []string
@@ -70,153 +71,115 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		tableName = "pv_install_install_subcontracting_schema"
 
 		// 1. Install Scheduled - Day 1
-		data, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window", dbOffices, dataReq.Year)
+		subReport = models.ProductionSummarySubReport{SubReportName: "Install Scheduled - Day 1"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Install Scheduled - Day 1",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":      key,
+				"System Size": value,
+			})
 		}
-		if len(data) >= 2 {
-			secondLastData := data[len(data)-1]
-			for key, value := range secondLastData {
-				if key == "week" {
-					continue
-				}
-				subReport.TableData = append(subReport.TableData, map[string]interface{}{
-					"Office":       key,
-					"Scheduled-kW": value,
-				})
-			}
-		}
-
-		// 2. Install Scheduled - Day 2
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
-		data, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_2", dbOffices, dataReq.Year)
+		// 2. Install Scheduled - Day 2
+		subReport = models.ProductionSummarySubReport{SubReportName: "Install Scheduled - Day 2"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_2", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Install Scheduled - Day 2",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
-		}
-		if len(data) >= 2 {
-			secondLastData := data[len(data)-2]
-			for key, value := range secondLastData {
-				if key == "week" {
-					continue
-				}
-				subReport.TableData = append(subReport.TableData, map[string]interface{}{
-					"Office":      key,
-					"System Size": value,
-				})
-			}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":      key,
+				"System Size": value,
+			})
 		}
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 3. Install Scheduled - Day 3
-		data, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_3", dbOffices, dataReq.Year)
+		subReport = models.ProductionSummarySubReport{SubReportName: "Install Scheduled - Day 3"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_3", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Install Scheduled - Day 3",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
-		}
-		if len(data) >= 2 {
-			secondLastData := data[len(data)-2]
-			for key, value := range secondLastData {
-				if key == "week" {
-					continue
-				}
-				subReport.TableData = append(subReport.TableData, map[string]interface{}{
-					"Office":      key,
-					"System Size": value,
-				})
-			}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":      key,
+				"System Size": value,
+			})
 		}
 
 		// 4. Install Fix Scheduled
-		data, err = queryProductionWeeklySystemSizes(tableName, "install_fix_scheduled_date", dbOffices, dataReq.Year)
+		subReport = models.ProductionSummarySubReport{SubReportName: "Install Fix Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "install_fix_scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
 
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Install Fix Scheduled",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
-		}
-		if len(data) >= 1 {
-			lastData := data[len(data)-1]
-			for key, value := range lastData {
-				if key == "week" {
-					continue
-				}
-				subReport.TableData = append(subReport.TableData, map[string]interface{}{
-					"Office":      key,
-					"System Size": value,
-				})
-			}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":      key,
+				"System Size": value,
+			})
 		}
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 5. Install Completed
-		data, err = queryProductionWeeklySystemSizes(tableName, "pv_completion_date", dbOffices, dataReq.Year)
+		subReport = models.ProductionSummarySubReport{SubReportName: "Install Completed"}
+
+		// fill in chart data
+		subReport.ChartData, _, err = queryProductionWeeklySystemSizes(tableName, "pv_completion_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Install Completed",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
+
+		// fill in table data
+		subReport.TableData, err = queryProductionWeekSummary("pv_completion_date", int64(dataReq.Week), dataReq.Year, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
 		}
 
-		if len(data) >= 2 {
-			secondLastWeek := data[len(data)-2]["week"].(int64)
-			data, err = queryProductionWeekSummary("pv_completion_date", secondLastWeek, dataReq.Year, dbOffices)
-			if err != nil {
-				appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
-				return
-			}
-			subReport.TableData = data
-		}
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 6. Install Fix Completed
-		data, err = queryProductionWeeklySystemSizes(tableName, "install_fix_complete_date", dbOffices, dataReq.Year)
+		subReport = models.ProductionSummarySubReport{SubReportName: "Install Fix Completed"}
+
+		// fill in chart data
+		subReport.ChartData, _, err = queryProductionWeeklySystemSizes(tableName, "install_fix_complete_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Install Fix Completed",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
-		}
 
-		if len(data) >= 2 {
-			secondLastWeek := data[len(data)-2]["week"].(int64)
-			data, err = queryProductionWeekSummary("install_fix_complete_date", secondLastWeek, dataReq.Year, dbOffices)
-			if err != nil {
-				appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
-				return
-			}
-			subReport.TableData = data
+		// fill in table data
+		subReport.TableData, err = queryProductionWeekSummary("install_fix_complete_date", int64(dataReq.Week), dataReq.Year, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
 		}
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
@@ -262,9 +225,9 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 //   - Filtering by year and office
 //   - TableName decides which table to query
 //   - DateCol decides date column to group weeks by
-func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices []string, year int) ([]map[string]interface{}, error) {
+func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices []string, year int, selectedWeek int) (
+	chartData []map[string]interface{}, selectedWeekData map[string]interface{}, err error) {
 	var (
-		err         error
 		query       string
 		data        []map[string]interface{}
 		weekNoGrps  map[int64][]map[string]interface{}
@@ -294,7 +257,7 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to retrieve data from DB err: %v", err)
 		err = fmt.Errorf("failed to retrieve data from DB")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// first, group by week
@@ -305,7 +268,7 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to convert week number to int64 from type %T", row["week_number"])
 			err = fmt.Errorf("internal Server Error")
-			return nil, err
+			return nil, nil, err
 		}
 
 		if _, ok := weekNoGrps[weekNo]; !ok {
@@ -318,6 +281,7 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 
 	// then for each week, accumulate to system size counts
 	data = []map[string]interface{}{}
+	selectedWeekData = make(map[string]interface{})
 	for _, weekNo := range weekNumbers {
 		officesFound := make(map[string]bool)
 		weekDataAccumulated := make(map[string]interface{})
@@ -355,13 +319,21 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 				zeroWeekData[getReportOfficeName(office)] = 0.0
 			}
 			data = append(data, zeroWeekData)
+			if i == int64(selectedWeek) {
+				delete(zeroWeekData, "week") // don't include week number in selectedWeekData
+				selectedWeekData = zeroWeekData
+			}
 		}
 
 		lastWeekNo = weekNo
 		data = append(data, weekDataAccumulated)
+		if weekNo == int64(selectedWeek) {
+			delete(weekDataAccumulated, "week") // don't include week number in selectedWeekData
+			selectedWeekData = weekDataAccumulated
+		}
 	}
 
-	return data, nil
+	return data, selectedWeekData, nil
 }
 
 // Query Production Reports:
