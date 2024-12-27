@@ -3,7 +3,8 @@ import { toast } from 'react-toastify';
 import {
     fetchSpeedSummaryReport,
     fetchInstallReportData,
-    getTimelineInstallToFinData
+    getTimelineInstallToFinData,
+    getDropDownData
 } from '../../apiActions/reportingAction/reportingAction';
 
 interface ReportingState {
@@ -19,6 +20,11 @@ interface ReportingState {
         error: string | null;
     };
     installToFinData:{
+        data: any,
+        loading: boolean,
+        error: string | null;
+    };
+    dropdownData:{
         data: any,
         loading: boolean,
         error: string | null;
@@ -40,6 +46,11 @@ const initialState: ReportingState = {
         error: null
     },
     installToFinData:{
+        data: null,
+        loading: false,
+        error: null,
+    },
+    dropdownData:{
         data: null,
         loading: false,
         error: null,
@@ -120,6 +131,22 @@ const reportingSlice = createSlice({
               .addCase(getTimelineInstallToFinData.rejected, (state, action) => {
                 state.installToFinData.loading = false;
                 state.installToFinData.error = action.payload as string;
+                toast.error(action.payload as string);
+              })
+
+               // Dropdown cases
+            .addCase(getDropDownData.pending, (state) => {
+                state.dropdownData.loading = true;
+                state.dropdownData.error = null;
+              })
+              .addCase(getTimelineInstallToFinData.fulfilled, (state, action) => {
+                state.dropdownData.loading = false;
+                state.dropdownData.data = action.payload;
+                toast.success(action.payload.message)
+              })
+              .addCase(getTimelineInstallToFinData.rejected, (state, action) => {
+                state.dropdownData.loading = false;
+                state.dropdownData.error = action.payload as string;
                 toast.error(action.payload as string);
               });
     }
