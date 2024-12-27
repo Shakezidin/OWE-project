@@ -32,8 +32,11 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		dataReq        models.TimelineReportRequest
 		RecordCount    int = 0
 		reportResp     models.SummaryReportResponse
+		dataTotal      []models.DataPoint
+		dataPercentage []models.DataPoint
 		whereEleList   []interface{}
 		escapedOffices []string
+		totalWeeks     int
 	)
 
 	log.EnterFn(0, "HandleGetTimelineAhjFifteenReportRequest")
@@ -103,6 +106,7 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 				quarter = fmt.Sprintf("%d", q)
 				continue
 			}
+			totalWeeks += 12
 			quarter = fmt.Sprintf("%s, %d", quarter, q)
 		}
 		quarter = fmt.Sprintf("quarter IN (%s)", quarter)
@@ -158,16 +162,6 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 	categories := []string{"Percentage AHJ +15 Days SLA", "Total AHJ +15 Days SLA"}
 	reportResp.Data = make(map[string][]models.DataPoint)
 
-	var dataTotal []models.DataPoint = make([]models.DataPoint, 52)
-	for i := 0; i < 52; i++ {
-		dataTotal[i].Value = make(map[string]interface{})
-	}
-
-	var dataPercentage []models.DataPoint = make([]models.DataPoint, 52)
-	for i := 0; i < 52; i++ {
-		dataPercentage[i].Value = make(map[string]interface{})
-	}
-
 	qtrToCountMaping := make(map[float64]map[string]int64)
 	for _, item := range dbData {
 		install_week := int(item["install_week"].(float64))
@@ -192,31 +186,45 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 				"out":    0,
 			}
 		}
+		qtrToCountMaping[quarter][status] += int64(count)
 
 		slaStatusSlabel := "Within SLA"
 		if status == "out" {
 			slaStatusSlabel = "Out of SLA"
 		}
 
-		qtrToCountMaping[quarter][slaStatusSlabel] += count
-		dataTotal[install_week].Value[slaStatusSlabel] = count
-		dataPercentage[install_week].Value[slaStatusSlabel] = percentage
+		dataTotal = append(dataTotal, models.DataPoint{
+			Value: map[string]interface{}{
+				slaStatusSlabel: count,
+			},
+			Index: install_week,
+		})
 
-		dataTotal[install_week].Index = install_week + 1
-		dataPercentage[install_week].Index = install_week + 1
+		dataPercentage = append(dataPercentage, models.DataPoint{
+			Value: map[string]interface{}{
+				slaStatusSlabel: percentage,
+			},
+			Index: install_week,
+		})
 	}
 
 	qtrSummary := make(map[string]map[string]float64)
 
 	for qtr, countMap := range qtrToCountMaping {
 		total := countMap["within"] + countMap["out"]
-		qtrStr := fmt.Sprintf("Q%2.f", qtr)
+
+		withinSlaPercentage := 0.0
+		outSideSlaPercentage := 0.0
+		if total > 0 {
+			withinSlaPercentage = float64(countMap["within"]) / float64(total) * 100.00
+			outSideSlaPercentage = float64(countMap["out"]) / float64(total) * 100.00
+		}
 
 		qtrSummaryItem := map[string]float64{
-			"Within SLA Count":               float64(countMap["within"]),
-			"Within SLA Percentage":          float64(countMap["within"]) / float64(total) * 100,
-			"Out of SLA Count":               float64(countMap["out"]),
-			"Out of SLA Percentage" + qtrStr: float64(countMap["out"]) / float64(total) * 100,
+			"Within SLA Count":      float64(countMap["within"]),
+			"Within SLA Percentage": withinSlaPercentage,
+			"Out of SLA Count":      float64(countMap["out"]),
+			"Out of SLA Percentage": outSideSlaPercentage,
 		}
 		qtrSummary[fmt.Sprintf("q%.0f", qtr)] = qtrSummaryItem
 	}
