@@ -6,7 +6,6 @@ import BarChartExample from './components/BarChart';
 import TableCustom from './components/Tables/CustomTable';
 import WeekSelect from './components/Dropdowns/WeekSelect';
 import YearSelect from './components/Dropdowns/YearSelect';
-import DaySelect from './components/Dropdowns/DaySelect';
 import CompanySelect from './components/Dropdowns/CompanySelect';
 import BackButtom from './components/BackButtom';
 
@@ -60,13 +59,6 @@ const Production: React.FC = () => {
     value: 'install',
   });
 
-  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
-    newFormData?.dealer_name?.map((value: string) => ({
-      value,
-      label: value,
-    }));
-
-
   const [data, setData] = useState([
     { column1: 'Tucson', column2: '0' },
     { column1: 'Texas', column2: '0' },
@@ -75,7 +67,6 @@ const Production: React.FC = () => {
     { column1: 'Colarado', column2: '0' },
     { column1: 'Albuquerque/El Paso', column2: '0' },
     { column1: '#N/A', column2: '0' },
-    // ... more data
   ]);
 
   useEffect(() => {
@@ -159,14 +150,16 @@ const Production: React.FC = () => {
 
   const stylesGraph = {
     width: isMobile ? 'auto' : '100%',
-    height: '463px',
-    marginTop:'10px'
+    height: '315px',
+    backgroundColor: 'white',
+    boxShadow:
+      'rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px',
   };
 
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <BackButtom heading = "Production"/>
+        <BackButtom heading="Production" />
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>
@@ -204,15 +197,9 @@ const Production: React.FC = () => {
               singleValueStyles={{ fontWeight: 400 }}
             />
           </div>
-          <div>
-            <CompanySelect />
-          </div>
-          <div>
-            <YearSelect />
-          </div>
-          <div>
-            <WeekSelect />
-          </div>
+          <CompanySelect />
+          <YearSelect />
+          <WeekSelect />
         </div>
       </div>
       <div
@@ -240,6 +227,7 @@ const Production: React.FC = () => {
               justifyContent: 'center',
               alignItems: 'center',
               marginBottom: 50,
+              gap: '30px',
             }}
           >
             {false ? (
@@ -247,8 +235,7 @@ const Production: React.FC = () => {
                 className="flex items-center"
                 style={{ justifyContent: 'center' }}
               >
-                {' '}
-                <MicroLoader />{' '}
+                <MicroLoader />
               </div>
             ) : (
               <>
@@ -258,12 +245,17 @@ const Production: React.FC = () => {
                   data={data}
                   setData={setData}
                 />
-                <div className="main-graph" style={stylesGraph}>
-                  <h3 style={{ textAlign: 'center' }}>
+                <div
+                  className="main-graph"
+                  style={{ width: '100%', textAlign: 'center' }}
+                >
+                  <h3 style={{ textAlign: 'center', marginBottom: '8px' }}>
                     {reportType.label} {graph.title}
                   </h3>
-                  <LineGraph />
-                  <p className="chart-info-report">Week</p>
+                  <div style={stylesGraph}>
+                    <LineGraph />
+                    <p className="chart-info-report">Week</p>
+                  </div>
                 </div>
               </>
             )}
@@ -279,6 +271,7 @@ const Production: React.FC = () => {
             justifyContent: 'center',
             alignItems: 'center',
             marginBottom: 50,
+            gap: '30px',
           }}
         >
           {false ? (
@@ -286,8 +279,7 @@ const Production: React.FC = () => {
               className="flex items-center"
               style={{ justifyContent: 'center' }}
             >
-              {' '}
-              <MicroLoader />{' '}
+              <MicroLoader />
             </div>
           ) : (
             <>
@@ -297,11 +289,18 @@ const Production: React.FC = () => {
                 data={data}
                 setData={setData}
               />
-              <div className="main-graph some-margin" style={stylesGraph}>
-                <h3 style={{ textAlign: 'center' }}>
+              
+              <div
+                className="main-graph"
+                style={{ width: '100%', textAlign: 'center' }}
+              >
+                <h3 style={{ textAlign: 'center', marginBottom: '8px' }}>
                   Pending {reportType.label}
                 </h3>
-                <BarChartExample />
+                <div style={stylesGraph}>
+                  <BarChartExample />
+                  <p className="chart-info-report">Week</p>
+                </div>
               </div>
             </>
           )}

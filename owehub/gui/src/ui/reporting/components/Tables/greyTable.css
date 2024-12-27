@@ -1,10 +1,13 @@
 .grey-table-container {
-  width: 300px;
+  min-width: 300px;
   margin: auto;
   overflow-x: auto;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  box-shadow:
+    rgba(0, 0, 0, 0.14) 0px 2px 2px 0px,
+    rgba(0, 0, 0, 0.2) 0px 1px 1px 0px,
+    rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
 }
 .grey-table-container::-webkit-scrollbar {
   width: 10px;
@@ -38,24 +41,21 @@
   width: 100%;
   border-collapse: collapse;
 }
-.grey-custom-table table tbody tr td{
+.grey-custom-table table tbody tr td {
   min-width: 20px;
 }
 
 .grey-custom-table th,
 .grey-custom-table td {
-  
   padding: 8px 8px;
   text-align: center;
   border-bottom: 1px solid #696969;
 }
 
- 
 .grey-custom-table th {
   background-color: #f4f4f4;
   font-weight: 700;
   font-size: 12px;
- 
 }
 
 .grey-custom-table tr:nth-child(even) {
@@ -72,16 +72,13 @@
   font-size: 12px;
   white-space: nowrap;
 }
-.chart-info-report{
+.chart-info-report {
   font-size: 12px;
   font-weight: 500;
-  margin-top: -10px;
+  margin-top: 10px;
 }
-.some-margin{
-  margin-left: 24px;
-  margin-top: 19px;
-}
-.backButton-reporting{
+
+.backButton-reporting {
   display: flex;
   flex-direction: row;
   gap: 6px;

@@ -1,8 +1,5 @@
 
 /* Example of scoped custom CSS */
-.pv-install-dashboard {
-    padding: 24px;
-  }
   
   .pv-install-dashboard .header {
     display: flex;

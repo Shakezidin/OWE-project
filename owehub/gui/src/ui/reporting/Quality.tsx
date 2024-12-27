@@ -73,199 +73,201 @@ const Quality = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          background: '#ddd',
-          height: 50,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5,
-          width: '100%',
-          margin: '10px 0',
-          fontWeight: '700',
-        }}
-      >
-        {reportType.label}
-      </div>
+      <div className="reports-yscroll">
+        <div
+          style={{
+            background: '#ddd',
+            height: 50,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 5,
+            width: '100%',
+            margin: '10px 0',
+            fontWeight: '700',
+          }}
+        >
+          {reportType.label}
+        </div>
 
-      <div className="quality-top-div-wrapper">
-        <div className="qualty-top-div">
-          <div className="qual-sec-1">
-            <div className="approved-sec">
-              <h1>{reportType.label} Approved</h1>
-              <TableGrey
-                data={[
-                  { column1: 'Peoria/Kingman', column2: '4400' },
-                  { column1: 'Tempe', column2: '45' },
-                  { column1: 'Tucson', column2: '1' },
-                  { column1: 'Albuquerque/El Paso', column2: '44' },
-                  { column1: 'Texas', column2: '45' },
-                  { column1: 'Colorado', column2: '1' },
-                ]}
-              />
+        <div className="quality-top-div-wrapper">
+          <div className="qualty-top-div">
+            <div className="qual-sec-1">
+              <div className="approved-sec">
+                <h1>{reportType.label} Approved</h1>
+                <TableGrey
+                  data={[
+                    { column1: 'Peoria/Kingman', column2: '4400' },
+                    { column1: 'Tempe', column2: '45' },
+                    { column1: 'Tucson', column2: '1' },
+                    { column1: 'Albuquerque/El Paso', column2: '44' },
+                    { column1: 'Texas', column2: '45' },
+                    { column1: 'Colorado', column2: '1' },
+                  ]}
+                />
+              </div>
+              <div className="approved-sec">
+                <h1>{reportType.label} Pass Rate</h1>
+                <TableGrey
+                  data={[
+                    { column1: 'Peoria/Kingman', column2: '445' },
+                    { column1: 'Tempe', column2: '45' },
+                    { column1: 'Tucson', column2: '1' },
+                    { column1: 'Albuquerque/El Paso', column2: '44' },
+                    { column1: 'Texas', column2: '45' },
+                    { column1: 'Colorado', column2: '1' },
+                  ]}
+                />
+              </div>
+              <div className="approved-sec">
+                <h1>{reportType.label} Pending</h1>
+                <QualityTable
+                  reportType=""
+                  middleName=""
+                  data={[
+                    { column1: 'Peoria/Kingman', column2: '44', column3: '10' },
+                    { column1: 'Tempe', column2: '45', column3: '10' },
+                    { column1: 'Tucson', column2: '1', column3: '10' },
+                    {
+                      column1: 'Albuquerque/El Paso',
+                      column2: '44',
+                      column3: '44',
+                    },
+                    { column1: 'Texas', column2: '45', column3: '10' },
+                    { column1: 'Colorado', column2: '1', column3: '10' },
+                  ]}
+                />
+              </div>
+              <div className="main-graph" style={stylesGraph}>
+                <h1>{reportType.label} Approved</h1>
+                <LineGraph />
+                <p className="chart-info-report">Week</p>
+              </div>
             </div>
-            <div className="approved-sec">
-              <h1>{reportType.label} Pass Rate</h1>
-              <TableGrey
-                data={[
-                  { column1: 'Peoria/Kingman', column2: '445' },
-                  { column1: 'Tempe', column2: '45' },
-                  { column1: 'Tucson', column2: '1' },
-                  { column1: 'Albuquerque/El Paso', column2: '44' },
-                  { column1: 'Texas', column2: '45' },
-                  { column1: 'Colorado', column2: '1' },
-                ]}
-              />
-            </div>
-            <div className="approved-sec">
-              <h1>{reportType.label} Pending</h1>
-              <QualityTable
-                reportType=""
-                middleName=""
-                data={[
-                  { column1: 'Peoria/Kingman', column2: '44', column3: '10' },
-                  { column1: 'Tempe', column2: '45', column3: '10' },
-                  { column1: 'Tucson', column2: '1', column3: '10' },
-                  {
-                    column1: 'Albuquerque/El Paso',
-                    column2: '44',
-                    column3: '44',
-                  },
-                  { column1: 'Texas', column2: '45', column3: '10' },
-                  { column1: 'Colorado', column2: '1', column3: '10' },
-                ]}
-              />
-            </div>
-            <div className="main-graph" style={stylesGraph}>
-              <h1>{reportType.label} Approved</h1>
-              <LineGraph />
-              <p className="chart-info-report">Week</p>
-            </div>
-          </div>
-          <div className="qual-sec-2">
-            <div className="approved-sec">
-              <h1>{reportType.label} Failed</h1>
-              <TableGrey
-                data={[
-                  { column1: 'Peoria/Kingman', column2: '44' },
-                  { column1: 'Tempe', column2: '45' },
-                  { column1: 'Tucson', column2: '1' },
-                  { column1: 'Albuquerque/El Paso', column2: '44' },
-                  { column1: 'Texas', column2: '45' },
-                  { column1: 'Colorado', column2: '1' },
-                ]}
-              />
-            </div>
-            <div className="approved-sec">
-              <h1>{reportType.label} Source of Fail</h1>
-              <QualityTable2
-                reportType=""
-                middleName=""
-                data={[
-                  {
-                    column1: 'Peoria/Kingman',
-                    column2: '44',
-                    column3: '44',
-                    column4: 'Tucson',
-                    column5: '44',
-                    column6: '44',
-                  },
-                  {
-                    column1: 'Tempe',
-                    column2: '45',
-                    column3: '44',
-                    column4: 'Tucson',
-                    column5: '44',
-                    column6: '44',
-                  },
-                  {
-                    column1: 'Tucson',
-                    column2: '1',
-                    column3: '44',
-                    column4: 'Tucson',
-                    column5: '44',
-                    column6: '44',
-                  },
-                  {
-                    column1: 'Albuquerque/El Paso',
-                    column2: '44',
-                    column3: '44',
-                    column4: 'Tucson',
-                    column5: '44',
-                    column6: '44',
-                  },
-                  {
-                    column1: 'Texas',
-                    column2: '45',
-                    column3: '44',
-                    column4: 'Tucson',
-                    column5: '44',
-                    column6: '44',
-                  },
-                  {
-                    column1: 'Colorado',
-                    column2: '1',
-                    column3: '44',
-                    column4: 'Tucson',
-                    column5: '44',
-                    column6: '44',
-                  },
-                ]}
-              />
-            </div>
-            <div className="main-graph" style={stylesGraph}>
-              <h1>{reportType.label} Failed</h1>
-              <LineGraph />
-              <p className="chart-info-report">Week</p>
-            </div>
-          </div>
-          {(reportType.label === 'Install Funding' ||
-            reportType.label === 'Final Funding') && (
             <div className="qual-sec-2">
               <div className="approved-sec">
-                <h1>{reportType.label} - Pass Rate</h1>
-                <QualityTable3
+                <h1>{reportType.label} Failed</h1>
+                <TableGrey
+                  data={[
+                    { column1: 'Peoria/Kingman', column2: '44' },
+                    { column1: 'Tempe', column2: '45' },
+                    { column1: 'Tucson', column2: '1' },
+                    { column1: 'Albuquerque/El Paso', column2: '44' },
+                    { column1: 'Texas', column2: '45' },
+                    { column1: 'Colorado', column2: '1' },
+                  ]}
+                />
+              </div>
+              <div className="approved-sec">
+                <h1>{reportType.label} Source of Fail</h1>
+                <QualityTable2
                   reportType=""
                   middleName=""
                   data={[
                     {
-                      column1: 'Week 1',
+                      column1: 'Peoria/Kingman',
                       column2: '44',
                       column3: '44',
                       column4: 'Tucson',
                       column5: '44',
                       column6: '44',
-                      column7: '90',
                     },
                     {
-                      column1: 'Week 2',
+                      column1: 'Tempe',
                       column2: '45',
                       column3: '44',
                       column4: 'Tucson',
                       column5: '44',
                       column6: '44',
-                      column7: '90',
                     },
                     {
-                      column1: 'Week 3',
+                      column1: 'Tucson',
                       column2: '1',
                       column3: '44',
                       column4: 'Tucson',
                       column5: '44',
                       column6: '44',
-                      column7: '90',
+                    },
+                    {
+                      column1: 'Albuquerque/El Paso',
+                      column2: '44',
+                      column3: '44',
+                      column4: 'Tucson',
+                      column5: '44',
+                      column6: '44',
+                    },
+                    {
+                      column1: 'Texas',
+                      column2: '45',
+                      column3: '44',
+                      column4: 'Tucson',
+                      column5: '44',
+                      column6: '44',
+                    },
+                    {
+                      column1: 'Colorado',
+                      column2: '1',
+                      column3: '44',
+                      column4: 'Tucson',
+                      column5: '44',
+                      column6: '44',
                     },
                   ]}
                 />
               </div>
               <div className="main-graph" style={stylesGraph}>
-                <h1>{reportType.label} - Pass Rate</h1>
-                <BarChartQuality />
+                <h1>{reportType.label} Failed</h1>
+                <LineGraph />
                 <p className="chart-info-report">Week</p>
               </div>
             </div>
-          )}
+            {(reportType.label === 'Install Funding' ||
+              reportType.label === 'Final Funding') && (
+              <div className="qual-sec-2">
+                <div className="approved-sec">
+                  <h1>{reportType.label} - Pass Rate</h1>
+                  <QualityTable3
+                    reportType=""
+                    middleName=""
+                    data={[
+                      {
+                        column1: 'Week 1',
+                        column2: '44',
+                        column3: '44',
+                        column4: 'Tucson',
+                        column5: '44',
+                        column6: '44',
+                        column7: '90',
+                      },
+                      {
+                        column1: 'Week 2',
+                        column2: '45',
+                        column3: '44',
+                        column4: 'Tucson',
+                        column5: '44',
+                        column6: '44',
+                        column7: '90',
+                      },
+                      {
+                        column1: 'Week 3',
+                        column2: '1',
+                        column3: '44',
+                        column4: 'Tucson',
+                        column5: '44',
+                        column6: '44',
+                        column7: '90',
+                      },
+                    ]}
+                  />
+                </div>
+                <div className="main-graph" style={stylesGraph}>
+                  <h1>{reportType.label} - Pass Rate</h1>
+                  <BarChartQuality />
+                  <p className="chart-info-report">Week</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

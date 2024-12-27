@@ -103,10 +103,10 @@ const Dashboard: React.FC = () => {
       state: useState<boolean>(true),
     },
     {
-      title: 'Others',
+      title: 'CFA Timeline',
       data: [
         { title: 'Install to FIN', route: ROUTES.INSTALL_TO_FIN },
-        { title: 'AJH', route: ROUTES.AHJ },
+        { title: 'AJH + 15 Days SLA', route: ROUTES.AHJ },
       ],
       state: useState<boolean>(true),
     },

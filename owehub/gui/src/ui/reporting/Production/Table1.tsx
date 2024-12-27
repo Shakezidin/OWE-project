@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { FaCaretDown } from 'react-icons/fa';
 
-const TableCustom = ({
+const TableProd1 = ({
   data,
   reportType,
   middleName,
@@ -11,6 +11,7 @@ const TableCustom = ({
   th2,
 }: any) => {
   const [reverse, setReverse] = useState(false);
+  console.log(data, "table 1")
 
   const handleOfficeClick = () => {
     setData((prevData: any) => {
@@ -22,14 +23,19 @@ const TableCustom = ({
     setReverse(!reverse);
   };
 
-  const total = (data || []).reduce((acc: number, row: any) => acc + (Number(row.column2) || 0), 0);
+  const headers = data && data.length > 0 ? Object.keys(data[0]) : [];
+
+  const totalSum = data ? data.reduce((sum: any, row: any) => {
+    const value = row[headers[1]];
+    return sum + (typeof value === 'number' ? value : 0);
+  }, 0).toFixed(2) : '0.00';
 
 
   return (
     <div className="grey-table-main-container">
       {reportType?.label ? (
         <h3>
-          {reportType?.label} {middleName}
+          {middleName}
         </h3>
       ) : (
         <h3>{middleName}</h3>
@@ -39,35 +45,26 @@ const TableCustom = ({
         <table className="grey-custom-table">
           <thead>
             <tr>
-              <th
-                onClick={handleOfficeClick}
-                style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
-              >
-                {th1 ? th1 : 'Office (2)'}{' '}
-                <FaCaretDown
-                  size={20}
-                  style={{
-                    fontWeight: '500',
-                    marginBottom: '-5px',
-                    transform: reverse ? 'rotate(180deg)' : '',
-                  }}
-                />{' '}
-              </th>
-              <th>{th2 ? th2 : 'Scheduled-kW'}</th>
+              {headers.map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {data?.map((row: any, index: any) => (
-              <tr key={index}>
-                <td>{row.column1}</td>
-                <td>{row.column2}</td>
+            {data && data.map((row: any, rowIndex: any) => (
+              <tr key={rowIndex}>
+                {headers.map((header, cellIndex) => (
+                  <td key={cellIndex}>{row[header]}</td>
+                ))}
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
               <th>Grand Total</th>
-              <th>{Number(total.toFixed(2))}</th>
+              <th>
+                {totalSum}
+              </th>
             </tr>
           </tfoot>
         </table>
@@ -76,4 +73,4 @@ const TableCustom = ({
   );
 };
 
-export default TableCustom;
+export default TableProd1;

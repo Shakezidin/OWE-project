@@ -48,7 +48,7 @@ import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
 import TotalCount from './ui/TotalCount/TotalCount';
-import Production from './ui/reporting/Production';
+import Production from './ui/reporting/Production/Production';
 import Quality from './ui/reporting/Quality';
 import SpeedOverall from './ui/reporting/SpeedOverall';
 import SalesToInstall from './ui/reporting/SalesToInstall';

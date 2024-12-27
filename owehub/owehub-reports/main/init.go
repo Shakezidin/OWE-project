@@ -110,8 +110,15 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-calc-service/v1/get_qualitysummaryreport",
+		"/owe-reports-service/v1/get_qualitysummaryreport",
 		apiHandler.HandleGetQualitySummaryReportRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_offices_list",
+		apiHandler.HandleGetOfficesListRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
