@@ -68,6 +68,10 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           dx={-10}
           dataKey="name"
           tick={{ fontSize: 8, fontWeight: 500, fill: '#818181' }}
+          tickFormatter={(value) => {
+            const weekNumber = parseInt(value, 10) + 1;
+            return `${weekNumber}`;
+          }}
         />
         <YAxis
           tickSize={10}
