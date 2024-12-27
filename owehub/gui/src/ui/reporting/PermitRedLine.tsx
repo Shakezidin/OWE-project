@@ -14,14 +14,9 @@ import {
 } from 'recharts';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getTimelineInstallToFinData } from '../../redux/apiActions/reportingAction/reportingAction';
-import CustomSelect from './components/Dropdowns/CustomSelect';
 import BackButtom from './components/BackButtom';
 import styles from './styles/InstalltoFin.module.css';
 import MicroLoader from '../components/loader/MicroLoader';
-import OfficeSelect from './components/Dropdowns/OfficeSelect';
-import AHJSelect from './components/Dropdowns/AHJSelect';
-import StateSelect from './components/Dropdowns/StateSelect';
-import QuarterSelect from './components/Dropdowns/QuarterSelect';
 import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
 import DropdownCheckBox from '../components/DropdownCheckBox';
 import YearSelect from './components/Dropdowns/YearSelect';
@@ -41,7 +36,7 @@ interface ChartData {
   veryHigh: number;
   ultraHigh: number;
   extreme: number;
-  "Average Days From Install to FIN": number;
+  "Permit Redline %": number;
 }
 
 interface Option {
@@ -49,7 +44,7 @@ interface Option {
   label: string;
 }
 
-const InstalltoFin = () => {
+const PermitRedLine = () => {
   // State Management
   const [selectedOffices, setSelectedOffices] = useState<Option[]>([]);
   const [selectedAhj, setSelectedAhj] = useState<Option[]>([]);
@@ -99,7 +94,7 @@ const InstalltoFin = () => {
         veryHigh: 0,   // 46-60 days
         ultraHigh: 0,  // 61-90 days
         extreme: 0,    // >90 days
-        "Average Days From Install to FIN": 0
+        "Permit Redline %": 0
       });
     }
   
@@ -135,7 +130,7 @@ const InstalltoFin = () => {
       if (item.index && item.value?.average !== undefined) {
         const weekData = weekMap.get(item.index);
         if (weekData) {
-          weekData["Average Days From Install to FIN"] = item.value.average;
+          weekData["Permit Redline %"] = item.value.average;
         }
       }
     });
@@ -324,12 +319,11 @@ const getNewFormData = async () => {
     };
     fetchData();
   }, []);
-  
 
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <BackButtom heading="Install to FIN" />
+        <BackButtom heading="Permit Redline %" />
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>
@@ -437,23 +431,23 @@ const getNewFormData = async () => {
                     wrapperClassName={styles.tooltip}
                     formatter={(value, name) => {
                       const legendLabels: { [key: string]: string } = {
-                        low: '0-15 days',
-                        medium: '16-30 days',
-                        high: '31-45 days',
-                        veryHigh: '46-60 days',
-                        ultraHigh: '61-90 days',
-                        extreme: '91+ days',
+                        low: 'Count of all Permit Approved Dates',
+                        // medium: '16-30 days',
+                        // high: '31-45 days',
+                        // veryHigh: '46-60 days',
+                        ultraHigh: 'Count of all Permits Redlined',
+                        // extreme: '91+ days',
                       };
                       return [value, legendLabels[name]]; // Return value and custom label
                     }}
                   />
 
                   {[
-                    'extreme', // Red at the bottom
+                    // 'extreme', // Red at the bottom
                     'ultraHigh',
-                    'veryHigh',
-                    'high',
-                    'medium',
+                    // 'veryHigh',
+                    // 'high',
+                    // 'medium',
                     'low', // Green at the top
                   ].map((dataKey) => (
                     <Bar
@@ -490,22 +484,22 @@ const getNewFormData = async () => {
                     }}
                     formatter={(value) => {
                       const legendLabels: { [key: string]: string } = {
-                        low: '0-15 days',
-                        medium: '16-30 days',
-                        high: '31-45 days',
-                        veryHigh: '46-60 days',
-                        ultraHigh: '61-90 days',
-                        extreme: '91+ days',
+                        low: 'Count of all Permit Approved Dates',
+                        // medium: '16-30 days',
+                        // high: '31-45 days',
+                        // veryHigh: '46-60 days',
+                        ultraHigh: 'Count of all Permits Redlined',
+                        // extreme: '91+ days',
                       };
                       return legendLabels[value] || value; // Custom label for legend items
                     }}
                     payload={[
                       { value: 'low', type: 'square', color: getBarColor('low') },
-                      { value: 'medium', type: 'square', color: getBarColor('medium') },
-                      { value: 'high', type: 'square', color: getBarColor('high') },
-                      { value: 'veryHigh', type: 'square', color: getBarColor('veryHigh') },
+                      // { value: 'medium', type: 'square', color: getBarColor('medium') },
+                      // { value: 'high', type: 'square', color: getBarColor('high') },
+                      // { value: 'veryHigh', type: 'square', color: getBarColor('veryHigh') },
                       { value: 'ultraHigh', type: 'square', color: getBarColor('ultraHigh') },
-                      { value: 'extreme', type: 'square', color: getBarColor('extreme') },
+                      // { value: 'extreme', type: 'square', color: getBarColor('extreme') },
                     ]}
                   />
 
@@ -543,7 +537,7 @@ const getNewFormData = async () => {
                           }}>
                             <p style={{fontWeight:'bold'}}>Week {label}</p>
                             <p>
-                              Average Days from Install to FIN:
+                              Permit Redline % :
                               <span style={{color:'rgb(76, 175, 80)',fontWeight:'bold', padding:5}}>
                                 {typeof payload?.[0]?.value === 'number' ? payload[0].value.toFixed(2) : 'N/A'}
                               </span>
@@ -556,13 +550,13 @@ const getNewFormData = async () => {
                   />
                   <Line
                     type="monotone"
-                    dataKey="Average Days From Install to FIN"
+                    dataKey="Permit Redline %"
                     stroke="rgb(76, 175, 80)" // Updated line color
                     activeDot={{ r: 8 }}
                     fill="rgb(76, 175, 80)"
                   >
                     <LabelList
-                      dataKey="Average Days From Install to FIN"
+                      dataKey="Permit Redline %"
                       position="top"
                       fill="rgb(76, 175, 80)"
                       fontSize={12}
@@ -593,4 +587,4 @@ const getNewFormData = async () => {
   );
 };
 
-export default InstalltoFin;
+export default PermitRedLine;

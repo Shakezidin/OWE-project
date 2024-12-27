@@ -114,6 +114,7 @@ export const ROUTES = {
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
   CALCULATOR:'/calculator',
   SIGN_DOCUMENT:'digital-signature-portal',
-  AHJ:'/reporting/ahj'
+  AHJ:'/reporting/ahj',
+  PERMIT_REDLINE:'/reporting/permit-redline'
 
 };

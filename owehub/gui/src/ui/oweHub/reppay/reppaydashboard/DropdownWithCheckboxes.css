@@ -51,6 +51,7 @@
   box-sizing: border-box;
   color: #0493ce;
   box-shadow: 0px 4px 10px rgba(43, 42, 42, 0.3); /* Add this line */
+  scrollbar-width: none;
 }
 
 .dropdown-item {
@@ -64,6 +65,10 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
+
+  white-space: nowrap;       /* Prevents text from wrapping to a new line */
+  overflow: hidden;          /* Hides any overflowing text */
+  text-overflow: ellipsis;   /* Adds "..." if the text overflows */
 }
 
 .dropdown-item input[type='checkbox'] {
