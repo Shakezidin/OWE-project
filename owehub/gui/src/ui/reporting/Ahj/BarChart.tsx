@@ -23,10 +23,7 @@ interface AhjBarChartProps {
   data: ApiResponse;
 }
 
-const tooltipStyle = {
-  fontSize: '10px',
-  padding: '6px',
-};
+ 
 
 
 const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
@@ -38,7 +35,7 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           'Within SLA (%)': item.value['Within SLA'] || 0,
           'Out of SLA (%)': item.value['Out of SLA'] || 0,
         }))}
-        margin={{ top: 22, right: 10, left: 10, bottom: 6 }}
+        margin={{ top: 22, right: 30, left: 0, bottom: 6 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -62,7 +59,7 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           
         />
         <Tooltip
-          contentStyle={tooltipStyle}
+          contentStyle={{ fontSize: '12px',}}
           wrapperStyle={{
             outline: 'none',
             borderRadius: 4,

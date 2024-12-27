@@ -56,7 +56,7 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
           'Out of SLA': item.value['Out of SLA'] || 0,
           'Within SLA': item.value['Within SLA'] || 0,
         }))}
-        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+        margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
       >
         <Legend
           verticalAlign="top"
