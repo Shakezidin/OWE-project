@@ -122,7 +122,7 @@ export const reportingCaller = async (
 
   try {
     const response: AxiosResponse = await axios.post(
-      `http://155.138.239.170:31024/owe-reports-service/v1/${endpoint}`,
+      `${BASE_URL}/${endpoint}`,
       postData,
       config
     );
