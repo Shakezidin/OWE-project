@@ -36,7 +36,6 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		dataPercentage []models.DataPoint
 		whereEleList   []interface{}
 		escapedOffices []string
-		totalWeeks     int
 	)
 
 	log.EnterFn(0, "HandleGetTimelineAhjFifteenReportRequest")
@@ -106,7 +105,6 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 				quarter = fmt.Sprintf("%d", q)
 				continue
 			}
-			totalWeeks += 12
 			quarter = fmt.Sprintf("%s, %d", quarter, q)
 		}
 		quarter = fmt.Sprintf("quarter IN (%s)", quarter)
@@ -312,6 +310,20 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		states = "pvi.state IN (" + strings.Join(escapedStates, ", ") + ")"
 	}
 
+	quarter := ""
+	if len(dataReq.Quarter) == 0 {
+		quarter = "'ALL' = 'ALL'"
+	} else {
+		for i, q := range dataReq.Quarter {
+			if i == 0 {
+				quarter = fmt.Sprintf("%d", q)
+				continue
+			}
+			quarter = fmt.Sprintf("%s, %d", quarter, q)
+		}
+		quarter = fmt.Sprintf("DATE_PART('quarter', fin.pv_fin_date) IN (%s)", quarter)
+	}
+
 	query := fmt.Sprintf(`SELECT
     		DATE_PART('week', fin.pv_fin_date) AS install_week,
     		CASE 
@@ -331,14 +343,15 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
     		pvi.customer_unique_id = fin.customer_unique_id
 		WHERE
     		DATE_PART('year', fin.pv_fin_date) = $1
-    		AND (%s)
+			AND (%s)
+			AND (%s)
     		AND (%s)
     		AND (%s)
 		GROUP BY 
     		install_week, day_range
 		ORDER BY 
     		install_week, day_range;
-	`, Offices, ahj, states)
+	`, Offices, ahj, states, quarter)
 
 	whereEleList = append(whereEleList, dataReq.Year)
 
@@ -354,20 +367,19 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 	reportResp.Data = make(map[string][]models.DataPoint)
 
 	//Install to FIN Day Range
-	var data []models.DataPoint = make([]models.DataPoint, 52)
-	for i := 0; i < 52; i++ {
-		data[i].Value = make(map[string]interface{})
-	}
-
+	var data []models.DataPoint
 	for _, item := range dbData {
-		log.FuncErrorTrace(0, "item: %+v", item)
 		install_week := int(item["install_week"].(float64))
-		install_week -= 1
 
 		days_range := item["day_range"].(string)
 		project_count := item["project_count"].(int64)
 
-		data[install_week].Value[days_range] = project_count
+		data = append(data, models.DataPoint{
+			Value: map[string]interface{}{
+				days_range: project_count,
+			},
+			Index: install_week,
+		})
 	}
 	reportResp.Data[categories[0]] = data
 
@@ -387,11 +399,12 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 							AND (%s)
 							AND (%s)
 							AND (%s)
+							AND (%s)
 						GROUP BY
     						install_week
 						ORDER BY
     						install_week;
-					`, Offices, ahj, states)
+					`, quarter, Offices, ahj, states)
 
 	dbDataAverage, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
@@ -403,14 +416,9 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 
 	log.FuncErrorTrace(0, "dbDataAverage: %+v", dbDataAverage)
 
-	var dataAverage []models.DataPoint = make([]models.DataPoint, 52)
-	for i := 0; i < 52; i++ {
-		dataAverage[i].Value = make(map[string]interface{})
-	}
-
+	var dataAverage []models.DataPoint
 	for _, item := range dbDataAverage {
 		install_week := int(item["install_week"].(float64))
-		install_week -= 1
 
 		byteArray := item["avg_day_diff"].([]uint8)
 		strValue := string(byteArray)
@@ -421,8 +429,12 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 			fmt.Println("Error parsing float:", err)
 			return
 		}
-
-		dataAverage[install_week].Value["average"] = avgDayDiff
+		dataAverage = append(dataAverage, models.DataPoint{
+			Index: install_week,
+			Value: map[string]interface{}{
+				"average": avgDayDiff,
+			},
+		})
 	}
 	reportResp.Data[categories[1]] = dataAverage
 
