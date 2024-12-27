@@ -150,7 +150,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		filter, whereEleList = PrepareSaleRepAddressFilters(tableName, dataReq, SaleRepList)
 	}
 
-	query = `SELECT cs.unique_id, cs.address, cs.customer_name as home_owner, cs.project_status, cs.address_lat, cs.address_lng, cs.state
+	query = `SELECT cs.unique_id, cs.address, cs.customer_name as home_owner, cs.project_status, cs.address, cs.state
 			FROM  customers_customers_schema cs
 			LEFT JOIN ntp_ntp_schema ns ON cs.unique_id = ns.unique_id 
 			LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id`
