@@ -419,6 +419,7 @@ func checkField(value interface{}, fieldName string, targetType string) (interfa
 		log.FuncErrorTrace(0, "Warning: %s is nil", fieldName)
 		return nil, false
 	}
+
 	switch targetType {
 	case "string":
 		if strVal, ok := value.(string); ok {
@@ -429,10 +430,22 @@ func checkField(value interface{}, fieldName string, targetType string) (interfa
 			return floatVal, true
 		}
 	case "time.Time":
-		if timeVal, ok := value.(time.Time); ok {
+		if fieldName == "install_scheduled_date" {
+			if strVal, ok := value.(string); ok {
+				// Parse the string into a time.Time object
+				layout := "Mon Jan 02 2006 15:04:05 MST-0700 (MST)"
+				parsedTime, err := time.Parse(layout, strVal)
+				if err != nil {
+					log.FuncErrorTrace(0, "Error parsing %s as time.Time: %v", fieldName, err)
+					return nil, false
+				}
+				return parsedTime, true
+			}
+		} else if timeVal, ok := value.(time.Time); ok {
 			return timeVal, true
 		}
 	}
+
 	log.FuncErrorTrace(0, "Error: %s is not a %s. Value: %v", fieldName, targetType, value)
 	return nil, false
 }
