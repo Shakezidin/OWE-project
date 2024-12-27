@@ -94,17 +94,33 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		states = "pv.state IN (" + strings.Join(escapedStates, ", ") + ")"
 	}
 
+	quarter := ""
+	if len(dataReq.Quarter) == 0 {
+		quarter = "'ALL' = 'ALL'"
+	} else {
+		for i, q := range dataReq.Quarter {
+			if i == 0 {
+				quarter = fmt.Sprintf("%d", q)
+				continue
+			}
+			quarter = fmt.Sprintf("%s, %d", quarter, q)
+		}
+		quarter = fmt.Sprintf("quarter IN (%s)", quarter)
+	}
+
 	query := fmt.Sprintf(`SELECT 
+							quarter,
 							install_week,
 							SLA_Status,
 							COUNT(*) AS count,
 							ROUND((COUNT(*) * 100.0) / SUM(COUNT(*)) OVER (PARTITION BY install_week), 2) AS percentage
 						FROM (
 							SELECT 
+								DATE_PART('quarter', pv.pv_completion_date) AS quarter,
 								DATE_PART('week', pv.pv_completion_date) AS install_week,
 								CASE 
-									WHEN DATE_PART('day', pv.pv_completion_date - cu.sale_date) < (CAST(ah.ahj_timeline AS INT) + 15) THEN 'Within SLA'
-									ELSE 'Out of SLA'
+									WHEN DATE_PART('day', pv.pv_completion_date - cu.sale_date) < (CAST(ah.ahj_timeline AS INT) + 15) THEN 'within'
+									ELSE 'out'
 								END AS SLA_Status
 							FROM 
 								pv_install_install_subcontracting_schema AS pv
@@ -123,11 +139,11 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 								AND ah.ahj_timeline != ''
 						) subquery
 						GROUP BY 
-							install_week, SLA_Status
+							install_week, SLA_Status, quarter
+						HAVING (%s)
 						ORDER BY 
 							install_week, SLA_Status;
-						;
-				`, Offices, ahj, states)
+				`, Offices, ahj, states, quarter)
 
 	whereEleList = append(whereEleList, dataReq.Year)
 
@@ -152,12 +168,15 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		dataPercentage[i].Value = make(map[string]interface{})
 	}
 
+	qtrToCountMaping := make(map[float64]map[string]int64)
 	for _, item := range dbData {
 		install_week := int(item["install_week"].(float64))
 		install_week -= 1
 
-		sla_status := item["sla_status"].(string)
+		status := item["sla_status"].(string)
 		count := item["count"].(int64)
+
+		quarter := item["quarter"].(float64)
 
 		byteArray := item["percentage"].([]uint8)
 		strValue := string(byteArray)
@@ -167,11 +186,46 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 			return
 		}
 
-		dataTotal[install_week].Value[sla_status] = count
-		dataPercentage[install_week].Value[sla_status] = percentage
+		if _, ok := qtrToCountMaping[quarter]; !ok {
+			qtrToCountMaping[quarter] = map[string]int64{
+				"within": 0,
+				"out":    0,
+			}
+		}
+
+		slaStatusSlabel := "Within SLA"
+		if status == "out" {
+			slaStatusSlabel = "Out of SLA"
+		}
+
+		qtrToCountMaping[quarter][slaStatusSlabel] += count
+		dataTotal[install_week].Value[slaStatusSlabel] = count
+		dataPercentage[install_week].Value[slaStatusSlabel] = percentage
+
+		dataTotal[install_week].Index = install_week + 1
+		dataPercentage[install_week].Index = install_week + 1
 	}
+
+	qtrSummary := make(map[string]map[string]float64)
+
+	for qtr, countMap := range qtrToCountMaping {
+		total := countMap["within"] + countMap["out"]
+		qtrStr := fmt.Sprintf("Q%2.f", qtr)
+
+		qtrSummaryItem := map[string]float64{
+			"Within SLA Count":               float64(countMap["within"]),
+			"Within SLA Percentage":          float64(countMap["within"]) / float64(total) * 100,
+			"Out of SLA Count":               float64(countMap["out"]),
+			"Out of SLA Percentage" + qtrStr: float64(countMap["out"]) / float64(total) * 100,
+		}
+		qtrSummary[fmt.Sprintf("q%.0f", qtr)] = qtrSummaryItem
+	}
+
 	reportResp.Data[categories[0]] = dataPercentage
 	reportResp.Data[categories[1]] = dataTotal
+	reportResp.Summary = qtrSummary
+
+	log.FuncDebugTrace(0, "reportResp: %+v", reportResp.Summary)
 
 	appserver.FormAndSendHttpResp(resp, "AHJ+15 Report", http.StatusOK, reportResp, int64(RecordCount))
 }
