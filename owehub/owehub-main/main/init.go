@@ -623,12 +623,11 @@ func init() {
 	}
 
 	/* Upsert sales partners from owe db on service start */
-	/* TODO: Uncomment this once tape owe db is ready */
-	// err = apiHandler.UpsertSalesPartnersFromOweDb()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to pull sales partners from owe db with error = %v", err)
-	// 	return
-	// }
+	err = apiHandler.UpsertSalesPartnersFromOweDb()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to pull sales partners from owe db with error = %v", err)
+		return
+	}
 
 	//* Read and Initialize Podio configuration from cfg */
 	// err = FetchPodioCfg()
