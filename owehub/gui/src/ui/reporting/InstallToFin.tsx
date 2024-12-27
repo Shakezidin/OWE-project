@@ -18,6 +18,10 @@ import CustomSelect from './components/Dropdowns/CustomSelect';
 import BackButtom from './components/BackButtom';
 import styles from './styles/InstalltoFin.module.css';
 import MicroLoader from '../components/loader/MicroLoader';
+import OfficeSelect from './components/Dropdowns/OfficeSelect';
+import AHJSelect from './components/Dropdowns/AHJSelect';
+import StateSelect from './components/Dropdowns/StateSelect';
+import QuarterSelect from './components/Dropdowns/QuarterSelect';
 
 interface LabelProps {
   x: number;
@@ -207,95 +211,26 @@ const InstalltoFin = () => {
         <BackButtom heading="Install to FIN" />
         <div className="report-header-dropdown flex-wrap">
           <div>
-            <CustomSelect
-              options={[
-                { value: 'AZKING01', label: 'AZKING01' },
-                { value: 'AZPEO01', label: 'AZPEO01' },
-                { value: 'AZTEM01', label: 'AZTEM01' },
-                { value: 'AZTUC01', label: 'AZTUC01' },
-                { value: 'CODEN1', label: 'CODEN1' },
-                { value: 'COGJT1', label: 'COGJT1' },
-                { value: 'NMABQ01', label: 'NMABQ01' },
-                { value: 'No Office', label: 'No Office' },
-                { value: 'TXAUS01', label: 'TXAUS01' },
-                { value: 'TXDAL01', label: 'TXDAL01' },
-                { value: 'TXELP01', label: 'TXELP01' },
-              ]}
-              label="Office"
-              value={selectedOffices} // Bind selected value
-              onChange={(value) => setSelectedOffices(value)} // Update state on change
+            <OfficeSelect
+              onOfficeChange={setSelectedOffices}
             />
           </div>
 
           <div>
-            <CustomSelect
-              options={[
-                { value: 'null', label: 'null' },
-                { value: 'AHJ', label: 'AHJ' },
-                {
-                  value: 'Abilene, City of (TX)',
-                  label: 'Abilene, City of (TX)',
-                },
-                { value: 'Adams County (CO)', label: 'Adams County (CO)' },
-                {
-                  value: 'Alamogordo, City of (NM)',
-                  label: 'Alamogordo, City of (NM)',
-                },
-                { value: 'Alamosa City (CO)', label: 'Alamosa City (CO)' },
-                { value: 'Alamosa County (CO)', label: 'Alamosa County (CO)' },
-                {
-                  value: 'Albuquerque, City of (NM)',
-                  label: 'Albuquerque, City of (NM)',
-                },
-                { value: 'Alice, City of (TX)', label: 'Alice, City of (TX)' },
-                { value: 'Allen, City of (TX)', label: 'Allen, City of (TX)' },
-                {
-                  value: 'Amarillo, City of (TX)',
-                  label: 'Amarillo, City of (TX)',
-                },
-                {
-                  value: 'Andrews, City of(TX)',
-                  label: 'Andrews, City of(TX)',
-                },
-                {
-                  value: 'Angelina County (TX)',
-                  label: 'Angelina County (TX)',
-                },
-                { value: 'Anna, City of (TX)', label: 'Anna, City of (TX)' },
-              ]}
-              label="AHJ"
-              value={selectedAhj}
-              onChange={setSelectedAhj}
+            <AHJSelect
+              onAhjChange={setSelectedAhj}
             />
           </div>
 
           <div>
-            <CustomSelect
-              options={[
-                { value: 'AZ :: Arizona', label: 'AZ' },
-                { value: 'CO :: Colorado', label: 'CO' },
-                { value: 'NM :: New Mexico', label: 'NM' },
-                { value: 'NV :: Nevada', label: 'NV' },
-                { value: 'ST :: South Dakota', label: 'ST' },
-                { value: 'TX :: Texas', label: 'TX' },
-              ]}
-              label="State"
-              value={selectedStates}
-              onChange={setSelectedState}
+            <StateSelect
+              onStateChange={setSelectedState}
             />
           </div>
 
           <div>
-            <CustomSelect
-              options={[
-                { value: 'Q1 2024', label: 'Q1 2024' },
-                { value: 'Q2 2024', label: 'Q2 2024' },
-                { value: 'Q3 2024', label: 'Q3 2024' },
-                { value: 'Q4 2024', label: 'Q4 2024' },
-              ]}
-              label="Quarter"
-              value={selectedQuarter}
-              onChange={setSelectedQuarter}
+            <QuarterSelect
+              onQuarterChange={setSelectedQuarter}
             />
           </div>
         </div>
