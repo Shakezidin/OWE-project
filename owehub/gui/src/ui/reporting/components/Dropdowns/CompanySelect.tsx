@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DropdownCheckBox from '../../../components/DropdownCheckBox';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { getDropDownData } from '../../../../redux/apiActions/reportingAction/reportingAction';
 
 interface Option {
   value: string;
@@ -10,8 +12,32 @@ interface CompanySelectProps {
   onOfficeChange?: (values: string[]) => void; // Callback function to send values to parent
 }
 
-const CompanySelect: React.FC<CompanySelectProps> = ({ onOfficeChange = ()=>{ } }) => {
+const CompanySelect: React.FC<CompanySelectProps> = ({ onOfficeChange = () => { } }) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getDropDownData({}));
+  }, []);
+
+  const { dropdownData } = useAppSelector(
+    (state) => state.reportingSlice
+  );
+
+  console.log(dropdownData, "data is sjowhwug")
+
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
+
+  const [officeSelect, setOfficeSelect] = useState([]);
+
+  useEffect(() => {
+    if (!dropdownData.loading && dropdownData) {
+      const officeData = dropdownData?.data?.offices?.map((office: any) => ({
+        label: office,
+        value: office,
+      }));
+      setOfficeSelect(officeData);
+    }
+  }, [dropdownData])
 
   const handleChange = (val: Option[]) => {
     setSelectedDealer(val);
@@ -25,15 +51,7 @@ const CompanySelect: React.FC<CompanySelectProps> = ({ onOfficeChange = ()=>{ } 
         label={selectedDealer.length === 1 ? 'Office' : 'Office'}
         placeholder={'Search Office'}
         selectedOptions={selectedDealer}
-        options={[
-          { label: `#N/A`, value: `#N/A` },
-          { label: `Peoria/Kingman`, value: `Peoria/Kingman` },
-          { label: 'Tucson', value: 'Tucson' },
-          { label: `Colorado`, value: `Colorado` },
-          { label: 'Albuquerque/El Paso', value: 'Albuquerque/El Paso' },
-          { label: `Tempe`, value: `Tempe` },
-          { label: 'Texas', value: 'Texas' },
-        ]}
+        options={officeSelect ? officeSelect : []}
         onChange={handleChange}
       />
     </div>

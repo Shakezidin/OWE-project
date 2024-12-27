@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import styles from '../../styles/CompletionsPerOffice.module.css';
 import YearSelect from '../../components/Dropdowns/YearSelect';
 import WeekSelect from '../../components/Dropdowns/WeekSelect';
 import DaySelect from '../../components/Dropdowns/DaySelect';
@@ -518,7 +519,7 @@ const CompletionsPerTeams: React.FC = () => {
   };
 
   const tooltipStyle = {
-    fontSize: '8px',
+    fontSize: '10px',
     padding: '6px',
   };
 
@@ -578,14 +579,16 @@ const CompletionsPerTeams: React.FC = () => {
         </div>
       </div>
 
-      <div className="reports-yscroll">
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Office by Count
-          </h3>
+      <div className={`${styles.container} reports-yscroll`}>
+        <div>
+        <p className={`${styles.tableHeading}`}>
+        Installs Completed per Office by Count
+          </p>
+          <div className={styles.wrapper}>
+          <div>
           <div
             className="flex justify-end h5 bold pr3"
-            style={{ background: '#f0f4c3' }}
+            style={{ background: '#f0f4c3', padding:'10px 15px', borderRadius: '12px 12px 0 0' }}
             title="Week / Customer"
           >
             Week / Customer
@@ -600,42 +603,51 @@ const CompletionsPerTeams: React.FC = () => {
             className="install-table"
             sticky={false}
           />
-        </div>
-
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Office by System Size
-          </h3>
-          <div
-            className="flex justify-end h5 bold pr3"
-            style={{ background: '#b2ebf2' }}
-            title="Week / Customer"
-          >
-            Week / System Size{' '}
+            </div>
           </div>
-          <Table
-            columns={systemSizeColumns}
-            dataSource={[
-              ...systemSizeTableData.map((row) => ({
-                ...row,
-                grandTotal: (
-                  <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
-                ),
-              })),
-              calculateSystemSizeGrandTotals(systemSizeTableData),
-            ]}
-            pagination={false}
-            className="install-table"
-          />
+          
         </div>
 
-        <div className="bg-white rounded-lg shadow p2">
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Office by System Size (Average kW)
-          </h3>
+        <div>
+        <p className={`${styles.tableHeading}`}>
+        Installs Completed per Office by System Size
+          </p>
+          <div className={styles.wrapper}>
+        
+        <div
+          className="flex justify-end h5 bold pr3"
+          style={{ background: '#b2ebf2' , padding:'10px 15px',borderRadius: '12px 12px 0 0' }}
+          title="Week / Customer"
+        >
+          Week / System Size{' '}
+        </div>
+        <Table
+          columns={systemSizeColumns}
+          dataSource={[
+            ...systemSizeTableData.map((row) => ({
+              ...row,
+              grandTotal: (
+                <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
+              ),
+            })),
+            calculateSystemSizeGrandTotals(systemSizeTableData),
+          ]}
+          pagination={false}
+          className="install-table"
+        />
+      </div>
+
+        </div>
+
+<div>
+<p className={`${styles.tableHeading}`}>
+Installs Completed per Office by System Size (Average kW)
+          </p>
+<div className={styles.wrapper}>
+         
           <div
             className="flex justify-end h5 bold pr3"
-            style={{ background: '#f0f4c3' }}
+            style={{ background: '#f0f4c3',padding:'10px 15px',borderRadius: '12px 12px 0 0' }}
             title="Week / Customer"
           >
             Week / Customer
@@ -650,33 +662,47 @@ const CompletionsPerTeams: React.FC = () => {
             className="install-table"
           />
         </div>
+</div>
+
+        
 
         {/* AZPEO Chart */}
-        <div className="bg-white rounded-lg shadow p2 mb-6">
-          <h3 className="text-lg font-semibold mb-4">
+        <div >
+        <p className={`${styles.tableHeading}`}>
             Installs Completed per Team by System Size (Average kW) - AZPEO
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={azpeoData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
                 interval={0}
                 height={60}
               />
-              <YAxis domain={[0, 150]} tick={{ fontSize: 10, fill: '#555' }} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <YAxis domain={[0, 150]} tick={{ fontSize: 8, fill: '#555' }} tickSize={10} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(AZPEO_COLORS).map((team) => (
                 <Bar
@@ -688,34 +714,47 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
         {/* AZTEM Chart */}
-        <div className="bg-white rounded-lg shadow p2 mb-6">
-          <h3 className="text-lg font-semibold mb-4">
+        <div>
+        <p className={`${styles.tableHeading}`}>
             Installs Completed per Team by System Size (Average kW) - AZTEM
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={aztemData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
                 interval={0}
                 height={60}
               />
-              <YAxis domain={[0, 125]} tick={{ fontSize: 10, fill: '#555' }} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <YAxis domain={[0, 125]} tick={{ fontSize: 8, fill: '#555' }} tickSize={10} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(AZTEM_COLORS).map((team) => (
                 <Bar
@@ -727,34 +766,47 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
         {/* AZTUC Chart */}
-        <div className="bg-white rounded-lg shadow p2 mb-6">
-          <h3 className="text-lg font-semibold mb-4">
+        <div>
+        <p className={`${styles.tableHeading}`}>
             Installs Completed per Team by System Size (Average kW) - AZTUC
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={aztucData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
                 interval={0}
                 height={60}
               />
-              <YAxis domain={[0, 50]} tick={{ fontSize: 10, fill: '#555' }} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <YAxis domain={[0, 50]} tick={{ fontSize: 8, fill: '#555' }} tickSize={10} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(AZTUC_COLORS).map((team) => (
                 <Bar
@@ -766,22 +818,27 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
         {/* CODEN Chart */}
-        <div className="bg-white rounded-lg shadow p2 mb-6">
-          <h3 className="text-lg font-semibold mb-4">
+        <div >
+        <p className={`${styles.tableHeading}`}>
             Installs Completed per Team by System Size (Average kW) - CODEN
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={codenData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
@@ -790,13 +847,22 @@ const CompletionsPerTeams: React.FC = () => {
               />
               <YAxis
                 domain={[0, 'dataMax + 10']}
-                tick={{ fontSize: 10, fill: '#555' }}
+                tick={{ fontSize: 8, fill: '#555' }}
+                tickSize={10}
               />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(CODEN_COLORS).map((team) => (
                 <Bar
@@ -808,24 +874,29 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
         {/* COGJT Chart */}
-        <div className="bg-white rounded-lg shadow p2">
+        <div>
           {' '}
           {/* Removed mb-6 from the last chart */}
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Team by System Size (Average kW) - COGJT
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          <p className={`${styles.tableHeading}`}>
+          Installs Completed per Team by System Size (Average kW) - COGJT
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={cogjtData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
@@ -834,13 +905,21 @@ const CompletionsPerTeams: React.FC = () => {
               />
               <YAxis
                 domain={[0, 'dataMax + 10']}
-                tick={{ fontSize: 10, fill: '#555' }}
+                tick={{ fontSize: 8, fill: '#555' }} tickSize={10}
               />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(COGJT_COLORS).map((team) => (
                 <Bar
@@ -852,24 +931,29 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
         {/* nmabq Chart */}
-        <div className="bg-white rounded-lg shadow p2">
+        <div>
           {' '}
           {/* Removed mb-6 from the last chart */}
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Team by System Size (Average kW) - NMABQ
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          <p className={`${styles.tableHeading}`}>
+          Installs Completed per Team by System Size (Average kW) - NMABQ
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={nmabqData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
@@ -878,13 +962,21 @@ const CompletionsPerTeams: React.FC = () => {
               />
               <YAxis
                 domain={[0, 'dataMax + 10']}
-                tick={{ fontSize: 10, fill: '#555' }}
+                tick={{ fontSize: 8, fill: '#555' }} tickSize={10}
               />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }} 
+          contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(NMABQ_COLORS).map((team) => (
                 <Bar
@@ -896,24 +988,29 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p2">
+        <div>
           {' '}
           {/* Removed mb-6 from the last chart */}
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Team by System Size (Average kW) - TXDAL,
+          <p className={`${styles.tableHeading}`}>
+          Installs Completed per Team by System Size (Average kW) - TXDAL,
             TXSAN
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={txdalData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
@@ -922,13 +1019,21 @@ const CompletionsPerTeams: React.FC = () => {
               />
               <YAxis
                 domain={[0, 'dataMax + 10']}
-                tick={{ fontSize: 10, fill: '#555' }}
+                tick={{ fontSize: 8, fill: '#555' }} tickSize={10}
               />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(TXDAL_COLORS).map((team) => (
                 <Bar
@@ -940,23 +1045,28 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p2">
+        <div>
           {' '}
           {/* Removed mb-6 from the last chart */}
-          <h3 className="text-lg font-semibold mb-4">
-            Installs Completed per Team by System Size (Average kW) - TXELP
-          </h3>
-          <ResponsiveContainer width="100%" height={400}>
+          <p className={`${styles.tableHeading}`}>
+          Installs Completed per Team by System Size (Average kW) - TXELP
+          </p>
+          <div className={styles.wrapper}>
+            <div className={styles.graph}>
+            <ResponsiveContainer width="100%" height={400}>
             <BarChart data={txelData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="week"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 8,
                   fill: '#555',
                 }}
+                tickSize={10}
                 angle={-45}
                 dy={20}
                 dx={-8}
@@ -965,13 +1075,21 @@ const CompletionsPerTeams: React.FC = () => {
               />
               <YAxis
                 domain={[0, 'dataMax + 10']}
-                tick={{ fontSize: 10, fill: '#555' }}
+                tick={{ fontSize: 8, fill: '#555' }} tickSize={10}
               />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip wrapperStyle={{
+            outline: 'none',
+            borderRadius: 4,
+            padding: 4,
+            boxShadow: 'none',
+          }}
+           contentStyle={tooltipStyle} />
               <Legend
+                layout="horizontal"
+                align="center"
                 verticalAlign="top"
                 height={32}
-                wrapperStyle={{ gap: 20, fontSize: 10 }}
+                wrapperStyle={{ gap: 20, fontSize: 12, paddingBottom:10, top: 0, left:32 }}
               />
               {Object.keys(TXELP_COLORS).map((team) => (
                 <Bar
@@ -983,6 +1101,8 @@ const CompletionsPerTeams: React.FC = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+            </div>
+          </div>
         </div>
       </div>
     </div>

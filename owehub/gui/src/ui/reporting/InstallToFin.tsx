@@ -334,6 +334,7 @@ const InstalltoFin = () => {
                       paddingBottom: '20px',
                       fontSize: '12px',
                       fontFamily: 'poppins',
+                      cursor:'pointer'
                     }}
                     formatter={getLegendLabel}
                   />
