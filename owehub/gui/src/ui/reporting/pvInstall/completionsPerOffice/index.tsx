@@ -578,7 +578,7 @@ const CompletionsPerOffice: React.FC = () => {
         
           <div
             className="flex justify-end h5 bold pr3"
-            style={{ background: '#f0f4c3',padding:'10px 15px' }}
+            style={{ background: '#f0f4c3',padding:'10px 15px',borderRadius: '12px 12px 0 0' }}
             title="Week / Customer"
           >
             Week / System Size{' '}
