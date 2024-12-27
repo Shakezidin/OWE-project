@@ -62,10 +62,10 @@ const LineGraphProd: React.FC<LineGraphProps> = ({ data }) => {
         <ResponsiveContainer width="95%" height="100%" className={'graph-container'}>
 
             <LineChart data={transformedData}  margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-                <Legend verticalAlign="top"  wrapperStyle={{ paddingBottom: 20,fontSize: 10 }} />
+                <Legend verticalAlign="top"  wrapperStyle={{ paddingBottom: 20,fontSize: 12 }} />
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
-                <YAxis tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />
+                <XAxis dataKey="name" tick={{ fontSize: 8, fontWeight: 500, fill: '#818181'}} dy={5} />
+                <YAxis tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line type="monotone" dataKey="Albuquerque/El Paso" stroke="#8884d8" strokeWidth={2} dot={{ r: 3, fill: '#8884d8' }} activeDot={{ r: 4, fill: '#8884d8' }} />
                 <Line type="monotone" dataKey="Colorado" stroke="#82ca9d" strokeWidth={2} dot={{ r: 3, fill: '#82ca9d' }} activeDot={{ r: 4 }} />

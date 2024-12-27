@@ -25,7 +25,7 @@ const MulCol = ({
   console.log(data, "mildghjd")
 
   return (
-    <div className="grey-table-main-container">
+    <div className="grey-table-main-container" style={{width: "100%"}}>
       {reportType?.label ? (
         <h3>
           {middleName}
@@ -36,8 +36,7 @@ const MulCol = ({
 
       <div className="grey-table-container" style={
         {
-          maxHeight:"282px",
-          minHeight:"282px",
+          height: "300px"
           // position:"relative"
         }
       }>

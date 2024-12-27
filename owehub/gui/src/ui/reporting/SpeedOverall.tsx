@@ -673,22 +673,24 @@ const SpeedOverall: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="reports-yscroll">
-        <div
-          style={{
-            background: '#ddd',
-            height: 50,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 5,
-            width: '100%',
-            margin: '10px 0',
-          }}
-        >
-          Speed - Overall
-        </div>
-
+      <div
+        style={{
+          background: '#e0e0e0',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 4,
+          width: '97%',
+          padding: 8,
+          margin: "1.2rem",
+          fontWeight: 600,
+          fontSize: '1rem',
+          marginBottom: '1rem',
+        }}
+      >
+        Speed - Overall
+      </div>
+      <div className="reports-yscroll" style={{height: "68vh"}}>
         <div className="report-graphs">
           {isLoading ? (
             <div
@@ -710,7 +712,6 @@ const SpeedOverall: React.FC = () => {
                     className="report-table"
                     style={{
                       display: 'flex',
-                      justifyContent: 'center',
                       alignItems: 'center',
                       marginBottom: 30,
                       height: 300,

@@ -1,17 +1,16 @@
 .grey-table-container {
   min-width: 300px;
-  margin: auto;
   overflow-x: auto;
   border: 1px solid #ddd;
-  border-radius: 1px;
+  border-radius: 8px;
   box-shadow:
     rgba(0, 0, 0, 0.14) 0px 2px 2px 0px,
     rgba(0, 0, 0, 0.2) 0px 1px 1px 0px,
     rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
 }
 .grey-table-container::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 .grey-table-container::-webkit-scrollbar {
   display: initial;
@@ -54,7 +53,7 @@
 
 .grey-custom-table th {
   background-color: #f4f4f4;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 12px;
 }
 
@@ -68,7 +67,7 @@
 
 .grey-custom-table tfoot th {
   border-bottom: none;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 12px;
   white-space: nowrap;
 }
@@ -84,4 +83,9 @@
   gap: 6px;
   justify-content: center;
   align-items: center;
+  transform: all 0.3s ease;
+}
+
+.backButton-reporting svg:hover{
+  transform: scale(1.05);
 }
