@@ -28,11 +28,12 @@ import (
  ******************************************************************************/
 func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.TimelineReportRequest
-		RecordCount  int = 0
-		reportResp   models.SummaryReportResponse
-		whereEleList []interface{}
+		err            error
+		dataReq        models.TimelineReportRequest
+		RecordCount    int = 0
+		reportResp     models.SummaryReportResponse
+		whereEleList   []interface{}
+		escapedOffices []string
 	)
 
 	log.EnterFn(0, "HandleGetTimelineAhjFifteenReportRequest")
@@ -63,9 +64,10 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
 		Offices = "'ALL' = 'ALL'"
 	} else {
-		escapedOffices := make([]string, len(dataReq.Office))
-		for i, name := range dataReq.Office {
-			escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		for _, name := range dataReq.Office {
+			for _, officeCode := range getDBOfficeNames(name) {
+				escapedOffices = append(escapedOffices, "'"+strings.ReplaceAll(officeCode, "'", "''")+"'")
+			}
 		}
 		Offices = "pv.office IN (" + strings.Join(escapedOffices, ", ") + ")"
 	}
@@ -182,11 +184,12 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
  ******************************************************************************/
 func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.TimelineReportRequest
-		RecordCount  int = 0
-		reportResp   models.SummaryReportResponse
-		whereEleList []interface{}
+		err            error
+		dataReq        models.TimelineReportRequest
+		RecordCount    int = 0
+		reportResp     models.SummaryReportResponse
+		whereEleList   []interface{}
+		escapedOffices []string
 	)
 
 	log.EnterFn(0, "HandleGetTimelineInstallToFinReportRequest")
@@ -217,9 +220,10 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
 		Offices = "'ALL' = 'ALL'"
 	} else {
-		escapedOffices := make([]string, len(dataReq.Office))
-		for i, name := range dataReq.Office {
-			escapedOffices[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		for _, name := range dataReq.Office {
+			for _, officeCode := range getDBOfficeNames(name) {
+				escapedOffices = append(escapedOffices, "'"+strings.ReplaceAll(officeCode, "'", "''")+"'")
+			}
 		}
 		Offices = "pvi.office IN (" + strings.Join(escapedOffices, ", ") + ")"
 	}
