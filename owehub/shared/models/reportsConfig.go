@@ -13,5 +13,5 @@ type ReportsOfficeMappingItem struct {
 // bidirectional mapping for db office name to report office name and vice versa
 type ReportsOfficeMapping struct {
 	DbToReportMap map[string]string
-	ReportToDbMap map[string]string
+	ReportToDbMap map[string][]string
 }

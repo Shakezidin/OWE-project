@@ -439,11 +439,11 @@ func FetchOfficeMapping() (err error) {
 
 	officeMappingParsed := models.ReportsOfficeMapping{
 		DbToReportMap: make(map[string]string),
-		ReportToDbMap: make(map[string]string),
+		ReportToDbMap: make(map[string][]string),
 	}
 	for _, item := range officeMappingCfg {
 		officeMappingParsed.DbToReportMap[item.DBOfficeName] = item.ReportOfficeName
-		officeMappingParsed.ReportToDbMap[item.ReportOfficeName] = item.DBOfficeName
+		officeMappingParsed.ReportToDbMap[item.ReportOfficeName] = append(officeMappingParsed.ReportToDbMap[item.ReportOfficeName], item.DBOfficeName)
 	}
 
 	types.CommGlbCfg.ReportsOfficeMapping = officeMappingParsed

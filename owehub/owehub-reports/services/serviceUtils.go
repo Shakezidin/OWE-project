@@ -24,10 +24,10 @@ func getTime(item map[string]interface{}, key string) time.Time {
 }
 
 // Get DB office name from report office name via office mapping config
-func getDBOfficeName(reportOfficeName string) string {
+func getDBOfficeNames(reportOfficeName string) []string {
 	dbOfficeName, ok := types.CommGlbCfg.ReportsOfficeMapping.ReportToDbMap[reportOfficeName]
 	if !ok {
-		return reportOfficeName
+		return []string{reportOfficeName}
 	}
 	return dbOfficeName
 }

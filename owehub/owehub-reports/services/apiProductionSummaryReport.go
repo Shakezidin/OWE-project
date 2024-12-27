@@ -62,9 +62,8 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 	}
 
 	// Convert report office names to db office names
-	dbOffices = make([]string, len(dataReq.Office))
-	for i, reportOffice := range dataReq.Office {
-		dbOffices[i] = getDBOfficeName(reportOffice)
+	for _, reportOffice := range dataReq.Office {
+		dbOffices = append(dbOffices, getDBOfficeNames(reportOffice)...)
 	}
 
 	if dataReq.ReportType == "install" {
