@@ -690,7 +690,7 @@ const SpeedOverall: React.FC = () => {
       >
         Speed - Overall
       </div>
-      <div className="reports-yscroll" style={{height: "68vh"}}>
+      <div className="reports-yscroll" style={{height: "calc(100vh - 245px)"}}>
         <div className="report-graphs">
           {isLoading ? (
             <div

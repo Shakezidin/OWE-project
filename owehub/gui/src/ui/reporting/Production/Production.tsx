@@ -178,9 +178,9 @@ const Production: React.FC = () => {
     width: isMobile ? 'auto' : '100%',
     height: '300px',
     marginBottom: '-41px',
-    padding: "1rem 0",
+    padding: '1rem 0',
     boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-    borderRadius: "8px",
+    borderRadius: '8px',
     border: '1px solid rgba(0, 0, 0, 0.1)',
   };
 
@@ -205,7 +205,15 @@ const Production: React.FC = () => {
     }
   };
 
-  const [selectedOffices, setSelectedOffices] = useState<string[]>(["Albuquerque/El Paso",'Tucson', 'Texas','Tempe','Colorado','Peoria/Kingman','N/A']);
+  const [selectedOffices, setSelectedOffices] = useState<string[]>([
+    'Albuquerque/El Paso',
+    'Tucson',
+    'Texas',
+    'Tempe',
+    'Colorado',
+    'Peoria/Kingman',
+    'N/A',
+  ]);
 
   const [subReports, setSubReports] = useState<SubReport[]>([]);
 
@@ -219,7 +227,7 @@ const Production: React.FC = () => {
           year: parseInt(selectedYear.value),
           report_type: reportType.value,
           office: selectedOffices,
-          week:parseInt(selectedWeek.value)
+          week: parseInt(selectedWeek.value),
         });
 
         if (response.status === 200) {
@@ -236,7 +244,7 @@ const Production: React.FC = () => {
       setLoading(false);
     };
     fetchData();
-  }, [selectedYear, reportType,selectedOffices,selectedWeek]);
+  }, [selectedYear, reportType, selectedOffices, selectedWeek]);
 
   return (
     <div className="total-main-container">
@@ -292,31 +300,34 @@ const Production: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="reports-yscroll">
-        <div
-          style={{
-            background: '#e0e0e0',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 4,
-            width: '100%',
-            fontSize: "1rem",
-            fontWeight: "600",
-            padding: "8px",
-            marginBottom: "1rem"
-          }}
-        >
-          {reportType.label}
-        </div>
+      <div
+        style={{
+          background: '#e0e0e0',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 4,
+          width: '97%',
+          fontSize: '1rem',
+          fontWeight: '600',
+          padding: '8px',
+          margin: '1.2rem 1.2rem 1rem',
+        }}
+      >
+        {reportType.label}
+      </div>
 
-        {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <MicroLoader />
-          </div>
-        ) : subReports ? (
-          <>
-            <div className="report-graphs">
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <MicroLoader />
+        </div>
+      ) : subReports ? (
+        <>
+          <div
+            className="reports-yscroll"
+            style={{ height: 'calc(-245px + 100vh)' }}
+          >
+            <div className="prod-graphs">
               {subReports &&
                 subReports
                   .filter(
@@ -338,7 +349,9 @@ const Production: React.FC = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         gap: '16px',
-                        marginBottom: "1.5rem"
+                        marginBottom: '1.5rem',
+                        width: 'fit-content',
+                        paddingRight: "10px"
                       }}
                     >
                       {false ? (
@@ -371,9 +384,7 @@ const Production: React.FC = () => {
                       )}
                     </div>
                   ))}
-            </div>
 
-            <div className="report-graphs">
               {subReports &&
                 subReports
                   .filter(
@@ -389,8 +400,10 @@ const Production: React.FC = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: "1.5rem",
+                        marginBottom: '1.5rem',
                         gap: '16px',
+                        width: 'fit-content',
+                        paddingRight: "10px"
                       }}
                     >
                       {false ? (
@@ -420,9 +433,6 @@ const Production: React.FC = () => {
                       )}
                     </div>
                   ))}
-            </div>
-
-            <div className="report-graphs">
               {subReports &&
                 subReports
                   .filter(
@@ -436,8 +446,10 @@ const Production: React.FC = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: "1.5rem",
+                        marginBottom: '1.5rem',
                         gap: '16px',
+                        width: 'fit-content',
+                        paddingRight: "10px"
                       }}
                     >
                       {false ? (
@@ -470,13 +482,13 @@ const Production: React.FC = () => {
                     </div>
                   ))}
             </div>
-          </>
-        ) : (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <DataNotFound />
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <DataNotFound />
+        </div>
+      )}
     </div>
   );
 };

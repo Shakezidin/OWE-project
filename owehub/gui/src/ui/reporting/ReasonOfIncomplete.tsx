@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './ReasonOfIncomplete.css';
 import {
   ResponsiveContainer,
@@ -24,6 +24,11 @@ interface LabelProps {
   outerRadius: number;
   percent: number;
   index: number;
+}
+
+interface Option {
+  value: string;
+  label: string;
 }
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -215,7 +220,17 @@ const ReasonOfIncomplete = () => {
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',
-    borderRadius: "4px"
+    borderRadius: '4px',
+  };
+
+  const [selectedWeek, setSelectedWeek] = useState<Option>({
+    label: 'Week 1',
+    value: '1',
+  });
+  const handleWeekChange = (value: Option | null) => {
+    if (value) {
+      setSelectedWeek(value);
+    }
   };
 
   return (
@@ -223,7 +238,7 @@ const ReasonOfIncomplete = () => {
       <div className="headingcount flex justify-between items-center">
         <BackButtom heading="Reason of Incomplete" />
         <div className="incomplete-dropdowns">
-          <WeekSelect />
+          <WeekSelect value={selectedWeek} onChange={handleWeekChange} />
           <CompanySelect />
         </div>
       </div>
@@ -254,7 +269,12 @@ const ReasonOfIncomplete = () => {
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
-                    wrapperStyle={{ outline: "none", borderRadius:0, padding:0, boxShadow:'none' }}
+                    wrapperStyle={{
+                      outline: 'none',
+                      borderRadius: 0,
+                      padding: 0,
+                      boxShadow: 'none',
+                    }}
                     formatter={(value) => `${value}%`}
                   />
                   <Legend
@@ -280,7 +300,7 @@ const ReasonOfIncomplete = () => {
             </div>
             <div className="line"></div>
             <div className="time-radialbar">
-              <p className='time-radialbar-p'>Reason for Incompletion</p>
+              <p className="time-radialbar-p">Reason for Incompletion</p>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -301,7 +321,16 @@ const ReasonOfIncomplete = () => {
                       />
                     ))}
                   </Pie>
-                  <Tooltip wrapperStyle={{fontSize: 12, outline: "none", borderRadius:0, padding:0, boxShadow:'none' }} contentStyle={tooltipStyle} />
+                  <Tooltip
+                    wrapperStyle={{
+                      fontSize: 12,
+                      outline: 'none',
+                      borderRadius: 0,
+                      padding: 0,
+                      boxShadow: 'none',
+                    }}
+                    contentStyle={tooltipStyle}
+                  />
                   <Legend
                     layout="vertical"
                     align="right"
@@ -311,7 +340,7 @@ const ReasonOfIncomplete = () => {
                     wrapperStyle={{
                       fontSize: '10px',
                       marginRight: 50,
-                      marginTop: 50
+                      marginTop: 50,
                     }}
                     height={100}
                     payload={dataSet.pieData.map((entry, i) => ({

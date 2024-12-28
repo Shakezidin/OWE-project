@@ -22,6 +22,24 @@ const Quality = () => {
     label: 'FIN',
     value: 'FIN',
   });
+  const [selectedYear, setSelectedYear] = useState<Option>({
+    label: '2024',
+    value: '2024',
+  });
+  const handleYearChange = (value: Option | null) => {
+    if (value) {
+      setSelectedYear(value);
+    }
+  };
+  const [selectedWeek, setSelectedWeek] = useState<Option>({
+    label: 'Week 1',
+    value: '1',
+  });
+  const handleWeekChange = (value: Option | null) => {
+    if (value) {
+      setSelectedWeek(value);
+    }
+  };
   // const stylesGraph = {
   //   width: '100%',
   //   height: '280px',
@@ -66,10 +84,10 @@ const Quality = () => {
           </div>
 
           <div>
-            <YearSelect />
+            <YearSelect value={selectedYear} onChange={handleYearChange} />
           </div>
           <div>
-            <WeekSelect />
+            <WeekSelect value={selectedWeek} onChange={handleWeekChange} />
           </div>
         </div>
       </div>
