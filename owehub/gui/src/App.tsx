@@ -61,7 +61,7 @@ import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
-import InstalltoFin from './ui/reporting/InstallToFin';
+import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
 import PermitRedLine from './ui/reporting/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';

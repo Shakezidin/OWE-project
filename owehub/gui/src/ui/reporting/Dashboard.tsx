@@ -41,34 +41,34 @@ const Dashboard: React.FC = () => {
       data: [{ title: 'Sales NTP Install', route: ROUTES.TOTAL_COUNT }],
       state: useState<boolean>(true),
     },
-    // {
-    //   title: 'Summary',
-    //   data: [
-    //     { title: 'Production', route: ROUTES.REPORTING_PRODUCTION },
-    //     { title: 'Quality', route: ROUTES.REPORTING_QUALITY },
-    //     {
-    //       heading: 'Speed',
-    //       title: 'Overall',
-    //       route: ROUTES.REPORTING_SPEED_OVERALL,
-    //     },
-    //     {
-    //       heading: 'Speed',
-    //       title: 'Sales to Install',
-    //       route: ROUTES.REPORTING_SALES_TO_INSTALL,
-    //     },
-    //     {
-    //       heading: 'First time completions',
-    //       title: 'Quality per Office',
-    //       route: '',
-    //     },
-    //     {
-    //       heading: 'First time completions',
-    //       title: 'Reason for Incompletion',
-    //       route: ROUTES.REPORTING_REASON_FOR_INCOMPLETE,
-    //     },
-    //   ],
-    //   state: useState<boolean>(true),
-    // },
+    {
+      title: 'Summary',
+      data: [
+        { title: 'Production', route: ROUTES.REPORTING_PRODUCTION },
+        { title: 'Quality', route: ROUTES.REPORTING_QUALITY },
+        {
+          heading: 'Speed',
+          title: 'Overall',
+          route: ROUTES.REPORTING_SPEED_OVERALL,
+        },
+        {
+          heading: 'Speed',
+          title: 'Sales to Install',
+          route: ROUTES.REPORTING_SALES_TO_INSTALL,
+        },
+        {
+          heading: 'First time completions',
+          title: 'Quality per Office',
+          route: '',
+        },
+        {
+          heading: 'First time completions',
+          title: 'Reason for Incompletion',
+          route: ROUTES.REPORTING_REASON_FOR_INCOMPLETE,
+        },
+      ],
+      state: useState<boolean>(true),
+    },
     // {
     //   title: 'PV Install',
     //   data: [
