@@ -20,6 +20,7 @@ import MicroLoader from '../components/loader/MicroLoader';
 import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
 import DropdownCheckBox from '../components/DropdownCheckBox';
 import YearSelect from './components/Dropdowns/YearSelect';
+import DataNotFound from '../components/loader/DataNotFound';
 
 interface LabelProps {
   x: number;
@@ -69,36 +70,30 @@ const InstalltoFin = () => {
     error: installToFinDataError,
   } = useAppSelector((state) => state.reportingSlice.installToFinData);
 
-  // data mapping function for Install to FIN charts
+
+
   const mapApiDataToChartData = (apiData: any): ChartData[] => {
     const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
-    const averageDaysData =
-      apiData?.data?.['Average Days From Install to FIN'] || [];
-
+    const averageDaysData = apiData?.data?.['Average Days From Install to FIN'] || [];
+  
     // Create a map of all weeks and their data
     const weekMap = new Map();
+  
+    // Process day range data and average days data first
+    dayRangeData.forEach((item: any) => {
+      if (item.index && item.value) {
+        const weekData = {
+          week: item.index,
+          low: 0,
+          medium: 0,
+          high: 0,
+          veryHigh: 0,
+          ultraHigh: 0,
+          extreme: 0,
+          'Average Days From Install to FIN': 0,
+        };
 
-    // Initialize all weeks from 1 to max index found
-    const maxWeek = Math.max(
-      ...dayRangeData.map((item: any) => item.index || 0),
-      ...averageDaysData.map((item: any) => item.index || 0)
-    );
-
-    // Initialize all weeks with default values
-    for (let week = 1; week <= maxWeek; week++) {
-      weekMap.set(week, {
-        week,
-        low: 0, // 0-15 days
-        medium: 0, // 16-30 days
-        high: 0, // 31-45 days
-        veryHigh: 0, // 46-60 days
-        ultraHigh: 0, // 61-90 days
-        extreme: 0, // >90 days
-        'Average Days From Install to FIN': 0,
-      });
-    }
-
-    // Map day ranges to their corresponding properties
+            // Map day ranges to their corresponding properties
     const rangeToProperty = {
       '0-15 days': 'low',
       '16-30 days': 'medium',
@@ -107,38 +102,56 @@ const InstalltoFin = () => {
       '61-90 days': 'ultraHigh',
       '>90 days': 'extreme',
     };
-
-    // Process day range data
-    dayRangeData.forEach((item: any) => {
-      if (item.index && item.value) {
-        const weekData = weekMap.get(item.index);
-        if (weekData) {
-          // Add counts for each range
-          Object.entries(item.value).forEach(([range, count]) => {
-            const property =
-              rangeToProperty[range as keyof typeof rangeToProperty];
-            if (property) {
-              weekData[property] =
-                (weekData[property] || 0) + (count as number);
-            }
-          });
-        }
+  
+        // Add counts for each range
+        Object.entries(item.value).forEach(([range, count]) => {
+          const property = rangeToProperty[range as keyof typeof rangeToProperty];
+          if (property) {
+            weekData[property as keyof ChartData] = (count as number);
+          }
+        });
+  
+        weekMap.set(item.index, weekData);
       }
     });
-
+  
     // Process average days data
     averageDaysData.forEach((item: any) => {
       if (item.index && item.value?.average !== undefined) {
-        const weekData = weekMap.get(item.index);
-        if (weekData) {
-          weekData['Average Days From Install to FIN'] = item.value.average;
-        }
+        const existingWeekData = weekMap.get(item.index) || {
+          week: item.index,
+          low: 0,
+          medium: 0,
+          high: 0,
+          veryHigh: 0,
+          ultraHigh: 0,
+          extreme: 0,
+          'Average Days From Install to FIN': 0,
+        };
+        existingWeekData['Average Days From Install to FIN'] = item.value.average;
+        weekMap.set(item.index, existingWeekData);
       }
     });
-
-    // Convert map to array and sort by week
-    return Array.from(weekMap.values()).sort((a, b) => a.week - b.week);
+  
+    // Filter out weeks with no data
+    const filteredData = Array.from(weekMap.values()).filter(weekData => {
+      const hasBarData = weekData.low > 0 || 
+                        weekData.medium > 0 || 
+                        weekData.high > 0 || 
+                        weekData.veryHigh > 0 || 
+                        weekData.ultraHigh > 0 || 
+                        weekData.extreme > 0;
+      const hasAverageData = weekData['Average Days From Install to FIN'] > 0;
+      return hasBarData || hasAverageData;
+    });
+  
+    // Sort by week
+    return filteredData.sort((a, b) => a.week - b.week);
   };
+
+
+
+
 
   // API Call Function
   const getNewFormData = async () => {
@@ -368,7 +381,7 @@ const InstalltoFin = () => {
 
           <div>
             <DropdownCheckBox
-              label={'AHJ'}
+              label={`${selectedAhj.length} AHJ's`}
               placeholder={'Search AHJ'}
               selectedOptions={selectedAhj}
               options={ahj}
@@ -391,6 +404,10 @@ const InstalltoFin = () => {
             }}
           >
             <MicroLoader />
+          </div>
+        ) : chartData.length === 0 ? ( // Check if there's no data
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <DataNotFound />
           </div>
         ) : (
           <div
@@ -553,6 +570,7 @@ const InstalltoFin = () => {
                       fontSize: 12,
                     }}
                     labelFormatter={(label) => `Week ${label}`}
+                    formatter={(value) => (value as number).toFixed(2)} // Type assertion to number
                   />
                   <Line
                     type="monotone"
@@ -565,7 +583,7 @@ const InstalltoFin = () => {
                       dataKey="Average Days From Install to FIN"
                       position="top"
                       fill="rgb(76, 175, 80)"
-                      fontSize={12}
+                      fontSize={8}
                       offset={5}
                       formatter={(value: number) => value.toFixed(2)} // Format labels on the line to 2 decimal places
                     />
