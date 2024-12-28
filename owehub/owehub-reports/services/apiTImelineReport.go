@@ -222,6 +222,19 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		return
 	}
 
+	categories := []string{"Percentage AHJ +15 Days SLA", "Total AHJ +15 Days SLA"}
+
+	// return nil values if empty filters provided
+	if len(dataReq.Office) == 0 || len(dataReq.Ahj) == 0 || len(dataReq.State) == 0 || len(dataReq.Quarter) == 0 {
+		reportResp.Summary = nil
+		reportResp.Data = map[string][]models.DataPoint{
+			categories[0]: nil,
+			categories[1]: nil,
+		}
+		appserver.FormAndSendHttpResp(resp, "Ahj+15 Report", http.StatusOK, reportResp, int64(RecordCount))
+		return
+	}
+
 	Offices := ""
 	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
 		Offices = "'ALL' = 'ALL'"
@@ -317,7 +330,6 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 		return
 	}
 
-	categories := []string{"Percentage AHJ +15 Days SLA", "Total AHJ +15 Days SLA"}
 	reportResp.Data = make(map[string][]models.DataPoint)
 
 	var dataTotal []models.DataPoint = make([]models.DataPoint, 52)
@@ -439,6 +451,19 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		return
 	}
 
+	categories := []string{"Install to FIN Day Range", "Average Days From Install to FIN"}
+
+	// return nil values if empty filters provided
+	if len(dataReq.Office) == 0 || len(dataReq.Ahj) == 0 || len(dataReq.State) == 0 || len(dataReq.Quarter) == 0 {
+		reportResp.Summary = nil
+		reportResp.Data = map[string][]models.DataPoint{
+			categories[0]: nil,
+			categories[1]: nil,
+		}
+		appserver.FormAndSendHttpResp(resp, "Install To Fin Report", http.StatusOK, reportResp, int64(RecordCount))
+		return
+	}
+
 	Offices := ""
 	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
 		Offices = "'ALL' = 'ALL'"
@@ -526,7 +551,6 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 		return
 	}
 
-	categories := []string{"Install to FIN Day Range", "Average Days From Install to FIN"}
 	reportResp.Data = make(map[string][]models.DataPoint)
 
 	//Install to FIN Day Range

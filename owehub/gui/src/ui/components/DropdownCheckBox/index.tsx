@@ -200,12 +200,12 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
                   onChange={() => !disabled && handleOptionChange(option)}
                 />
                 <span className={disabled ? 'disbaled-label' : ''}>
-                  {option.label}
+                  {option.label || "N/A"} 
                 </span>
               </div>
             ))
           ) : (
-            <div className="text-center h5 mt4 text-dark">No data found</div>
+            <div className="text-center h5  text-dark">No data available</div>
           )}
         </div>
       )}

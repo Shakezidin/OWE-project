@@ -63,6 +63,7 @@ import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
 import InstalltoFin from './ui/reporting/InstallToFin';
 import Ahj from './ui/reporting/Ahj/Ahj';
+import PermitRedLine from './ui/reporting/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 function App() {
@@ -169,6 +170,10 @@ function App() {
             <Route
               path={ROUTES.REPORTING_QUALITY_PER_OFFICE}
               element={<QualityPerOffice />}
+            />
+             <Route
+              path={ROUTES.PERMIT_REDLINE}
+              element={<PermitRedLine />}
             />
             <Route
               path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}

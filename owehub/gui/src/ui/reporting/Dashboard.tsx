@@ -107,6 +107,7 @@ const Dashboard: React.FC = () => {
       data: [
         { title: 'Install to FIN', route: ROUTES.INSTALL_TO_FIN },
         { title: 'AJH + 15 Days SLA', route: ROUTES.AHJ },
+        { title: 'Permit Redline %', route: ROUTES.PERMIT_REDLINE },
       ],
       state: useState<boolean>(true),
     },

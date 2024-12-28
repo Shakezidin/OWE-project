@@ -156,7 +156,7 @@ services:
     container_name: owehub-reports
     networks:
       owe_net:
-        ipv4_address: 172.30.0.216
+        ipv4_address: 172.30.0.230
     ports:
       - "31024:8080"
     environment:

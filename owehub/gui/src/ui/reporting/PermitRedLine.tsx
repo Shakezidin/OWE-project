@@ -36,7 +36,7 @@ interface ChartData {
   veryHigh: number;
   ultraHigh: number;
   extreme: number;
-  'Average Days From Install to FIN': number;
+  'Permit Redline %': number;
 }
 
 interface Option {
@@ -44,7 +44,7 @@ interface Option {
   label: string;
 }
 
-const InstalltoFin = () => {
+const PermitRedLine = () => {
   // State Management
   const [selectedOffices, setSelectedOffices] = useState<Option[]>([]);
   const [selectedAhj, setSelectedAhj] = useState<Option[]>([]);
@@ -94,7 +94,7 @@ const InstalltoFin = () => {
         veryHigh: 0, // 46-60 days
         ultraHigh: 0, // 61-90 days
         extreme: 0, // >90 days
-        'Average Days From Install to FIN': 0,
+        'Permit Redline %': 0,
       });
     }
 
@@ -131,7 +131,7 @@ const InstalltoFin = () => {
       if (item.index && item.value?.average !== undefined) {
         const weekData = weekMap.get(item.index);
         if (weekData) {
-          weekData['Average Days From Install to FIN'] = item.value.average;
+          weekData['Permit Redline %'] = item.value.average;
         }
       }
     });
@@ -316,7 +316,7 @@ const InstalltoFin = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <BackButtom heading="Install to FIN" />
+        <BackButtom heading="Permit Redline %" />
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>
@@ -431,23 +431,23 @@ const InstalltoFin = () => {
                     labelFormatter={(label) => `Week ${label}`}
                     formatter={(value, name) => {
                       const legendLabels: { [key: string]: string } = {
-                        low: '0-15 days',
-                        medium: '16-30 days',
-                        high: '31-45 days',
-                        veryHigh: '46-60 days',
-                        ultraHigh: '61-90 days',
-                        extreme: '91+ days',
+                        low: 'Count of all Permit Approved Dates',
+                        // medium: '16-30 days',
+                        // high: '31-45 days',
+                        // veryHigh: '46-60 days',
+                        ultraHigh: 'Count of all Permits Redlined',
+                        // extreme: '91+ days',
                       };
                       return [value, legendLabels[name]]; // Return value and custom label
                     }}
                   />
 
                   {[
-                    'extreme', // Red at the bottom
+                    // 'extreme', // Red at the bottom
                     'ultraHigh',
-                    'veryHigh',
-                    'high',
-                    'medium',
+                    // 'veryHigh',
+                    // 'high',
+                    // 'medium',
                     'low', // Green at the top
                   ].map((dataKey) => (
                     <Bar
@@ -482,12 +482,12 @@ const InstalltoFin = () => {
                     }}
                     formatter={(value) => {
                       const legendLabels: { [key: string]: string } = {
-                        low: '0-15 days',
-                        medium: '16-30 days',
-                        high: '31-45 days',
-                        veryHigh: '46-60 days',
-                        ultraHigh: '61-90 days',
-                        extreme: '91+ days',
+                        low: 'Count of all Permit Approved Dates',
+                        // medium: '16-30 days',
+                        // high: '31-45 days',
+                        // veryHigh: '46-60 days',
+                        ultraHigh: 'Count of all Permits Redlined',
+                        // extreme: '91+ days',
                       };
                       return legendLabels[value] || value; // Custom label for legend items
                     }}
@@ -497,31 +497,15 @@ const InstalltoFin = () => {
                         type: 'square',
                         color: getBarColor('low'),
                       },
-                      {
-                        value: 'medium',
-                        type: 'square',
-                        color: getBarColor('medium'),
-                      },
-                      {
-                        value: 'high',
-                        type: 'square',
-                        color: getBarColor('high'),
-                      },
-                      {
-                        value: 'veryHigh',
-                        type: 'square',
-                        color: getBarColor('veryHigh'),
-                      },
+                      // { value: 'medium', type: 'square', color: getBarColor('medium') },
+                      // { value: 'high', type: 'square', color: getBarColor('high') },
+                      // { value: 'veryHigh', type: 'square', color: getBarColor('veryHigh') },
                       {
                         value: 'ultraHigh',
                         type: 'square',
                         color: getBarColor('ultraHigh'),
                       },
-                      {
-                        value: 'extreme',
-                        type: 'square',
-                        color: getBarColor('extreme'),
-                      },
+                      // { value: 'extreme', type: 'square', color: getBarColor('extreme') },
                     ]}
                   />
                 </BarChart>
@@ -531,7 +515,7 @@ const InstalltoFin = () => {
             {/* Line Chart */}
             <div className={styles.chartWrapper}>
               <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={chartData} margin={{ right: 70 }}>
+                <LineChart data={chartData} margin={{ right: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     className={styles.axis}
@@ -556,13 +540,13 @@ const InstalltoFin = () => {
                   />
                   <Line
                     type="monotone"
-                    dataKey="Average Days From Install to FIN"
+                    dataKey="Permit Redline %"
                     stroke="rgb(76, 175, 80)" // Updated line color
                     activeDot={{ r: 8 }}
                     fill="rgb(76, 175, 80)"
                   >
                     <LabelList
-                      dataKey="Average Days From Install to FIN"
+                      dataKey="Permit Redline %"
                       position="top"
                       fill="rgb(76, 175, 80)"
                       fontSize={12}
@@ -592,4 +576,4 @@ const InstalltoFin = () => {
   );
 };
 
-export default InstalltoFin;
+export default PermitRedLine;

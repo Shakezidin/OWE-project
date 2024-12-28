@@ -8,8 +8,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  LabelList,
-  TooltipProps,
 } from 'recharts';
 
 type ApiData = {
@@ -25,27 +23,7 @@ interface AhjBarChartProps {
   data: ApiResponse;
 }
 
-const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
-  active,
-  payload,
-  label,
-}) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip">
-        <p className="label">{`${label}`}</p>
-        <p className="value">{`${payload[0].name}: ${payload[0].value}`}</p>
-      </div>
-    );
-  }
-
-  return null;
-};
-
-const tooltipStyle = {
-  fontSize: '10px',
-  padding: '6px',
-};
+ 
 
 
 const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
@@ -57,7 +35,7 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           'Within SLA (%)': item.value['Within SLA'] || 0,
           'Out of SLA (%)': item.value['Out of SLA'] || 0,
         }))}
-        margin={{ top: 22, right: 10, left: 10, bottom: 6 }}
+        margin={{ top: 22, right: 30, left: 0, bottom: 6 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -70,7 +48,7 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           tick={{ fontSize: 8, fontWeight: 500, fill: '#818181' }}
           tickFormatter={(value) => {
             const weekNumber = parseInt(value, 10) + 1;
-            return `${weekNumber}`;
+            return `Week ${weekNumber}`;
           }}
         />
         <YAxis
@@ -78,15 +56,17 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }}
           tickFormatter={(value) => `${value}%`}
           domain={[0, 100]}
+          
         />
         <Tooltip
-          contentStyle={tooltipStyle}
+          contentStyle={{ fontSize: '12px',}}
           wrapperStyle={{
             outline: 'none',
             borderRadius: 4,
             padding: 4,
             boxShadow: 'none',
           }}
+          labelFormatter={(value) => `Week ${value}`}
           formatter={(value) => `${value}%`}
         />
         <Legend

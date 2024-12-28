@@ -10,6 +10,7 @@ import { EndPoints } from '../api_client/EndPoints';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
+const REPORT_BASE_URL = `${process.env.REACT_APP_REPORT_URL}`;
 const CONFIG_URL = `https://staging.owe-hub.com/api/owe-calc-service/v1`;
 // authService.ts
 
@@ -72,7 +73,6 @@ export const postCaller = async (
   }
 };
 
-
 export const configPostCaller = async (
   endpoint: string,
   postData: any,
@@ -107,7 +107,6 @@ export const configPostCaller = async (
   }
 };
 
-
 export const reportingCaller = async (
   endpoint: string,
   postData: any,
@@ -122,7 +121,7 @@ export const reportingCaller = async (
 
   try {
     const response: AxiosResponse = await axios.post(
-      `http://155.138.239.170:31024/owe-reports-service/v1/${endpoint}`,
+      `${REPORT_BASE_URL}/${endpoint}`,
       postData,
       config
     );
