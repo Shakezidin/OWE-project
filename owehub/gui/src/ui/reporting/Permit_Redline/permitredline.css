@@ -1,0 +1,12 @@
+.permitredline-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.permitredline-header p{
+    color: #000000;
+    font-size: 14px;
+    font-weight: 500;
+}
