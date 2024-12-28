@@ -16,6 +16,8 @@ type DealerPayReportRequest struct {
 	PayroleDate string   `json:"payrole_date"`
 	SearchInput string   `json:"search_input"`
 	Paginate    bool     `json:"paginate"`
+	Role string
+	Email string
 }
 
 type Adder struct {

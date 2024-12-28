@@ -96,10 +96,10 @@ SELECT
     pe_ee_stamps_cad_schema.completion_date AS peee_complete_date,
     fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date,
     fin_permits_fin_schema.fin_rescheduled_date,
-    project_mgmt_metrics_schema.fin_fail_date,
+    fin_permits_fin_schema.pv_redlined_date AS fin_fail_date,
     fin_permits_fin_schema.approved_date AS fin_pass_date,
     system_customers_schema.install_scheduled_date,
-    customers_customers_schema.install_eta_date,
+    pv_install_install_subcontracting_schema.install_eta as install_eta_date,
     pv_install_install_subcontracting_schema.pv_completion_date as install_complete,
     customers_customers_schema.primary_sales_rep,
     customers_customers_schema.pre_post_install,
@@ -131,9 +131,6 @@ LEFT JOIN
     pe_ee_stamps_cad_schema ON pe_ee_stamps_cad_schema.customer_unique_id = customers_customers_schema.unique_id
 LEFT JOIN
     fin_permits_fin_schema ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
-LEFT JOIN
-    project_mgmt_metrics_schema ON project_mgmt_metrics_schema.unique_id = customers_customers_schema.unique_id
-
 WHERE
  customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
 `
@@ -422,6 +419,7 @@ func checkField(value interface{}, fieldName string, targetType string) (interfa
 		log.FuncErrorTrace(0, "Warning: %s is nil", fieldName)
 		return nil, false
 	}
+
 	switch targetType {
 	case "string":
 		if strVal, ok := value.(string); ok {
@@ -432,10 +430,22 @@ func checkField(value interface{}, fieldName string, targetType string) (interfa
 			return floatVal, true
 		}
 	case "time.Time":
-		if timeVal, ok := value.(time.Time); ok {
+		if fieldName == "install_scheduled_date" {
+			if strVal, ok := value.(string); ok {
+				// Parse the string into a time.Time object
+				layout := "Mon Jan 02 2006 15:04:05 MST-0700 (MST)"
+				parsedTime, err := time.Parse(layout, strVal)
+				if err != nil {
+					log.FuncErrorTrace(0, "Error parsing %s as time.Time: %v", fieldName, err)
+					return nil, false
+				}
+				return parsedTime, true
+			}
+		} else if timeVal, ok := value.(time.Time); ok {
 			return timeVal, true
 		}
 	}
+
 	log.FuncErrorTrace(0, "Error: %s is not a %s. Value: %v", fieldName, targetType, value)
 	return nil, false
 }

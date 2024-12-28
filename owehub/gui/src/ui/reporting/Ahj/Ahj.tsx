@@ -12,6 +12,7 @@ import YearSelect from '../components/Dropdowns/YearSelect';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
 import DropdownCheckBox from '../../components/DropdownCheckBox';
+import ProjectBreak from './ProjectBreak';
 
 interface Option {
   value: string;
@@ -97,8 +98,19 @@ const Ahj = () => {
   const [selectloading, setSelectLoading] = useState(false);
 
   const [isFetch, setIsFetch] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [breakdownData, setBreakDownData] = useState('')
 
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setBreakDownData('')
+  }
 
+  const handleBoxClick = (key:any, type:any) => {
+    setModalOpen(true);
+    setBreakDownData(`${type} ${key}`)
+  };
+  console.log(breakdownData, "clicked data");
 
   useEffect(() => {
     setSelectedQuarter(QuarterSet)
@@ -177,189 +189,163 @@ const Ahj = () => {
     }
   }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
 
-  console.log(selectedOffices, "dsghjfgdjsf")
-
 
   return (
-    <div className="total-main-container">
-      <div className="headingcount flex justify-between items-center">
-        <BackButtom heading="AHJ +15 Days SLA" />
-        <div className="report-header-dropdown flex-wrap">
-          {/* <div><DaySelect /></div> */}
-          <div>
-            <DropdownCheckBox
-              label={"Offices"}
-              placeholder={'Search Offices'}
-              selectedOptions={selectedOffices}
-              options={officeSelect}
-              onChange={(val) => {
-                setSelectedOffices(val);
-              }}
-              disabled={selectloading|| loading}
-            />
-          </div>
+    <>
+      <ProjectBreak isOpen1={modalOpen} handleClose={handleModalClose} breakdownData={breakdownData}/>
+      <div className="total-main-container">
+        <div className="headingcount flex justify-between items-center">
+          <BackButtom heading="AHJ +15 Days SLA" />
+          <div className="report-header-dropdown flex-wrap">
+            {/* <div><DaySelect /></div> */}
+            <div>
+              <DropdownCheckBox
+                label={"Offices"}
+                placeholder={'Search Offices'}
+                selectedOptions={selectedOffices}
+                options={officeSelect}
+                onChange={(val) => {
+                  setSelectedOffices(val);
+                }}
+                disabled={selectloading || loading}
+              />
+            </div>
 
-          <div>
-            <DropdownCheckBox
-              label={"State"}
-              placeholder={'Search States'}
-              selectedOptions={selectedState}
-              options={stateSet}
-              onChange={(val) => {
-                setSelectedState(val);
-              }}
-              disabled={selectloading|| loading}
-            />
-          </div>
+            <div>
+              <DropdownCheckBox
+                label={"State"}
+                placeholder={'Search States'}
+                selectedOptions={selectedState}
+                options={stateSet}
+                onChange={(val) => {
+                  setSelectedState(val);
+                }}
+                disabled={selectloading || loading}
+              />
+            </div>
 
-          <div><YearSelect value={selectedYear} onChange={handleYearChange} disabled={selectloading || loading}/></div>
+            <div><YearSelect value={selectedYear} onChange={handleYearChange} disabled={selectloading || loading} /></div>
 
-          <div>
-            <DropdownCheckBox
-              label={"Quarter"}
-              placeholder={'Search Quarter'}
-              selectedOptions={selectedQuarter}
-              options={QuarterSet}
-              onChange={(val) => {
-                setSelectedQuarter(val);
-              }}
-              disabled={selectloading || loading}
-            />
-          </div>
+            <div>
+              <DropdownCheckBox
+                label={"Quarter"}
+                placeholder={'Search Quarter'}
+                selectedOptions={selectedQuarter}
+                options={QuarterSet}
+                onChange={(val) => {
+                  setSelectedQuarter(val);
+                }}
+                disabled={selectloading || loading}
+              />
+            </div>
 
-          <div>
-            <DropdownCheckBox
-              label={"AHJ"}
-              placeholder={'Search AHJ'}
-              selectedOptions={selectedAhj}
-              options={ahj}
-              onChange={(val) => {
-                setSelectedAhj(val);
-              }}
-              disabled={selectloading || loading}
-            />
+            <div>
+              <DropdownCheckBox
+                label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
+                placeholder={'Search AHJ'}
+                selectedOptions={selectedAhj}
+                options={ahj}
+                onChange={(val) => {
+                  setSelectedAhj(val);
+                }}
+                disabled={selectloading || loading}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="reports-yscroll">
-        {(loading || !isFetch) ? (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <MicroLoader />
-          </div>
-        ) : totalResponse ? (
-          <>
-            {/* <div className="ahj-box">
-              <div className="ahj-box-first">
-                <div className="ahj-box-first-green">
-                  <p>Within SLA % (Q2)</p>
-                  <h4>44.6%</h4>
-                </div>
-                <div className="ahj-box-first-green">
-                  <p>Within SLA Count (Q2)</p>
-                  <h4>446</h4>
-                </div>
-                <div className="ahj-box-first-red">
-                  <p>Out of SLA % (Q2)</p>
-                  <h4>44.6%</h4>
-                </div>
-                <div className="ahj-box-first-red">
-                  <p>Out of SLA Count (Q2)</p>
-                  <h4>832</h4>
-                </div>
-              </div>
-              <div className="ahj-box-first">
-                <div className="ahj-box-first-green">
-                  <p>Within SLA % (Q3)</p>
-                  <h4>44.6%</h4>
-                </div>
-                <div className="ahj-box-first-green">
-                  <p>Within SLA Count (Q3)</p>
-                  <h4>899</h4>
-                </div>
-                <div className="ahj-box-first-red">
-                  <p>Out of SLA % (Q3)</p>
-                  <h4>44.6%</h4>
-                </div>
-                <div className="ahj-box-first-red">
-                  <p>Out of SLA Count (Q3)</p>
-                  <h4>838</h4>
-                </div>
-              </div>
-            </div> */}
-
-            <div className="ahj-box">
-              {summaryResponse && Object.entries(summaryResponse).map(([key, value]) => (
-                <div key={key} className="ahj-box-first">
-                  <div className="ahj-box-first-green">
-                    <p>Within SLA % ({key.toUpperCase()})</p>
-                    <h4>{(value['Within SLA Percentage']).toFixed(2)}%</h4>
-                  </div>
-                  <div className="ahj-box-first-green">
-                    <p>Within SLA Count ({key.toUpperCase()})</p>
-                    <h4>{(value['Within SLA Count']).toFixed(2)}</h4>
-                  </div>
-                  <div className="ahj-box-first-red">
-                    <p>Out of SLA % ({key.toUpperCase()})</p>
-                    <h4>{(value['Out of SLA Percentage']).toFixed(2)}%</h4>
-                  </div>
-                  <div className="ahj-box-first-red">
-                    <p>Out of SLA Count ({key.toUpperCase()})</p>
-                    <h4>{(value['Out of SLA Count']).toFixed(2)}</h4>
-                  </div>
-                </div>
-              ))}
+        <div className="reports-yscroll">
+          {(loading || !isFetch) ? (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <MicroLoader />
             </div>
+          ) : totalResponse ? (
+            <>
+              <div className="ahj-box">
+                {summaryResponse && Object.entries(summaryResponse).map(([key, value]) => (
+                  <div key={key} className="ahj-box-first">
+                    <div
+                      className="ahj-box-first-green"
+                      onClick={() => handleBoxClick(key.toUpperCase(), 'Within SLA')}
+                    >
+                      <p>Within SLA % ({key.toUpperCase()})</p>
+                      <h4>{(value['Within SLA Percentage']).toFixed(2)}%</h4>
+                    </div>
+                    <div
+                      className="ahj-box-first-green"
+                      onClick={() => handleBoxClick(key.toUpperCase(), 'Within SLA')}
+                    >
+                      <p>Within SLA Count ({key.toUpperCase()})</p>
+                      <h4>{(value['Within SLA Count']).toFixed(2)}</h4>
+                    </div>
+                    <div
+                      className="ahj-box-first-red"
+                      onClick={() => handleBoxClick(key.toUpperCase(), 'Out of SLA')}
+                    >
+                      <p>Out of SLA % ({key.toUpperCase()})</p>
+                      <h4>{(value['Out of SLA Percentage']).toFixed(2)}%</h4>
+                    </div>
+                    <div
+                      className="ahj-box-first-red"
+                      onClick={() => handleBoxClick(key.toUpperCase(), 'Out of SLA')}
+                    >
+                      <p>Out of SLA Count ({key.toUpperCase()})</p>
+                      <h4>{(value['Out of SLA Count']).toFixed(2)}</h4>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div className="report-graphs" >
-                <p className="rep-graph-heading">Percentage</p>
-                <div
-                  className="report-graph"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
-                  }}
-                >
-                  <div className="main-graph" style={stylesGraph}>
-                    <AhjBarChart data={apiResponse} />
-                    <p className="chart-info-report">Week</p>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="report-graphs" >
+                  <p className="rep-graph-heading">Percentage</p>
+                  <div
+                    className="report-graph"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    <div className="main-graph" style={stylesGraph}>
+                      <AhjBarChart data={apiResponse} />
+                      <p className="chart-info-report">Week</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="report-graphs">
+                  <p className="rep-graph-heading">Total</p>
+                  <div
+                    className="report-graph"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    <div className="main-graph" style={stylesGraph}>
+                      <BelowUpChartAhj data={totalResponse} />
+                      <p className="chart-info-report">Week Install</p>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="report-graphs">
-                <p className="rep-graph-heading">Total</p>
-                <div
-                  className="report-graph"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    boxShadow: '2px 4px 8px -1px rgba(0, 0, 0, 0.1)',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
-                  }}
-                >
-                  <div className="main-graph" style={stylesGraph}>
-                    <BelowUpChartAhj data={totalResponse} />
-                    <p className="chart-info-report">Week Install</p>
-                  </div>
-                </div>
-              </div>
+            </>
+          ) : (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <DataNotFound />
             </div>
-          </>
-        ) : (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <DataNotFound />
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

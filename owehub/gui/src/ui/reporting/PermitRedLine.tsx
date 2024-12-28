@@ -14,14 +14,9 @@ import {
 } from 'recharts';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getTimelineInstallToFinData } from '../../redux/apiActions/reportingAction/reportingAction';
-import CustomSelect from './components/Dropdowns/CustomSelect';
 import BackButtom from './components/BackButtom';
 import styles from './styles/InstalltoFin.module.css';
 import MicroLoader from '../components/loader/MicroLoader';
-import OfficeSelect from './components/Dropdowns/OfficeSelect';
-import AHJSelect from './components/Dropdowns/AHJSelect';
-import StateSelect from './components/Dropdowns/StateSelect';
-import QuarterSelect from './components/Dropdowns/QuarterSelect';
 import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
 import DropdownCheckBox from '../components/DropdownCheckBox';
 import YearSelect from './components/Dropdowns/YearSelect';
@@ -41,7 +36,7 @@ interface ChartData {
   veryHigh: number;
   ultraHigh: number;
   extreme: number;
-  totalDays: number;
+  'Permit Redline %': number;
 }
 
 interface Option {
@@ -49,7 +44,7 @@ interface Option {
   label: string;
 }
 
-const InstalltoFin = () => {
+const PermitRedLine = () => {
   // State Management
   const [selectedOffices, setSelectedOffices] = useState<Option[]>([]);
   const [selectedAhj, setSelectedAhj] = useState<Option[]>([]);
@@ -62,7 +57,6 @@ const InstalltoFin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [chartData, setChartData] = useState<ChartData[]>([]);
 
-  
   const [selectedYear, setSelectedYear] = useState<Option>({
     label: '2024',
     value: '2024',
@@ -78,42 +72,42 @@ const InstalltoFin = () => {
   // data mapping function for Install to FIN charts
   const mapApiDataToChartData = (apiData: any): ChartData[] => {
     const dayRangeData = apiData?.data?.['Install to FIN Day Range'] || [];
-    const averageDaysData = apiData?.data?.['Average Days From Install to FIN'] || [];
-    
+    const averageDaysData =
+      apiData?.data?.['Average Days From Install to FIN'] || [];
+
     // Create a map of all weeks and their data
     const weekMap = new Map();
-    
+
     // Initialize all weeks from 1 to max index found
     const maxWeek = Math.max(
       ...dayRangeData.map((item: any) => item.index || 0),
       ...averageDaysData.map((item: any) => item.index || 0)
     );
-    
+
     // Initialize all weeks with default values
     for (let week = 1; week <= maxWeek; week++) {
       weekMap.set(week, {
         week,
-        low: 0,        // 0-15 days
-        medium: 0,     // 16-30 days
-        high: 0,       // 31-45 days
-        veryHigh: 0,   // 46-60 days
-        ultraHigh: 0,  // 61-90 days
-        extreme: 0,    // >90 days
-        totalDays: 0
+        low: 0, // 0-15 days
+        medium: 0, // 16-30 days
+        high: 0, // 31-45 days
+        veryHigh: 0, // 46-60 days
+        ultraHigh: 0, // 61-90 days
+        extreme: 0, // >90 days
+        'Permit Redline %': 0,
       });
     }
-  
-  
-     // Map day ranges to their corresponding properties
-     const rangeToProperty = {
+
+    // Map day ranges to their corresponding properties
+    const rangeToProperty = {
       '0-15 days': 'low',
       '16-30 days': 'medium',
       '31-45 days': 'high',
       '46-60 days': 'veryHigh',
       '61-90 days': 'ultraHigh',
-      '>90 days': 'extreme'
+      '>90 days': 'extreme',
     };
-    
+
     // Process day range data
     dayRangeData.forEach((item: any) => {
       if (item.index && item.value) {
@@ -121,55 +115,54 @@ const InstalltoFin = () => {
         if (weekData) {
           // Add counts for each range
           Object.entries(item.value).forEach(([range, count]) => {
-            const property = rangeToProperty[range as keyof typeof rangeToProperty];
+            const property =
+              rangeToProperty[range as keyof typeof rangeToProperty];
             if (property) {
-              weekData[property] = (weekData[property] || 0) + (count as number);
+              weekData[property] =
+                (weekData[property] || 0) + (count as number);
             }
           });
         }
       }
     });
-    
+
     // Process average days data
     averageDaysData.forEach((item: any) => {
       if (item.index && item.value?.average !== undefined) {
         const weekData = weekMap.get(item.index);
         if (weekData) {
-          weekData.totalDays = item.value.average;
+          weekData['Permit Redline %'] = item.value.average;
         }
       }
     });
-    
+
     // Convert map to array and sort by week
-    return Array.from(weekMap.values())
-      .sort((a, b) => a.week - b.week);
+    return Array.from(weekMap.values()).sort((a, b) => a.week - b.week);
   };
 
-// API Call Function 
-const getNewFormData = async () => {
-  setIsLoading(true);
-  try {
-
+  // API Call Function
+  const getNewFormData = async () => {
+    setIsLoading(true);
+    try {
       const response = await dispatch(
-          getTimelineInstallToFinData({
-              year: selectedYear.value,
-              state: selectedState.map((item) => item.value),
-              office: selectedOffices.map((item) => item.value),
-              ahj: selectedAhj.map((item) => item.value),
-              quarter: selectedQuarter.map((item) => Number(item.value)), // Pass the numeric quarters
-          })
+        getTimelineInstallToFinData({
+          year: selectedYear.value,
+          state: selectedState.map((item) => item.value),
+          office: selectedOffices.map((item) => item.value),
+          ahj: selectedAhj.map((item) => item.value),
+          quarter: selectedQuarter.map((item) => Number(item.value)), // Pass the numeric quarters
+        })
       ).unwrap();
 
       if (response.error) {
-          throw new Error(response.error);
+        throw new Error(response.error);
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching install to fin data:', error);
-  } finally {
+    } finally {
       setIsLoading(false);
-  }
-};
-
+    }
+  };
 
   // Update chart data when API data changes
   useEffect(() => {
@@ -252,7 +245,6 @@ const getNewFormData = async () => {
   const [loading, setLoading] = useState(false);
   const [selectloading, setSelectLoading] = useState(false);
 
-
   const [stateSet, setStateSet] = useState([]);
   const [ahj, setAhj] = useState([]);
   const QuarterSet = [
@@ -281,18 +273,14 @@ const getNewFormData = async () => {
     }
   };
 
-  
-
   useEffect(() => {
-    setSelectedQuarter(QuarterSet)
+    setSelectedQuarter(QuarterSet);
     setSelectLoading(true);
     const fetchData = async () => {
       try {
         const response = await reportingCaller('get_offices_list', {});
 
-
         if (response.status === 200) {
-
           const officeData = response.data.offices.map((office: any) => ({
             label: office,
             value: office,
@@ -303,15 +291,15 @@ const getNewFormData = async () => {
             label: state,
             value: state,
           }));
-          setSelectedState(stateData)
-          setStateSet(stateData)
+          setSelectedState(stateData);
+          setStateSet(stateData);
           const ahjData = response.data.ahj.map((ahj: any) => ({
             label: ahj,
             value: ahj,
           }));
-          setSelectedAhj(ahjData)
-          setAhj(ahjData)
-          setIsFetch(true)
+          setSelectedAhj(ahjData);
+          setAhj(ahjData);
+          setIsFetch(true);
         } else {
           console.error('Error fetching data:', response.data.message);
           setSelectLoading(false);
@@ -328,40 +316,46 @@ const getNewFormData = async () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <BackButtom heading="Install to FIN" />
+        <BackButtom heading="Permit Redline %" />
         <div className="report-header-dropdown flex-wrap">
           {/* <div><DaySelect /></div> */}
           <div>
             <DropdownCheckBox
-              label={"Offices"}
+              label={'Offices'}
               placeholder={'Search Offices'}
               selectedOptions={selectedOffices}
               options={officeSelect}
               onChange={(val) => {
                 setSelectedOffices(val);
               }}
-              disabled={selectloading|| loading}
+              disabled={selectloading || loading}
             />
           </div>
 
           <div>
             <DropdownCheckBox
-              label={"State"}
+              label={'State'}
               placeholder={'Search States'}
               selectedOptions={selectedState}
               options={stateSet}
               onChange={(val) => {
                 setSelectedState(val);
               }}
-              disabled={selectloading|| loading}
+              disabled={selectloading || loading}
             />
           </div>
 
-          <div><YearSelect value={selectedYear} onChange={handleYearChange} disabled={selectloading || loading}/></div>
+          <div>
+            <YearSelect
+              value={selectedYear}
+              onChange={handleYearChange}
+              disabled={selectloading || loading}
+            />
+          </div>
 
           <div>
             <DropdownCheckBox
-              label={"Quarter"}
+              label={'Quarter'}
               placeholder={'Search Quarter'}
               selectedOptions={selectedQuarter}
               options={QuarterSet}
@@ -374,7 +368,7 @@ const getNewFormData = async () => {
 
           <div>
             <DropdownCheckBox
-              label={"AHJ"}
+              label={'AHJ'}
               placeholder={'Search AHJ'}
               selectedOptions={selectedAhj}
               options={ahj}
@@ -400,7 +394,7 @@ const getNewFormData = async () => {
           </div>
         ) : (
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: "1.2rem" }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}
           >
             {/* Bar Chart */}
             <div className={styles.chartWrapper}>
@@ -430,29 +424,30 @@ const getNewFormData = async () => {
                     wrapperStyle={{
                       outline: 'none',
                       borderRadius: 4,
-                      padding: 0,
+                      padding: 4,
                       boxShadow: 'none',
+                      fontSize: 12,
                     }}
-                    wrapperClassName={styles.tooltip}
+                    labelFormatter={(label) => `Week ${label}`}
                     formatter={(value, name) => {
                       const legendLabels: { [key: string]: string } = {
-                        low: '0-15 days',
-                        medium: '16-30 days',
-                        high: '31-45 days',
-                        veryHigh: '46-60 days',
-                        ultraHigh: '61-90 days',
-                        extreme: '91+ days',
+                        low: 'Count of all Permit Approved Dates',
+                        // medium: '16-30 days',
+                        // high: '31-45 days',
+                        // veryHigh: '46-60 days',
+                        ultraHigh: 'Count of all Permits Redlined',
+                        // extreme: '91+ days',
                       };
                       return [value, legendLabels[name]]; // Return value and custom label
                     }}
                   />
 
                   {[
-                    'extreme', // Red at the bottom
+                    // 'extreme', // Red at the bottom
                     'ultraHigh',
-                    'veryHigh',
-                    'high',
-                    'medium',
+                    // 'veryHigh',
+                    // 'high',
+                    // 'medium',
                     'low', // Green at the top
                   ].map((dataKey) => (
                     <Bar
@@ -467,9 +462,7 @@ const getNewFormData = async () => {
                       }
                       className={styles.bar}
                       label={
-                        dataKey === 'low'
-                          ? renderCustomizedLabel
-                          : undefined
+                        dataKey === 'low' ? renderCustomizedLabel : undefined
                       }
                     />
                   ))}
@@ -485,29 +478,36 @@ const getNewFormData = async () => {
                       paddingBottom: '20px',
                       fontSize: '12px',
                       fontFamily: 'poppins',
-                      cursor:'pointer'
+                      cursor: 'pointer',
                     }}
                     formatter={(value) => {
                       const legendLabels: { [key: string]: string } = {
-                        low: '0-15 days',
-                        medium: '16-30 days',
-                        high: '31-45 days',
-                        veryHigh: '46-60 days',
-                        ultraHigh: '61-90 days',
-                        extreme: '91+ days',
+                        low: 'Count of all Permit Approved Dates',
+                        // medium: '16-30 days',
+                        // high: '31-45 days',
+                        // veryHigh: '46-60 days',
+                        ultraHigh: 'Count of all Permits Redlined',
+                        // extreme: '91+ days',
                       };
                       return legendLabels[value] || value; // Custom label for legend items
                     }}
                     payload={[
-                      { value: 'low', type: 'square', color: getBarColor('low') },
-                      { value: 'medium', type: 'square', color: getBarColor('medium') },
-                      { value: 'high', type: 'square', color: getBarColor('high') },
-                      { value: 'veryHigh', type: 'square', color: getBarColor('veryHigh') },
-                      { value: 'ultraHigh', type: 'square', color: getBarColor('ultraHigh') },
-                      { value: 'extreme', type: 'square', color: getBarColor('extreme') },
+                      {
+                        value: 'low',
+                        type: 'square',
+                        color: getBarColor('low'),
+                      },
+                      // { value: 'medium', type: 'square', color: getBarColor('medium') },
+                      // { value: 'high', type: 'square', color: getBarColor('high') },
+                      // { value: 'veryHigh', type: 'square', color: getBarColor('veryHigh') },
+                      {
+                        value: 'ultraHigh',
+                        type: 'square',
+                        color: getBarColor('ultraHigh'),
+                      },
+                      // { value: 'extreme', type: 'square', color: getBarColor('extreme') },
                     ]}
                   />
-
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -515,7 +515,7 @@ const getNewFormData = async () => {
             {/* Line Chart */}
             <div className={styles.chartWrapper}>
               <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={chartData} margin={{ right: 70 }}>
+                <LineChart data={chartData} margin={{ right: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     className={styles.axis}
@@ -527,41 +527,26 @@ const getNewFormData = async () => {
                     dy={12}
                     interval={0}
                   />
-                  <YAxis
-                    className={styles.axis}
-                    tickSize={10}
-                  />
+                  <YAxis className={styles.axis} tickSize={10} />
                   <Tooltip
-                    content={({ payload, label }) => {
-                      if (payload && payload.length > 0) {
-                        return (
-                          <div style={{
-                            backgroundColor: 'white',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                          }}>
-                            <p style={{fontWeight:'bold'}}>Week {label}</p>
-                            <p>
-                              Average Days from Install to FIN:
-                              <span style={{color:'rgb(76, 175, 80)',fontWeight:'bold', padding:5}}>
-                                {typeof payload?.[0]?.value === 'number' ? payload[0].value.toFixed(2) : 'N/A'}
-                              </span>
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
+                    wrapperStyle={{
+                      outline: 'none',
+                      borderRadius: 4,
+                      padding: 4,
+                      boxShadow: 'none',
+                      fontSize: 12,
                     }}
+                    labelFormatter={(label) => `Week ${label}`}
                   />
                   <Line
                     type="monotone"
-                    dataKey="totalDays"
+                    dataKey="Permit Redline %"
                     stroke="rgb(76, 175, 80)" // Updated line color
                     activeDot={{ r: 8 }}
                     fill="rgb(76, 175, 80)"
                   >
                     <LabelList
-                      dataKey="totalDays"
+                      dataKey="Permit Redline %"
                       position="top"
                       fill="rgb(76, 175, 80)"
                       fontSize={12}
@@ -584,7 +569,6 @@ const getNewFormData = async () => {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-
           </div>
         )}
       </div>
@@ -592,4 +576,4 @@ const getNewFormData = async () => {
   );
 };
 
-export default InstalltoFin;
+export default PermitRedLine;
