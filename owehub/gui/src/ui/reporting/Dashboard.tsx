@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
         {
           heading: 'First time completions',
           title: 'Quality per Office',
-          route: '',
+          route: ROUTES.FIRST_TIME_COMPLETIONS,
         },
         {
           heading: 'First time completions',
