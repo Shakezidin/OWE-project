@@ -512,6 +512,7 @@ const PermitRedLine = () => {
                     tickLine={{ stroke: 'black', strokeWidth: 1 }}
                   />
                   <Tooltip
+                    cursor={{ fill: '#E7F0FF' }}
                     wrapperStyle={{
                       outline: 'none',
                       borderRadius: 4,
@@ -525,7 +526,7 @@ const PermitRedLine = () => {
                     align="center"
                     verticalAlign="bottom"
                     wrapperStyle={{
-                      paddingBottom: '20px',
+                      paddingBottom: '0px',
                       fontSize: '12px',
                       fontFamily: 'poppins',
                       cursor: 'pointer',
@@ -600,7 +601,7 @@ const PermitRedLine = () => {
 
 
                 <AreaChart width={730} height={250} data={areaData}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
                 >
                   <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -615,6 +616,7 @@ const PermitRedLine = () => {
                   <XAxis dataKey="name" className={styles.axis} height={50} tickSize={10} angle={-45} dy={12} interval={0} />
                   <YAxis tickSize={10} className={styles.axis} tickFormatter={(value) => `${value}%`} />
                   <Tooltip
+                    cursor={{ fill: '#377CF6', stroke: '#377CF6' }}
                     wrapperStyle={{
                       outline: 'none',
                       borderRadius: 4,
