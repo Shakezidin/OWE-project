@@ -441,7 +441,6 @@ const Production: React.FC = () => {
                   )
                   .map((subReport, index) => (
                     <div
-                      className="report-graph"
                       style={{
                         display: 'flex',
                         justifyContent: 'center',
