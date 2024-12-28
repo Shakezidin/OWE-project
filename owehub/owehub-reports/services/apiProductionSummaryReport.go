@@ -28,15 +28,16 @@ import (
  ******************************************************************************/
 func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err       error
-		dataReq   models.ProductionSummaryReportRequest
-		weekData  map[string]interface{}
-		totals    map[string]interface{}
-		subReport models.ProductionSummarySubReport
-		apiResp   models.ProductionSummaryReportResponse
-		dbOffices []string
-		tableName string
-		calcQuery string
+		err        error
+		dataReq    models.ProductionSummaryReportRequest
+		weekData   map[string]interface{}
+		totals     map[string]interface{}
+		subReport  models.ProductionSummarySubReport
+		apiResp    models.ProductionSummaryReportResponse
+		dbOffices  []string
+		tableName  string
+		calcQuery  string
+		dateFilter []string
 	)
 
 	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
@@ -321,7 +322,13 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 			return
 		}
 
-		//  TODO: fill in table data for pending service
+		//  fill in table data
+		subReport.TableData, err = queryProductionCustomerCountGrouping(tableName, "service_type", nil, dbOffices)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
@@ -462,13 +469,23 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "DER/LST Scheduled"}
 
 		// fill in chart data
-		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, _, err = queryProductionWeeklyData[int64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		// TODO: fill in DER/LST Scheduled table data
+		// fill in table data
+		dateFilter = []string{
+			fmt.Sprintf("EXTRACT('WEEK' FROM scheduled_date) = %d", dataReq.Week),
+			fmt.Sprintf("EXTRACT('YEAR' FROM scheduled_date) = %d", dataReq.Year),
+		}
+		subReport.TableData, err = queryProductionCustomerCountGrouping(tableName, "sow", dateFilter, dbOffices)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
 
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
@@ -476,13 +493,23 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "DER/LST Completed"}
 
 		// fill in chart data
-		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "completed_date", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, _, err = queryProductionWeeklyData[int64](tableName, calcQuery, "completed_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		// TODO: fill in DER/LST Completed table data
+		// fill in table data
+		dateFilter = []string{
+			fmt.Sprintf("EXTRACT('WEEK' FROM completed_date) = %d", dataReq.Week),
+			fmt.Sprintf("EXTRACT('YEAR' FROM completed_date) = %d", dataReq.Year),
+		}
+		subReport.TableData, err = queryProductionCustomerCountGrouping(tableName, "sow", dateFilter, dbOffices)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
 
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
@@ -620,69 +647,6 @@ func queryProductionWeeklyData[TNum int64 | float64](
 
 // Query Production Reports:
 //   - Grouping by office
-//   - Filtering by year, week number and office
-//   - DateCol decides date column to group weeks by
-func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offices []string) ([]map[string]interface{}, error) {
-	var (
-		err        error
-		query      string
-		data       []map[string]interface{}
-		outData    []map[string]interface{}
-		officeGrps map[string]map[string]interface{}
-	)
-	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
-	defer func() { log.ExitFn(0, "HandleGetProductionSummaryReportRequest", err) }()
-
-	query = fmt.Sprintf(`
-        SELECT
-            office,
-            CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
-            COUNT(DISTINCT customer_unique_id) AS customers_count,
-            CAST(AVG(system_size::DECIMAL) AS FLOAT) AS system_size_avg
-        FROM pv_install_install_subcontracting_schema
-        WHERE system_size != ''
-        AND EXTRACT('WEEK' FROM %s) = $1
-        AND EXTRACT('YEAR' FROM %s) = $2
-        GROUP BY office
-        HAVING office = ANY($3)
-    `, dateColName, dateColName)
-
-	whereEleList := []interface{}{weekNo, year, pq.Array(offices)}
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to retrieve data from DB err: %v", err)
-		return nil, fmt.Errorf("failed to retrieve data from DB")
-	}
-
-	// group by office
-	officeGrps = make(map[string]map[string]interface{})
-	for _, item := range data {
-		officeName := getReportOfficeName(item["office"].(string))
-		if _, ok := officeGrps[officeName]; !ok {
-			officeGrps[officeName] = map[string]interface{}{
-				"Office":              officeName,
-				"System Size":         float64(0),
-				"Customers":           int64(0),
-				"Average System Size": float64(0),
-			}
-		}
-		officeGrps[officeName]["System Size"] =
-			officeGrps[officeName]["System Size"].(float64) + item["system_size_sum"].(float64)
-		officeGrps[officeName]["Customers"] =
-			officeGrps[officeName]["Customers"].(int64) + item["customers_count"].(int64)
-		officeGrps[officeName]["Average System Size"] =
-			officeGrps[officeName]["Average System Size"].(float64) + item["system_size_avg"].(float64)
-	}
-
-	// extract officeGrps values to outData
-	for _, officeData := range officeGrps {
-		outData = append(outData, officeData)
-	}
-	return outData, nil
-}
-
-// Query Production Reports:
-//   - Grouping by office
 //   - Filtering by office
 //
 // Used for bar chart data
@@ -784,4 +748,161 @@ func queryProductionStatusGrouping[TNum int64 | float64](tableName, calculationQ
 		chartData = append(chartData, officeDataAccumulated)
 	}
 	return chartData, totals, nil
+}
+
+// Query Production Reports:
+//   - Group customer counts by column specified
+func queryProductionCustomerCountGrouping(tableName, grpCol string, dateFilter, offices []string) ([]map[string]interface{}, error) {
+	var (
+		err           error
+		query         string
+		dateFilterStr string
+		whereEleList  []interface{}
+		officeGrps    map[string][]map[string]interface{}
+		groupNames    map[string]bool
+		outData       []map[string]interface{}
+	)
+
+	if len(dateFilter) > 0 {
+		for _, filter := range dateFilter {
+			dateFilterStr = fmt.Sprintf("%s AND %s", dateFilterStr, filter)
+		}
+	}
+
+	query = fmt.Sprintf(`
+		SELECT
+			%s AS grp_col,
+			office,
+			COUNT(DISTINCT customer_unique_id) AS customer_count
+		FROM %s
+		WHERE OFFICE = ANY($1)
+		%s
+		GROUP BY %s, OFFICE
+	`, grpCol, tableName, dateFilterStr, grpCol)
+
+	whereEleList = []interface{}{pq.Array(offices)}
+
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retrieve data from DB err: %v", err)
+		return nil, fmt.Errorf("failed to retrieve data from DB")
+	}
+
+	// first, group by office
+	officeGrps = make(map[string][]map[string]interface{})
+	groupNames = make(map[string]bool) // maintain list of all group names
+	for _, row := range data {
+		office, ok := row["office"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to convert office to string from type %T", row["office"])
+			continue
+		}
+		grpName, ok := row["grp_col"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to convert grpName to string from type %T", row["grp_col"])
+			continue
+		}
+		groupNames[grpName] = true // maintain list of all group names
+		officeName := getReportOfficeName(office)
+		officeGrps[officeName] = append(officeGrps[officeName], row)
+	}
+
+	// add offices that did not appear in rows
+	for _, office := range offices {
+		officeName := getReportOfficeName(office)
+		if _, ok := officeGrps[officeName]; !ok {
+			officeGrps[officeName] = []map[string]interface{}{}
+		}
+	}
+
+	// accumulate data for each office
+	for office, rows := range officeGrps {
+		outItem := map[string]interface{}{
+			"Office": office,
+		}
+		total := int64(0)
+		for _, row := range rows {
+			grpCol := row["grp_col"].(string)
+			customerCount := row["customer_count"].(int64)
+			total += customerCount
+
+			if _, ok := outItem[grpCol]; !ok {
+				outItem[grpCol] = customerCount
+			} else {
+				outItem[grpCol] = outItem[grpCol].(int64) + customerCount
+			}
+		}
+		// fill groups that did't appear in rows
+		for groupName := range groupNames {
+			if _, ok := outItem[groupName]; !ok {
+				outItem[groupName] = 0
+			}
+		}
+		outItem["Total"] = total
+		outData = append(outData, outItem)
+	}
+	return outData, nil
+}
+
+// Query Production Reports:
+//   - Grouping by office
+//   - Filtering by year, week number and office
+//   - DateCol decides date column to group weeks by
+func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offices []string) ([]map[string]interface{}, error) {
+	var (
+		err        error
+		query      string
+		data       []map[string]interface{}
+		outData    []map[string]interface{}
+		officeGrps map[string]map[string]interface{}
+	)
+	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
+	defer func() { log.ExitFn(0, "HandleGetProductionSummaryReportRequest", err) }()
+
+	query = fmt.Sprintf(`
+        SELECT
+            office,
+            CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
+            COUNT(DISTINCT customer_unique_id) AS customers_count,
+            CAST(AVG(system_size::DECIMAL) AS FLOAT) AS system_size_avg
+        FROM pv_install_install_subcontracting_schema
+        WHERE system_size != ''
+        AND EXTRACT('WEEK' FROM %s) = $1
+        AND EXTRACT('YEAR' FROM %s) = $2
+        GROUP BY office
+        HAVING office = ANY($3)
+    `, dateColName, dateColName)
+
+	whereEleList := []interface{}{weekNo, year, pq.Array(offices)}
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retrieve data from DB err: %v", err)
+		return nil, fmt.Errorf("failed to retrieve data from DB")
+	}
+
+	// group by office
+	officeGrps = make(map[string]map[string]interface{})
+	for _, item := range data {
+		officeName := getReportOfficeName(item["office"].(string))
+		if _, ok := officeGrps[officeName]; !ok {
+			officeGrps[officeName] = map[string]interface{}{
+				"Office":              officeName,
+				"System Size":         float64(0),
+				"Customers":           int64(0),
+				"Average System Size": float64(0),
+			}
+		}
+		officeGrps[officeName]["System Size"] =
+			officeGrps[officeName]["System Size"].(float64) + item["system_size_sum"].(float64)
+		officeGrps[officeName]["Customers"] =
+			officeGrps[officeName]["Customers"].(int64) + item["customers_count"].(int64)
+		officeGrps[officeName]["Average System Size"] =
+			officeGrps[officeName]["Average System Size"].(float64) + item["system_size_avg"].(float64)
+	}
+
+	// extract officeGrps values to outData
+	for _, officeData := range officeGrps {
+		outData = append(outData, officeData)
+	}
+	return outData, nil
 }
