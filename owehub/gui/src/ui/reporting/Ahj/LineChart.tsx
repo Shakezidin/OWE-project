@@ -9,6 +9,7 @@ import {
   Tooltip,
   TooltipProps,
   Legend,
+  LabelList,
 } from 'recharts';
 import styles from '../styles/InstalltoFin.module.css';
 
@@ -89,7 +90,7 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
             fontSize: 10,
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
           }}
-          formatter={(value) => `${value}%`}
+          formatter={(value) => `${value}`}
           labelFormatter={(value) => `Week ${value}`}
         />
         <Line
@@ -99,7 +100,16 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
           strokeWidth={2}
           dot={{ r: 3, fill: '#f10000' }}
           activeDot={{ r: 4, fill: '#f10000' }}
-        />
+        >
+          <LabelList
+            dataKey="Out of SLA"
+            position="top"
+            fill="#f10000"
+            fontSize={8}
+            offset={5}
+            formatter={(value: number) => `${value.toFixed(0)}`}
+          />
+        </Line>
         <Line
           type="monotone"
           dataKey="Within SLA"
@@ -107,7 +117,16 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
           strokeWidth={2}
           dot={{ r: 3, fill: '#7cb342' }}
           activeDot={{ r: 4 }}
-        />
+        >
+          <LabelList
+            dataKey="Within SLA"
+            position="bottom"
+            fill="#7cb342"
+            fontSize={8}
+            offset={5}
+            formatter={(value: number) => `${value.toFixed(0)}`}
+          />
+        </Line>
       </LineChart>
     </ResponsiveContainer>
   );

@@ -227,7 +227,7 @@ const Ahj = () => {
 
           <div>
             <DropdownCheckBox
-              label={`${ahj.length} AHJ's`}
+              label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
               placeholder={'Search AHJ'}
               selectedOptions={selectedAhj}
               options={ahj}
