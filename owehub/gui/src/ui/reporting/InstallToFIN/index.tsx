@@ -236,11 +236,7 @@ const InstalltoFin = () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <MicroLoader />
           </div>
-        ) : chartData.length === 0 ? (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <DataNotFound />
-          </div>
-        ) : (
+        ) : chartData.length > 0 ? (
           <Charts
             chartData={chartData}
             highlightedLegend={highlightedLegend}
@@ -248,6 +244,11 @@ const InstalltoFin = () => {
             renderCustomizedLabel={renderCustomizedLabel}
             getBarColor={getBarColor}
           />
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <DataNotFound />
+          </div>
+
         )}
       </div>
     </div>

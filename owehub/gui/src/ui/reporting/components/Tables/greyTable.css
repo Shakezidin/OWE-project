@@ -1,5 +1,6 @@
 .grey-table-container {
-  min-width: 300px;
+  min-width: 550px;
+  max-width: 550px;
   overflow-x: auto;
   border: 1px solid #ddd;
   border-radius: 8px;
