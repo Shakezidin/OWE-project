@@ -30,12 +30,13 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 	var (
 		err       error
 		dataReq   models.ProductionSummaryReportRequest
-		data      []map[string]interface{}
 		weekData  map[string]interface{}
+		totals    map[string]interface{}
 		subReport models.ProductionSummarySubReport
 		apiResp   models.ProductionSummaryReportResponse
 		dbOffices []string
 		tableName string
+		calcQuery string
 	)
 
 	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
@@ -69,12 +70,13 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 
 	if dataReq.ReportType == "install" {
 		tableName = "pv_install_install_subcontracting_schema"
+		calcQuery = "CAST(SUM(CASE WHEN system_size = '' THEN 0 ELSE system_size::DECIMAL END) AS FLOAT)"
 
 		// 1. Install Scheduled - Day 1
 		subReport = models.ProductionSummarySubReport{SubReportName: "Install Scheduled - Day 1"}
 
 		// fill in chart data
-		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[float64](tableName, calcQuery, "pv_install_day_window", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -93,7 +95,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "Install Scheduled - Day 2"}
 
 		// fill in chart data
-		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_2", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[float64](tableName, calcQuery, "pv_install_day_window_day_2", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -112,7 +114,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "Install Scheduled - Day 3"}
 
 		// fill in chart data
-		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "pv_install_day_window_day_3", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[float64](tableName, calcQuery, "pv_install_day_window_day_3", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -130,7 +132,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "Install Fix Scheduled"}
 
 		// fill in chart data
-		subReport.ChartData, weekData, err = queryProductionWeeklySystemSizes(tableName, "install_fix_scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[float64](tableName, calcQuery, "install_fix_scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
@@ -150,7 +152,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "Install Completed"}
 
 		// fill in chart data
-		subReport.ChartData, _, err = queryProductionWeeklySystemSizes(tableName, "pv_completion_date", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "pv_completion_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
@@ -169,7 +171,7 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		subReport = models.ProductionSummarySubReport{SubReportName: "Install Fix Completed"}
 
 		// fill in chart data
-		subReport.ChartData, _, err = queryProductionWeeklySystemSizes(tableName, "install_fix_complete_date", dbOffices, dataReq.Year, dataReq.Week)
+		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "install_fix_complete_date", dbOffices, dataReq.Year, dataReq.Week)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
@@ -184,28 +186,20 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
 		// 7. Pending Installs
-		data, err = queryProductionStatusGrouping(dbOffices)
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending Installs"}
+
+		// fill in chart data
+		subReport.ChartData, totals, err = queryProductionStatusGrouping[float64](tableName, calcQuery, dbOffices)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 			return
 		}
-		subReport = models.ProductionSummarySubReport{
-			SubReportName: "Pending Installs",
-			ChartData:     data,
-			TableData:     []map[string]interface{}{},
-		}
 
-		// sum system size for each office
-		for _, row := range data {
-			sysSizeSum := 0.0
-			for _, val := range row {
-				if sysSize, ok := val.(float64); ok {
-					sysSizeSum += sysSize
-				}
-			}
+		// fill in table data
+		for office, total := range totals {
 			subReport.TableData = append(subReport.TableData, map[string]interface{}{
-				"Office":      row["office"],
-				"System Size": sysSizeSum,
+				"Office":      office,
+				"System Size": total,
 			})
 		}
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
@@ -214,7 +208,288 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
-	// TODO: Handle more report types here
+	if dataReq.ReportType == "battery" {
+		tableName = "batteries_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. Battery Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "Battery Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "battery_installation_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. Battery Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "Battery Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "completion_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending Battery
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending Battery"}
+		subReport.ChartData, totals, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for office, totalCustomers := range totals {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    office,
+				"Customers": totalCustomers,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "service" {
+		tableName = "service_requests_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. Service Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "Service Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. Service Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "Service Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "completion_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending Service
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending Service"}
+		subReport.ChartData, _, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		//  TODO: fill in table data for pending service
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "mpu" {
+		tableName = "mpu_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. MPU Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "MPU Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "pk_or_cutover_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. MPU Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "MPU Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "pk_or_cutover_date_of_completion", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending MPU
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending MPU"}
+		subReport.ChartData, totals, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range totals {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "derate" {
+		tableName = "derates_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. Derate Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "Derate Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. Derate Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "Derate Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "completion_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending Derate
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending Derate"}
+		subReport.ChartData, totals, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range totals {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "der/lst" {
+		tableName = "der_lst_sub_panel_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. DER/LST Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "DER/LST Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// TODO: fill in DER/LST Scheduled table data
+
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. DER/LST Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "DER/LST Completed"}
+
+		// fill in chart data
+		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "completed_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// TODO: fill in DER/LST Completed table data
+
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// TODO: Fetch Pending DER/LST
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
 
 	appserver.FormAndSendHttpResp(resp, "Invalid report type", http.StatusBadRequest, nil)
 }
@@ -225,7 +500,8 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 //   - Filtering by year and office
 //   - TableName decides which table to query
 //   - DateCol decides date column to group weeks by
-func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices []string, year int, selectedWeek int) (
+func queryProductionWeeklyData[TNum int64 | float64](
+	tableName, calculationQuery, dateCol string, offices []string, year, selectedWeek int) (
 	chartData []map[string]interface{}, selectedWeekData map[string]interface{}, err error) {
 	var (
 		query       string
@@ -240,18 +516,17 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 
 	query = fmt.Sprintf(`
         SELECT
-            CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
+            %s AS calculated_col,
             office AS office,
             CAST(EXTRACT('WEEK' FROM %s) AS INT) AS week_number
         FROM %s
         WHERE
-            system_size != ''
-            AND OFFICE IS NOT NULL
+            OFFICE IS NOT NULL
             AND EXTRACT('YEAR' FROM %s) = $1
             AND OFFICE = ANY($2)
         GROUP BY week_number, office
         ORDER BY week_number
-    `, dateCol, tableName, dateCol)
+    `, calculationQuery, dateCol, tableName, dateCol)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, []interface{}{year, pq.Array(offices)})
 	if err != nil {
@@ -294,20 +569,27 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 				continue
 			}
 
-			sysSize, ok := row["system_size_sum"].(float64)
-
+			sysSize, ok := row["calculated_col"].(TNum)
 			if !ok {
-				log.FuncErrorTrace(0, "Failed to convert system_size_sum to float64 from type %T", row["system_size_sum"])
+				log.FuncErrorTrace(0, "Failed to convert calculated_col to TNum from type %T", row["calculated_col"])
 				continue
 			}
-			officesFound[office] = true
-			weekDataAccumulated[getReportOfficeName(office)] = sysSize
+
+			reportOfficeName := getReportOfficeName(office)
+			officesFound[reportOfficeName] = true
+
+			if _, ok := weekDataAccumulated[reportOfficeName]; !ok {
+				weekDataAccumulated[reportOfficeName] = sysSize
+				continue
+			}
+			weekDataAccumulated[reportOfficeName] = weekDataAccumulated[reportOfficeName].(TNum) + sysSize
 		}
 
 		// for all offices that were not found, add a row with zero
 		for _, office := range offices {
-			if _, ok := officesFound[office]; !ok {
-				weekDataAccumulated[getReportOfficeName(office)] = 0.0
+			reportOfficeName := getReportOfficeName(office)
+			if _, ok := officesFound[reportOfficeName]; !ok {
+				weekDataAccumulated[reportOfficeName] = 0.0
 			}
 		}
 
@@ -342,10 +624,11 @@ func queryProductionWeeklySystemSizes(tableName string, dateCol string, offices 
 //   - DateCol decides date column to group weeks by
 func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offices []string) ([]map[string]interface{}, error) {
 	var (
-		err     error
-		query   string
-		data    []map[string]interface{}
-		outData []map[string]interface{}
+		err        error
+		query      string
+		data       []map[string]interface{}
+		outData    []map[string]interface{}
+		officeGrps map[string]map[string]interface{}
 	)
 	log.EnterFn(0, "HandleGetProductionSummaryReportRequest")
 	defer func() { log.ExitFn(0, "HandleGetProductionSummaryReportRequest", err) }()
@@ -371,14 +654,29 @@ func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offi
 		return nil, fmt.Errorf("failed to retrieve data from DB")
 	}
 
+	// group by office
+	officeGrps = make(map[string]map[string]interface{})
 	for _, item := range data {
 		officeName := getReportOfficeName(item["office"].(string))
-		outData = append(outData, map[string]interface{}{
-			"Office":              officeName,
-			"System Size":         item["system_size_sum"],
-			"Customers":           item["customers_count"],
-			"Average System Size": item["system_size_avg"],
-		})
+		if _, ok := officeGrps[officeName]; !ok {
+			officeGrps[officeName] = map[string]interface{}{
+				"Office":              officeName,
+				"System Size":         float64(0),
+				"Customers":           int64(0),
+				"Average System Size": float64(0),
+			}
+		}
+		officeGrps[officeName]["System Size"] =
+			officeGrps[officeName]["System Size"].(float64) + item["system_size_sum"].(float64)
+		officeGrps[officeName]["Customers"] =
+			officeGrps[officeName]["Customers"].(int64) + item["customers_count"].(int64)
+		officeGrps[officeName]["Average System Size"] =
+			officeGrps[officeName]["Average System Size"].(float64) + item["system_size_avg"].(float64)
+	}
+
+	// extract officeGrps values to outData
+	for _, officeData := range officeGrps {
+		outData = append(outData, officeData)
 	}
 	return outData, nil
 }
@@ -388,9 +686,9 @@ func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offi
 //   - Filtering by office
 //
 // Used for bar chart data
-func queryProductionStatusGrouping(offices []string) ([]map[string]interface{}, error) {
+func queryProductionStatusGrouping[TNum int64 | float64](tableName, calculationQuery string, offices []string) (
+	chartData []map[string]interface{}, totals map[string]interface{}, err error) {
 	var (
-		err                  error
 		query                string
 		projStatusExceptions []string
 		appStatusExceptions  []string
@@ -421,21 +719,20 @@ func queryProductionStatusGrouping(offices []string) ([]map[string]interface{}, 
 
 	query = fmt.Sprintf(`
         SELECT
-            CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
+			%s AS calculated_col,
             app_status,
             office
-        FROM pv_install_install_subcontracting_schema
-        WHERE system_size != ''
-        AND project_status NOT IN (%s)
+        FROM %s
+        WHERE project_status NOT IN (%s)
         GROUP BY app_status, office
         HAVING app_status NOT IN (%s)
         AND OFFICE = ANY($1)
-    `, strings.Join(projStatusExceptions, ", "), strings.Join(appStatusExceptions, ", "))
+    `, calculationQuery, tableName, strings.Join(projStatusExceptions, ", "), strings.Join(appStatusExceptions, ", "))
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, []interface{}{pq.Array(offices)})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to retrieve data from DB err: %v", err)
-		return nil, fmt.Errorf("failed to retrieve data from DB")
+		return nil, nil, fmt.Errorf("failed to retrieve data from DB")
 	}
 
 	// first, group by office
@@ -446,20 +743,26 @@ func queryProductionStatusGrouping(offices []string) ([]map[string]interface{}, 
 			log.FuncErrorTrace(0, "Failed to convert office to string from type %T", row["office"])
 			continue
 		}
-		if _, ok := officeGrps[office]; !ok {
-			officeGrps[office] = []map[string]interface{}{}
+
+		reportOfficeName := getReportOfficeName(office)
+
+		if _, ok := officeGrps[reportOfficeName]; !ok {
+			officeGrps[reportOfficeName] = []map[string]interface{}{}
 		}
-		officeGrps[office] = append(officeGrps[office], row)
+		officeGrps[reportOfficeName] = append(officeGrps[reportOfficeName], row)
 	}
 
 	// then for each office, accumulate to system size counts and app status
-	data = []map[string]interface{}{}
+	chartData = []map[string]interface{}{}
+	totals = make(map[string]interface{}) // sum totals per office
 	for office, officeData := range officeGrps {
-		officeDataAccumulated := make(map[string]interface{})
+		officeDataAccumulated := map[string]interface{}{
+			"office": office,
+		}
+		totals[office] = TNum(0)
 
-		officeDataAccumulated["office"] = getReportOfficeName(office)
 		for _, row := range officeData {
-			sysSize, ok := row["system_size_sum"].(float64)
+			calcCol, ok := row["calculated_col"].(TNum)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to convert system_size_sum to float64 from type %T", row["system_size_sum"])
 				continue
@@ -469,9 +772,16 @@ func queryProductionStatusGrouping(offices []string) ([]map[string]interface{}, 
 				log.FuncErrorTrace(0, "Failed to convert app_status to string from type %T", row["app_status"])
 				continue
 			}
-			officeDataAccumulated[appStatus] = sysSize
+
+			totals[office] = totals[office].(TNum) + calcCol
+			if _, ok := officeDataAccumulated[appStatus]; !ok {
+				officeDataAccumulated[appStatus] = calcCol
+				continue
+			}
+			officeDataAccumulated[appStatus] = officeDataAccumulated[appStatus].(TNum) + calcCol
+
 		}
-		data = append(data, officeDataAccumulated)
+		chartData = append(chartData, officeDataAccumulated)
 	}
-	return data, nil
+	return chartData, totals, nil
 }

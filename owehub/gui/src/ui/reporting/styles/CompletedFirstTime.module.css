@@ -1,0 +1,48 @@
+/* .sectionWrapper{
+    display: flex
+;
+    flex-direction: column;
+    gap: 18px;
+    width: fit-content;
+} */
+
+/* 
+
+.headingTitle{
+    display: flex
+;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.headingTitle h1{
+    font-size: 14px;
+    font-weight: 500;
+} */
+
+.graphWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.graphWrapper p{
+    font-size: 14px;
+    font-weight: 500;
+    padding-bottom: 8px;
+}
+
+.chartWrapper{
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.03) 2px 4px 8px -1px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    /* padding-bottom: 10px; */
+    height: 242px;
+    width: 600px;
+}
