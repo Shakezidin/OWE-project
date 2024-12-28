@@ -21,6 +21,168 @@ import (
 )
 
 /******************************************************************************
+ * FUNCTION:		HandleGetTimelinePermitRedlinePerReportRequest
+ * DESCRIPTION:     handler for get Permit Redline Percentage Report request
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func HandleGetTimelinePermitRedlinePerReportRequest(resp http.ResponseWriter, req *http.Request) {
+	var (
+		err            error
+		dataReq        models.TimelineReportRequest
+		RecordCount    int = 0
+		reportResp     models.SummaryReportResponse
+		whereEleList   []interface{}
+		escapedOffices []string
+	)
+
+	log.EnterFn(0, "HandleGetTimelinePermitRedlinePerReportRequest")
+	defer func() { log.ExitFn(0, "HandleGetTimelinePermitRedlinePerReportRequest", err) }()
+
+	if req.Body == nil {
+		err = fmt.Errorf("HTTP Request body is null in get Permit Redline Percentage Report")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		return
+	}
+
+	reqBody, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Permit Redline Percentage Report err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal get Permit Redline Percentage Report err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Permit Redline Percentage Report", http.StatusBadRequest, nil)
+		return
+	}
+
+	Offices := ""
+	if (len(dataReq.Office) > 0) && (dataReq.Office[0] == "ALL") {
+		Offices = "'ALL' = 'ALL'"
+	} else {
+		for _, name := range dataReq.Office {
+			for _, officeCode := range getDBOfficeNames(name) {
+				escapedOffices = append(escapedOffices, "'"+strings.ReplaceAll(officeCode, "'", "''")+"'")
+			}
+		}
+		Offices = "pv.office IN (" + strings.Join(escapedOffices, ", ") + ")"
+	}
+
+	ahj := ""
+	if (len(dataReq.Ahj) > 0) && (dataReq.Ahj[0] == "ALL") {
+		ahj = "'ALL' = 'ALL'"
+	} else {
+		escapedAhj := make([]string, len(dataReq.Ahj))
+		for i, name := range dataReq.Ahj {
+			escapedAhj[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		ahj = "pv.ahj IN (" + strings.Join(escapedAhj, ", ") + ")"
+	}
+
+	states := ""
+	if (len(dataReq.State) > 0) && (dataReq.State[0] == "ALL") {
+		states = "'ALL' = 'ALL'"
+	} else {
+		escapedStates := make([]string, len(dataReq.State))
+		for i, name := range dataReq.State {
+			escapedStates[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
+		}
+		states = "pv.state IN (" + strings.Join(escapedStates, ", ") + ")"
+	}
+
+	year := dataReq.Year + "-01-01"
+
+	query := fmt.Sprintf(`WITH weeks AS (
+							SELECT 
+								DATE_TRUNC('week', generate_series(DATE_TRUNC('year', $1::DATE), DATE_TRUNC('year', $1::DATE) + INTERVAL '1 year' - INTERVAL '1 day', '1 week')) AS week_start
+						)
+						SELECT 
+							EXTRACT('week' FROM w.week_start)::INTEGER AS week_number,
+							w.week_start,
+							COUNT(CASE WHEN pv_submitted IS NOT NULL AND pv_submitted >= w.week_start AND pv_submitted < w.week_start + INTERVAL '1 week' THEN 1 END) AS pv_submitted_count,
+							COUNT(CASE WHEN pv_redlined_date IS NOT NULL AND pv_redlined_date >= w.week_start AND pv_redlined_date < w.week_start + INTERVAL '1 week' THEN 1 END) AS pv_redlined_date_count,
+							CASE 
+								WHEN COUNT(CASE WHEN pv_submitted IS NOT NULL AND pv_submitted >= w.week_start AND pv_submitted < w.week_start + INTERVAL '1 week' THEN 1 END) > 0
+								THEN ROUND(
+									COUNT(CASE WHEN pv_redlined_date IS NOT NULL AND pv_redlined_date >= w.week_start AND pv_redlined_date < w.week_start + INTERVAL '1 week' THEN 1 END)::DECIMAL
+									/
+									COUNT(CASE WHEN pv_submitted IS NOT NULL AND pv_submitted >= w.week_start AND pv_submitted < w.week_start + INTERVAL '1 week' THEN 1 END)::DECIMAL
+									* 100, 2)
+								ELSE 0
+							END AS permit_redline_percentage
+						FROM 
+							permit_fin_pv_permits_schema p
+						RIGHT JOIN 
+							weeks w
+						ON 
+							TRUE
+						WHERE 
+							(%s)
+							AND (%s)
+							AND (%s)
+						GROUP BY 
+							w.week_start
+						ORDER BY 
+							w.week_start;
+					`, Offices, ahj, states)
+
+	whereEleList = append(whereEleList, year)
+
+	dbData, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		err = fmt.Errorf("failed to get table data from db err: %v", err)
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get the AHJ+15 Report", http.StatusInternalServerError, nil)
+		return
+	}
+
+	categories := []string{"Percentage Permit Redline Report", "Count Permit Redline Report"}
+	reportResp.Data = make(map[string][]models.DataPoint)
+
+	var dataTotal []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataTotal[i].Value = make(map[string]interface{})
+	}
+
+	var dataPercentage []models.DataPoint = make([]models.DataPoint, 52)
+	for i := 0; i < 52; i++ {
+		dataPercentage[i].Value = make(map[string]interface{})
+	}
+
+	for _, item := range dbData {
+		week_number := int(item["week_number"].(int64))
+		week_number -= 1
+
+		pv_submitted_count := item["pv_submitted_count"].(int64)
+		pv_redlined_date_count := item["pv_redlined_date_count"].(int64)
+
+		byteArray := item["permit_redline_percentage"].([]uint8)
+		strValue := string(byteArray)
+		permit_redline_percentage, err := strconv.ParseFloat(strValue, 64)
+		if err != nil {
+			fmt.Println("Error parsing float:", err)
+			return
+		}
+
+		dataTotal[week_number].Value["pv_submited_count"] = pv_submitted_count
+		dataTotal[week_number].Value["pv_redline_count"] = pv_redlined_date_count
+		dataPercentage[week_number].Value["percentage"] = permit_redline_percentage
+
+		dataTotal[week_number].Index = week_number + 1
+		dataPercentage[week_number].Index = week_number + 1
+	}
+
+	reportResp.Data[categories[0]] = dataPercentage
+	reportResp.Data[categories[1]] = dataTotal
+
+	appserver.FormAndSendHttpResp(resp, "Permit Redline Report", http.StatusOK, reportResp, int64(RecordCount))
+}
+
+/******************************************************************************
  * FUNCTION:		HandleGetTimelineAhjFifteenReportRequest
  * DESCRIPTION:     handler for get AHJ+15 Report request
  * INPUT:			resp, req
