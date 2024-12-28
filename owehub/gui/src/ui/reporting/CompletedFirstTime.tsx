@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-// import '../reporting/styles/quality.css';
 import styles from './styles/CompletedFirstTime.module.css';
 import SelectOption from '../components/selectOption/SelectOption';
 import TableGrey from './components/Tables/LeftGreyTable';
-import LineGraph from './components/LineGraph';
-import TableCustom from './components/Tables/CustomTable';
-import QualityTable from './components/Tables/QualityTable';
-import QualityTable2 from './components/Tables/QualityTable2';
-import QualityTable3 from './components/Tables/QualityTable3';
-import BarChartQuality from './components/BarChartQuality';
-import YearSelect from './components/Dropdowns/YearSelect';
-import WeekSelect from './components/Dropdowns/WeekSelect';
 import BackButtom from './components/BackButtom';
 import CompletedFirstTimeGraph from './components/CompletedFirstTimeGraph';
 
@@ -24,10 +15,7 @@ const CompletedFirstTime = () => {
     label: 'FIN',
     value: 'FIN',
   });
-  // const stylesGraph = {
-  //   width: '100%',
-  //   height: '280px',
-  // };
+
   const stylesGraph = {
     width: '1000px',
     height: '300px',
@@ -41,21 +29,6 @@ const CompletedFirstTime = () => {
     { week: 4, sales: 350, revenue: 225 },
     { week: 5, sales: 400, revenue: 250 },
   ];
-
-  // Define a formatter for labels (optional)
-  const labelFormatter = (value: any) => `${value} units`;
-
-  // Define a formatter for x-axis labels (optional)
-  const xAxisFormatter = (value: any) => `Week ${value}`;
-
-  // Define a formatter for tooltips (optional)
-  const tooltipFormatter = (value: any) => `${value} USD`;
-
-  const lines = [
-    { dataKey: 'sales', color: '#8884d8' },
-    { dataKey: 'revenue', color: '#82ca9d' },
-  ];
-
   const dummyData = [
     {
       week: 1,
@@ -161,7 +134,6 @@ const CompletedFirstTime = () => {
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        {/* <h4 className="reports-title">Quality</h4> */}
         <BackButtom heading="Quality per Office" />
         <div className="report-header-dropdown flex-wrap">
           <div>
@@ -180,13 +152,13 @@ const CompletedFirstTime = () => {
                   value: 'Peoria/Kingman',
                 },
                 {
-                    label: 'Tempe',
-                    value: 'Tempe',
-                  },
-                  {
-                    label: 'Texas',
-                    value: 'Texas',
-                  },
+                  label: 'Tempe',
+                  value: 'Tempe',
+                },
+                {
+                  label: 'Texas',
+                  value: 'Texas',
+                },
               ]}
               onChange={(value: any) => setReportType(value)}
               value={reportType}
@@ -197,23 +169,13 @@ const CompletedFirstTime = () => {
           </div>
         </div>
       </div>
-      <div className="reports-yscroll">
-        <div
-          style={{
-            background: '#ddd',
-            height: 50,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 5,
-            width: '100%',
-            margin: '10px 0',
-            fontWeight: '700',
-          }}
-        >
-          Completed First Time
-        </div>
 
+      <div className={styles.tableHeader}>Completed First Time</div>
+
+      <div
+        style={{ height: 'calc(-245px + 100vh)' }}
+        className="reports-yscroll"
+      >
         <div
           style={{
             display: 'flex',
@@ -252,86 +214,9 @@ const CompletedFirstTime = () => {
               </div>
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
-                {/* <div className={styles.chartWrapper}>
-                <ReusableLineChart
-  data={data}
-  lines={lines}
-  xAxisKey="week" 
-  height={240}
-  width={600}
-  yAxisLabel="Amount ($)"
-  xAxisLabel="Week"  
-  showGrid={true}
-  showLegend={true}
-  showTooltip={true}
-  margin={{ top: 20, right: 30, bottom: 30, left: 40 }}
-  className="my-4"
-/>
-                </div> */}
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
-                  {/* <LineGraphProd data={dummyData} /> */}
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="qualty-top-div">
-            <div className={`${styles.sectionWrapper} qual-sec-1`}>
-              <div className="approved-sec">
-                <h1>Completed First Time - Overall</h1>
-                <TableGrey
-                  data={[
-                    { column1: 'Peoria/Kingman', column2: '4400' },
-                    { column1: 'Tempe', column2: '45' },
-                    { column1: 'Tucson', column2: '1' },
-                    { column1: 'Albuquerque/El Paso', column2: '44' },
-                    { column1: 'Texas', column2: '45' },
-                    { column1: 'Colorado', column2: '1' },
-                  ]}
-                />
-              </div>
-              <div className="approved-sec">
-                <h1>First Time Completion Rate - Overall </h1>
-                <TableGrey
-                  data={[
-                    { column1: 'Peoria/Kingman', column2: '445' },
-                    { column1: 'Tempe', column2: '45' },
-                    { column1: 'Tucson', column2: '1' },
-                    { column1: 'Albuquerque/El Paso', column2: '44' },
-                    { column1: 'Texas', column2: '45' },
-                    { column1: 'Colorado', column2: '1' },
-                  ]}
-                />
-              </div>
-              <div className={styles.graphWrapper}>
-                <p> Completed First Time (Weekly)</p>
-                {/* <div className={styles.chartWrapper}>
-                <ReusableLineChart
-  data={data}
-  lines={lines}
-  xAxisKey="week" 
-  height={240}
-  width={600}
-  yAxisLabel="Amount ($)"
-  xAxisLabel="Week"  
-  showGrid={true}
-  showLegend={true}
-  showTooltip={true}
-  margin={{ top: 20, right: 30, bottom: 30, left: 40 }}
-  className="my-4"
-/>
-                </div> */}
-                <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
-                  <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -368,11 +253,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -409,11 +291,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -450,11 +329,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -491,11 +367,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -532,11 +405,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -572,28 +442,47 @@ const CompletedFirstTime = () => {
               </div>
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
-                {/* <div className={styles.chartWrapper}>
-                <ReusableLineChart
-  data={data}
-  lines={lines}
-  xAxisKey="week" 
-  height={240}
-  width={600}
-  yAxisLabel="Amount ($)"
-  xAxisLabel="Week"  
-  showGrid={true}
-  showLegend={true}
-  showTooltip={true}
-  margin={{ top: 20, right: 30, bottom: 30, left: 40 }}
-  className="my-4"
-/>
-                </div> */}
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="qualty-top-div">
+            <div className={`${styles.sectionWrapper} qual-sec-1`}>
+              <div className="approved-sec">
+                <h1>Completed First Time - Overall</h1>
+                <TableGrey
+                  data={[
+                    { column1: 'Peoria/Kingman', column2: '4400' },
+                    { column1: 'Tempe', column2: '45' },
+                    { column1: 'Tucson', column2: '1' },
+                    { column1: 'Albuquerque/El Paso', column2: '44' },
+                    { column1: 'Texas', column2: '45' },
+                    { column1: 'Colorado', column2: '1' },
+                  ]}
+                />
+              </div>
+              <div className="approved-sec">
+                <h1>First Time Completion Rate - Overall </h1>
+                <TableGrey
+                  data={[
+                    { column1: 'Peoria/Kingman', column2: '445' },
+                    { column1: 'Tempe', column2: '45' },
+                    { column1: 'Tucson', column2: '1' },
+                    { column1: 'Albuquerque/El Paso', column2: '44' },
+                    { column1: 'Texas', column2: '45' },
+                    { column1: 'Colorado', column2: '1' },
+                  ]}
+                />
+              </div>
+              <div className={styles.graphWrapper}>
+                <p> Completed First Time (Weekly)</p>
+                <div className={`${styles.chartWrapper} main-graph`}>
+                  <h3 style={{ textAlign: 'center' }}></h3>
+                  <CompletedFirstTimeGraph data={dummyData} />
                 </div>
               </div>
             </div>
@@ -631,11 +520,8 @@ const CompletedFirstTime = () => {
                 <p> Completed First Time (Weekly)</p>
 
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -672,11 +558,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -713,11 +596,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -754,11 +634,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -795,11 +672,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
@@ -836,11 +710,8 @@ const CompletedFirstTime = () => {
               <div className={styles.graphWrapper}>
                 <p> Completed First Time (Weekly)</p>
                 <div className={`${styles.chartWrapper} main-graph`}>
-                  <h3 style={{ textAlign: 'center' }}>
-                    {/* {reportType.label} {graph.title} */}
-                  </h3>
+                  <h3 style={{ textAlign: 'center' }}></h3>
                   <CompletedFirstTimeGraph data={dummyData} />
-                  {/* <p className="chart-info-report">Week</p> */}
                 </div>
               </div>
             </div>
