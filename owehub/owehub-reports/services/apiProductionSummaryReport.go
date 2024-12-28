@@ -271,7 +271,225 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
-	// TODO: Handle more report types here
+	if dataReq.ReportType == "service" {
+		tableName = "service_requests_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. Service Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "Service Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. Service Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "Service Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "completion_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending Service
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending Service"}
+		subReport.ChartData, _, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		//  TODO: fill in table data for pending service
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "mpu" {
+		tableName = "mpu_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. MPU Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "MPU Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "pk_or_cutover_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. MPU Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "MPU Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "pk_or_cutover_date_of_completion", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending MPU
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending MPU"}
+		subReport.ChartData, totals, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range totals {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "derate" {
+		tableName = "derates_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. Derate Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "Derate Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. Derate Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "Derate Completed"}
+
+		// fill in chart data
+		subReport.ChartData, weekData, err = queryProductionWeeklyData[int64](tableName, calcQuery, "completion_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range weekData {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 3. Pending Derate
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending Derate"}
+		subReport.ChartData, totals, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+
+		// fill in table data
+		for key, value := range totals {
+			subReport.TableData = append(subReport.TableData, map[string]interface{}{
+				"Office":    key,
+				"Customers": value,
+			})
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
+
+	if dataReq.ReportType == "der/lst" {
+		tableName = "der_lst_sub_panel_service_electrical_schema"
+		calcQuery = "COUNT(DISTINCT customer_unique_id)"
+
+		// 1. DER/LST Scheduled
+		subReport = models.ProductionSummarySubReport{SubReportName: "DER/LST Scheduled"}
+
+		// fill in chart data
+		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "scheduled_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// TODO: fill in DER/LST Scheduled table data
+
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// 2. DER/LST Completed
+		subReport = models.ProductionSummarySubReport{SubReportName: "DER/LST Completed"}
+
+		// fill in chart data
+		subReport.ChartData, _, err = queryProductionWeeklyData[float64](tableName, calcQuery, "completed_date", dbOffices, dataReq.Year, dataReq.Week)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// TODO: fill in DER/LST Completed table data
+
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
+		// TODO: Fetch Pending DER/LST
+		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
+		return
+	}
 
 	appserver.FormAndSendHttpResp(resp, "Invalid report type", http.StatusBadRequest, nil)
 }
