@@ -43,7 +43,7 @@ const Filters: React.FC<FiltersProps> = ({
     <div className="report-header-dropdown flex-wrap">
       <div>
         <DropdownCheckBox
-          label={'Offices'}
+          label={`Offices (${selectedOffices.length})`}
           placeholder={'Search Offices'}
           selectedOptions={selectedOffices}
           options={officeSelect}
@@ -53,7 +53,7 @@ const Filters: React.FC<FiltersProps> = ({
       </div>
       <div>
         <DropdownCheckBox
-          label={'State'}
+          label={`State (${selectedState.length})`}
           placeholder={'Search States'}
           selectedOptions={selectedState}
           options={stateSet}
@@ -62,15 +62,8 @@ const Filters: React.FC<FiltersProps> = ({
         />
       </div>
       <div>
-        <YearSelect
-          value={selectedYear}
-          onChange={handleYearChange}
-          disabled={selectloading || loading}
-        />
-      </div>
-      <div>
         <DropdownCheckBox
-          label={'Quarter'}
+          label={`Quarter (${selectedQuarter.length})`}
           placeholder={'Search Quarter'}
           selectedOptions={selectedQuarter}
           options={QuarterSet}
@@ -80,11 +73,18 @@ const Filters: React.FC<FiltersProps> = ({
       </div>
       <div>
         <DropdownCheckBox
-          label={`${selectedAhj.length} AHJ's`}
+          label={`AHJ's (${selectedAhj.length})`}
           placeholder={'Search AHJ'}
           selectedOptions={selectedAhj}
           options={ahj}
           onChange={setSelectedAhj}
+          disabled={selectloading || loading}
+        />
+      </div>
+      <div>
+        <YearSelect
+          value={selectedYear}
+          onChange={handleYearChange}
           disabled={selectloading || loading}
         />
       </div>

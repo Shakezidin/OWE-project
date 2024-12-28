@@ -71,7 +71,7 @@ const LineGraph: React.FC<LineGraphProps> = ({ batteryData, installData, mpuData
     const renderChart = (data: TransformedDataPoint[], keys: string[], title: string) => (
         <div className="">
             <h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" tick={{ fontSize: 8, fontWeight: "500" }} interval={0} angle={-45} dy={10} />

@@ -63,8 +63,10 @@ import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
 import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
-import PermitRedLine from './ui/reporting/PermitRedLine';
+import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
+import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
+
 
 function App() {
   const dispatch = useAppDispatch();
@@ -196,6 +198,7 @@ function App() {
             {/* <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} /> */}
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
+            <Route path={ROUTES.FIRST_TIME_COMPLETIONS} element={<CompletedFirstTime />} />
             <Route
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}

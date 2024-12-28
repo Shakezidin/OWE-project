@@ -1,6 +1,7 @@
 .speed-overall-parent {
     display: flex;
     justify-content: space-between;
+    gap: 3rem;
 }
 
 .speed-overall-parent .main-graph {

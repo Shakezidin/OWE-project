@@ -38,7 +38,7 @@ const ProductionBar: React.FC<ProductionBarProps> = ({ data }) => {
         return color;
     };
     return (
-        <ResponsiveContainer width="100%" height="97%">
+        <ResponsiveContainer width="100%" height="97%" minWidth="1000px">
             <BarChart data={data} margin={{ top: 22, right: 10, left: 10, bottom: 6 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={{ fontSize: 8, fontWeight: 500, fill: '#818181' }} />
