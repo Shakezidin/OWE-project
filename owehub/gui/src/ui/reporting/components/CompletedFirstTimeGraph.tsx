@@ -95,8 +95,9 @@ const LineGraphProd: React.FC<LineGraphProps> = ({ data }) => {
             borderRadius: 4,
             padding: 4,
             boxShadow: 'none',
-            fontSize: 12,
+            fontSize:10
           }}
+          
           labelFormatter={(label) => `Week ${label}`}
           formatter={(value) => (value as number).toFixed(2)} // Type assertion to number
         />
