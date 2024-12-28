@@ -23,18 +23,21 @@ interface AhjBarChartProps {
   data: ApiResponse;
 }
 
- 
+
 
 
 const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
-        data={data.map((item, index) => ({
-          name: index.toString(),
-          'Within SLA (%)': item.value['Within SLA'] || 0,
-          'Out of SLA (%)': item.value['Out of SLA'] || 0,
-        }))}
+        data={data
+          .filter(item => Object.keys(item.value).length > 0)
+          .map((item, index) => ({
+            name: index.toString(),
+            'Within SLA (%)': item.value['Within SLA'] || 0,
+            'Out of SLA (%)': item.value['Out of SLA'] || 0,
+          }))
+        }
         margin={{ top: 22, right: 30, left: 0, bottom: 6 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
@@ -56,10 +59,10 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }}
           tickFormatter={(value) => `${value}%`}
           domain={[0, 100]}
-          
+
         />
         <Tooltip
-          contentStyle={{ fontSize: '12px',}}
+          contentStyle={{ fontSize: '12px', }}
           wrapperStyle={{
             outline: 'none',
             borderRadius: 4,

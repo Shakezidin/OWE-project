@@ -14,7 +14,7 @@ const CustomMultiSelect = ({ data,disable, placeholder,onOfficeChange = ()=>{ } 
         onOfficeChange(val.map(option => option.value));
       };
 
-      console.log(selectedOption, "response.message")
+   
 
     return (
         <div>
