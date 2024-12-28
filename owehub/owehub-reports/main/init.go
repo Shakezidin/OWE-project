@@ -126,6 +126,14 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/get_timeline_permitredline_per_report",
 		apiHandler.HandleGetTimelinePermitRedlinePerReportRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	// ahj fifteen
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_ahj_fifteen_project_list",
+		apiHandler.HandleAhjFifteenProjectListRequest,
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
