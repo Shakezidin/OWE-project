@@ -438,7 +438,7 @@ const PermitRedLine = () => {
                 {/* <div><DaySelect /></div> */}
                 <div>
                   <DropdownCheckBox
-                    label={'Offices'}
+                    label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Office's`}
                     placeholder={'Search Offices'}
                     selectedOptions={selectedOffices}
                     options={officeSelect}
@@ -451,7 +451,7 @@ const PermitRedLine = () => {
 
                 <div>
                   <DropdownCheckBox
-                    label={'State'}
+                    label={selectedState.length === 1 ? "1 State" : `${selectedState.length} State's`}
                     placeholder={'Search States'}
                     selectedOptions={selectedState}
                     options={stateSet}
@@ -472,7 +472,7 @@ const PermitRedLine = () => {
 
                 <div>
                   <DropdownCheckBox
-                    label={'AHJ'}
+                    label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
                     placeholder={'Search AHJ'}
                     selectedOptions={selectedAhj}
                     options={ahj}
@@ -546,7 +546,7 @@ const PermitRedLine = () => {
                 {/* <div><DaySelect /></div> */}
                 <div>
                   <DropdownCheckBox
-                    label={'Offices'}
+                    label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Office's`}
                     placeholder={'Search Offices'}
                     selectedOptions={selectedOffices}
                     options={officeSelect}
@@ -559,7 +559,7 @@ const PermitRedLine = () => {
 
                 <div>
                   <DropdownCheckBox
-                    label={'State'}
+                    label={selectedState.length === 1 ? "1 State" : `${selectedState.length} State's`}
                     placeholder={'Search States'}
                     selectedOptions={selectedState}
                     options={stateSet}
@@ -580,7 +580,7 @@ const PermitRedLine = () => {
 
                 <div>
                   <DropdownCheckBox
-                    label={'AHJ'}
+                    label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
                     placeholder={'Search AHJ'}
                     selectedOptions={selectedAhj}
                     options={ahj}
