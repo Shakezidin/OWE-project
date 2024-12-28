@@ -38,8 +38,7 @@ interface AhjBarChartProps {
 
 
 const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
-  console.log(data, 'shout out');
-
+ 
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',

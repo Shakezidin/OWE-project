@@ -27,7 +27,6 @@ interface AhjBarChartProps {
 
 
 const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
-  console.log("data in graph", data);
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
