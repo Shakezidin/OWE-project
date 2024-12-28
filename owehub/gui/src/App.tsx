@@ -63,7 +63,7 @@ import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
 import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
-import PermitRedLine from './ui/reporting/PermitRedLine';
+import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 
 function App() {
