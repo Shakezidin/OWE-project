@@ -17,7 +17,7 @@
 }
 
 .configure-main {
-  height: 100%;
+  height: calc(100vh - 100px);
   background: var(--white-color);
   padding: 20px;
   border-radius: 16px;

@@ -4,3 +4,37 @@
     border-radius: 6px;
     font-size: 12px;
 }
+.prod-main{
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+.prod-graphs{
+    width: 100%;
+}
+.prod-main::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .prod-main::-webkit-scrollbar {
+    display: initial;
+  }
+  
+  .prod-main::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+  
+  .prod-main::-webkit-scrollbar-button {
+    display: initial;
+  }
+  
+  .prod-main::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  
+  .prod-main::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
