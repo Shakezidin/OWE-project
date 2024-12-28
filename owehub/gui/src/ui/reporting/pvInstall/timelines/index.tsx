@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Table } from 'antd';
+import styles from '../../styles/Timeline.module.css';
 import {
   LineChart,
   Line,
@@ -206,7 +207,7 @@ const Timelines = () => {
   };
 
   const tooltipStyle = {
-    fontSize: '8px',
+    fontSize: '10px',
     padding: '6px',
   };
 
@@ -266,27 +267,48 @@ const Timelines = () => {
           </div>
         </div>
 
-        <div className='reports-yscroll'>
+        <div className={styles.reportsYscroll}>
           {/* First Section */}
-          <div className="section p2">
+          <div className={`${styles.wrapper}`}>
             <div className="section-header">
-              <h3 className="section-title">
+              <p className={`${styles.tableHeading} section-title`}>
                 Install Created to Install Completed Timeline
-              </h3>
+              </p>
             </div>
 
-            <div className="grid timeline-grid">
+            <div className={`${styles.tableWrapper}`}>
               {/* Table */}
-              <div className="table-container">
-                <div
+              <div className={styles.tableBox}>
+                {/* <div
+                  className={styles.tableHeader}
                   className="flex justify-end h5 bold"
-                  style={{ background: '#f0f4c3' }}
+                  style={{
+                    background: '#f0f4c3',
+                    padding: '10px 15px',
+                    width: '100%',
+                  }}
                   title="Week / Customer"
                 >
                   Week / Created Date to Completion in Days
-                </div>
-                <table className="table">
+                </div> */}
+                <table className={`${styles.table} table`}>
                   <thead>
+                    <tr>
+                      <th
+                        className={styles.tableHeader}
+                        colSpan={7}
+                        style={{
+                          background: '#f0f4c3',
+                          padding: '10px 15px',
+                          width: '100%',
+                          fontSize:'14px',
+                          fontWeight:"600",
+                          textAlign:'right'
+                        }}
+                      >
+                        Week / Created Date to Completion in Days
+                      </th>
+                    </tr>
                     <tr>
                       <th>Year</th>
                       <th>Office (2)</th>
@@ -323,59 +345,76 @@ const Timelines = () => {
               </div>
 
               {/* Bar Chart */}
-              <div className="chart-container">
-                <div className="center mb-2 text-sm font-medium">
-                  Overall (Q3)
+              <div className={styles.chartBox}>
+                <div className={`${styles.perOffice} center`}>Overall (Q3)</div>
+                <div className={styles.chartWrapper}>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart
+                      data={overallData}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{
+                          fontSize: 8,
+                          fill: '#555',
+                        }}
+                        tickSize={10}
+                        angle={-45}
+                        dy={20}
+                        dx={-8}
+                        interval={0}
+                        height={60}
+                        label={{
+                          value: 'Week of Completion',
+                          position: 'bottom',
+                          offset: 20,
+                          fontSize: 12,
+                        }}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 8, fill: '#555' }}
+                        tickSize={10}
+                      />
+                      <Tooltip
+                        wrapperStyle={{
+                          outline: 'none',
+                          borderRadius: 4,
+                          padding: 4,
+                          boxShadow: 'none',
+                        }}
+                        contentStyle={tooltipStyle}
+                      />
+                      <Legend
+                        layout="horizontal"
+                        align="center"
+                        verticalAlign="top"
+                        height={32}
+                        wrapperStyle={{
+                          gap: 20,
+                          fontSize: 12,
+                          paddingBottom: 10,
+                          left: 32,
+                        }}
+                      />
+                      <Bar
+                        dataKey="value"
+                        fill="rgb(0, 114, 240)"
+                        name="Created Date to Completion in Days"
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <ResponsiveContainer width="100%" height={400}>
-                  <BarChart
-                    data={overallData}
-                    margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{
-                        fontSize: 10,
-                        fill: '#555',
-                      }}
-                      angle={-45}
-                      dy={20}
-                      dx={-8}
-                      interval={0}
-                      height={60}
-                      label={{
-                        value: 'Week of Completion',
-                        position: 'bottom',
-                        offset: 20,
-                        fontSize: 12,
-                      }}
-                    />
-                    <YAxis tick={{ fontSize: 10, fill: '#555' }} />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend
-                      verticalAlign="top"
-                      align="left"
-                      height={36}
-                      wrapperStyle={{
-                        // paddingTop: '10px',
-                        paddingLeft: '40px',
-                        fontSize: 10,
-                      }}
-                    />
-                    <Bar
-                      dataKey="value"
-                      fill="rgb(0, 114, 240)"
-                      name="Created Date to Completion in Days"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
               </div>
             </div>
 
             {/* Line Chart for Install Created */}
-            <div className="mt-6 bg-white rounded-lg shadow-sm p-4">
-              <div className="center mb-4 font-medium">Per Office</div>
+          </div>
+
+          <div className={styles.lineChartwrapper}>
+            <div>
+              <div className={`${styles.perOffice} center`}>Per Office</div>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart
                   data={[1, 2, 3, 4, 5].map((week) => ({
@@ -394,23 +433,40 @@ const Timelines = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="week"
-                    tick={{ fontSize: 10, fill: '#555' }}
+                    tick={{ fontSize: 8, fill: '#555' }}
                     label={{
                       value: 'Week',
                       position: 'bottom',
                       offset: 15,
                       fontSize: 12,
                     }}
+                    tickSize={10}
                   />
                   <YAxis
                     domain={[-290, -265]}
-                    tick={{ fontSize: 10, fill: '#555' }}
+                    tick={{ fontSize: 8, fill: '#555' }}
+                    tickSize={10}
                   />
-                  <Tooltip contentStyle={tooltipStyle} />
+                  <Tooltip
+                    wrapperStyle={{
+                      outline: 'none',
+                      borderRadius: 4,
+                      padding: 4,
+                      boxShadow: 'none',
+                    }}
+                    contentStyle={tooltipStyle}
+                  />
                   <Legend
+                    layout="horizontal"
+                    align="center"
                     verticalAlign="top"
                     height={32}
-                    wrapperStyle={{ gap: 20, fontSize: 10 }}
+                    wrapperStyle={{
+                      gap: 20,
+                      fontSize: 12,
+                      paddingBottom: 10,
+                      left: 32,
+                    }}
                   />
                   {installCreatedData
                     .filter((office) => office.name !== '#N/A')
@@ -430,25 +486,41 @@ const Timelines = () => {
           </div>
 
           {/* Second Section */}
-          <div className="section p2">
+          <div className={`${styles.wrapper} `}>
             <div className="section-header">
-              <h3 className="section-title">
+              <p className={`${styles.tableHeading} section-title`}>
                 Install Date to Install Completed Timeline
-              </h3>
+              </p>
             </div>
 
-            <div className="grid timeline-grid">
+            <div className={`${styles.tableWrapper}`}>
               {/* Table */}
-              <div className="table-container mt0">
-                <div
+              <div className={styles.tableBox}>
+                {/* <div
                   className="flex justify-end h5 bold"
-                  style={{ background: '#b2ebf2' }}
+                  style={{ background: '#b2ebf2', padding: '10px 15px' }}
                   title="Week / Customer"
                 >
                   Week / Install Date to Completion in Days
-                </div>
-                <table className="table">
+                </div> */}
+                <table className={`${styles.table} table`}>
                   <thead>
+                  <tr>
+                      <th
+                        className={styles.tableHeader}
+                        colSpan={7}
+                        style={{
+                          background: '#b2ebf2',
+                          padding: '10px 15px',
+                          width: '100%',
+                          fontSize:'14px',
+                          fontWeight:"600",
+                          textAlign:'right'
+                        }}
+                      >
+                  Week / Install Date to Completion in Days
+                  </th>
+                    </tr>
                     <tr>
                       <th>Year</th>
                       <th>Office (2)</th>
@@ -485,114 +557,145 @@ const Timelines = () => {
               </div>
 
               {/* Bar Chart */}
-              <div className="chart-container">
-                <div className="center mb-2 text-sm font-medium">
-                  Overall (Q3)
+              <div className={styles.chartBox}>
+                <div className={`${styles.perOffice} center`}>Overall (Q3)</div>
+                <div className={styles.chartWrapper}>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart
+                      data={overallDataCompleted}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{
+                          fontSize: 8,
+                          fill: '#555',
+                        }}
+                        tickSize={10}
+                        angle={-45}
+                        dy={20}
+                        dx={-8}
+                        interval={0}
+                        height={60}
+                        label={{
+                          value: 'Week of Completion',
+                          position: 'bottom',
+                          offset: 20,
+                          fontSize: 12,
+                        }}
+                      />
+                      <YAxis
+                        domain={[0, 10]}
+                        tick={{ fontSize: 8, fill: '#555' }}
+                        ticks={[0, 2.5, 5, 7.5, 10]}
+                        tickSize={10}
+                      />
+                      <Tooltip
+                        wrapperStyle={{
+                          outline: 'none',
+                          borderRadius: 4,
+                          padding: 4,
+                          boxShadow: 'none',
+                        }}
+                        contentStyle={tooltipStyle}
+                      />
+                      <Legend
+                        layout="horizontal"
+                        align="center"
+                        verticalAlign="top"
+                        height={32}
+                        wrapperStyle={{
+                          gap: 20,
+                          fontSize: 12,
+                          paddingBottom: 10,
+                          left: 32,
+                        }}
+                      />
+                      <Bar
+                        dataKey="value"
+                        fill="rgb(0, 114, 240)"
+                        name="Install Date to Completion in Days"
+                        label={{
+                          position: 'top',
+                          fill: '#555',
+                          fontSize: 12,
+                          formatter: (value: any) => value.toFixed(2),
+                        }}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={overallDataCompleted}
-                    margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{
-                        fontSize: 10,
-                        fill: '#555',
-                      }}
-                      angle={-45}
-                      dy={20}
-                      dx={-8}
-                      interval={0}
-                      height={60}
-                      label={{
-                        value: 'Week of Completion',
-                        position: 'bottom',
-                        offset: 20,
-                        fontSize: 12,
-                      }}
-                    />
-                    <YAxis
-                      domain={[0, 10]}
-                      tick={{ fontSize: 10, fill: '#555' }}
-                      ticks={[0, 2.5, 5, 7.5, 10]}
-                    />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend
-                      verticalAlign="top"
-                      align="left"
-                      height={36}
-                      wrapperStyle={{
-                        // paddingTop: '10px',
-                        paddingLeft: '40px',
-                        fontSize: 10,
-                      }}
-                    />
-                    <Bar
-                      dataKey="value"
-                      fill="rgb(0, 114, 240)"
-                      name="Install Date to Completion in Days"
-                      label={{
-                        position: 'top',
-                        fill: '#555',
-                        fontSize: 12,
-                        formatter: (value: any) => value.toFixed(2),
-                      }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
               </div>
             </div>
 
             {/* Line Chart for Install Completed */}
-            <div className="chart-container mt-8">
-              <div className="center mb-4 font-medium">Per Office</div>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={[1, 2, 3, 4].map((week) => ({
-                    week: `Week ${week}`,
-                    ...Object.fromEntries(
-                      installCompletedData.map((office) => [
-                        office.name,
-                        office[`week${week}` as keyof InstallData],
-                      ])
-                    ),
-                  }))}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 25 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="week"
-                    tick={{ fontSize: 10, fill: '#555' }}
-                    label={{
-                      value: 'Week',
-                      position: 'bottom',
-                      offset: 15,
-                      fontSize: 12,
-                    }}
-                  />
-                  <YAxis
-                    domain={[0, 3]}
-                    tick={{ fontSize: 10, fill: '#555' }}
-                  />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend
-                    verticalAlign="top"
-                    height={32}
-                    wrapperStyle={{ gap: 20, fontSize: 10 }}
-                  />
-                  {installCompletedData.map((office, index) => (
-                    <Line
-                      key={office.name}
-                      type="monotone"
-                      dataKey={office.name}
-                      name={office.name}
-                      stroke={`hsl(${index * 40}, 70%, 50%)`}
+            <div className={styles.lineChartwrapper}>
+              <div>
+                <div className={`${styles.perOffice} center`}>Per Office</div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart
+                    data={[1, 2, 3, 4].map((week) => ({
+                      week: `Week ${week}`,
+                      ...Object.fromEntries(
+                        installCompletedData.map((office) => [
+                          office.name,
+                          office[`week${week}` as keyof InstallData],
+                        ])
+                      ),
+                    }))}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 25 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="week"
+                      tick={{ fontSize: 8, fill: '#555' }}
+                      tickSize={10}
+                      label={{
+                        value: 'Week',
+                        position: 'bottom',
+                        offset: 15,
+                        fontSize: 12,
+                      }}
                     />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
+                    <YAxis
+                      domain={[0, 3]}
+                      tick={{ fontSize: 8, fill: '#555' }}
+                      tickSize={10}
+                    />
+                    <Tooltip
+                      wrapperStyle={{
+                        outline: 'none',
+                        borderRadius: 4,
+                        padding: 4,
+                        boxShadow: 'none',
+                      }}
+                      contentStyle={tooltipStyle}
+                    />
+                    <Legend
+                      layout="horizontal"
+                      align="center"
+                      verticalAlign="top"
+                      height={32}
+                      wrapperStyle={{
+                        gap: 20,
+                        fontSize: 12,
+                        paddingBottom: 10,
+                        left: 32,
+                      }}
+                    />
+                    {installCompletedData.map((office, index) => (
+                      <Line
+                        key={office.name}
+                        type="monotone"
+                        dataKey={office.name}
+                        name={office.name}
+                        stroke={`hsl(${index * 40}, 70%, 50%)`}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         </div>
