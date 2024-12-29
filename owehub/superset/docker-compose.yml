@@ -32,7 +32,7 @@ services:
       - POSTGRES_PASSWORD=superset
       - POSTGRES_DB=superset
     volumes:
-      - superset_db_data:/var/lib/postgresql/data  # Persist PostgreSQL data
+      - /var/lib/superset/postgresql/data:/var/lib/postgresql/data  # Persist PostgreSQL data
     networks:
       - superset-net
 
@@ -40,5 +40,3 @@ networks:
   superset-net:
     driver: bridge
 
-volumes:
-  superset_db_data:
