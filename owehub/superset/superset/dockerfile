@@ -1,0 +1,34 @@
+FROM apache/superset:latest
+
+# Switch to root to install system dependencies
+USER root
+
+# Install necessary system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python package for PostgreSQL
+RUN pip install psycopg2-binary
+
+# Set environment variables for admin credentials
+ENV ADMIN_USERNAME $ADMIN_USERNAME
+ENV ADMIN_EMAIL $ADMIN_EMAIL
+ENV ADMIN_PASSWORD $ADMIN_PASSWORD
+
+# Copy initialization script and configuration
+COPY ./superset-init.sh /superset-init.sh
+COPY superset_config.py /app/
+# Set execute permissions for the script
+RUN chmod +x /superset-init.sh
+
+
+# Set the configuration path
+ENV SUPERSET_CONFIG_PATH /app/superset_config.py
+
+# Switch back to the default user
+USER superset
+
+# Set the entrypoint script
+ENTRYPOINT [ "/superset-init.sh" ]
