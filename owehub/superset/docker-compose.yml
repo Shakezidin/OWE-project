@@ -10,7 +10,7 @@ services:
       - ADMIN_USERNAME=admin
       - ADMIN_EMAIL=admin@superset.com
       - ADMIN_PASSWORD=yklHAGFCYCgTMBT
-      - DATABASE_URL=postgresql+psycopg2://superset:superset@db/superset
+      - DATABASE_URL=postgresql+psycopg2://superset:superset@db:5433/superset
     ports:
       - '8088:8088'
     depends_on:
@@ -25,15 +25,20 @@ services:
   db:
     image: postgres:13
     container_name: superset-db
+    ports:
+      - '5433:5432'  # Expose PostgreSQL on port 5433 on the host machine
     environment:
       - POSTGRES_USER=superset
       - POSTGRES_PASSWORD=superset
       - POSTGRES_DB=superset
     volumes:
-      - /var/lib/superset/postgresql/data:/var/lib/postgresql/data  # Persist PostgreSQL data
+      - superset_db_data:/var/lib/postgresql/data  # Persist PostgreSQL data
     networks:
       - superset-net
 
 networks:
   superset-net:
     driver: bridge
+
+volumes:
+  superset_db_data:
