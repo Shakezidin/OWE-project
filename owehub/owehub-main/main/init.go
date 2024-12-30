@@ -622,12 +622,11 @@ func init() {
 		log.ConfDebugTrace(0, "Database Configuration fatched Successfully from file.")
 	}
 
-	/* Upsert sales partners from owe db on service start */
-	// err = apiHandler.UpsertSalesPartnersFromOweDb()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to pull sales partners from owe db with error = %v", err)
-	// 	// return
-	// }
+	/* Upsert sales partners from owe db on service start; but don't exit if it fails */
+	salesPartnerErr := apiHandler.UpsertSalesPartnersFromOweDb()
+	if salesPartnerErr != nil {
+		log.FuncErrorTrace(0, "Failed to pull sales partners from owe db with error = %v", salesPartnerErr)
+	}
 
 	//* Read and Initialize Podio configuration from cfg */
 	// err = FetchPodioCfg()
