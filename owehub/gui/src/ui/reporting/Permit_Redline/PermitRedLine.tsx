@@ -21,6 +21,7 @@ import DropdownCheckBox from '../../components/DropdownCheckBox';
 import YearSelect from '../components/Dropdowns/YearSelect';
 import styles from '../styles/InstalltoFin.module.css';
 import './permitredline.css'
+import { toast } from 'react-toastify';
 
 
 interface LabelProps {
@@ -135,6 +136,37 @@ const PermitRedLine = () => {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    if (isFetch) {
+      setLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await reportingCaller('get_timeline_permitredline_per_report', {
+            "year": selectedYear.value,
+            "state": selectedState.map((item) => item.value),
+            "office": selectedOffices.map((item) => item.value),
+            "ahj": selectedAhj.map((item) => item.value),
+            "quarter": selectedQuarter.map((item) => Number(item.value))
+          });
+
+
+          if (response.status === 200) {
+            setLoading(false);
+          } else {
+            console.error('Error fetching data:', response.message);
+            toast.error(response.message)
+            setLoading(false);
+          }
+        } catch (error) {
+          console.error('Error making API request:', error);
+          setLoading(false);
+        }
+        setLoading(false);
+      };
+      fetchData();
+    }
+  }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
+
   const data = [
     {
       "name": "Week 1",
@@ -398,15 +430,41 @@ const PermitRedLine = () => {
     },
 
   ]
-  const areaData = [
-    { "name": "Week 1", "uv": 40, "amt": 2400 },
-    { "name": "Week 2", "uv": 30, "amt": 2210 },
-    { "name": "Week 3", "uv": 20, "amt": 2290 },
-    { "name": "Week 4", "uv": 27.8, "amt": 2000 },
-    { "name": "Week 5", "uv": 18.9, "amt": 2181 },
-    { "name": "Week 6", "uv": 23.9, "amt": 2500 },
-    { "name": "Week 7", "uv": 34.9, "amt": 2100 }
-  ];
+  const tooltipStyle = {
+    fontSize: '10px',
+    padding: '6px',
+  };
+
+  const lineData = [
+    {
+      "value": {
+        
+        "Within SLA": 2
+      },
+      "index": 1
+    },
+    {
+      "value": {
+       
+        "Within SLA": 20
+      },
+      "index": 2
+    },
+    {
+      "value": {
+        
+        "Within SLA": 10
+      },
+      "index": 3
+    },
+    {
+      "value": {
+        
+        "Within SLA": 8
+      },
+      "index": 4
+    },
+  ]
 
 
 
@@ -414,6 +472,69 @@ const PermitRedLine = () => {
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
         <BackButtom heading="Permit Redline %" />
+        <div className="report-header-dropdown flex-wrap">
+          {/* <div><DaySelect /></div> */}
+          <div>
+            <DropdownCheckBox
+              label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Office's`}
+              placeholder={'Search Offices'}
+              selectedOptions={selectedOffices}
+              options={officeSelect}
+              onChange={(val) => {
+                setSelectedOffices(val);
+              }}
+              disabled={selectloading || loading}
+            />
+          </div>
+
+          <div>
+            <DropdownCheckBox
+              label={"Quarter"}
+              placeholder={'Search Quarter'}
+              selectedOptions={selectedQuarter}
+              options={QuarterSet}
+              onChange={(val) => {
+                setSelectedQuarter(val);
+              }}
+              disabled={selectloading || loading}
+            />
+          </div>
+
+          <div>
+            <DropdownCheckBox
+              label={selectedState.length === 1 ? "1 State" : `${selectedState.length} State's`}
+              placeholder={'Search States'}
+              selectedOptions={selectedState}
+              options={stateSet}
+              onChange={(val) => {
+                setSelectedState(val);
+              }}
+              disabled={selectloading || loading}
+            />
+          </div>
+
+          <div>
+            <YearSelect
+              value={selectedYear}
+              onChange={handleYearChange}
+              disabled={selectloading || loading}
+            />
+          </div>
+
+          <div>
+            <DropdownCheckBox
+              label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
+              placeholder={'Search AHJ'}
+              selectedOptions={selectedAhj}
+              options={ahj}
+              onChange={(val) => {
+                setSelectedAhj(val);
+              }}
+              disabled={selectloading || loading}
+            />
+          </div>
+
+        </div>
       </div>
 
       <div className="reports-yscroll">
@@ -433,57 +554,8 @@ const PermitRedLine = () => {
           >
 
             <div className='permitredline-header'>
-              <p>Permit Redline by Count</p>
-              <div className="report-header-dropdown flex-wrap">
-                {/* <div><DaySelect /></div> */}
-                <div>
-                  <DropdownCheckBox
-                    label={'Offices'}
-                    placeholder={'Search Offices'}
-                    selectedOptions={selectedOffices}
-                    options={officeSelect}
-                    onChange={(val) => {
-                      setSelectedOffices(val);
-                    }}
-                    disabled={selectloading || loading}
-                  />
-                </div>
+              <p>Permit Redline and PV Submitted by Count</p>
 
-                <div>
-                  <DropdownCheckBox
-                    label={'State'}
-                    placeholder={'Search States'}
-                    selectedOptions={selectedState}
-                    options={stateSet}
-                    onChange={(val) => {
-                      setSelectedState(val);
-                    }}
-                    disabled={selectloading || loading}
-                  />
-                </div>
-
-                <div>
-                  <YearSelect
-                    value={selectedYear}
-                    onChange={handleYearChange}
-                    disabled={selectloading || loading}
-                  />
-                </div>
-
-                <div>
-                  <DropdownCheckBox
-                    label={'AHJ'}
-                    placeholder={'Search AHJ'}
-                    selectedOptions={selectedAhj}
-                    options={ahj}
-                    onChange={(val) => {
-                      setSelectedAhj(val);
-                    }}
-                    disabled={selectloading || loading}
-                  />
-                </div>
-
-              </div>
             </div>
 
             {/* Line Chart */}
@@ -542,92 +614,68 @@ const PermitRedLine = () => {
 
             <div className='permitredline-header'>
               <p>Permit Redline by Percentage</p>
-              <div className="report-header-dropdown flex-wrap">
-                {/* <div><DaySelect /></div> */}
-                <div>
-                  <DropdownCheckBox
-                    label={'Offices'}
-                    placeholder={'Search Offices'}
-                    selectedOptions={selectedOffices}
-                    options={officeSelect}
-                    onChange={(val) => {
-                      setSelectedOffices(val);
-                    }}
-                    disabled={selectloading || loading}
-                  />
-                </div>
 
-                <div>
-                  <DropdownCheckBox
-                    label={'State'}
-                    placeholder={'Search States'}
-                    selectedOptions={selectedState}
-                    options={stateSet}
-                    onChange={(val) => {
-                      setSelectedState(val);
-                    }}
-                    disabled={selectloading || loading}
-                  />
-                </div>
-
-                <div>
-                  <YearSelect
-                    value={selectedYear}
-                    onChange={handleYearChange}
-                    disabled={selectloading || loading}
-                  />
-                </div>
-
-                <div>
-                  <DropdownCheckBox
-                    label={'AHJ'}
-                    placeholder={'Search AHJ'}
-                    selectedOptions={selectedAhj}
-                    options={ahj}
-                    onChange={(val) => {
-                      setSelectedAhj(val);
-                    }}
-                    disabled={selectloading || loading}
-                  />
-                </div>
-
-              </div>
             </div>
 
 
 
             <div className={styles.chartWrapper}>
-              <ResponsiveContainer width="100%" height={400}>
-
-
-                <AreaChart width={730} height={250} data={areaData}
-                  margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
+              <ResponsiveContainer width="100%" height={400} >
+                <LineChart
+                  data={lineData.map((item, index) => ({
+                    name: index.toString(),
+                    'Within SLA': item.value['Within SLA'] || 0,
+                  }))}
+                  margin={{ top: 19, right: 20, left: 0, bottom: 5 }}
                 >
-                  <defs>
-                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#84B3FF" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#84B3FF" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#84B3FF" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#84B3FF" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis dataKey="name" className={styles.axis} height={50} tickSize={10} angle={-45} dy={12} interval={0} />
-                  <YAxis tickSize={10} className={styles.axis} tickFormatter={(value) => `${value}%`} />
+                  <CartesianGrid strokeDasharray="0" />
+                  <XAxis
+                    className={styles.axis}
+                    height={50}
+                    tickSize={10}
+                    angle={-45}
+                    dy={12}
+                    interval={0}
+                    tickFormatter={(value) => {
+                      const weekNumber = parseInt(value, 10) + 1;
+                      return `Week ${weekNumber}`;
+                    }}
+                  />
+                  <YAxis
+                    tickSize={10}
+                    tick={{ fontSize: 10, fontWeight: 500, fill: '#818181' }}
+                    tickFormatter={(value) => `${value}%`}
+                  />
                   <Tooltip
-                    cursor={{ fill: '#377CF6', stroke: '#377CF6' }}
+                    contentStyle={tooltipStyle}
                     wrapperStyle={{
                       outline: 'none',
                       borderRadius: 4,
-                      padding: 4,
-                      boxShadow: 'none',
-                      fontSize: 12,
+                      padding: 8,
+                      fontSize: 10,
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
                     }}
-                    formatter={(value) => `${value}%`}
+                    formatter={(value) => `${value}`}
+                    labelFormatter={(value) => `Week ${value}`}
                   />
-                  <Area type="monotone" dataKey="uv" stroke="#84B3FF" strokeWidth={2} fillOpacity={1} fill="url(#colorUv)" />
-                </AreaChart>
+                  <Line
+                    type="monotone"
+                    dataKey="Within SLA"
+                    stroke="#6CD68C"
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: '#6CD68C' }}
+                    activeDot={{ r: 4 }}
+                  >
+                    <LabelList
+                      dataKey="Within SLA"
+                      position="bottom"
+                      fill="#6CD68C"
+                      fontSize={8}
+                      offset={5}
+                      formatter={(value: number) => `${value.toFixed(0)}%`}
+                    />
+                  </Line>
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
