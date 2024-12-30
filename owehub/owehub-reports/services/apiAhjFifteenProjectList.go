@@ -29,15 +29,12 @@ import (
 
 func HandleAhjFifteenProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.AhjFifteenProjectListRequest
-		apiResponse []models.AhjFifteenProjectListResponse
-		// data             []map[string]interface{}
-		// query            string
+		err          error
+		dataReq      models.AhjFifteenProjectListRequest
+		apiResponse  []models.AhjFifteenProjectListResponse
 		whereEleList []interface{}
-		// whereClause      string
-		recordCount int64
-		slaOperator string // it can be > or <
+		recordCount  int64
+		slaOperator  string // it can be > or <
 	)
 
 	log.EnterFn(0, "HandleAhjFifteenProjectListRequest")
@@ -121,6 +118,7 @@ WHERE
     AND ah.ahj_timeline != ''
 	AND (DATE_PART('quarter', pv.pv_completion_date) = %d)  -- Quarter filter condition (added dynamically)
     AND DATE_PART('day', pv.pv_completion_date - cu.sale_date) %s (CAST(ah.ahj_timeline AS INT) + 15)  -- SLA condition
+	AND (pv.project_status IN ('ACTIVE', ''))
 ORDER BY 
     cu.project_id;    
 `, officeFilter, ahjFilter, stateFilter, dataReq.Quarter, slaOperator)
