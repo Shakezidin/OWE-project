@@ -22,27 +22,39 @@
     font-weight: 500;
 } */
 
-.graphWrapper{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.graphWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.graphWrapper p{
-    font-size: 14px;
-    font-weight: 500;
-    padding-bottom: 8px;
+.graphWrapper p {
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 8px;
 }
 
-.chartWrapper{
-    display: flex
-;
-    justify-content: center;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.03) 2px 4px 8px -1px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    /* padding-bottom: 10px; */
-    height: 242px;
-    width: 600px;
+.chartWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.03) 2px 4px 8px -1px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  /* padding-bottom: 10px; */
+  height: 242px;
+  width: 900px;
+}
+
+.tableHeader {
+  background: rgb(224, 224, 224);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  width: 97%;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 8px;
+  margin: 1.2rem 1.2rem 1rem;
 }
