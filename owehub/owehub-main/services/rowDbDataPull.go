@@ -41,7 +41,7 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 		{"record_id", "item_id"}, // primary key !! MUST BE FIRST IN THE LIST !!
 		{"partner_id", "partner_id"},
 		{"sales_partner_name", "sales_partner_name"},
-		{"account_manager_2", "account_manager2"},
+		{"account_manager", "account_manager2"},
 		{"account_executive", "account_executive"},
 	}
 	for _, recordId := range recordIds {
@@ -95,8 +95,8 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 				// escape single quotes
 				val = strings.ReplaceAll(val, "'", "''")
 				tupleItems = append(tupleItems, fmt.Sprintf("'%s'", val))
-			case float32, float64:
-				tupleItems = append(tupleItems, fmt.Sprintf("%f", val))
+			case float32, float64, int64:
+				tupleItems = append(tupleItems, fmt.Sprintf("%v", val))
 			case time.Time:
 				tupleItems = append(tupleItems, fmt.Sprintf("'%s'", val.Format("2006-01-02 15:04:05")))
 			default:
@@ -106,7 +106,7 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 
 			// add update param if not added yet
 			if !didGetUpdateParams {
-				updateParams = append(updateParams, fmt.Sprintf("%s = EXCLUDED.%s", column, column))
+				updateParams = append(updateParams, fmt.Sprintf("%s = EXCLUDED.%s", column[1], column[1]))
 			}
 		}
 
@@ -122,8 +122,8 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 		query += column[1]
 	}
 	query += fmt.Sprintf(") VALUES %s ON CONFLICT (%s) DO UPDATE SET %s",
-		columns[0][1],
 		strings.Join(insertTuples, ","),
+		columns[0][1],
 		strings.Join(updateParams, ","),
 	)
 
