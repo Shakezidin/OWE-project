@@ -11,6 +11,7 @@ import {
   LineChart,
   Line,
   LabelList,
+  Cell
 } from 'recharts';
 import styles from '../styles/InstalltoFin.module.css';
 
@@ -22,6 +23,15 @@ interface ChartsProps {
   getBarColor: (dataKey: string) => string;
 }
 
+interface HighlightedBar {
+  week: number | null;
+  category: string | null;
+}
+
+interface LegendLabels {
+  [key: string]: string;
+}
+
 const Charts: React.FC<ChartsProps> = ({
   chartData,
   highlightedLegend,
@@ -29,92 +39,77 @@ const Charts: React.FC<ChartsProps> = ({
   renderCustomizedLabel,
   getBarColor,
 }) => {
-  const [highlightedSection, setHighlightedSection] = useState<string | null>(null);
+  const [highlightedBar, setHighlightedBar] = useState<HighlightedBar>({ 
+    week: null, 
+    category: null 
+  });
 
-  const CustomTooltip: React.FC<{ active: boolean; payload: any[]; label: string }> = ({ active, payload, label }) => {
+  const legendLabels: LegendLabels = {
+    low: '0-15 days',
+    medium: '16-30 days',
+    high: '31-45 days',
+    veryHigh: '46-60 days',
+    ultraHigh: '61-90 days',
+    extreme: '91+ days',
+  };
+
+  const CustomTooltip: React.FC<{
+    active?: boolean;
+    payload?: any[];
+    label?: string;
+  }> = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
 
-    const legendLabels = {
-      low: '0-15 days',
-      medium: '16-30 days',
-      high: '31-45 days',
-      veryHigh: '46-60 days',
-      ultraHigh: '61-90 days',
-      extreme: '91+ days',
-    };
-
-    const getBarColor = (dataKey: string) => {
-      switch (dataKey) {
-        case 'low': return 'rgb(51, 140, 0)';
-        case 'medium': return 'rgb(124, 179, 66)';
-        case 'high': return 'rgb(255, 168, 0)';
-        case 'veryHigh': return 'rgb(246, 109, 0)';
-        case 'ultraHigh': return 'rgb(242, 68, 45)';
-        case 'extreme': return 'rgb(238, 0, 0)';
-        default: return 'rgb(0, 0, 0)';
-      }
-    };
-
-    const relevantPayload = highlightedSection
-      ? payload.filter(entry => entry.dataKey === highlightedSection)
+    const relevantPayload = highlightedBar.category
+      ? payload.filter(entry => entry.dataKey === highlightedBar.category)
       : payload;
 
-      return (
-        <div className="chart-tooltip" style={{
-          backgroundColor: 'white',
-          border: '1px solid #efeff5',
-          boxShadow: 'none',
-          // margin:2,
-          padding:5
-
-        }}>
-          <div className="tooltip-title" style={{
-            fontWeight: '500',
-            marginBottom: '5px',
-            fontSize: '12px',
-            color: '#333',
-          }}>Week {label}</div>
-          {relevantPayload.map((entry, index) => (
-            <div key={index} className="tooltip-row" style={{
+    return (
+      <div className="chart-tooltip" style={{
+        backgroundColor: 'white',
+        border: '1px solid #efeff5',
+        boxShadow: 'none',
+        padding: 5
+      }}>
+        <div className="tooltip-title" style={{
+          fontWeight: '500',
+          marginBottom: '5px',
+          fontSize: '12px',
+          color: '#333',
+        }}>Week {label}</div>
+        {relevantPayload.map((entry, index) => (
+          <div key={index} className="tooltip-row" style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '3px',
+          }}>
+            <div className="tooltip-label" style={{
               display: 'flex',
               alignItems: 'center',
-              marginBottom: '3px',
             }}>
-              <div className="tooltip-label" style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}>
-                <span 
-                  className="color-box"
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '0',
-                    backgroundColor: getBarColor(entry.dataKey),
-                    marginRight: '5px',
-                  }}
-                />
-                <span className="tooltip-name" style={{
-                  fontSize: '12px',
-                  color: '#555',
-                }}>{legendLabels[entry.dataKey as keyof typeof legendLabels]}</span>
-              </div>
-              <span className="tooltip-value" style={{
+              <span 
+                className="color-box"
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '0',
+                  backgroundColor: getBarColor(entry.dataKey),
+                  marginRight: '5px',
+                }}
+              />
+              <span className="tooltip-name" style={{
                 fontSize: '12px',
-                color: '#000',
-              }}>: {entry.value}</span>
+                color: '#555',
+              }}>{legendLabels[entry.dataKey]}</span>
             </div>
-          ))}
-        </div>
-      );
-  };
-
-  const handleBarMouseEnter = (dataKey:any) => {
-    setHighlightedSection(dataKey);
-  };
-
-  const handleBarMouseLeave = () => {
-    setHighlightedSection(null);
+            <span className="tooltip-value" style={{
+              fontSize: '12px',
+              color: '#000',
+            }}>: {entry.value}</span>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -141,24 +136,46 @@ const Charts: React.FC<ChartsProps> = ({
             />
             <YAxis className={styles.axis} tickSize={10} />
             <Tooltip 
-             wrapperStyle={{
-              outline: 'none',
-              borderRadius: 0,
-              padding: 3,
-              boxShadow: 'none',
-            }}
-            content={<CustomTooltip active={false} payload={[]} label="" />} />
+              wrapperStyle={{
+                outline: 'none',
+                borderRadius: 0,
+                padding: 3,
+                boxShadow: 'none',
+              }}
+              content={<CustomTooltip />}
+            />
             {['extreme', 'ultraHigh', 'veryHigh', 'high', 'medium', 'low'].map((dataKey) => (
               <Bar
                 key={dataKey}
                 dataKey={dataKey}
                 stackId="a"
                 fill={getBarColor(dataKey)}
-                opacity={!highlightedSection || highlightedSection === dataKey ? 1 : 0.2}
-                onMouseEnter={() => handleBarMouseEnter(dataKey)}
-                onMouseLeave={handleBarMouseLeave}
                 label={dataKey === 'low' ? renderCustomizedLabel : undefined}
-              />
+              >
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={getBarColor(dataKey)}
+                    opacity={
+                      highlightedBar.week === null || 
+                      (highlightedBar.week === entry.week && 
+                       highlightedBar.category === dataKey) ? 1 : 0.4
+                    }
+                    onMouseEnter={() => {
+                      setHighlightedBar({ 
+                        week: entry.week, 
+                        category: dataKey 
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      setHighlightedBar({ 
+                        week: null, 
+                        category: null 
+                      });
+                    }}
+                  />
+                ))}
+              </Bar>
             ))}
             <Legend
               layout="horizontal"
@@ -172,17 +189,7 @@ const Charts: React.FC<ChartsProps> = ({
                 fontFamily: 'poppins',
                 cursor: 'pointer',
               }}
-              formatter={(value) => {
-                const legendLabels: { [key: string]: string } = {
-                  low: '0-15 days',
-                  medium: '16-30 days',
-                  high: '31-45 days',
-                  veryHigh: '46-60 days',
-                  ultraHigh: '61-90 days',
-                  extreme: '91+ days',
-                };
-                return legendLabels[value] || value;
-              }}
+              formatter={(value: string) => legendLabels[value] || value}
               payload={[
                 { value: 'low', type: 'square', color: getBarColor('low') },
                 { value: 'medium', type: 'square', color: getBarColor('medium') },
@@ -249,7 +256,7 @@ const Charts: React.FC<ChartsProps> = ({
                 fontSize: '12px',
                 fontFamily: 'poppins',
               }}
-              formatter={(dataKey) => dataKey}
+              formatter={(dataKey: string) => dataKey}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -258,4 +265,4 @@ const Charts: React.FC<ChartsProps> = ({
   );
 };
 
-export default Charts; 
+export default Charts;
