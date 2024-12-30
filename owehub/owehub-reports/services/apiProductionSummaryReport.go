@@ -513,7 +513,22 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
-		// TODO: Fetch Pending DER/LST
+		// 3. Pending DER/LST
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending DER/LST"}
+		subReport.ChartData, _, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		subReport.TableData, err = queryProductionCustomerCountGrouping(tableName, "sow", nil, dbOffices)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
 		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
 		return
 	}
@@ -521,12 +536,29 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 	appserver.FormAndSendHttpResp(resp, "Invalid report type", http.StatusBadRequest, nil)
 }
 
-// Query Production Reports:
-//   - Grouping by week number (week in an year)
-//   - Grouping by office
-//   - Filtering by year and office
-//   - TableName decides which table to query
-//   - DateCol decides date column to group weeks by
+// Query with TNum as return type of calculationQuery
+//
+//	`
+//	SELECT
+//	    <calculationQuery> AS calculated_col,
+//	    office,
+//	    CAST(EXTRACT('WEEK' FROM %s) AS INT) AS week_number
+//	FROM <tableName>
+//	WHERE
+//	    OFFICE IS NOT NULL
+//	    AND EXTRACT('YEAR' FROM <dateCol>) = <year>
+//	    AND OFFICE = ANY(<offices>)
+//	GROUP BY week_number, office
+//	ORDER BY week_number
+//	`
+//
+// # Then group by week and return {office: calculationQuery} mapss
+//
+// For example:
+//
+//	[{"office": "Tempe", "week_number": 1}, {"office": "Colorado", "week_number": 1}]
+//
+// # Also, return the map for selectedWeek
 func queryProductionWeeklyData[TNum int64 | float64](
 	tableName, calculationQuery, dateCol string, offices []string, year, selectedWeek int) (
 	chartData []map[string]interface{}, selectedWeekData map[string]interface{}, err error) {
@@ -596,7 +628,7 @@ func queryProductionWeeklyData[TNum int64 | float64](
 				continue
 			}
 
-			sysSize, ok := row["calculated_col"].(TNum)
+			calcCol, ok := row["calculated_col"].(TNum)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to convert calculated_col to TNum from type %T", row["calculated_col"])
 				continue
@@ -606,10 +638,10 @@ func queryProductionWeeklyData[TNum int64 | float64](
 			officesFound[reportOfficeName] = true
 
 			if _, ok := weekDataAccumulated[reportOfficeName]; !ok {
-				weekDataAccumulated[reportOfficeName] = sysSize
+				weekDataAccumulated[reportOfficeName] = calcCol
 				continue
 			}
-			weekDataAccumulated[reportOfficeName] = weekDataAccumulated[reportOfficeName].(TNum) + sysSize
+			weekDataAccumulated[reportOfficeName] = weekDataAccumulated[reportOfficeName].(TNum) + calcCol
 		}
 
 		// for all offices that were not found, add a row with zero
@@ -645,11 +677,31 @@ func queryProductionWeeklyData[TNum int64 | float64](
 	return data, selectedWeekData, nil
 }
 
-// Query Production Reports:
-//   - Grouping by office
-//   - Filtering by office
+// Query with TNum as return type of calculationQuery
 //
-// Used for bar chart data
+//	`
+//	SELECT
+//	    <calculationQuery> AS calculated_col,
+//	    app_status,
+//	    office
+//	FROM <tableName>
+//	WHERE project_status NOT IN (<projStatusExceptions>)
+//	GROUP BY app_status, office
+//	HAVING app_status NOT IN (<appStatusExceptions>)
+//	AND OFFICE = ANY(<offices>)
+//	`
+//
+// # Then group by office and return {status: count} maps
+//
+// For example:
+//
+//	[{"office": "Tempe", "ACTIVE": 10, "DUPLICATE": 5}, {"office": "Colorado", "ACTIVE": 20, "DUPLICATE": 15}]
+//
+// # Also, calculate totals for each office
+//
+//	For example:
+//
+//	{"Tempe": 25, "Colorado": 35}
 func queryProductionStatusGrouping[TNum int64 | float64](tableName, calculationQuery string, offices []string) (
 	chartData []map[string]interface{}, totals map[string]interface{}, err error) {
 	var (
@@ -750,8 +802,24 @@ func queryProductionStatusGrouping[TNum int64 | float64](tableName, calculationQ
 	return chartData, totals, nil
 }
 
-// Query Production Reports:
-//   - Group customer counts by column specified
+// Query
+//
+//	```
+//	SELECT
+//		<grpCol> AS grp_col,
+//		office,
+//		COUNT(*) AS customer_count
+//	FROM <tableName>
+//	WHERE OFFICE = ANY($1)
+//	AND <dateFilter>
+//	GROUP BY <grpCol>, office
+//	```
+//
+// # Then group by office
+//
+// For example:
+//
+//	[{"Office": "Tempe", "Grp Val 1": 100, "Grp Val 2": 200, "Total": 300}, {"Office": "Colorado", "Grp Val 1": 400, "Grp Val 2": 500, "Total": 900}]
 func queryProductionCustomerCountGrouping(tableName, grpCol string, dateFilter, offices []string) ([]map[string]interface{}, error) {
 	var (
 		err           error
@@ -844,10 +912,23 @@ func queryProductionCustomerCountGrouping(tableName, grpCol string, dateFilter, 
 	return outData, nil
 }
 
-// Query Production Reports:
-//   - Grouping by office
-//   - Filtering by year, week number and office
-//   - DateCol decides date column to group weeks by
+// Query
+//
+//	```
+//	SELECT
+//		office,
+//		CAST(SUM(system_size::DECIMAL) AS FLOAT) AS system_size_sum,
+//		COUNT(DISTINCT customer_unique_id) AS customers_count,
+//		CAST(AVG(system_size::DECIMAL) AS FLOAT) AS system_size_avg
+//	FROM pv_install_install_subcontracting_schema
+//	WHERE system_size != ''
+//	AND EXTRACT('WEEK' FROM %s) = $1
+//	AND EXTRACT('YEAR' FROM %s) = $2
+//	GROUP BY office
+//	HAVING office = ANY($3)
+//	```
+//
+// # Then group by office and return {office: calculationQuery} maps
 func queryProductionWeekSummary(dateColName string, weekNo int64, year int, offices []string) ([]map[string]interface{}, error) {
 	var (
 		err        error

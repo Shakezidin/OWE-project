@@ -42,12 +42,7 @@ interface DataPoint {
   pv: number;
 }
 
-interface GraphProps {
-  title: string;
-  stopColor: string;
-  borderColor: string;
-  data: DataPoint[];
-}
+
 interface Option {
   value: string;
   label: string;
@@ -94,17 +89,7 @@ const SpeedOverall: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<TableData[]>([]);
-  const [isExportingData, setIsExporting] = useState(false);
-  const [graphs, setGraphs] = useState<GraphProps[]>([
-    { title: 'Sales', stopColor: '#0096D3', borderColor: '#0096D3', data: [] },
-    { title: 'NTP', stopColor: '#A6CE50', borderColor: '#A6CE50', data: [] },
-    {
-      title: 'Installs',
-      stopColor: '#377CF6',
-      borderColor: '#377CF6',
-      data: [],
-    },
-  ]);
+
 
   const [batteryIncluded, setBatterIncluded] = useState<Option>({
     label: 'Yes',
@@ -119,84 +104,6 @@ const SpeedOverall: React.FC = () => {
     label: 'All State',
     value: 'All',
   });
-
-  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
-    newFormData?.dealer_name?.map((value: string) => ({
-      value,
-      label: value,
-    }));
-
-  // const tableData = {
-  //   tableNames: ['available_states', 'dealer_name'],
-  // };
-
-  const exportCsv = async () => {
-    try {
-      const selectedDate = selectedReportOption.value.split(' - ');
-      const start_date = selectedDate[0];
-      const end_date = selectedDate[1];
-      const headers = [
-        'Unique ID',
-        'Customer Name',
-        'Install Date',
-        'NTP Date',
-        'Sale Date',
-      ];
-      setIsExporting(true);
-
-      const data = await postCaller('get_milestone_data_csv_download', {
-        dealer_names: selectedDealer.map((dealer) => dealer.value),
-        start_date,
-        end_date,
-        state:
-          selectedStateOption.value === 'All'
-            ? ''
-            : selectedStateOption.value === ''
-              ? ''
-              : selectedStateOption.value,
-      });
-      if (data.status > 200) {
-        toast.error(data.message);
-        setIsExporting(false);
-        return;
-      }
-      setIsExporting(false);
-      const csvData = Object.entries(
-        data?.data as Record<
-          string,
-          {
-            install_date?: string;
-            ntp_date?: string;
-            sale_date?: string;
-            customer_name: string;
-          }
-        >
-      ).map(([key, value]) => {
-        const installDate = value.install_date
-          ? format(new Date(value.install_date), 'dd-MM-yyyy')
-          : '';
-        const ntpDate = value.ntp_date
-          ? format(new Date(value.ntp_date), 'dd-MM-yyyy')
-          : '';
-        const saleDate = value.sale_date
-          ? format(new Date(value.sale_date), 'dd-MM-yyyy')
-          : '';
-        return [key, value.customer_name, installDate, ntpDate, saleDate];
-      });
-      const csvRows = [headers, ...csvData];
-      const csvString = Papa.unparse(csvRows);
-      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'reports.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      toast.error((error as Error).message as string);
-    }
-  };
 
   const dispatch = useAppDispatch();
   const {
@@ -265,102 +172,7 @@ const SpeedOverall: React.FC = () => {
     }
   }, [speedSummaryData, speedSummaryError]);
 
-  const handleReportOptionChange = (newValue: Option | null) => {
-    if (newValue) {
-      setSelectedReportOption(newValue);
-      console.log('Selected Report Option:', newValue);
-    } else {
-      console.log('Report option was cleared or set to null');
-    }
-  };
 
-  const handleWeeklyOption = (newValue: Option | null) => {
-    if (newValue) {
-      setSelectedOption(newValue);
-      const newMappedOptions = periodFilterOptions
-        .filter((period) => {
-          const label = period.label ?? '';
-          if (newValue.value === 'day') {
-            return [
-              'This Week',
-              'Last Week',
-              'This Month',
-              'Last Month',
-            ].includes(label);
-          }
-          if (newValue.value === 'week') {
-            return [
-              'Current Week',
-              'Current Month',
-              'Last Month',
-              'This Quarter',
-              'Last Quarter',
-            ].includes(label);
-          }
-          if (newValue.value === 'month') {
-            return [
-              'This Month',
-              'This Quarter',
-              'Last Quarter',
-              'This Year',
-              'Last Year',
-            ].includes(label);
-          }
-          if (newValue.value === 'year') {
-            return [
-              'This Year',
-              'Last 3 Years',
-              'Last 5 Years',
-              'Last 10 Years',
-            ].includes(label);
-          }
-          return false;
-        })
-        .map((period) => ({
-          label: period.label ?? 'Unknown',
-          value: `${format(period.start, 'dd-MM-yyyy')} - ${format(period.end, 'dd-MM-yyyy')}`,
-        }));
-
-      setSelectedReportOption(newMappedOptions[0] || newMappedOptions[0]);
-    } else {
-      console.log('Report option was cleared or set to null');
-    }
-  };
-
-  const handleStateOptionChange = (newValue: Option | null) => {
-    if (newValue) {
-      setSelectedStateOption(newValue);
-      console.log('Selected State Option:', newValue);
-    } else {
-      console.log('State option was cleared or set to null');
-    }
-  };
-
-  const handleChange = (newValue: any) => {
-    console.log('jnknhb');
-  };
-
-  // Helper function to map data for daily, weekly, monthly, or yearly formats
-  const mapDataToGraph = (data: Record<string, number>) => {
-    return Object.entries(data).map(([date, value]) => {
-      let displayName;
-      if (selectedOption.value === 'week') {
-        displayName = `${date.split('-')[1]}`;
-      } else if (selectedOption.value === 'month') {
-        const [year, month] = date.split('-');
-        displayName = format(
-          new Date(Number(year), Number(month) - 1),
-          'MMM yyyy'
-        );
-      } else if (selectedOption.value === 'year') {
-        displayName = date; // Display the year as is
-      } else {
-        displayName = format(new Date(date), 'MMM dd');
-      }
-
-      return { name: displayName, pv: value };
-    });
-  };
 
   // Date utility functions
   const today = toZonedTime(
@@ -496,111 +308,7 @@ const SpeedOverall: React.FC = () => {
     value: `${format(defaultPeriodOptions[0]?.start, 'dd-MM-yyyy')} - ${format(defaultPeriodOptions[0]?.end, 'dd-MM-yyyy')}`,
   });
 
-  useEffect(() => {
-    // Clear previous graph data to reset the state for fresh data
-    setGraphs([
-      {
-        title: 'Sales To Install',
-        stopColor: '#0096D3',
-        borderColor: '#0096D3',
-        data: [],
-      },
-      {
-        title: 'Sales To MPU',
-        stopColor: '#A6CE50',
-        borderColor: '#A6CE50',
-        data: [],
-      },
-      {
-        title: 'Sales To Battery',
-        stopColor: '#377CF6',
-        borderColor: '#377CF6',
-        data: [],
-      },
-    ]);
 
-    const partnerNames = selectedDealer.map((dealer) => dealer.value);
-
-    if (selectedReportOption?.value && selectedOption.value) {
-      (async () => {
-        try {
-          setIsLoading(true);
-
-          const formatDate = (dateString: string): string => {
-            if (!dateString) return '';
-            const [day, month, year] = dateString.split('-');
-            return `${day}-${month}-${year}`; // Return in DD-MM-YYYY format
-          };
-
-          // Split and validate dates
-          const dateRange = selectedReportOption.value.split(' - ');
-          if (dateRange.length !== 2) {
-            console.error(
-              'Invalid date range format:',
-              selectedReportOption.value
-            );
-            return;
-          }
-
-          const [start_date, end_date] = dateRange.map(formatDate);
-          console.log(start_date, end_date, 'start_Date');
-
-          const response = await postCaller('get_milestone_data', {
-            dealer_names: partnerNames,
-            start_date,
-            end_date,
-            date_by: selectedOption.value,
-            state:
-              selectedStateOption.value === 'All'
-                ? ''
-                : selectedStateOption.value === ''
-                  ? ''
-                  : selectedStateOption.value,
-          });
-
-          if (response.status > 201) {
-            toast.error(response.message);
-            setData([]); // Clear data if error
-            setGraphs([]); // Clear graphs if error
-            return;
-          }
-
-          // setData(response.data);
-          const { ntp_data, sale_data, install_data } = response.data;
-
-          setGraphs([
-            {
-              title: 'Sales',
-              stopColor: '#0096D3',
-              borderColor: '#0096D3',
-              data: mapDataToGraph(sale_data),
-            },
-            {
-              title: 'NTP',
-              stopColor: '#A6CE50',
-              borderColor: '#A6CE50',
-              data: mapDataToGraph(ntp_data),
-            },
-            {
-              title: 'Installs',
-              stopColor: '#377CF6',
-              borderColor: '#377CF6',
-              data: mapDataToGraph(install_data),
-            },
-          ]);
-        } catch (error) {
-          console.error('Error fetching milestone data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-    }
-  }, [
-    selectedOption,
-    selectedStateOption,
-    selectedReportOption,
-    selectedDealer,
-  ]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -634,7 +342,6 @@ const SpeedOverall: React.FC = () => {
     }
   };
 
-  console.log(graphs, 'Graph Data'); // Log the graph data to check its structure
 
   return (
     <div className="total-main-container">
@@ -747,3 +454,4 @@ const SpeedOverall: React.FC = () => {
 };
 
 export default SpeedOverall;
+    
