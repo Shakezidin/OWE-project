@@ -513,7 +513,22 @@ func HandleGetProductionSummaryReportRequest(resp http.ResponseWriter, req *http
 
 		apiResp.SubReports = append(apiResp.SubReports, subReport)
 
-		// TODO: Fetch Pending DER/LST
+		// 3. Pending DER/LST
+		subReport = models.ProductionSummarySubReport{SubReportName: "Pending DER/LST"}
+		subReport.ChartData, _, err = queryProductionStatusGrouping[int64](tableName, calcQuery, dbOffices)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		// fill in table data
+		subReport.TableData, err = queryProductionCustomerCountGrouping(tableName, "sow", nil, dbOffices)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to fetch data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+			return
+		}
+		apiResp.SubReports = append(apiResp.SubReports, subReport)
+
 		appserver.FormAndSendHttpResp(resp, "Production summary report data", http.StatusOK, apiResp)
 		return
 	}
