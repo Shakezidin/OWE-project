@@ -31,19 +31,19 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 		updateParams       []string
 		didGetUpdateParams bool
 		tableName          string
-		columns            []string
+		columns            [][]string
 	)
 
 	tableName = "sales_partner_dbhub_schema"
 
-	// columns to sync (excluding item_id/record_id)
-	columns = []string{
-		"partner_id",
-		"sales_partner_name",
-		"account_manager2",
-		"account_executive",
+	// listed mapping of columns to sync (owe_db colname, owe_hub colname)
+	columns = [][]string{
+		{"record_id", "item_id"}, // primary key !! MUST BE FIRST IN THE LIST !!
+		{"partner_id", "partner_id"},
+		{"sales_partner_name", "sales_partner_name"},
+		{"account_manager_2", "account_manager2"},
+		{"account_executive", "account_executive"},
 	}
-
 	for _, recordId := range recordIds {
 		whereEleList = append(whereEleList, recordId)
 		wherePlaceholders = append(wherePlaceholders, fmt.Sprintf("$%d", len(whereEleList)))
@@ -51,11 +51,18 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 
 	// don't use where clause if recordIds not provided
 	if len(whereEleList) > 0 {
-		whereClause = fmt.Sprintf("WHERE record_id IN (%s)", strings.Join(wherePlaceholders, ","))
+		whereClause = fmt.Sprintf("WHERE %s IN (%s)", columns[0][0], strings.Join(wherePlaceholders, ", "))
 	}
 
 	// query owe db
-	query = fmt.Sprintf("SELECT record_id, %s FROM %s %s", strings.Join(columns, ","), tableName, whereClause)
+	query = "SELECT "
+	for i, column := range columns {
+		if i != 0 {
+			query += ", "
+		}
+		query += column[0]
+	}
+	query += fmt.Sprintf(" FROM %s %s", tableName, whereClause)
 
 	oweDbData, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
@@ -81,10 +88,9 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 	//
 
 	for _, item := range oweDbData {
-		tupleItems := []string{fmt.Sprintf("%v", item["record_id"])}
-
+		tupleItems := []string{}
 		for _, column := range columns {
-			switch val := item[column].(type) {
+			switch val := item[column[0]].(type) {
 			case string:
 				// escape single quotes
 				val = strings.ReplaceAll(val, "'", "''")
@@ -108,10 +114,15 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 		didGetUpdateParams = true // set to true after first item
 	}
 
-	query = fmt.Sprintf(
-		"INSERT INTO %s (item_id, %s) VALUES %s ON CONFLICT (item_id) DO UPDATE SET %s",
-		tableName,
-		strings.Join(columns, ","),
+	query = fmt.Sprintf("INSERT INTO %s (", tableName)
+	for i, column := range columns {
+		if i != 0 {
+			query += ", "
+		}
+		query += column[1]
+	}
+	query += fmt.Sprintf(") VALUES %s ON CONFLICT (%s) DO UPDATE SET %s",
+		columns[0][1],
 		strings.Join(insertTuples, ","),
 		strings.Join(updateParams, ","),
 	)
