@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Table } from 'antd';
+import ScrollableInstallationsTable, { ScrollableInstallationsTableProps } from '../../components/ScrollableFixedTable/TableComponent';
 import styles from '../../styles/CompletionsPerOffice.module.css';
 import {
   BarChart,
@@ -525,16 +525,7 @@ const CompletionsPerOffice: React.FC = () => {
           >
             Week / Customer
           </div>
-          <Table
-            columns={countColumns}
-            dataSource={[
-              ...countTableData,
-              calculateGrandTotals(countTableData),
-            ]}
-            pagination={false}
-            className="install-table"
-            sticky={false}
-          />
+          <ScrollableInstallationsTable data={tableData} columns={columns} />
         </div>
         </div>
       </div>
@@ -554,16 +545,7 @@ const CompletionsPerOffice: React.FC = () => {
           >
             Week / Customer
           </div>
-          <Table
-            columns={countColumns}
-            dataSource={[
-              ...countTableData,
-              calculateGrandTotals(countTableData),
-            ]}
-            pagination={false}
-            className="install-table"
-            sticky={false}
-          />
+          <ScrollableInstallationsTable data={tableData} columns={columns} />
         </div>
         </div>
         </div>
@@ -583,15 +565,8 @@ const CompletionsPerOffice: React.FC = () => {
           >
             Week / System Size{' '}
           </div>
-          <Table
-            columns={averageSizeColumns}
-            dataSource={[
-              ...averageSizeTableData,
-              calculateAverageSizeGrandTotals(averageSizeTableData),
-            ]}
-            pagination={false}
-            className="install-table"
-          />
+          <ScrollableInstallationsTable data={tableData} columns={columns} />
+
         </div>
         </div>
         </div>
