@@ -71,16 +71,15 @@ const LineGraph: React.FC<LineGraphProps> = ({ batteryData, installData, mpuData
     const renderChart = (data: TransformedDataPoint[], keys: string[], title: string) => (
         <div className="">
             <h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" tick={{ fontSize: 8, fontWeight: "500" }} interval={0} angle={-45} dy={10} />
-                    <YAxis
-                        tick={{ fontSize: 10 }}
-                        label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft', dy: 50, dx: 15, style:{fontSize: 12}}} 
+                    <XAxis dataKey="name" tick={{ fontSize: 8, fontWeight: "500" }} interval={0} angle={-45} dy={10} />                    <YAxis
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft', dy: 50, dx: 15, style: { fontSize: 12 } }}
                     />
-                    <Tooltip wrapperStyle={{fontSize: 12,border: 'none', outline: 'none', borderRadius:4, padding:4 }} content={<CustomTooltip />} />
-                    <Legend wrapperStyle={{fontSize: "12px", paddingTop: "10px"}} iconSize={12} />
+                    <Tooltip wrapperStyle={{ fontSize: 12, border: 'none', outline: 'none', borderRadius: 4, padding: 4 }} content={<CustomTooltip />} />
+                    <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} iconSize={12} />
                     {keys.map((key) => {
                         let strokeColor;
                         switch (key) {
