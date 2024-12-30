@@ -115,7 +115,7 @@ func HandleGetTimelinePermitRedlinePerReportRequest(resp http.ResponseWriter, re
 								ELSE 0
 							END AS permit_redline_percentage
 						FROM 
-							permit_fin_pv_permits_schema p
+							permit_fin_pv_permits_schema pv
 						RIGHT JOIN 
 							weeks w
 						ON 
@@ -124,6 +124,7 @@ func HandleGetTimelinePermitRedlinePerReportRequest(resp http.ResponseWriter, re
 							(%s)
 							AND (%s)
 							AND (%s)
+							AND (pv.project_status IN ('ACTIVE', ''))
 						GROUP BY 
 							w.week_start
 						ORDER BY 
@@ -310,6 +311,7 @@ func HandleGetTimelineAhjFifteenReportRequest(resp http.ResponseWriter, req *htt
 								AND (%s)
 								AND (%s)
 								AND (%s)
+								AND (pv.project_status IN ('ACTIVE', ''))
 								AND ah.ahj_timeline IS NOT NULL
 								AND ah.ahj_timeline != ''
 						) subquery
@@ -584,6 +586,7 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
     						pvi.customer_unique_id = fin.customer_unique_id
 						WHERE
 							DATE_PART('year', fin.pv_fin_date) = $1
+							AND (pvi.project_status IN ('ACTIVE', ''))
 							AND (%s)
 							AND (%s)
 							AND (%s)
