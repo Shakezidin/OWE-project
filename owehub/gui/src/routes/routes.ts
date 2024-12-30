@@ -58,7 +58,25 @@ export const ROUTES = {
   CALENDAR: '/calendar',
   LIBRARY: '/library',
   SS_ONBOARDING: '/config/ss-onboarding',
-  TOTAL_COUNT: '/reports',
+  REPORTING: '/reporting',
+  TOTAL_COUNT: '/reporting/report',
+  REPORTING_PRODUCTION: '/reporting/production',
+  REPORTING_QUALITY: '/reporting/quality',
+  REPORTING_SPEED_OVERALL: '/reporting/speed-overall',
+  REPORTING_SALES_TO_INSTALL: '/reporting/sales-install',
+  REPORTING_QUALITY_PER_OFFICE: '/reporting/quality-per-office',
+  REPORTING_REASON_FOR_INCOMPLETE: '/reporting/reason-for-incomplete',
+  COMPLETIONS_PER_OFFICE: '/reporting/completions-per-office',
+  COMPLETIONS_PER_TEAM: '/reporting/completions-per-team',
+  NO_PTO: '/reporting/no-pto',
+  TIMELINES: '/reporting/timelines',
+  SITE_COMPLETION: '/reporting/site-completion',
+  SITE_TIMELINES: '/reporting/site-timelines',
+  SITE_FIRST_COMPLETION: '/reporting/site-first_completion',
+  SITE_OUTSIDE_SLA: '/reporting/site-outise-sla',
+  INSTALL_TO_FIN:'/reporting/install-to-fin',
+  FIRST_TIME_COMPLETIONS:'/reporting/first-time-completion',
+
 
 
   // other routes
@@ -96,6 +114,8 @@ export const ROUTES = {
   FOLDER_DETAIL:"/library/*",
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
   CALCULATOR:'/calculator',
-  SIGN_DOCUMENT:'digital-signature-portal'
+  SIGN_DOCUMENT:'digital-signature-portal',
+  AHJ:'/reporting/ahj',
+  PERMIT_REDLINE:'/reporting/permit-redline'
 
 };

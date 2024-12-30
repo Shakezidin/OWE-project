@@ -149,7 +149,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
           transition: 'all 0.3s ease',
         }}
       >
-        <span>{`${selectedOptions.length} ${label}`}</span>
+        <span>{`${label}`}</span>
         <BiChevronDown
           className="ml1"
           size={22}
@@ -200,12 +200,12 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
                   onChange={() => !disabled && handleOptionChange(option)}
                 />
                 <span className={disabled ? 'disbaled-label' : ''}>
-                  {option.label}
+                  {option.label || "N/A"} 
                 </span>
               </div>
             ))
           ) : (
-            <div className="text-center h5 mt4 text-dark">No data found</div>
+            <div className="text-center h5  text-dark">No data available</div>
           )}
         </div>
       )}

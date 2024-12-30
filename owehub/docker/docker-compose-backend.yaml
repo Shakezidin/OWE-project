@@ -149,6 +149,30 @@ services:
       - /var/log/owe/:/var/log/owe/
     privileged: true
 
+  ############### OWE HUB LEADS #####################
+  service-owehub-reports:
+    restart: always
+    image: owehub-reports:v1
+    container_name: owehub-reports
+    networks:
+      owe_net:
+        ipv4_address: 172.30.0.230
+    ports:
+      - "31024:8080"
+    environment:
+      SELF_CFG_PATH: "json/"
+      ANLF_SVC_ADDR:
+      OAUTH2_SUPPORT: "NO"
+      OPEN_HTTP_STD_PORT: "NO"
+      HTTPS_SUPPORT: "NO"
+      HTTP_READ_HEADER_TIMEOUT: "10"
+    depends_on:
+      - service-postgres
+      - migrate
+    volumes:
+      - /var/log/owe/:/var/log/owe/
+    privileged: true
+
 networks:
   owe_net:
     driver: bridge

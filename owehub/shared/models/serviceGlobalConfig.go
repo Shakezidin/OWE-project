@@ -47,4 +47,5 @@ type SvcConfig struct {
 	PodioAppCfg            PodioAppConfig
 	GraphApiCfg            GraphApiConfInfo
 	ScheduleGraphApiClient *msgraphsdk.GraphServiceClient
+	ReportsOfficeMapping   ReportsOfficeMapping
 }

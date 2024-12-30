@@ -5,6 +5,7 @@ import (
 	oweconfig "OWEApp/shared/oweconfig"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -61,11 +62,20 @@ func CalcPaymentsDealerPay(totalNetCommissions float64, drawPercent float64, dra
 func CalcAmountDealerPay(dealerPayments []oweconfig.DealerPaymentsStruct, uniqueId string) (amount float64) {
 	for _, entry := range dealerPayments {
 		if entry.UniqueId == uniqueId {
-			// Handle currency prefix if present (e.g., "USD ")
+			// Handle currency prefix and potential negative sign
 			paymentAmountStr := entry.PaymentAmount
-			if len(paymentAmountStr) > 4 && paymentAmountStr[:4] == "USD " {
-				paymentAmountStr = paymentAmountStr[4:] // Remove "USD " prefix
+			isNegative := false
+
+			// Check for negative sign before "USD"
+			if len(paymentAmountStr) > 4 && paymentAmountStr[0] == '-' && paymentAmountStr[1:4] == "USD" {
+				isNegative = true
+				paymentAmountStr = paymentAmountStr[4:] // Remove "-USD" prefix
+			} else if len(paymentAmountStr) > 3 && paymentAmountStr[:3] == "USD" {
+				paymentAmountStr = paymentAmountStr[3:] // Remove "USD" prefix
 			}
+
+			// Remove commas from the string
+			paymentAmountStr = strings.ReplaceAll(paymentAmountStr, ",", "")
 
 			// Convert cleaned payment amount string to float64
 			paymentAmount, err := strconv.ParseFloat(paymentAmountStr, 64)
@@ -73,6 +83,13 @@ func CalcAmountDealerPay(dealerPayments []oweconfig.DealerPaymentsStruct, unique
 				log.FuncErrorTrace(0, "error while converting string to float with err %v", err)
 				continue // Skip this entry if conversion fails
 			}
+
+			// Apply negative sign if necessary
+			if isNegative {
+				paymentAmount = -paymentAmount
+			}
+
+			// Add to total amount
 			amount += paymentAmount
 		}
 	}
@@ -114,11 +131,20 @@ func CalcAmtPaidByDealer(dealerPayments []oweconfig.DealerPaymentsStruct, dealer
 func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, uniqueId string) (amtPaid float64) {
 	for _, entry := range dealerPayments {
 		if entry.UniqueId == uniqueId {
-			// Handle currency prefix if present (e.g., "USD ")
+			// Handle currency prefix and potential negative sign
 			paymentAmountStr := entry.PaymentAmount
-			if len(paymentAmountStr) > 4 && paymentAmountStr[:4] == "USD " {
-				paymentAmountStr = paymentAmountStr[4:] // Remove "USD " prefix
+
+			// Check for negative sign before "USD"
+			isNegative := false
+			if len(paymentAmountStr) > 4 && paymentAmountStr[0] == '-' && paymentAmountStr[1:4] == "USD" {
+				isNegative = true
+				paymentAmountStr = paymentAmountStr[4:] // Remove "-USD" prefix
+			} else if len(paymentAmountStr) > 3 && paymentAmountStr[:3] == "USD" {
+				paymentAmountStr = paymentAmountStr[3:] // Remove "USD" prefix
 			}
+
+			// Remove commas from the string
+			paymentAmountStr = strings.ReplaceAll(paymentAmountStr, ",", "")
 
 			// Convert cleaned payment amount string to float64
 			paymentAmount, err := strconv.ParseFloat(paymentAmountStr, 64)
@@ -126,6 +152,12 @@ func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsSt
 				log.FuncErrorTrace(0, "error while converting string to float with err %v", err)
 				continue // Skip this entry if conversion fails
 			}
+
+			// Apply negative sign if necessary
+			if isNegative {
+				paymentAmount = -paymentAmount
+			}
+
 			amtPaid += paymentAmount
 		}
 	}
@@ -149,30 +181,63 @@ func CalcDrawMaxRedLineCommissionDealerPay(partnerPaySchedule []oweconfig.Partne
 		if len(matches) > 1 {
 			partnerName = matches[1] // Capture the portion before " -" or "-"
 		}
-		if entry.Sales_partner == dealer && entry.State == state && partnerName == financePartner && entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
-			// Convert M1SalesPartnerNotToExceed from string to float64
+
+		if entry.Sales_partner == dealer && entry.State == state && partnerName == financePartner &&
+			entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
+
+			// Handle M1SalesPartnerNotToExceed
 			M1SalesPartnerNotToExceed := entry.M1SalesPartnerNotToExceed
-			if len(M1SalesPartnerNotToExceed) > 4 && M1SalesPartnerNotToExceed[:4] == "USD " {
-				M1SalesPartnerNotToExceed = M1SalesPartnerNotToExceed[4:] // Remove "USD " prefix
+			isNegative := false
+			if len(M1SalesPartnerNotToExceed) > 4 && M1SalesPartnerNotToExceed[0] == '-' && M1SalesPartnerNotToExceed[1:4] == "USD" {
+				isNegative = true
+				M1SalesPartnerNotToExceed = M1SalesPartnerNotToExceed[4:] // Remove "-USD" prefix
+			} else if len(M1SalesPartnerNotToExceed) > 3 && M1SalesPartnerNotToExceed[:3] == "USD" {
+				M1SalesPartnerNotToExceed = M1SalesPartnerNotToExceed[3:] // Remove "USD" prefix
 			}
 
+			// Remove commas from the string
+			M1SalesPartnerNotToExceed = strings.ReplaceAll(M1SalesPartnerNotToExceed, ",", "")
+
+			// Convert cleaned string to float64
 			notToExceed, err := strconv.ParseFloat(M1SalesPartnerNotToExceed, 64)
 			if err != nil {
 				log.FuncErrorTrace(0, "Error converting M1SalesPartnerNotToExceed to float: %v", err)
 				continue // Skip this entry if there's a conversion error
 			}
+
+			// Apply negative sign if necessary
+			if isNegative {
+				notToExceed = -notToExceed
+			}
 			drawMax = notToExceed
 
-			redLine, err := strconv.ParseFloat(entry.Redline, 64)
+			// Handle Redline
+			redlineStr := entry.Redline
+			isRedlineNegative := false
+			if len(redlineStr) > 0 && redlineStr[0] == '-' {
+				isRedlineNegative = true
+				redlineStr = redlineStr[1:] // Remove negative sign
+			}
+
+			// Remove commas from the string
+			redlineStr = strings.ReplaceAll(redlineStr, ",", "")
+
+			redLine, err := strconv.ParseFloat(redlineStr, 64)
 			if err != nil {
 				log.FuncErrorTrace(0, "Error converting redline to float: %v", err)
 				continue // Skip this entry if there's a conversion error
+			}
+
+			// Apply negative sign if necessary
+			if isRedlineNegative {
+				redLine = -redLine
 			}
 			redline = redLine
 		}
 	}
 	return drawMax, redline
 }
+
 func CalcDrawPercCommissionDealerPay(partnerPaySchedule []oweconfig.PartnerPayScheduleStruct, dealer string, contractDate time.Time) (drawPerc float64) {
 	for _, entry := range partnerPaySchedule {
 		if entry.Sales_partner == dealer && entry.ActiveDateStart.Before(contractDate) && entry.ActiveDateEnd.After(contractDate) {
