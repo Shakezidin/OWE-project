@@ -405,15 +405,15 @@ const PermitRedLine = () => {
                   <Line
                     type="monotone"
                     dataKey="PV Redline"
-                    stroke="#6CD68C"
+                    stroke="#2C84FE"
                     strokeWidth={2}
-                    dot={{ r: 3, fill: '#6CD68C' }}
+                    dot={{ r: 3, fill: '#2C84FE' }}
                     activeDot={{ r: 4 }}
                   >
                     <LabelList
                       dataKey="PV Redline"
                       position="top"
-                      fill="#6CD68C"
+                      fill="#2C84FE"
                       fontSize={10}
                       offset={5}
                       formatter={(value: number) => `${value.toFixed(0)}%`}
