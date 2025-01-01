@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { embedDashboard } from '@superset-ui/embedded-sdk';
 
-const URL = 'http://155.138.239.170:8088/api/owe-reports-service/v1'
+const URL = 'http://155.138.239.170:8088/owe-reports-service/v1'
 const SUPERSET_DOMAIN = 'http://45.77.121.171:8088'
 
 async function getToken(dashboardId:string) {
