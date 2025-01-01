@@ -90,7 +90,7 @@ import (
  func loginToSuperset() (string, error) {
 	 client := &http.Client{}
 	 loginPayload := map[string]interface{}{
-		 "password": "admin",
+		 "password": "n9rHMFgHfi93N7n",
 		 "provider": "db",
 		 "refresh":  true,
 		 "username": "admin",

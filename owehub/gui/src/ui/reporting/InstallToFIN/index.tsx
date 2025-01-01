@@ -20,7 +20,7 @@ async function getToken(dashboardId:string) {
     };
 
     const response = await axios.post(`${URL}/guest_token`,{dashboardId},login_headers);
-    return response.data.token;
+    return response.data.data.token;
   } catch (error) {
     console.error('Error fetching token:', error);
     throw error;  
