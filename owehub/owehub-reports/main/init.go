@@ -61,6 +61,13 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/guest_token",
+		apiHandler.GetSupetsetGuestToken,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/get_overallspeedsummaryreport",
 		apiHandler.HandleGetOverallSpeedSummaryReportRequest,
 		false,
