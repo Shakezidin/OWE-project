@@ -19,6 +19,7 @@ interface Option {
   label: string;
 }
 interface ApiData {
+  index: number;
   value: {
     "Out of SLA"?: number;
     "Within SLA"?: number;
@@ -106,7 +107,7 @@ const Ahj = () => {
     setBreakDownData('')
   }
 
-  const handleBoxClick = (key:any, type:any) => {
+  const handleBoxClick = (key: any, type: any) => {
     setModalOpen(true);
     setBreakDownData(`${type} ${key}`)
   };
@@ -192,7 +193,7 @@ const Ahj = () => {
 
   return (
     <>
-      <ProjectBreak isOpen1={modalOpen} handleClose={handleModalClose} breakdownData={breakdownData}/>
+      <ProjectBreak isOpen1={false} handleClose={handleModalClose} breakdownData={breakdownData} />
       <div className="total-main-container">
         <div className="headingcount flex justify-between items-center">
           <BackButtom heading="AHJ +15 Days SLA" />
@@ -200,7 +201,7 @@ const Ahj = () => {
             {/* <div><DaySelect /></div> */}
             <div>
               <DropdownCheckBox
-                label={"Offices"}
+                label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Offices`}
                 placeholder={'Search Offices'}
                 selectedOptions={selectedOffices}
                 options={officeSelect}
@@ -210,21 +211,6 @@ const Ahj = () => {
                 disabled={selectloading || loading}
               />
             </div>
-
-            <div>
-              <DropdownCheckBox
-                label={"State"}
-                placeholder={'Search States'}
-                selectedOptions={selectedState}
-                options={stateSet}
-                onChange={(val) => {
-                  setSelectedState(val);
-                }}
-                disabled={selectloading || loading}
-              />
-            </div>
-
-            <div><YearSelect value={selectedYear} onChange={handleYearChange} disabled={selectloading || loading} /></div>
 
             <div>
               <DropdownCheckBox
@@ -241,7 +227,28 @@ const Ahj = () => {
 
             <div>
               <DropdownCheckBox
-                label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
+                label={selectedState.length === 1 ? "1 State" : `${selectedState.length} States`}
+                placeholder={'Search States'}
+                selectedOptions={selectedState}
+                options={stateSet}
+                onChange={(val) => {
+                  setSelectedState(val);
+                }}
+                disabled={selectloading || loading}
+              />
+            </div>
+
+            <div>
+              <YearSelect
+                value={selectedYear}
+                onChange={handleYearChange}
+                disabled={selectloading || loading}
+              />
+            </div>
+
+            <div>
+              <DropdownCheckBox
+                label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJs`}
                 placeholder={'Search AHJ'}
                 selectedOptions={selectedAhj}
                 options={ahj}
@@ -251,6 +258,7 @@ const Ahj = () => {
                 disabled={selectloading || loading}
               />
             </div>
+
           </div>
         </div>
 
@@ -313,7 +321,7 @@ const Ahj = () => {
                     <div className="main-graph" style={stylesGraph}>
                       <AhjBarChart data={apiResponse} />
                       <p className="chart-info-report">Week</p>
-                      
+
                     </div>
                   </div>
                 </div>
