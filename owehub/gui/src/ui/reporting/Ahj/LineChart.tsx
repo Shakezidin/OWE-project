@@ -89,8 +89,8 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
             fontSize: 10,
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
           }}
-          formatter={(value) => `${value}`}
-          labelFormatter={(value) => `Week ${value}`}
+          formatter={(value) => `${Number(value) + 1}`}
+          labelFormatter={(value) => `Week ${Number(value) + 1}`}
         />
         <Line
           type="monotone"

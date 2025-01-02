@@ -22,6 +22,7 @@ import YearSelect from '../components/Dropdowns/YearSelect';
 import styles from '../styles/InstalltoFin.module.css';
 import './permitredline.css'
 import { toast } from 'react-toastify';
+import DataNotFound from '../../components/loader/DataNotFound';
 
 
 interface LabelProps {
@@ -45,6 +46,20 @@ interface ChartData {
 interface Option {
   value: string;
   label: string;
+}
+interface CountPermitRedlineReport {
+  value: {
+    pv_redline_count: number;
+    pv_submited_count: number;
+  };
+  index: number;
+}
+
+interface PercentageRedlineReport {
+  value: {
+    percentage: number;
+  };
+  index: number;
 }
 
 const PermitRedLine = () => {
@@ -96,6 +111,31 @@ const PermitRedLine = () => {
       setSelectedYear(value);
     }
   };
+
+  const [countPermitRedlineReport, setCountPermitRedlineReport] = useState<CountPermitRedlineReport[]>([]);
+  const [percentReport, setPercentReport] = useState<PercentageRedlineReport[]>([]);
+
+  console.log(percentReport, "i want to see")
+
+  const data = countPermitRedlineReport
+  .filter((item) => Object.keys(item.value).length > 0)
+  .map((item) => ({
+    name: `Week ${item.index}`,
+    'PV Submitted': item.value.pv_submited_count,
+    'PV Redline': item.value.pv_redline_count,
+  }));
+
+  const lineChartData = percentReport
+  .filter((item) => Object.keys(item.value).length > 0)
+  .map((item) => ({
+    name: `Week ${item.index}`,
+    'PV Redline': item.value.percentage,
+  }));
+
+
+  
+
+
 
   useEffect(() => {
     setSelectedQuarter(QuarterSet);
@@ -152,6 +192,8 @@ const PermitRedLine = () => {
 
           if (response.status === 200) {
             setLoading(false);
+            setCountPermitRedlineReport(response.data.data["Count Permit Redline Report"]);
+            setPercentReport(response.data.data["Percentage Permit Redline Report"])
           } else {
             console.error('Error fetching data:', response.message);
             toast.error(response.message)
@@ -167,304 +209,13 @@ const PermitRedLine = () => {
     }
   }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
 
-  const data = [
-    {
-      "name": "Week 1",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 2",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 3",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 4",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 8",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 9",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 10",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 11",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 12",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 13",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 14",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 15",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 2",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 3",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 4",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 1",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 2",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 3",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 4",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 1",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 2",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 3",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 4",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 1",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 2",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 3",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 4",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 1",
-      "PV Submitted": 400,
-      "PV Redline": 200
-    },
-    {
-      "name": "Week 2",
-      "PV Submitted": 300,
-      "PV Redline": 139
-    },
-    {
-      "name": "Week 3",
-      "PV Submitted": 200,
-      "PV Redline": 980
-    },
-    {
-      "name": "Week 4",
-      "PV Submitted": 278,
-      "PV Redline": 390
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-    {
-      "name": "Week 5",
-      "PV Submitted": 189,
-      "PV Redline": 480
-    },
-    {
-      "name": "Week 6",
-      "PV Submitted": 239,
-      "PV Redline": 380
-    },
-    {
-      "name": "Week 7",
-      "PV Submitted": 349,
-      "PV Redline": 430
-    },
-
-  ]
+  
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',
   };
 
-  const lineData = [
-    {
-      "value": {
-        
-        "Within SLA": 2
-      },
-      "index": 1
-    },
-    {
-      "value": {
-       
-        "Within SLA": 20
-      },
-      "index": 2
-    },
-    {
-      "value": {
-        
-        "Within SLA": 10
-      },
-      "index": 3
-    },
-    {
-      "value": {
-        
-        "Within SLA": 8
-      },
-      "index": 4
-    },
-  ]
+  
 
 
 
@@ -538,24 +289,20 @@ const PermitRedLine = () => {
       </div>
 
       <div className="reports-yscroll">
-        {isLoading ? (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <MicroLoader />
-          </div>
-        ) : (
+
+      {(loading || !isFetch) ? (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <MicroLoader />
+            </div>
+          ) : (countPermitRedlineReport || percentReport) ? (
+           
+       
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}
           >
 
             <div className='permitredline-header'>
               <p>Permit Redline and PV Submitted by Count</p>
-
             </div>
 
             {/* Line Chart */}
@@ -622,10 +369,7 @@ const PermitRedLine = () => {
             <div className={styles.chartWrapper}>
               <ResponsiveContainer width="100%" height={400} >
                 <LineChart
-                  data={lineData.map((item, index) => ({
-                    name: index.toString(),
-                    'Within SLA': item.value['Within SLA'] || 0,
-                  }))}
+                  data={lineChartData}
                   margin={{ top: 19, right: 20, left: 0, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="0" />
@@ -655,22 +399,22 @@ const PermitRedLine = () => {
                       fontSize: 10,
                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
                     }}
-                    formatter={(value) => `${value}`}
-                    labelFormatter={(value) => `Week ${value}`}
+                    formatter={(value) => `${Number(value) + 1}`}
+                    labelFormatter={(value) => `Week ${Number(value) + 1}`}
                   />
                   <Line
                     type="monotone"
-                    dataKey="Within SLA"
-                    stroke="#6CD68C"
+                    dataKey="PV Redline"
+                    stroke="#2C84FE"
                     strokeWidth={2}
-                    dot={{ r: 3, fill: '#6CD68C' }}
+                    dot={{ r: 3, fill: '#2C84FE' }}
                     activeDot={{ r: 4 }}
                   >
                     <LabelList
-                      dataKey="Within SLA"
-                      position="bottom"
-                      fill="#6CD68C"
-                      fontSize={8}
+                      dataKey="PV Redline"
+                      position="top"
+                      fill="#2C84FE"
+                      fontSize={10}
                       offset={5}
                       formatter={(value: number) => `${value.toFixed(0)}%`}
                     />
@@ -679,7 +423,13 @@ const PermitRedLine = () => {
               </ResponsiveContainer>
             </div>
           </div>
-        )}
+
+        ) : (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <DataNotFound />
+            </div>
+          )}
+      
       </div>
     </div>
   );
