@@ -118,22 +118,22 @@ const PermitRedLine = () => {
   console.log(percentReport, "i want to see")
 
   const data = countPermitRedlineReport
-  .filter((item) => Object.keys(item.value).length > 0)
-  .map((item) => ({
-    name: `Week ${item.index}`,
-    'PV Submitted': item.value.pv_submited_count,
-    'PV Redline': item.value.pv_redline_count,
-  }));
+    .filter((item) => Object.keys(item.value).length > 0)
+    .map((item) => ({
+      name: `${item.index}`,
+      'PV Submitted': item.value.pv_submited_count,
+      'PV Redline': item.value.pv_redline_count,
+    }));
 
   const lineChartData = percentReport
-  .filter((item) => Object.keys(item.value).length > 0)
-  .map((item) => ({
-    name: `Week ${item.index}`,
-    'PV Redline': item.value.percentage,
-  }));
+    .filter((item) => Object.keys(item.value).length > 0)
+    .map((item) => ({
+      name: `Week ${item.index}`,
+      'PV Redline': item.value.percentage,
+    }));
 
 
-  
+
 
 
 
@@ -209,14 +209,20 @@ const PermitRedLine = () => {
     }
   }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
 
-  
+
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',
   };
 
-  
-
+  const stylesGraph = {
+    width: '100%',
+    height: '463px',
+    padding: "1rem",
+    boxShadow: "rgba(0, 0, 0, 0.03) 2px 4px 8px -1px",
+    border: "1px solid rgba(0, 0, 0, 0.1)",
+    borderRadius: "12px"
+  };
 
 
   return (
@@ -227,7 +233,7 @@ const PermitRedLine = () => {
           {/* <div><DaySelect /></div> */}
           <div>
             <DropdownCheckBox
-              label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Office's`}
+              label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Offices`}
               placeholder={'Search Offices'}
               selectedOptions={selectedOffices}
               options={officeSelect}
@@ -253,7 +259,7 @@ const PermitRedLine = () => {
 
           <div>
             <DropdownCheckBox
-              label={selectedState.length === 1 ? "1 State" : `${selectedState.length} State's`}
+              label={selectedState.length === 1 ? "1 State" : `${selectedState.length} States`}
               placeholder={'Search States'}
               selectedOptions={selectedState}
               options={stateSet}
@@ -274,7 +280,7 @@ const PermitRedLine = () => {
 
           <div>
             <DropdownCheckBox
-              label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJ's`}
+              label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJs`}
               placeholder={'Search AHJ'}
               selectedOptions={selectedAhj}
               options={ahj}
@@ -290,13 +296,13 @@ const PermitRedLine = () => {
 
       <div className="reports-yscroll">
 
-      {(loading || !isFetch) ? (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <MicroLoader />
-            </div>
-          ) : (countPermitRedlineReport || percentReport) ? (
-           
-       
+        {(loading || !isFetch) ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <MicroLoader />
+          </div>
+        ) : (countPermitRedlineReport || percentReport) ? (
+
+
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}
           >
@@ -306,7 +312,7 @@ const PermitRedLine = () => {
             </div>
 
             {/* Line Chart */}
-            <div className={styles.chartWrapper}>
+            <div className="main-graph" style={stylesGraph}>
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart width={730} height={250} data={data} barCategoryGap="5%" className={styles.barChart}
                   margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
@@ -322,8 +328,7 @@ const PermitRedLine = () => {
                     className={styles.axis}
                     height={50}
                     tickSize={10}
-                    angle={-45}
-                    dy={12}
+                    dy={4}
                     interval={0} />
                   <YAxis
                     className={styles.axis}
@@ -339,13 +344,14 @@ const PermitRedLine = () => {
                       boxShadow: 'none',
                       fontSize: 12,
                     }}
+                    labelFormatter={(value) => `Week ${Number(value)}`}
                   />
                   <Legend
                     layout="horizontal"
                     align="center"
-                    verticalAlign="bottom"
+                    verticalAlign="top"
                     wrapperStyle={{
-                      paddingBottom: '0px',
+                      paddingBottom: '10px',
                       fontSize: '12px',
                       fontFamily: 'poppins',
                       cursor: 'pointer',
@@ -357,6 +363,7 @@ const PermitRedLine = () => {
                   <Bar dataKey="PV Redline" fill="#2C84FE" />
                 </BarChart>
               </ResponsiveContainer>
+              <p className="chart-info-report" style={{marginTop:"-10px"}}>Week</p>
             </div>
 
             <div className='permitredline-header'>
@@ -399,7 +406,7 @@ const PermitRedLine = () => {
                       fontSize: 10,
                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
                     }}
-                    formatter={(value) => `${Number(value) + 1}`}
+                    formatter={(value) => `${Number(value)}`}
                     labelFormatter={(value) => `Week ${Number(value) + 1}`}
                   />
                   <Line
@@ -421,15 +428,16 @@ const PermitRedLine = () => {
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
+
             </div>
           </div>
 
         ) : (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <DataNotFound />
-            </div>
-          )}
-      
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <DataNotFound />
+          </div>
+        )}
+
       </div>
     </div>
   );

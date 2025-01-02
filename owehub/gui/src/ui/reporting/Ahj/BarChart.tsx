@@ -27,6 +27,8 @@ interface AhjBarChartProps {
 
 
 const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
+
+  console.log(data, "Please send null when payload is empty, as others api")
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -69,9 +71,10 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
             padding: 4,
             boxShadow: 'none',
           }}
-          labelFormatter={(value) => `Week ${value}`}
+          labelFormatter={(value) => `Week ${Number(value) + 1}`}
           formatter={(value) => `${value}%`}
         />
+
         <Legend
           align="center"
           layout="horizontal"

@@ -313,6 +313,7 @@ const Ahj = () => {
                     <div className="main-graph" style={stylesGraph}>
                       <AhjBarChart data={apiResponse} />
                       <p className="chart-info-report">Week</p>
+                      
                     </div>
                   </div>
                 </div>
