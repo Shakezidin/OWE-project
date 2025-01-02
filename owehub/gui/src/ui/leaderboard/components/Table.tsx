@@ -517,7 +517,7 @@ const DateFilter = ({
         }}
         offset={8}
         id="lead-calendar"
-        place="top"
+        place="bottom"
         content="Calendar"
         delayShow={200}
         className='pagination-tooltip'
