@@ -3,7 +3,7 @@ import axios from 'axios';
 import { embedDashboard } from '@superset-ui/embedded-sdk';
 
 const URL = 'https://staging.owe-hub.com/api/owe-reports-service/v1'
-const SUPERSET_DOMAIN = 'http://45.77.121.171:8088'
+const SUPERSET_DOMAIN = 'https://superset.owe-hub.com'
 
 async function getToken(dashboardId:string) {
   try {
