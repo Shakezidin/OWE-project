@@ -73,20 +73,18 @@ const Banner: React.FC<BannerProps> = ({
   };
 
   useEffect(() => {
-    const isEligibleRole = 
+    if (
       role === 'Admin' ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
       role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-      role === TYPE_OF_USER.ACCOUNT_MANAGER 
-      
-  
-    if (isEligibleRole || isShowDropdown) {
+      role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+      role === TYPE_OF_USER.DEALER_OWNER ||
+      isShowDropdown
+    ) {
       getNewFormData();
-    }  
-  }, [role, groupBy, isShowDropdown, TYPE_OF_USER]);
-  
+    }
+  }, [role]);
 
-  console.log(role, groupBy, "dfkjh")
   useEffect(() => {
     if (
       role !== 'Admin' &&
