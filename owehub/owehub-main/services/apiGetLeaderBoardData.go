@@ -452,6 +452,21 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		filtersBuilder.WriteString(" cs.unique_id != '' ")
 	}
 
+	if !whereAdded {
+		filtersBuilder.WriteString(" WHERE (")
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ns.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ss.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
+		whereAdded = true
+	} else {
+		filtersBuilder.WriteString(" AND (")
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ns.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ss.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
+	}
+
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(ss.team_region_untd, '/'::text, 2)" {
 		if dataReq.GroupBy != "dealer" {
 			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v, cs.dealer HAVING", dataReq.GroupBy))
