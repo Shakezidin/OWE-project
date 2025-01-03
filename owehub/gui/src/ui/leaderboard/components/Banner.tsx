@@ -73,18 +73,20 @@ const Banner: React.FC<BannerProps> = ({
   };
 
   useEffect(() => {
-    if (
+    const isEligibleRole = 
       role === 'Admin' ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
       role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-      role === TYPE_OF_USER.ACCOUNT_MANAGER ||
-      role === TYPE_OF_USER.DEALER_OWNER ||
-      isShowDropdown
-    ) {
+      role === TYPE_OF_USER.ACCOUNT_MANAGER 
+      
+  
+    if (isEligibleRole || isShowDropdown) {
       getNewFormData();
-    }
-  }, [role]);
+    }  
+  }, [role, groupBy, isShowDropdown, TYPE_OF_USER]);
+  
 
+  console.log(role, groupBy, "dfkjh")
   useEffect(() => {
     if (
       role !== 'Admin' &&
@@ -361,9 +363,10 @@ const Banner: React.FC<BannerProps> = ({
       </div>
 
       {(role === 'Admin' ||
-        role === TYPE_OF_USER.FINANCE_ADMIN ||
-        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-        role === TYPE_OF_USER.ACCOUNT_MANAGER) || (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer') && (
+  role === TYPE_OF_USER.FINANCE_ADMIN ||
+  role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+  role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+  (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
         <div
           className="dealer-dropdown-filter"
           style={{ zIndex: 100 }}

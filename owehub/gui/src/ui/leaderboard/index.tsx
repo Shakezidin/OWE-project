@@ -128,6 +128,10 @@ const Index = () => {
       (async () => {
         setIsLoading(true);
         try {
+          // Extracting dealer logic for readability
+          
+  
+          // API call
           const data = await postCaller('get_perfomance_leaderboard_data', {
             type: activeHead,
             sort_by: active,
@@ -135,22 +139,27 @@ const Index = () => {
             page_number: page,
             start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
             end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-            dealer: selectDealer.map((item) => item.value),
+            dealer: (role === TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer') ? [] : selectDealer.map((item) => item.value),
             group_by: groupBy,
           });
 
+          console.log(TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer', "jhdsfg")
+  
+          // Handle error response
           if (data.status > 201) {
             toast.error(data.message);
-            setIsLoading(false);
             return;
           }
+  
+          // Update state with fetched data
           setDetails(data.data?.top_leader_board_list);
           setTableData(data);
-          setIsLoading(false);
           setCount(data?.dbRecCount || 0);
         } catch (error) {
-          console.error(error);
+          console.error('Error fetching leaderboard data:', error);
+          toast.error('An unexpected error occurred. Please try again.');
         } finally {
+          setIsLoading(false); // Always reset loading state
         }
       })();
     }
@@ -162,10 +171,11 @@ const Index = () => {
     groupBy,
     isAuthenticated,
     isFetched,
-    authData,
-    page
+    page,
+    TYPE_OF_USER,
   ]);
-
+  
+  
   console.log(tableData, 'data');
   const shareImage = () => {
     if (topCards.current) {
