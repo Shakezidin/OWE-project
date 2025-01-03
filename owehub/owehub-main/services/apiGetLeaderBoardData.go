@@ -90,7 +90,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList := models.GetLeaderBoardList{}
 
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
-		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) {
+		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
+		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		if len(dataReq.DealerName) == 0 {
 			LeaderBoardList.TopLeaderBoardList = []models.GetLeaderBoard{}
 			LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
