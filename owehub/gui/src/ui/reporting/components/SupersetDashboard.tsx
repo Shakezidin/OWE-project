@@ -54,7 +54,7 @@ const SupersetDashboard = ({ dashboardId }: any) => {
     var iframe = document.querySelector('iframe');
     if (iframe) {
       iframe.style.width = '100%'; // Set the width of the iframe
-      iframe.style.minHeight = '100vh'; // Set the height of the iframe
+      iframe.style.minHeight = '85vh'; // Set the height of the iframe
       iframe.style.border = 'none';
     }
   }, []);
