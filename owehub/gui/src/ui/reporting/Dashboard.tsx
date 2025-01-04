@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 import { useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { RiArrowRightLine } from 'react-icons/ri';
 import ReportFormModal from './AddNewModal';
+import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import DynDashboard from './DynamicReports/DynDashboard';
+import MicroLoader from '../components/loader/MicroLoader';
+import DataNotFound from '../components/loader/DataNotFound';
 
 interface AccordionSection {
   title: string;
   data: { title: string; route: string; heading?: string }[];
   state: [boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined;
 }
+
+interface ReportData {
+  id: number;
+  title: string;
+  subtitle: string;
+  dashboard_id: string;
+}
+
+interface ApiData {
+  [key: string]: ReportData[];
+}
+
 
 const Dashboard: React.FC = () => {
   const cardColors = ['#FAD9CA', '#CDE8FB', '#EDD4EE', '#D0E6E3', '#DDD9F6'];
@@ -35,6 +52,62 @@ const Dashboard: React.FC = () => {
         return '';
     }
   };
+
+
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState<ApiData | null>(null);
+  const [dashboardIds, setDashboardIds] = useState<string[]>([]);
+
+ 
+  useEffect(() => {
+
+    setLoading(true)
+    const fetchData = async () => {
+      try {
+        const response = await reportingCaller('get_superset_reports', {});
+        if (response.status === 200) {
+          setData(response.data)
+          const allDashboardIds = Object.values(response.data).flatMap((items: any) =>
+            items.map((item: any) => item.dashboard_id)
+          );
+          const uniqueDashboardIds = Array.from(new Set(allDashboardIds));
+          setDashboardIds(uniqueDashboardIds);
+        } else {
+          console.error('Error fetching data:', response.message);
+          toast.error(response.message)
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error making API request:', error);
+        setLoading(false);
+      }
+      setLoading(false);
+    };
+    fetchData();
+
+  }, []);
+  const [accordionStates, setAccordionStates] = useState<boolean[]>([]);
+
+ const accordionSectionsTest = data
+  ? Object.entries(data).map(([arrayName, arrayData], index) => ({
+      title: arrayName,
+      data: arrayData.map((item, index) => ({
+        subtitle: item.subtitle || '',
+        id:item.id,
+        title: item.title || `Item ${index + 1}`,
+        route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
+      })),
+      state: [accordionStates[index] ?? true, () => {}],
+    }))
+  : [];
+
+// Update accordion states when data changes
+useEffect(() => {
+  if (data) {
+    setAccordionStates(Object.keys(data).map(() => true));
+  }
+}, [data]);
+
 
   const accordionSections: AccordionSection[] = [
     {
@@ -116,25 +189,33 @@ const Dashboard: React.FC = () => {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredItem, setHoveredItem] = useState('');
-  const [isOpen , setIsOpen] = useState(false)
+  const [isOpenMod, setIsOpenMod] = useState(false)
 
   const handleClose = () => {
-    setIsOpen(false)
+    setIsOpenMod(false)
   }
   const handleOpen = () => {
-    setIsOpen(true)
+    setIsOpenMod(true)
   }
 
-  
 
-  const toggleAccordion =
-    (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
-      setState((prevState: boolean) => !prevState);
-    };
+
+
+  const toggleAccordion = (index: number) => () => {
+    setAccordionStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+  };
+
+  console.log(accordionSectionsTest, "gfadsh")
+  
 
   return (
     <>
-    <ReportFormModal isOpen={isOpen} handleClose={handleClose}/>
+
+      <ReportFormModal isOpen={isOpenMod} handleClose={handleClose} />
       <div className="configure-container">
 
         <div className="configure-main">
@@ -147,7 +228,13 @@ const Dashboard: React.FC = () => {
             }
           </div>
           <div className="configure-main-section">
-            {accordionSections.map(({ title, data, state }, index) => {
+          {(loading) ? (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <MicroLoader />
+            </div>
+          ) : accordionSectionsTest ? (
+            <>
+            {accordionSectionsTest.map(({ title, data, state }, index) => {
               if (!state) return null;
               const [isOpen, setIsOpen] = state;
               return (
@@ -157,7 +244,7 @@ const Dashboard: React.FC = () => {
                 >
                   <div
                     className="configure-card-title"
-                    onClick={toggleAccordion(setIsOpen)}
+                    onClick={toggleAccordion(index)}
                   >
                     <p className="payer-type">{title}</p>
                     <div className="accordion-icon-container">
@@ -198,8 +285,8 @@ const Dashboard: React.FC = () => {
                           >
 
                             <div className="con-fle">
-                              {item.heading ? (
-                                <small>({item.heading})</small>
+                              {item.subtitle ? (
+                                <small>({item.subtitle})</small>
                               ) : null}
                               <h1 className="reporting-card-heading">
                                 {item.title}
@@ -244,6 +331,12 @@ const Dashboard: React.FC = () => {
                 </div>
               );
             })}
+             </>
+          ) : (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <DataNotFound />
+            </div>
+          )}
           </div>
         </div>
       </div>

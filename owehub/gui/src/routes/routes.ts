@@ -116,6 +116,6 @@ export const ROUTES = {
   CALCULATOR:'/calculator',
   SIGN_DOCUMENT:'digital-signature-portal',
   AHJ:'/reporting/ahj',
-  PERMIT_REDLINE:'/reporting/permit-redline'
-
+  PERMIT_REDLINE:'/reporting/permit-redline',
+  DYNAMIC_REPORT:'/reporting/:id'
 };

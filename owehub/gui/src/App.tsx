@@ -66,6 +66,7 @@ import Ahj from './ui/reporting/Ahj/Ahj';
 import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
+import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 
 
 function App() {
@@ -176,6 +177,10 @@ function App() {
              <Route
               path={ROUTES.PERMIT_REDLINE}
               element={<PermitRedLine />}
+            />
+            <Route
+              path={ROUTES.DYNAMIC_REPORT}
+              element={<DynDashboard />}
             />
             <Route
               path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}
