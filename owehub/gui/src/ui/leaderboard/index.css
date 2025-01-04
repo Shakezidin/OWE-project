@@ -502,6 +502,7 @@
   box-shadow: 5px 5px 18px rgba(0, 0, 0, 0.07);
   border: 1px solid #ddd;
   border-radius: 8px;
+  z-index: 99;
 }
 
 .exportt {
