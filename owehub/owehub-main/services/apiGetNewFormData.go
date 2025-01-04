@@ -139,6 +139,9 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 			items = append(items, name)
 		}
+		if tableName == "partners" {
+			items = append(items, "")
+		}
 		responseData[tableName] = items
 	}
 
