@@ -144,6 +144,29 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+
+	// superset reports CRUD
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/create_superset_report",
+		apiHandler.HandleCreateSupersetReportRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_superset_reports",
+		apiHandler.HandleGetSupersetReportsRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/delete_superset_reports",
+		apiHandler.HandleDeleteSupersetReportsRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************
