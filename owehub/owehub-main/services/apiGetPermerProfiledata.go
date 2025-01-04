@@ -136,13 +136,13 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 	case "sale_rep":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v' AND cs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 1) = '%v' AS team AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 1) = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.state = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AS region AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
@@ -180,13 +180,13 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	case "sale_rep":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v' AND cs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 1) = '%v' AS team AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 1) = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.state = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AS region AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
