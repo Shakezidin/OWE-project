@@ -15,7 +15,7 @@ interface FormInput
 
 
 const ReportFormModal = ({
-    isOpen, handleClose
+    isOpen, handleClose, setCount, count
 }: any) => {
 
     const [formData, setFormData] = useState({
@@ -73,9 +73,9 @@ const ReportFormModal = ({
         if (formData.dashboard_id.trim() === '') {
             errors.dashboard_id = 'Dashboard Id is required';
         }
-        if (formData.subTitle.trim() === '') {
-            errors.subTitle = 'Subtitle is required';
-        }
+        // if (formData.subTitle.trim() === '') {
+        //     errors.subTitle = 'Subtitle is required';
+        // }
         if (formData.category.trim() === '') {
             errors.category = 'Category is required';
         }
@@ -99,6 +99,7 @@ const ReportFormModal = ({
                 );
                 if (response.status === 200) {
                     toast.success('Report Created Succesfully');
+                    setCount(count + 1);
                     handleClose();
                     setFormData(initialFormData);
                 } else if (response.status >= 201) {
@@ -122,6 +123,29 @@ const ReportFormModal = ({
                             <RxCross2 size={20} onClick={handleClose} style={{ cursor: "pointer" }} />
                         </div>
                         <div className='rep-inp-container'>
+
+                            <div className="reportContainerModal">
+                                <p className='title-label-report'>Category</p>
+                                <input
+                                    type="text"
+                                    placeholder="Please Enter Category"
+                                    onChange={handleInputChange}
+                                    value={formData.category}
+                                    name="category"
+                                    maxLength={30}
+                                    autoComplete="off"
+                                />
+                                {errors.category && (
+                                    <span
+                                        style={{
+                                            display: 'block',
+                                        }}
+                                        className="error"
+                                    >
+                                        {errors.category}
+                                    </span>
+                                )}
+                            </div>
                             <div className="reportContainerModal">
                                 <p className='title-label-report'>Title</p>
                                 <input
@@ -130,7 +154,7 @@ const ReportFormModal = ({
                                     onChange={handleInputChange}
                                     value={formData.title}
                                     name="title"
-                                    maxLength={100}
+                                    maxLength={30}
                                     autoComplete="off"
                                 />
                                 {errors.title && (
@@ -141,6 +165,29 @@ const ReportFormModal = ({
                                         className="error"
                                     >
                                         {errors.title}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="reportContainerModal">
+                                <p className='title-label-report'>Subtitle</p>
+                                <input
+                                    type="text"
+                                    value={formData.subTitle}
+                                    placeholder="Please Enter Subtitle"
+                                    onChange={handleInputChange}
+                                    name="subTitle"
+                                    maxLength={30}
+                                    autoComplete="off"
+                                />
+                                {errors.subTitle && (
+                                    <span
+                                        style={{
+                                            display: 'block',
+                                        }}
+                                        className="error"
+                                    >
+                                        {errors.subTitle}
                                     </span>
                                 )}
                             </div>
@@ -168,60 +215,12 @@ const ReportFormModal = ({
                                 )}
                             </div>
 
-                            <div className="reportContainerModal">
-                                <p className='title-label-report'>Subtitle</p>
-                                <input
-                                    type="text"
-                                    value={formData.subTitle}
-                                    placeholder="Please Enter Subtitle"
-                                    onChange={handleInputChange}
-                                    name="subTitle"
-                                    maxLength={100}
-                                    autoComplete="off"
-                                />
-                                {errors.subTitle && (
-                                    <span
-                                        style={{
-                                            display: 'block',
-                                        }}
-                                        className="error"
-                                    >
-                                        {errors.subTitle}
-                                    </span>
-                                )}
-                            </div>
-
-                            <div className="reportContainerModal">
-                                <p className='title-label-report'>Category</p>
-                                <input
-                                    type="text"
-                                    placeholder="Please Enter Category"
-                                    onChange={handleInputChange}
-                                    value={formData.category}
-                                    name="category"
-                                    maxLength={100}
-                                    autoComplete="off"
-                                />
-                                {errors.category && (
-                                    <span
-                                        style={{
-                                            display: 'block',
-                                        }}
-                                        className="error"
-                                    >
-                                        {errors.category}
-                                    </span>
-                                )}
-                            </div>
-
                             <div className='modal-submit-report'>
-                                <button onClick={handleSubmit} style={{ backgroundColor: "rgb(62, 62, 208)", cursor: load ? "not-allowed" : "pointer" }}
+                                <button onClick={handleSubmit} style={{ backgroundColor: "rgb(62, 62, 208)", cursor: load ? "not-allowed" : "pointer",pointerEvents: load ? "none" : "auto", }}
                                     disabled={load}
-                                >Submit</button>
+                                >{load ? "Creating..." : "Create Report"}</button>
                             </div>
-
                         </div>
-
                     </div>
 
                 </div>
