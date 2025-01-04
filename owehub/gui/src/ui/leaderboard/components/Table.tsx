@@ -1239,7 +1239,7 @@ const Table = ({
                               ? 'sale_rep'
                               : groupBy,
                           dealer:
-                            groupBy === 'primary_sales_rep' ? item.dealer : '',
+                            groupBy === 'primary_sales_rep' || groupBy === 'team' || groupBy ==='setter' ? item.dealer : '',
                           name: item.rep_name,
                           rank: item.rank,
                           sale: item.sale,
