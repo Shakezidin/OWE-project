@@ -139,7 +139,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 			items = append(items, name)
 		}
-		if tableName == "partners" {
+		if tableName == "dealer_name" && (role != string(types.RoleAccountManager) && role != string(types.RoleAccountExecutive)) {
 			items = append(items, "")
 		}
 		responseData[tableName] = items
