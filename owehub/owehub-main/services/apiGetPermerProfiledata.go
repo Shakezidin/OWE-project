@@ -142,7 +142,7 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' ", dataReq.Name))
 	case "setter":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
@@ -187,7 +187,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" split_part(ss.team_region_untd, '/'::text, 2) = '%v'", dataReq.Name))
 	case "setter":
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
