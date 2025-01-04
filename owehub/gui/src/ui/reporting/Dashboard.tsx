@@ -4,6 +4,7 @@ import { ROUTES } from '../../routes/routes';
 import { useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { RiArrowRightLine } from 'react-icons/ri';
+import ReportFormModal from './AddNewModal';
 
 interface AccordionSection {
   title: string;
@@ -112,6 +113,19 @@ const Dashboard: React.FC = () => {
       state: useState<boolean>(true),
     },
   ];
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState('');
+  const [isOpen , setIsOpen] = useState(false)
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+  const handleOpen = () => {
+    setIsOpen(true)
+  }
+
+  
 
   const toggleAccordion =
     (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
@@ -120,17 +134,18 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
+    <ReportFormModal isOpen={isOpen} handleClose={handleClose}/>
       <div className="configure-container">
-        {/* <div className="configure-header">
-          <Breadcrumb
-            head=""
-            linkPara="Configure"
-            route={''}
-            linkparaSecond=""
-            marginLeftMobile="12px"
-          />
-        </div> */}
+
         <div className="configure-main">
+          <div className='add-delete-report'>
+            {checkedItems.length === 0 &&
+              <button onClick={handleOpen} style={{ backgroundColor: "rgb(62, 62, 208)" }}>Add New</button>
+            }
+            {checkedItems.length !== 0 &&
+              <button style={{ backgroundColor: "rgb(225, 44, 44)" }}>Delete</button>
+            }
+          </div>
           <div className="configure-main-section">
             {accordionSections.map(({ title, data, state }, index) => {
               if (!state) return null;
@@ -161,6 +176,7 @@ const Dashboard: React.FC = () => {
                       const randomCardColor = cardColors[colorIndex];
                       const randomArrowColor = arrowColors[colorIndex];
                       return (
+
                         <div key={index} className="pay-card-wrapper">
                           <Link
                             to={item.route}
@@ -169,8 +185,18 @@ const Dashboard: React.FC = () => {
                               backgroundColor: randomCardColor,
                               outline: `1px dotted ${randomArrowColor}`,
                               outlineOffset: '3px',
+                              position: "relative"
+                            }}
+                            onMouseEnter={() => {
+                              setIsHovered(true);
+                              setHoveredItem(item.title);
+                            }}
+                            onMouseLeave={() => {
+                              setIsHovered(false);
+                              setHoveredItem('');
                             }}
                           >
+
                             <div className="con-fle">
                               {item.heading ? (
                                 <small>({item.heading})</small>
@@ -178,13 +204,37 @@ const Dashboard: React.FC = () => {
                               <h1 className="reporting-card-heading">
                                 {item.title}
                               </h1>
-                              <div
-                                className="arrow-wrapper"
-                                style={{ color: randomArrowColor }}
-                              >
-                                <span className="view-text">View</span>
-                                <RiArrowRightLine className="arrow-right" />
+                              <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "36px" }}>
+                                <div
+                                  className="checkbox-wrapper"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    const title = item.title;
+                                    if (checkedItems.includes(title)) {
+                                      setCheckedItems(checkedItems.filter((item) => item !== title));
+                                    } else {
+                                      setCheckedItems([...checkedItems, title]);
+                                    }
+                                  }}
+                                  style={{
+                                    display: checkedItems.includes(item.title) || (isHovered && hoveredItem === item.title) ? 'block' : 'none'
+                                  }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={checkedItems.includes(item.title)}
+                                    readOnly
+                                  />
+                                </div>
+                                <div
+                                  className="arrow-wrapper"
+                                  style={{ color: randomArrowColor }}
+                                >
+                                  <span className="view-text">View</span>
+                                  <RiArrowRightLine className="arrow-right" />
+                                </div>
                               </div>
+
                             </div>
                           </Link>
                         </div>
