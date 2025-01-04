@@ -1146,16 +1146,17 @@ const Table = ({
                   </div>
                   <div>
                     <span className="rank-stats-num">
-                      {formatSaleValue(totalStats?.total_ntp || 0)}
-                    </span>
-                    <p className="rank-sm-text">NTP</p>
-                  </div>
-                  <div>
-                    <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_install || 0)}
                     </span>
                     <p className="rank-sm-text">Install</p>
                   </div>
+                  <div>
+                    <span className="rank-stats-num">
+                      {formatSaleValue(totalStats?.total_ntp || 0)}
+                    </span>
+                    <p className="rank-sm-text">NTP</p>
+                  </div>
+                 
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
