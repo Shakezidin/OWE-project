@@ -74,7 +74,7 @@ func HandleDeleteSupersetReportsRequest(resp http.ResponseWriter, req *http.Requ
 	query = fmt.Sprintf("DELETE FROM %s WHERE id IN (%s)", db.TableName_SupersetReports, strings.Join(queryPlaceholders, ", "))
 
 	// delete the superset reports
-	err, deletedCount = db.UpdateDataInDB(db.RowDataDBIndex, query, whereEleList)
+	err, deletedCount = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Delete Superset Report in DB with err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to Delete Superset Report ", http.StatusInternalServerError, nil)

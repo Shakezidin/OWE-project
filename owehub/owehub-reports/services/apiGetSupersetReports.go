@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"fmt"
 	"net/http"
 )
 
@@ -31,7 +32,7 @@ func HandleGetSupersetReportsRequest(resp http.ResponseWriter, req *http.Request
 	log.EnterFn(0, "HandleGetSupersetReportsRequest")
 	defer func() { log.ExitFn(0, "HandleGetSupersetReportsRequest", err) }()
 
-	query = `
+	query = fmt.Sprintf(`
 		SELECT
 			id,
 			category,
@@ -39,14 +40,14 @@ func HandleGetSupersetReportsRequest(resp http.ResponseWriter, req *http.Request
 			subtitle,
 			dashboard_id
 		FROM
-			superset_reports
+			%s
 		WHERE
 			is_archived = FALSE
 		ORDER BY
 			created_at DESC
-	`
+	`, db.TableName_SupersetReports)
 
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get superset reports from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get superset reports", http.StatusInternalServerError, nil)
