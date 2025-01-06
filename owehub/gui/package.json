@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "^5.5.2",
     "@emailjs/browser": "^4.3.3",
     "@fontsource/poppins": "^5.0.8",
     "@popperjs/core": "^2.11.8",
@@ -24,7 +23,6 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-window": "^1.8.8",
     "@types/redux-logger": "^3.0.12",
-    "antd": "^5.22.5",
     "axios": "^1.6.5",
     "basscss": "^8.0.2",
     "date-fns": "^3.6.0",
@@ -74,7 +72,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts --max_old_space_size=4096 build",
+    "build": "react-scripts --max_old_space_size=8192 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",

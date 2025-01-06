@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Table } from 'antd';
+import ScrollableInstallationsTable, { ScrollableInstallationsTableProps } from '../../components/ScrollableFixedTable/TableComponent';
 import {
   BarChart,
   Bar,
@@ -593,16 +593,7 @@ const CompletionsPerTeams: React.FC = () => {
           >
             Week / Customer
           </div>
-          <Table
-            columns={countColumns}
-            dataSource={[
-              ...countTableData,
-              calculateGrandTotals(countTableData),
-            ]}
-            pagination={false}
-            className="install-table"
-            sticky={false}
-          />
+          <ScrollableInstallationsTable data={countTableData} columns={countColumns} />
             </div>
           </div>
           
@@ -621,20 +612,8 @@ const CompletionsPerTeams: React.FC = () => {
         >
           Week / System Size{' '}
         </div>
-        <Table
-          columns={systemSizeColumns}
-          dataSource={[
-            ...systemSizeTableData.map((row) => ({
-              ...row,
-              grandTotal: (
-                <span className="font-bold">{row.grandTotal.toFixed(2)}</span>
-              ),
-            })),
-            calculateSystemSizeGrandTotals(systemSizeTableData),
-          ]}
-          pagination={false}
-          className="install-table"
-        />
+                  <ScrollableInstallationsTable data={systemSizeTableData} columns={systemSizeColumns} />
+
       </div>
 
         </div>
@@ -652,15 +631,9 @@ Installs Completed per Office by System Size (Average kW)
           >
             Week / Customer
           </div>
-          <Table
-            columns={averageSizeColumns}
-            dataSource={[
-              ...averageSizeTableData,
-              calculateAverageSizeGrandTotals(averageSizeTableData),
-            ]}
-            pagination={false}
-            className="install-table"
-          />
+
+                    <ScrollableInstallationsTable data={averageSizeTableData} columns={averageSizeColumns} />
+
         </div>
 </div>
 
