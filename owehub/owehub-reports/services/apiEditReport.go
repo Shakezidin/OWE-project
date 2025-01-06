@@ -67,7 +67,6 @@
 		 `, db.TableName_SupersetReports, dataReq.Category, dataReq.Title, dataReq.Subtitle, dataReq.DashboardId, dataReq.ReportId)
 
 
-		 log.FuncErrorTrace(0, "Executing query: %s", query)
 
 		 err, res := db.UpdateDataInDB(db.OweHubDbIndex, query, nil)
 		 if err != nil {

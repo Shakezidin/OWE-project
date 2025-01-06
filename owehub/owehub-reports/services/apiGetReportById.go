@@ -70,8 +70,7 @@ func HandleGetReportById(resp http.ResponseWriter, req *http.Request) {
             id = %d
     `, db.TableName_SupersetReports, dataReq.ReportId)
 
-  
-    log.FuncErrorTrace(0, "Executing query: %s", query)
+
 
     data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
     if err != nil {
