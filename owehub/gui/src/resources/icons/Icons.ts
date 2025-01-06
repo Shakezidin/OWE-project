@@ -284,8 +284,6 @@ export const ICONS = {
   arrowDown: arrowDown,
   linearGraph: linearGraph,
   curveGraph: curveGraph,
-  // browserIcon: browserIcon,
-  // whiteCross: whiteCross
   redcurveGraph: redcurveGraph,
   rep1: rep1,
   rep2: rep2,
