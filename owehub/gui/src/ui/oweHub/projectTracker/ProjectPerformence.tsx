@@ -2,58 +2,41 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import './projectTracker.css';
 import 'react-circular-progressbar/dist/styles.css';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getPerfomanceStatus } from '../../../redux/apiSlice/perfomanceSlice';
-import { Calendar } from './ICONS';
-import Select from 'react-select';
-import { getProjects } from '../../../redux/apiSlice/projectManagement';
-import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
 import { MdDownloading } from 'react-icons/md';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
-  format,
-  subDays,
-  startOfMonth,
-  startOfWeek,
-  endOfWeek,
-  startOfYear,
   subMonths,
 } from 'date-fns';
-import { DateRange } from 'react-date-range';
 import Pagination from '../../components/pagination/Pagination';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import useMatchMedia from '../../../hooks/useMatchMedia';
 import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
 import { IoClose } from 'react-icons/io5';
 import { ICONS } from '../../../resources/icons/Icons';
 import { MdDone } from 'react-icons/md';
-import useAuth from '../../../hooks/useAuth';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
 import { LuImport } from 'react-icons/lu';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
-import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
+import { Tooltip as Tooltip } from 'react-tooltip';
 import Slider from 'rc-slider';
 import useEscapeKey from '../../../hooks/useEscape';
 interface Option {
   value: string;
   label: string;
 }
-
 export type DateRangeWithLabel = {
   label?: string;
   start: any;
@@ -63,9 +46,6 @@ const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const datePickerRef = useRef<HTMLDivElement>(null);
-  const refBtn = useRef<null | HTMLDivElement>(null);
-  const [activePopups, setActivePopups] = useState<boolean>(false);
-  const { projects } = useAppSelector((state) => state.projectManagement);
   const [selectedMilestone, setSelectedMilestone] = useState('');
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
@@ -74,70 +54,23 @@ const ProjectPerformence = () => {
   const [titleData, setTileData] = useState<any>('');
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
-
-  const [mapHovered, setMapHovered] = useState(false);
-
   //Ajay chaudhary code starts from here
-
-  const [filterAplied,setFilterAplied]=useState<boolean>(false);
-
+  const [filterAplied, setFilterAplied] = useState<boolean>(false);
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
     value: string;
   }>({} as Option);
-
-  const { authData } = useAuth();
   const role = localStorage.getItem('role');
-
   const showDropdown =
     role === TYPE_OF_USER.ADMIN ||
     role === TYPE_OF_USER.FINANCE_ADMIN ||
     role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
     role === TYPE_OF_USER.ACCOUNT_MANAGER;
-
-  const today = new Date();
-  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
-  const startOfThisMonth = startOfMonth(today);
   const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
-  const startOfThisYear = startOfYear(today);
-  const startOfLastMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() - 1,
-    1
-  );
-  const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
-  // Calculate the start and end of last week
-  const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
-    weekStartsOn: 1,
-  });
-  const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
-    weekStartsOn: 1,
-  });
-
-  const handleClickOutside = (e: MouseEvent) => {
-    const elm = e.target as HTMLElement;
-    if (
-      refBtn?.current &&
-      (elm === refBtn?.current || refBtn?.current?.contains(elm))
-    ) {
-      return;
-    }
-    if (!elm.closest('.popup')) {
-      setActivePopups(false);
-    }
-  };
-
-
   //Ajay Chaudhary
-
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [minValue, set_minValue] = useState(25);
   const [maxValue, set_maxValue] = useState(75);
-  const handleInput = (e: any) => {
-    set_minValue(e.minValue);
-    set_maxValue(e.maxValue);
-  };
   const handleSliderChange = (values: number | number[]) => {
     if (Array.isArray(values)) {
       set_minValue(values[0]);
@@ -146,70 +79,56 @@ const ProjectPerformence = () => {
       set_minValue(values);
     }
   };
-
   const handleMinChange = (e: any) => {
     const value = e.target.value;
-
     if (value.length > 3) {
       return;
     }
-
     const newMinValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
-    if(newMinValue>180)
-    {
+    if (newMinValue > 180) {
       set_minValue(180);
-
       return;
     }
     set_minValue(newMinValue);
   };
-
   const handleMaxChange = (e: any) => {
     const value = e.target.value;
-
-
-    if (value.length > 3 || value>180) {
+    if (value.length > 3 || value > 180) {
       return;
     }
     const newMaxValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
     set_maxValue(newMaxValue);
   };
-
-useEffect(()=>{
-  const maxi=maxValue;
-  if(minValue===180)
-  {
-    set_maxValue(360)
-  }
-  else{
-    set_maxValue(maxi);
-  }
-},[minValue])
+  useEffect(() => {
+    const maxi = maxValue;
+    if (minValue === 180) {
+      set_maxValue(360);
+    } else {
+      set_maxValue(maxi);
+    }
+  }, [minValue]);
   const HandleFilterClick = () => {
-    setOpenFilter(prev => !prev);
-  }
+    setOpenFilter((prev) => !prev);
+  };
   const [filtered, setFiltered] = useState<boolean>(false);
   const [checkedOptions, setCheckedOptions] = useState<string[]>([]);
   const filterRef = useRef<HTMLDivElement>(null);
   const handleClickOutsidee = (event: MouseEvent) => {
-
-
-    if (filterRef.current && !filterRef.current.contains(event.target as Node) && !(event.target as HTMLElement).closest('.pipelineFilterLine')) {
+    if (
+      filterRef.current &&
+      !filterRef.current.contains(event.target as Node) &&
+      !(event.target as HTMLElement).closest('.pipelineFilterLine')
+    ) {
       setOpenFilter(false);
     }
   };
-
-
   const [fieldData, setFieldData] = useState<string[]>([]);
-
   useEffect(() => {
     const newFieldData: string[] = [];
-
     if (checkedOptions.length === 0) {
       // If no options are checked, clear the fieldData
       setFieldData([]);
-    }
-    else {
+    } else {
       checkedOptions.forEach((val) => {
         switch (val) {
           case 'Project Age':
@@ -232,8 +151,8 @@ useEffect(()=>{
         }
       });
     }
-
-    setFieldData(newFieldData); // Update the state with the final array
+    // Update the state with the final array
+    setFieldData(newFieldData); 
   }, [checkedOptions]);
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutsidee);
@@ -241,78 +160,37 @@ useEffect(()=>{
       document.removeEventListener('mousedown', handleClickOutsidee);
     };
   }, [openFilter]);
-
-
   const [checkedStates, setCheckedStates] = useState(
-    Array(5).fill(false) // Initialize an array of 5 false values
+    // Initialize an array of 5 false values
+    Array(5).fill(false) 
   );
-
-
-  const handleCheckboxChange = (index: number) => {
-    setCheckedStates((prevState) => {
-      const updatedStates = [...prevState]; // Create a copy of the array
-      updatedStates[index] = !updatedStates[index]; // Toggle the state at the given index
-      return updatedStates;
-    });
-  };
-
-
-  const [selectionRange, setSelectionRange] = useState({
-    startDate: subMonths(new Date(), 3),
-    endDate: subDays(new Date(), 1),
-    key: 'selection',
-  });
-
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
-  const toggleExportShow = () => {
-    setExportShow((prev) => !prev);
-  };
-
   const [selectedRangeDate, setSelectedRangeDate] = useState<any>({
     label: 'Three Months',
     start: role == TYPE_OF_USER.ADMIN ? subMonths(new Date(), 3) : '',
     end: role == TYPE_OF_USER.ADMIN ? subMonths(new Date(), 1) : '',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const handleSelect = (ranges: any) => {
-    setSelectionRange(ranges.selection);
-  };
-
   const perPage = 10;
   const getColorStyle = (color: any | null) => {
     let backgroundColor;
     let textColor;
     let boxShadowColor;
-
     backgroundColor = color;
     textColor = 'white';
     boxShadowColor = 'rgba(0, 141, 218, 0.2)';
-
     return {
       backgroundColor,
       color: textColor,
       boxShadow: `0px 4px 12px ${boxShadowColor}`,
     };
   };
-
-  const projectOption: Option[] = projects?.map?.(
-    (item: (typeof projects)[0]) => ({
-      label: `${item.unqiue_id}-${item.customer}`,
-      value: item.unqiue_id,
-    })
-  );
-
   const { projectStatus, projectsCount, datacount, isLoading } = useAppSelector(
     (state) => state.perfomanceSlice
   );
-  const { sessionTimeout } = useAppSelector((state) => state.auth);
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
-
   const ExportCsv = async () => {
     setIsExporting(true);
     const headers = [
@@ -349,7 +227,6 @@ useEffect(()=>{
       'Pto Submitted Date',
       'Pto Date',
     ];
-
     const getAllData = await postCaller('get_peroformancecsvdownload', {
       start_date: '',
       end_date: '',
@@ -395,11 +272,8 @@ useEffect(()=>{
       item.PtoSubmittedDate,
       item.PtoDate,
     ]);
-
     const csvRows = [headers, ...csvData];
-
     const csvString = Papa.unparse(csvRows);
-
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -411,18 +285,11 @@ useEffect(()=>{
     setIsExporting(false);
     setExportShow(false);
   };
-
-
-  useEscapeKey(()=>setOpenFilter(false));
-
+  useEscapeKey(() => setOpenFilter(false));
   const location = useLocation();
-
   useEffect(() => {
-    
-      window.scrollTo({top:10,behavior:'smooth'});
-        
+    window.scrollTo({ top: 10, behavior: 'smooth' });
   }, [location.pathname]);
-  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -432,20 +299,16 @@ useEffect(()=>{
         setShowDatePicker(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
       value,
       label: value,
     }));
-
   const getNewFormData = async () => {
     const tableData = {
       tableNames: ['dealer_name'],
@@ -460,40 +323,6 @@ useEffect(()=>{
     }
     setIsFetched(true);
   };
-
-  const periodFilterOptions: any = [
-    {
-      label: 'All',
-      start: null,
-      end: null,
-    },
-    {
-      label: 'This Week',
-      start: startOfThisWeek,
-      end: today,
-    },
-    {
-      label: 'Last Week',
-      start: startOfLastWeek,
-      end: endOfLastWeek,
-    },
-    {
-      label: 'This Month',
-      start: startOfThisMonth,
-      end: today,
-    },
-    {
-      label: 'Last Month',
-      start: startOfLastMonth,
-      end: endOfLastMonth,
-    },
-    {
-      label: 'This Year',
-      start: startOfThisYear,
-      end: today,
-    },
-  ];
-
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
@@ -501,7 +330,6 @@ useEffect(()=>{
     }, 800),
     []
   );
-
   useEffect(() => {
     if (isFetched) {
       (async () => {
@@ -527,13 +355,10 @@ useEffect(()=>{
       })();
     }
   }, [activeTab, selectedDealer, isFetched]);
-
   useEffect(() => {
     if (isFetched) {
       dispatch(
         getPerfomanceStatus({
-
-
           page,
           perPage,
           startDate: '',
@@ -545,9 +370,8 @@ useEffect(()=>{
           dealer_names: selectedDealer.map((item) => item.value),
           fieldData,
           minValue,
-          maxValue
+          maxValue,
         })
-
       );
     }
   }, [
@@ -561,9 +385,8 @@ useEffect(()=>{
     selectedDealer,
     isFetched,
     activeCardId,
-    filtered
+    filtered,
   ]);
-
   useEffect(() => {
     if (showDropdown) {
       getNewFormData();
@@ -571,33 +394,8 @@ useEffect(()=>{
       setIsFetched(true);
     }
   }, [showDropdown]);
-
-  const calculateCompletionPercentage = (
-    project: (typeof projectStatus)[0]
-  ) => {
-    const totalSteps = Object.keys(project).length;
-    const completedSteps = Object.values(project).filter(
-      (date) => !!date
-    ).length;
-    const completionPercentage = (completedSteps / totalSteps) * 100;
-    return completionPercentage.toFixed(2);
-  };
-
-  const formatFloat = (number: number | undefined) => {
-    if (
-      typeof number === 'number' &&
-      !isNaN(number) &&
-      Number.isFinite(number) &&
-      Number.isInteger(number) === false
-    ) {
-      return number.toFixed(2);
-    } else {
-      return number;
-    }
-  };
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
-
   const topCardsData = [
     {
       id: 1,
@@ -642,7 +440,6 @@ useEffect(()=>{
       pending: 'activation',
     },
   ];
-
   const cardColors = [
     '#57B3F1',
     '#E0728C',
@@ -670,60 +467,35 @@ useEffect(()=>{
     '#A07FFF',
     '#EE6363',
   ];
-
-  const resetPage = () => {
-    setPage(1);
-  };
-
-  const isMobile = useMatchMedia('(max-width: 767px)');
-
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
     setPage(1);
   };
-
   const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
-
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
   const filterClose = () => setFilterOpen(false);
-
   const filter = () => {
     setFilterOpen(true);
   };
-
   const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
-
   const ntpClose = () => setNtpOPen(false);
-
   const ntpAction = () => {
     setNtpOPen(true);
   };
-  const [ntpValue, setNtpValue] = useState("0 days pending");
+  const [ntpValue, setNtpValue] = useState('0 days pending');
   const handleActiveTab = (tab: any) => {
     setActiveTab(tab);
   };
-
-  const isStaging = process.env.REACT_APP_ENV;
-
-  // console.log(projectStatus, datacount, 'projectStatus');
-  // console.log(selectedRangeDate, 'select');
-  console.log(projectStatus, "This is project status");
-  console.log(projectsCount, " This is projectsCount")
-
+  console.log(projectStatus, 'This is project status');
+  console.log(projectsCount, ' This is projectsCount');
   const [isHovered, setIsHovered] = useState(-1);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     const container = containerRef.current;
-
     if (!container) return;
-
     let isDown = false;
     let startX: number;
     let scrollLeft: number;
-
     const mouseDownHandler = (e: MouseEvent) => {
       isDown = true;
       container.classList.add('active');
@@ -731,17 +503,14 @@ useEffect(()=>{
       scrollLeft = container.scrollLeft;
       container.style.cursor = 'grabbing';
     };
-
     const mouseLeaveHandler = () => {
       isDown = false;
       container.style.cursor = 'grab';
     };
-
     const mouseUpHandler = () => {
       isDown = false;
       container.style.cursor = 'grab';
     };
-
     const mouseMoveHandler = (e: MouseEvent) => {
       if (!isDown) return;
       e.preventDefault();
@@ -753,7 +522,6 @@ useEffect(()=>{
     container.addEventListener('mouseleave', mouseLeaveHandler);
     container.addEventListener('mouseup', mouseUpHandler);
     container.addEventListener('mousemove', mouseMoveHandler);
-
     return () => {
       container.removeEventListener('mousedown', mouseDownHandler);
       container.removeEventListener('mouseleave', mouseLeaveHandler);
@@ -761,7 +529,6 @@ useEffect(()=>{
       container.removeEventListener('mousemove', mouseMoveHandler);
     };
   }, []);
-
   return (
     <div className="project-main-wrp">
       <div className="project-container">
@@ -769,18 +536,17 @@ useEffect(()=>{
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
           <div className="pipeline-header-btns">
             {showDropdown && (
-             <DropdownCheckbox
-             label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
-             placeholder="Search partners"
-             selectedOptions={selectedDealer}
-             options={dealerOption}
-             onChange={(val) => {
-               setSelectedDealer(val);
-               setPage(1);
-             }}
-             disabled={loading || isLoading}
-           />
-           
+              <DropdownCheckbox
+                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
+                placeholder="Search partners"
+                selectedOptions={selectedDealer}
+                options={dealerOption}
+                onChange={(val) => {
+                  setSelectedDealer(val);
+                  setPage(1);
+                }}
+                disabled={loading || isLoading}
+              />
             )}
             <button
               disabled={loading || isLoading}
@@ -800,7 +566,6 @@ useEffect(()=>{
             >
               Active
             </button>
-
             <button
               disabled={loading || isLoading}
               className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
@@ -846,12 +611,10 @@ useEffect(()=>{
                   const hoverColor = hoverColors[index % hoverColors.length];
                   const activeColor = activeColors[index % activeColors.length];
                   const isActive = activeCardId === card.id;
-
                   const handleCardClick = (cardId: any, title: string) => {
                     setActiveCardId(activeCardId === cardId ? null : cardId);
                     setActiveCardTitle(activeCardId === cardId ? '' : title);
                   };
-
                   return (
                     <div
                       key={card.id}
@@ -860,8 +623,9 @@ useEffect(()=>{
                     >
                       <div
                         key={card.id}
-                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
-                          } ${isActive ? 'active' : ''}`}
+                        className={`project-card ${
+                          index === topCardsData.length - 1 ? 'last-card' : ''
+                        } ${isActive ? 'active' : ''}`}
                         onMouseEnter={() => setIsHovered(index)}
                         onMouseLeave={() => setIsHovered(-1)}
                         style={{
@@ -935,12 +699,14 @@ useEffect(()=>{
           </div>
         </div>
       </div>
-
       <div
         className="project-container"
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
-        <div className="performance-table-heading" style={{ marginTop: "1.2rem" }}>
+        <div
+          className="performance-table-heading"
+          style={{ marginTop: '1.2rem' }}
+        >
           <div className="proper-top pipeline-agingReport-filter">
             <div className="performance-project">
               {activeCardId !== null && (
@@ -957,7 +723,6 @@ useEffect(()=>{
                 </div>
               )}
               <div className="proper-select">
-                {/* <IoIosSearch className="search-icon" /> */}
                 <Input
                   type="text"
                   placeholder="Search for Unique ID or Name"
@@ -965,7 +730,8 @@ useEffect(()=>{
                   name="Search for Unique ID or Name"
                   onChange={(e) => {
                     const input = e.target.value;
-                    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+                    // Allow only alphanumeric and spaces
+                    const regex = /^[a-zA-Z0-9\s]*$/; 
                     if (regex.test(input) && input.length <= 50) {
                       setSearch(input);
                       handleSearchChange(e);
@@ -973,7 +739,6 @@ useEffect(()=>{
                   }}
                 />
               </div>
-
               <div
                 className="performance-box-container pipeline-box-container"
                 style={{ padding: '0.7rem 1rem' }}
@@ -1002,32 +767,30 @@ useEffect(()=>{
                 </div>
               </div>
             </div>
-
             <div className="perf-export-btn relative pipline-export-btn">
               {!!(projectStatus.length && !loading) && (
-                <div className='filterButtonAddition '>
-
+                <div className="filterButtonAddition ">
                   <div
                     className="pipelineFilterLine"
                     style={{ backgroundColor: '#377CF6' }}
-                    data-tooltip-id='filter'
+                    data-tooltip-id="filter"
                     onClick={HandleFilterClick}
                   >
                     <img
                       src={ICONS.fil_white}
                       alt=""
-                      style={{ height: '15px', width: '15px',position:filterAplied?'relative':'static', left:filterAplied? '5px' : '0px' }}
-                      className='filterImg'
-
-                   
+                      style={{
+                        height: '15px',
+                        width: '15px',
+                        position: filterAplied ? 'relative' : 'static',
+                        left: filterAplied ? '5px' : '0px',
+                      }}
+                      className="filterImg"
                     />
-                    { filterAplied &&
-                      <div className='pipeLine-filter-ActiveSign'></div>
-                    }
-
+                    {filterAplied && (
+                      <div className="pipeLine-filter-ActiveSign"></div>
+                    )}
                   </div>
-
-
                   <button
                     disabled={isExportingData}
                     onClick={ExportCsv}
@@ -1045,7 +808,6 @@ useEffect(()=>{
                   </button>
                 </div>
               )}
-
               <Tooltip
                 style={{
                   zIndex: 20,
@@ -1059,215 +821,236 @@ useEffect(()=>{
                 place="bottom"
                 content="Export"
               />
-              {!openFilter && <Tooltip
-                style={{
-                  zIndex: 20,
-                  background: '#f7f7f7',
-                  color: '#292b2e',
-                  fontSize: 12,
-                  paddingBlock: 4,
-                }}
-                offset={8}
-                id="filter"
-                place="bottom"
-                content="Filter"
-              />}
-              {openFilter && !loading && <div ref={filterRef} className='dropDownFilter'>
-
-                <div className='filterOptions'>
-                  {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
-                    (option: string, index) => (
-                      <div className="eachOption" key={index}>
-                        <input
-                          id={`pipeline-filter-options-${index}`}
-                          type="checkbox"
-                          checked={checkedStates[index]}
-                          onChange={() => {
-                            const newCheckedStates = [...checkedStates];
-                            newCheckedStates[index] = !newCheckedStates[index];
-
-                            setCheckedStates(newCheckedStates);
-
-                            // Update the checkedOptions based on the new state
-                            if (newCheckedStates[index]) {
-                              // Add the option if checked
-                              setCheckedOptions((prev) => [...prev, option]);
-                            } else {
-                              // Remove the option if unchecked
-                              setCheckedOptions((prev) => prev.filter((opt) => opt !== option));
-                            }
-                          }}
-                        />
-                        <label
-                          className="options"
-                          style={{ color: checkedStates[index] ? '#377CF6' : '#292b2e' , cursor:'pointer'}}
-                          htmlFor={`pipeline-filter-options-${index}`}
-                        >
-                          {option}
-                        </label>
-                        {
-
-                        }
-                      </div>
-                    )
-                  )}
-                </div>
-
-
-                <div className='breakLine'>
-                </div>
-                <div className='secondHalfFilter'>
-                  <div className='selectDaysDiv'>
-                    <p className='selectDays'>Select Days</p>
+              {!openFilter && (
+                <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#292b2e',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                  }}
+                  offset={8}
+                  id="filter"
+                  place="bottom"
+                  content="Filter"
+                />
+              )}
+              {openFilter && !loading && (
+                <div ref={filterRef} className="dropDownFilter">
+                  <div className="filterOptions">
+                    {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
+                      (option: string, index) => (
+                        <div className="eachOption" key={index}>
+                          <input
+                            id={`pipeline-filter-options-${index}`}
+                            type="checkbox"
+                            checked={checkedStates[index]}
+                            onChange={() => {
+                              const newCheckedStates = [...checkedStates];
+                              newCheckedStates[index] =
+                                !newCheckedStates[index];
+                              setCheckedStates(newCheckedStates);
+                              // Update the checkedOptions based on the new state
+                              if (newCheckedStates[index]) {
+                                // Add the option if checked
+                                setCheckedOptions((prev) => [...prev, option]);
+                              } else {
+                                // Remove the option if unchecked
+                                setCheckedOptions((prev) =>
+                                  prev.filter((opt) => opt !== option)
+                                );
+                              }
+                            }}
+                          />
+                          <label
+                            className="options"
+                            style={{
+                              color: checkedStates[index]
+                                ? '#377CF6'
+                                : '#292b2e',
+                              cursor: 'pointer',
+                            }}
+                            htmlFor={`pipeline-filter-options-${index}`}
+                          >
+                            {option}
+                          </label>
+                          {}
+                        </div>
+                      )
+                    )}
                   </div>
-
-                  <div className='filterdays'>
-                    <div className='startDay'>
-                      <div className='mThen'>
-                        <p className='moreThen'>More than</p>
-                      </div>
-                      <label className='pipeline-inputBox-div'>
-                      <input
-                        className='dayBox'
-                        value={minValue === 0 ? '' : minValue}
-                        type="text"
-                        onChange={handleMinChange}
-                        onBlur={() => {
-                          set_minValue(minValue <= 0 ? 1 : minValue);
-                        }}
-                        style={{outline:'none', width: minValue.toString().length === 1 ? '15px' :
-                          minValue.toString().length === 2 ? '24px' : '30px'}}
-                        min={1}
-                        max={180}
-                      />
-                     {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue===1?'day':'days'}</p>}
-                        </label>
+                  <div className="breakLine"></div>
+                  <div className="secondHalfFilter">
+                    <div className="selectDaysDiv">
+                      <p className="selectDays">Select Days</p>
                     </div>
-                    <div className='endDay'>
-                      <div className='lThen'>
-                        <p className='lessThen'>Less than</p>
+                    <div className="filterdays">
+                      <div className="startDay">
+                        <div className="mThen">
+                          <p className="moreThen">More than</p>
+                        </div>
+                        <label className="pipeline-inputBox-div">
+                          <input
+                            className="dayBox"
+                            value={minValue === 0 ? '' : minValue}
+                            type="text"
+                            onChange={handleMinChange}
+                            onBlur={() => {
+                              set_minValue(minValue <= 0 ? 1 : minValue);
+                            }}
+                            style={{
+                              outline: 'none',
+                              width:
+                                minValue.toString().length === 1
+                                  ? '15px'
+                                  : minValue.toString().length === 2
+                                    ? '24px'
+                                    : '30px',
+                            }}
+                            min={1}
+                            max={180}
+                          />
+                          {minValue !== 0 && (
+                            <p className="pipeline-inputBox-div-para">
+                              {minValue === 1 ? 'day' : 'days'}
+                            </p>
+                          )}
+                        </label>
                       </div>
-                      <label className='pipeline-inputBox-div'>
-                      <input
-                        className='dayBox'
-                        value={maxValue === 0 ? '' : maxValue}
-                        type="text"
-                        onChange={handleMaxChange}
-                        disabled={minValue === 180}
-                        
-                        onBlur={() => {
-                          set_maxValue(maxValue <= 0 ? 180 : maxValue);
-                          
+                      <div className="endDay">
+                        <div className="lThen">
+                          <p className="lessThen">Less than</p>
+                        </div>
+                        <label className="pipeline-inputBox-div">
+                          <input
+                            className="dayBox"
+                            value={maxValue === 0 ? '' : maxValue}
+                            type="text"
+                            onChange={handleMaxChange}
+                            disabled={minValue === 180}
+                            onBlur={() => {
+                              set_maxValue(maxValue <= 0 ? 180 : maxValue);
+                            }}
+                            style={{
+                              outline: 'none',
+                              width:
+                                maxValue.toString().length === 1
+                                  ? '15px'
+                                  : maxValue.toString().length === 2
+                                    ? '24px'
+                                    : '30px',
+                            }}
+                            min={1}
+                            max={360}
+                          />
+                          {maxValue !== 0 && (
+                            <p className="pipeline-inputBox-div-para">
+                              {maxValue === 1 ? 'day' : 'days'}
+                            </p>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                    <Slider
+                      range
+                      min={1}
+                      max={180}
+                      value={[minValue, maxValue]}
+                      onChange={handleSliderChange}
+                      marks={{
+                        1: {
+                          label: <span style={{ color: '#292b2e' }}>1</span>,
+                        },
+                        30: {
+                          label: <span style={{ color: '#292b2e' }}>30</span>,
+                        },
+                        60: {
+                          label: <span style={{ color: '#292b2e' }}>60</span>,
+                        },
+                        90: {
+                          label: <span style={{ color: '#292b2e' }}>90</span>,
+                        },
+                        120: {
+                          label: <span style={{ color: '#292b2e' }}>120</span>,
+                        },
+                        150: {
+                          label: <span style={{ color: '#292b2e' }}>150</span>,
+                        },
+                        180: {
+                          label: <span style={{ color: '#292b2e' }}>180</span>,
+                        },
+                      }}
+                      className="custom-slider"
+                      railStyle={{
+                        backgroundColor: '#E5E7EB',
+                        height: 2,
+                      }}
+                      trackStyle={{
+                        backgroundColor: '#3B82F6',
+                        height: 2,
+                      }}
+                      handleStyle={{
+                        borderColor: '#3B82F6',
+                        backgroundColor: '#3B82F6',
+                        opacity: 1,
+                        width: 12,
+                        height: 12,
+                        marginTop: -4,
+                        boxShadow: '0 0 0 2px white',
+                      }}
+                    />
+                    <div className="filterButtons">
+                      <div
+                        className="cancelButton"
+                        onClick={() => {
+                          setFieldData([]);
+                          const resetStates = new Array(5).fill(false);
+                          setCheckedStates(resetStates);
+                          set_maxValue(75);
+                          set_minValue(25);
+                          setPage(1);
+                          // Also clear the checkedOptions array
+                          setCheckedOptions([]);
+                          setOpenFilter(false);
+                          setFilterAplied(false);
+                          setFiltered((prev) => !prev);
                         }}
-                        style={{outline:'none',width: maxValue.toString().length === 1 ? '15px' :
-                          maxValue.toString().length === 2 ? '24px' : '30px'}}
-                        min={1}
-                        max={360}
-                      />
-                       {maxValue !==0 && <p className='pipeline-inputBox-div-para'>{maxValue===1?'day':'days'}</p>}
-</label>
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {' '}
+                        Cancel{' '}
+                      </div>
+                      <div
+                        className="applyButton"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          if (minValue > maxValue) {
+                            toast.error(
+                              'In Range Min value can not be more than Max value'
+                            );
+                            set_minValue(25);
+                            set_maxValue(70);
+                            setFilterAplied(false);
+                          } else if (fieldData.length === 0) {
+                            toast.error('Please Select atleast one Option!');
+                          } else {
+                            setFiltered((prev) => !prev);
+                            setOpenFilter(false);
+                            setFilterAplied(true);
+                            setPage(1);
+                          }
+                        }}
+                      >
+                        {' '}
+                        Apply{' '}
+                      </div>
                     </div>
                   </div>
-
-                  <Slider
-                    range
-                    min={1}
-                    max={180}
-                    value={[minValue, maxValue]}
-                    onChange={handleSliderChange}
-                    marks={{
-                      1: {
-                        label: <span style={{ color: '#292b2e' }}>1</span>,
-                      },
-                      30: {
-                        label: <span style={{ color: '#292b2e' }}>30</span>,
-                      },
-                      60: {
-                        label: <span style={{ color: '#292b2e' }}>60</span>,
-                      },
-                      90: {
-                        label: <span style={{ color: '#292b2e' }}>90</span>,
-                      },
-                      120: {
-                        label: <span style={{ color: '#292b2e' }}>120</span>,
-                      },
-                      150: {
-                        label: <span style={{ color: '#292b2e' }}>150</span>,
-                      },
-                      180: {
-                        label: <span style={{ color: '#292b2e' }}>180</span>,
-                      },
-                    }}
-                    className="custom-slider"
-                    railStyle={{
-                      backgroundColor: '#E5E7EB',
-                      height: 2,
-                    }}
-                    trackStyle={{
-                      backgroundColor: '#3B82F6',
-                      height: 2,
-                    }}
-                    handleStyle={{
-                      borderColor: '#3B82F6',
-                      backgroundColor: '#3B82F6',
-                      opacity: 1,
-                      width: 12,
-                      height: 12,
-                      marginTop: -4,
-                      boxShadow: '0 0 0 2px white',
-                    }}
-                  />
-
-
-                 
-
-
-                  <div className='filterButtons'>
-
-                    <div className='cancelButton' onClick={() => {
-                      setFieldData([]); const resetStates = new Array(5).fill(false);
-                      setCheckedStates(resetStates);
-                      set_maxValue(75);
-                      set_minValue(25);
-                      setPage(1);
-                      // Also clear the checkedOptions array
-                      setCheckedOptions([]); setOpenFilter(false); 
-                      setFilterAplied(false);
-                      setFiltered(prev=>!prev);
-                      
-                    }} style={{ cursor: "pointer" }}> Cancel </div>
-
-
-                    <div className='applyButton' 
-                    style={{cursor:'pointer'}}
-                    onClick={() => {
-                    if (minValue > maxValue) {
-                    toast.error("In Range Min value can not be more than Max value");
-                    set_minValue(25);
-                    set_maxValue(70);
-                    setFilterAplied(false);
-                    }
-                    else if(fieldData.length===0)
-                    {
-                      toast.error("Please Select atleast one Option!");
-                    }
-                    else {
-                    setFiltered(prev => !prev);
-                    setOpenFilter(false);
-                    setFilterAplied(true);
-                    setPage(1);
-                    }
-      
-      
-                    }}
-                   > Apply </div>
-                  </div>
                 </div>
-
-              </div>}
+              )}
             </div>
           </div>
-
           <div className="performance-milestone-table">
             <table>
               <thead>
@@ -1319,11 +1102,8 @@ useEffect(()=>{
                           <td style={{ padding: '0px' }}>
                             <div className="milestone-data">
                               <div className="project-info-details">
-
-
                                 <Link
                                   to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
-                                  
                                 >
                                   <div className="deco-text">
                                     <h3>{project.customer}</h3>
@@ -1332,20 +1112,24 @@ useEffect(()=>{
                                     </p>
                                   </div>
                                 </Link>
-                                {project.days_project_age && project.days_project_age !== '-' && project.days_project_age !== '0' && <div className='projectAge'>
-                                  <p>Project age :
-                                    {
-                                      ' ' + project.days_project_age.split(" ")[0] + " days"
-
-                                    }
-                                  </p>
-
-                                </div>}
-                                {
-                                  !project.days_project_age && <div style={{ margin: '5px 0px' }}> </div>
-                                }
+                                {project.days_project_age &&
+                                  project.days_project_age !== '-' &&
+                                  project.days_project_age !== '0' && (
+                                    <div className="projectAge">
+                                      <p>
+                                        Project age :
+                                        {' ' +
+                                          project.days_project_age.split(
+                                            ' '
+                                          )[0] +
+                                          ' days'}
+                                      </p>
+                                    </div>
+                                  )}
+                                {!project.days_project_age && (
+                                  <div style={{ margin: '5px 0px' }}> </div>
+                                )}
                                 <div className="milestone-status">
-
                                   <div
                                     className="status-item qc-item click qc"
                                     onClick={() => {
@@ -1359,7 +1143,7 @@ useEffect(()=>{
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.qc.qc_action_required_count > 0
+                                        project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1386,7 +1170,7 @@ useEffect(()=>{
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.ntp.action_required_count > 0
+                                        project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1398,46 +1182,50 @@ useEffect(()=>{
                                     ) && project.qc.qc_action_required_count > 0
                                       ? project.ntp.action_required_count
                                       : ''}
-                                    {
-                                      project.days_ntp && project.days_ntp !== '-' && project.days_ntp !== '0 day pending' &&
-
-                                      <div className='ntpActionRequired'>
-                                        <p>{project.days_ntp.split(" ")[0] + project.days_ntp.split(" ")[0] === '1' ? 'day' : 'days'}</p>
-                                      </div>
-                                    }
+                                    {project.days_ntp &&
+                                      project.days_ntp !== '-' &&
+                                      project.days_ntp !== '0 day pending' && (
+                                        <div className="ntpActionRequired">
+                                          <p>
+                                            {project.days_ntp.split(' ')[0] +
+                                              project.days_ntp.split(' ')[0] ===
+                                            '1'
+                                              ? 'day'
+                                              : 'days'}
+                                          </p>
+                                        </div>
+                                      )}
                                   </div>
-                                  {
-
-                                  }
-
+                                  {}
                                   {project.co_status !== 'CO Complete' &&
                                     project.co_status && (
                                       <div
                                         className="status-item co"
-                                        data-tooltip={project.co_status} // Custom tooltip
+                                        // Custom tooltip
+                                        data-tooltip={project.co_status} 
                                       >
                                         C/O
                                       </div>
                                     )}
-
                                 </div>
                               </div>
-
-                              {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}
-
                               <div className="strips-wrapper">
                                 {/* Site Survey */}
                                 <div className="strip-container">
                                   <div
                                     className="milestone-strips"
-                                    style={getColorStyle(project.site_survey_colour)}
+                                    style={getColorStyle(
+                                      project.site_survey_colour
+                                    )}
                                   >
                                     <p className="strips-data">site survey</p>
                                     <div className="strip-title">
                                       {project.site_survey_date ? (
                                         <p>{project?.site_survey_date}</p>
                                       ) : (
-                                        <p className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                        <p
+                                          className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
                                           {'No Data'}
                                         </p>
                                       )}
@@ -1453,24 +1241,34 @@ useEffect(()=>{
                                     </div>
                                   </div>
                                   {/* Days Remaining */}
-                                  {project.days_site_survey && project.days_site_survey !== '0 day pending' && project.days_site_survey !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_site_survey}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
+                                  {project.days_site_survey &&
+                                    project.days_site_survey !==
+                                      '0 day pending' &&
+                                    project.days_site_survey !== '-' && (
+                                      <div className="pendingDayDiv">
+                                        <p className="daysRemaining">
+                                          {project.days_site_survey}
+                                        </p>
+                                        <div className="simpleLine"> </div>
+                                      </div>
+                                    )}
                                 </div>
-
                                 {/* CAD Design */}
                                 <div className="strip-container">
                                   <div
                                     className="notch-strip"
-                                    style={getColorStyle(project.cad_design_colour)}
+                                    style={getColorStyle(
+                                      project.cad_design_colour
+                                    )}
                                   >
                                     <p className="strips-data">cad design</p>
                                     <div className="notch-title">
                                       {project.cad_design_date ? (
                                         <p>{project?.cad_design_date}</p>
                                       ) : (
-                                        <p className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                        <p
+                                          className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
                                           {'No Data'}
                                         </p>
                                       )}
@@ -1486,24 +1284,35 @@ useEffect(()=>{
                                     </div>
                                   </div>
                                   {/* Days Remaining */}
-                                  {project.cad_design_colour === '#377CF6' && project.days_cad_design && project.days_cad_design !== '0 day pending' && project.days_cad_design !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_cad_design}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
+                                  {project.cad_design_colour === '#377CF6' &&
+                                    project.days_cad_design &&
+                                    project.days_cad_design !==
+                                      '0 day pending' &&
+                                    project.days_cad_design !== '-' && (
+                                      <div className="pendingDayDiv">
+                                        <p className="daysRemaining">
+                                          {project.days_cad_design}
+                                        </p>
+                                        <div className="simpleLine"> </div>
+                                      </div>
+                                    )}
                                 </div>
-
                                 {/* Permitting */}
                                 <div className="strip-container">
                                   <div
                                     className="notch-strip"
-                                    style={getColorStyle(project.permitting_colour)}
+                                    style={getColorStyle(
+                                      project.permitting_colour
+                                    )}
                                   >
                                     <p className="strips-data">permitting</p>
                                     <div className="notch-title">
                                       {project.permitting_date ? (
                                         <p>{project?.permitting_date}</p>
                                       ) : (
-                                        <p className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                        <p
+                                          className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
                                           {'No Data'}
                                         </p>
                                       )}
@@ -1519,25 +1328,34 @@ useEffect(()=>{
                                     </div>
                                   </div>
                                   {/* Days Remaining */}
-                                  {project.days_permits && project.days_permits !== '0 day pending' && project.days_permits !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_permits}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
+                                  {project.days_permits &&
+                                    project.days_permits !== '0 day pending' &&
+                                    project.days_permits !== '-' && (
+                                      <div className="pendingDayDiv">
+                                        <p className="daysRemaining">
+                                          {project.days_permits}
+                                        </p>
+                                        <div className="simpleLine"> </div>
+                                      </div>
+                                    )}
                                 </div>
-
                                 {/* Roofing */}
                                 {project.roofing_colour && (
                                   <div className="strip-container">
                                     <div
                                       className="notch-strip"
-                                      style={getColorStyle(project.roofing_colour)}
+                                      style={getColorStyle(
+                                        project.roofing_colour
+                                      )}
                                     >
                                       <p className="strips-data">roofing</p>
                                       <div className="notch-title">
                                         {project.roofing_date ? (
                                           <p>{project?.roofing_date}</p>
                                         ) : (
-                                          <p className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                          <p
+                                            className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                          >
                                             {'No Data'}
                                           </p>
                                         )}
@@ -1553,25 +1371,35 @@ useEffect(()=>{
                                       </div>
                                     </div>
                                     {/* Days Remaining */}
-                                    {project.days_roofing && project.days_roofing !== '-' && project.days_roofing !== '0 day pending' && <div className="pendingDayDiv">
-                                      <p className="daysRemaining">{project.days_roofing}</p>
-                                      <div className='simpleLine'> </div>
-                                    </div>}
+                                    {project.days_roofing &&
+                                      project.days_roofing !== '-' &&
+                                      project.days_roofing !==
+                                        '0 day pending' && (
+                                        <div className="pendingDayDiv">
+                                          <p className="daysRemaining">
+                                            {project.days_roofing}
+                                          </p>
+                                          <div className="simpleLine"> </div>
+                                        </div>
+                                      )}
                                   </div>
                                 )}
-
                                 {/* Install */}
                                 <div className="strip-container">
                                   <div
                                     className="notch-strip"
-                                    style={getColorStyle(project.install_colour)}
+                                    style={getColorStyle(
+                                      project.install_colour
+                                    )}
                                   >
                                     <p className="strips-data">install</p>
                                     <div className="notch-title">
                                       {project.install_date ? (
                                         <p>{project?.install_date}</p>
                                       ) : (
-                                        <p className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                        <p
+                                          className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
                                           {'No Data'}
                                         </p>
                                       )}
@@ -1587,25 +1415,34 @@ useEffect(()=>{
                                     </div>
                                   </div>
                                   {/* Days Remaining */}
-                                  {project.days_install && project.days_install !== '0 day pending' && project.days_install !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_install}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
+                                  {project.days_install &&
+                                    project.days_install !== '0 day pending' &&
+                                    project.days_install !== '-' && (
+                                      <div className="pendingDayDiv">
+                                        <p className="daysRemaining">
+                                          {project.days_install}
+                                        </p>
+                                        <div className="simpleLine"> </div>
+                                      </div>
+                                    )}
                                 </div>
-
                                 {/* Electrical */}
                                 {project?.electrical_date && (
                                   <div className="strip-container">
                                     <div
                                       className="notch-strip"
-                                      style={getColorStyle(project.electrical_colour)}
+                                      style={getColorStyle(
+                                        project.electrical_colour
+                                      )}
                                     >
                                       <p className="strips-data">electrical</p>
                                       <div className="notch-title">
                                         {project.electrical_date ? (
                                           <p>{project?.electrical_date}</p>
                                         ) : (
-                                          <p className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                          <p
+                                            className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                          >
                                             {'No Data'}
                                           </p>
                                         )}
@@ -1621,25 +1458,35 @@ useEffect(()=>{
                                       </div>
                                     </div>
                                     {/* Days Remaining */}
-                                    {project.days_electrical && project.days_electrical !== '0 day pending' && project.days_electrical !== '-' && <div className="pendingDayDiv">
-                                      <p className="daysRemaining">{project.days_electrical}</p>
-                                      <div className='simpleLine'> </div>
-                                    </div>}
+                                    {project.days_electrical &&
+                                      project.days_electrical !==
+                                        '0 day pending' &&
+                                      project.days_electrical !== '-' && (
+                                        <div className="pendingDayDiv">
+                                          <p className="daysRemaining">
+                                            {project.days_electrical}
+                                          </p>
+                                          <div className="simpleLine"> </div>
+                                        </div>
+                                      )}
                                   </div>
                                 )}
-
                                 {/* Inspection */}
                                 <div className="strip-container">
                                   <div
                                     className="notch-strip"
-                                    style={getColorStyle(project.inspectionsColour)}
+                                    style={getColorStyle(
+                                      project.inspectionsColour
+                                    )}
                                   >
                                     <p className="strips-data">inspection</p>
                                     <div className="notch-title">
                                       {project.inspection_date ? (
                                         <p>{project?.inspection_date}</p>
                                       ) : (
-                                        <p className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                        <p
+                                          className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
                                           {'No Data'}
                                         </p>
                                       )}
@@ -1655,24 +1502,34 @@ useEffect(()=>{
                                     </div>
                                   </div>
                                   {/* Days Remaining */}
-                                  {project.days_inspection && project.days_inspection !== '0 day pending' && project.days_inspection !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_inspection}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
+                                  {project.days_inspection &&
+                                    project.days_inspection !==
+                                      '0 day pending' &&
+                                    project.days_inspection !== '-' && (
+                                      <div className="pendingDayDiv">
+                                        <p className="daysRemaining">
+                                          {project.days_inspection}
+                                        </p>
+                                        <div className="simpleLine"> </div>
+                                      </div>
+                                    )}
                                 </div>
-
                                 {/* Activation */}
                                 <div className="strip-container">
                                   <div
                                     className="notch-strip"
-                                    style={getColorStyle(project.activation_colour)}
+                                    style={getColorStyle(
+                                      project.activation_colour
+                                    )}
                                   >
                                     <p className="strips-data">activation</p>
                                     <div className="notch-title">
                                       {project.activation_date ? (
                                         <p>{project?.activation_date}</p>
                                       ) : (
-                                        <p className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                        <p
+                                          className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
                                           {'No Data'}
                                         </p>
                                       )}
@@ -1688,13 +1545,19 @@ useEffect(()=>{
                                     </div>
                                   </div>
                                   {/* Days Remaining */}
-                                  {project.days_activation && project.days_activation !== '0 day pending' && project.days_activation !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_activation}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
+                                  {project.days_activation &&
+                                    project.days_activation !==
+                                      '0 day pending' &&
+                                    project.days_activation !== '-' && (
+                                      <div className="pendingDayDiv">
+                                        <p className="daysRemaining">
+                                          {project.days_activation}
+                                        </p>
+                                        <div className="simpleLine"> </div>
+                                      </div>
+                                    )}
                                 </div>
                               </div>
-
                             </div>
                           </td>
                         </tr>
@@ -1702,7 +1565,6 @@ useEffect(()=>{
                     }
                   )
                 )}
-
                 <QCPopUp
                   projectDetail={selectedProjectQC}
                   isOpen={filterOPen}
@@ -1717,7 +1579,6 @@ useEffect(()=>{
               </tbody>
             </table>
           </div>
-
           {!isLoading && (
             <div className="page-heading-container">
               {!!projectsCount && (
@@ -1727,7 +1588,6 @@ useEffect(()=>{
                   {projectsCount} item
                 </p>
               )}
-
               {projectStatus?.length > 0 ? (
                 <Pagination
                   currentPage={page}
@@ -1748,5 +1608,4 @@ useEffect(()=>{
     </div>
   );
 };
-  
 export default ProjectPerformence;
