@@ -1,8 +1,8 @@
-/**************************************************************************
+/*****************************************************************************
  * File       	   : apiGetReportById.go
- * DESCRIPTION     : This file contains functions to edit superset report
+ * DESCRIPTION     : This file contains functions to get superset report by id
  * DATE            : 6-Jan-2025
- **************************************************************************/
+ ****************************************************************************/
 
 package services
 
@@ -20,7 +20,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:				HandleGetReportById
- * DESCRIPTION:     handler for edit superset report request
+ * DESCRIPTION:     handler for get superset report request
  * INPUT:						resp, req
  * RETURNS:    			void
  ******************************************************************************/
@@ -69,6 +69,9 @@ func HandleGetReportById(resp http.ResponseWriter, req *http.Request) {
         WHERE
             id = %d
     `, db.TableName_SupersetReports, dataReq.ReportId)
+
+  
+    log.FuncErrorTrace(0, "Executing query: %s", query)
 
     data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
     if err != nil {

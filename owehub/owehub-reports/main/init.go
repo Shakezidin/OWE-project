@@ -174,6 +174,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/edit_report",
+		apiHandler.HandleEditReportRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************
