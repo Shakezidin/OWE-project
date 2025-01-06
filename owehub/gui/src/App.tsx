@@ -48,7 +48,7 @@ import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
 import TotalCount from './ui/TotalCount/TotalCount';
-import Production from './ui/reporting/Production';
+import Production from './ui/reporting/Production/Production';
 import Quality from './ui/reporting/Quality';
 import SpeedOverall from './ui/reporting/SpeedOverall';
 import SalesToInstall from './ui/reporting/SalesToInstall';
@@ -61,9 +61,13 @@ import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
-import InstalltoFin from './ui/reporting/InstallToFin';
+import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
+import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
+import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
+import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
+
 
 function App() {
   const dispatch = useAppDispatch();
@@ -170,6 +174,14 @@ function App() {
               path={ROUTES.REPORTING_QUALITY_PER_OFFICE}
               element={<QualityPerOffice />}
             />
+             <Route
+              path={ROUTES.PERMIT_REDLINE}
+              element={<PermitRedLine />}
+            />
+            <Route
+              path={ROUTES.DYNAMIC_REPORT}
+              element={<DynDashboard />}
+            />
             <Route
               path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}
               element={<ReasonOfIncomplete />}
@@ -191,6 +203,7 @@ function App() {
             {/* <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} /> */}
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
+            <Route path={ROUTES.FIRST_TIME_COMPLETIONS} element={<CompletedFirstTime />} />
             <Route
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}

@@ -6,19 +6,25 @@ interface Option {
     label: string;
 }
 
-const CustomMultiSelect = ({ data, placeholder }: any) => {
-    const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
+const CustomMultiSelect = ({ data,disable, placeholder,onOfficeChange = ()=>{ } }: any) => {
+    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
+    
+      const handleChange = (val: Option[]) => {
+        setSelectedOption(val);
+        onOfficeChange(val.map(option => option.value));
+      };
+
+   
 
     return (
         <div>
             <DropdownCheckBox
                 label={placeholder}
                 placeholder={placeholder ?  `Search ${placeholder}` : 'Search Office'}
-                selectedOptions={selectedDealer}
+                selectedOptions={selectedOption}
                 options={data}
-                onChange={(val) => {
-                    setSelectedDealer(val);
-                }}
+                onChange={handleChange}
+                disabled={disable}
             />
         </div>
     )

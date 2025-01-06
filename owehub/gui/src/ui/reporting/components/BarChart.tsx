@@ -165,7 +165,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
 
 const BarChartExample: React.FC = () => {
     return (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="97%">
             <BarChart data={data as Data[]} margin={{ top: 22, right: 10, left: 10, bottom: 6 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }} />

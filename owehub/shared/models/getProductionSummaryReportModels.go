@@ -8,6 +8,7 @@ package models
 
 type ProductionSummaryReportRequest struct {
 	Year       int      `json:"year"`
+	Week       int      `json:"week"`
 	ReportType string   `json:"report_type"`
 	Office     []string `json:"office"`
 }

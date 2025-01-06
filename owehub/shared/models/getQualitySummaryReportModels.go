@@ -107,3 +107,26 @@ type WeekData struct {
 	TexasApproved             int `json:"Texas_Approved"`
 	ColoradoApproved          int `json:"Colorado_Approved"`
 }
+
+// Office list Response
+type GetOfficesListResponse struct {
+	Offices []string `json:"offices"` // List of distinct office names
+	States  []string `json:"states"`  // List of distinct states names
+	Ahj     []string `json:"ahj"`     // List of distinct ahj names
+}
+
+// ahj fifteen project list request
+type AhjFifteenProjectListRequest struct {
+	Office    []string `json:"office"`
+	State     []string `json:"state"`
+	Year      int64    `json:"year"`
+	Quarter   int      `json:"quarter"`
+	Ahj       []string `json:"ahj"`
+	Condition string   `json:"condition"`
+}
+
+type AhjFifteenProjectListResponse struct {
+	ProjectId    string `json:"project_id"`
+	CustomerName string `json:"customer_name"`
+	Address      string `json:"address"`
+}

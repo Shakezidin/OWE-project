@@ -22,8 +22,11 @@ const TableCustom = ({
     setReverse(!reverse);
   };
 
+  const total = (data || []).reduce((acc: number, row: any) => acc + (Number(row.column2) || 0), 0);
+
+
   return (
-    <div className="grey-table-main-container">
+    <div className="grey-table-main-container" style={{width: "500px"}}>
       {reportType?.label ? (
         <h3>
           {reportType?.label} {middleName}
@@ -32,7 +35,7 @@ const TableCustom = ({
         <h3>{middleName}</h3>
       )}
 
-      <div className="grey-table-container">
+      <div className="grey-table-container" style={{height: "260px"}}>
         <table className="grey-custom-table">
           <thead>
             <tr>
@@ -54,7 +57,7 @@ const TableCustom = ({
             </tr>
           </thead>
           <tbody>
-            {data.map((row: any, index: any) => (
+            {data?.map((row: any, index: any) => (
               <tr key={index}>
                 <td>{row.column1}</td>
                 <td>{row.column2}</td>
@@ -64,7 +67,7 @@ const TableCustom = ({
           <tfoot>
             <tr>
               <th>Grand Total</th>
-              <th>0</th>
+              <th>{Number(total.toFixed(2))}</th>
             </tr>
           </tfoot>
         </table>

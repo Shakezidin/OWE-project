@@ -8,9 +8,11 @@ interface Option {
 }
 
 interface CustomSelectProps {
-    options: Option[];  // Options will come as a prop from the parent
-    label: string;      // Label will also come as a prop from the parent
-}
+    options: { value: string; label: string }[];
+    label: string;
+    value: string[]; // Ensure this matches the type you are using
+    onChange: (selectedValues: string[]) => void; // Adjust the type as necessary
+  }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ options, label }) => {
     const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);

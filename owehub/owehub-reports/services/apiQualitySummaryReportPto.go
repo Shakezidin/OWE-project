@@ -5,6 +5,8 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"math"
+
+	"github.com/lib/pq"
 )
 
 func calculatePtoSummaryReport(dataReq models.QualitySummaryReportRequest) (interface{}, error) {
@@ -26,11 +28,15 @@ func calculatePtoSummaryReport(dataReq models.QualitySummaryReportRequest) (inte
             customer_unique_id,
             customer
         FROM pto_ic_schema
-        WHERE EXTRACT(YEAR FROM pto_granted) = $1
-           OR EXTRACT(YEAR FROM utility_redlined_date) = $1
+        WHERE (EXTRACT(YEAR FROM pto_granted) = $1 OR EXTRACT(YEAR FROM utility_redlined_date) = $1)
     `
 
 	whereEleList = append(whereEleList, dataReq.Year)
+	if len(dataReq.Office) > 0 {
+		query += " AND office = ANY($2)"
+		whereEleList = append(whereEleList, pq.Array(dataReq.Office))
+	}
+
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PTO data from DB err: %v", err)
@@ -63,11 +69,11 @@ func calculatePtoSummaryReport(dataReq models.QualitySummaryReportRequest) (inte
 
 	// Create the response map containing all calculated metrics
 	response := make(map[string]interface{})
-	response["pto_approved"] = ptoApproves
-	response["pto_fails"] = ptoFails
-	response["pto_pass_rate"] = ptoPassRates
-	response["pto_pending"] = appStatusCounts
-	response["pto_source_of_fail"] = ptoSourceOfFail
+	response["approved"] = ptoApproves
+	response["failed"] = ptoFails
+	response["pass_rate"] = ptoPassRates
+	response["app_status"] = appStatusCounts
+	response["source_of_fail"] = ptoSourceOfFail
 
 	return response, nil
 }

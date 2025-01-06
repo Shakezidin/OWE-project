@@ -12,6 +12,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	oweconfig "OWEApp/shared/oweconfig"
+	"OWEApp/shared/types"
 	"math"
 	"strings"
 	"time"
@@ -66,11 +67,48 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
-	if len(dataReq.PartnerName) <= 0 {
+	dataReq.Email = req.Context().Value("emailid").(string)
+	if dataReq.Email == "" {
+		appserver.FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	dataReq.Role = req.Context().Value("rolename").(string)
+	if dataReq.Role == "" {
+		appserver.FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(dataReq.PartnerName) <= 0 && dataReq.Role == string(types.RoleAdmin) {
 		var dlrpayComm []models.DealerPayReportResponse
 		dlsPayCommResp.DealerPayComm = dlrpayComm
 		appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
 		return
+	}
+
+	if dataReq.Role == string(types.RoleDealerOwner) || dataReq.Role == string(types.RoleSubDealerOwner) {
+		dealerQuery := fmt.Sprintf(` SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
+			LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
+			where ud.email_id = '%v'`, dataReq.Email)
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, dealerQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
+			return
+		}
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+			return
+		}
+
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
+			appserver.FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
+			return
+		}
+		dataReq.PartnerName = append(dataReq.PartnerName, dealerName)
 	}
 
 	tableName := "dealer_pay"
@@ -329,14 +367,8 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "today":
-				valueAsTime, _ := time.Parse("02-01-2006", value.(string))
-
-				if !valueAsTime.Equal(time.Now().Truncate(24 * time.Hour)) {
-					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
-					whereEleList = append(whereEleList, value)
-				} else {
-					filtersBuilder.WriteString(" 1 =1 ")
-				}
+				filtersBuilder.WriteString(fmt.Sprintf("CURRENT_DATE = TO_DATE($%d, 'MM-DD-YYYY')", len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)

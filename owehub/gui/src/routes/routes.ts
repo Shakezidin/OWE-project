@@ -75,6 +75,7 @@ export const ROUTES = {
   SITE_FIRST_COMPLETION: '/reporting/site-first_completion',
   SITE_OUTSIDE_SLA: '/reporting/site-outise-sla',
   INSTALL_TO_FIN:'/reporting/install-to-fin',
+  FIRST_TIME_COMPLETIONS:'/reporting/first-time-completion',
 
 
 
@@ -114,6 +115,7 @@ export const ROUTES = {
   LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
   CALCULATOR:'/calculator',
   SIGN_DOCUMENT:'digital-signature-portal',
-  AHJ:'/reporting/ahj'
-
+  AHJ:'/reporting/ahj',
+  PERMIT_REDLINE:'/reporting/permit-redline',
+  DYNAMIC_REPORT:'/reporting/:id'
 };

@@ -87,9 +87,25 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	saleRepNameQuery := fmt.Sprintf("SELECT name FROM user_details where email_id = '%v'", dataReq.Email)
-	query := (`SELECT contract_date, pv_install_created_date, pv_install_completed_date, home_owner, address, unique_id, site_survey_scheduled_date, site_survey_completed_date,
-		battery_scheduled_date, battery_complete_date, permit_approved_date, ic_approved_date
-		FROM consolidated_data_view `)
+	query := (`SELECT customers_customers_schema.sale_date AS contract_date, pv_install_install_subcontracting_schema.created_on AS pv_install_created_date, 
+pv_install_install_subcontracting_schema.pv_completion_date AS pv_install_completed_date, customers_customers_schema.customer_name AS home_owner, 
+customers_customers_schema.address, customers_customers_schema.unique_id, survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
+survey_survey_schema.survey_completion_date AS site_survey_completed_date, batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date, 
+batteries_service_electrical_schema.completion_date AS battery_complete_date, permit_fin_pv_permits_schema.pv_approved AS permit_approved_date, 
+ic_ic_pto_schema.ic_approved_date
+FROM 
+            customers_customers_schema
+        LEFT JOIN survey_survey_schema 
+            ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN permit_fin_pv_permits_schema 
+            ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN ic_ic_pto_schema 
+            ON ic_ic_pto_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN pv_install_install_subcontracting_schema 
+            ON pv_install_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN batteries_service_electrical_schema 
+            ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id where customers_customers_schema.unique_id != ''
+         `)
 
 	// retrieving value from owe_db from here
 	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) {
@@ -310,7 +326,7 @@ func PrepareCalenderFilters(tableName string, dataFilter models.GetCalenderDataR
 	defer func() { log.ExitFn(0, "PrepareCalenderFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := false
+	whereAdded := true
 
 	// // Start constructing the WHERE clause if the date range is provided
 	// if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
@@ -337,7 +353,7 @@ func PrepareCalenderFilters(tableName string, dataFilter models.GetCalenderDataR
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" primary_sales_rep IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -356,10 +372,8 @@ func PrepareCalenderFilters(tableName string, dataFilter models.GetCalenderDataR
 		whereAdded = true
 	}
 	// Add the always-included filters
-	filtersBuilder.WriteString(` unique_id IS NOT NULL
-			AND unique_id <> ''
-			AND system_size IS NOT NULL
-			AND system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -371,9 +385,9 @@ func PrepareCalenderFilters(tableName string, dataFilter models.GetCalenderDataR
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()

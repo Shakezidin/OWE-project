@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './ReasonOfIncomplete.css';
 import {
   ResponsiveContainer,
@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import CompanySelect from './components/Dropdowns/CompanySelect';
 import WeekSelect from './components/Dropdowns/WeekSelect';
+import BackButtom from './components/BackButtom';
 
 interface LabelProps {
   cx: number;
@@ -23,6 +24,11 @@ interface LabelProps {
   outerRadius: number;
   percent: number;
   index: number;
+}
+
+interface Option {
+  value: string;
+  label: string;
 }
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -214,113 +220,141 @@ const ReasonOfIncomplete = () => {
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',
+    borderRadius: '4px',
+  };
+
+  const [selectedWeek, setSelectedWeek] = useState<Option>({
+    label: 'Week 1',
+    value: '1',
+  });
+  const handleWeekChange = (value: Option | null) => {
+    if (value) {
+      setSelectedWeek(value);
+    }
   };
 
   return (
     <div className="total-main-container">
       <div className="headingcount flex justify-between items-center">
-        <h4 className="reports-title">Reason Of Incomplete</h4>
+        <BackButtom heading="Reason of Incomplete" />
         <div className="incomplete-dropdowns">
-          <WeekSelect />
+          <WeekSelect value={selectedWeek} onChange={handleWeekChange} />
           <CompanySelect />
         </div>
       </div>
-      {chartDataSets.map((dataSet, index) => (
-        <div key={index} className="time-completions">
-          <div className="time-bar">
-            <p>{titles[index]}</p>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={dataSet.barData}
-                margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
-                barCategoryGap="0%"
-                barGap={0}
-              >
-                <XAxis
-                  dataKey="week"
-                  interval={0}
-                  tick={{ fontSize: 8, fill: '#555' }}
-                  angle={-45}
-                  dy={12}
-                  dx={-10}
-                />
-                <YAxis
-                  tickFormatter={(tick) => `${tick}%`}
-                  tick={{ fontSize: 10, fill: '#555' }}
-                  domain={[0, 100]}
-                />
-                <Tooltip contentStyle={tooltipStyle} formatter={(value) => `${value}%`} />
-                <Legend
-                  height={32}
-                  verticalAlign="top"
-                  wrapperStyle={{ fontSize: 10, gap: 20, color: '#555' }}
-                  payload={[
-                    { value: 'Null', type: 'square', color: timeColors.null },
-                    { value: 'No', type: 'square', color: timeColors.no },
-                    { value: 'Yes', type: 'square', color: timeColors.yes },
-                  ]}
-                />
-                <Bar dataKey="null" fill={timeColors.null} stackId="a" />
-                <Bar dataKey="no" fill={timeColors.no} stackId="a" />
-                <Bar
-                  dataKey="yes"
-                  fill={timeColors.yes}
-                  stackId="a"
-                  isAnimationActive={false}
-                />
-                {/* <Bar
-                  dataKey="percent"
-                  fill="#CA3D01"
-                  background={{ fill: '#CFE621' }}
-                  barSize={15}
-                  isAnimationActive={false}
-                /> */}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="line"></div>
-          <div className="time-radialbar">
-            <p>Reason for Incompletion</p>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={dataSet.pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="40%"
-                  cy="50%"
-                  outerRadius={110}
-                  fill="#8884d8"
-                  label={renderCustomizedLabel}
-                  labelLine={false}
+      <div className="reports-yscroll">
+        {chartDataSets.map((dataSet, index) => (
+          <div key={index} className="time-completions">
+            <div className="time-bar">
+              <p className="time-bar-p">{titles[index]}</p>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={dataSet.barData}
+                  margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
+                  barCategoryGap="0%"
+                  barGap={0}
                 >
-                  {dataSet.pieData.map((entry, i) => (
-                    <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={tooltipStyle} />
-                <Legend
-                  layout="vertical"
-                  align="right"
-                  verticalAlign="middle"
-                  iconType="circle"
-                  iconSize={10}
-                  wrapperStyle={{
-                    fontSize: '10px',
-                    marginRight: 50,
-                  }}
-                  height={100}
-                  payload={dataSet.pieData.map((entry, i) => ({
-                    value: entry.name,
-                    type: 'circle',
-                    color: COLORS[i % COLORS.length],
-                  }))}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+                  <XAxis
+                    dataKey="week"
+                    interval={0}
+                    tick={{ fontSize: 8, fill: '#555' }}
+                    angle={-45}
+                    dy={12}
+                    dx={-10}
+                  />
+                  <YAxis
+                    tickFormatter={(tick) => `${tick}%`}
+                    tick={{ fontSize: 10, fill: '#555' }}
+                    domain={[0, 100]}
+                  />
+                  <Tooltip
+                    contentStyle={tooltipStyle}
+                    wrapperStyle={{
+                      outline: 'none',
+                      borderRadius: 0,
+                      padding: 0,
+                      boxShadow: 'none',
+                    }}
+                    formatter={(value) => `${value}%`}
+                  />
+                  <Legend
+                    height={32}
+                    verticalAlign="top"
+                    wrapperStyle={{ fontSize: 10, gap: 20, color: '#555' }}
+                    payload={[
+                      { value: 'Null', type: 'square', color: timeColors.null },
+                      { value: 'No', type: 'square', color: timeColors.no },
+                      { value: 'Yes', type: 'square', color: timeColors.yes },
+                    ]}
+                  />
+                  <Bar dataKey="null" fill={timeColors.null} stackId="a" />
+                  <Bar dataKey="no" fill={timeColors.no} stackId="a" />
+                  <Bar
+                    dataKey="yes"
+                    fill={timeColors.yes}
+                    stackId="a"
+                    isAnimationActive={false}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="line"></div>
+            <div className="time-radialbar">
+              <p className="time-radialbar-p">Reason for Incompletion</p>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={dataSet.pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="40%"
+                    cy="50%"
+                    outerRadius={110}
+                    fill="#8884d8"
+                    label={renderCustomizedLabel}
+                    labelLine={false}
+                  >
+                    {dataSet.pieData.map((entry, i) => (
+                      <Cell
+                        key={`cell-${i}`}
+                        fill={COLORS[i % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    wrapperStyle={{
+                      fontSize: 12,
+                      outline: 'none',
+                      borderRadius: 0,
+                      padding: 0,
+                      boxShadow: 'none',
+                    }}
+                    contentStyle={tooltipStyle}
+                  />
+                  <Legend
+                    layout="vertical"
+                    align="right"
+                    verticalAlign="top"
+                    iconType="circle"
+                    iconSize={10}
+                    wrapperStyle={{
+                      fontSize: '10px',
+                      marginRight: 50,
+                      marginTop: 50,
+                    }}
+                    height={100}
+                    payload={dataSet.pieData.map((entry, i) => ({
+                      value: entry.name,
+                      type: 'circle',
+                      color: COLORS[i % COLORS.length],
+                    }))}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
