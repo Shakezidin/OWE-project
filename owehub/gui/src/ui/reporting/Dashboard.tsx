@@ -9,6 +9,10 @@ import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
+import { ActionButton } from '../components/button/ActionButton';
+import { AddNewButton } from '../components/button/AddNewButton';
+import { SlPencil } from "react-icons/sl";
+import { Tooltip } from 'react-tooltip';
 
 interface AccordionSection {
   title: string;
@@ -94,6 +98,7 @@ const Dashboard: React.FC = () => {
       data: arrayData.map((item, index) => ({
         subtitle: item.subtitle || '',
         id: item.id,
+        dashboard_id:item.dashboard_id,
         title: item.title || `Item ${index + 1}`,
         route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
       })),
@@ -101,7 +106,7 @@ const Dashboard: React.FC = () => {
     }))
     : [];
 
- 
+
   useEffect(() => {
     if (data) {
       setAccordionStates(Object.keys(data).map(() => true));
@@ -109,7 +114,8 @@ const Dashboard: React.FC = () => {
   }, [data]);
 
 
- 
+
+
   const [checkedItems, setCheckedItems] = useState<number[]>([]);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
@@ -159,31 +165,48 @@ const Dashboard: React.FC = () => {
     setDeleteRec(false)
   };
 
+  const [editId, setEditId] = useState(0);
+  const [editCat, setEditCat] = useState("")
+  const [editTitle, setEditTitle] = useState("");
+  const [subTitle, setSubTitle] = useState("");
+  const [editDashId, setDashEditId] = useState("");
+
   return (
     <>
 
-      <ReportFormModal isOpen={isOpenMod} handleClose={handleClose} count={count} setCount={setCount} />
+
+      <ReportFormModal title={editTitle} subTitle={subTitle} dashId={editDashId} id={editId} isOpen={isOpenMod} handleClose={handleClose} count={count} setCount={setCount} />
       <div className="configure-container">
 
         <div className="configure-main">
           <div className='add-delete-report'>
-            {checkedItems.length === 0 &&
-              <button onClick={handleOpen} style={{ backgroundColor: "rgb(62, 62, 208)" }}>Add New Report</button>
-            }
-            {checkedItems.length !== 0 && (
-              <button
-                onClick={handleSubmit}
-                style={{
-                  backgroundColor: "rgb(225, 44, 44)",
-                  cursor: deleteRec ? "not-allowed" : "pointer",
-                  pointerEvents: deleteRec ? "none" : "auto",
-                  opacity: deleteRec ? 0.6 : 1,
-                }}
-                disabled={deleteRec}
-              >
-                {checkedItems.length === 1 ? "Delete Report" :"Delete Report's"}
-              </button>
-            )}
+            <p>Total Reports: {dashboardIds ? dashboardIds.length : "0"}</p>
+            <div>
+              {checkedItems.length === 0 &&
+                <AddNewButton
+                  title={'Add New Report'}
+                  onClick={() => {
+                    handleOpen();
+                    setEditId(0);
+                  }}
+                />
+              }
+              {checkedItems.length !== 0 && (
+                <button
+                  className='delete-report'
+                  onClick={handleSubmit}
+                  style={{
+                    backgroundColor: "rgb(225, 44, 44)",
+                    cursor: deleteRec ? "not-allowed" : "pointer",
+                    pointerEvents: deleteRec ? "none" : "auto",
+                    opacity: deleteRec ? 0.6 : 1,
+                  }}
+                  disabled={deleteRec}
+                >
+                  {checkedItems.length === 1 ? "Delete Report" : "Delete Report's"}
+                </button>
+              )}
+            </div>
           </div>
           <div className="configure-main-section">
             {(loading) ? (
@@ -246,16 +269,17 @@ const Dashboard: React.FC = () => {
                                   {item.subtitle ? (
                                     <small>
                                       {item.subtitle.length > 20 ? `${item.subtitle.slice(0, 15)}...` : item.subtitle}
-                                      </small>
+                                    </small>
                                   ) : null}
                                   <h1 className="reporting-card-heading">
                                     {item.title.length > 20 ? `${item.title.slice(0, 15)}...` : item.title}
                                   </h1>
-                                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "36px" }}>
+                                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>
                                     <div
                                       className="checkbox-wrapper"
                                       onClick={(event) => {
                                         event.stopPropagation();
+
                                         const id = item.id;
                                         if (checkedItems.includes(id)) {
                                           setCheckedItems(checkedItems.filter((item) => item !== id));
@@ -272,6 +296,26 @@ const Dashboard: React.FC = () => {
                                         checked={checkedItems.includes(item.id)}
                                         readOnly
                                       />
+                                    </div>
+
+                                    <div
+                                      onClick={(event) => {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        setEditId(item.id);
+                                        setEditTitle(item.title)
+                                        setDashEditId(item.dashboard_id)
+                                        setSubTitle(item.subtitle);
+                                        handleOpen();
+                                      }}
+                                      style={{
+                                        display: checkedItems.includes(item.id) || (isHovered && hoveredItem === item.id) ? 'block' : 'none',
+                                        width: "15px",
+                                        // backgroundColor:"black"
+                                      }}
+                                      data-tooltip-id={"edit"}
+                                    >
+                                      <SlPencil color="white" className="report-edit-icon"/>
                                     </div>
                                     <div
                                       className="arrow-wrapper"
