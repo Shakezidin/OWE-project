@@ -90,7 +90,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList := models.GetLeaderBoardList{}
 
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
-		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) {
+		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
+		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		if len(dataReq.DealerName) == 0 {
 			LeaderBoardList.TopLeaderBoardList = []models.GetLeaderBoard{}
 			LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
@@ -450,6 +451,21 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	} else {
 		filtersBuilder.WriteString(" AND ")
 		filtersBuilder.WriteString(" cs.unique_id != '' ")
+	}
+
+	if !whereAdded {
+		filtersBuilder.WriteString(" WHERE (")
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ns.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ss.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
+		whereAdded = true
+	} else {
+		filtersBuilder.WriteString(" AND (")
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ns.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR ss.%v", dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
 	}
 
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(ss.team_region_untd, '/'::text, 2)" {

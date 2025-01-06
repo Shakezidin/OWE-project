@@ -450,7 +450,10 @@ func QcNtpRetrieveQueryFunc() string {
         LEFT JOIN system_customers_schema  
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
         LEFT JOIN prospects_customers_schema 
-                ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+        ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+        AND ntp_ntp_schema.prospectid_dealerid_salesrepid IS NOT NULL
+        AND ntp_ntp_schema.prospectid_dealerid_salesrepid <> ''
+        AND TRIM(ntp_ntp_schema.prospectid_dealerid_salesrepid) <> ','
     `)
 
 	return filtersBuilder.String()

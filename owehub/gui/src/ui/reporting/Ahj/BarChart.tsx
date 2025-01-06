@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 
 type ApiData = {
+  index: number;
   value: {
     "Within SLA"?: number;
     "Out of SLA"?: number;
@@ -27,13 +28,15 @@ interface AhjBarChartProps {
 
 
 const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
+
+  console.log(data, "Please send null when payload is empty, as others api")
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={data
           .filter(item => Object.keys(item.value).length > 0)
           .map((item, index) => ({
-            name: index.toString(),
+            name: item.index.toString(),
             'Within SLA (%)': item.value['Within SLA'] || 0,
             'Out of SLA (%)': item.value['Out of SLA'] || 0,
           }))
@@ -50,7 +53,7 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
           dataKey="name"
           tick={{ fontSize: 8, fontWeight: 500, fill: '#818181' }}
           tickFormatter={(value) => {
-            const weekNumber = parseInt(value, 10) + 1;
+            const weekNumber = parseInt(value, 10);
             return `Week ${weekNumber}`;
           }}
         />
@@ -69,9 +72,10 @@ const AhjBarChart: React.FC<AhjBarChartProps> = ({ data }) => {
             padding: 4,
             boxShadow: 'none',
           }}
-          labelFormatter={(value) => `Week ${value}`}
+          labelFormatter={(value) => `Week ${Number(value)}`}
           formatter={(value) => `${value}%`}
         />
+
         <Legend
           align="center"
           layout="horizontal"

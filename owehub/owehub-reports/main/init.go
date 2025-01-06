@@ -61,6 +61,13 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/guest_token",
+		apiHandler.GetSupetsetGuestToken,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/get_overallspeedsummaryreport",
 		apiHandler.HandleGetOverallSpeedSummaryReportRequest,
 		false,
@@ -135,6 +142,29 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-reports-service/v1/get_ahj_fifteen_project_list",
 		apiHandler.HandleAhjFifteenProjectListRequest,
 		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+
+	// superset reports CRUD
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/create_superset_report",
+		apiHandler.HandleCreateSupersetReportRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_superset_reports",
+		apiHandler.HandleGetSupersetReportsRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/delete_superset_reports",
+		apiHandler.HandleDeleteSupersetReportsRequest,
+		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
 }

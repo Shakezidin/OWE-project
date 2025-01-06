@@ -24,6 +24,7 @@ interface GraphData {
 }
 
 type ApiData = {
+  index: number;
   value: {
     'Within SLA'?: number;
     'Out of SLA'?: number;
@@ -51,8 +52,8 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
       className={'graph-container'}
     >
       <LineChart
-        data={data.map((item, index) => ({
-          name: index.toString(),
+        data={data .filter(item => Object.keys(item.value).length > 0).map((item, index) => ({
+          name: item.index.toString(),
           'Out of SLA': item.value['Out of SLA'] || 0,
           'Within SLA': item.value['Within SLA'] || 0,
         }))}
@@ -71,8 +72,9 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
           angle={-45}
           dy={12}
           interval={0}
+          dataKey="name"
           tickFormatter={(value) => {
-            const weekNumber = parseInt(value, 10) + 1;
+            const weekNumber = parseInt(value, 10);
             return `Week ${weekNumber}`;
           }}
         />
@@ -89,8 +91,8 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
             fontSize: 10,
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
           }}
-          formatter={(value) => `${value}`}
-          labelFormatter={(value) => `Week ${value}`}
+          formatter={(value) => `${Number(value)}`}
+          labelFormatter={(value) => `Week ${Number(value)}`}
         />
         <Line
           type="monotone"
