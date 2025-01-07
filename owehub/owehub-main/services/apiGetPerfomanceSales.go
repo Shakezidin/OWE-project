@@ -136,7 +136,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrTalesFilters(tableName, dataReq, true, false, false)
-		case string(types.RoleDealerOwner),string(types.RoleSubDealerOwner):
+		case string(types.RoleDealerOwner), string(types.RoleSubDealerOwner):
 			filter, whereEleList = PrepareAdminDlrTalesFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchDealerForAmAe(dataReq, role)
@@ -781,7 +781,7 @@ func FetchDealerForAmAe(dataReq models.PerfomanceTileDataReq, userRole interface
 	var roleBase string
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
-		roleBase = "account_manager2"
+		roleBase = "account_manager"
 	} else {
 		roleBase = "account_executive"
 	}

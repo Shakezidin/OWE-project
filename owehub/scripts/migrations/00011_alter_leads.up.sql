@@ -114,7 +114,7 @@ BEGIN
                 ON user_details.role_id = user_roles.role_id
                 AND user_roles.role_name = ANY (p_roles)
             WHERE (v_user_role = 'Account Executive' AND sales_partner_dbhub_schema.account_executive = v_user_name)
-               OR (v_user_role = 'Account Manager' AND sales_partner_dbhub_schema.account_manager2 = v_user_name);
+               OR (v_user_role = 'Account Manager' AND sales_partner_dbhub_schema.account_manager = v_user_name);
 
     -- Dealer Owner and Sub Dealer Owner check
     ELSIF v_user_role IN ('Dealer Owner', 'SubDealer Owner') THEN
