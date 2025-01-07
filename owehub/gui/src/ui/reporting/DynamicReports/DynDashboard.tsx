@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SupersetDashboard from '../components/SupersetDashboard';
 import { useParams } from 'react-router-dom';
+import BackButtom from '../components/BackButtom';
 
 
 const DynDashboard = () => {
@@ -17,6 +18,7 @@ const DynDashboard = () => {
 
     return (
         <>
+            <BackButtom heading="Dashboard"/>
             {dashboardId && <SupersetDashboard dashboardId={dashboardId} />}
         </>
     );
