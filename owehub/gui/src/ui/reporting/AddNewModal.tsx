@@ -110,7 +110,7 @@ const ReportFormModal = ({
         const allowedPattern = /^[A-Za-z\s]+$/;
 
         if (name === 'title' || name === 'subTitle' || name === 'category') {
-            const sanitizedValue = value.replace(/[^A-Za-z\s$_]/g, '');
+            const sanitizedValue = value;
 
             if (sanitizedValue === value) {
                 setFormData((prevData) => ({
@@ -377,7 +377,6 @@ const ReportFormModal = ({
                                         label="Dashboard ID"
                                         value={formData.dashboard_id}
                                         placeholder="Please Enter dashboard id"
-                                        maxLength={30}
                                         onChange={handleInputChange}
                                         name="dashboard_id"
                                     />
