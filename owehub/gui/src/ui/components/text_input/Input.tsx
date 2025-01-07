@@ -14,7 +14,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   | 'password'
   | 'date'
   | 'datetime-local'
-  | 'file';
+  | 'file'
+  |'category'
+  |'title'
+  |'subTitle'
+  |'dashboard_id';
   value: string | number;
   placeholder: string;
   label?: string;
@@ -62,7 +66,7 @@ const Input: FC<InputProps> = ({
       const pattern = new RegExp(customRegex, 'g');
       e.target.value = e.target.value.replace(pattern, '');
     } else {
-      if (type === 'text' && !name.includes('email')) {
+      if (type === 'text' && !name.includes('email') && !name.includes('category') && !name.includes('title') && !name.includes('subTitle') && !name.includes('dashboard_id')) {
         e.target.value = e.target.value.replace(
           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,.'-]| {2,}/g,
           ''
