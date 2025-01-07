@@ -35,7 +35,8 @@ interface Details {
 const today = new Date();
 export type Tcategory = (typeof categories)[0];
 const Index = () => {
-  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
+  // assuming week starts on Monday, change to 0 if it starts on Sunday
+  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
   const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
     weekStartsOn: 1,
   });
@@ -73,7 +74,6 @@ const Index = () => {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const role = authData?.role;
-
   useEffect(() => {
     const role = localStorage.getItem('role');
     const isAuth = localStorage.getItem('isPasswordChangeRequired');
@@ -121,7 +121,6 @@ const Index = () => {
         setIsLoading(true);
         try {
           // Extracting dealer logic for readability
-
           // API call
           const data = await postCaller('get_perfomance_leaderboard_data', {
             type: activeHead,
@@ -136,7 +135,6 @@ const Index = () => {
                 : selectDealer.map((item) => item.value),
             group_by: groupBy,
           });
-
           console.log(
             TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer',
             'jhdsfg'

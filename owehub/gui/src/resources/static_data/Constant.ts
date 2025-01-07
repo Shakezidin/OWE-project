@@ -20,7 +20,6 @@ export const ALL_USER_ROLE_LIST = [
   { value: 'Finance Admin', label: 'Finance Admin' },
   { value: 'DB User', label: 'DB User' },
   { value: 'SubDealer Owner', label: 'SubDealer Owner' },
-  // { value: 'Partner', label: 'Partner' },
   { value: 'Appointment Setter', label: 'Appointment Setter' },
   { value: 'Dealer Owner', label: 'Dealer Owner' },
   { value: 'Regional Manager', label: 'Regional Manager' },
@@ -39,12 +38,10 @@ export const MANAGER_ASSIGN_TO_USER = [
 
 export const getObjectsBeforeMatch = (arr: any, matchLabel: string) => {
   const index = arr.findIndex((obj: any) => obj.label === matchLabel);
-
   console.log(index);
   if (index === 0) {
     return [{ value: 'Dealer Owner', label: 'Dealer Owner' }]; // No match found
   }
-
   return arr.slice(0, index);
 };
 

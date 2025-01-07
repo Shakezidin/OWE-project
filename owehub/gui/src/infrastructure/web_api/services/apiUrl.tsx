@@ -1,5 +1,4 @@
 // api.ts
-
 import axios, { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios';
 import {
   HTTP_METHOD,
@@ -7,13 +6,11 @@ import {
 } from '../../../core/models/api_models/RequestModel';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { EndPoints } from '../api_client/EndPoints';
-
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
 const REPORT_BASE_URL = `${process.env.REACT_APP_REPORT_URL}`;
 const CONFIG_URL = `https://staging.owe-hub.com/api/owe-calc-service/v1`;
 // authService.ts
-
 export interface LoginResponse {
   email_id: string;
   role_name: string;
@@ -22,7 +19,6 @@ export interface LoginResponse {
   status: number;
   message: string;
 }
-
 export const login = async (
   credentials: Credentials
 ): Promise<{ data: LoginResponse }> => {
@@ -50,7 +46,6 @@ export const postCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
-
   try {
     const response: AxiosResponse = await axios.post(
       `${hasChangedBaseUrl ? LEADS_BASE_URL : BASE_URL}/${endpoint}`,
@@ -68,11 +63,9 @@ export const postCaller = async (
       if (error.message === 'Network Error')
         return new Error('No internet connection');
     }
-
     throw new Error('Failed to fetch data');
   }
 };
-
 export const configPostCaller = async (
   endpoint: string,
   postData: any,
@@ -84,7 +77,6 @@ export const configPostCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
-
   try {
     const response: AxiosResponse = await axios.post(
       `${CONFIG_URL}/${endpoint}`,
@@ -102,11 +94,9 @@ export const configPostCaller = async (
       if (error.message === 'Network Error')
         return new Error('No internet connection');
     }
-
     throw new Error('Failed to fetch data');
   }
 };
-
 export const reportingCaller = async (
   endpoint: string,
   postData: any,
@@ -118,7 +108,6 @@ export const reportingCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
-
   try {
     const response: AxiosResponse = await axios.post(
       `${REPORT_BASE_URL}/${endpoint}`,
@@ -136,11 +125,9 @@ export const reportingCaller = async (
       if (error.message === 'Network Error')
         return new Error('No internet connection');
     }
-
     throw new Error('Failed to fetch data');
   }
 };
-
 export const getCaller = async (endpoint: string): Promise<any> => {
   const config: AxiosRequestConfig = {
     headers: {
@@ -158,7 +145,6 @@ export const getCaller = async (endpoint: string): Promise<any> => {
     throw new Error('Failed to fetch data');
   }
 };
-
 export const putCaller = async (endpoint: string, data: any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method: HTTP_METHOD.PUT,
