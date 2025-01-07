@@ -99,7 +99,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				}
 				var roleBase string
 				if role == "Account Manager" {
-					roleBase = "account_manager2"
+					roleBase = "account_manager"
 				} else {
 					roleBase = "account_executive"
 				}
