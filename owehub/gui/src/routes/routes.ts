@@ -117,5 +117,6 @@ export const ROUTES = {
   SIGN_DOCUMENT:'digital-signature-portal',
   AHJ:'/reporting/ahj',
   PERMIT_REDLINE:'/reporting/permit-redline',
-  DYNAMIC_REPORT:'/reporting/:id'
+  DYNAMIC_REPORT:'/reporting/:id',
+  SUMMARY_DASBOARD:'/summary-dashboard'
 };
