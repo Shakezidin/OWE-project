@@ -97,6 +97,7 @@ const Summary_Dashboard = () => {
         width: '100%',
         height: '463px',
         padding: "1rem",
+        borderRight: "1px dotted #D7D9DC"
 
     };
     const stylesGraph2 = {
@@ -111,10 +112,15 @@ const Summary_Dashboard = () => {
     const handleButtonClick = (buttonName: any) => {
         setActiveButton(buttonName);
     };
-    const[line, setLine] = useState(false)
+    const [line, setLine] = useState(false)
     const handleChartClick = () => {
         setLine(!line);
     }
+
+    const [activePerc, setActivePerc] = useState('100');
+    const handlePercButtonClick = (buttonName: any) => {
+        setActivePerc(buttonName);
+    };
 
     return (
         <div className={classes.top_dashboard}>
@@ -122,6 +128,23 @@ const Summary_Dashboard = () => {
                 <div className={classes.top_box_heading}>
                     <p>Summary</p>
                     <div className={classes.top_box_drop}>
+                        <div className={classes.bottom_box_chart2_head_buttons_sec}>
+                            <div
+                                className={`${classes.bottom_box_button_sec} ${activePerc === '100' ? classes.active : ''}`}
+                                // style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
+                                onClick={() => handlePercButtonClick('100')}
+                            >
+                                100%
+                            </div>
+                            <div
+                                className={`${classes.bottom_box_button_sec} ${activePerc === '75' ? classes.active : ''}`}
+                                // style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
+                                onClick={() => handlePercButtonClick('75')}
+                            >
+                                75%
+                            </div>
+                        </div>
+
                         <SelectOption
                             options={options}
                             onChange={(value: any) => setReportType(value)}
@@ -249,9 +272,13 @@ const Summary_Dashboard = () => {
                 </div>
             </div>
             <div className={classes.bottom_box}>
-                <div className={classes.bottom_box_chart1} style={stylesGraph}>
-                    <RadialChart />
-                    <RadarChartComponenet />
+                <div className={classes.bottom_box_chart1} >
+                    <p>Monthly Progress</p>
+                    <div className={classes.bottom_box_chart1_sec} style={stylesGraph}>
+                        <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart /></div>
+                        <RadarChartComponenet />
+                    </div>
+
                 </div>
                 <div className={classes.bottom_box_chart2} style={stylesGraph2}>
                     <div className={classes.bottom_box_chart2_head}>
@@ -292,17 +319,17 @@ const Summary_Dashboard = () => {
                         </div>
                     </div>
 
-                    
+
                     {line ? <LineChartComp /> : <BarChartComp />}
 
-                    
-                    
+
+
                     <div className={classes.bottom_graphchange_div}>
-                    <div className={classes.bottom_graphchange} onClick={handleChartClick}>
-                        {line ? <FaChartLine size={15} style={{marginRight:"-2px"}} color="#377CF6"/> : <MdBarChart size={15} style={{marginRight:"-2px"}} color="#377CF6" />}
+                        <div className={classes.bottom_graphchange} onClick={handleChartClick}>
+                            {line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                        </div>
                     </div>
-                    </div>
-                    
+
 
                 </div>
             </div>

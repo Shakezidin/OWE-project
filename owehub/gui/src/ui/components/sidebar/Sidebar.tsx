@@ -62,13 +62,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.CONFIG_PAGE || 
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT)
         ) {
         } else if (
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.CALCULATOR
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
         ) {
           newArr[0].mob.push(item);
         }
@@ -88,7 +88,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD &&
-          item.path !== ROUTES.CALCULATOR
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
         ) {
           newArr[0].mob.push(item);
         }
@@ -112,7 +112,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD &&
-          item.path !== ROUTES.CALCULATOR
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
         ) {
           newArr[0].mob.push(item);
         }
@@ -140,7 +140,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT
+          item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.REPORTING
         ) {
           if (
             isStaging !== 'staging' &&
@@ -153,7 +153,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.COMMISSION_DASHBOARD &&
-            item.path !== ROUTES.CALCULATOR
+            item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
           ) {
             newArr[0].mob.push(item);
           }
@@ -177,7 +177,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD && item.path !== ROUTES.REPORTING
           ) {
             newArr[0].mob.push(item);
           }
@@ -192,7 +192,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS &&
-          item.path !== ROUTES.LEAD_MANAGEMENT
+          item.path !== ROUTES.LEAD_MANAGEMENT && item.path !== ROUTES.REPORTING
         ) {
           if (
             isStaging !== 'staging' &&
