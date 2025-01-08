@@ -41,7 +41,7 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 		{"record_id", "item_id"}, // primary key !! MUST BE FIRST IN THE LIST !!
 		{"partner_id", "partner_id"},
 		{"sales_partner_name", "sales_partner_name"},
-		{"account_manager", "account_manager2"},
+		{"account_manager", "account_manager"},
 		{"account_executive", "account_executive"},
 	}
 	for _, recordId := range recordIds {
