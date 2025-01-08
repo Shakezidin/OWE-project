@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classes from './styles/newfile.module.css';
 import CreateNewFolderLibrary from './CreateNewFolderLibrary';
-import LibraryModel from '../components/LibraryModals (1)/LibraryModals/LibModal';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface NewFileProps {
@@ -20,11 +19,9 @@ type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
 const NewFile: React.FC<NewFileProps> = ({
   activeSection,
-  onSort,
   handleSuccess,
   uploadPath,
   folderUploadPath,
-  setLoading,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
@@ -44,9 +41,6 @@ const NewFile: React.FC<NewFileProps> = ({
     setIsVisible(!isVisible);
     setIsVisibleuploadFile(false);
   };
-  const handleClickNewFolder = () => {
-    setIsVisibleNewFolder(!isVisibleNewFolder);
-  };
   // Api code start for uploadFolder
   const handleFolderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
@@ -64,14 +58,7 @@ const NewFile: React.FC<NewFileProps> = ({
     if (files.length === 0) return;
     const accessToken = Cookies.get('myToken');
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || '/'}`;
-
-    const MAX_TOTAL_SIZE = 60 * 1024 * 1024; // 60MB in bytes
-
     try {
-      const totalSize = files.reduce((sum, file) => sum + file.size, 0);
-      // if (totalSize > MAX_TOTAL_SIZE) {
-      //   throw new Error(`Total file size exceeds the 60MB limit. Current total: ${(totalSize / (1024 * 1024)).toFixed(2)}MB`);
-      // }
 
       sePendingState('uploading');
       setIsVisible(false);
@@ -143,7 +130,6 @@ const NewFile: React.FC<NewFileProps> = ({
   };
 
   //api code end for uploadFolder
-
   // Api code start for uploadFile
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -258,14 +244,3 @@ const NewFile: React.FC<NewFileProps> = ({
 };
 
 export default NewFile;
-function setFile(selectedFile: File | null) {
-  throw new Error('Function not implemented.');
-}
-
-function convertFileToBase64(selectedFile: File) {
-  throw new Error('Function not implemented.');
-}
-
-function setUploadedImage(base64File: void) {
-  throw new Error('Function not implemented.');
-}

@@ -1,18 +1,13 @@
 .lib_Grid_Header {
   display: grid;
   grid-template-columns: calc(50% - 30px) calc(50% - 30px) auto;
-
-  /* gap: 136px; */
   padding: 0.8rem 1rem;
   font-size: large;
   background-color: #eff5ff;
-  /* border: 1px solid black; */
 }
 .grid_item_uploaded {
-  /* border: 1px solid black; */
   display: flex;
   gap: 280px;
-  /* justify-content: space-between; */
 }
 
 .parentDiv {
@@ -82,7 +77,6 @@
 .libSecHeader_left {
   display: flex;
   flex-direction: row;
-  /* border: 1px solid black; */
   height: 30px;
   gap: 0.5rem;
 }
@@ -98,7 +92,6 @@
 
 .buttons {
   border-radius: 18px;
-  /* border: 1px solid #989898; */
   border: 1px solid var(--input-border-color);
   padding: 8px 24px;
   font-family: poppins;
@@ -119,17 +112,10 @@
   color: #377cf6;
   transform: scale(1.05);
 }
-/* .buttons:hover {
-  color: #eff5ff;
-  background-color: #377cf6;
-  border: 1px solid #377cf6;
-  transform: scale(1.05);
 
-} */
 
 .Folderbuttons {
   border-radius: 18px;
-  /* border: 1px solid #989898; */
   border: 1px solid var(--input-border-color);
   padding: 8px 24px;
   font-family: poppins;
@@ -152,13 +138,6 @@
   color: #377cf6;
   transform: scale(1.05);
 }
-
-/* .Folderbuttons:hover {
-  color: #eff5ff;
-  background-color: #377cf6;
-  border: 1px solid #377cf6;
-  transform: scale(1.05);
-} */
 
 .filter_button {
   display: flex;
@@ -184,7 +163,6 @@
   align-items: center;
   justify-items: center;
   cursor: pointer;
-
   border-radius: 8px;
   border: 1px solid #afafaf;
 }
@@ -324,13 +302,6 @@
 .file_icon {
   display: flex;
 }
-/* 
-.grid_item {
-   text-align: center;
-  justify-content: end;
-  align-items: center; 
-  
-} */
 
 .table_name {
   text-align: start;
@@ -345,7 +316,6 @@
 .lib_Grid_Header .grid_item {
   font-size: 14px;
   font-weight: 600;
-  /* border: 1px solid black; */
 }
 
 .grid_item_action {
@@ -356,7 +326,6 @@
   font: poppins;
   font-weight: 400;
   padding-right: 43px;
-  /* border: 1px solid black;  */
 }
 .libGridItem .grid_item_delete {
   font-size: 14px;
@@ -396,7 +365,6 @@
   font-weight: 600;
 }
 .grid_item_dates_upload {
-  /* border: 1px solid black;  */
   display: flex;
   gap: 280px;
 }
@@ -459,7 +427,6 @@
   cursor: pointer;
   height: 18px;
   width: 18px;
-  /* color: #667085;  */
   color: #101828;
   transition: all 0.3s ease;
 }
@@ -471,7 +438,6 @@
   cursor: pointer;
   height: 18px;
   width: 18px;
-
   transition: all 0.3s ease;
 }
 .icons_delete:hover {
@@ -542,7 +508,7 @@
   border-radius: 8px;
   border: none;
   color: #ffffff;
-  background-color: #D91515;
+  background-color: #d91515;
   cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
   height: 36px;
@@ -567,7 +533,7 @@
 
 .DeleteButton:not([disabled]):hover {
   color: #ffffff;
-  background-color: #AD1313;
+  background-color: #ad1313;
   transform: scale(1.05);
 }
 
@@ -606,7 +572,6 @@
 
 .filesLoader {
   width: 100%;
-  /* height: 100%; */
   height: 64.7vh;
   display: flex;
   justify-content: center;
@@ -614,7 +579,6 @@
 }
 
 .view_btn {
-  /* border: 1px solid #8C8C8C; */
   border: 1px solid var(--input-border-color);
   display: flex;
   flex-shrink: 0;
@@ -633,11 +597,6 @@
 }
 
 .view_btn:not(.active_tile):hover {
-  /* background-color: #377cf6;
-  color: #fff;
-  transition: all 500ms;
-  border: 1px solid #fff;
-  transform: scale(1.1); */
   background-color: #e5efff;
   border: 1px solid #4368dc;
   color: #377cf6;
@@ -714,10 +673,10 @@
     display: none;
   }
 
-  .libraryContainer{
+  .libraryContainer {
     margin: 10px;
   }
-  .desktop_hide{
+  .desktop_hide {
     margin-bottom: 10px;
   }
 }
@@ -731,7 +690,6 @@
     justify-content: center;
     position: relative;
     padding-left: 10px;
-    /* width: 100%; */
     max-width: 97.1%;
   }
   .sort_container {
@@ -753,7 +711,6 @@
     text-overflow: ellipsis;
     padding: 15px;
     margin: 0;
-    /* resize: horizontal;  */
   }
   .searchWrapper {
     flex-basis: 200px;
@@ -766,8 +723,6 @@
     max-width: 150px;
   }
   .libraryHeader {
-    /* padding-top: 10px;
-    padding-bottom: 10px; */
     padding: 12px 0;
   }
 
@@ -795,7 +750,6 @@
     text-overflow: ellipsis;
     padding: 15px;
     margin: 0;
-    /* resize: horizontal;  */
   }
   .name {
     overflow: hidden;
@@ -805,13 +759,10 @@
     max-width: 150px;
   }
   .libraryHeader {
-    /* padding-top: 10px;
-    padding-bottom: 10px; */
     padding: 12px 0;
   }
 
   .libSecHeader_left {
-    /* justify-content: space-between; */
     gap: 5px;
   }
   .searchWrapper {

@@ -1,7 +1,6 @@
 /* -----------------Vaibhav Start----------------- */
 
 .dashboard {
-  /* padding: 24px; */
   background-color: #f3f4f6;
   min-height: 100vh;
   font-family: 'Poppins', sans-serif;
@@ -20,15 +19,6 @@
 .CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-/* .chart_main_grid ::selection { 
-  background-color: var(--select-Context-Menu) !important; 
-  color: var(--white-color) !important; 
-}
- 
-.pieChart ::selection {
-  background-color: var(--select-Context-Menu) !important;
-  color: var(--white-color)  !important;
-} */
 .PaginationFont a {
   font-size: 12px !important;
 }
@@ -41,7 +31,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
-
 .horizontal {
   display: flex;
   gap: 20px;
@@ -69,7 +58,6 @@
   padding-left: 0 !important;
   max-width: auto !important;
 }
-
 @media (min-width: 0px) {
   .chartGrid {
     grid-template-columns: 1fr 1fr;
@@ -80,7 +68,6 @@
     grid-column: 1 / span 2;
   }
 }
-
 @media (min-width: 1441px) {
   .custom3 {
     margin-right: 0px;
@@ -89,7 +76,6 @@
     margin-right: 0px;
   }
 }
-
 .mainHeader {
   display: grid;
   width: 100%;
@@ -97,7 +83,6 @@
   margin-right: 0;
   padding-right: 0;
 }
-
 .mainHeader > div {
   padding: 0 10px;
 }
@@ -110,13 +95,11 @@
 }
 .cardHeaderFirst {
   padding: 18px 16px 16px 16px;
-  /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .cardHeader {
   padding: 16px;
   font-weight: bold;
@@ -131,17 +114,14 @@
   align-items: center;
   margin-bottom: -7px;
 }
-
 .cardContent {
   padding: 16px 0;
 }
-
 .totalLeads {
   font-size: 14px;
   color: #6b7280;
   margin-bottom: 8px;
 }
-
 .legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -149,24 +129,20 @@
   margin-top: 16px;
   padding-left: 35px;
 }
-
 .legendItem {
   display: flex;
   align-items: center;
 }
-
 .legendColor {
   width: 12px;
   height: 6.12px;
   border-radius: 6.12px;
   margin-right: 8px;
 }
-
 .legendText {
   font-size: 12px;
   color: var(--input-border-color);
 }
-
 /* Shams */
 .monthSelect {
   background-color: #377cf6;
@@ -176,31 +152,20 @@
   border: none;
   padding-right: 0;
 }
-
 .stats {
   margin-top: 16px;
   font-size: 14px;
 }
-
 .statItem {
   margin-right: 16px;
 }
 
-/* .buttonGroup {
-    display: flex;
-    gap: 8px;
-    width: 70%;
-    overflow: scroll;
-    flex-wrap: wrap;
-  } */
 .buttonGroup {
   display: flex;
   padding: 5px;
   gap: 1px;
   width: 71%;
-  /* overflow: scroll; */
   flex-wrap: wrap;
-  /* box-shadow: inset -3px 0px 5px 2px #0000000d; */
   border-radius: 22px 0 0 22px;
 }
 
@@ -224,26 +189,15 @@
   color: #377cf6;
   background-color: #ddebff;
   border: 1px solid #377cf6 !important;
-
-  /* border-color: var(--primary-color) !important; */
 }
 
 .button:hover p,
 .button:hover span {
-  /* color: var(--primary-color); */
 }
 
-/* .displayStatus{
-  width: 56px;
-  line-height: 16px;
-  text-align: left;
-} */
-
 .status {
-  /* background: #fff; */
   border-radius: 50%;
   padding: 4px;
-  /* color: #292B2E; */
   width: 30px;
   height: 28px;
   border-radius: 50%;
@@ -253,11 +207,6 @@
   align-items: center;
   justify-content: center;
 }
-.statusInactive {
-  /* background: #dfdfdf !important; */
-  /* color: #929292 !important; */
-}
-
 .buttonActive {
   font-weight: 500;
   background-color: #3b82f6;
@@ -270,32 +219,26 @@
   font-weight: 500;
   border: none !important;
 }
-
 .table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .table th,
 .table td {
   text-align: left;
   padding: 11px;
   border-bottom: 1px solid #e5e7eb;
 }
-
 .table th {
   font-weight: bold;
 }
-
 table tbody tr:hover {
   transition: 0.4s all linear;
   background-color: #377df623;
 }
-
 .statusPending {
   color: #f59e0b;
 }
-
 .filtericon {
   display: flex;
   justify-content: center;
@@ -322,7 +265,6 @@ table tbody tr:hover {
   align-items: center;
   width: 35%;
 }
-
 .SecondColHead {
   display: flex;
   justify-content: space-between;
@@ -340,18 +282,15 @@ table tbody tr:hover {
   margin-right: 13px;
   box-shadow: 1px solid var(--primary-color);
 }
-
 .searchBar:hover {
   border: 1px solid var(--primary-color);
 }
 .searchBar .searchInput:focus {
   outline: none;
 }
-
 .searchBar:focus-within {
   border: 1px solid var(--primary-color) !important;
 }
-
 .searchIcon {
   margin-left: 5px;
   margin-right: 5px;
@@ -365,13 +304,11 @@ table tbody tr:hover {
 .searchBar:focus-within .searchInput::placeholder {
   color: #377cf6 !important;
 }
-
 .searchBar:hover .searchIcon img,
 .searchBar:focus-within .searchIcon img {
   filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg)
     brightness(100%) contrast(100%);
 }
-
 .searchInput {
   border: none;
   outline: none;
@@ -397,8 +334,6 @@ table tbody tr:hover {
   transform: scale(0.75);
   position: relative;
   align-items: center;
-  /* top: -2pc; */
-  /* right: -8px; */
 }
 
 .pieChart :focus {
@@ -408,14 +343,12 @@ table tbody tr:hover {
 .table {
   width: 100%;
   border-collapse: separate;
-  /* border-spacing: 0 16px; */
 }
 
 .history_lists {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 16px; */
 }
 .ScheduleBtnNew {
   width: 103px;
@@ -465,7 +398,7 @@ table tbody tr:hover {
 
 .actionButtons {
   display: flex;
-  gap: 10px; /* Adds space between buttons */
+  gap: 10px;
 }
 
 .rescheduleButton {
@@ -486,7 +419,7 @@ table tbody tr:hover {
 
 .archiveButton {
   background-color: transparent;
-  color: #757575; /* Gray color */
+  color: #757575;
   border: 1px solid #757575;
   padding: 8px 16px;
   border-radius: 20px;
@@ -496,7 +429,6 @@ table tbody tr:hover {
 }
 
 .archiveButton:hover {
-  /* background-color: #757575; */
   color: white;
   transform: scale(1.05);
 }
@@ -512,7 +444,6 @@ table tbody tr:hover {
   display: flex;
   align-items: center;
 }
-
 .closeIcon {
   font-size: 24px;
   margin-right: 10px;
@@ -529,8 +460,6 @@ table tbody tr:hover {
   transform: scale(1.09);
 }
 
-
-
 .removeButton {
   background-color: #d91515;
   color: white;
@@ -543,11 +472,10 @@ table tbody tr:hover {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-.removeButton:hover{
+.removeButton:hover {
   transform: scale(1.05);
-  background-color: #AD1313;
+  background-color: #ad1313;
 }
-
 
 .paginationContainer {
   display: flex;
@@ -561,19 +489,17 @@ table tbody tr:hover {
   justify-content: space-between;
   align-items: center;
   height: 50px;
-
 }
 .PaginationFont select {
   min-width: 44px;
   min-height: 31.1px;
   border-radius: 4px;
-  text-align: center; 
+  text-align: center;
   text-align-last: center;
   margin: 0 auto;
   position: relative;
   padding: 0;
 }
-
 
 .chevron_down {
   display: none !important;
@@ -625,9 +551,7 @@ table tbody tr:hover {
     width: 100px;
     height: 32px;
     font-size: 14px;
-
   }
-  
 
   .vertical1 {
     order: 3;
@@ -678,7 +602,6 @@ table tbody tr:hover {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* background-color: teal; */
     width: 100%;
   }
   .FirstColHead {
@@ -694,11 +617,7 @@ table tbody tr:hover {
     width: 100%;
   }
 
-  .card {
-    /* background-color: rgb(38, 158, 48); */
-  }
   /* ANOTHER SECTION RESPONSIVENESS ADEDDD */
-
   .cardHeader {
     display: none;
   }
@@ -756,14 +675,13 @@ table tbody tr:hover {
     display: flex;
     align-items: center;
     outline: none;
-    border: 0.5px solid black; 
+    border: 0.5px solid black;
     border-radius: 8px;
     padding: 5px;
     height: 36px;
     width: 252px !important;
     margin-right: 0;
-}
-
+  }
 
   .searchBarMobile input::placeholder {
     font-size: 11.8px;
@@ -775,15 +693,10 @@ table tbody tr:hover {
   .searchBarMobile .searchInput:focus {
     outline: none;
   }
-  
+
   .searchBarMobile:focus-within {
     border: 1px solid var(--primary-color) !important;
   }
-
-
-
-
-
 }
 @media (min-width: 401px) and (max-width: 560px) {
   .date_calendar {
@@ -823,7 +736,6 @@ table tbody tr:hover {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    /* background-color: teal; */
   }
 
   .buttonGroupMobile {
@@ -888,7 +800,7 @@ table tbody tr:hover {
   .searchBarMobile .searchInput:focus {
     outline: none;
   }
-  
+
   .searchBarMobile:focus-within {
     border: 1px solid var(--primary-color) !important;
   }
@@ -931,19 +843,17 @@ table tbody tr:hover {
   .dashboard {
     margin: 10px;
   }
-  .card{
+  .card {
     margin-top: 0;
   }
 }
 @media (min-width: 768px) {
   .tabs_setting {
-    padding: 19px 15px 0px  15px !important;
+    padding: 19px 15px 0px 15px !important;
   }
   .history_list_inner_declined {
     display: grid;
-    /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
     grid-template-columns: 35px 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
   }
   .chartGrid {
@@ -990,8 +900,6 @@ table tbody tr:hover {
     display: flex;
     flex-direction: row;
     gap: 4px;
-    /* padding: 17px 16px 17px 35px !important;
-    margin: 17px 16px 17px 35px !important; */
   }
   .detailsRowChev {
   }
@@ -999,7 +907,6 @@ table tbody tr:hover {
 
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
-  /* Styles for smartphones */
   .button {
     transform: scale(0.9);
   }
@@ -1011,7 +918,6 @@ table tbody tr:hover {
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr 1fr !important;
-    /* place-items: center; */
     align-items: start;
   }
   .history_list_inner {
@@ -1021,7 +927,6 @@ table tbody tr:hover {
   }
 
   .actionButtons {
-    /* transform: scale(0.7) translate(0, -10px); */
     gap: 3px;
   }
 
@@ -1046,7 +951,6 @@ table tbody tr:hover {
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
   }
 }
@@ -1092,11 +996,6 @@ table tbody tr:hover {
   }
 }
 
-/* Extra large desktops */
-@media only screen and (min-width: 1201px) {
-  /* Styles for extra-large screens */
-}
-
 .lead__datepicker_wrapper {
   position: relative;
   line-height: 0;
@@ -1132,14 +1031,11 @@ table tbody tr:hover {
 .hist_date {
   font-weight: 600;
   font-size: 14px;
-  /* margin-right: 6.2px !important; */
   color: #377cf6;
 }
 
 .monthSelect {
-  /* background-color: #3b82f6; */
   color: white;
-  /* border-radius: 20px; */
   padding: 4px 8px;
   border: none;
   font-size: 12px;
@@ -1179,7 +1075,6 @@ table tbody tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-left: 6px !important; */
   cursor: pointer;
   transition: all 500ms ease;
 }
@@ -1234,7 +1129,6 @@ table tbody tr:hover {
   align-items: center !important;
 }
 .ButtonAbovearrov {
-  /* border: 1px solid #377cf6; */
   width: 36px;
   background-color: #ddebff;
   border-radius: 8px;
@@ -1258,8 +1152,6 @@ table tbody tr:hover {
   flex-wrap: wrap;
   justify-content: right !important;
 }
-
-/* General style for the month select */
 /* General style for the month select */
 .monthSelect {
   margin-top: 0;
@@ -1397,7 +1289,6 @@ table tbody tr:hover {
     display: block !important;
     height: 24px !important;
     width: 24px !important;
-    /* transform: translate(-20px, 13px); */
     background-color: #eaecf0;
     display: flex !important;
     justify-content: center !important;
@@ -1470,13 +1361,12 @@ table tbody tr:hover {
     line-height: 0;
     cursor: pointer;
     transition: transform 0.3s ease;
-    z-index: 11; 
+    z-index: 11;
   }
 
   .lead__datepicker_content {
-  margin-top: 127.8px;
-  margin-left: 300px;
-   
+    margin-top: 127.8px;
+    margin-left: 300px;
   }
   .mobile_tooltip {
     display: none !important;

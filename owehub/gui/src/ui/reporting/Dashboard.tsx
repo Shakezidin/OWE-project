@@ -9,28 +9,17 @@ import { reportingCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
-import { ActionButton } from '../components/button/ActionButton';
 import { AddNewButton } from '../components/button/AddNewButton';
-import { SlPencil } from "react-icons/sl";
-import { Tooltip } from 'react-tooltip';
-
-interface AccordionSection {
-  title: string;
-  data: { title: string; route: string; heading?: string }[];
-  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined;
-}
-
+import { SlPencil } from 'react-icons/sl';
 interface ReportData {
   id: number;
   title: string;
   subtitle: string;
   dashboard_id: string;
 }
-
 interface ApiData {
   [key: string]: ReportData[];
 }
-
 
 const Dashboard: React.FC = () => {
   const cardColors = ['#FAD9CA', '#CDE8FB', '#EDD4EE', '#D0E6E3', '#DDD9F6'];
@@ -44,41 +33,35 @@ const Dashboard: React.FC = () => {
         return 'bg-light-blue';
       case '#EDD4EE':
         return 'bg-purple';
-
       case '#D0E6E3':
         return 'bg-light-green';
-
       case '#DDD9F6':
         return 'bg-dark-blue';
-
       default:
         return '';
     }
   };
 
-
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ApiData | null>(null);
   const [dashboardIds, setDashboardIds] = useState<string[]>([]);
   const [count, setCount] = useState(1);
 
-
   useEffect(() => {
-
-    setLoading(true)
+    setLoading(true);
     const fetchData = async () => {
       try {
         const response = await reportingCaller('get_superset_reports', {});
         if (response.status === 200) {
-          setData(response.data)
-          const allDashboardIds = Object.values(response.data).flatMap((items: any) =>
-            items.map((item: any) => item.dashboard_id)
+          setData(response.data);
+          const allDashboardIds = Object.values(response.data).flatMap(
+            (items: any) => items.map((item: any) => item.dashboard_id)
           );
           const uniqueDashboardIds = Array.from(new Set(allDashboardIds));
           setDashboardIds(uniqueDashboardIds);
         } else {
           console.error('Error fetching data:', response.message);
-          toast.error(response.message)
+          toast.error(response.message);
           setLoading(false);
         }
       } catch (error) {
@@ -88,24 +71,22 @@ const Dashboard: React.FC = () => {
       setLoading(false);
     };
     fetchData();
-
   }, [count]);
   const [accordionStates, setAccordionStates] = useState<boolean[]>([]);
 
   const accordionSectionsTest = data
     ? Object.entries(data).map(([arrayName, arrayData], index) => ({
-      title: arrayName,
-      data: arrayData.map((item, index) => ({
-        subtitle: item.subtitle || '',
-        id: item.id,
-        dashboard_id:item.dashboard_id,
-        title: item.title || `Item ${index + 1}`,
-        route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
-      })),
-      state: [accordionStates[index] ?? true, () => { }],
-    }))
+        title: arrayName,
+        data: arrayData.map((item, index) => ({
+          subtitle: item.subtitle || '',
+          id: item.id,
+          dashboard_id: item.dashboard_id,
+          title: item.title || `Item ${index + 1}`,
+          route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
+        })),
+        state: [accordionStates[index] ?? true, () => {}],
+      }))
     : [];
-
 
   useEffect(() => {
     if (data) {
@@ -113,23 +94,17 @@ const Dashboard: React.FC = () => {
     }
   }, [data]);
 
-
-
-
   const [checkedItems, setCheckedItems] = useState<number[]>([]);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
-  const [isOpenMod, setIsOpenMod] = useState(false)
+  const [isOpenMod, setIsOpenMod] = useState(false);
 
   const handleClose = () => {
-    setIsOpenMod(false)
-  }
+    setIsOpenMod(false);
+  };
   const handleOpen = () => {
-    setIsOpenMod(true)
-  }
-
-
-
+    setIsOpenMod(true);
+  };
 
   const toggleAccordion = (index: number) => () => {
     setAccordionStates((prevStates) => {
@@ -142,47 +117,49 @@ const Dashboard: React.FC = () => {
   const [deleteRec, setDeleteRec] = useState(false);
 
   const handleSubmit = async (e: any) => {
-    setDeleteRec(true)
+    setDeleteRec(true);
     try {
-      const response = await reportingCaller(
-        'delete_superset_reports',
-        {
-          "report_ids": checkedItems
-        },
-      );
+      const response = await reportingCaller('delete_superset_reports', {
+        report_ids: checkedItems,
+      });
       if (response.status === 200) {
         toast.success(response.message);
-        setCheckedItems([])
+        setCheckedItems([]);
         setCount(count + 1);
-        setDeleteRec(false)
+        setDeleteRec(false);
       } else if (response.status >= 201) {
         toast.warn(response.message);
-        setDeleteRec(false)
+        setDeleteRec(false);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
     }
-    setDeleteRec(false)
+    setDeleteRec(false);
   };
 
   const [editId, setEditId] = useState(0);
-  const [editCat, setEditCat] = useState("")
-  const [editTitle, setEditTitle] = useState("");
-  const [subTitle, setSubTitle] = useState("");
-  const [editDashId, setDashEditId] = useState("");
+  const [editTitle, setEditTitle] = useState('');
+  const [subTitle, setSubTitle] = useState('');
+  const [editDashId, setDashEditId] = useState('');
 
   return (
     <>
-
-
-      <ReportFormModal title={editTitle} subTitle={subTitle} dashId={editDashId} id={editId} isOpen={isOpenMod} handleClose={handleClose} count={count} setCount={setCount} />
+      <ReportFormModal
+        title={editTitle}
+        subTitle={subTitle}
+        dashId={editDashId}
+        id={editId}
+        isOpen={isOpenMod}
+        handleClose={handleClose}
+        count={count}
+        setCount={setCount}
+      />
       <div className="configure-container">
-
         <div className="configure-main">
-          <div className='add-delete-report'>
-            <p>Total Reports: {dashboardIds ? dashboardIds.length : "0"}</p>
+          <div className="add-delete-report">
+            <p>Total Reports: {dashboardIds ? dashboardIds.length : '0'}</p>
             <div>
-              {checkedItems.length === 0 &&
+              {checkedItems.length === 0 && (
                 <AddNewButton
                   title={'Add New Report'}
                   onClick={() => {
@@ -190,26 +167,28 @@ const Dashboard: React.FC = () => {
                     setEditId(0);
                   }}
                 />
-              }
+              )}
               {checkedItems.length !== 0 && (
                 <button
-                  className='delete-report'
+                  className="delete-report"
                   onClick={handleSubmit}
                   style={{
-                    backgroundColor: "rgb(225, 44, 44)",
-                    cursor: deleteRec ? "not-allowed" : "pointer",
-                    pointerEvents: deleteRec ? "none" : "auto",
+                    backgroundColor: 'rgb(225, 44, 44)',
+                    cursor: deleteRec ? 'not-allowed' : 'pointer',
+                    pointerEvents: deleteRec ? 'none' : 'auto',
                     opacity: deleteRec ? 0.6 : 1,
                   }}
                   disabled={deleteRec}
                 >
-                  {checkedItems.length === 1 ? "Delete Report" : "Delete Report's"}
+                  {checkedItems.length === 1
+                    ? 'Delete Report'
+                    : "Delete Report's"}
                 </button>
               )}
             </div>
           </div>
           <div className="configure-main-section">
-            {(loading) ? (
+            {loading ? (
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <MicroLoader />
               </div>
@@ -237,14 +216,16 @@ const Dashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className={`configure-cards ${isOpen ? 'open' : ''}`}>
+                      <div
+                        className={`configure-cards ${isOpen ? 'open' : ''}`}
+                      >
                         {data.map((item, index) => {
                           const colorIndex =
-                            index % Math.min(cardColors.length, arrowColors.length);
+                            index %
+                            Math.min(cardColors.length, arrowColors.length);
                           const randomCardColor = cardColors[colorIndex];
                           const randomArrowColor = arrowColors[colorIndex];
                           return (
-
                             <div key={index} className="pay-card-wrapper">
                               <Link
                                 to={item.route}
@@ -253,7 +234,7 @@ const Dashboard: React.FC = () => {
                                   backgroundColor: randomCardColor,
                                   outline: `1px dotted ${randomArrowColor}`,
                                   outlineOffset: '3px',
-                                  position: "relative"
+                                  position: 'relative',
                                 }}
                                 onMouseEnter={() => {
                                   setIsHovered(true);
@@ -264,17 +245,28 @@ const Dashboard: React.FC = () => {
                                   setHoveredItem(null);
                                 }}
                               >
-
                                 <div className="con-fle">
                                   {item.subtitle ? (
                                     <small>
-                                      {item.subtitle.length > 20 ? `${item.subtitle.slice(0, 15)}...` : item.subtitle}
+                                      {item.subtitle.length > 20
+                                        ? `${item.subtitle.slice(0, 15)}...`
+                                        : item.subtitle}
                                     </small>
                                   ) : null}
                                   <h1 className="reporting-card-heading">
-                                    {item.title.length > 20 ? `${item.title.slice(0, 15)}...` : item.title}
+                                    {item.title.length > 20
+                                      ? `${item.title.slice(0, 15)}...`
+                                      : item.title}
                                   </h1>
-                                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                    }}
+                                  >
                                     <div
                                       className="checkbox-wrapper"
                                       onClick={(event) => {
@@ -282,13 +274,24 @@ const Dashboard: React.FC = () => {
 
                                         const id = item.id;
                                         if (checkedItems.includes(id)) {
-                                          setCheckedItems(checkedItems.filter((item) => item !== id));
+                                          setCheckedItems(
+                                            checkedItems.filter(
+                                              (item) => item !== id
+                                            )
+                                          );
                                         } else {
-                                          setCheckedItems([...checkedItems, id]);
+                                          setCheckedItems([
+                                            ...checkedItems,
+                                            id,
+                                          ]);
                                         }
                                       }}
                                       style={{
-                                        display: checkedItems.includes(item.id) || (isHovered && hoveredItem === item.id) ? 'block' : 'none'
+                                        display:
+                                          checkedItems.includes(item.id) ||
+                                          (isHovered && hoveredItem === item.id)
+                                            ? 'block'
+                                            : 'none',
                                       }}
                                     >
                                       <input
@@ -303,19 +306,25 @@ const Dashboard: React.FC = () => {
                                         event.preventDefault();
                                         event.stopPropagation();
                                         setEditId(item.id);
-                                        setEditTitle(item.title)
-                                        setDashEditId(item.dashboard_id)
+                                        setEditTitle(item.title);
+                                        setDashEditId(item.dashboard_id);
                                         setSubTitle(item.subtitle);
                                         handleOpen();
                                       }}
                                       style={{
-                                        display: checkedItems.includes(item.id) || (isHovered && hoveredItem === item.id) ? 'block' : 'none',
-                                        width: "15px",
-                                        // backgroundColor:"black"
+                                        display:
+                                          checkedItems.includes(item.id) ||
+                                          (isHovered && hoveredItem === item.id)
+                                            ? 'block'
+                                            : 'none',
+                                        width: '15px',
                                       }}
-                                      data-tooltip-id={"edit"}
+                                      data-tooltip-id={'edit'}
                                     >
-                                      <SlPencil color="white" className="report-edit-icon"/>
+                                      <SlPencil
+                                        color="white"
+                                        className="report-edit-icon"
+                                      />
                                     </div>
                                     <div
                                       className="arrow-wrapper"
@@ -325,7 +334,6 @@ const Dashboard: React.FC = () => {
                                       <RiArrowRightLine className="arrow-right" />
                                     </div>
                                   </div>
-
                                 </div>
                               </Link>
                             </div>

@@ -60,7 +60,6 @@
   font-size: 14px;
   font-weight: 600;
   line-height: 18px;
-  /* width: 100px; */
   color: var(--coloumn-text-color);
   text-overflow: ellipsis;
   overflow-x: hidden;
@@ -211,7 +210,6 @@
 }
 
 @media (max-width: 768px) {
-
   .configure-main,
   .commissionContainer {
     margin: 10px;
