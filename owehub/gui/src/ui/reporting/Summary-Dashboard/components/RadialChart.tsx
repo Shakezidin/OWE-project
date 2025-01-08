@@ -43,21 +43,28 @@ const RadialChart = () => {
     };
 
     return (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" >
             <RadialBarChart
                 cx="50%"
-                cy="50%"
-                innerRadius="15%"
-                outerRadius="80%"
-                barSize={10}
+                cy="70%"
+                innerRadius="30%"
+                outerRadius="120%"
+                barSize={15}
                 data={data}
                 startAngle={180}
                 endAngle={0}
             >
                 <RadialBar
-                    background
+                    background={{ fill: '#FFFFFF' }}
                     dataKey="uv"
+                    strokeWidth={2}
+                    cornerRadius={10}
+                    data={data.map(item => ({
+                        ...item,
+                        stroke: item.fill, // Adding stroke property directly in the data
+                    }))}
                 />
+
                 <Tooltip
                     contentStyle={tooltipStyle}
                     wrapperStyle={{
@@ -71,11 +78,11 @@ const RadialChart = () => {
                 <Legend
                     iconSize={10}
                     layout="horizontal"
-                    verticalAlign="middle"
+                    verticalAlign="bottom"
                     wrapperStyle={{
                         fontSize: '12px',
                         fontWeight: "400",
-                        marginTop: "24px"
+                        bottom: "78px"
                     }}
                     payload={
                         data.map((item, index) => ({
@@ -86,6 +93,15 @@ const RadialChart = () => {
                         }))
                     }
                 />
+                <text
+                    x="50%"
+                    y="67%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    style={{ fontSize: '16px', fontWeight: 'bold' }}
+                >
+                    2024
+                </text>
             </RadialBarChart>
         </ResponsiveContainer>
 

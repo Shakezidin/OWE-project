@@ -162,12 +162,21 @@
 
 .bottom_box_chart1 {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     box-shadow: rgba(0, 0, 0, 0.03) 2px 4px 8px -1px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     width: 100%;
 }
+
+.bottom_box_chart1_sec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
 .bottom_box_chart2 {
     display: flex;
     flex-direction: column;
@@ -176,22 +185,26 @@
     border-radius: 12px;
     width: 100%;
 }
-.bottom_box_chart2_head{
+
+.bottom_box_chart2_head {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 18px;
 }
-.bottom_box_chart2_head h1{
+
+.bottom_box_chart2_head h1 {
     font-size: 16px;
     font-weight: 500;
 }
-.bottom_box_chart2_head_buttons{
+
+.bottom_box_chart2_head_buttons {
     display: flex;
     flex-direction: row;
     border-radius: 10px;
 }
-.bottom_box_button{
+
+.bottom_box_button {
     font-weight: 500;
     font-size: 12px;
     border: 1px solid #377CF6;
@@ -200,17 +213,21 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
-.bottom_box_button:hover{
+
+.bottom_box_button:hover {
     background-color: #ddebff;
 }
+
 .bottom_box_button.active {
     background-color: #377CF6;
     color: #fff;
 }
-.bottom_box_button.active:hover{
+
+.bottom_box_button.active:hover {
     background-color: #377CF6;
 }
-.bottom_graphchange{
+
+.bottom_graphchange {
     height: 28px;
     width: 28px;
     border-radius: 50%;
@@ -221,8 +238,54 @@
     align-items: center;
     cursor: pointer;
 }
-.bottom_graphchange_div{
+
+.bottom_graphchange_div {
     display: flex;
     justify-content: flex-end;
     padding-right: 18px;
+}
+
+
+.bottom_box_chart1 p {
+    font-weight: 500;
+    font-size: 16px;
+    margin-top: 13px;
+    margin-left: 18px;
+}
+
+
+
+
+.bottom_box_chart2_head_buttons_sec {
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    border: 4px solid #EFEFEF;
+}
+
+.bottom_box_button_sec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 12px;
+    padding: 5px 13px 5px 13px;
+    color: #B4B4B4;
+    background-color: #EFEFEF;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bottom_box_button_sec:hover {
+    background-color: #ddebff;
+}
+
+.bottom_box_button_sec.active {
+    background-color: #377CF6;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.bottom_box_button_sec.active:hover {
+    background-color: #377CF6;
 }
