@@ -98,7 +98,7 @@ const Dashboard: React.FC = () => {
       data: arrayData.map((item, index) => ({
         subtitle: item.subtitle || '',
         id: item.id,
-        dashboard_id:item.dashboard_id,
+        dashboard_id: item.dashboard_id,
         title: item.title || `Item ${index + 1}`,
         route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
       })),
@@ -253,7 +253,7 @@ const Dashboard: React.FC = () => {
                                   backgroundColor: randomCardColor,
                                   outline: `1px dotted ${randomArrowColor}`,
                                   outlineOffset: '3px',
-                                  position: "relative"
+                                  position: "relative",
                                 }}
                                 onMouseEnter={() => {
                                   setIsHovered(true);
@@ -271,9 +271,26 @@ const Dashboard: React.FC = () => {
                                       {item.subtitle.length > 20 ? `${item.subtitle.slice(0, 15)}...` : item.subtitle}
                                     </small>
                                   ) : null}
-                                  <h1 className="reporting-card-heading">
-                                    {item.title.length > 20 ? `${item.title.slice(0, 15)}...` : item.title}
+                                  <h1 className="reporting-card-heading" data-tooltip-id={item.title.length > 15 ? item.title : ""}>
+                                    {item.title.length > 15 ? `${item.title.slice(0, 15)}...` : item.title}
                                   </h1>
+                                  <Tooltip
+                                    style={{
+                                      zIndex: 999,
+                                      background: "#000",
+                                      color: '#f7f7f7',
+                                      fontSize: 12,
+                                      paddingBlock: 4,
+                                    }}
+                                    delayShow={400}
+                                    offset={8}
+                                    id={item.title}
+                                    place="bottom"
+                                    content={item.title}
+                                    
+                                    
+                                  />
+
                                   <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>
                                     <div
                                       className="checkbox-wrapper"
@@ -315,7 +332,7 @@ const Dashboard: React.FC = () => {
                                       }}
                                       data-tooltip-id={"edit"}
                                     >
-                                      <SlPencil color="white" className="report-edit-icon"/>
+                                      <SlPencil color="white" className="report-edit-icon" />
                                     </div>
                                     <div
                                       className="arrow-wrapper"
