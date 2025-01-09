@@ -129,7 +129,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
           ) {
-          } else {
+          } else if(item.path !== ROUTES.REPORTING) {
             newArr[0].mob.push(item);
           }
         }
