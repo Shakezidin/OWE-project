@@ -18,7 +18,7 @@ const DynDashboard = () => {
 
     return (
         <>
-            <BackButtom heading="Dashboard"/>
+            <BackButtom heading="Reports Dashboard"/>
             {dashboardId && <SupersetDashboard dashboardId={dashboardId} />}
         </>
     );
