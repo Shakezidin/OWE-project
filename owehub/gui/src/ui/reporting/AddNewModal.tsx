@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
 import { toast } from 'react-toastify';
