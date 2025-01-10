@@ -6,6 +6,8 @@
 
 package models
 
+// Get Reports Achieved (homepage) models
+
 type GetReportsTargetReq struct {
 	TargetType string `json:"target_type"`
 	Month      string `json:"month"`
@@ -34,6 +36,37 @@ type GetReportsTargetResp struct {
 	Summary         map[string]GetReportsTargetRespSummaryItem   `json:"summary"`
 	Progress        map[string]GetReportsTargetRespProgressItem  `json:"progress"`
 	MonthlyOverview map[string][]GetReportsTargetRespMonthlyItem `json:"monthly_overview"`
+}
+
+// Get production targets by year models
+
+type ProductionTargetsByYearReq struct {
+	Year int `json:"year"`
+}
+
+type ProductionTargetsByYearRespItem struct {
+	Month        string  `json:"month"`
+	ProjectsSold int64   `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    int64   `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  int64   `json:"batteries_ct"`
+}
+
+// Update production targets models
+
+type UpdateProductionTargetsReqItem struct {
+	Year         int     `json:"year"`
+	Month        int     `json:"month"`
+	ProjectsSold int64   `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    int64   `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  int64   `json:"batteries_ct"`
+}
+
+type UpdateProductionTargetsReq struct {
+	Targets []UpdateProductionTargetsReqItem `json:"targets"`
 }
 
 // type MonthlyData struct {
