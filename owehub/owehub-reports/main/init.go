@@ -144,7 +144,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
-
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_reports_achived",
+		apiHandler.HandleReportsTargetListRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 	// superset reports CRUD
 	{
 		strings.ToUpper("POST"),
