@@ -58,7 +58,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 	query = fmt.Sprintf(`
 		WITH months(n) AS (SELECT generate_series(1, 12))
 		SELECT
-			TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month') AS month,
+			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
 			COALESCE(p.projects_sold, 0) AS projects_sold,
 			COALESCE(p.mw_sold, 0) AS mw_sold,
 			COALESCE(p.install_ct, 0) AS install_ct,
@@ -67,6 +67,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		FROM MONTHS
 		LEFT JOIN %s p
 		ON MONTHS.n = p.month AND p.year = $1
+		ORDER BY MONTHS.n
 	`, db.TableName_ProductionTargets)
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.Year})
