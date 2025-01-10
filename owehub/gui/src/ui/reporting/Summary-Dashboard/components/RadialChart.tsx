@@ -37,15 +37,6 @@ const RadialChart = () => {
             fill: '#AD7BFF',
         },
     ];
-
-    const tooltipStyle = {
-        fontSize: '10px',
-        padding: '6px',
-        borderRadius: '4px',
-    };
-
-
-
     const CustomTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
@@ -53,13 +44,17 @@ const RadialChart = () => {
             return (
                 <div
                     style={{
-                        backgroundColor: 'white',
-                        padding: '6px',
+                        fontSize: '10px',
+                        padding: '2px',
                         borderRadius: '4px',
-                        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+                        display:"flex",
+                        flexDirection:"column",
+                        justifyContent:"start",
+                        alignItems:"start",
+                       
                     }}
                 >
-                    <p>{data.name}</p>
+                    <p style={{fontWeight:"500", fontSize:"12px", color:"#101828", marginRight:'-10px'}}>{data.name}</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* Blank Circle for Target */}
                         <svg width="12" height="12" style={{ marginRight: '5px' }}>
@@ -68,11 +63,11 @@ const RadialChart = () => {
                                 cy="6"
                                 r="5"
                                 stroke={data.fill}
-                                strokeWidth="2"
+                                strokeWidth="1"
                                 fill="white"
                             />
                         </svg>
-                        <span>Target: {data.Target}%</span>
+                        <span style={{fontWeight:"500", fontSize:"12px", color:"#767676"}}>Target: {data.Target}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* Filled Circle for Achieved */}
@@ -84,7 +79,7 @@ const RadialChart = () => {
                                 fill={data.fill}
                             />
                         </svg>
-                        <span>Achieved: {data.Achieved}%</span>
+                        <span style={{fontWeight:"500", fontSize:"12px", color:"#767676"}}>Achieved: {data.Achieved}</span>
                     </div>
                 </div>
             );
