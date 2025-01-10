@@ -42,7 +42,7 @@
     overflow-x: auto;
   }
   .editTarget-table-container::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
     height: 6px;
   }
   .editTarget-table-container::-webkit-scrollbar {

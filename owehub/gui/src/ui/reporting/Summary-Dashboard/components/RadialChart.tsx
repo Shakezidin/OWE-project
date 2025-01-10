@@ -80,10 +80,13 @@ const RadialChart = () => {
                     layout="horizontal"
                     verticalAlign="bottom"
                     wrapperStyle={{
-                        fontSize: '12px',
-                        fontWeight: "400",
-                        bottom: "78px"
+                      bottom: "78px",
                     }}
+                    formatter={(value) => (
+                      <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                        {value}
+                      </span>
+                    )}
                     payload={
                         data.map((item, index) => ({
                             id: item.name,

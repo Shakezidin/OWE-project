@@ -343,11 +343,9 @@ const Summary_Dashboard = () => {
 
                         <div className={classes.bottom_graphchange_div}>
                             <div className={classes.bottom_graphchange} onClick={handleChartClick}>
-                                {line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                                {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
