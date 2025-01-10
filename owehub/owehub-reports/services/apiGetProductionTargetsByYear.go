@@ -66,7 +66,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			COALESCE(p.batteries_ct, 0) AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
-		ON MONTHS.n = production_targets.month AND p.year = $1
+		ON MONTHS.n = p.month AND p.year = $1
 	`, db.TableName_ProductionTargets)
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.Year})
