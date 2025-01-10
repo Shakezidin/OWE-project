@@ -237,6 +237,10 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+.bottom_graphchange:hover{
+    transform: scale(1.08);
 }
 
 .bottom_graphchange_div {
@@ -288,4 +292,19 @@
 
 .bottom_box_button_sec.active:hover {
     background-color: #377CF6;
+}
+
+.editModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.editModal img {
+    transition: all 0.3s ease;
+}
+
+.editModal img:hover {
+    transform: scale(1.06);
 }

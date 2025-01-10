@@ -1,5 +1,5 @@
 import React from 'react'
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarAngleAxisProps, ResponsiveContainer } from 'recharts';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarAngleAxisProps, ResponsiveContainer, Legend } from 'recharts';
 
 
 const RadarChartComponenet = () => {
@@ -31,19 +31,19 @@ const RadarChartComponenet = () => {
     },
   ];
 
-  const CustomTick = ({ payload, x, y, textAnchor }:any) => {
+  const CustomTick = ({ payload, x, y, textAnchor }: any) => {
     const entry = data.find((item) => item.subject === payload.value);
     if (entry) {
       const percentage = ((entry.Achieve / entry.Target) * 100).toFixed(1);
-  
+
       return (
         <text x={x} y={y} textAnchor={textAnchor}>
           {/* Dot with custom color */}
           <tspan fill="#377CF6" fontWeight="bold" fontSize="14px">● </tspan>
           {/* Subject */}
-          <tspan fill="#767676" fontWeight="600" fontSize="12px">{payload.value}</tspan>
+          <tspan fill="#767676" fontWeight="400" fontSize="12px">{payload.value}</tspan>
           {/* Percentage */}
-          <tspan fill="#000000" fontWeight="400" fontSize="10px"> ({percentage}%)</tspan>
+          <tspan fill="#000000" fontWeight="500" fontSize="12px"> ({percentage}%)</tspan>
         </text>
       );
     }
@@ -61,7 +61,7 @@ const RadarChartComponenet = () => {
           dataKey="subject"
           tick={<CustomTick />}
         />
-       
+
         <Radar
           name="Achieve"
           dataKey="Achieve"
@@ -75,6 +75,24 @@ const RadarChartComponenet = () => {
             r: 2,
           }}
         />
+        <Legend
+          payload={[
+            {
+              value: 'Target Achieved in Percentage',
+              type: 'circle',
+              id: 'Achieve',
+              color: '#377CF6',
+            },
+          ]}
+          formatter={(value) => (
+            <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+              {value}
+            </span>
+          )}
+          iconSize={10}
+        />
+
+
       </RadarChart>
     </ResponsiveContainer>
   );
