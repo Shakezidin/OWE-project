@@ -5,13 +5,12 @@
     
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" 
-    content="default-src 'self'; 
-             script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://*.google-analytics.com https://lottie.host;
-             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    content= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com https://*.googletagmanager.com https://*.google-analytics.com https://lottie.host https://*.owe-hub.com;
+             style-src 'self' 'unsafe-inline' https://*.googleapis.com https://*.owe-hub.com;
              img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://*.owe-hub.com;
-             connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://lottie.host https://*.owe-hub.com;
+             connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://graph.microsoft.com https://lottie.host https://*.owe-hub.com;
              font-src 'self' https://fonts.gstatic.com data:;
-             object-src 'none';
+             object-src 'self';
              media-src 'self';
              frame-src 'self' https://lottie.host https://*.owe-hub.com;
              worker-src 'self' blob:;">
