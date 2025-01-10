@@ -1,7 +1,8 @@
-.calc-wrapper{
+.calc-wrapper {
     background-color: var(--white-color) !important;
     border-radius: 16px;
 }
+
 #calc-header {
     display: flex;
     align-items: center;
@@ -14,7 +15,6 @@
 }
 
 #calc-header h2 {
-    /* font-size: 1rem; */
     font-size: 18px;
     font-weight: 600;
 }
@@ -99,7 +99,6 @@
 
 .build-earnout h2,
 .equity-header h2 {
-    /* font-size: 1.1rem; */
     font-size: 16px;
     font-weight: 600;
     color: #5E5E5E;
@@ -278,7 +277,7 @@
 }
 
 .calc-btn-earn,
-.calc-btn-growth{
+.calc-btn-growth {
     transition: all 0.3s ease;
 }
 
@@ -328,50 +327,68 @@
 .rc-slider-handle {
     border-radius: 50%;
 }
-.desktop-hide{
+
+.desktop-hide {
     display: none;
 }
 
-@media (max-width: 1024px){
-    #calculator-main{
+@media (max-width: 1024px) {
+    #calculator-main {
         padding: 10px 12px;
     }
-    .build-earnout, .equity-growth{
+
+    .build-earnout,
+    .equity-growth {
         height: 88vh !important;
     }
-    #calc-header{
+
+    #calc-header {
         padding: 1.1rem;
     }
-    #calc-header h2{
+
+    #calc-header h2 {
         font-size: 14px;
     }
-    .body-header input.number-input{
+
+    .body-header input.number-input {
         width: 80px;
         font-size: 12px;
     }
-    .build-earnout h2, .equity-header h2{
+
+    .build-earnout h2,
+    .equity-header h2 {
         font-size: 1rem;
     }
-    .build-body p, .equity-body p{
+
+    .build-body p,
+    .equity-body p {
         font-size: 13px;
     }
-    .build-head-btn button{
+
+    .build-head-btn button {
         height: 34px;
     }
-    .build-earnout{
+
+    .build-earnout {
         width: 54%;
     }
-    .equity-growth{
+
+    .equity-growth {
         width: 45%
     }
-    .build-footer button, .equity-footer button{
+
+    .build-footer button,
+    .equity-footer button {
         width: 300px;
         font-size: 1rem;
     }
-    #calculator-main .footer-value{
+
+    #calculator-main .footer-value {
         font-size: 12px;
     }
-    .build-footer button span, .equity-footer button span{
+
+    .build-footer button span,
+    .equity-footer button span {
         font-size: 12px;
     }
 }
@@ -379,30 +396,36 @@
 
 /* Responsive  */
 @media (max-width: 768px) {
-    .calc-wrapper{
+    .calc-wrapper {
         margin: 0;
     }
-    .desktop-hide{
+
+    .desktop-hide {
         display: inline-flex;
     }
+
     #calculator-main {
         flex-direction: column;
         padding: 0;
         margin-top: 0;
     }
-    .equity-growth{box-shadow: unset !important}
 
-    .mob-header-active{
+    .equity-growth {
+        box-shadow: unset !important
+    }
+
+    .mob-header-active {
         color: #5E5E5E !important;
     }
 
-    .mob-header-inactive{
+    .mob-header-inactive {
         color: #cfcfcf !important;
     }
 
-    .build-header{
+    .build-header {
         justify-content: flex-start;
     }
+
     .equity-growth:not(.selected-tab) {
         display: none !important;
     }
@@ -410,44 +433,47 @@
     .build-body-mob:not(.selected-tab) {
         display: none !important;
     }
- 
-    .hide-mob:not(.selected-tab){
+
+    .hide-mob:not(.selected-tab) {
         display: none !important;
     }
 
-    .equity-header{
+    .equity-header {
         display: none;
     }
-    .sm-btn{
+
+    .sm-btn {
         cursor: pointer;
     }
 
-    .equity-growth.selected-tab{
-        height:82vh !important ;
+    .equity-growth.selected-tab {
+        height: 82vh !important;
     }
 
-    .margin-mob{
-        margin-top: 0  !important;
+    .margin-mob {
+        margin-top: 0 !important;
     }
-    .equity-body{
+
+    .equity-body {
         margin-top: 0;
     }
 
-    .build-earnout.height-mob{
-        height: 60px  !important;
+    .build-earnout.height-mob {
+        height: 60px !important;
         box-shadow: none !important;
     }
+
     #calc-header {
         padding: 1.1rem;
         gap: 1rem;
         border-radius: 0;
     }
 
-    #calc-header h2{
+    #calc-header h2 {
         font-size: 14px;
     }
 
-    .build-earnout h2{
+    .build-earnout h2 {
         font-size: 14px;
     }
 
@@ -464,27 +490,30 @@
         padding-left: 0.5rem;
     }
 
-    .build-footer, .equity-footer{
+    .build-footer,
+    .equity-footer {
         left: 0;
         right: 0;
     }
 
-    .build-footer button, .equity-footer button {
+    .build-footer button,
+    .equity-footer button {
         border-radius: unset;
         width: 100%;
     }
 
-    .build-head-btn{
+    .build-head-btn {
         position: absolute;
         top: 80px;
         left: 16px;
     }
 
-    .build-body, .equity-body{
+    .build-body,
+    .equity-body {
         margin-top: 4rem;
     }
 
-    .body-header input.number-input{
+    .body-header input.number-input {
         width: 100px;
     }
 }
