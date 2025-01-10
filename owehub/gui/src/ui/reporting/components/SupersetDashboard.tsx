@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { embedDashboard } from '@superset-ui/embedded-sdk';
 
-const URL = 'https://staging.owe-hub.com/api/owe-reports-service/v1';
+// const URL = 'https://owe-hub.com/api/owe-reports-service/v1';
 const SUPERSET_DOMAIN = 'https://superset.owe-hub.com';
+
+const URL = `${process.env.REACT_APP_REPORT_URL}`;
 
 async function getToken(dashboardId: string) {
   try {
