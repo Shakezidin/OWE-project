@@ -90,6 +90,7 @@ const (
 	/* Reports Tables and Procedures */
 	TableName_SupersetReports    string = "superset_reports"
 	CreateSupersetReportFunction string = "create_superset_report"
+	TableName_ProductionTargets  string = "production_targets"
 )
 
 /******************************************************************************
