@@ -39,25 +39,11 @@ const AddMember: React.FC<createUserProps> = ({
   setIsRefresh,
 }) => {
   const dispatch = useAppDispatch();
-  const [phoneNumberError, setPhoneNumberError] = useState('');
   const { loading, formData } = useAppSelector(
     (state) => state.createOnboardUser
   );
 
   const { team_dropdown } = useAppSelector((state) => state.teamManagmentSlice);
-
-  const handleInputChange = (
-    e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-
-    if (name === 'first_name' || name === 'last_name') {
-      const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
-      dispatch(updateUserForm({ field: name, value: sanitizedValue }));
-    } else {
-      dispatch(updateUserForm({ field: name, value }));
-    }
-  };
 
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [selectedDropdown, setSelectDropdown] = useState<Option | undefined>(
@@ -84,13 +70,6 @@ const AddMember: React.FC<createUserProps> = ({
     phone: string;
     email: string;
   }
-  // const handleSelectChange = (selectedOption: Option | undefined) => {
-  //   setSelectedRole(selectedOption);
-  // };
-
-  // const handleRole = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   setSelectedRole(event.target.value);
-  // };
 
   const handleRemoveOption = (optionToRemove: Option) => {
     //@ts-ignore
@@ -188,7 +167,6 @@ const AddMember: React.FC<createUserProps> = ({
     }
   };
 
- 
   return (
     <div className="transparent-model">
       {loading && (

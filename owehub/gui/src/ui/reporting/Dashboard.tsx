@@ -11,6 +11,7 @@ import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { AddNewButton } from '../components/button/AddNewButton';
 import { SlPencil } from 'react-icons/sl';
+import { Tooltip } from 'react-tooltip';
 interface ReportData {
   id: number;
   title: string;
@@ -76,16 +77,16 @@ const Dashboard: React.FC = () => {
 
   const accordionSectionsTest = data
     ? Object.entries(data).map(([arrayName, arrayData], index) => ({
-        title: arrayName,
-        data: arrayData.map((item, index) => ({
-          subtitle: item.subtitle || '',
-          id: item.id,
-          dashboard_id: item.dashboard_id,
-          title: item.title || `Item ${index + 1}`,
-          route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
-        })),
-        state: [accordionStates[index] ?? true, () => {}],
-      }))
+      title: arrayName,
+      data: arrayData.map((item, index) => ({
+        subtitle: item.subtitle || '',
+        id: item.id,
+        dashboard_id: item.dashboard_id,
+        title: item.title || `Item ${index + 1}`,
+        route: `${ROUTES.DYNAMIC_REPORT.replace(':id', item.dashboard_id)}`,
+      })),
+      state: [accordionStates[index] ?? true, () => { }],
+    }))
     : [];
 
   useEffect(() => {
@@ -234,7 +235,7 @@ const Dashboard: React.FC = () => {
                                   backgroundColor: randomCardColor,
                                   outline: `1px dotted ${randomArrowColor}`,
                                   outlineOffset: '3px',
-                                  position: 'relative',
+                                  position: "relative",
                                 }}
                                 onMouseEnter={() => {
                                   setIsHovered(true);
@@ -253,20 +254,27 @@ const Dashboard: React.FC = () => {
                                         : item.subtitle}
                                     </small>
                                   ) : null}
-                                  <h1 className="reporting-card-heading">
-                                    {item.title.length > 20
-                                      ? `${item.title.slice(0, 15)}...`
-                                      : item.title}
+                                  <h1 className="reporting-card-heading" data-tooltip-id={item.title.length > 15 ? item.title : ""}>
+                                    {item.title.length > 15 ? `${item.title.slice(0, 15)}...` : item.title}
                                   </h1>
-                                  <div
+                                  <Tooltip
                                     style={{
-                                      display: 'flex',
-                                      flexDirection: 'row',
-                                      justifyContent: 'space-between',
-                                      alignItems: 'center',
-                                      gap: '6px',
+                                      zIndex: 999,
+                                      background: "#000",
+                                      color: '#f7f7f7',
+                                      fontSize: 12,
+                                      paddingBlock: 4,
                                     }}
-                                  >
+                                    delayShow={400}
+                                    offset={8}
+                                    id={item.title}
+                                    place="bottom"
+                                    content={item.title}
+                                    
+                                    
+                                  />
+
+                                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>
                                     <div
                                       className="checkbox-wrapper"
                                       onClick={(event) => {
@@ -321,10 +329,7 @@ const Dashboard: React.FC = () => {
                                       }}
                                       data-tooltip-id={'edit'}
                                     >
-                                      <SlPencil
-                                        color="white"
-                                        className="report-edit-icon"
-                                      />
+                                      <SlPencil color="white" className="report-edit-icon" />
                                     </div>
                                     <div
                                       className="arrow-wrapper"

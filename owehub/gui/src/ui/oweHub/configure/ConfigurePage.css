@@ -110,6 +110,7 @@
 }
 
 .pay-card:hover {
+  z-index: 1000;
   transform: scale(1.08);
   transition: all 0.4s ease;
 }

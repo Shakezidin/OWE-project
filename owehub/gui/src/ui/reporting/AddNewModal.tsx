@@ -180,16 +180,126 @@ const ReportFormModal = ({
       return <div className="report-loading-message">Loading...</div>;
     }
     return (
-      <ul className="report-suggestion-list">
-        {suggestions.map((suggestion) => (
-          <li
-            key={suggestion}
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            {suggestion}
-          </li>
-        ))}
-      </ul>
+        <>
+            {isOpen &&
+                <div className="add-transparent-model">
+                    <div className='rep-mod-top'>
+                        <div className='ahj-header'>
+                            <p>{id === 0 ? "Create New Report" : "Update Report"}</p>
+                            <RxCross2 className="edit-report-cross-icon" size={20} onClick={handleClose} style={{ cursor: "pointer" }} />
+                        </div>
+                        {(editLoad && (id !== 0)) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop:"110px" }}>
+                                <MicroLoader />
+                            </div>
+                        ) :
+                            <div className='rep-inp-container'>
+                                <div className="reportContainerModal">
+                                    <Input
+                                        type="text"
+                                        label="Category"
+                                        value={formData.category}
+                                        placeholder="Please Enter Category"
+                                        maxLength={30}
+                                        onChange={handleInputChange}
+                                        name="category"
+                                    />
+                                    {renderSuggestions()}
+                                    {errors.category && (
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                            }}
+                                            className="error"
+                                        >
+                                            {errors.category}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="reportContainerModal">
+                                    <Input
+                                        type="text"
+                                        label="Title"
+                                        value={formData.title}
+                                        placeholder="Please Enter Title"
+                                        maxLength={30}
+                                        onChange={handleInputChange}
+                                        name="title"
+                                    />
+                                    {errors.title && (
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                            }}
+                                            className="error"
+                                        >
+                                            {errors.title}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="reportContainerModal">
+                                    <Input
+                                        type="text"
+                                        label="Subtitle"
+                                        value={formData.subTitle}
+                                        placeholder="Please Enter Subtitle"
+                                        maxLength={30}
+                                        onChange={handleInputChange}
+                                        name="subTitle"
+                                    />
+                                    {errors.subTitle && (
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                            }}
+                                            className="error"
+                                        >
+                                            {errors.subTitle}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="reportContainerModal">
+                                    <Input
+                                        type="text"
+                                        label="Dashboard ID"
+                                        value={formData.dashboard_id}
+                                        placeholder="Please Enter dashboard id"
+                                        onChange={handleInputChange}
+                                        name="dashboard_id"
+                                    />
+                                    {errors.dashboard_id && (
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                            }}
+                                            className="error"
+                                        >
+                                            {errors.dashboard_id}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className='modal-submit-report'>
+                                    {(id === 0) ? <button onClick={handleSubmit} style={{ cursor: load ? "not-allowed" : "pointer", pointerEvents: load ? "none" : "auto", }}
+                                        disabled={load}
+                                    >{load ? "Creating..." : "Create Report"}</button>
+                                        :
+
+                                        <button onClick={handleEdit} style={{ cursor: load ? "not-allowed" : "pointer", pointerEvents: load ? "none" : "auto", }}
+                                            disabled={load}
+                                        >{load ? "Updating..." : "Update"}</button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            }
+        </>
+
     );
   };
   useEffect(() => {
