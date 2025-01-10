@@ -8,6 +8,7 @@ import LineChartComp from './components/LineChart';
 import { MdBarChart } from 'react-icons/md';
 import { FaChartLine } from 'react-icons/fa';
 import EditModal from './components/EditModal';
+import { ICONS } from '../../../resources/icons/Icons';
 interface Option {
     value: string;
     label: string;
@@ -296,7 +297,7 @@ const Summary_Dashboard = () => {
                             <h1>Overview</h1>
                             <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center", alignItems: "center" }}>
                                 <div className={classes.editModal} onClick={handleOpen}>
-                                    Edit
+                                    <img src={ICONS.ReportEdit} alt="Edit" />
                                 </div>
                                 <div className={classes.bottom_box_chart2_head_buttons}>
                                     <div
