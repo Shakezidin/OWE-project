@@ -68,6 +68,9 @@ const EditModal = ({ open, handleClose }: any) => {
             },
         }));
     };
+    const currentMonth = new Date().getMonth();
+    console.log(currentMonth, new Date().getMonth(), "hgfhf")
+
 
 
     return (
@@ -103,7 +106,7 @@ const EditModal = ({ open, handleClose }: any) => {
                                                 className={isPastMonth ? "pastMonth" : ""}
                                                 style={{ cursor: isPastMonth ? "not-allowed" : "default" }}
                                             >
-                                                <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
+                                                <td>
 
                                                     {isCurrentMonth && (
                                                         <span
@@ -121,9 +124,14 @@ const EditModal = ({ open, handleClose }: any) => {
                                                 </td>
 
 
-                                                <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
+                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
                                                     {!showInput[row.month]?.showprojectSold ? (
-                                                        <div onClick={() => handleShow(row.month, 'projectSold', row.projectSold)}>
+                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => {
+                                                            if (!isPastMonth) {
+                                                                handleShow(row.month, 'projectSold', row.projectSold)
+                                                            }
+                                                        }}
+                                                        >
                                                             {row.projectSold}
                                                         </div>
                                                     ) : (
@@ -154,9 +162,16 @@ const EditModal = ({ open, handleClose }: any) => {
                                                     )}
                                                 </td>
 
-                                                <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
+                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
                                                     {!showInput[row.month]?.showmwSold && (
-                                                        <div style={{cursor:"pointer"}} onClick={() => handleShow(row.month, 'mwSold', row.mwSold)}>
+                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }}
+                                                            onClick={() => {
+                                                                if (!isPastMonth) {
+                                                                    handleShow(row.month, 'mwSold', row.mwSold)
+                                                                }
+                                                            }}
+
+                                                        >
                                                             {row.mwSold}
                                                         </div>
                                                     )}
@@ -188,9 +203,9 @@ const EditModal = ({ open, handleClose }: any) => {
                                                     )}
                                                 </td>
 
-                                                <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
+                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
                                                     {!showInput[row.month]?.showinstallCT && (
-                                                        <div onClick={() => handleShow(row.month, 'installCT', row.installCT)}>
+                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => { if (!isPastMonth) { handleShow(row.month, 'installCT', row.installCT) } }}>
                                                             {row.installCT}
                                                         </div>
                                                     )}
@@ -222,9 +237,9 @@ const EditModal = ({ open, handleClose }: any) => {
                                                     )}
                                                 </td>
 
-                                                <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
+                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
                                                     {!showInput[row.month]?.showmwInstalled && (
-                                                        <div onClick={() => handleShow(row.month, 'mwInstalled', row.mwInstalled)}>
+                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => { if (!isPastMonth) { handleShow(row.month, 'mwInstalled', row.mwInstalled) } }}>
                                                             {row.mwInstalled}
                                                         </div>
                                                     )}
@@ -256,9 +271,9 @@ const EditModal = ({ open, handleClose }: any) => {
                                                     )}
                                                 </td>
 
-                                                <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
+                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
                                                     {!showInput[row.month]?.showbatteriesCT && (
-                                                        <div onClick={() => handleShow(row.month, 'batteriesCT', row.batteriesCT)}>
+                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => { if (!isPastMonth) { handleShow(row.month, 'batteriesCT', row.batteriesCT) } }}>
                                                             {row.batteriesCT}
                                                         </div>
                                                     )}
