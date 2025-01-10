@@ -100,7 +100,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 			batteries_ct = EXCLUDED.batteries_ct
 	`, db.TableName_ProductionTargets, strings.Join(valuesPlaceholders, ", "))
 
-	err = db.ExecQueryDB(db.OweHubDbIndex, query)
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to upsert data in DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get the production targets", http.StatusInternalServerError, nil)
