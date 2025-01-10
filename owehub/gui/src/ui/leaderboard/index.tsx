@@ -12,8 +12,7 @@ import jsPDF from 'jspdf';
 import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import { PDFDocument } from 'pdf-lib';
 import 'jspdf-autotable';
-import useAuth, { AuthData } from '../../hooks/useAuth';
-import { countReset } from 'console';
+import useAuth from '../../hooks/useAuth';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -52,7 +51,6 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
-
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
   const [tableData, setTableData] = useState([]);
@@ -129,8 +127,6 @@ const Index = () => {
         setIsLoading(true);
         try {
           // Extracting dealer logic for readability
-          
-  
           // API call
           const data = await postCaller('get_perfomance_leaderboard_data', {
             type: activeHead,
@@ -139,18 +135,24 @@ const Index = () => {
             page_number: page,
             start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
             end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-            dealer: (role === TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer') ? [] : selectDealer.map((item) => item.value),
+            dealer:
+              role === TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer'
+                ? []
+                : selectDealer.map((item) => item.value),
             group_by: groupBy,
           });
 
-          console.log(TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer', "jhdsfg")
-  
+          console.log(
+            TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer',
+            'jhdsfg'
+          );
+
           // Handle error response
           if (data.status > 201) {
             toast.error(data.message);
             return;
           }
-  
+
           // Update state with fetched data
           setDetails(data.data?.top_leader_board_list);
           setTableData(data);
@@ -174,8 +176,7 @@ const Index = () => {
     page,
     TYPE_OF_USER,
   ]);
-  
-  
+
   console.log(tableData, 'data');
   const shareImage = () => {
     if (topCards.current) {
@@ -322,7 +323,7 @@ const Index = () => {
   };
 
   return (
-    <div ref={leaderboard} className='leaderboard-main'>
+    <div ref={leaderboard} className="leaderboard-main">
       <div ref={topCards} style={{ background: '#f3f3f3' }}>
         <Banner
           selectDealer={selectDealer}

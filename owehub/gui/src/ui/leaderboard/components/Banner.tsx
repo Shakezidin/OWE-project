@@ -30,7 +30,7 @@ const Banner: React.FC<BannerProps> = ({
   setIsFetched,
   isGenerating,
   isLoading,
-  groupBy
+  groupBy,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -91,7 +91,6 @@ const Banner: React.FC<BannerProps> = ({
       role !== TYPE_OF_USER.FINANCE_ADMIN &&
       role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
       role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-      
       isAuthenticated
     ) {
       (async () => {
@@ -99,22 +98,18 @@ const Banner: React.FC<BannerProps> = ({
           const data = await postCaller('get_leaderboarddatarequest', {});
 
           if (data.status > 201) {
-            // setIsLoading(false);
             toast.error(data?.message);
             return;
           }
-          // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-          // setTotalCount(data?.dbRecCount);
           setDetails(data?.data);
           setDealerId(data?.data?.dealer_id);
         } catch (error) {
           console.error(error);
         } finally {
-          // setIsLoading(false);
         }
       })();
     }
-  }, [ role, refetch, isAuthenticated]);
+  }, [role, refetch, isAuthenticated]);
 
   useEffect(() => {
     if (
@@ -147,18 +142,13 @@ const Banner: React.FC<BannerProps> = ({
           });
 
           if (data.status > 201) {
-            // setIsLoading(false);
-
             toast.error(data.message);
             return;
           }
-          // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-          // setTotalCount(data?.dbRecCount);
           setVdealer(data?.data?.vdealers_list[0]);
         } catch (error) {
           console.error(error);
         } finally {
-          // setIsLoading(false);
         }
       })();
     }
@@ -178,28 +168,30 @@ const Banner: React.FC<BannerProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setOpts(leaderDealer(newFormData));
         setSearch('');
       }
     };
-  
+
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsOpen(false);
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyPress);
-  
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, [newFormData, search]);
-  
 
   console.log('details', details);
   return (
@@ -361,10 +353,10 @@ const Banner: React.FC<BannerProps> = ({
       </div>
 
       {(role === 'Admin' ||
-  role === TYPE_OF_USER.FINANCE_ADMIN ||
-  role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-  role === TYPE_OF_USER.ACCOUNT_MANAGER ||
-  (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+        (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
         <div
           className="dealer-dropdown-filter"
           style={{ zIndex: 100 }}
@@ -395,17 +387,23 @@ const Banner: React.FC<BannerProps> = ({
                   type="text"
                   className="input leaderboard-input"
                   placeholder="Search Partners"
-                  style={{ width: '100%'}}
+                  style={{ width: '100%' }}
                   value={search}
                   disabled={isLoading}
                   onChange={(e) => {
                     // Remove any non-alphanumeric characters
-                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                    const sanitizedValue = e.target.value.replace(
+                      /[^a-zA-Z0-9 ]/g,
+                      ''
+                    );
                     setSearch(sanitizedValue);
-                    
+
                     if (sanitizedValue.trim()) {
-                      const filtered = leaderDealer(newFormData)?.filter((item) =>
-                        item?.value.toLowerCase().includes(sanitizedValue.toLowerCase().trim())
+                      const filtered = leaderDealer(newFormData)?.filter(
+                        (item) =>
+                          item?.value
+                            .toLowerCase()
+                            .includes(sanitizedValue.toLowerCase().trim())
                       );
                       setOpts([...filtered]);
                     } else {
@@ -433,65 +431,31 @@ const Banner: React.FC<BannerProps> = ({
                   All
                 </div>
               )}
-              {opts?.length?opts?.map?.((option, ind) => (
-                <div key={ind} className="dropdown-item">
-                  <input
-                    type="checkbox"
-                    style={{ flexShrink: 0 }}
-                    disabled={isLoading}
-                    checked={selectDealer?.some(
-                      (item) => item.value === option.value
-                    )}
-                    onChange={() => handleChange(option)}
-                  />
-                  <span className='dropdown-text'>{option.label}</span>
+              {opts?.length ? (
+                opts?.map?.((option, ind) => (
+                  <div key={ind} className="dropdown-item">
+                    <input
+                      type="checkbox"
+                      style={{ flexShrink: 0 }}
+                      disabled={isLoading}
+                      checked={selectDealer?.some(
+                        (item) => item.value === option.value
+                      )}
+                      onChange={() => handleChange(option)}
+                    />
+                    <span className="dropdown-text">{option.label}</span>
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="text-center"
+                  style={{ fontSize: 14, color: '#000' }}
+                >
+                  No Data Found
                 </div>
-              )):<div className='text-center' style={{fontSize:14,color:"#000"}}>No Data Found</div>}
+              )}
             </div>
           )}
-
-          {/* <Select
-          isMulti
-            styles={{
-              menuList: (base) => ({
-                ...base,
-                height: '230px',
-                '&::-webkit-scrollbar': {
-                  scrollbarWidth: 'thin',
-                  display: 'block',
-                  scrollbarColor: 'rgb(173, 173, 173) #fff',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  background: 'rgb(173, 173, 173)',
-                  borderRadius: '30px',
-                },
-              }),
-              option: (base) => ({
-                ...base,
-                fontSize: '12px',
-              }),
-              indicatorSeparator: (base) => ({
-                ...base,
-                display: 'none',
-              }),
-              control: (base) => ({
-                ...base,
-                borderRadius: '24px',
-                // width: 'fit-content',
-                zIndex: 999,
-                fontSize: 14,
-              }),
-              dropdownIndicator: (base) => ({
-                ...base,
-                svg: {
-                  fill: '#3B3B3B',
-                },
-              }),
-            }}
-            options={leaderDealer(newFormData)}
-            onChange={(newValue) => setSelectDealer([...newValue])}
-            value={selectDealer}
-          /> */}
         </div>
       )}
       {showModal && (

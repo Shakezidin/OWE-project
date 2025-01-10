@@ -1,37 +1,32 @@
 /* -----------------Vaibhav Start----------------- */
 
 .dashboard {
-  /* padding: 24px; */
   background-color: #f3f4f6;
   min-height: 100vh;
   font-family: 'Poppins', sans-serif;
 }
+
 .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 24px;
 }
+
 .CrossRemoveSearch {
   right: 0;
   padding-right: 5px;
   transition: all 0.3s ease;
   cursor: pointer;
 }
+
 .CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-/* .chart_main_grid ::selection { 
-  background-color: var(--select-Context-Menu) !important; 
-  color: var(--white-color) !important; 
-}
- 
-.pieChart ::selection {
-  background-color: var(--select-Context-Menu) !important;
-  color: var(--white-color)  !important;
-} */
+
 .PaginationFont a {
   font-size: 12px !important;
 }
+
 .chartGrid {
   display: grid;
   background-color: white;
@@ -48,11 +43,13 @@
   justify-content: space-between;
   width: 100%;
 }
+
 .customFont,
 .customLeftRRR {
   font-weight: 600;
   color: var(--input-border-color);
 }
+
 .vertical2 {
   display: flex;
   justify-content: center;
@@ -60,6 +57,7 @@
   padding: 10px;
   max-width: auto !important;
 }
+
 .vertical1 {
   display: flex;
   justify-content: center;
@@ -98,9 +96,10 @@
   padding-right: 0;
 }
 
-.mainHeader > div {
+.mainHeader>div {
   padding: 0 10px;
 }
+
 .card {
   background-color: white;
   border-radius: 16px;
@@ -108,9 +107,9 @@
   min-height: 200px;
   margin-top: 1.2rem;
 }
+
 .cardHeaderFirst {
   padding: 18px 16px 16px 16px;
-  /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -123,6 +122,7 @@
   display: flex;
   align-items: center;
 }
+
 .cardHeaderSecond {
   padding: 10.8px 16px 16px 16px;
   font-weight: bold;
@@ -186,21 +186,12 @@
   margin-right: 16px;
 }
 
-/* .buttonGroup {
-    display: flex;
-    gap: 8px;
-    width: 70%;
-    overflow: scroll;
-    flex-wrap: wrap;
-  } */
 .buttonGroup {
   display: flex;
   padding: 5px;
   gap: 1px;
   width: 71%;
-  /* overflow: scroll; */
   flex-wrap: wrap;
-  /* box-shadow: inset -3px 0px 5px 2px #0000000d; */
   border-radius: 22px 0 0 22px;
 }
 
@@ -224,26 +215,11 @@
   color: #377cf6;
   background-color: #ddebff;
   border: 1px solid #377cf6 !important;
-
-  /* border-color: var(--primary-color) !important; */
 }
-
-.button:hover p,
-.button:hover span {
-  /* color: var(--primary-color); */
-}
-
-/* .displayStatus{
-  width: 56px;
-  line-height: 16px;
-  text-align: left;
-} */
 
 .status {
-  /* background: #fff; */
   border-radius: 50%;
   padding: 4px;
-  /* color: #292B2E; */
   width: 30px;
   height: 28px;
   border-radius: 50%;
@@ -253,10 +229,6 @@
   align-items: center;
   justify-content: center;
 }
-.statusInactive {
-  /* background: #dfdfdf !important; */
-  /* color: #929292 !important; */
-}
 
 .buttonActive {
   font-weight: 500;
@@ -264,6 +236,7 @@
   color: white;
   border: unset !important;
 }
+
 .buttonActive:hover {
   background-color: #3b82f6;
   color: #ffffff;
@@ -307,14 +280,17 @@ table tbody tr:hover {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .filtericon:hover {
   background-color: #4062ca;
   transform: scale(1.05);
 }
+
 .filtericon img {
   height: 17px;
   width: 22px;
 }
+
 .FirstColHead {
   display: flex;
 
@@ -329,6 +305,7 @@ table tbody tr:hover {
   align-items: center;
   width: 55%;
 }
+
 .searchBar {
   display: flex;
   align-items: center;
@@ -344,6 +321,7 @@ table tbody tr:hover {
 .searchBar:hover {
   border: 1px solid var(--primary-color);
 }
+
 .searchBar .searchInput:focus {
   outline: none;
 }
@@ -361,6 +339,7 @@ table tbody tr:hover {
   height: 12px !important;
   width: 12px !important;
 }
+
 .searchBar:hover .searchInput::placeholder,
 .searchBar:focus-within .searchInput::placeholder {
   color: #377cf6 !important;
@@ -368,8 +347,7 @@ table tbody tr:hover {
 
 .searchBar:hover .searchIcon img,
 .searchBar:focus-within .searchIcon img {
-  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg)
-    brightness(100%) contrast(100%);
+  filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(100%);
 }
 
 .searchInput {
@@ -381,6 +359,7 @@ table tbody tr:hover {
   font-weight: 400;
   border-radius: 5px;
 }
+
 .searchInput::placeholder {
   color: var(--input-border-color);
   transition: color 0.3s ease;
@@ -397,8 +376,6 @@ table tbody tr:hover {
   transform: scale(0.75);
   position: relative;
   align-items: center;
-  /* top: -2pc; */
-  /* right: -8px; */
 }
 
 .pieChart :focus {
@@ -408,19 +385,16 @@ table tbody tr:hover {
 .table {
   width: 100%;
   border-collapse: separate;
-  /* border-spacing: 0 16px; */
 }
 
 .history_lists {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 16px; */
 }
+
 .ScheduleBtnNew {
   width: 103px;
-}
-.ThreeDotsMinor {
 }
 
 .history_list_inner {
@@ -465,11 +439,13 @@ table tbody tr:hover {
 
 .actionButtons {
   display: flex;
-  gap: 10px; /* Adds space between buttons */
+  gap: 10px;
+  /* Adds space between buttons */
 }
 
 .rescheduleButton {
-  background-color: #2979ff; /* Blue color */
+  background-color: #2979ff;
+  /* Blue color */
   color: white;
   border: none;
   padding: 8px 0;
@@ -479,6 +455,7 @@ table tbody tr:hover {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .rescheduleButton:hover {
   transform: scale(1.05);
   background-color: #4062ca;
@@ -486,7 +463,8 @@ table tbody tr:hover {
 
 .archiveButton {
   background-color: transparent;
-  color: #757575; /* Gray color */
+  color: #757575;
+  /* Gray color */
   border: 1px solid #757575;
   padding: 8px 16px;
   border-radius: 20px;
@@ -496,7 +474,6 @@ table tbody tr:hover {
 }
 
 .archiveButton:hover {
-  /* background-color: #757575; */
   color: white;
   transform: scale(1.05);
 }
@@ -525,11 +502,10 @@ table tbody tr:hover {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .closeIcon:hover {
   transform: scale(1.09);
 }
-
-
 
 .removeButton {
   background-color: #d91515;
@@ -543,11 +519,11 @@ table tbody tr:hover {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-.removeButton:hover{
-  transform: scale(1.05);
-  background-color: #AD1313;
-}
 
+.removeButton:hover {
+  transform: scale(1.05);
+  background-color: #ad1313;
+}
 
 .paginationContainer {
   display: flex;
@@ -561,19 +537,18 @@ table tbody tr:hover {
   justify-content: space-between;
   align-items: center;
   height: 50px;
-
 }
+
 .PaginationFont select {
   min-width: 44px;
   min-height: 31.1px;
   border-radius: 4px;
-  text-align: center; 
+  text-align: center;
   text-align-last: center;
   margin: 0 auto;
   position: relative;
   padding: 0;
 }
-
 
 .chevron_down {
   display: none !important;
@@ -598,9 +573,11 @@ table tbody tr:hover {
 .tabs_setting {
   padding: 10px 0 0 5px;
 }
+
 .FirstColHeadMobile {
   display: none;
 }
+
 .customFontMobile {
   display: none;
 }
@@ -608,11 +585,14 @@ table tbody tr:hover {
 .cardHeaderForMobile {
   display: none;
 }
+
 .MobileViewHide {
   display: none;
 }
+
 /* *******************************************RABINDRA DATE 22.10.2024 ************************************************************************* */
 @media (max-width: 600px) {
+
   /* From DASHBOARD GRAPH ENDED */
   .chartGrid {
     display: flex;
@@ -620,14 +600,13 @@ table tbody tr:hover {
     align-items: center !important;
     margin: 0 auto;
   }
+
   .removeButton {
     cursor: pointer;
     width: 100px;
     height: 32px;
     font-size: 14px;
-
   }
-  
 
   .vertical1 {
     order: 3;
@@ -648,6 +627,7 @@ table tbody tr:hover {
     margin-bottom: 14px;
     margin-left: -34px;
   }
+
   .HideContent {
     display: flex;
     width: 100%;
@@ -655,14 +635,17 @@ table tbody tr:hover {
     left: 0;
     justify-content: space-between;
   }
+
   .ButtonAbovearrov {
     all: unset;
     width: 100%;
   }
+
   .customFontMobile {
     font-weight: 600;
     display: block;
   }
+
   .upKeys_DownKeysX {
     all: unset;
   }
@@ -678,30 +661,28 @@ table tbody tr:hover {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* background-color: teal; */
     width: 100%;
   }
+
   .FirstColHead {
     display: none;
   }
+
   .FirstColHeadMobile {
     width: 100% !important;
     display: flex;
     margin-top: 9px;
     justify-content: space-between;
   }
+
   .SecondColHead {
     width: 100%;
   }
 
-  .card {
-    /* background-color: rgb(38, 158, 48); */
-  }
-  /* ANOTHER SECTION RESPONSIVENESS ADEDDD */
-
   .cardHeader {
     display: none;
   }
+
   .cardHeaderForMobile {
     display: flex;
     margin-top: 10px;
@@ -733,6 +714,7 @@ table tbody tr:hover {
     scrollbar-color: #ccc transparent;
     scroll-behavior: smooth;
   }
+
   .buttonGroupMobile::-webkit-scrollbar {
     height: 6px;
   }
@@ -752,18 +734,18 @@ table tbody tr:hover {
     position: inherit;
     gap: 9px;
   }
+
   .searchBarMobile {
     display: flex;
     align-items: center;
     outline: none;
-    border: 0.5px solid black; 
+    border: 0.5px solid black;
     border-radius: 8px;
     padding: 5px;
     height: 36px;
     width: 252px !important;
     margin-right: 0;
-}
-
+  }
 
   .searchBarMobile input::placeholder {
     font-size: 11.8px;
@@ -772,19 +754,16 @@ table tbody tr:hover {
   .searchBarMobile:hover {
     border: 1px solid var(--primary-color);
   }
+
   .searchBarMobile .searchInput:focus {
     outline: none;
   }
-  
+
   .searchBarMobile:focus-within {
     border: 1px solid var(--primary-color) !important;
   }
-
-
-
-
-
 }
+
 @media (min-width: 401px) and (max-width: 560px) {
   .date_calendar {
     display: flex;
@@ -793,7 +772,7 @@ table tbody tr:hover {
     width: 270px;
   }
 
-  .date_calendar > .hist_date {
+  .date_calendar>.hist_date {
     order: -1;
     text-align: right;
     font-size: 12px !important;
@@ -809,6 +788,7 @@ table tbody tr:hover {
   .cardHeader {
     display: none;
   }
+
   .cardHeaderForMobile {
     display: flex;
     margin-top: 10px;
@@ -823,7 +803,6 @@ table tbody tr:hover {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    /* background-color: teal; */
   }
 
   .buttonGroupMobile {
@@ -844,6 +823,7 @@ table tbody tr:hover {
     scrollbar-color: #ccc transparent;
     scroll-behavior: smooth;
   }
+
   .buttonGroupMobile::-webkit-scrollbar {
     height: 6px;
   }
@@ -864,6 +844,7 @@ table tbody tr:hover {
     position: inherit;
     gap: 15px;
   }
+
   .searchBarMobile {
     display: flex;
     align-items: center;
@@ -878,6 +859,7 @@ table tbody tr:hover {
   .searchBarMobile input {
     padding-left: 16px;
   }
+
   .searchBarMobile input::placeholder {
     font-size: 11.8px;
   }
@@ -885,13 +867,15 @@ table tbody tr:hover {
   .searchBarMobile:hover {
     border: 1px solid var(--primary-color);
   }
+
   .searchBarMobile .searchInput:focus {
     outline: none;
   }
-  
+
   .searchBarMobile:focus-within {
     border: 1px solid var(--primary-color) !important;
   }
+
   .searchBarMobile input::placeholder {
     font-size: 12px;
     text-align: left;
@@ -931,27 +915,32 @@ table tbody tr:hover {
   .dashboard {
     margin: 10px;
   }
-  .card{
+
+  .card {
     margin-top: 0;
   }
 }
+
 @media (min-width: 768px) {
   .tabs_setting {
-    padding: 19px 15px 0px  15px !important;
+    padding: 19px 15px 0px 15px !important;
   }
+
   .history_list_inner_declined {
     display: grid;
-    /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
     grid-template-columns: 35px 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
   }
+
   .chartGrid {
-    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+    grid-template-columns: 40% 60%;
+    /* First card 40%, second card 60% */
   }
+
   .lineCard {
     margin-right: 26px;
   }
+
   .buttonGroup {
     display: flex;
     gap: 6px;
@@ -961,6 +950,7 @@ table tbody tr:hover {
     flex-direction: row;
     box-shadow: unset;
   }
+
   .filterCallToAction {
     display: flex;
     gap: 13px;
@@ -968,13 +958,13 @@ table tbody tr:hover {
     position: unset;
     padding-left: 13px;
   }
+
   .mobile_view_table {
     display: flex;
     flex: 1;
   }
 }
-.ButtonAbovearrov {
-}
+
 @media screen and (min-width: 336px) and (max-width: 436px) {
   .date_calendar {
     display: flex;
@@ -990,44 +980,43 @@ table tbody tr:hover {
     display: flex;
     flex-direction: row;
     gap: 4px;
-    /* padding: 17px 16px 17px 35px !important;
-    margin: 17px 16px 17px 35px !important; */
-  }
-  .detailsRowChev {
   }
 }
 
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
+
   /* Styles for smartphones */
   .button {
     transform: scale(0.9);
   }
+
   .phone_number,
   .email,
   .address {
     display: none;
   }
+
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr 1fr !important;
-    /* place-items: center; */
     align-items: start;
   }
+
   .history_list_inner {
     display: grid;
-    grid-template-columns: auto 2fr 1fr auto auto !important ;
+    grid-template-columns: auto 2fr 1fr auto auto !important;
     align-items: baseline;
   }
 
   .actionButtons {
-    /* transform: scale(0.7) translate(0, -10px); */
     gap: 3px;
   }
 
   .hist_date {
     font-size: 10px !important;
   }
+
   .date_parent {
     display: flex;
     gap: 10px;
@@ -1042,11 +1031,11 @@ table tbody tr:hover {
 
 /* Tablets in both portrait and landscape */
 @media only screen and (min-width: 481px) and (max-width: 768px) {
+
   /* Styles for tablets */
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
   }
 }
@@ -1056,6 +1045,7 @@ table tbody tr:hover {
   .chartGrid {
     grid-template-columns: 45% 55%;
   }
+
   .lineChart_div {
     position: relative;
     align-items: center;
@@ -1071,6 +1061,7 @@ table tbody tr:hover {
     font-weight: 500 !important;
     font-size: 12px !important;
   }
+
   .history_list_inner {
     display: grid;
     grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
@@ -1092,11 +1083,6 @@ table tbody tr:hover {
   }
 }
 
-/* Extra large desktops */
-@media only screen and (min-width: 1201px) {
-  /* Styles for extra-large screens */
-}
-
 .lead__datepicker_wrapper {
   position: relative;
   line-height: 0;
@@ -1104,6 +1090,7 @@ table tbody tr:hover {
   transition: transform 0.3s ease;
   z-index: 11;
 }
+
 .lead__datepicker_content {
   position: absolute;
   left: 36px;
@@ -1132,14 +1119,11 @@ table tbody tr:hover {
 .hist_date {
   font-weight: 600;
   font-size: 14px;
-  /* margin-right: 6.2px !important; */
   color: #377cf6;
 }
 
 .monthSelect {
-  /* background-color: #3b82f6; */
   color: white;
-  /* border-radius: 20px; */
   padding: 4px 8px;
   border: none;
   font-size: 12px;
@@ -1179,7 +1163,6 @@ table tbody tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-left: 6px !important; */
   cursor: pointer;
   transition: all 500ms ease;
 }
@@ -1209,10 +1192,8 @@ table tbody tr:hover {
 .upKeys_DownKeysX {
   transform: rotate(180deg);
   display: flex !important;
-
   justify-content: center !important;
   align-items: center !important;
-
   color: #2979ff;
 }
 
@@ -1221,11 +1202,13 @@ table tbody tr:hover {
   height: 36px;
   width: 36px;
 }
+
 .ArrowD {
   position: relative;
   height: 36px;
   width: 36px;
 }
+
 .upKeys_DownKeys {
   color: #2979ff;
 
@@ -1233,8 +1216,8 @@ table tbody tr:hover {
   justify-content: center !important;
   align-items: center !important;
 }
+
 .ButtonAbovearrov {
-  /* border: 1px solid #377cf6; */
   width: 36px;
   background-color: #ddebff;
   border-radius: 8px;
@@ -1245,11 +1228,13 @@ table tbody tr:hover {
   cursor: pointer;
   transition: all 500ms ease;
 }
+
 .ButtonAbovearrov:hover {
   transform: scale(1.05);
   background-color: #e5e5e5;
   border: none;
 }
+
 .date_calendar {
   display: flex;
   flex-direction: row;
@@ -1259,7 +1244,6 @@ table tbody tr:hover {
   justify-content: right !important;
 }
 
-/* General style for the month select */
 /* General style for the month select */
 .monthSelect {
   margin-top: 0;
@@ -1275,7 +1259,8 @@ table tbody tr:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-right: 20px; /* Space for the arrow */
+  padding-right: 20px;
+  /* Space for the arrow */
   background-color: #ffffff;
   box-shadow: none;
   position: relative;
@@ -1284,12 +1269,14 @@ table tbody tr:hover {
 
 /* Arrow in the dropdown */
 .monthSelect::after {
-  content: '▼'; /* Down arrow character */
+  content: '▼';
+  /* Down arrow character */
   font-size: 12px;
   color: #3e3e3e;
   position: absolute;
   right: 10px;
-  pointer-events: none; /* Prevent interaction with the arrow */
+  pointer-events: none;
+  /* Prevent interaction with the arrow */
 }
 
 /* Border will be none when the dropdown is open */
@@ -1353,20 +1340,24 @@ table tbody tr:hover {
     width: 30px;
     height: 30px;
   }
+
   .ArrowDX {
     position: relative;
     height: 30px;
     width: 30px;
   }
+
   .ArrowD {
     position: relative;
     height: 30px;
     width: 30px;
   }
+
   .cardHeaderSecond span {
     font-size: 14px;
     text-align: left;
   }
+
   .monthSelect {
     width: 80px;
   }
@@ -1380,24 +1371,27 @@ table tbody tr:hover {
     border: 1px solid var(--border-color);
     top: 57px;
   }
+
   .rescheduleButton {
     width: 120px;
     font-size: 12px;
   }
+
   .archiveButton {
     background-color: transparent;
-    color: #757575; /* Gray color */
+    color: #757575;
+    /* Gray color */
     border: 1px solid #757575;
     padding: 2px 10px;
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
   }
+
   .chevron_down {
     display: block !important;
     height: 24px !important;
     width: 24px !important;
-    /* transform: translate(-20px, 13px); */
     background-color: #eaecf0;
     display: flex !important;
     justify-content: center !important;
@@ -1436,6 +1430,7 @@ table tbody tr:hover {
 .ichove {
   transition: all 0.3s ease;
 }
+
 .ichove:hover {
   transform: scale(1.08);
 }
@@ -1445,6 +1440,7 @@ table tbody tr:hover {
     display: none !important;
   }
 }
+
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
   .date_calendar {
     display: flex;
@@ -1454,7 +1450,7 @@ table tbody tr:hover {
     z-index: 1;
   }
 
-  .date_calendar > .hist_date {
+  .date_calendar>.hist_date {
     order: -1;
     text-align: left;
     font-size: 12px !important;
@@ -1470,14 +1466,14 @@ table tbody tr:hover {
     line-height: 0;
     cursor: pointer;
     transition: transform 0.3s ease;
-    z-index: 11; 
+    z-index: 11;
   }
 
   .lead__datepicker_content {
-  margin-top: 127.8px;
-  margin-left: 300px;
-   
+    margin-top: 127.8px;
+    margin-left: 300px;
   }
+
   .mobile_tooltip {
     display: none !important;
   }
@@ -1494,16 +1490,19 @@ table tbody tr:hover {
     width: 46px;
     border-radius: 8px;
   }
+
   .export_btn {
     width: 46px !important;
     height: 46px !important;
   }
 }
+
 @media only screen and (min-width: 340px) and (max-width: 539px) {
   .filtericon {
     height: 40px;
     width: 40px;
   }
+
   .export_btn {
     width: 40px !important;
     height: 40px !important;

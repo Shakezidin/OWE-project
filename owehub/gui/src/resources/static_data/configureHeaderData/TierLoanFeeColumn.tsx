@@ -1,8 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const TierLoanColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
-
   {
     name: 'dealer_tier',
     displayName: 'Dealer Tier',

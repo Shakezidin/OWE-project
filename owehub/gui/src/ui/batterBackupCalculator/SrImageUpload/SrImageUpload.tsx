@@ -39,7 +39,6 @@ const FormComponent: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [squareFeet, setSquareFeet] = useState('');
   const [systemSize, setSystemSize] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
   const navigate = useNavigate();
   const [error, setError] = useState<{
     email?: string;

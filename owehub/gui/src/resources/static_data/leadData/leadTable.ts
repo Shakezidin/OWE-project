@@ -40,16 +40,4 @@ export const LeadColumn = [
     id: 'Setter',
     displayName: 'Setter Name',
   },
-  // {
-  //   id: 'finance_type',
-  //   displayName: 'Finance Type',
-  // },
-  // {
-  //   id: 'finance_company',
-  //   displayName: 'Finance Company',
-  // },
-  // {
-  //   id: 'qc_audit',
-  //   displayName: 'QC Audit',
-  // },
 ];

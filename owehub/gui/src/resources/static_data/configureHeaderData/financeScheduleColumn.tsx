@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const FinanceScheduleColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'finance_company',
     displayName: 'Finance Company',

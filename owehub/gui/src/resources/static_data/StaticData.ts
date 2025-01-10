@@ -43,7 +43,6 @@ export const payRollData = [
 
 export const comissionValueData = [
   { value: 'ALL', label: 'All' },
-  // { value: 'Percentage', label: 'Percentage' },
   { value: '80/20', label: '80/20' },
   { value: 'standard', label: 'Standard' },
 ];

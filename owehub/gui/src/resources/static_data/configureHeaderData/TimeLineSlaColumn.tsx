@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const TimeLineSlaColumns: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'type_m2m',
     displayName: 'Type M2M',

@@ -64,11 +64,9 @@ import Dashboard from './ui/reporting/Dashboard';
 import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
 import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
-// import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
-
 
 function App() {
   const dispatch = useAppDispatch();
@@ -175,14 +173,8 @@ function App() {
               path={ROUTES.REPORTING_QUALITY_PER_OFFICE}
               element={<QualityPerOffice />}
             />
-             <Route
-              path={ROUTES.PERMIT_REDLINE}
-              element={<PermitRedLine />}
-            />
-            <Route
-              path={ROUTES.DYNAMIC_REPORT}
-              element={<DynDashboard />}
-            />
+            <Route path={ROUTES.PERMIT_REDLINE} element={<PermitRedLine />} />
+            <Route path={ROUTES.DYNAMIC_REPORT} element={<DynDashboard />} />
             <Route
               path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}
               element={<ReasonOfIncomplete />}
@@ -201,26 +193,22 @@ function App() {
 
             {/* TODO: Component need to change, ADDING ROUTES AND DEFAULT components */}
             <Route path={ROUTES.SITE_COMPLETION} element={<Timelines />} />
-            {/* <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} /> */}
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
-            <Route path={ROUTES.FIRST_TIME_COMPLETIONS} element={<CompletedFirstTime />} />
+            <Route
+              path={ROUTES.FIRST_TIME_COMPLETIONS}
+              element={<CompletedFirstTime />}
+            />
             <Route
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}
             />
             <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
 
-            <Route
-              path={ROUTES.AHJ}
-              element={<Ahj />}
-            />
-
+            <Route path={ROUTES.AHJ} element={<Ahj />} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
-
-
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
           <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
@@ -252,7 +240,10 @@ function App() {
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
-          <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
+          <Route
+            path={ROUTES.SUMMARY_DASBOARD}
+            element={<Summary_Dashboard />}
+          />
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>

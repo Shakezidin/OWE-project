@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const DealerCreditColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'unique_id',
     displayName: 'Unique ID',
@@ -36,6 +35,5 @@ export const DealerCreditColumn: Column[] = [
     isCheckbox: false,
   },
   { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
-  // { name: 'podio', displayName: 'Podio Link', type: 'string', isCheckbox: false },
  
 ];

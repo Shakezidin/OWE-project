@@ -13,7 +13,7 @@ import { HiDownload } from 'react-icons/hi';
 import { toCanvas } from 'html-to-image';
 import { FirstAwardIcon, SecondAwardIcon, ThirdAwardIcon } from './Icons';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
-import useAuth, { AuthData } from '../../../hooks/useAuth';
+import useAuth from '../../../hooks/useAuth';
 
 interface IDealer {
   dealer?: string;
@@ -91,8 +91,6 @@ const Sidebar = ({
       const data = await postCaller('get_leaderboardprofiledatarequest', {
         ...dealer,
         count_kw_selection: true,
-        // start_date: selectedRangeDate.value.split(',')[0],
-        // end_date: selectedRangeDate.value.split(',')[1],
       });
       if (data.status > 201) {
         toast.error(data.message);
@@ -177,12 +175,6 @@ const Sidebar = ({
                 >
                   {dealer.name}
                 </h3>
-                {/* <p
-                  className=""
-                  style={{ color: '#434343', fontSize: 10, marginTop: 6 }}
-                >
-                  OUR31245
-                </p> */}
               </div>
             </div>
             <div className="mt2 px2">

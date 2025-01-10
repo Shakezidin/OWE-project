@@ -8,10 +8,12 @@
   cursor: pointer;
   transition: all 0.5s ease;
 }
+
 .filtericonHistory:hover {
   background-color: #ddebff;
   transform: scale(1.05);
 }
+
 .ICONSTYLETHREEDOT {
   width: auto;
   height: auto;
@@ -20,6 +22,7 @@
   align-items: center;
   justify-content: center;
 }
+
 /* HERE FOR RESPONSIVESNESS */
 
 @media screen and (max-width: 1200px) {
@@ -52,6 +55,7 @@
     justify-content: center;
   }
 }
+
 @media only screen and (min-width: 460px) and (max-width: 768px) {
   .filtericonHistory {
     display: flex;
@@ -64,6 +68,7 @@
     border: 1.2px solid #377cf6 !important;
     cursor: pointer;
   }
+
   .ICONSTYLETHREEDOT {
     width: auto;
     height: auto;
@@ -72,17 +77,6 @@
     justify-content: center;
   }
 }
-/* position: absolute;
-width: 160px;
-right: 0;
-top: 65px;
-background-color: #fff;
-border: 1px solid #2b63f1;
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-padding: 10px;
-z-index: 999;
-margin-top: -22px;
-border-radius: 0px !important; */
 
 .prdropdownX ul {
   list-style-type: none;
@@ -105,10 +99,11 @@ border-radius: 0px !important; */
 }
 
 @media (max-width:968px) {
-  .mobile_tooltip{
+  .mobile_tooltip {
     display: none !important;
   }
 }
+
 @media only screen and (min-width: 340px) and (max-width: 539px) {
   .filtericonHistory {
     display: flex;
@@ -120,8 +115,6 @@ border-radius: 0px !important; */
     border-radius: 8px;
     border: 1.2px solid #377cf6;
     cursor: pointer;
-
-    /* .buttonGroup INSIDE THIS GROUP WIDTH IS ALSO REMOVE */
   }
- 
+
 }

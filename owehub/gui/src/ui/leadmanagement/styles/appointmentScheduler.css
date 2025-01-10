@@ -107,7 +107,6 @@
   margin-bottom: 9px;
   margin-top: -20px !important;
   color: #377cf6;
-  /* background-color: #ddebff ; */
 }
 
 .sendAppointmentBtn button {
@@ -154,12 +153,14 @@
   color: white;
   border-radius: 50%;
 }
+
 .react-datepicker__month-container {
   float: none;
   border: 0.89px solid #d1d5db;
   padding: 5px 10px;
   border-radius: 14.32px;
 }
+
 .prev-month,
 .next-month {
   width: 35.8px;

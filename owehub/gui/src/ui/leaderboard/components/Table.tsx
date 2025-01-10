@@ -433,7 +433,6 @@ const DateFilter = ({
           options={periodFilterOptions}
           value={selected}
           isDisabled={disabled}
-          // placeholder={selected?"Custom"}
           isSearchable={false}
           onChange={(value) => value && setSelected(value)}
           styles={{
@@ -520,9 +519,13 @@ const DateFilter = ({
         place="bottom"
         content="Calendar"
         delayShow={200}
-        className='pagination-tooltip'
+        className="pagination-tooltip"
       />
-      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper" data-tooltip-id="lead-calendar">
+      <div
+        ref={wrapperRef}
+        className="leaderboard-data__datepicker-wrapper"
+        data-tooltip-id="lead-calendar"
+      >
         <span
           role="button"
           onClick={() => setShowCalendar((prev) => !prev)}
@@ -531,7 +534,7 @@ const DateFilter = ({
           <Calendar disabled={disabled} />
         </span>
         {showCalendar && !disabled && (
-          <div className="leaderboard-data__datepicker-content" >
+          <div className="leaderboard-data__datepicker-content">
             <DateRange
               editableDateInputs={true}
               onChange={(item) => {
@@ -575,11 +578,9 @@ const Table = ({
   selectDealer,
   exportPdf,
   isExporting,
-  count,
   resetDealer,
   isFetched,
   tableData,
-  setIsLoading,
   isLoading,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
@@ -607,14 +608,12 @@ const Table = ({
   const [leaderTable, setLeaderTable] = useState<any>([]);
 
   const [totalCount, setTotalCount] = useState(0);
-  // const [isLoading, setIsLoading] = useState(true);
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
   const { authData, saveAuthData } = useAuth();
-
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 25;
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -622,7 +621,6 @@ const Table = ({
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
-
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
@@ -630,8 +628,6 @@ const Table = ({
 
   useEffect(() => {
     if (tableData) {
-      // setLeaderTable(tableData.data.leader_board_list
-      // );
       setLeaderTable(tableData?.data?.leader_board_list);
       setTotalCount(tableData?.dbRecCount);
       setTotalStats(tableData?.data);
@@ -649,49 +645,6 @@ const Table = ({
     tableData,
   ]);
 
-  // useEffect(() => {
-  //   if (isAuthenticated && isFetched) {
-  //     (async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         const data = await postCaller('get_perfomance_leaderboard', {
-  //           type: activeHead,
-  //           dealer: selectDealer.map((item) => item.value),
-  //           page_size: itemsPerPage,
-  //           page_number: page,
-  //           start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-  //           end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-  //           sort_by: active,
-  //           group_by: groupBy,
-  //         });
-  //         if (data.status > 201) {
-  //           setIsLoading(false);
-  //           toast.error(data.message);
-  //           return;
-  //         }
-  //         if (data.data?.ap_ded_list) {
-  //           setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-  //           setTotalCount(data?.dbRecCount);
-  //           setTotalStats(data.data);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     })();
-  //   }
-  // }, [
-  //   activeHead,
-  //   active,
-  //   selectedRangeDate,
-  //   itemsPerPage,
-  //   page,
-  //   selectDealer,
-  //   groupBy,
-  //   isAuthenticated,
-  //   isFetched,
-  // ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -879,7 +832,6 @@ const Table = ({
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
-      {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       {groupBy === 'dealer' ? null : (
         <div className="relative exportt" ref={wrapperReff}>
           <div className="leaderboard-data__title">
@@ -931,58 +883,6 @@ const Table = ({
           )}
         </div>
       )}
-      {/* <div className="leaderboard-data__export">
-        <Select
-          options={exportOptions}
-          value={exportOption}
-          onChange={(selectedOption) => {
-            setExportOption(selectedOption);
-            // handleExport(selectedOption.value);
-          }}
-          isSearchable={false}
-          placeholder="Export Options"
-          styles={{
-            control: (baseStyles) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              fontWeight: '500',
-              border: 'none',
-              outline: 'none',
-              width: '120px',
-              alignContent: 'center',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              boxShadow: 'none',
-            }),
-            indicatorSeparator: () => ({
-              display: 'none',
-            }),
-            dropdownIndicator: (baseStyles) => ({
-              ...baseStyles,
-              color: '#ee824d',
-            }),
-            option: (baseStyles, state) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              backgroundColor: state.isSelected ? '#ee824d' : '#fff',
-              '&:hover': {
-                backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
-                color: state.isSelected ? '#fff' : '#ee824d',
-              },
-            }),
-            singleValue: (baseStyles) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              color: exportOption ? '#ee824d' : '#222',
-              width: 'fit-content',
-            }),
-            menu: (baseStyles) => ({
-              ...baseStyles,
-              marginTop: '-4px',
-            }),
-          }}
-        />
-      </div> */}
 
       <div>
         <div className="leaderboard-data__filter-row">
@@ -1156,7 +1056,7 @@ const Table = ({
                     </span>
                     <p className="rank-sm-text">NTP</p>
                   </div>
-                 
+
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
@@ -1240,7 +1140,11 @@ const Table = ({
                               ? 'sale_rep'
                               : groupBy,
                           dealer:
-                            groupBy === 'primary_sales_rep' || groupBy === 'team' || groupBy ==='setter' ? item.dealer : '',
+                            groupBy === 'primary_sales_rep' ||
+                            groupBy === 'team' ||
+                            groupBy === 'setter'
+                              ? item.dealer
+                              : '',
                           name: item.rep_name,
                           rank: item.rank,
                           sale: item.sale,

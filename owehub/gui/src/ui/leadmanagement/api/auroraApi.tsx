@@ -1,5 +1,12 @@
 import { toast } from 'react-toastify';
-import { auroraCreateDesign, auroraCreateProject, auroraCreateProposal, auroraGenerateWebProposal, auroraListModules, auroraWebProposal } from '../../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  auroraCreateDesign,
+  auroraCreateProject,
+  auroraCreateProposal,
+  auroraGenerateWebProposal,
+  auroraListModules,
+  auroraWebProposal,
+} from '../../../redux/apiActions/leadManagement/LeadManagementAction';
 
 type SSEPayload =
   | {
@@ -25,7 +32,11 @@ type SSEPayload =
     };
 
 // Function to handle creating a proposal
-export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: number) => number) => void, dispatch: any) => {
+export const handleCreateProposal = (
+  leadId: number,
+  setRefresh: (value: (prev: number) => number) => void,
+  dispatch: any
+) => {
   return async () => {
     try {
       // Step 1: Fetch preferred solar modules using dispatch
@@ -38,22 +49,28 @@ export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: 
           const moduleIds = modulesData.map((module: any) => module.id); // Extract the ids from the module list
 
           // Step 2: Create Project with dynamic preferred solar modules
-          const createProjectResult = await dispatch(auroraCreateProject({
-            "leads_id": leadId,
-            "customer_salutation": "Mr./Mrs.",
-            "project_type": "residential",
-            "status": "In Progress",
-            "preferred_solar_modules": moduleIds,
-            "tags": ["third_party_1"]
-          }));
+          const createProjectResult = await dispatch(
+            auroraCreateProject({
+              leads_id: leadId,
+              customer_salutation: 'Mr./Mrs.',
+              project_type: 'residential',
+              status: 'In Progress',
+              preferred_solar_modules: moduleIds,
+              tags: ['third_party_1'],
+            })
+          );
 
           if (auroraCreateProject.fulfilled.match(createProjectResult)) {
             // Step 3: Create Design
-            const createDesignResult = await dispatch(auroraCreateDesign({ leads_id: leadId }));
+            const createDesignResult = await dispatch(
+              auroraCreateDesign({ leads_id: leadId })
+            );
 
             if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
               // Step 4: Create Proposal
-              const createProposalResult = await dispatch(auroraCreateProposal({ leads_id: leadId }));
+              const createProposalResult = await dispatch(
+                auroraCreateProposal({ leads_id: leadId })
+              );
 
               if (auroraCreateProposal.fulfilled.match(createProposalResult)) {
                 const proposalData = createProposalResult.payload.data;
@@ -71,13 +88,22 @@ export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: 
                   toast.error('Proposal link not available.');
                 }
               } else {
-                toast.error(createProposalResult.payload as string || 'Failed to create proposal');
+                toast.error(
+                  (createProposalResult.payload as string) ||
+                    'Failed to create proposal'
+                );
               }
             } else {
-              toast.error(createDesignResult.payload as string || 'Failed to create design');
+              toast.error(
+                (createDesignResult.payload as string) ||
+                  'Failed to create design'
+              );
             }
           } else {
-            toast.error(createProjectResult.payload as string || 'Failed to create project');
+            toast.error(
+              (createProjectResult.payload as string) ||
+                'Failed to create project'
+            );
           }
         } else {
           toast.error('No solar modules available.');
@@ -94,56 +120,60 @@ export const handleCreateProposal = (leadId: number, setRefresh: (value: (prev: 
 
 export const generateWebProposal = (leadId: number, dispatch: any) => {
   return async () => {
-  try {
-    // Generate Web Proposal
-    const generateProposalResult = await dispatch(auroraGenerateWebProposal({ leads_id: leadId }));
+    try {
+      // Generate Web Proposal
+      const generateProposalResult = await dispatch(
+        auroraGenerateWebProposal({ leads_id: leadId })
+      );
 
-    if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
-      const generatedProposalData = generateProposalResult.payload.data;
-      if (generatedProposalData.url) {
-        toast.success('Web proposal generated successfully!');
-        return generatedProposalData;
+      if (auroraGenerateWebProposal.fulfilled.match(generateProposalResult)) {
+        const generatedProposalData = generateProposalResult.payload.data;
+        if (generatedProposalData.url) {
+          toast.success('Web proposal generated successfully!');
+          return generatedProposalData;
+        } else {
+          toast.error('Failed to generate web proposal.');
+          return null;
+        }
       } else {
-        toast.error('Failed to generate web proposal.');
         return null;
       }
-    } else {
-      // toast.error(generateProposalResult.payload as string || 'Failed to generate web proposal');
+    } catch (error) {
+      toast.error(
+        'An unexpected error occurred while generating the web proposal'
+      );
+      console.error('Error in generateWebProposal:', error);
       return null;
     }
-  } catch (error) {
-    toast.error('An unexpected error occurred while generating the web proposal');
-    console.error('Error in generateWebProposal:', error);
-    return null;
-  }
-}
+  };
 };
 
 export const retrieveWebProposal = (leadId: number, dispatch: any) => {
   return async () => {
-  try {
-    // Retrieve Web Proposal
-    const webProposalResult = await dispatch(auroraWebProposal(leadId));
+    try {
+      // Retrieve Web Proposal
+      const webProposalResult = await dispatch(auroraWebProposal(leadId));
 
-    if (auroraWebProposal.fulfilled.match(webProposalResult)) {
-      const webProposalData = webProposalResult.payload.data;
+      if (auroraWebProposal.fulfilled.match(webProposalResult)) {
+        const webProposalData = webProposalResult.payload.data;
 
-      if (webProposalData.url) {
-        toast.success('Web proposal retrieved successfully!');
-        window.open(webProposalData.url, '_blank');
-      } else if (webProposalData.url_expired) {
-        toast.error('Web proposal URL has expired. Please regenerate.');
+        if (webProposalData.url) {
+          toast.success('Web proposal retrieved successfully!');
+          window.open(webProposalData.url, '_blank');
+        } else if (webProposalData.url_expired) {
+          toast.error('Web proposal URL has expired. Please regenerate.');
+        } else {
+          toast.error('No web proposal available.');
+        }
       } else {
-        toast.error('No web proposal available.');
       }
-    } else {
-      // toast.error(webProposalResult.payload as string || 'Failed to retrieve web proposal');
+    } catch (error) {
+      toast.error(
+        'An unexpected error occurred while retrieving the web proposal'
+      );
+      console.error('Error in retrieveWebProposal:', error);
     }
-  } catch (error) {
-    toast.error('An unexpected error occurred while retrieving the web proposal');
-    console.error('Error in retrieveWebProposal:', error);
-  }
-}
+  };
 };
 
 export const downloadProposalWithSSE = (leadId: number) => {
@@ -155,8 +185,11 @@ export const downloadProposalWithSSE = (leadId: number) => {
     const payload: SSEPayload = JSON.parse(event.data);
 
     if (!payload.is_done) {
-      const progressPercentage = (payload.data.current_step / payload.data.total_steps) * 100;
-      console.log(`PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`);
+      const progressPercentage =
+        (payload.data.current_step / payload.data.total_steps) * 100;
+      console.log(
+        `PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`
+      );
     } else if (payload.is_done) {
       eventSource.close(); // Close the connection once the PDF is ready or an error occurs
     }

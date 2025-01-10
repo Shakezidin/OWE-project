@@ -3,7 +3,6 @@ import { Column } from '../../core/models/data_models/FilterSelectModel';
 export const UserManagementTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  // { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'reporting_manager',
     displayName: 'Reporting To',
@@ -59,19 +58,6 @@ export const UserAppointmentTableColumn: Column[] = [
     isCheckbox: false,
   },
   { name: 'dealer', displayName: 'Dealer', type: 'string', isCheckbox: false },
-  // {
-  //   name: "start_date",
-  //   displayName: "Start Date",
-  //   type: "string",
-  //   isCheckbox: false,
-  // },
-  // {
-  //   name: "end_date",
-  //   displayName: "End Date",
-  //   type: "string",
-  //   isCheckbox: false,
-  // },
-
   {
     name: 'description',
     displayName: 'Description',
@@ -140,7 +126,6 @@ export const UserDealerTableColumn: Column[] = [
 export const UserRegionalTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  // { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'dealer_owner',
     displayName: 'Dealer',
@@ -189,7 +174,6 @@ export const UserRegionalTableColumn: Column[] = [
 export const UserSaleMangerTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  // { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'dealer_owner',
     displayName: 'Dealer',
@@ -225,7 +209,6 @@ export const UserSaleMangerTableColumn: Column[] = [
 export const UserSaleRepresentTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  // { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'dealer_owner',
     displayName: 'Dealer',
@@ -267,7 +250,6 @@ export const UserSaleRepresentTableColumn: Column[] = [
 export const AccountManagerTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  // { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'reporting_manager',
     displayName: 'Reporting To',

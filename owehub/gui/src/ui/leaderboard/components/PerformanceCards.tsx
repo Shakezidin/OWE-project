@@ -1,6 +1,6 @@
 import './PerformanceCards.css';
 import { ICONS } from '../../../resources/icons/Icons';
-import { MdDownload, MdOutlineIosShare } from 'react-icons/md';
+import { MdDownload } from 'react-icons/md';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import artboard from '../../../resources/assets/artboard.svg';
@@ -57,8 +57,8 @@ const PerformanceCards: React.FC<performance> = ({
           height: isAccoOpen ? 70 : 'auto',
           transition: 'all 500ms',
           overflow: 'hidden',
-          marginTop: "1.2rem",
-          borderRadius: "16px"
+          marginTop: '1.2rem',
+          borderRadius: '16px',
         }}
       >
         <div className="right-button">
@@ -124,12 +124,6 @@ const PerformanceCards: React.FC<performance> = ({
                     <h2 style={getCardHeadingStyle(rank2)}>
                       {rank2?.rep_name || 'N/A'}
                     </h2>
-                    {/* <p>
-                    OUR31245
-                    <span>
-                      <MdContentCopy />
-                    </span>
-                  </p> */}
                   </div>
                 </div>
                 <div className="dashed-border"></div>
@@ -167,12 +161,6 @@ const PerformanceCards: React.FC<performance> = ({
                     <h2 style={getCardHeadingStyle(rank1)}>
                       {rank1?.rep_name || 'N/A'}
                     </h2>
-                    {/* <p>
-                    OUR31245
-                    <span>
-                      <MdContentCopy />
-                    </span>
-                  </p> */}
                   </div>
                 </div>
                 <div className="dashed-border"></div>
@@ -210,12 +198,6 @@ const PerformanceCards: React.FC<performance> = ({
                     <h2 style={getCardHeadingStyle(rank3)}>
                       {rank3?.rep_name || 'N/A'}
                     </h2>
-                    {/* <p>
-                    OUR31245
-                    <span>
-                      <MdContentCopy />
-                    </span>
-                  </p> */}
                   </div>
                 </div>
                 <div className="dashed-border"></div>

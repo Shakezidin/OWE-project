@@ -9,8 +9,6 @@ interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
 }
 
-// { setArchive }: HistoryRedirectProps
-
 const HistoryRedirect = () => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
@@ -21,7 +19,6 @@ const HistoryRedirect = () => {
   };
 
   const ArchivesTable = () => {
-    // setArchive(true);
     navigate('/leadmng-dashboard/lead-dashboard-archives');
   };
 
@@ -48,16 +45,19 @@ const HistoryRedirect = () => {
 
   const handleClose = () => {
     setModalOpenClick(false);
-  }
+  };
 
-  useEscapeKey(handleClose)
-
+  useEscapeKey(handleClose);
 
   // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
 
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
-      <div className={classes.filtericonHistory} onClick={HistoryButtonCalled} data-tooltip-id="More Pages">
+      <div
+        className={classes.filtericonHistory}
+        onClick={HistoryButtonCalled}
+        data-tooltip-id="More Pages"
+      >
         <img
           className={classes.ICONSTYLETHREEDOT}
           src={ThreeDotsImage}
@@ -73,7 +73,7 @@ const HistoryRedirect = () => {
           color: '#000',
           fontSize: 12,
           paddingBlock: 4,
-          fontWeight: "400"
+          fontWeight: '400',
         }}
         className={classes.mobile_tooltip}
         offset={8}
@@ -86,7 +86,6 @@ const HistoryRedirect = () => {
         <div
           id="dropdowninHistoryRedirectXR"
           className="pr-dropdown editedinParentXR"
-        // className={`${classes.prdropdownX} editedinParent`}
         >
           <ul>
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>
@@ -99,7 +98,6 @@ const HistoryRedirect = () => {
           </ul>
         </div>
       )}
-      {/* )} */}
     </div>
   );
 };
