@@ -3,15 +3,10 @@ import Styles from './scheduledActivity.module.css';
 import { TbChevronDown } from 'react-icons/tb';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
-// import Select, {
-//   SelectOption,
-// } from '../../SalesRepScheduler/components/Select';
 import { FaXmark } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
 import useEscapeKey from '../../../../hooks/useEscape';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import SelectOption from '../../../components/selectOption/SelectOption';
-
 interface Appointment {
   name: string;
   email: string;
@@ -20,7 +15,6 @@ interface Appointment {
   status: 'Pending' | 'Approved';
   state?: string; 
 }
-
 interface AppointmentData {
   date: string;
   appointment: Appointment[];
@@ -38,7 +32,7 @@ interface Option {
 
 interface ScheduledActivityProps {
   onClose: () => void;
-  isOpen: boolean; // Add this prop to control the animation state
+  isOpen: boolean;
 }
 
 function ScheduledActivity({ onClose }: ScheduledActivityProps) {
@@ -46,7 +40,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
   const [collapse, setCollapse] = useState<number>(-1);
   const [selectedState, setSelectedState] = useState<SelectOption>({ label: 'All State', value: 'All' });
   const [isClosing, setIsClosing] = useState(false);
-  const navigate = useNavigate();
   const isMobile = useMatchMedia('(max-width:600px)');
 
   const appointmentsData: AppointmentData[] = [
@@ -120,13 +113,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
     },
   ];
 
-  // const stateOptions: SelectOption[] = [
-  //   { label: 'All', value: 'ALL' },
-  //   { label: 'Arizona', value: 'AZ' },
-  //   { label: 'Texas', value: 'TX' },
-  //   { label: 'New Mexico', value: 'NM' },
-  // ];
-
    // Get unique states from appointments
    const getAvailableStates = (): SelectOption[] => {
     const states = new Set<string>();
@@ -156,11 +142,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
     }
   };
 
-  // const handleSelectChange = (options: SelectOption[]) => {
-  //   setSelectedOptions(options);
-  //   console.log(options);
-  // };
-
   const handleEdit = (appointment: Appointment) => {
     console.log('Edit:', appointment);
   };
@@ -171,7 +152,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
 
   const handleClose = () => {
     setIsClosing(true);
-    // Wait for animation to complete before calling onClose
     setTimeout(() => {
       onClose();
       setIsClosing(false);
@@ -352,7 +332,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
                           </div>
                         </div>
                         {/* ////////////////////////////////Phone Layout//////////////////////////// */}
-
                         <div className={isMobile ? Styles.mobile_view : Styles.hide} >
                             <div className={Styles.scheduled_date}>
                             Scheduled Date & Time{' '}
@@ -388,8 +367,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
                               </div>
                             )}
                           </div>
-
-
                           </div>
                         </div>
                     {/* ////////////////////////////////Phone Layout//////////////////////////// */}

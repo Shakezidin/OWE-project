@@ -38,12 +38,10 @@ export const MANAGER_ASSIGN_TO_USER = [
 
 export const getObjectsBeforeMatch = (arr: any, matchLabel: string) => {
   const index = arr.findIndex((obj: any) => obj.label === matchLabel);
-
   console.log(index);
   if (index === 0) {
     return [{ value: 'Dealer Owner', label: 'Dealer Owner' }]; // No match found
   }
-
   return arr.slice(0, index);
 };
 

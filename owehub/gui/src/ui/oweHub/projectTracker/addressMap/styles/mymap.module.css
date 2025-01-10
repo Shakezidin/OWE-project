@@ -18,7 +18,6 @@
   width: 300px;
 }
 
-
 .mapHeaderWrap {
   display: flex;
   align-items: center;
@@ -161,7 +160,6 @@
 /* Custom styles for the autocomplete dropdown */
 .pac-container {
   font-family: 'Poppins', sans-serif;
-  /* Use Poppins for the dropdown */
   font-size: 14px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -192,7 +190,6 @@
 /* Styling for highlighted text */
 .pac-item .pac-item-query {
   color: #007bff;
-  /* Highlighted text color */
   font-weight: 500;
 }
 
@@ -214,7 +211,6 @@
   border-width: 1px;
 }
 
-
 .inputsearch:hover,
 .inputsearch:focus,
 .inputsearch:not(:placeholder-shown) {
@@ -227,19 +223,21 @@
 }
 
 .inputMap {
-  fill: var(--input-border-color); 
+  fill: var(--input-border-color);
 }
 
-.inputsearch:focus::placeholder, .inputsearch:hover::placeholder {
-  color: var(--primary-color); 
+.inputsearch:focus::placeholder,
+.inputsearch:hover::placeholder {
+  color: var(--primary-color);
 }
 
-.inputsearch:hover + .inputMap{
+.inputsearch:hover + .inputMap {
   fill: var(--primary-color);
 }
 
-.focused + .inputMap, .inputsearch.focused::placeholder {
-  fill: var(--primary-color); 
+.focused + .inputMap,
+.inputsearch.focused::placeholder {
+  fill: var(--primary-color);
 }
 
 .dropdownselect {
@@ -262,14 +260,11 @@
 
 .dropdownselect span {
   font-weight: lighter;
-  /* You can adjust the label styling as needed */
 }
 
 .dropdownselect select {
   width: 100%;
-  /* Make the select box flexible */
   max-width: 200px;
-  /* You can set a max width for the dropdown */
 }
 
 .date_parent {
@@ -371,20 +366,12 @@
   margin-right: 16px;
 }
 
-/* .buttonGroup {
-      display: flex;
-      gap: 8px;
-      width: 70%;
-      overflow: scroll;
-      flex-wrap: wrap;
-    } */
 .buttonGroup {
   display: flex;
   padding: 5px;
   gap: 8px;
   width: 70%;
   overflow: scroll;
-  /* flex-wrap: wrap; */
   box-shadow: inset -3px 0px 5px 2px #0000000d;
   border-radius: 22px 0 0 22px;
 }
@@ -478,7 +465,6 @@ table tbody tr:hover {
   gap: 10px;
   transform: scale(0.7);
   position: relative;
-  /* top: -2pc; */
   right: -8px;
 }
 
@@ -489,14 +475,12 @@ table tbody tr:hover {
 .table {
   width: 100%;
   border-collapse: separate;
-  /* border-spacing: 0 16px; */
 }
 
 .history_lists {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 16px; */
 }
 
 .history_list_inner {
@@ -554,12 +538,10 @@ input[type='checkbox']:checked {
 .actionButtons {
   display: flex;
   gap: 10px;
-  /* Adds space between buttons */
 }
 
 .rescheduleButton {
   background-color: #2979ff;
-  /* Blue color */
   color: white;
   border: none;
   padding: 8px 16px;
@@ -571,13 +553,11 @@ input[type='checkbox']:checked {
 
 .rescheduleButton:hover {
   background-color: #1565c0;
-  /* Darker blue on hover */
 }
 
 .archiveButton {
   background-color: transparent;
   color: #757575;
-  /* Gray color */
   border: 1px solid #757575;
   padding: 8px 16px;
   border-radius: 20px;
@@ -660,7 +640,7 @@ input[type='checkbox']:checked {
   align-items: center;
   border-radius: 5px;
 }
-.chart_main_grid svg text{
+.chart_main_grid svg text {
   color: red;
 }
 
@@ -670,7 +650,6 @@ input[type='checkbox']:checked {
 @media (min-width: 768px) {
   .chartGrid {
     grid-template-columns: 50% 50%;
-    /* First card 40%, second card 60% */
   }
 
   .lineCard {
@@ -702,7 +681,6 @@ input[type='checkbox']:checked {
 
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
-  /* Styles for smartphones */
   .button {
     transform: scale(0.9);
   }
@@ -801,23 +779,14 @@ input[type='checkbox']:checked {
 
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
-  /* Styles for small desktops */
-  /* .chart_main_grid {
-        display: flex;
-        flex-direction: row;
-      } */
   .chartGrid {
     grid-template-columns: 50% 50%;
-    /* First card 40%, second card 60% */
   }
 
   .lineChart_div {
     position: relative;
-    /* top: 50px; */
     align-items: center;
     justify-content: center;
-    /* margin-top: 30px;
-        margin-right: 40px; */
     right: 30px;
   }
 
@@ -862,7 +831,6 @@ input[type='checkbox']:checked {
 
   .lead_pagination {
     align-items: flex-start;
-    /* Optional: vertically center the items */
   }
 }
 

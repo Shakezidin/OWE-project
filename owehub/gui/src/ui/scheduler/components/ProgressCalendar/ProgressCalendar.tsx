@@ -71,14 +71,14 @@ const DayButton = ({
   const isNext = nextSevenWeekdays.some(
     (date) => date.getTime() === new Date(day.date).setHours(0, 0, 0, 0)
   );
-  
+
   const findDay = dayWithProgress?.find(
     (date) =>
       date.date.getDate() === day.date.getDate() &&
       date.date.getMonth() === day.date.getMonth() &&
       date.date.getFullYear() === day.date.getFullYear()
   );
-  
+
   const colorProgress = findDay?.progress;
   const getColor = findDay?.colorCode || ''; // Use colorCode instead of calculating
   const isSelected =
@@ -129,9 +129,14 @@ const DayPickerCalendar = ({
   }, [selectedDate]);
 
   return (
-    <div style={{marginLeft:'20px'}}>
+    <div style={{ marginLeft: '20px' }}>
       <h5
-        style={{ fontWeight: 600, fontSize:'14px', justifyContent:'center', cursor:'default' }}
+        style={{
+          fontWeight: 600,
+          fontSize: '14px',
+          justifyContent: 'center',
+          cursor: 'default',
+        }}
         className={`mb2 ${defaultClassNames.month_caption} ${!selected ? 'flex justify-center' : 'ml2'}`}
       >
         {format(

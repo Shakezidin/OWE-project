@@ -5,10 +5,6 @@ import ThreeDotsImage from './Modals/Modalimages/ThreeDots.svg';
 import useEscapeKey from '../../hooks/useEscape';
 import { Tooltip } from 'react-tooltip';
 
-interface HistoryRedirectProps {
-  setArchive: (value: boolean) => void;
-}
-
 const HistoryRedirect = () => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
@@ -50,7 +46,6 @@ const HistoryRedirect = () => {
   useEscapeKey(handleClose);
 
   // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
-
   return (
     <div className="relative drop-ref-container" ref={clickableDivRef}>
       <div

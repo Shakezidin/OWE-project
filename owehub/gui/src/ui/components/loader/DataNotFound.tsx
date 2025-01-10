@@ -5,7 +5,6 @@ interface Params {
 }
 const DataNotFound = ({ title = 'No Record Found' }: Params) => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -13,7 +12,6 @@ const DataNotFound = ({ title = 'No Record Found' }: Params) => {
 
     return () => clearTimeout(timer); // Cleanup the timer on unmount
   }, []);
-
   return (
     <>
       {isVisible && (
@@ -29,5 +27,4 @@ const DataNotFound = ({ title = 'No Record Found' }: Params) => {
     </>
   );
 };
-
 export default DataNotFound;

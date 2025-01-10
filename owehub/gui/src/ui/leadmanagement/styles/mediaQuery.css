@@ -7,15 +7,12 @@
     height: 200px !important;
   }
 }
-
 .monthSelectFocus:focus-visible {
   outline: none;
 }
-
 .react-datepicker__day-name {
   font-weight: bold;
 }
-
 .monthSelect {
   padding-right: 16px;
   padding-left: 30px;
@@ -121,7 +118,7 @@ div#dropdowninHistoryRedirectXR ul li:nth-child(2):hover {
   border-radius: 8px;
 }
 
-.editedinParentHTRY{
+.editedinParentHTRY {
   border: 1px solid #929292 !important;
   width: 152px !important;
   padding: 0 !important;

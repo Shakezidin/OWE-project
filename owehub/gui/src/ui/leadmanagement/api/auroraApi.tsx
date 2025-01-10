@@ -65,7 +65,6 @@ export const handleCreateProposal = (
             const createDesignResult = await dispatch(
               auroraCreateDesign({ leads_id: leadId })
             );
-
             if (auroraCreateDesign.fulfilled.match(createDesignResult)) {
               // Step 4: Create Proposal
               const createProposalResult = await dispatch(

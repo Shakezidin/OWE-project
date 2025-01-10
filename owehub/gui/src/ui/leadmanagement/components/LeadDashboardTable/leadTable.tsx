@@ -16,7 +16,9 @@ import { ICONS } from '../../../../resources/icons/Icons';
 import { format, parseISO } from 'date-fns';
 import { Tooltip } from 'react-tooltip';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
-import { getDocuSignUrl } from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  getDocuSignUrl,
+} from '../../../../redux/apiActions/leadManagement/LeadManagementAction';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { downloadProposalWithSSE } from '../../api/auroraApi';
@@ -34,7 +36,6 @@ type DocuStatus = 'Completed' | 'Sent' | 'Voided' | 'Declined';
 interface VisibilityState {
   [key: string]: boolean;
 }
-
 interface LeadSelectionProps {
   selectedLeads: number[];
   setSelectedLeads: React.Dispatch<React.SetStateAction<number[]>>;
@@ -48,29 +49,6 @@ interface LeadSelectionProps {
   currentFilter: string;
   setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
 }
-
-type SSEPayload =
-  | {
-      is_done: false;
-      data: {
-        current_step: number;
-        total_steps: number;
-      };
-    }
-  | {
-      is_done: true;
-      data: {
-        current_step: number;
-        total_steps: number;
-        url: string;
-      };
-      error: null;
-    }
-  | {
-      is_done: true;
-      error: string;
-      data: null;
-    };
 
 const LeadTable = ({
   selectedLeads,
@@ -133,19 +111,13 @@ const LeadTable = ({
       action: 'getuserinfo' as const,
       authorization_code: accessToken, // Include the access token in the params if required by your backend
     };
-
     try {
       const response = await dispatch(getDocuSignUrl(params) as any);
-
       // Check if the response is successful
       if (response.error) {
         console.error('Failed to retrieve user info:', response.error);
         return;
       }
-
-      // Process the user info data
-      const userInfo = response.data; // Adjust based on your response structure
-
       // Store user info in your state or context as needed
     } catch (error) {
       console.error('Error fetching user info:', error);
@@ -159,7 +131,6 @@ const LeadTable = ({
   const [activeSection, setActiveSection] = useState<
     'Deal Won' | 'Deal Loss' | 'Appointment Not Required' | null
   >('Deal Won');
-  const tableRef = useRef<HTMLTableElement>(null);
   const loaderRef = useRef<HTMLTableRowElement>(null);
 
   const [leadId, setLeadId] = useState(0);
@@ -182,7 +153,6 @@ const LeadTable = ({
         : [...prev, leadId]
     );
   };
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
@@ -548,7 +518,6 @@ const LeadTable = ({
         onClose1={handleCloseProfileModal}
         leadId={leadId}
       />
-
       <LeadEditModal
         isOpen1={isEditOpen}
         onClose1={handleCloseEditModal}

@@ -14,8 +14,8 @@ import { MdDownloading } from 'react-icons/md';
 import MicroLoader from '../components/loader/MicroLoader';
 import Pagination from '../components/pagination/Pagination';
 import DataNotFound from '../components/loader/DataNotFound';
-import { SingleValue, ActionMeta } from 'react-select';
-import { Tooltip } from 'react-tooltip';
+import  { SingleValue, ActionMeta } from 'react-select';
+import { Tooltip as Tooltip } from 'react-tooltip';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import './styles/mediaQuery.css';
@@ -92,7 +92,6 @@ const LeadManagementDashboard = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
-  const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / itemsPerPage);
@@ -211,7 +210,6 @@ const LeadManagementDashboard = () => {
     const generateHandler = generateWebProposal(leadId, dispatch);
     await generateHandler();
   };
-
   const retrieveProposalWrapper = async (leadId: number) => {
     const retrieveHandler = retrieveWebProposal(leadId, dispatch);
     await retrieveHandler();
@@ -308,7 +306,6 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-
       fetchData();
     }
   }, [isAuthenticated, selectedDates, refresh]);
@@ -317,7 +314,6 @@ const LeadManagementDashboard = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
       setTotalValue(sum);
     };
-
     calculateTotalValue();
   }, [pieData]);
   useEffect(() => {
@@ -329,19 +325,16 @@ const LeadManagementDashboard = () => {
           const defaultDataKey = Object.keys(defaultData).find(
             (key) => key === statusName || defaultData[key].name === statusName
           );
-
           if (defaultDataKey) {
             acc[defaultDataKey] = {
               ...defaultData[defaultDataKey],
               value: item.count,
             };
           }
-
           return acc;
         },
         { ...defaultData }
       );
-
       const mergedData = Object.values(formattedData) as StatusData[];
       setPieData(mergedData);
     }
@@ -388,7 +381,6 @@ const LeadManagementDashboard = () => {
         page_size: itemsPerPage,
         page_number: archive ? 1 : page,
       };
-
       dispatch(getLeads(data));
     }
   }, [
@@ -456,10 +448,7 @@ const LeadManagementDashboard = () => {
     }
     setArchived(false);
   };
-  const handleNewButtonClick = () => {
-    setCurrentFilter('Projects'); // Example filter name
-    setIsNewButtonActive(true);
-  };
+
   const OpenWindowClick = () => {
     setIsToggledX((prev) => !prev);
   };
@@ -468,7 +457,6 @@ const LeadManagementDashboard = () => {
     setIsExporting(true);
     const headers = [
       'Lead ID',
-      // 'Status ID',
       'First Name',
       'Last Name',
       'Email',
@@ -602,7 +590,6 @@ const LeadManagementDashboard = () => {
         <div className={styles.horizontal}>
           <div className={styles.FirstColHead}>
             {/* HERE FOR TOGGLE VIEW WHEN HIDE OTHER BOTTONS */}
-
             {isToggledX && <div className={styles.customLeftRRR}>Overview</div>}
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads : {totalValue ? totalValue : '0'}
@@ -697,7 +684,6 @@ const LeadManagementDashboard = () => {
                     <img src={ICONS.includes_icon} alt="" />
                   </div>
                 )}
-
                 <div
                   onClick={OpenWindowClick}
                   className={styles.ButtonAbovearrov}
@@ -756,12 +742,10 @@ const LeadManagementDashboard = () => {
               >
                 Overview
               </div>
-
               <div className={styles.customFont}>
                 Total leads : {totalValue ? totalValue : '0'}
               </div>
             </div>
-
             <div style={{ width: '120%' }}>
               {loading ? (
                 <div
@@ -1042,7 +1026,6 @@ const LeadManagementDashboard = () => {
                       setSelectedValue={setSelectedValue}
                     />
                   )}
-
                   <div className={styles.filterCallToActionMobile}>
                     <div
                       className={styles.filtericon}
@@ -1160,7 +1143,6 @@ const LeadManagementDashboard = () => {
                   default:
                     displayStatus = data.name;
                 }
-
                 return (
                   <button
                     key={data.name}

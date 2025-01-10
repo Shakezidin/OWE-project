@@ -18,38 +18,10 @@ import Proj_pie_chart from './lib/proj_pie_chart';
 import { ICONS } from '../../../resources/icons/Icons';
 import QCModal from './PopUp';
 import NtpModal from './NtpPopUp';
-import Input from '../../components/text_input/Input';
-import { debounce } from '../../../utiles/debounce';
-
-interface ActivePopups {
-  [key: number]: number | null;
-}
 interface Option {
   value: string;
   label: string;
 }
-const data = [
-  {
-    name: 'Page A',
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: 'Page B',
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: 'Page C',
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: 'Page D',
-    pv: 3908,
-    amt: 2000,
-  },
-];
 
 const ProjectStatus = () => {
   const { projects, projectDetail, isLoading, otherlinks } = useAppSelector(
@@ -57,14 +29,12 @@ const ProjectStatus = () => {
   );
   const location = useLocation();
   const projectId = new URLSearchParams(location.search).get('project_id');
-  const projectName = new URLSearchParams(location.search).get('customer-name');
-
-  useEffect(()=>{
+  useEffect(() => {
     window.scrollTo({
-      top:0,
-      behavior: 'smooth'
-    })    
-  },[location.pathname])
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [location.pathname]);
   const getStatus = (arr: string[]) => {
     return arr.every(
       (item) => projectDetail[item as keyof typeof projectDetail]
@@ -72,29 +42,7 @@ const ProjectStatus = () => {
   };
   const [search, setSearch] = useState('OUR22645');
   const [searchValue, setSearchValue] = useState('OUR22645');
-  const [active, setActive] = useState(false);
-
-
-  
   const filtered = [
-    // {
-    //   name: 'Sales',
-    //   number: <FaCheck />,
-    //   color: 'white',
-    //   numColor: '#0493CE',
-    //   bgColor: '#4191C9',
-    //   childStatusData: [
-    //     {
-    //       name: '10 Apr',
-    //       process: 'Completed',
-    //       bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
-    //       color: projectDetail.sales_completed ? 'white' : '#858585',
-    //       borderColor: projectDetail.sales_completed ? 'white' : '#A5AAB2',
-    //       key: 'sales_completed',
-    //     },
-    //   ],
-    // },
-
     {
       name: 'NTP',
       number: '1',
@@ -329,7 +277,6 @@ const ProjectStatus = () => {
           bgColor: projectDetail.install_pending ? '#63ACA3' : '#EBEBEB',
           color: projectDetail.install_pending ? 'white' : '#858585',
         },
-
         {
           name: '10 Apr',
           process: 'Ready',
@@ -348,7 +295,6 @@ const ProjectStatus = () => {
           bgColor: projectDetail.install_scheduled ? '#63ACA3' : '#EBEBEB',
           color: projectDetail.install_scheduled ? 'white' : '#858585',
         },
-
         {
           name: '10 Apr',
           process: 'Completed',
@@ -422,7 +368,6 @@ const ProjectStatus = () => {
           bgColor: projectDetail.pto_submitted ? '#63ACA3' : '#EBEBEB',
           color: projectDetail.pto_submitted ? 'white' : '#858585',
         },
-
         {
           name: '10 Apr',
           process: 'Approved',
@@ -435,7 +380,6 @@ const ProjectStatus = () => {
       ],
     },
   ];
-
   const filteredStatusData = filtered.filter((status) => {
     if (status.name === 'Roofing') {
       return (
@@ -451,9 +395,9 @@ const ProjectStatus = () => {
         projectDetail.electrical_completed
       );
     }
-    return true; // Keep all other status objects
+    // Keep all other status objects
+    return true;
   });
-
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
   const isTablet = useMatchMedia('(max-width:1024px)');
@@ -462,7 +406,6 @@ const ProjectStatus = () => {
     value: string;
   }>({} as Option);
   const dispatch = useAppDispatch();
-
   const handleClickOutside = (e: MouseEvent) => {
     const elm = e.target as HTMLElement;
     if (
@@ -475,27 +418,16 @@ const ProjectStatus = () => {
       setActivePopups(false);
     }
   };
-
-  const handleSearchChange = useCallback(
-    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchValue(e.target.value);
-    }, 800),
-    []
-  );
-
   useEffect(() => {
     if (activePopups) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [activePopups]);
-
   useEffect(() => {
     dispatch(getProjects());
-
     return () => toast.dismiss();
   }, []);
   const projectOption: Option[] = projects?.map?.(
@@ -504,24 +436,21 @@ const ProjectStatus = () => {
       value: item.unqiue_id,
     })
   );
-
   useEffect(() => {
     if (activePopups) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [activePopups]);
-
   useEffect(() => {
     if (projectId) {
-      const anotheropt = projectOption.filter((item) => item.value === projectId)
-      const opt = { label: projectId, value: projectId };
-      console.log(anotheropt, "kjgfh")
-      setSelectedProject(anotheropt[0])
-
+      const anotheropt = projectOption.filter(
+        (item) => item.value === projectId
+      );
+      console.log(anotheropt, 'kjgfh');
+      setSelectedProject(anotheropt[0]);
     } else if (projectOption.length) {
       const val = {
         label: projectOption[0].label || '',
@@ -531,7 +460,6 @@ const ProjectStatus = () => {
       setSelectedProject(val);
     }
   }, [projectOption.length, projectId, dispatch]);
-
   useEffect(() => {
     if (selectedProject?.value) {
       dispatch(getProjectDetail(selectedProject?.value));
@@ -539,51 +467,23 @@ const ProjectStatus = () => {
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
   }, [selectedProject?.value]);
-
   useEffect(() => {
     if (projectId) {
       setSearch(projectId);
       setSearchValue(projectId);
     }
   }, [projectId]);
-
-  const options = [
-    { id: 1, content: 'Podio' },
-    { id: 2, content: 'Active CAD' },
-    { id: 3, content: 'DAT' },
-  ];
-
-  const handleButton1Click = (optionId: number) => {
-    console.log('Button 1 clicked for option:', optionId);
-  };
-
-  const handleButton2Click = (optionId: number) => {
-    console.log('Button 2 clicked for option:', optionId);
-  };
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
   const filterClose = () => setFilterOpen(false);
-
   const filter = () => {
     setFilterOpen(true);
   };
-
   const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
-
   const ntpClose = () => setNtpOPen(false);
-
   const ntpAction = () => {
     setNtpOPen(true);
   };
   const popupRef = useRef(null);
-
-  const [showComplete, setShowComplete] = useState(false);
-
-  const handleOrderStatusClick = () => {
-    setActive(!active);
-    setShowComplete(!showComplete);
-  };
-
   // Function to handle Escape key press
   const handleKeyDown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
@@ -591,22 +491,16 @@ const ProjectStatus = () => {
       ntpClose();
     }
   };
-
   useEffect(() => {
     // Add event listener for keydown
     window.addEventListener('keydown', handleKeyDown);
-
     // Clean up event listener on component unmount
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-
-  const isMobile = useMatchMedia('(max-width: 767px)');
-
   const [isHovered, setIsHovered] = useState(-1);
-
- console.log(selectedProject, 'fhfh')
+  console.log(selectedProject, 'fhfh');
   return (
     <>
       <QCModal
@@ -614,13 +508,11 @@ const ProjectStatus = () => {
         isOpen={filterOPen}
         handleClose={filterClose}
       />
-
       <NtpModal
         projectDetail={otherlinks}
         isOpen={ntpOPen}
         handleClose={ntpClose}
       />
-
       <div className="">
         <div style={{ padding: '0px' }}>
           <div className="flex top-project-cards">
@@ -635,7 +527,8 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className="cust-name">
-                    Customer name: <pre>{selectedProject?.label?.split('-')[1]}</pre>
+                      Customer name:{' '}
+                      <pre>{selectedProject?.label?.split('-')[1]}</pre>
                     </span>
                     <SelectOption
                       options={projectOption}
@@ -649,9 +542,9 @@ const ProjectStatus = () => {
                       }}
                       width="190px"
                       optionStyles={{
-                        overflowX: "hidden",
-                        textOverflow: "ellipsis",
-                        textWrap: "nowrap",
+                        overflowX: 'hidden',
+                        textOverflow: 'ellipsis',
+                        textWrap: 'nowrap',
                       }}
                     />
                   </div>
@@ -688,7 +581,10 @@ const ProjectStatus = () => {
                           style={{
                             width: '100%',
                             textAlign: 'center',
-                            color: isHovered === i ? '#fff' : 'var(--input-border-color)',
+                            color:
+                              isHovered === i
+                                ? '#fff'
+                                : 'var(--input-border-color)',
                           }}
                         >
                           <p className="para-head text-white-color">
@@ -696,16 +592,14 @@ const ProjectStatus = () => {
                           </p>
                           <span className="span-para">
                             {el.key === 'adders_total' ||
-                              el.key === 'contract_amount'
+                            el.key === 'contract_amount'
                               ? '$'
                               : ''}
-
                             <>
                               {projectDetail[
                                 el.key as keyof typeof projectDetail
                               ] || 'N/A'}{' '}
                             </>
-
                             {el.key === 'system_size' ? '(kW)' : ''}
                           </span>
                         </div>
@@ -730,20 +624,22 @@ const ProjectStatus = () => {
                               {
                                 // @ts-ignore
                                 projectDetail.adder_breakdown_and_total &&
-                                Object.keys(
-                                  // @ts-ignore
-                                  projectDetail.adder_breakdown_and_total
-                                ).map((item, ind) => {
-                                  // @ts-ignore
-                                  return (
-                                    <li key={ind} className="order-list-name">
-                                      {' '}
-                                      {item} :{' '}
-                                      {(projectDetail as any).adder_breakdown_and_total[item]
-                                      }{' '}
-                                    </li>
-                                  );
-                                })
+                                  Object.keys(
+                                    // @ts-ignore
+                                    projectDetail.adder_breakdown_and_total
+                                  ).map((item, ind) => {
+                                    // @ts-ignore
+                                    return (
+                                      <li key={ind} className="order-list-name">
+                                        {' '}
+                                        {item} :{' '}
+                                        {
+                                          (projectDetail as any)
+                                            .adder_breakdown_and_total[item]
+                                        }{' '}
+                                      </li>
+                                    );
+                                  })
                               }
                             </ol>
                           </div>
@@ -754,28 +650,28 @@ const ProjectStatus = () => {
                 ))}
               </div>
             </div>
-            <div className="flex-auto second-project-card" style={{paddingLeft: "1.2rem"}}>
+            <div
+              className="flex-auto second-project-card"
+              style={{ paddingLeft: '1.2rem' }}
+            >
               <div
                 className="bg-white rounded-16 flex relative"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   height: '100%',
-                  // alignItems: 'center',
                 }}
               >
                 <Proj_pie_chart projectDetail={otherlinks} />
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-16 project-table-wrapper">
             <div
               className="project-heading project-status-heading"
-              style={{ padding: '22px', marginTop: "1.2rem" }}
+              style={{ padding: '22px', marginTop: '1.2rem' }}
             >
               <p className="mob-projhead">Project Stages</p>
-
               <div className="proj-status-tab-head flex">
                 <div className="progress-box-container status-boxes">
                   <div className="progress-box-body mt0">
@@ -816,7 +712,6 @@ const ProjectStatus = () => {
                   </div>
                 </div>
               </div>
-
               <div className="flex items-center project-status-table-title1">
                 <div className="progress-box-container status-btn ml3">
                   <div className="progress-qc mt0" onClick={filter}>
@@ -836,12 +731,6 @@ const ProjectStatus = () => {
                     <span>{otherlinks?.ntp?.action_required_count}</span>
                   </div>
                 ) : null}
-                {/* {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&
-                      <div className="co-status mt0">
-                        <p>C/O Status</p>
-                        <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>{otherlinks.co_status} <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
-                      </div>
-                    } */}
                 {otherlinks.co_status !== 'CO Complete' &&
                   otherlinks.co_status && (
                     <div className="progress-co mt0">
@@ -886,7 +775,10 @@ const ProjectStatus = () => {
                         ) : (
                           filteredStatusData.map((item: any, i: any) => (
                             <>
-                              <div key={item.id || i} className="project-status-table">
+                              <div
+                                key={item.id || i}
+                                className="project-status-table"
+                              >
                                 <div
                                   className="project-status-card"
                                   style={{
@@ -941,19 +833,19 @@ const ProjectStatus = () => {
                                         {!(
                                           el.key &&
                                           projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                            el.key as keyof typeof projectDetail
                                           ]
                                         ) && (
-                                            <span
-                                              className="date-para"
-                                              style={{
-                                                color: el.color,
-                                                fontSize: '9px',
-                                              }}
-                                            >
-                                              ETA
-                                            </span>
-                                          )}
+                                          <span
+                                            className="date-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '9px',
+                                            }}
+                                          >
+                                            ETA
+                                          </span>
+                                        )}
                                         <p
                                           style={{
                                             color: el.color,
@@ -961,22 +853,22 @@ const ProjectStatus = () => {
                                           }}
                                         >
                                           {el.key &&
-                                            projectDetail[
+                                          projectDetail[
                                             el.key as keyof typeof projectDetail
-                                            ]
+                                          ]
                                             ? format(
-                                              new Date(
-                                                projectDetail[
-                                                el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'dd MMMM'
-                                            ).slice(0, 6)
+                                                new Date(
+                                                  projectDetail[
+                                                    el.key as keyof typeof projectDetail
+                                                  ]
+                                                ),
+                                                'dd MMMM'
+                                              ).slice(0, 6)
                                             : 'N/A'}
                                         </p>
                                         {el.key &&
                                           projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                            el.key as keyof typeof projectDetail
                                           ] && (
                                             <p
                                               className="stage-1-para"
@@ -989,7 +881,7 @@ const ProjectStatus = () => {
                                               {format(
                                                 new Date(
                                                   projectDetail[
-                                                  el.key as keyof typeof projectDetail
+                                                    el.key as keyof typeof projectDetail
                                                   ]
                                                 ),
                                                 'yyyy'

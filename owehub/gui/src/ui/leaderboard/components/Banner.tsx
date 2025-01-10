@@ -42,7 +42,6 @@ const Banner: React.FC<BannerProps> = ({
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
   const { authData, getUpdatedAuthData } = useAuth();
-
   const [isAuthenticated, setAuthenticated] = useState(false);
   const tableData = {
     tableNames: ['dealer_name'],
@@ -52,7 +51,6 @@ const Banner: React.FC<BannerProps> = ({
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
-
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
@@ -71,7 +69,6 @@ const Banner: React.FC<BannerProps> = ({
     setOpts(leaderDealer(res.data));
     setIsFetched(true);
   };
-
   useEffect(() => {
     if (
       role === 'Admin' ||
@@ -84,7 +81,6 @@ const Banner: React.FC<BannerProps> = ({
       getNewFormData();
     }
   }, [role]);
-
   useEffect(() => {
     if (
       role !== 'Admin' &&
@@ -96,7 +92,6 @@ const Banner: React.FC<BannerProps> = ({
       (async () => {
         try {
           const data = await postCaller('get_leaderboarddatarequest', {});
-
           if (data.status > 201) {
             toast.error(data?.message);
             return;

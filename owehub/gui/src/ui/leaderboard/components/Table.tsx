@@ -1,16 +1,13 @@
 import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import { DateRange } from 'react-date-range';
-
 import {
-  endOfMonth,
   subDays,
   startOfMonth,
   startOfWeek,
@@ -97,10 +94,7 @@ export const RankColumn = ({ rank }: { rank: number }) => {
   return <span className="ml1">{rank}</span>;
 };
 
-//
 // PERIOD FILTER
-//
-
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
@@ -112,7 +106,8 @@ function getCurrentDateInUserTimezone() {
   return toZonedTime(now, userTimezone);
 }
 const today = getCurrentDateInUserTimezone();
-const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
+ // assuming week starts on Monday, change to 0 if it starts on Sunday
+const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
@@ -200,9 +195,7 @@ const PeriodFilter = ({
   );
 };
 
-//
 // SELECTABLE FILTER (rank by & group by)
-//
 const SelectableFilter = ({
   label,
   options,
@@ -312,9 +305,7 @@ const SelectableFilter = ({
   );
 };
 
-//
 // DATE FILTER
-//
 const DateFilter = ({
   selected,
   setSelected,
@@ -470,7 +461,6 @@ const DateFilter = ({
               },
               marginLeft: '-18px',
             }),
-
             option: (baseStyles, state) => ({
               ...baseStyles,
               fontSize: '12px',
@@ -484,7 +474,6 @@ const DateFilter = ({
               background: '#EE824D',
               transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
             }),
-
             singleValue: (baseStyles, state) => ({
               ...baseStyles,
               color: '#EE824D',
@@ -606,7 +595,6 @@ const Table = ({
   isFetched: boolean;
 }) => {
   const [leaderTable, setLeaderTable] = useState<any>([]);
-
   const [totalCount, setTotalCount] = useState(0);
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
@@ -623,7 +611,6 @@ const Table = ({
       authData?.isPasswordChangeRequired?.toString();
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
-
   console.log(tableData, 'tableData');
 
   useEffect(() => {
@@ -675,7 +662,8 @@ const Table = ({
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
-    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    // If the number is an integer, return it as a string without .00
+    if (sale % 1 === 0) return sale.toString(); 
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
   const role = authData?.role;
@@ -732,8 +720,6 @@ const Table = ({
   }, [groupBy, role, authData]);
 
   const exportCsv = async () => {
-    // Define the headers for the CSV
-    // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
       return str.replace(/<\/?[^>]+(>|$)/g, '');
@@ -788,9 +774,7 @@ const Table = ({
     ]);
 
     const csvRows = [headers, ...csvData];
-
     const csvString = Papa.unparse(csvRows);
-
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -856,7 +840,6 @@ const Table = ({
               {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
             </span>
           </div>
-
           {exportShow && (
             <div className="export-opt">
               <button
@@ -883,7 +866,6 @@ const Table = ({
           )}
         </div>
       )}
-
       <div>
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
@@ -1056,7 +1038,6 @@ const Table = ({
                     </span>
                     <p className="rank-sm-text">NTP</p>
                   </div>
-
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
@@ -1077,9 +1058,7 @@ const Table = ({
             <thead>
               <tr>
                 <th>Rank</th>
-
                 <th>{getName}</th>
-
                 {showPartner && <th>Partner</th>}
                 <th>
                   Sale
@@ -1162,11 +1141,9 @@ const Table = ({
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
                       {showPartner && <td> {item.dealer} </td>}
-
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
                       <td>{formatSaleValue(item?.install)}</td>
-
                       <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );
@@ -1204,7 +1181,6 @@ const Table = ({
           </table>
         </div>
       </div>
-
       <div className="page-heading-container">
         {leaderTable?.length > 0 && !isLoading ? (
           <>

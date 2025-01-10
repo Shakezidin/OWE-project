@@ -22,7 +22,6 @@
 .CrossRemoveSearch:hover {
   transform: scale(1.13);
 }
-
 .PaginationFont a {
   font-size: 12px !important;
 }
@@ -36,7 +35,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
-
 .horizontal {
   display: flex;
   gap: 20px;
@@ -67,7 +65,6 @@
   padding-left: 0 !important;
   max-width: auto !important;
 }
-
 @media (min-width: 0px) {
   .chartGrid {
     grid-template-columns: 1fr 1fr;
@@ -78,7 +75,6 @@
     grid-column: 1 / span 2;
   }
 }
-
 @media (min-width: 1441px) {
   .custom3 {
     margin-right: 0px;
@@ -87,7 +83,6 @@
     margin-right: 0px;
   }
 }
-
 .mainHeader {
   display: grid;
   width: 100%;
@@ -95,8 +90,7 @@
   margin-right: 0;
   padding-right: 0;
 }
-
-.mainHeader>div {
+.mainHeader > div {
   padding: 0 10px;
 }
 
@@ -115,7 +109,6 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .cardHeader {
   padding: 16px;
   font-weight: bold;
@@ -131,17 +124,14 @@
   align-items: center;
   margin-bottom: -7px;
 }
-
 .cardContent {
   padding: 16px 0;
 }
-
 .totalLeads {
   font-size: 14px;
   color: #6b7280;
   margin-bottom: 8px;
 }
-
 .legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -149,24 +139,20 @@
   margin-top: 16px;
   padding-left: 35px;
 }
-
 .legendItem {
   display: flex;
   align-items: center;
 }
-
 .legendColor {
   width: 12px;
   height: 6.12px;
   border-radius: 6.12px;
   margin-right: 8px;
 }
-
 .legendText {
   font-size: 12px;
   color: var(--input-border-color);
 }
-
 /* Shams */
 .monthSelect {
   background-color: #377cf6;
@@ -176,12 +162,10 @@
   border: none;
   padding-right: 0;
 }
-
 .stats {
   margin-top: 16px;
   font-size: 14px;
 }
-
 .statItem {
   margin-right: 16px;
 }
@@ -217,6 +201,10 @@
   border: 1px solid #377cf6 !important;
 }
 
+.button:hover p,
+.button:hover span {
+}
+
 .status {
   border-radius: 50%;
   padding: 4px;
@@ -229,7 +217,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .buttonActive {
   font-weight: 500;
   background-color: #3b82f6;
@@ -243,32 +230,26 @@
   font-weight: 500;
   border: none !important;
 }
-
 .table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .table th,
 .table td {
   text-align: left;
   padding: 11px;
   border-bottom: 1px solid #e5e7eb;
 }
-
 .table th {
   font-weight: bold;
 }
-
 table tbody tr:hover {
   transition: 0.4s all linear;
   background-color: #377df623;
 }
-
 .statusPending {
   color: #f59e0b;
 }
-
 .filtericon {
   display: flex;
   justify-content: center;
@@ -298,7 +279,6 @@ table tbody tr:hover {
   align-items: center;
   width: 35%;
 }
-
 .SecondColHead {
   display: flex;
   justify-content: space-between;
@@ -317,7 +297,6 @@ table tbody tr:hover {
   margin-right: 13px;
   box-shadow: 1px solid var(--primary-color);
 }
-
 .searchBar:hover {
   border: 1px solid var(--primary-color);
 }
@@ -325,11 +304,9 @@ table tbody tr:hover {
 .searchBar .searchInput:focus {
   outline: none;
 }
-
 .searchBar:focus-within {
   border: 1px solid var(--primary-color) !important;
 }
-
 .searchIcon {
   margin-left: 5px;
   margin-right: 5px;
@@ -344,12 +321,10 @@ table tbody tr:hover {
 .searchBar:focus-within .searchInput::placeholder {
   color: #377cf6 !important;
 }
-
 .searchBar:hover .searchIcon img,
 .searchBar:focus-within .searchIcon img {
   filter: invert(32%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(100%);
 }
-
 .searchInput {
   border: none;
   outline: none;
@@ -440,12 +415,10 @@ table tbody tr:hover {
 .actionButtons {
   display: flex;
   gap: 10px;
-  /* Adds space between buttons */
 }
 
 .rescheduleButton {
   background-color: #2979ff;
-  /* Blue color */
   color: white;
   border: none;
   padding: 8px 0;
@@ -464,7 +437,6 @@ table tbody tr:hover {
 .archiveButton {
   background-color: transparent;
   color: #757575;
-  /* Gray color */
   border: 1px solid #757575;
   padding: 8px 16px;
   border-radius: 20px;
@@ -489,7 +461,6 @@ table tbody tr:hover {
   display: flex;
   align-items: center;
 }
-
 .closeIcon {
   font-size: 24px;
   margin-right: 10px;
@@ -519,7 +490,6 @@ table tbody tr:hover {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-
 .removeButton:hover {
   transform: scale(1.05);
   background-color: #ad1313;
@@ -679,6 +649,7 @@ table tbody tr:hover {
     width: 100%;
   }
 
+  /* ANOTHER SECTION RESPONSIVENESS ADEDDD */
   .cardHeader {
     display: none;
   }
@@ -915,7 +886,6 @@ table tbody tr:hover {
   .dashboard {
     margin: 10px;
   }
-
   .card {
     margin-top: 0;
   }
@@ -934,7 +904,6 @@ table tbody tr:hover {
 
   .chartGrid {
     grid-template-columns: 40% 60%;
-    /* First card 40%, second card 60% */
   }
 
   .lineCard {
@@ -981,12 +950,12 @@ table tbody tr:hover {
     flex-direction: row;
     gap: 4px;
   }
+  .detailsRowChev {
+  }
 }
 
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
-
-  /* Styles for smartphones */
   .button {
     transform: scale(0.9);
   }
@@ -1243,7 +1212,6 @@ table tbody tr:hover {
   flex-wrap: wrap;
   justify-content: right !important;
 }
-
 /* General style for the month select */
 .monthSelect {
   margin-top: 0;

@@ -6,7 +6,6 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import artboard from '../../../resources/assets/artboard.svg';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
 import MicroLoader from '../../components/loader/MicroLoader';
-
 interface performance {
   details: any;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -45,7 +44,8 @@ const PerformanceCards: React.FC<performance> = ({
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
-    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    // If the number is an integer, return it as a string without .00
+    if (sale % 1 === 0) return sale.toString(); 
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
 
@@ -184,7 +184,6 @@ const PerformanceCards: React.FC<performance> = ({
                     <p className="text-center">
                       {formatSaleValue(rank1?.install)}
                     </p>
-
                     <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                 </div>
@@ -231,7 +230,6 @@ const PerformanceCards: React.FC<performance> = ({
         ) : (
           ''
         )}
-
         {!Boolean(details.length) && !isLoading && (
           <div
             style={{ textAlign: 'center' }}
