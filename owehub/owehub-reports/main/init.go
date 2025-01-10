@@ -137,6 +137,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-reports-service/v1/get_reports_achived",
+	// 	apiHandler.HandleReportsAchivedListRequest,
+	// 	false,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
 }
 
 /******************************************************************************
