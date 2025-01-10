@@ -35,7 +35,6 @@ import UserIcon from '../lib/UserIcon';
 import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
-import Input from '../../../components/text_input/Input';
 import Swal from 'sweetalert2';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
@@ -139,7 +138,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   //dealerpagination
   const totalPages1 = Math.ceil(dealerCount! / pageSize1);
-
   const startIndex1 = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex1 = currentPage1 * pageSize1;
 
@@ -550,7 +548,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               style={buttonStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              data-tooltip-id='user-delete'
+              data-tooltip-id="user-delete"
             >
               <svg
                 width="24"

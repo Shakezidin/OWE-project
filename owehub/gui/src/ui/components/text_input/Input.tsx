@@ -5,20 +5,19 @@ import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-of
 import { ICONS } from '../../../resources/icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
 import { useRef, useEffect, useState } from 'react';
-
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
-  | 'text'
-  | 'number'
-  | 'email'
-  | 'password'
-  | 'date'
-  | 'datetime-local'
-  | 'file'
-  |'category'
-  |'title'
-  |'subTitle'
-  |'dashboard_id';
+    | 'text'
+    | 'number'
+    | 'email'
+    | 'password'
+    | 'date'
+    | 'datetime-local'
+    | 'file'
+    | 'category'
+    | 'title'
+    | 'subTitle'
+    | 'dashboard_id';
   value: string | number;
   placeholder: string;
   label?: string;
@@ -38,7 +37,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelClassName?: string;
   innerViewClassName?: string;
 }
-
 const Input: FC<InputProps> = ({
   type,
   value,
@@ -66,7 +64,14 @@ const Input: FC<InputProps> = ({
       const pattern = new RegExp(customRegex, 'g');
       e.target.value = e.target.value.replace(pattern, '');
     } else {
-      if (type === 'text' && !name.includes('email') && !name.includes('category') && !name.includes('title') && !name.includes('subTitle') && !name.includes('dashboard_id')) {
+      if (
+        type === 'text' &&
+        !name.includes('email') &&
+        !name.includes('category') &&
+        !name.includes('title') &&
+        !name.includes('subTitle') &&
+        !name.includes('dashboard_id')
+      ) {
         e.target.value = e.target.value.replace(
           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,.'-]| {2,}/g,
           ''
@@ -77,23 +82,19 @@ const Input: FC<InputProps> = ({
       onChange(e);
     }
   };
-
   //input handle
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
-
   const handleClickInside = () => {
     setIsFocused(true); // Set focused state
     inputRef.current?.focus(); // Focus the input
   };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
       setIsFocused(false); // Remove focused state
       inputRef.current.blur(); // Remove focus if clicking outside
     }
   };
-
   useEffect(() => {
     // Add event listener for clicks
     document.addEventListener('click', handleClickOutside);
@@ -103,14 +104,15 @@ const Input: FC<InputProps> = ({
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
-
   return (
     <div className="input-wrapper">
       {label && (
         <label className={`inputLabel ${labelClassName}`}>{label}</label>
       )}{' '}
-      <div className={`input-inner-view ${isFocused ? 'focused' : ''} ${innerViewClassName || ''}`}
-        onClick={handleClickInside}>
+      <div
+        className={`input-inner-view ${isFocused ? 'focused' : ''} ${innerViewClassName || ''}`}
+        onClick={handleClickInside}
+      >
         <input
           type={type}
           ref={inputRef}
@@ -118,7 +120,6 @@ const Input: FC<InputProps> = ({
           placeholder={placeholder}
           autoComplete="off"
           value={value}
-          
           max={'2050-01-01'}
           onChange={(e) => {
             if (name.includes('password')) {

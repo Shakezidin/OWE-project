@@ -1,7 +1,5 @@
 import React from 'react';
-import { ICONS } from '../../../resources/icons/Icons';
 import '../pagination/pagination.css';
-
 import { MdArrowForwardIos, MdArrowBackIos } from 'react-icons/md';
 import ReactPaginate from 'react-paginate';
 import { Tooltip } from 'react-tooltip';
@@ -15,14 +13,10 @@ interface PaginationProps {
   perPage: number;
   onPerPageChange?: (perPage: number) => void;
 }
-
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   paginate,
-  goToNextPage,
-  currentPageData,
-  goToPrevPage,
   perPage,
   onPerPageChange,
 }) => {
@@ -32,7 +26,6 @@ const Pagination: React.FC<PaginationProps> = ({
       onPerPageChange(selectedPerPage);
     }
   };
-
   return (
     <div className="pagination-container">
       {onPerPageChange && (
@@ -50,38 +43,38 @@ const Pagination: React.FC<PaginationProps> = ({
           </select>
         </div>
       )}
-       <Tooltip
-              style={{
-                zIndex: 103,
-                background: '#f7f7f7',
-                color: '#000',
-                fontSize: 12,
-                paddingBlock: 4,
-                fontWeight: '400',
-              }}
-              offset={8}
-              id="pagination-nxt"
-              place="top"
-              content="Next"
-              delayShow={200}
-              className='pagination-tooltip'
-            />
-       <Tooltip
-              style={{
-                zIndex: 103,
-                background: '#f7f7f7',
-                color: '#000',
-                fontSize: 12,
-                paddingBlock: 4,
-                fontWeight: '400',
-              }}
-              offset={8}
-              id="pagination-prev"
-              place="top"
-              content="Prev"
-              delayShow={200}
-              className='pagination-tooltip'
-            />
+      <Tooltip
+        style={{
+          zIndex: 103,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: '400',
+        }}
+        offset={8}
+        id="pagination-nxt"
+        place="top"
+        content="Next"
+        delayShow={200}
+        className="pagination-tooltip"
+      />
+      <Tooltip
+        style={{
+          zIndex: 103,
+          background: '#f7f7f7',
+          color: '#000',
+          fontSize: 12,
+          paddingBlock: 4,
+          fontWeight: '400',
+        }}
+        offset={8}
+        id="pagination-prev"
+        place="top"
+        content="Prev"
+        delayShow={200}
+        className="pagination-tooltip"
+      />
       <ReactPaginate
         breakLabel="..."
         nextLabel={
@@ -128,5 +121,4 @@ const Pagination: React.FC<PaginationProps> = ({
     </div>
   );
 };
-
 export default Pagination;

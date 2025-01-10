@@ -8,9 +8,7 @@
 
 import React from 'react';
 import './ActionButton.css';
-// import { ICONS } from '../../../resources/icons/Icons';
 import { MdAdd } from 'react-icons/md';
-
 interface ActionButtonProps {
   title: string;
   onClick: () => void;
@@ -20,11 +18,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
   const { title, onClick } = props;
   return (
     <div className="iconsSection2 iconSection2-mobile">
-      <button
-        type="button"
-        style={{}}
-        onClick={onClick}
-      >
+      <button type="button" style={{}} onClick={onClick}>
         <MdAdd style={{ flexShrink: 0 }} size={12} />
         <span className="mobileTitle">{title}</span>
       </button>

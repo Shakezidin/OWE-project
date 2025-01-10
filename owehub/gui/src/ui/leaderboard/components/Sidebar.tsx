@@ -14,7 +14,6 @@ import { toCanvas } from 'html-to-image';
 import { FirstAwardIcon, SecondAwardIcon, ThirdAwardIcon } from './Icons';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
-
 interface IDealer {
   dealer?: string;
   rep_name?: string;
@@ -32,12 +31,10 @@ const switchIcons = (rank: number) => {
   switch (rank) {
     case 1:
       return <FirstAwardIcon width={40} height={40} />;
-
     case 2:
       return <SecondAwardIcon width={40} height={40} />;
     case 3:
       return <ThirdAwardIcon width={40} height={40} />;
-
     default:
       return (
         <span
@@ -91,8 +88,6 @@ const Sidebar = ({
       const data = await postCaller('get_leaderboardprofiledatarequest', {
         ...dealer,
         count_kw_selection: true,
-        // start_date: selectedRangeDate.value.split(',')[0],
-        // end_date: selectedRangeDate.value.split(',')[1],
       });
       if (data.status > 201) {
         toast.error(data.message);
@@ -135,7 +130,8 @@ const Sidebar = ({
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
-    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+     // If the number is an integer, return it as a string without .00
+    if (sale % 1 === 0) return sale.toString();
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
 
@@ -177,12 +173,6 @@ const Sidebar = ({
                 >
                   {dealer.name}
                 </h3>
-                {/* <p
-                  className=""
-                  style={{ color: '#434343', fontSize: 10, marginTop: 6 }}
-                >
-                  OUR31245
-                </p> */}
               </div>
             </div>
             <div className="mt2 px2">
@@ -233,7 +223,6 @@ const Sidebar = ({
                     </span>
                   </div>
                 </div>
-
                 <div>
                   <div className="icon">
                     <SuccessIcon />
@@ -251,7 +240,6 @@ const Sidebar = ({
                     </span>
                   </div>
                 </div>
-
                 <div>
                   <div className="icon">
                     <ServiceIcon />
@@ -280,7 +268,6 @@ const Sidebar = ({
                       {formatSaleValue(data?.weekly_sale)}
                     </span>
                   </div>
-
                   <div className="text-center leader-board-stats-wrapper py1">
                     <span className="block" style={{ fontWeight: 400 }}>
                       Total sales
@@ -299,7 +286,6 @@ const Sidebar = ({
                     <HiDownload size={16} color="#fff" className="mr1" />
                     <span> Download </span>
                   </button>
-
                   {isShareOpen && (
                     <SocialShare
                       setIsOpen={setIsShareOpen}
@@ -308,7 +294,6 @@ const Sidebar = ({
                     />
                   )}
                 </div>
-
                 <div className="mt1 text-center">
                   <span className="text-center block" style={{ fontSize: 12 }}>
                     Powered by

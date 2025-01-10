@@ -136,7 +136,7 @@ export const projects = [
       { name: 'Permit Submitted', date: null },
       { name: 'Install Ready', date: null },
       { name: 'Install Completed', date: null },
-      
+
       { name: 'PTO', date: null },
     ],
     overallProgress: 20,

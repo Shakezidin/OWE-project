@@ -12,15 +12,12 @@ import jsPDF from 'jspdf';
 import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import { PDFDocument } from 'pdf-lib';
 import 'jspdf-autotable';
-import useAuth, { AuthData } from '../../hooks/useAuth';
-import { countReset } from 'console';
-
+import useAuth from '../../hooks/useAuth';
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
-
 const categories = [
   { name: 'Sale', key: 'sale' },
   { name: 'NTP', key: 'ntp' },
@@ -35,12 +32,11 @@ interface Details {
   total_teams?: number;
   total_strength?: number;
 }
-
 const today = new Date();
-
 export type Tcategory = (typeof categories)[0];
 const Index = () => {
-  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
+  // assuming week starts on Monday, change to 0 if it starts on Sunday
+  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
   const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
     weekStartsOn: 1,
   });
@@ -48,11 +44,9 @@ const Index = () => {
     weekStartsOn: 1,
   });
   const { authData } = useAuth();
-
   const [isOpen, setIsOpen] = useState(-1);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
-
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
   const [tableData, setTableData] = useState([]);
@@ -77,11 +71,9 @@ const Index = () => {
       start: startOfLastWeek,
       end: endOfLastWeek,
     });
-
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const role = authData?.role;
-
   useEffect(() => {
     const role = localStorage.getItem('role');
     const isAuth = localStorage.getItem('isPasswordChangeRequired');
@@ -129,8 +121,6 @@ const Index = () => {
         setIsLoading(true);
         try {
           // Extracting dealer logic for readability
-          
-  
           // API call
           const data = await postCaller('get_perfomance_leaderboard_data', {
             type: activeHead,
@@ -139,18 +129,21 @@ const Index = () => {
             page_number: page,
             start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
             end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-            dealer: (role === TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer') ? [] : selectDealer.map((item) => item.value),
+            dealer:
+              role === TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer'
+                ? []
+                : selectDealer.map((item) => item.value),
             group_by: groupBy,
           });
-
-          console.log(TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer', "jhdsfg")
-  
+          console.log(
+            TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer',
+            'jhdsfg'
+          );
           // Handle error response
           if (data.status > 201) {
             toast.error(data.message);
             return;
           }
-  
           // Update state with fetched data
           setDetails(data.data?.top_leader_board_list);
           setTableData(data);
@@ -159,7 +152,8 @@ const Index = () => {
           console.error('Error fetching leaderboard data:', error);
           toast.error('An unexpected error occurred. Please try again.');
         } finally {
-          setIsLoading(false); // Always reset loading state
+          // Always reset loading state
+          setIsLoading(false);
         }
       })();
     }
@@ -174,8 +168,6 @@ const Index = () => {
     page,
     TYPE_OF_USER,
   ]);
-  
-  
   console.log(tableData, 'data');
   const shareImage = () => {
     if (topCards.current) {
@@ -190,12 +182,10 @@ const Index = () => {
         link.href = img;
         link.download = 'Performance_Leaderboard.png';
         link.click();
-
         setGenerating(false);
       });
     }
   };
-
   const resetDealer = (value: string) => {
     if (value !== 'dealer' && isShowDropdown && selectDealer.length) {
       setIsShowDropdown(false);
@@ -204,20 +194,17 @@ const Index = () => {
       setIsShowDropdown(true);
     }
   };
-
   const exportPdf = async () => {
     if (leaderboard.current) {
       setIsExporting(true);
       const element = leaderboard.current;
       const scrollHeight = element.scrollHeight;
-
       const filter = (node: HTMLElement) => {
         const exclusionClasses = ['page-heading-container', 'exportt'];
         return !exclusionClasses.some((classname) =>
           node.classList?.contains(classname)
         );
       };
-
       const selector = document.querySelector(
         '.leaderboard-table-container'
       ) as HTMLElement;
@@ -229,7 +216,6 @@ const Index = () => {
           cacheBust: true,
           canvasWidth: element.clientWidth,
         });
-
         const imageData = canvas.toDataURL('image/png');
         const screenshotPdf = new jsPDF({
           orientation: 'portrait',
@@ -258,7 +244,6 @@ const Index = () => {
       }
     }
   };
-
   const generateTablePdf = async (width: number, height: number) => {
     const getAllLeaders = await postCaller('get_perfomance_leaderboard_data', {
       type: activeHead,
@@ -271,7 +256,6 @@ const Index = () => {
       group_by: groupBy,
     });
     const data = await getAllLeaders.data;
-
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'pt',
@@ -285,11 +269,9 @@ const Index = () => {
       { header: 'Install', dataKey: 'install' },
       { header: 'Cancel', dataKey: 'cancel' },
     ];
-
     if (showPartner) {
       columns.splice(2, 0, { header: 'Partner', dataKey: 'dealer' });
     }
-
     // @ts-ignore
     doc.autoTable({
       columns: columns,
@@ -305,10 +287,8 @@ const Index = () => {
       margin: { top: 20 },
       tableWidth: 'auto',
     });
-
     return doc; // Returns PDF as ArrayBuffer
   };
-
   const mergePdfs = async (pdfs: jsPDF[]) => {
     const mergedPdf = await PDFDocument.create();
     for (const pdf of pdfs) {
@@ -317,12 +297,10 @@ const Index = () => {
       const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
       pages.forEach((page) => mergedPdf.addPage(page));
     }
-
     return await mergedPdf.save();
   };
-
   return (
-    <div ref={leaderboard} className='leaderboard-main'>
+    <div ref={leaderboard} className="leaderboard-main">
       <div ref={topCards} style={{ background: '#f3f3f3' }}>
         <Banner
           selectDealer={selectDealer}
@@ -377,5 +355,4 @@ const Index = () => {
     </div>
   );
 };
-
 export default Index;

@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import classes from './index.module.css';
-import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
-import { CiFilter } from 'react-icons/ci';
 import { FaFilter } from 'react-icons/fa';
 import useEscapeKey from '../../../../../hooks/useEscape';
 import { Tooltip } from 'react-tooltip';
-interface HistoryRedirectProps {
-  setArchive: (value: boolean) => void;
-}
 
 interface SelectedValueState {
   selectedValue: string;

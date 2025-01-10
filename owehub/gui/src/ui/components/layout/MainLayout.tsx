@@ -34,17 +34,17 @@ const MainLayout = () => {
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
-  const {pathname} = useLocation()
+  const { pathname } = useLocation();
 
   const getToken = async () => {
     try {
-      const response = await postCaller("get_graph_api_access_token", {});
+      const response = await postCaller('get_graph_api_access_token', {});
       const token = await response.data.access_token;
       const tokenDuration = await response.data.expires_in;
-      const expTime = new Date(Date.now() + 100)
-      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60))
-      Cookies.set('myToken', token, { expires: expTime, path: "/" });
-      dispatch(setToken(token))
+      const expTime = new Date(Date.now() + 100);
+      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60));
+      Cookies.set('myToken', token, { expires: expTime, path: '/' });
+      dispatch(setToken(token));
     } catch (error) {
       console.error(error);
     }
@@ -53,9 +53,9 @@ const MainLayout = () => {
   useEffect(() => {
     const token = Cookies.get('myToken');
     if (!token) {
-      getToken()
+      getToken();
     }
-  }, [pathname])
+  }, [pathname]);
 
   /** logout  */
   const logoutUser = (message?: string) => {
@@ -70,8 +70,6 @@ const MainLayout = () => {
 
   /** check idle time  */
   useIdleTimer({ onIdle: logoutUser, timeout: 900000 });
-
-
 
   /** reset paswword */
   useEffect(() => {
@@ -129,9 +127,9 @@ const MainLayout = () => {
   }, [dispatch, navigate, authData]);
 
   useEffect(() => {
-if(isTablet){
-  setToggleOpen(true);
-}
+    if (isTablet) {
+      setToggleOpen(true);
+    }
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
       localStorage.setItem('version', process.env.REACT_APP_VERSION!);
       window.location.reload();
@@ -140,9 +138,6 @@ if(isTablet){
 
   return isAuthenticated ? (
     <div className="main-container">
-      {/* {isStaging === 'staging' ? (
-        <ChatSupport isAuthenticated={isAuthenticated} />
-      ) : null} */}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
