@@ -517,7 +517,7 @@ const DateFilter = ({
         }}
         offset={8}
         id="lead-calendar"
-        place="top"
+        place="bottom"
         content="Calendar"
         delayShow={200}
         className='pagination-tooltip'
@@ -1146,16 +1146,17 @@ const Table = ({
                   </div>
                   <div>
                     <span className="rank-stats-num">
-                      {formatSaleValue(totalStats?.total_ntp || 0)}
-                    </span>
-                    <p className="rank-sm-text">NTP</p>
-                  </div>
-                  <div>
-                    <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_install || 0)}
                     </span>
                     <p className="rank-sm-text">Install</p>
                   </div>
+                  <div>
+                    <span className="rank-stats-num">
+                      {formatSaleValue(totalStats?.total_ntp || 0)}
+                    </span>
+                    <p className="rank-sm-text">NTP</p>
+                  </div>
+                 
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
@@ -1239,7 +1240,7 @@ const Table = ({
                               ? 'sale_rep'
                               : groupBy,
                           dealer:
-                            groupBy === 'primary_sales_rep' ? item.dealer : '',
+                            groupBy === 'primary_sales_rep' || groupBy === 'team' || groupBy ==='setter' ? item.dealer : '',
                           name: item.rep_name,
                           rank: item.rank,
                           sale: item.sale,

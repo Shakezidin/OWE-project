@@ -638,7 +638,7 @@ func FetchProjectDealerForAmAndAe(Email string, userRole interface{}) ([]string,
 	var roleBase string
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
-		roleBase = "account_manager2"
+		roleBase = "account_manager"
 	} else {
 		roleBase = "account_executive"
 	}

@@ -100,7 +100,7 @@ func SalesMetricsRetrieveQueryFunc() string {
             pto_ic_schema.pto_granted AS pto_date,
             permit_fin_pv_permits_schema.pv_approved AS permit_approved_date,
             ic_ic_pto_schema.ic_approved_date AS ic_approved_date,
-            roofing_request_install_subcontracting_schema.created_on AS roofing_created_date,
+            roofing_request_install_subcontracting_schema.record_created_on AS roofing_created_date,
             roofing_request_install_subcontracting_schema.work_completed_date AS roofing_completed_date,
             batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
             batteries_service_electrical_schema.completion_date AS battery_complete_date,
@@ -175,7 +175,7 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
             pto_ic_schema.pto_granted AS pto_date,
             permit_fin_pv_permits_schema.pv_approved AS permit_approved_date,
             ic_ic_pto_schema.ic_approved_date AS ic_approved_date,
-            roofing_request_install_subcontracting_schema.created_on AS roofing_created_date,
+            roofing_request_install_subcontracting_schema.record_created_on AS roofing_created_date,
             roofing_request_install_subcontracting_schema.work_completed_date AS roofing_completed_date,
             batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
             batteries_service_electrical_schema.completion_date AS battery_complete_date,
@@ -258,7 +258,7 @@ func ProjectMngmntRetrieveQueryFunc() string {
         survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
         survey_survey_schema.survey_completion_date AS site_survey_completed_date, 
         roofing_request_install_subcontracting_schema.work_scheduled_date AS roofing_scheduled_date, 
-        roofing_request_install_subcontracting_schema.created_on AS roofing_created_date,
+        roofing_request_install_subcontracting_schema.record_created_on AS roofing_created_date,
         roofing_request_install_subcontracting_schema.work_completed_date AS roofing_completed_date, 
         electrical_permits_permit_fin_schema.created_on AS electrical_permit_created_date, 
         pv_install_install_subcontracting_schema.created_on AS pv_install_created_date, 
@@ -450,7 +450,10 @@ func QcNtpRetrieveQueryFunc() string {
         LEFT JOIN system_customers_schema  
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
         LEFT JOIN prospects_customers_schema 
-                ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+        ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+        AND ntp_ntp_schema.prospectid_dealerid_salesrepid IS NOT NULL
+        AND ntp_ntp_schema.prospectid_dealerid_salesrepid <> ''
+        AND TRIM(ntp_ntp_schema.prospectid_dealerid_salesrepid) <> ','
     `)
 
 	return filtersBuilder.String()

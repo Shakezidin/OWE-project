@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Table } from 'antd';
 import styles from '../../styles/Timeline.module.css';
 import {
   LineChart,

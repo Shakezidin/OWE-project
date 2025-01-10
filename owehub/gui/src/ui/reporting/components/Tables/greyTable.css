@@ -81,9 +81,10 @@
 .backButton-reporting {
   display: flex;
   flex-direction: row;
-  gap: 6px;
-  justify-content: center;
+  gap: 10px;
+  /* justify-content: center; */
   align-items: center;
+  margin-bottom: 10px;
   transform: all 0.3s ease;
 }
 

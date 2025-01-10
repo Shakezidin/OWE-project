@@ -1,6 +1,5 @@
-import { Tooltip } from 'antd'
 import React from 'react'
-import { Bar, BarChart, CartesianGrid, LabelList, Legend, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, LabelList, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts'
 
 const OverAllBarGraph = () => {
     const data = [

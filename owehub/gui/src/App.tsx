@@ -66,6 +66,8 @@ import Ahj from './ui/reporting/Ahj/Ahj';
 import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 // import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
+import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
+import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
 
 
 function App() {
@@ -178,6 +180,10 @@ function App() {
               element={<PermitRedLine />}
             />
             <Route
+              path={ROUTES.DYNAMIC_REPORT}
+              element={<DynDashboard />}
+            />
+            <Route
               path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}
               element={<ReasonOfIncomplete />}
             />
@@ -246,6 +252,8 @@ function App() {
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
+          <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
+
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />

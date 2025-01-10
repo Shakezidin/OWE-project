@@ -4,7 +4,7 @@
  * DATE            : 22-Dec-2024
  **************************************************************************/
 
-package services
+ package services
 
 import (
 	"OWEApp/shared/appserver"
@@ -14,11 +14,11 @@ import (
 	"strings"
 	"time"
 
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
+	 "encoding/json"
+	 "fmt"
+	 "io/ioutil"
+	 "net/http"
+ )
 
 /******************************************************************************
  * FUNCTION:		HandleGetOverallSpeedSummaryReportRequest
@@ -324,28 +324,28 @@ func contains(arr []string, target string) bool {
 	return false
 }
 
-func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
-	start := (pageNumber - 1) * pageSize
-	if start >= int64(len(data)) {
-		return []T{}
-	}
+ func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
+	 start := (pageNumber - 1) * pageSize
+	 if start >= int64(len(data)) {
+		 return []T{}
+	 }
 
-	end := start + pageSize
-	if end > int64(len(data)) {
-		end = int64(len(data))
-	}
+	 end := start + pageSize
+	 if end > int64(len(data)) {
+		 end = int64(len(data))
+	 }
 
-	return data[start:end]
-}
+	 return data[start:end]
+ }
 
 func PrepareProductionSummaryReportFilters(tableName string, dataFilter models.SummaryReportRequest) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareProductionSummaryReportFilters")
 	defer func() { log.ExitFn(0, "PrepareProductionSummaryReportFilters", nil) }()
 
-	var filtersBuilder strings.Builder
+	 var filtersBuilder strings.Builder
 
-	filters = filtersBuilder.String()
+	 filters = filtersBuilder.String()
 
-	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-	return filters, whereEleList
-}
+	 log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	 return filters, whereEleList
+ }

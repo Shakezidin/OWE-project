@@ -99,7 +99,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				}
 				var roleBase string
 				if role == "Account Manager" {
-					roleBase = "account_manager2"
+					roleBase = "account_manager"
 				} else {
 					roleBase = "account_executive"
 				}
@@ -138,6 +138,9 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				continue
 			}
 			items = append(items, name)
+		}
+		if tableName == "dealer_name" && (role != string(types.RoleAccountManager) && role != string(types.RoleAccountExecutive)) {
+			items = append(items, "")
 		}
 		responseData[tableName] = items
 	}

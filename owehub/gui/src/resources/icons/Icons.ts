@@ -6,11 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
-import Searchbar1 from "../assets/search-bar-01.png"
-import searchbar2 from "../assets/images (1).png"
 import SignEditBotton from "../assets/SignEditBotton.png"
-import EditPenNew from "../assets/EditPenNew.png"
-import searchbar3 from "../assets/images.png"
 import SignModelConfirmation from "../../resources/assets/SignConfirnationModel.png"
 import DashboardNewIcon from "../../resources/assets/ArrowNewAdded.svg"
 import scheduleDoor from '../../resources/assets/schedule_door.png';
@@ -180,6 +176,7 @@ import MenuLead from "../assets/SideLead.svg";
 import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
 import QCAudit from "../assets/QCAudit.png"
 import QcLineLead from '../../resources/assets/QcLineLead.svg';
+import ReportEdit from '../../resources/assets/ReportEdit.svg';
 
 
 export const ICONS = {
@@ -196,13 +193,8 @@ export const ICONS = {
   Ellipse: ellipse,
   FILTERACTIVE: filterActive,
   ARCHIVE: archive,
-  EditPenNew:EditPenNew,
   editIcon: edit,
-  Searchbar1:Searchbar1,
-  searchbar2:searchbar2,
   QCAudit:QCAudit,
-  
-  searchbar3:searchbar3,
   APPICON: require('../../resources/assets/appicon.png'),
   USER_IMAGE: require('../../resources/assets/user.png'),
   NOTIFICATION: require('../../resources/assets/notification.png'),
@@ -293,8 +285,6 @@ export const ICONS = {
   arrowDown: arrowDown,
   linearGraph: linearGraph,
   curveGraph: curveGraph,
-  // browserIcon: browserIcon,
-  // whiteCross: whiteCross
   redcurveGraph: redcurveGraph,
   rep1: rep1,
   rep2: rep2,
@@ -380,4 +370,5 @@ export const ICONS = {
   MenuLead: MenuLead,
   ScheduleRepeat: ScheduleRepeat,
   QcLineLead:QcLineLead,
+  ReportEdit:ReportEdit,
 };
