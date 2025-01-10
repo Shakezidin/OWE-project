@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  TooltipProps,
   Legend,
   LabelList,
 } from 'recharts';
@@ -37,9 +36,7 @@ interface AhjBarChartProps {
   data: ApiResponse;
 }
 
-
 const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
- 
   const tooltipStyle = {
     fontSize: '10px',
     padding: '6px',
@@ -52,11 +49,13 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
       className={'graph-container'}
     >
       <LineChart
-        data={data .filter(item => Object.keys(item.value).length > 0).map((item, index) => ({
-          name: item.index.toString(),
-          'Out of SLA': item.value['Out of SLA'] || 0,
-          'Within SLA': item.value['Within SLA'] || 0,
-        }))}
+        data={data
+          .filter((item) => Object.keys(item.value).length > 0)
+          .map((item, index) => ({
+            name: item.index.toString(),
+            'Out of SLA': item.value['Out of SLA'] || 0,
+            'Within SLA': item.value['Within SLA'] || 0,
+          }))}
         margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
       >
         <Legend
@@ -89,7 +88,7 @@ const BelowUpChartAhj: React.FC<AhjBarChartProps> = ({ data }) => {
             borderRadius: 4,
             padding: 8,
             fontSize: 10,
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
           }}
           formatter={(value) => `${Number(value)}`}
           labelFormatter={(value) => `Week ${Number(value)}`}

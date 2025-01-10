@@ -113,7 +113,6 @@
   transform: scale(1.05);
 }
 
-
 .Folderbuttons {
   border-radius: 18px;
   border: 1px solid var(--input-border-color);
@@ -567,8 +566,6 @@
   flex-direction: row;
   gap: 15px;
 }
-
-/* ajay chaudhary */
 
 .filesLoader {
   width: 100%;

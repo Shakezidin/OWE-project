@@ -25,7 +25,6 @@ interface AppointmentSetterProps {
 const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
   data,
   onClickDelete,
-  onClickEdit,
   selectAllChecked,
   selectedRows,
   setSelectedRows,
@@ -143,14 +142,6 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                   <td>{el.email_id ? el.email_id : 'NA'}</td>
                   <td>{el.mobile_number ? el.mobile_number : 'NA'}</td>
                   <td>{el.dealer ? el.dealer : 'NA'}</td>
-
-                  {/* <td>
-                      {el.startDate ? el.startDate: 'NA'} 
-                    </td>
-                    <td >
-                      {el.endDate ? el.endDate : 'NA'}
-                    </td> */}
-
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >

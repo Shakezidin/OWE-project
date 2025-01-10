@@ -188,14 +188,12 @@
   }
 
   .pie-chart-container {
-    /* margin-left: 19px; */
     width: 240px;
   }
 }
 
 .active-slrp {
   border: 1px solid #377cf6;
-  /* height: 36px; */
   width: 230px;
   padding: 8px 12px;
   border-radius: 8px;
@@ -223,7 +221,6 @@
 
 .inactive-slrp {
   border: 1px solid #377cf6;
-  /* height: 36px; */
   width: 230px;
   padding: 8px 12px;
   border-radius: 8px;

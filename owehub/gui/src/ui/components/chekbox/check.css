@@ -10,7 +10,6 @@
   width: 18px !important;
   height: 18px !important;
   border-radius: 4px !important;
-  /* margin-top: .5rem; */
   border: 1px solid var(--check-border-color);
   background-color: var(--white-color);
   cursor: pointer;
@@ -24,7 +23,6 @@
 }
 
 .indeterminate {
-  /* background-color: #007bff; */
   border-color: var(--check-color);
 }
 

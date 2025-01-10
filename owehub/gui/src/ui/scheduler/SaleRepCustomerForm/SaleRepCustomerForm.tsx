@@ -112,7 +112,9 @@ const SaleRepCustomerForm = () => {
                   style={{ flexBasis: '60%' }}
                   className={styles.date_header_label}
                 >
-                  <div className={`${styles.calendar_h3}flex items-center justify-center`}>
+                  <div
+                    className={`${styles.calendar_h3}flex items-center justify-center`}
+                  >
                     <h3 className="text-white text-center">
                       Select Date & Time
                     </h3>

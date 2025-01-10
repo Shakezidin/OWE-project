@@ -39,7 +39,7 @@
   height: 10px !important;
 }
 
-.iconsSection2 button svg{
+.iconsSection2 button svg {
   width: 14px;
   height: 16px;
 }
@@ -62,7 +62,7 @@
   background-color: var(--row-bg-color);
 }
 
-.iconsSection2 button:disabled button>svg {
+.iconsSection2 button:disabled button > svg {
   fill: #fefefe;
 }
 
@@ -100,19 +100,13 @@
   transition: all 0.3s ease;
 }
 
-/* .iconsSection2-conan button:hover {
-  background-color: #305eae;
-  border: 1px solid #305eae;
-  transform: scale(1.05);
-} */
-
 .iconsSection2-confex {
   display: flex;
   border: none;
 }
 
 .iconsSection2-confex button:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
@@ -144,7 +138,7 @@
   pointer-events: none;
 }
 
-.iconsSection2-confex button:disabled button>svg {
+.iconsSection2-confex button:disabled button > svg {
   fill: #fefefe;
 }
 
@@ -169,7 +163,6 @@
   font-weight: 500;
   color: var(--btn-text-color);
   cursor: pointer;
-  /* box-shadow: 2px 2px 10px rgba(148, 148, 148, 40); */
   transition:
     transform 0.3s ease,
     background-color 0.3s ease;
@@ -180,12 +173,6 @@
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-
-/* .UserManageTable {
-  overflow-x: auto;
-  position: relative;
-  background: var(--white-color);
-} */
 
 .commission-back {
   display: flex;
@@ -297,13 +284,10 @@
 .action-archive .tooltiptext {
   visibility: hidden;
   width: 80px;
-  /* height: 30px; */
   background-color: var(--active-text-color);
   color: var(--white-color);
   text-align: center;
   border-radius: 6px;
-
-  /* Position the action-archive */
   position: absolute;
   left: -80px;
 
@@ -319,8 +303,6 @@ table {
   background-color: var(--white-color);
   border-collapse: collapse;
   position: relative;
-  /* border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem; */
 }
 
 table tbody {
@@ -339,7 +321,6 @@ table thead tr th {
   font-size: 14px;
   font-weight: 600;
   padding: 0.8rem 1rem 0.8rem 1rem;
-  /* line-height: 18px; */
 }
 
 .table-header {
@@ -349,7 +330,7 @@ table thead tr th {
   cursor: pointer;
 }
 
-.table-header p{
+.table-header p {
   color: var(--input-border-color);
   font-size: 14px;
   font-weight: 600;
@@ -409,7 +390,6 @@ table tbody tr td {
   display: flex;
   justify-content: space-between;
   padding: 1rem 1.875rem 1rem 1.875rem;
-  /* border-top: 1px solid var(--table-border-color); */
 }
 
 .page-heading {
@@ -518,7 +498,7 @@ table tbody tr:has(td[colspan='10'] .data-not-found):hover {
     margin-right: -15px;
   }
 
-  .iconsSection2 button>span {
+  .iconsSection2 button > span {
     display: none;
   }
 
@@ -539,15 +519,15 @@ table tbody tr:has(td[colspan='10'] .data-not-found):hover {
     margin: 10px;
   }
 
-  .commission-back{
+  .commission-back {
     gap: 5px;
   }
 
-  .iconContainer{
+  .iconContainer {
     gap: 10px;
   }
 
-  .commissionSection h3{
+  .commissionSection h3 {
     text-overflow: ellipsis;
     overflow-x: hidden;
     text-wrap: nowrap;

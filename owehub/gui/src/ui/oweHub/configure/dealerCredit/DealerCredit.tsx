@@ -2,15 +2,10 @@ import React, { useEffect, useState } from 'react';
 import '../configure.css';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
-import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { getDealerCredit } from '../../../../redux/apiActions/config/dealerCreditAction';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateDealerCredit from './CreateDealerCredit';
-import { ROUTES } from '../../../../routes/routes';
 import { DealerCreditColumn } from '../../../../resources/static_data/configureHeaderData/dealerCreditColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -34,7 +29,7 @@ const DealerCredit: React.FC = () => {
   const handleClose = () => setOpen(false);
   const handleExportOpen = () => {
     exportCsv();
-  }
+  };
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const { data, dbCount, isLoading } = useAppSelector(
@@ -83,8 +78,6 @@ const DealerCredit: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-
-  
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
   const handleAddCommission = () => {
@@ -131,34 +124,6 @@ const DealerCredit: React.FC = () => {
       }
     });
   }
-
-  //   useEffect(() => {
-
-  //     (async () => {
-  //       setLoading(true);
-  //       try {
-  //         const data = await configPostCaller('get_dealercredit', {
-  //           page_number: currentPage,
-  //           page_size: itemsPerPage,
-  //         });
-
-  //         if (data.status > 201) {
-  //           toast.error(data.message);
-  //           setLoading(false);
-  //           return;
-  //         }
-
-  //         console.log(data, "data");
-
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //       }
-  //     })();
-
-  // }, [
-  //   currentPage, viewArchived, filters
-  // ]);
 
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
@@ -241,64 +206,58 @@ const DealerCredit: React.FC = () => {
     setSelectAllChecked(false);
   };
   const notAllowed = selectedRows.size > 1;
-console.log(exportOPen)
+  console.log(exportOPen);
 
+  const exportCsv = async () => {
+    // Define the headers for the CSV
+    // Function to remove HTML tags from strings
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
+    };
+    setIsExporting(true);
+    const exportData = await configPostCaller('get_dealercredit', {
+      page_number: 1,
+      page_size: dbCount,
+    });
+    if (exportData.status > 201) {
+      toast.error(exportData.message);
+      return;
+    }
 
-const exportCsv = async () => {
-  // Define the headers for the CSV
-// Function to remove HTML tags from strings
-const removeHtmlTags = (str:any) => {
-  if (!str) return '';
-  return str.replace(/<\/?[^>]+(>|$)/g, "");
-};
-setIsExporting(true);
-const exportData = await configPostCaller('get_dealercredit', {
-  page_number: 1,
-  page_size: dbCount,
-});
-if (exportData.status > 201) {
-  toast.error(exportData.message);
-  return;
-}
+    const headers = [
+      'Unique ID',
+      'Customer',
+      'Credit Amt',
+      'Credit Date',
+      'Approved By',
+      'Notes',
+    ];
 
-  
-  const headers = [
-    'Unique ID',
-    'Customer',
-    'Credit Amt',
-    'Credit Date',
-    'Approved By',
-    'Notes',
-  ];
+    const csvData = exportData?.data?.DealerCreditsData?.map?.((item: any) => [
+      item.unique_id,
+      item.customer,
+      item.credit_amount,
+      item.credit_date,
+      '',
+      removeHtmlTags(item.notes),
+    ]);
 
- 
-   
-  const csvData = exportData?.data?.DealerCreditsData?.map?.((item: any) => [
-    item.unique_id,
-    item.customer,
-    item.credit_amount,
-    item.credit_date,
-    "",
-    removeHtmlTags(item.notes),
-    
-  ]);
+    const csvRows = [headers, ...csvData];
 
-  const csvRows = [headers, ...csvData];
+    const csvString = Papa.unparse(csvRows);
 
-  const csvString = Papa.unparse(csvRows);
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'dealercredit.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+  };
 
-  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', 'dealercredit.csv');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  setIsExporting(false);
- 
-};
-  
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -331,12 +290,7 @@ if (exportData.status > 201) {
             </CSVLink>
           </div>
         )}
-        {/* {filterOPen && <FilterCommission handleClose={filterClose}  
-            columns={columns} 
-             page_number = {currentPage}
-             page_size = {itemsPerPage}
 
-             />} */}
         {open && (
           <CreateDealerCredit
             editMode={editMode}
@@ -360,7 +314,7 @@ if (exportData.status > 201) {
 
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
           <table>
             <thead>
@@ -384,11 +338,7 @@ if (exportData.status > 201) {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {/* <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th> */}
+
               </tr>
             </thead>
             <tbody>
@@ -405,22 +355,10 @@ if (exportData.status > 201) {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        {/* <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        /> */}
                         {el.unique_id}
                       </div>
                     </td>
 
-                    
                     <td>{el.customer || 'N/A'}</td>
                     <td>{el.credit_amount || 'N/A'}</td>
                     <td>{dateFormat(el.credit_date) || 'N/A'}</td>
@@ -430,20 +368,6 @@ if (exportData.status > 201) {
                         ? el.notes.replace(/<\/?[^>]+(>|$)/g, '')
                         : 'N/A'}
                     </td>
-                    {/* <td>
-                      {el.podio_link ? (
-                        <p
-                          onClick={() => window.open(el.podio_link, '_blank')}
-                          className="view-button pointer"
-                        >
-                          View
-                        </p>
-                      ) : (
-                        'N/A'
-                      )}
-                    </td> */}
-
-                     
                   </tr>
                 ))
               ) : (

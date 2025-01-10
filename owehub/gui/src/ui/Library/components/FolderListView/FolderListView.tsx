@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import sharedStyles from '../../LibraryHomepage.module.css';
 import FolderList from '../FolderList/FolderList';
 import DataNotFound from '../../../components/loader/DataNotFound';

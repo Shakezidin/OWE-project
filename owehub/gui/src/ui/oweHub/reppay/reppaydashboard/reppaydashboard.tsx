@@ -191,15 +191,12 @@ export const RepPayDashboardPage: React.FC = () => {
                         borderRadius: '.40rem',
                         border: 'none',
                         outline: 'none',
-                        // width: '4rem',
                         width: 'fit-content',
                         minHeight: 'unset',
                         height: '8px',
                         alignContent: 'center',
                         backgroundColor: '#ffffff',
                         cursor: 'pointer',
-                        // marginRight: '32px',
-                        // marginBottom: '0px',
                         boxShadow: 'none',
                         marginTop: '15px',
                       }),
@@ -366,15 +363,12 @@ export const RepPayDashboardPage: React.FC = () => {
                         borderRadius: '.40rem',
                         border: 'none',
                         outline: 'none',
-                        // width: '4rem',
                         width: 'fit-content',
                         minHeight: 'unset',
                         height: '8px',
                         alignContent: 'center',
                         backgroundColor: '#ffffff',
                         cursor: 'pointer',
-                        // marginRight: '26px',
-                        // marginBottom: '0px',
                         boxShadow: 'none',
                         marginTop: '15px',
                       }),
@@ -459,15 +453,12 @@ export const RepPayDashboardPage: React.FC = () => {
                         borderRadius: '.40rem',
                         border: 'none',
                         outline: 'none',
-                        // width: '4rem',
                         width: 'fit-content',
                         minHeight: 'unset',
                         height: '8px',
                         alignContent: 'center',
                         backgroundColor: '#ffffff',
                         cursor: 'pointer',
-                        // marginRight: '32px',
-                        // marginBottom: '0px',
                         boxShadow: 'none',
                         marginTop: '15px',
                       }),
@@ -537,7 +528,6 @@ export const RepPayDashboardPage: React.FC = () => {
                     className={`filter-disable ${
                       active === 1 ? 'rep-active-filter-line' : ''
                     }`}
-                    // onClick={() => setActive(1)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
                     {active === 1 ? (
@@ -577,7 +567,6 @@ export const RepPayDashboardPage: React.FC = () => {
           </div>
           <div className="">
             <RepPayDashboardTotal />
-            {/* <DonutChart /> */}
           </div>
         </div>
 

@@ -16,7 +16,7 @@ import DeleteFileModal from './Modals/DeleteFileModal';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { format, set } from 'date-fns';
+import { format } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
 import { useAppSelector } from '../../redux/hooks';
 import { useNavigate } from 'react-router-dom';

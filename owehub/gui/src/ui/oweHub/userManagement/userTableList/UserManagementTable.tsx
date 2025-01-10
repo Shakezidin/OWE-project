@@ -135,7 +135,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex = currentPage1 * pageSize1;
   /** render table based on dropdown */
-
   //dealerpagination
   const totalPages1 = Math.ceil(dealerCount! / pageSize1);
   const startIndex1 = (currentPage1 - 1) * pageSize1 + 1;

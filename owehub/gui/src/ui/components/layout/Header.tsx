@@ -18,7 +18,6 @@ import { IoMenu } from 'react-icons/io5';
 import { RxCross2 } from 'react-icons/rx';
 import useAuth from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
-
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 interface Toggleprops {
   toggleOpen: boolean;
@@ -46,7 +45,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isStaging = process.env.REACT_APP_ENV;
 
   const handleLogout = () => {
-    // clearAuthData();
     dispatch(logout());
     navigate('/login');
   };
@@ -117,13 +115,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               style={{
                 height: toggleOpen ? 30 : 45,
                 paddingLeft: toggleOpen ? 10 : '',
-                // marginInline: toggleOpen ? 'auto' : undefined,
               }}
             />
           )}
-          {/* {toggleOpen || isTablet ? null : (
-            <h3 style={{ color: 'black' }}>OWE HUB</h3>
-          )} */}
 
           {!isTablet && (
             <div
@@ -173,8 +167,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               alignSelf: 'center',
               display: isTablet ? 'flex' : 'none',
               alignItems: 'center',
-              // paddingLeft: toggleOpen ? 10 : '',
-              // marginInline: toggleOpen ? 'auto' : undefined,
             }}
           />
           <></>
@@ -187,9 +179,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             alignSelf: 'center',
             display: isTablet ? 'flex' : 'none',
             alignItems: 'center',
-            paddingLeft: "1rem"
-            // paddingLeft: toggleOpen ? 10 : '',
-            // marginInline: toggleOpen ? 'auto' : undefined,
+            paddingLeft: '1rem',
           }}
         />
       </div>
@@ -231,7 +221,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {openIcon ? (
                       <img src={ICONS.upperIcon} alt="" />
                     ) : (
-                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem', color: "#292B2E" }} />
+                      <MdKeyboardArrowDown
+                        style={{ fontSize: '1.5rem', color: '#292B2E' }}
+                      />
                     )}
                   </div>
                 </div>

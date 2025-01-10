@@ -48,8 +48,6 @@ const DropdownWithCheckboxes = ({
   resetPage: () => void;
 }) => {
   const dispatch = useAppDispatch();
-  // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
   const dropdownRef = useRef<HTMLDivElement>(null);
   console.log(selectedOptions, 'optionssss');
   useEffect(() => {

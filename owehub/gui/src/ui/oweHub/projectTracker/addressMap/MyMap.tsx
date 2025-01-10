@@ -625,9 +625,6 @@ const MyMapComponent: React.FC = () => {
                   maxZoom: 20, // Set max zoom level
                 }}
               >
-
-                {/* Searched location marker with different color */}
-                <></>
                 {searchedLocation && (
                   <div>
                     <Marker

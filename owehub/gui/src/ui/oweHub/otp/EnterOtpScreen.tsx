@@ -144,38 +144,15 @@ const EnterOtpScreen = () => {
             Our World Revolves Around Powering Yours
           </p>
           <div className={'hrLine'} />
-          {/* <span id="loginNormalText">
-            {'Our World Revolves'}
-            <br />
-            Around
-            <span id="loginColorText">{' Powering '}</span>
-            Yours
-          </span>
-          <div className={'hrLine'}></div> */}
-          {/* <span className={'loginNormalTextDescription'}>
-            {'YOUR TRUSTED SOLAR EXPERTS'}
-          </span> */}
         </div>
 
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleOtpSubmit(e)}>
             <div className="loginTextView">
-              {/* <object
-                type="image/svg+xml"
-                className="loginImageLogo"
-                data={ICONS.LOGO}
-                aria-label="login-icon"
-                height={60}
-              ></object> */}
-              {/* <br /> */}
               <div className="loginLogowithText mb1">
                 <LOGO_SMALL />
                 <span className={'loginHeader'}>OWE HUB</span>
               </div>
-              {/* <div className="loginUnderLine">
-                <UNDER_LINE />
-              </div> */}
-              {/* <span className="loginLogText">Reset Password</span> */}
               <br />
               <div className="otp-input-wrap">
                 <Input
@@ -258,7 +235,6 @@ const EnterOtpScreen = () => {
                 )}
               </div>
 
-              {/* <ActionButton  title="Submit" type="submit" onClick={() => {}} /> */}
               <br />
               <button
                 className="login-button"

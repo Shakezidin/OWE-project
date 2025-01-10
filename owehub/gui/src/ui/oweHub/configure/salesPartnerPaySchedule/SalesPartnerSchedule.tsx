@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import '../configure.css';
 import CreateSalesPartner from './createSalesPartner';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
-import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
 import { PartnerPayScheduleColumn } from '../../../../resources/static_data/configureHeaderData/partnerPayScheduleColumn';
@@ -20,7 +15,6 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -38,13 +32,10 @@ const SalesPartnerSchedule: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-
   const error = useAppSelector((state) => state.dealer.error);
-
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState<number>(0);
-
   const [data, setData] = useState<any>([]);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -427,17 +418,6 @@ const SalesPartnerSchedule: React.FC = () => {
                     >
                       <td style={{ fontWeight: '500', color: 'black' }}>
                         <div className="flex-check">
-                          {/* <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        /> */}
                           {el.sales_partner || 'N/A'}
                         </div>
                       </td>

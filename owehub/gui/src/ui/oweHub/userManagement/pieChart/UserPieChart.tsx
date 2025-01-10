@@ -7,7 +7,6 @@ import perfomance_mask from '../lib/perfomance_mask.png';
 import onboarding_mask from '../lib/onboarding_mask.png';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import {
-  ALL_USER_ROLE_LIST,
   TYPE_OF_USER,
 } from '../../../../resources/static_data/Constant';
 interface UserPieChartProps {

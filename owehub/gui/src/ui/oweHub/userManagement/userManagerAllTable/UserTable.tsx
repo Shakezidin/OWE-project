@@ -156,7 +156,6 @@ const UserTable: React.FC<UserTableProps> = ({
                       disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
-
                         toggleRowSelection(
                           i,
                           selectedRows,
@@ -172,8 +171,6 @@ const UserTable: React.FC<UserTableProps> = ({
                 {selectedValue === TYPE_OF_USER.ALL && (
                   <td>{el.role_name ? el.role_name : 'NA'}</td>
                 )}
-                {/* <td>{el.role_name}</td> */}
-                {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
                   <td>{el.dealer ? el.dealer : 'NA'}</td>
                 )}
@@ -211,9 +208,13 @@ const UserTable: React.FC<UserTableProps> = ({
                         place="left"
                         content="Delete"
                         delayShow={200}
-                        className='pagination-tooltip'
+                        className="pagination-tooltip"
                       />
-                      <img src={ICONS.deleteIcon} alt="" data-tooltip-id='user_delete' />
+                      <img
+                        src={ICONS.deleteIcon}
+                        alt=""
+                        data-tooltip-id="user_delete"
+                      />
                     </div>
 
                     {(role_name === TYPE_OF_USER.ADMIN ||
@@ -237,7 +238,7 @@ const UserTable: React.FC<UserTableProps> = ({
                           place="left"
                           content="Reset"
                           delayShow={200}
-                          className='pagination-tooltip'
+                          className="pagination-tooltip"
                         />
                         <MdOutlineLockReset
                           color="#667085"

@@ -136,22 +136,12 @@
 }
 
 .filtericon {
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 39px;
-  width: 39px;
-  border-radius: 8px;
-  background-color: red;
-  cursor: pointer;
-  transition: all 0.3s ease; */
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: var(--primary-color);
   border: none;
   border-radius: 8px;
-  /* padding: 8.5px; */
   color: var(--white-color);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -449,7 +439,6 @@
   align-items: center;
   margin-bottom: 40px;
 }
-
 
 .calendar_schedule_btn {
   background-color: var(--primary-color);

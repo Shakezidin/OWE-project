@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
-import { ICONS } from '../../../../resources/icons/Icons';
 import { FaArrowDown } from 'react-icons/fa6';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -60,8 +59,6 @@ const SelectTable: React.FC<ButtonProps> = ({
             className="createUserCrossButton"
             onClick={() => {
               setSelectTable(false);
-              // setSelected(new Set())
-              // setTablePermissions({})
             }}
           >
             <CROSS_BUTTON />
@@ -199,7 +196,6 @@ const SelectTable: React.FC<ButtonProps> = ({
                             type="radio"
                             className="user-radio"
                             disabled={!selected.has(ind)}
-                            // value={"1"}
                             checked={tablePermissions[table] === 'Full'}
                             onChange={(e) =>
                               handleOptionChange('Full', table, ind)

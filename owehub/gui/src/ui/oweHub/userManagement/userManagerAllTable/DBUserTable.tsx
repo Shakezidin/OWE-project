@@ -24,7 +24,6 @@ interface DBUserTableProps {
 const DBUserTable: React.FC<DBUserTableProps> = ({
   data,
   onClickDelete,
-  onClickEdit,
   selectAllChecked,
   selectedRows,
   setSelectedRows,
@@ -148,8 +147,6 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
-                {/* <td>{el.role_name}</td> */}
-                {/* <td>{el.reporting_manager}</td> */}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>

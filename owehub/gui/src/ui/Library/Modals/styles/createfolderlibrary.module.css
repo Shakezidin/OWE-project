@@ -38,11 +38,9 @@
   justify-content: center;
 }
 .succicon_input_box {
-  /* height: 54px; */
   width: 548px;
   margin-top: 40px;
   border-radius: 8px;
-  /* padding: 3px, 18px; */
   color: var(--input-border-color);
   border: 1px solid var(--input-border-color);
   font-family: 'Poppins';
@@ -137,12 +135,6 @@
   color: #20963a;
   margin-left: 5px;
 }
-/* .error {
-  color: #db4437;
-  font-size: 12px;
-  margin-top: 4px;
-  font-weight: 400;
-} */
 
 .Column2Details {
   flex-grow: 1;
@@ -189,21 +181,6 @@
     padding: 10px 22px;
   }
 
-  /* .DetailsMcontainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: auto;
-    padding: 16px;
-    border: 1px solid #377cf6;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    background-color: #eef5ff;
-  } */
   .survey_button {
     display: flex;
     flex-direction: row;
@@ -215,10 +192,6 @@
   .error {
     margin-left: 15px;
   }
-  /* .success_crossing{
-    height: 26px;
-  
-  } */
 }
 
 @media (max-width: 768px) {

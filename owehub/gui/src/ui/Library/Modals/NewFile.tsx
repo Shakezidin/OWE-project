@@ -59,7 +59,6 @@ const NewFile: React.FC<NewFileProps> = ({
     const accessToken = Cookies.get('myToken');
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || '/'}`;
     try {
-
       sePendingState('uploading');
       setIsVisible(false);
 
@@ -129,7 +128,6 @@ const NewFile: React.FC<NewFileProps> = ({
     FolderInputRef.current?.click();
   };
 
-  //api code end for uploadFolder
   // Api code start for uploadFile
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -147,7 +145,6 @@ const NewFile: React.FC<NewFileProps> = ({
   const handleOptionClickFile = () => {
     setIsCreateFolder(true);
   };
-  // api code end for uploadFile
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -295,7 +295,6 @@
 .chartGrid {
   display: grid;
   grid-template-columns: 1fr;
-  /* Default to single column for mobile */
   gap: 24px;
   margin-bottom: 24px;
 }
@@ -833,18 +832,6 @@ input[type='checkbox']:checked {
     align-items: flex-start;
   }
 }
-
-/* Large desktops and monitors */
-@media only screen and (min-width: 1025px) and (max-width: 1200px) {
-  /* Styles for large desktops */
-}
-
-/* Extra large desktops */
-@media only screen and (min-width: 1201px) {
-  /* Styles for extra-large screens */
-}
-
-/* Shams */
 
 .lead__datepicker_content {
   position: absolute;

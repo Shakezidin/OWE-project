@@ -9,7 +9,6 @@
 .CrossContainerICONImage:hover {
   transform: scale(1.07);
   cursor: pointer;
-  /* background-color: gray; */
   border-radius: 50%;
 }
 
@@ -25,7 +24,8 @@
 }
 
 .dragdroparea.active {
-  background-color: #f0f8ff; /* Change color on drag active */
+  background-color: #f0f8ff;
+  /* Change color on drag active */
 }
 
 input[type='file'] {
@@ -52,6 +52,7 @@ input[type='file'] {
   font-size: 16px;
   line-height: 26px;
 }
+
 .OrDesign {
   font-family: 'Inter';
   color: #828282;
@@ -60,6 +61,7 @@ input[type='file'] {
   font-size: 12px;
   line-height: 26px;
 }
+
 .OrDesign1 {
   color: #737b8b;
   font-family: 'Inter';
@@ -72,10 +74,12 @@ input[type='file'] {
   border: 1px solid #e3e9f2;
   margin-top: 20px;
 }
+
 .hrline_LibModal2 {
   border: 1px solid #e3e9f2;
   width: 100%;
 }
+
 .customfileupload {
   display: inline-block;
   padding: 3px 10px 3px 10px;
@@ -100,7 +104,6 @@ input[type='file'] {
 }
 
 /* CODE ON TESTING */
-
 .fileuploadcontainer {
   display: flex;
   flex-direction: column;
@@ -113,11 +116,6 @@ input[type='file'] {
   display: none;
 }
 
-/* .customfileupload:hover {
-    color: white;
-    background-color: #377cf6;
-    border: 2px solid #377cf6;
-} */
 .customfileupload i {
   margin-right: 8px;
 }
@@ -127,6 +125,7 @@ input[type='file'] {
   color: #377cf6;
   border: 1.5px solid #377cf6;
 }
+
 .centercontainerX {
   justify-content: center;
   align-items: center;
@@ -166,6 +165,7 @@ input[type='file'] {
   max-width: 305px;
   text-align: center;
 }
+
 .survey_button {
   display: flex;
   flex-direction: column;
@@ -174,6 +174,7 @@ input[type='file'] {
   margin-top: 37px;
   gap: 5px;
 }
+
 .survey_button button {
   width: 130px;
   height: 40px;
@@ -183,6 +184,7 @@ input[type='file'] {
   color: rgba(125, 125, 125, 1);
   cursor: pointer;
 }
+
 .survey_button1 {
   display: flex;
   flex-direction: column;
@@ -191,6 +193,7 @@ input[type='file'] {
   margin-top: 30px;
   gap: 9px;
 }
+
 .survey_button1 button {
   width: 130px;
   height: 40px;
@@ -207,16 +210,14 @@ input[type='file'] {
 }
 
 .ImageContainerX {
-  /* border: 2px solid #377CF6; */
   max-width: 440px;
   height: 249px;
   margin: 90px 0px 33px 80px;
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
+
   border-radius: 8px;
   position: relative;
 }
+
 .ImageContainerX div {
   border: 4px solid #377cf6;
   width: 59px;
@@ -224,25 +225,30 @@ input[type='file'] {
   height: 55px;
   position: absolute;
 }
+
 .ImageContainerXdiv1 {
   position: relative;
   left: -4px;
 }
+
 .ImageContainerXdiv2 {
   position: relative;
   left: 373px;
   bottom: -4px;
 }
+
 .ImageContainerXdiv3 {
   position: relative;
   left: 373px;
   top: 186px;
 }
+
 .ImageContainerXdiv4 {
   position: relative;
   top: 186px;
   left: -4px;
 }
+
 .UploadedImage {
   border: 1.12px solid #377cf6;
   width: 432px;
@@ -256,15 +262,18 @@ input[type='file'] {
   transition: all 0.3s ease;
   position: fixed;
 }
+
 .self:hover {
   background-color: #377cf6;
   transform: scale(1.03);
 }
+
 .self2 {
   background-color: #377cf6;
   transition: all 0.3s ease;
   position: fixed;
 }
+
 .self2:hover {
   background-color: #377cf6;
   transform: scale(1.03);
@@ -275,9 +284,9 @@ input[type='file'] {
   transition: all 0.3s ease;
   background-color: #fff;
   margin-bottom: 15px;
-  /* background-color: #20963a; */
   border: 1px solid rgba(125, 125, 125, 1);
 }
+
 .other:hover {
   background-color: #fff;
   transform: scale(1.03);
@@ -334,6 +343,7 @@ input[type='file'] {
   padding: 14px;
   font-size: 14px;
 }
+
 .verified {
   color: #20963a;
   margin-left: 5px;

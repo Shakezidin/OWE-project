@@ -40,7 +40,9 @@
   border-color: var(--primary-color);
 }
 
-.input-inner-view:hover input::placeholder, .input-inner-view:focus input::placeholder, .input-inner-view.focused input::placeholder {
+.input-inner-view:hover input::placeholder,
+.input-inner-view:focus input::placeholder,
+.input-inner-view.focused input::placeholder {
   color: var(--primary-color);
 }
 

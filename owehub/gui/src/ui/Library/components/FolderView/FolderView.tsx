@@ -85,8 +85,7 @@ function FolderView({
                     })
             }
           >
-            <div className={styles.createdByWrapper}>
-            </div>
+            <div className={styles.createdByWrapper}></div>
             <div
               className={styles.folderIcon_wrapper}
               onMouseEnter={() =>

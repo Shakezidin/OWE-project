@@ -410,9 +410,7 @@ const CustomersList = () => {
                         className={`${styles.cust_name} ${styles.icon_and_content}`}
                       >
                         <div className={styles.head_det}>
-                          <div
-                            className={styles.name_icon}
-                          >
+                          <div className={styles.name_icon}>
                             <CiMail size={15} />
                           </div>
                           <span>{customer.email}</span>
