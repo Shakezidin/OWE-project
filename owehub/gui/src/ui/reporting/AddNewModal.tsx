@@ -293,7 +293,7 @@ const ReportFormModal = ({
     return (
         <>
             {isOpen &&
-                <div className="transparent-model">
+                <div className="add-transparent-model">
                     <div className='rep-mod-top'>
                         <div className='ahj-header'>
                             <p>{id === 0 ? "Create New Report" : "Update Report"}</p>
