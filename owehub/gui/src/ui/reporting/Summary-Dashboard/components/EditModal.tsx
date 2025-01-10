@@ -72,7 +72,7 @@ const EditModal = ({ open, handleClose }: any) => {
 
     return (
         <>
-            {true &&
+            {open &&
                 <div className="transparent-model">
                     <div className="edittar_mod_top">
                         <div className='editTar-header'>
@@ -156,7 +156,7 @@ const EditModal = ({ open, handleClose }: any) => {
 
                                                 <td style={{ color: isPastMonth ? "#888" : "#3E3E3E" }}>
                                                     {!showInput[row.month]?.showmwSold && (
-                                                        <div onClick={() => handleShow(row.month, 'mwSold', row.mwSold)}>
+                                                        <div style={{cursor:"pointer"}} onClick={() => handleShow(row.month, 'mwSold', row.mwSold)}>
                                                             {row.mwSold}
                                                         </div>
                                                     )}
