@@ -3,17 +3,18 @@
   <head>
     <meta charset="utf-8" />
     
-    <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" 
-    content= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com https://*.googletagmanager.com https://*.google-analytics.com https://lottie.host https://*.owe-hub.com;
-             style-src 'self' 'unsafe-inline' https://*.googleapis.com https://*.owe-hub.com;
-             img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://*.owe-hub.com https://maps.gstatic.com;
-             connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://graph.microsoft.com https://lottie.host https://maps.googleapis.com https://*.owe-hub.com;
-             font-src 'self' https://fonts.gstatic.com data:;
-             object-src 'self';
-             media-src 'self';
-             frame-src 'self' https://lottie.host https://*.owe-hub.com;
-             worker-src 'self' blob:;">
+   <!-- Security Headers -->
+   <meta http-equiv="Content-Security-Policy" 
+   content="
+     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com https://*.googletagmanager.com https://*.google-analytics.com https://lottie.host https://*.owe-hub.com;
+     style-src 'self' 'unsafe-inline' https://*.googleapis.com https://*.owe-hub.com;
+     img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://*.owe-hub.com https://maps.gstatic.com;
+     connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://graph.microsoft.com https://lottie.host https://maps.googleapis.com https://*.owe-hub.com;
+     font-src 'self' https://fonts.gstatic.com data:;
+     object-src 'self' https://lottie.host https://*.owe-hub.com data:;
+     media-src 'self';
+     frame-src 'self' https://lottie.host https://*.owe-hub.com;
+     worker-src 'self' blob:;">
 
     
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
