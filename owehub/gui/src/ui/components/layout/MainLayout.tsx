@@ -69,7 +69,7 @@ const MainLayout = () => {
   };
 
   /** check idle time  */
-  useIdleTimer({ onIdle: logoutUser, timeout: 900000 });
+  useIdleTimer({ onIdle: logoutUser, timeout: 60000 });
 
 
 
