@@ -33,8 +33,7 @@ const MainLayout = () => {
     (state: RootState) => state.auth.isAuthenticated
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
-  const [sessionExist, setSessionExist] = useState(false);
-  const {pathname} = useLocation()
+  const { pathname } = useLocation()
 
   const getToken = async () => {
     try {
@@ -70,9 +69,6 @@ const MainLayout = () => {
 
   /** check idle time  */
   useIdleTimer({ onIdle: logoutUser, timeout: 60000 });
-
-
-
   /** reset paswword */
   useEffect(() => {
     const isPasswordChangeRequired =
@@ -81,33 +77,7 @@ const MainLayout = () => {
     setIsOpenChangePassword(isPasswordChangeRequired === 'true');
   }, [authData]);
 
-  /** TODO: temp solution for session logout. Need to change in future */
-  useEffect(() => {
-    const user = localStorage.getItem('authData');
-    const userData = user ? JSON.parse(user) : {};
-
-    const token = userData?.token;
-    const expirationTime = userData?.expirationTime;
-    const expirationTimeInMin = userData?.expirationTimeInMin;
-    if (token && expirationTime && expirationTimeInMin) {
-      const currentTime = Date.now();
-      if (currentTime < parseInt(expirationTime, 10)) {
-        setSessionExist(true);
-        const timeout = setTimeout(
-          () => {
-            logoutUser('Session time expired. Please login again..');
-          },
-          parseInt(expirationTimeInMin) * 60 * 1000
-        ); // 480 minutes in milliseconds
-
-        return () => clearTimeout(timeout);
-      } else {
-        // Token has expired
-        logoutUser('Session time expired. Please login again..');
-      }
-    }
-  }, [dispatch, isAuthenticated, navigate]);
-
+ 
   /** check whether user exist or not */
   useEffect(() => {
     const email = authData?.email;
@@ -129,9 +99,9 @@ const MainLayout = () => {
   }, [dispatch, navigate, authData]);
 
   useEffect(() => {
-if(isTablet){
-  setToggleOpen(true);
-}
+    if (isTablet) {
+      setToggleOpen(true);
+    }
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
       localStorage.setItem('version', process.env.REACT_APP_VERSION!);
       window.location.reload();
@@ -163,7 +133,9 @@ if(isTablet){
               !toggleOpen && !isTablet ? '240px' : isTablet ? 0 : '50px',
           }}
         >
-          <div className="children-container">{sessionExist && <Outlet />}</div>
+          <div className="children-container">
+            <Outlet />
+          </div>
         </div>
         {isOpenChangePassword && (
           <ChangePassword
