@@ -114,7 +114,6 @@ export const LoginPage = () => {
             isRememberMe: credentials.isRememberMe.toString(),
             isPasswordChangeRequired: is_password_change_required,
           };
-          saveAuthData(loginResponse);
 
           //TODO: Need to remove in future
           localStorage.setItem('email', email_id);
@@ -125,12 +124,8 @@ export const LoginPage = () => {
             'isPasswordChangeRequired',
             is_password_change_required
           );
+          saveAuthData(loginResponse);
 
-          if (role_name === TYPE_OF_USER.DB_USER) {
-            navigate(ROUTES.PEINDING_QUEUE);
-          } else {
-            navigate(ROUTES.PEINDING_QUEUE);
-          }
         } else {
           toast.error(result.message);
         }
@@ -158,7 +153,7 @@ export const LoginPage = () => {
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleLogin(e)}>
             <div className="login_main">
-              <div style={{padding: "3rem", textAlign: "center"}}>
+              <div style={{ padding: "3rem", textAlign: "center" }}>
                 <div className="loginLogowithText">
                   <LOGO_SMALL />
                   <span className={'loginHeader'}>OWE HUB</span>

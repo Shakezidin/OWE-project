@@ -175,7 +175,7 @@ function App() {
               path={ROUTES.REPORTING_QUALITY_PER_OFFICE}
               element={<QualityPerOffice />}
             />
-             <Route
+            <Route
               path={ROUTES.PERMIT_REDLINE}
               element={<PermitRedLine />}
             />
@@ -219,8 +219,6 @@ function App() {
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
-
-
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
           <Route path={ROUTES.LIBRARY_RECYCLE_BIN} element={<RecycleBin />} />
