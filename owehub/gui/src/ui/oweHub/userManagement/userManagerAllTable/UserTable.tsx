@@ -98,6 +98,25 @@ const UserTable: React.FC<UserTableProps> = ({
         isCheckbox: false,
       });
     }
+
+    // Added Manager column
+    const managerIndex = selectedValue === TYPE_OF_USER.ALL ? 4 : 3;
+    col.splice(managerIndex, 0, {
+      name: 'reporting_manager',
+      displayName: 'Manager',
+      type: 'string',
+      isCheckbox: false,
+    });
+
+    // Added Dealer column
+    const dealerIndex = selectedValue === TYPE_OF_USER.ALL ? 5 : 4;
+    col.splice(dealerIndex, 0, {
+      name: 'dealer',
+      displayName: 'Dealer',
+      type: 'string',
+      isCheckbox: false,
+    });
+
     return col;
   }, [selectedValue, UserColumns]);
 
@@ -172,11 +191,40 @@ const UserTable: React.FC<UserTableProps> = ({
                 {selectedValue === TYPE_OF_USER.ALL && (
                   <td>{el.role_name ? el.role_name : 'NA'}</td>
                 )}
-                {/* <td>{el.role_name}</td> */}
-                {/* <td>{el.reporting_manager}</td> */}
-                {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
-                  <td>{el.dealer ? el.dealer : 'NA'}</td>
+                {/* Manager column */}
+                {selectedValue === TYPE_OF_USER.ALL && (
+                  <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
                 )}
+                {/* Added Dealer column */}
+                {selectedValue === TYPE_OF_USER.ALL && (
+                  <>
+                    <td
+                      data-tooltip-id={el.dealer.length > 15 ? el.dealer : ''}
+                    >
+                      {el.dealer
+                        ? el.dealer.length > 15
+                          ? `${el.dealer.slice(0, 15)}...`
+                          : el.dealer
+                        : 'NA'}
+                    </td>
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#000',
+                        color: '#f7f7f7',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: '400',
+                      }}
+                      offset={0}
+                      id={el.dealer}
+                      place="left"
+                      content={el.dealer}
+                      delayShow={200}
+                    />
+                  </>
+                )}
+
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
 
@@ -211,9 +259,13 @@ const UserTable: React.FC<UserTableProps> = ({
                         place="left"
                         content="Delete"
                         delayShow={200}
-                        className='pagination-tooltip'
+                        className="pagination-tooltip"
                       />
-                      <img src={ICONS.deleteIcon} alt="" data-tooltip-id='user_delete' />
+                      <img
+                        src={ICONS.deleteIcon}
+                        alt=""
+                        data-tooltip-id="user_delete"
+                      />
                     </div>
 
                     {(role_name === TYPE_OF_USER.ADMIN ||
@@ -237,7 +289,7 @@ const UserTable: React.FC<UserTableProps> = ({
                           place="left"
                           content="Reset"
                           delayShow={200}
-                          className='pagination-tooltip'
+                          className="pagination-tooltip"
                         />
                         <MdOutlineLockReset
                           color="#667085"
