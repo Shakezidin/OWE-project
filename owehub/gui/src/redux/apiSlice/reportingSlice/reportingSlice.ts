@@ -63,7 +63,7 @@ const initialState: ReportingState = {
     },
     summaryData:{
         data: null,
-        loading: false,
+        loading: true,
         error: null,
     },
     loading: false,
@@ -169,7 +169,6 @@ const reportingSlice = createSlice({
               .addCase(fetchSummaryData.fulfilled, (state, action) => {
                 state.summaryData.loading = false;
                 state.summaryData.data = action.payload;
-                toast.success(action.payload.message);
               })
               .addCase(fetchSummaryData.rejected, (state, action) => {
                 state.summaryData.loading = false;

@@ -107,4 +107,11 @@
     margin-top: 20px;
   
   }
+
+  @media screen and (max-width: 767px){
+    .axis{
+      font-size: 8px;
+      font-weight: 500;
+    }
+  }
   
