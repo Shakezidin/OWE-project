@@ -73,24 +73,26 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		tableName = dataReq.Filters[0].Data.(string)
 	}
 
-	switch tableName {
-	case "adder_data_cfg_schema":
-		SelectedTableName = "adder_data_cfg_schema"
-	case "field_ops_metrics_schema":
-		SelectedTableName = "field_ops_metrics_schema"
-	case "finance_metrics_schema":
-		SelectedTableName = "finance_metrics_schema"
-	case "internal_ops_metrics_schema":
-		SelectedTableName = "internal_ops_metrics_schema"
-	case "next_steps_schema":
-		SelectedTableName = "next_steps_schema"
-	case "sales_metrics_schema":
-		SelectedTableName = "sales_metrics_schema"
-	case "ntp_schema":
-		SelectedTableName = "ntp_schema"
-	case "customers_prospects_schema":
-		SelectedTableName = "customers_prospects_schema"
-	}
+	// switch tableName {
+	// case "adder_data_cfg_schema":
+	// 	SelectedTableName = "adder_data_cfg_schema"
+	// case "field_ops_metrics_schema":
+	// 	SelectedTableName = "field_ops_metrics_schema"
+	// case "finance_metrics_schema":
+	// 	SelectedTableName = "finance_metrics_schema"
+	// case "internal_ops_metrics_schema":
+	// 	SelectedTableName = "internal_ops_metrics_schema"
+	// case "next_steps_schema":
+	// 	SelectedTableName = "next_steps_schema"
+	// case "sales_metrics_schema":
+	// 	SelectedTableName = "sales_metrics_schema"
+	// case "ntp_schema":
+	// 	SelectedTableName = "ntp_schema"
+	// case "customers_prospects_schema":
+	// 	SelectedTableName = "customers_prospects_schema"
+	// }
+
+	SelectedTableName = tableName
 
 	query = fmt.Sprintf("select * from %s", SelectedTableName)
 	filter, _ = PrepareGetAnyTableDataFilters(SelectedTableName, dataReq, false)
