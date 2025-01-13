@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 /******************************************************************************
@@ -27,6 +28,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	var (
 		err                    error
 		dataReq                models.GetReportsTargetReq
+		yearInt                int
 		query                  string
 		whereEleList           []interface{}
 		targetData             []map[string]interface{}
@@ -53,6 +55,13 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request Body err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request Body", http.StatusBadRequest, nil)
+		return
+	}
+
+	yearInt, err = strconv.Atoi(dataReq.Year)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request Body err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request Body", http.StatusBadRequest, nil)
@@ -87,7 +96,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	// query achieved data
 	query = `
 		WITH 
-			MONTHS(N) AS (SELECT GENERATE_SERIES($1, $2)),
+			MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
 			PROJECTS_SOLD AS (
 				SELECT
 					DATE_PART('MONTH', SALE_DATE) AS month,
@@ -195,17 +204,58 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		achievedMwInstalled += acheivedData[i]["mw_installed"].(float64)
 		achievedBatteriesCt += acheivedData[i]["batteries_ct"].(int64)
 
-		monthlyItem := models.GetReportsTargetRespMonthlyItem{Month: targetMonth}
+		overviewItem := models.GetReportsTargetRespOverviewItem{Month: targetMonth}
 
-		monthlyItem.Achieved = acheivedData[i][dataReq.TargetType]
-		monthlyItem.Target = targetData[i][dataReq.TargetType]
+		overviewItem.Achieved = acheivedData[i][dataReq.TargetType]
+		overviewItem.Target = targetData[i][dataReq.TargetType]
+
+		apiResp.MonthlyOverview = append(apiResp.MonthlyOverview, overviewItem)
+
+		statsItem := models.GetReportsTargetRespStatsItem{Month: targetMonth}
+
+		if achived, ok := overviewItem.Achieved.(int64); ok {
+			target := overviewItem.Target.(int64)
+
+			statsItem.Target = target
+
+			if targetMonth == dataReq.Month {
+				statsItem.Inprogress = achived
+			} else {
+				if achived > target {
+					statsItem.MoreThanTarget = achived - target
+				}
+				if achived <= target {
+					statsItem.Incomplete = target - achived
+					statsItem.Completed = achived
+				}
+			}
+		}
+		if achived, ok := overviewItem.Achieved.(float64); ok {
+			target := overviewItem.Target.(float64)
+
+			statsItem.Target = target
+
+			if targetMonth == dataReq.Month {
+				statsItem.Inprogress = achived
+			} else {
+				if achived > target {
+					statsItem.MoreThanTarget = achived - target
+				}
+				if achived <= target {
+					statsItem.Incomplete = target - achived
+					statsItem.Completed = achived
+				}
+			}
+		}
+
+		apiResp.MonthlyStats = append(apiResp.MonthlyStats, statsItem)
 
 		if targetMonth == dataReq.Month {
 
 			// fetch/query last month data
 			// if January is selected, query for last December
 			if i == 0 {
-				whereEleList = []interface{}{12, 12, fmt.Sprintf("(%s - 1)", dataReq.Year)}
+				whereEleList = []interface{}{12, 12, yearInt - 1}
 				lastMonthAchieved, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
@@ -216,8 +266,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					continue
 				}
 
-				query = fmt.Sprintf("SELECT * FROM %s WHERE MONTH = 12 AND YEAR = (%s - 1)", db.TableName_ProductionTargets, dataReq.Year)
-				lastMonthTarget, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+				query = fmt.Sprintf("SELECT * FROM %s WHERE MONTH = 12 AND YEAR = %d", db.TableName_ProductionTargets, yearInt)
+				lastMonthTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
@@ -334,8 +384,6 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			PercentageAchieved: batteriesCtPct,
 		},
 	}
-
-	apiResp.MonthlyOverview = make(map[string]models.GetReportsTargetRespMonthlyItem)
 
 	appserver.FormAndSendHttpResp(resp, "Report target data", http.StatusOK, apiResp)
 }
