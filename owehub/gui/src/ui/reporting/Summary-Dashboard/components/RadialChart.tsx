@@ -2,41 +2,41 @@ import React from 'react'
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
+interface ProgressData {
+    [key: string]: {
+        target: number;
+        achieved: number;
+        percentage_achieved: number;
+    };
+}
 
-const RadialChart = () => {
+const RadialChart = ({ year, radData }: any) => {
 
-    const data = [
-        {
-            name: 'Batteries CT',
-            Target: 50,
-            Achieved: 40,
-            fill: '#F9CA3E',
-        },
-        {
-            name: 'mW Installed',
-            Target: 60,
-            Achieved: 45,
-            fill: '#4ECF54',
-        },
-        {
-            name: 'Install CT',
-            Target: 70,
-            Achieved: 65,
-            fill: '#64B5F6',
-        },
-        {
-            name: 'mW Sold',
-            Target: 80,
-            Achieved: 75,
-            fill: '#ABDB42',
-        },
-        {
-            name: 'Project Sold',
-            Target: 90,
-            Achieved: 85,
-            fill: '#AD7BFF',
-        },
-    ];
+    const getColorByKey = (key: any) => {
+        switch (key) {
+            case 'Batteries':
+                return '#F9CA3E';
+            case 'Installs':
+                return '#4ECF54';
+            case 'mW Installed':
+                return '#64B5F6';
+            case 'mW Sold':
+                return '#ABDB42';
+            case 'Projects Sold':
+                return '#AD7BFF';
+            default:
+                return '#000000';
+        }
+    };
+
+    const data = radData ? Object.entries(radData).map(([key, value]) => ({
+        name: key,
+        Target: (value as { target: number }).target,
+        Achieved: (value as { achieved: number }).achieved,
+        fill: getColorByKey(key),
+    })) : [];
+
+
     const CustomTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
@@ -47,14 +47,14 @@ const RadialChart = () => {
                         fontSize: '10px',
                         padding: '2px',
                         borderRadius: '4px',
-                        display:"flex",
-                        flexDirection:"column",
-                        justifyContent:"start",
-                        alignItems:"start",
-                       
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "start",
+                        alignItems: "start",
+
                     }}
                 >
-                    <p style={{fontWeight:"500", fontSize:"12px", color:"#101828", marginRight:'-10px'}}>{data.name}</p>
+                    <p style={{ fontWeight: "500", fontSize: "12px", color: "#101828", marginRight: '-10px' }}>{data.name}</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* Blank Circle for Target */}
                         <svg width="12" height="12" style={{ marginRight: '5px' }}>
@@ -67,7 +67,7 @@ const RadialChart = () => {
                                 fill="white"
                             />
                         </svg>
-                        <span style={{fontWeight:"500", fontSize:"12px", color:"#767676"}}>Target: {data.Target}</span>
+                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>{data.Target}-Target</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* Filled Circle for Achieved */}
@@ -79,7 +79,7 @@ const RadialChart = () => {
                                 fill={data.fill}
                             />
                         </svg>
-                        <span style={{fontWeight:"500", fontSize:"12px", color:"#767676"}}>Achieved: {data.Achieved}</span>
+                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>{data.Achieved}-Achieved</span>
                     </div>
                 </div>
             );
@@ -157,8 +157,9 @@ const RadialChart = () => {
                     dominantBaseline="middle"
                     style={{ fontSize: '16px', fontWeight: 'bold' }}
                 >
-                    2024
+                    {year.label}
                 </text>
+
             </RadialBarChart>
         </ResponsiveContainer>
 

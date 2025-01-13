@@ -4,6 +4,13 @@ import './table.css'
 import { ActionButton } from '../../../components/button/ActionButton';
 import { FaPencil } from 'react-icons/fa6';
 import { TiTick } from 'react-icons/ti';
+import useAuth from '../../../../hooks/useAuth';
+import { toast } from 'react-toastify';
+import { reportingCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import DataNotFound from '../../../components/loader/DataNotFound';
+
+
 
 interface InputState {
     showprojectSold: boolean;
@@ -19,21 +26,70 @@ interface InputState {
 }
 
 
-const EditModal = ({ open, handleClose }: any) => {
-    const data = [
-        { month: "January", projectSold: 1960, mwSold: 213, installCT: 342, mwInstalled: 546, batteriesCT: 456 },
-        { month: "February", projectSold: 1500, mwSold: 120, installCT: 300, mwInstalled: 400, batteriesCT: 350 },
-        { month: "March", projectSold: 1700, mwSold: 200, installCT: 330, mwInstalled: 500, batteriesCT: 400 },
-        { month: "April", projectSold: 1400, mwSold: 180, installCT: 310, mwInstalled: 450, batteriesCT: 380 },
-        { month: "May", projectSold: 1800, mwSold: 210, installCT: 340, mwInstalled: 520, batteriesCT: 420 },
-        { month: "June", projectSold: 1600, mwSold: 190, installCT: 320, mwInstalled: 480, batteriesCT: 390 },
-        { month: "July", projectSold: 1900, mwSold: 220, installCT: 350, mwInstalled: 530, batteriesCT: 430 },
-        { month: "August", projectSold: 2000, mwSold: 230, installCT: 360, mwInstalled: 550, batteriesCT: 450 },
-        { month: "September", projectSold: 1750, mwSold: 205, installCT: 335, mwInstalled: 505, batteriesCT: 415 },
-        { month: "October", projectSold: 1850, mwSold: 215, installCT: 345, mwInstalled: 515, batteriesCT: 425 },
-        { month: "November", projectSold: 1650, mwSold: 195, installCT: 325, mwInstalled: 485, batteriesCT: 395 },
-        { month: "December", projectSold: 1950, mwSold: 225, installCT: 355, mwInstalled: 545, batteriesCT: 455 }
-    ];
+const EditModal = ({refre, setRefre, year, open, handleClose }: any) => {
+    const [isAuthenticated, setAuthenticated] = useState(false);
+    const { authData, saveAuthData } = useAuth();
+    const [loading, setIsLoading] = useState(false)
+    const [salesData, setSalesData] = useState([
+        {
+            month: "",
+            projects_sold: 0,
+            mw_sold: 0,
+            install_ct: 0,
+            mw_installed: 0,
+            batteries_ct: 0,
+        },
+    ]);
+    
+    useEffect(() => {
+        const isPasswordChangeRequired =
+            authData?.isPasswordChangeRequired?.toString();
+        setAuthenticated(isPasswordChangeRequired === 'false');
+    }, [authData]);
+    const [loadinged, setLoadingEd] = useState(false)
+
+    useEffect(() => {
+        setLoadingEd(true)
+        if (isAuthenticated && open) {
+            const fetchData = async () => {
+
+                try {
+                    setIsLoading(true);
+                    const response = await reportingCaller(
+                        'get_production_targets_by_year',
+                        { "year": year },
+                    );
+                    if (response.status === 200) {
+                        setSalesData(response?.data)
+                        setLoadingEd(false)
+                    } else if (response.status > 201) {
+                        toast.error(response.data.message);
+                        setLoadingEd(false)
+                    }
+                } catch (error) {
+                    console.error(error);
+                    setLoadingEd(false)
+                } finally {
+                    setIsLoading(false);
+                    setLoadingEd(false)
+                }
+            };
+
+            fetchData();
+        }
+    }, [isAuthenticated,year, open, refre]);
+
+
+
+    const data = salesData.map(item => ({
+        month: item.month,
+        projectSold: item.projects_sold,
+        mwSold: item.mw_sold,
+        installCT: item.install_ct,
+        mwInstalled: item.mw_installed,
+        batteriesCT: item.batteries_ct,
+    }));
+
 
     const grandTotal = data.reduce((totals, row) => ({
         projectSold: totals.projectSold + row.projectSold,
@@ -44,7 +100,7 @@ const EditModal = ({ open, handleClose }: any) => {
     }), { projectSold: 0, mwSold: 0, installCT: 0, mwInstalled: 0, batteriesCT: 0 });
 
     const [showInput, setShowInput] = useState<Record<string, InputState>>({});
-    console.log(showInput)
+
     const handleShow = (month: string, key: keyof InputState, value: number) => {
         setShowInput((prevState) => {
             const currentMonthState = prevState[month] || {};
@@ -53,7 +109,7 @@ const EditModal = ({ open, handleClose }: any) => {
                 [month]: {
                     ...currentMonthState,
                     [`show${key.charAt(0).toLowerCase()}${key.slice(1)}`]: true,
-                    [key]: value,
+                    [key]: currentMonthState[key] ?? value,
                 },
             };
         });
@@ -68,9 +124,106 @@ const EditModal = ({ open, handleClose }: any) => {
             },
         }));
     };
-    const currentMonth = new Date().getMonth();
-    console.log(currentMonth, new Date().getMonth(), "hgfhf")
 
+   
+
+    const convertData = () => {
+        const convertedData = Object.entries(showInput).map(([month, data]) => {
+            const {
+                showprojectSold,
+                projectSold,
+                showmwSold,
+                mwSold,
+                showinstallCT,
+                installCT,
+                showmwInstalled,
+                mwInstalled,
+                showbatteriesCT,
+                batteriesCT,
+            } = data;
+
+            const monthNumber = new Date(Date.parse(month + " 1")).getMonth() + 1;
+
+            const result = {
+                year,
+                month: monthNumber,
+                projects_sold: projectSold,
+                mw_sold: mwSold ,
+                install_ct: installCT,
+                mw_installed: mwInstalled,
+                batteries_ct: batteriesCT
+            };
+
+            // Remove fields with undefined values
+            Object.keys(result).forEach((key) => {
+                if ((result as any)[key] === undefined) {
+                    delete (result as any)[key];
+                }
+            });
+
+            return result;
+        });
+
+        return convertedData;
+    };
+
+
+
+
+
+
+
+    const dataTarget = convertData()
+    console.log(dataTarget, "dataTarget")
+    console.log(showInput, "showInput")
+    
+
+    const [load, setLoad] = useState(false)
+
+    const handleSubmit = async () => {
+        setLoad(true)
+        try {
+            const response = await reportingCaller(
+                'update_production_targets',
+                {
+                    "targets": dataTarget
+                },
+            );
+            if (response.status === 200) {
+                toast.success('Target Updated Succesfully');
+                setRefre(refre + 1);
+                handleClose();
+                setLoad(false)
+            } else if (response.status >= 201) {
+                toast.warn(response.message);
+                setLoad(false)
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setLoad(false)
+        }
+
+    };
+
+    const currentYear = new Date().getFullYear();
+    const prevYear = currentYear > parseInt(year);
+
+    useEffect(() => {
+        setShowInput((prevState) => {
+          const updatedState: Record<string, InputState> = {};
+          for (const month in prevState) {
+            updatedState[month] = {
+              ...prevState[month],
+              showprojectSold: false,
+              showmwSold: false,
+              showinstallCT: false,
+              showmwInstalled: false,
+              showbatteriesCT: false,
+            };
+          }
+          return updatedState;
+        });
+      }, [open, refre]);
 
 
     return (
@@ -94,232 +247,279 @@ const EditModal = ({ open, handleClose }: any) => {
                                         <th>Batteries CT</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {data.map((row, index) => {
-                                        const currentMonth = new Date().getMonth();
-                                        const isPastMonth = index < currentMonth;
-                                        const isCurrentMonth = index === currentMonth;
+                                {(loadinged) ? (
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan={8}>
+                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                    <MicroLoader />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                ) : data ? (
+                                    <>
+                                        <tbody>
 
-                                        return (
-                                            <tr
-                                                key={index}
-                                                className={isPastMonth ? "pastMonth" : ""}
-                                                style={{ cursor: isPastMonth ? "not-allowed" : "default" }}
-                                            >
-                                                <td>
+                                            {data.map((row, index) => {
+                                                const currentMonth = new Date().getMonth();
+                                                const isPastMonth = index < currentMonth;
+                                                const isCurrentMonth = index === currentMonth;
 
-                                                    {isCurrentMonth && (
-                                                        <span
-                                                            style={{
-                                                                display: "inline-block",
-                                                                width: "8px",
-                                                                height: "8px",
-                                                                borderRadius: "50%",
-                                                                backgroundColor: "#377CF6",
-                                                                marginRight: "5px",
-                                                            }}
-                                                        ></span>
-                                                    )}
-                                                    {row.month}
-                                                </td>
+                                                return (
+                                                    <tr
+                                                        key={index}
+                                                        className={isPastMonth ? "pastMonth" : ""}
+                                                        style={{ cursor: isPastMonth ? "not-allowed" : "default" }}
+                                                    >
+                                                        <td>
 
-
-                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
-                                                    {!showInput[row.month]?.showprojectSold ? (
-                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => {
-                                                            if (!isPastMonth) {
-                                                                handleShow(row.month, 'projectSold', row.projectSold)
-                                                            }
-                                                        }}
-                                                        >
-                                                            {row.projectSold}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="edit_input">
-                                                            <input
-                                                                type="number"
-                                                                value={showInput[row.month]?.projectSold || row.projectSold}
-                                                                onChange={(e) =>
-                                                                    setShowInput((prevState) => ({
-                                                                        ...prevState,
-                                                                        [row.month]: {
-                                                                            ...prevState[row.month],
-                                                                            projectSold: Number(e.target.value),
-                                                                        },
-                                                                    }))
-                                                                }
-                                                            />
-                                                            <TiTick
-                                                                onClick={() => handleHide(row.month, 'projectSold')}
-                                                                size={25}
-                                                                style={{
-                                                                    height: "20px",
-                                                                    width: "20px",
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
-
-                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
-                                                    {!showInput[row.month]?.showmwSold && (
-                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }}
-                                                            onClick={() => {
-                                                                if (!isPastMonth) {
-                                                                    handleShow(row.month, 'mwSold', row.mwSold)
-                                                                }
-                                                            }}
-
-                                                        >
-                                                            {row.mwSold}
-                                                        </div>
-                                                    )}
-                                                    {showInput[row.month]?.showmwSold && (
-                                                        <div className="edit_input">
-                                                            <input
-                                                                type="number"
-                                                                value={showInput[row.month]?.mwSold || row.mwSold}
-                                                                onChange={(e) =>
-                                                                    setShowInput((prevState) => ({
-                                                                        ...prevState,
-                                                                        [row.month]: {
-                                                                            ...prevState[row.month],
-                                                                            mwSold: Number(e.target.value),
-                                                                        },
-                                                                    }))
-                                                                }
-                                                            />
-                                                            <TiTick
-                                                                onClick={() => handleHide(row.month, 'mwSold')}
-                                                                size={25}
-                                                                style={{
-                                                                    height: "20px",
-                                                                    width: "20px",
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
-
-                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
-                                                    {!showInput[row.month]?.showinstallCT && (
-                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => { if (!isPastMonth) { handleShow(row.month, 'installCT', row.installCT) } }}>
-                                                            {row.installCT}
-                                                        </div>
-                                                    )}
-                                                    {showInput[row.month]?.showinstallCT && (
-                                                        <div className="edit_input">
-                                                            <input
-                                                                type="number"
-                                                                value={showInput[row.month]?.installCT || row.installCT}
-                                                                onChange={(e) =>
-                                                                    setShowInput((prevState) => ({
-                                                                        ...prevState,
-                                                                        [row.month]: {
-                                                                            ...prevState[row.month],
-                                                                            installCT: Number(e.target.value),
-                                                                        },
-                                                                    }))
-                                                                }
-                                                            />
-                                                            <TiTick
-                                                                onClick={() => handleHide(row.month, 'installCT')}
-                                                                size={25}
-                                                                style={{
-                                                                    height: "20px",
-                                                                    width: "20px",
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
-
-                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
-                                                    {!showInput[row.month]?.showmwInstalled && (
-                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => { if (!isPastMonth) { handleShow(row.month, 'mwInstalled', row.mwInstalled) } }}>
-                                                            {row.mwInstalled}
-                                                        </div>
-                                                    )}
-                                                    {showInput[row.month]?.showmwInstalled && (
-                                                        <div className="edit_input">
-                                                            <input
-                                                                type="number"
-                                                                value={showInput[row.month]?.mwInstalled || row.mwInstalled}
-                                                                onChange={(e) =>
-                                                                    setShowInput((prevState) => ({
-                                                                        ...prevState,
-                                                                        [row.month]: {
-                                                                            ...prevState[row.month],
-                                                                            mwInstalled: Number(e.target.value),
-                                                                        },
-                                                                    }))
-                                                                }
-                                                            />
-                                                            <TiTick
-                                                                onClick={() => handleHide(row.month, 'mwInstalled')}
-                                                                size={25}
-                                                                style={{
-                                                                    height: "20px",
-                                                                    width: "20px",
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
-
-                                                <td className={`${isPastMonth ? 'viraj' : ''}`}>
-                                                    {!showInput[row.month]?.showbatteriesCT && (
-                                                        <div style={{ cursor: isPastMonth ? "" : "pointer" }} onClick={() => { if (!isPastMonth) { handleShow(row.month, 'batteriesCT', row.batteriesCT) } }}>
-                                                            {row.batteriesCT}
-                                                        </div>
-                                                    )}
-                                                    {showInput[row.month]?.showbatteriesCT && (
-                                                        <div className="edit_input">
-                                                            <input
-                                                                type="number"
-                                                                value={showInput[row.month]?.batteriesCT || row.batteriesCT}
-                                                                onChange={(e) =>
-                                                                    setShowInput((prevState) => ({
-                                                                        ...prevState,
-                                                                        [row.month]: {
-                                                                            ...prevState[row.month],
-                                                                            batteriesCT: Number(e.target.value),
-                                                                        },
-                                                                    }))
-                                                                }
-                                                            />
-                                                            <TiTick
-                                                                onClick={() => handleHide(row.month, 'batteriesCT')}
-                                                                size={25}
-                                                                style={{
-                                                                    height: "20px",
-                                                                    width: "20px",
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </td>
+                                                            {(isCurrentMonth && !prevYear) && (
+                                                                <span
+                                                                    style={{
+                                                                        display: "inline-block",
+                                                                        width: "8px",
+                                                                        height: "8px",
+                                                                        borderRadius: "50%",
+                                                                        backgroundColor: "#377CF6",
+                                                                        marginRight: "5px",
+                                                                    }}
+                                                                ></span>
+                                                            )}
+                                                            {row.month}
+                                                        </td>
 
 
+                                                        <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
+                                                            {!showInput[row.month]?.showprojectSold && (
+                                                                <div
+                                                                    style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                    onClick={() => {
+                                                                        if (!(isPastMonth || prevYear)) {
+                                                                            handleShow(row.month, 'projectSold', row.projectSold);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {showInput[row.month]?.projectSold ?? row.projectSold}
+                                                                </div>
+                                                            )}
+                                                            {showInput[row.month]?.showprojectSold && (
+                                                                <div className="edit_input">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
+                                                                        onChange={(e) =>
+                                                                            setShowInput((prevState) => ({
+                                                                                ...prevState,
+                                                                                [row.month]: {
+                                                                                    ...prevState[row.month],
+                                                                                    projectSold: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                },
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    <TiTick
+                                                                        onClick={() => handleHide(row.month, 'projectSold')}
+                                                                        size={25}
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+                                                        <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
+                                                            {!showInput[row.month]?.showmwSold && (
+                                                                <div
+                                                                    style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                    onClick={() => {
+                                                                        if (!(isPastMonth || prevYear)) {
+                                                                            handleShow(row.month, 'mwSold', row.mwSold);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {showInput[row.month]?.mwSold ?? row.mwSold}
+                                                                </div>
+                                                            )}
+                                                            {showInput[row.month]?.showmwSold && (
+                                                                <div className="edit_input">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
+                                                                        onChange={(e) =>
+                                                                            setShowInput((prevState) => ({
+                                                                                ...prevState,
+                                                                                [row.month]: {
+                                                                                    ...prevState[row.month],
+                                                                                    mwSold: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                },
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    <TiTick
+                                                                        onClick={() => handleHide(row.month, 'mwSold')}
+                                                                        size={25}
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+
+                                                        <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
+                                                            {!showInput[row.month]?.showinstallCT && (
+                                                                <div
+                                                                    style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                    onClick={() => {
+                                                                        if (!(isPastMonth || prevYear)) {
+                                                                            handleShow(row.month, 'installCT', row.installCT);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {showInput[row.month]?.installCT ?? row.installCT}
+                                                                </div>
+                                                            )}
+                                                            {showInput[row.month]?.showinstallCT && (
+                                                                <div className="edit_input">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
+                                                                        onChange={(e) =>
+                                                                            setShowInput((prevState) => ({
+                                                                                ...prevState,
+                                                                                [row.month]: {
+                                                                                    ...prevState[row.month],
+                                                                                    installCT: Number(e.target.value),
+                                                                                },
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    <TiTick
+                                                                        onClick={() => handleHide(row.month, 'installCT')}
+                                                                        size={25}
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+
+
+                                                        <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
+                                                            {!showInput[row.month]?.showmwInstalled && (
+                                                                <div
+                                                                    style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                    onClick={() => {
+                                                                        if (!(isPastMonth || prevYear)) {
+                                                                            handleShow(row.month, 'mwInstalled', row.mwInstalled);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {showInput[row.month]?.mwInstalled ?? row.mwInstalled}
+                                                                </div>
+                                                            )}
+                                                            {showInput[row.month]?.showmwInstalled && (
+                                                                <div className="edit_input">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
+                                                                        onChange={(e) =>
+                                                                            setShowInput((prevState) => ({
+                                                                                ...prevState,
+                                                                                [row.month]: {
+                                                                                    ...prevState[row.month],
+                                                                                    mwInstalled: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                },
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    <TiTick
+                                                                        onClick={() => handleHide(row.month, 'mwInstalled')}
+                                                                        size={25}
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+                                                        <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
+                                                            {!showInput[row.month]?.showbatteriesCT && (
+                                                                <div
+                                                                    style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                    onClick={() => {
+                                                                        if (!(isPastMonth || prevYear)) {
+                                                                            handleShow(row.month, 'batteriesCT', row.batteriesCT);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {showInput[row.month]?.batteriesCT ?? row.batteriesCT}
+                                                                </div>
+                                                            )}
+                                                            {showInput[row.month]?.showbatteriesCT && (
+                                                                <div className="edit_input">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
+                                                                        onChange={(e) =>
+                                                                            setShowInput((prevState) => ({
+                                                                                ...prevState,
+                                                                                [row.month]: {
+                                                                                    ...prevState[row.month],
+                                                                                    batteriesCT: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                },
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    <TiTick
+                                                                        onClick={() => handleHide(row.month, 'batteriesCT')}
+                                                                        size={25}
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </td>
+
+
+                                                    </tr>
+                                                );
+                                            })}
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr style={{ position: "sticky", bottom: "0" }}>
+                                                <th>Total</th>
+                                                <th>{grandTotal.projectSold}</th>
+                                                <th>{grandTotal.mwSold}</th>
+                                                <th>{grandTotal.installCT}</th>
+                                                <th>{grandTotal.mwInstalled}</th>
+                                                <th>{grandTotal.batteriesCT}</th>
                                             </tr>
-                                        );
-                                    })}
-                                </tbody>
-                                <tfoot>
-                                    <tr style={{ position: "sticky", bottom: "0" }}>
-                                        <th>Total</th>
-                                        <th>{grandTotal.projectSold}</th>
-                                        <th>{grandTotal.mwSold}</th>
-                                        <th>{grandTotal.installCT}</th>
-                                        <th>{grandTotal.mwInstalled}</th>
-                                        <th>{grandTotal.batteriesCT}</th>
-                                    </tr>
-                                </tfoot>
+                                        </tfoot>
+                                    </>
+                                ) : (
+                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <DataNotFound />
+                                    </div>
+                                )}
                             </table>
                         </div>
                         <div className='button-sec-target'>
@@ -328,7 +528,7 @@ const EditModal = ({ open, handleClose }: any) => {
                                 onClick={handleClose}
                                 type={'button'}
                             />
-                            <ActionButton title={'Save Changes'} onClick={() => { }} type={'submit'} />
+                            <ActionButton disabled={load} title={'Save Changes'} onClick={handleSubmit} type={'submit'} />
                         </div>
                     </div>
                 </div>

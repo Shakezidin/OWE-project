@@ -4,7 +4,8 @@ import {
     fetchSpeedSummaryReport,
     fetchInstallReportData,
     getTimelineInstallToFinData,
-    getDropDownData
+    getDropDownData,
+    fetchSummaryData
 } from '../../apiActions/reportingAction/reportingAction';
 
 interface ReportingState {
@@ -25,6 +26,11 @@ interface ReportingState {
         error: string | null;
     };
     dropdownData:{
+        data: any,
+        loading: boolean,
+        error: string | null;
+    };
+    summaryData:{
         data: any,
         loading: boolean,
         error: string | null;
@@ -53,6 +59,11 @@ const initialState: ReportingState = {
     dropdownData:{
         data: null,
         loading: false,
+        error: null,
+    },
+    summaryData:{
+        data: null,
+        loading: true,
         error: null,
     },
     loading: false,
@@ -147,6 +158,21 @@ const reportingSlice = createSlice({
               .addCase(getDropDownData.rejected, (state, action) => {
                 state.dropdownData.loading = false;
                 state.dropdownData.error = action.payload as string;
+                toast.error(action.payload as string);
+              })
+
+
+              .addCase(fetchSummaryData.pending, (state) => {
+                state.summaryData.loading = true;
+                state.summaryData.error = null;
+              })
+              .addCase(fetchSummaryData.fulfilled, (state, action) => {
+                state.summaryData.loading = false;
+                state.summaryData.data = action.payload;
+              })
+              .addCase(fetchSummaryData.rejected, (state, action) => {
+                state.summaryData.loading = false;
+                state.summaryData.error = action.payload as string;
                 toast.error(action.payload as string);
               });
     }

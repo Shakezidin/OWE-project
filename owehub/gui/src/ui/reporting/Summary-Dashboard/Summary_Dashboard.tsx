@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classes from './summary.module.css'
 import SelectOption from '../../components/selectOption/SelectOption'
 import RadialChart from './components/RadialChart';
@@ -9,9 +9,41 @@ import { MdBarChart } from 'react-icons/md';
 import { FaChartLine } from 'react-icons/fa';
 import EditModal from './components/EditModal';
 import { ICONS } from '../../../resources/icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { fetchSummaryData } from '../../../redux/apiActions/reportingAction/reportingAction';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
+import { Tooltip } from 'react-tooltip';
+import useWindowWidth from '../../../hooks/useWindowWidth';
 interface Option {
     value: string;
     label: string;
+}
+interface DynamicSummaryData {
+    [key: string]: {
+        target: number;
+        achieved: number;
+        last_month_acheived: number;
+    };
+}
+
+interface ProgressData {
+    [key: string]: {
+        target: number;
+        achieved: number;
+        percentage_achieved: number;
+    };
+}
+
+interface MonthlyOverviewItem {
+    month: string;
+    target: number;
+    achieved: number;
+}
+interface MonthlyStatsItem {
+    month: string;
+    target: number;
+    [key: string]: number | string;
 }
 
 const Summary_Dashboard = () => {
@@ -99,17 +131,23 @@ const Summary_Dashboard = () => {
         width: '100%',
         height: '463px',
         padding: "1rem",
-        borderRight: "1px dotted #D7D9DC"
+        borderRight: "1px dotted #D7D9DC",
 
     };
     const stylesGraph2 = {
         width: '100%',
         height: '500px',
         padding: "1rem",
-
+        "@media screen and (max-width: 767px)": {
+            height: 'auto',
+            borderRight: 'none',
+            borderBottom: "1px dotted #D7D9DC",
+            paddingBottom: "2rem",
+            marginBottom: "2rem"
+        }
     };
 
-    const [activeButton, setActiveButton] = useState('Project Sold');
+    const [activeButton, setActiveButton] = useState('projects_sold');
 
     const handleButtonClick = (buttonName: any) => {
         setActiveButton(buttonName);
@@ -132,9 +170,42 @@ const Summary_Dashboard = () => {
         setOpen(false)
     }
 
+    //Api Integration
+    const dispatch = useAppDispatch();
+
+    const [refre, setRefre] = useState(0);
+
+    useEffect(() => {
+        dispatch(fetchSummaryData({
+            "target_percentage": parseInt(activePerc),
+            "target_type": activeButton,
+            "month": reportType.value,
+            "year": year.value
+        }));
+    }, [reportType, year, activePerc, refre, activeButton]);
+
+    const { summaryData, loading } = useAppSelector(
+        (state) => state.reportingSlice
+    );
+    const [summaryDataState, setSummaryDataState] = useState<DynamicSummaryData>({});
+    const [progressData, setProgressData] = useState<ProgressData>({});
+    const [monthlyOverviewData, setMonthlyOverviewData] = useState<MonthlyOverviewItem[]>([]);
+    const [monthlyStatsData, setMonthlyStatsData] = useState<MonthlyStatsItem[]>([]);
+   
+    useEffect(() => {
+        setSummaryDataState(summaryData?.data?.data?.summary)
+        setProgressData(summaryData?.data?.data?.progress)
+        setMonthlyOverviewData(summaryData?.data?.data?.monthly_overview)
+        setMonthlyStatsData(summaryData?.data?.data?.monthly_stats)
+    }, [summaryData])
+
+    const width = useWindowWidth();
+    const isMobile = width <= 767;
+
+
     return (
         <>
-            <EditModal open={open} handleClose={handleClose} />
+            <EditModal refre={refre} setRefre={setRefre} year={parseInt(year.value)} open={open} handleClose={handleClose} />
             <div className={classes.top_dashboard}>
                 <div className={classes.top_box}>
                     <div className={classes.top_box_heading}>
@@ -176,176 +247,171 @@ const Summary_Dashboard = () => {
                         </div>
                     </div>
                     <div className={classes.top_box_boxes}>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>Project Sold</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
+
+                        {(summaryData.loading) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                                <MicroLoader />
                             </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#ABDB42" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>mw Sold</p>
+                        ) : progressData ? (
+                            <>
+                                <div className={classes.top_box_boxes}>
+
+                                    {summaryDataState && Object.entries(summaryDataState).map(([key, data]) => (
+                                        <div className={classes.top_box_box} key={key}>
+                                            <div className={classes.top_box_top}>
+                                                <div className={classes.top_box_head}>
+                                                    <p>{key}</p>
+                                                </div>
+                                                {data && (
+                                                    <>
+                                                        <div className={classes.top_box_divs}>
+                                                            <div className={classes.top_box_head_left}>
+                                                                <h1>
+                                                                    {Number.isInteger(data.achieved)
+                                                                        ? data.achieved
+                                                                        : data.achieved.toFixed(2)}
+                                                                </h1>
+                                                                <p>Achieved</p>
+                                                            </div>
+                                                            <div className={classes.top_box_head_right}>
+                                                                <h1>
+                                                                    {Number.isInteger(data.target)
+                                                                        ? data.target
+                                                                        : data.target.toFixed(2)}
+                                                                </h1>
+                                                                <p>Target</p>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                            {data && (
+                                                <div className={classes.top_box_bottom}>
+                                                    <p>Last Month Achieved</p>
+                                                    <h3 style={{ color: "#ABDB42" }}>
+                                                        {Number.isInteger(data.last_month_acheived)
+                                                            ? data.last_month_acheived
+                                                            : data.last_month_acheived.toFixed(2)}%
+                                                    </h3>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <DataNotFound />
                             </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#ABDB42" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>Install CT</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#EE4A3F" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>mw Installed</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#ABDB42" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>Batteries Ct</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#EE4A3F" }}>100%</h3>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
                 <div className={classes.bottom_box}>
                     <div className={classes.bottom_box_chart1} >
                         <p>Monthly Progress</p>
-                        <div className={classes.bottom_box_chart1_sec} style={stylesGraph}>
-                            <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart /></div>
-                            <RadarChartComponenet />
-                        </div>
+                        {(summaryData.loading) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                                <MicroLoader />
+                            </div>
+                        ) : progressData ? (
+                            <>
+                                <div className={classes.bottom_box_chart1_sec}>
+                                    <div className={classes.bottom_box_chart_rad}><RadialChart year={year} radData={progressData} /></div>
+                                    <RadarChartComponenet radData={progressData} />
+                                </div>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <DataNotFound />
+                            </div>
+                        )}
 
                     </div>
                     <div className={classes.bottom_box_chart2} style={stylesGraph2}>
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
                             <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center", alignItems: "center" }}>
-                                <div className={classes.editModal} onClick={handleOpen}>
+                                <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
                                     <img src={ICONS.ReportEdit} alt="Edit" />
+                                    <Tooltip
+                                        style={{
+                                            zIndex: 20,
+                                            background: '#f7f7f7',
+                                            color: '#000',
+                                            fontSize: 12,
+                                            paddingBlock: 4,
+                                            fontWeight: "400"
+                                        }}
+                                        offset={8}
+                                        delayShow={800}
+                                        id="downip"
+                                        place="bottom"
+                                        content={"Edit Target"}
+
+                                    />
                                 </div>
-                                <div className={classes.bottom_box_chart2_head_buttons}>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'Project Sold' ? classes.active : ''}`}
-                                        style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
-                                        onClick={() => handleButtonClick('Project Sold')}
-                                    >
-                                        Project Sold
+                                {!isMobile ?
+                                    <div className={classes.bottom_box_chart2_head_buttons}>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'projects_sold' ? classes.active : ''}`}
+                                            style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
+                                            onClick={() => handleButtonClick('projects_sold')}
+                                        >
+                                            Project Sold
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'mw_sold' ? classes.active : ''}`}
+                                            onClick={() => handleButtonClick('mw_sold')}
+                                        >
+                                            mW Sold
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'install_ct' ? classes.active : ''}`}
+                                            onClick={() => handleButtonClick('install_ct')}
+                                        >
+                                            Install Ct
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'mw_installed' ? classes.active : ''}`}
+                                            onClick={() => handleButtonClick('mw_installed')}
+                                        >
+                                            mW Installed
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'batteries_ct' ? classes.active : ''}`}
+                                            style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
+                                            onClick={() => handleButtonClick('batteries_ct')}
+                                        >
+                                            Batteries CT
+                                        </div>
                                     </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'mW Sold' ? classes.active : ''}`}
-                                        onClick={() => handleButtonClick('mW Sold')}
-                                    >
-                                        mW Sold
-                                    </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'Install Ct' ? classes.active : ''}`}
-                                        onClick={() => handleButtonClick('Install Ct')}
-                                    >
-                                        Install Ct
-                                    </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'mW Installed' ? classes.active : ''}`}
-                                        onClick={() => handleButtonClick('mW Installed')}
-                                    >
-                                        mW Installed
-                                    </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'Batteries CT' ? classes.active : ''}`}
-                                        style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
-                                        onClick={() => handleButtonClick('Batteries CT')}
-                                    >
-                                        Batteries CT
-                                    </div>
-                                </div>
+                                    : ""
+                                }
                             </div>
                         </div>
 
-
-                        {line ? <LineChartComp /> : <BarChartComp />}
-
-
-
-                        <div className={classes.bottom_graphchange_div}>
-                            <div className={classes.bottom_graphchange} onClick={handleChartClick}>
-                                {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                        {(summaryData.loading) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: "38px" }}>
+                                <MicroLoader />
                             </div>
-                        </div>
+                        ) : progressData ? (
+                            <>
+                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyStatsData}/>}
+
+
+
+
+                                <div className={classes.bottom_graphchange_div}>
+                                    <div className={classes.bottom_graphchange} onClick={handleChartClick}>
+                                        {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <DataNotFound />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

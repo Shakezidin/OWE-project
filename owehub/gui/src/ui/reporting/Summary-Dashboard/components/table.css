@@ -149,3 +149,12 @@
     outline: none;
     border-bottom: 1px solid #b7b6b6;
   }
+
+  @media screen and (max-width: 767px){
+    .editTarget-table-container{
+      width: 100%;
+    }
+    .edittar_mod_top{
+      
+    }
+  }

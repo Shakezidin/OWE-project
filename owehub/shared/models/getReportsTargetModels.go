@@ -9,9 +9,10 @@ package models
 // Get Reports Achieved (homepage) models
 
 type GetReportsTargetReq struct {
-	TargetType string `json:"target_type"`
-	Month      string `json:"month"`
-	Year       string `json:"year"`
+	TargetType       string `json:"target_type"`
+	TargetPercentage int    `json:"target_percentage"`
+	Month            string `json:"month"`
+	Year             string `json:"year"`
 }
 
 type GetReportsTargetRespSummaryItem struct {
@@ -26,16 +27,26 @@ type GetReportsTargetRespProgressItem struct {
 	PercentageAchieved float64     `json:"percentage_achieved"`
 }
 
-type GetReportsTargetRespMonthlyItem struct {
+type GetReportsTargetRespOverviewItem struct {
 	Month    string      `json:"month"`
 	Target   interface{} `json:"target"`
-	Achieved interface{} `json:"achieved,omitempty"`
+	Achieved interface{} `json:"achieved"`
+}
+
+type GetReportsTargetRespStatsItem struct {
+	Month          string      `json:"month"`
+	Completed      interface{} `json:"completed,omitempty"`
+	Incomplete     interface{} `json:"incomplete,omitempty"`
+	Inprogress     interface{} `json:"in_progress,omitempty"`
+	MoreThanTarget interface{} `json:"more_than_target,omitempty"`
+	Target         interface{} `json:"target,omitempty"`
 }
 
 type GetReportsTargetResp struct {
-	Summary         map[string]GetReportsTargetRespSummaryItem   `json:"summary"`
-	Progress        map[string]GetReportsTargetRespProgressItem  `json:"progress"`
-	MonthlyOverview map[string][]GetReportsTargetRespMonthlyItem `json:"monthly_overview"`
+	Summary         map[string]GetReportsTargetRespSummaryItem  `json:"summary"`
+	Progress        map[string]GetReportsTargetRespProgressItem `json:"progress"`
+	MonthlyOverview []GetReportsTargetRespOverviewItem          `json:"monthly_overview"`
+	MonthlyStats    []GetReportsTargetRespStatsItem             `json:"monthly_stats"`
 }
 
 // Get production targets by year models
