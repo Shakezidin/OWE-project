@@ -4,6 +4,11 @@ import './table.css'
 import { ActionButton } from '../../../components/button/ActionButton';
 import { FaPencil } from 'react-icons/fa6';
 import { TiTick } from 'react-icons/ti';
+import useAuth from '../../../../hooks/useAuth';
+import { toast } from 'react-toastify';
+import { reportingCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+
+
 
 interface InputState {
     showprojectSold: boolean;
@@ -20,20 +25,61 @@ interface InputState {
 
 
 const EditModal = ({ open, handleClose }: any) => {
-    const data = [
-        { month: "January", projectSold: 1960, mwSold: 213, installCT: 342, mwInstalled: 546, batteriesCT: 456 },
-        { month: "February", projectSold: 1500, mwSold: 120, installCT: 300, mwInstalled: 400, batteriesCT: 350 },
-        { month: "March", projectSold: 1700, mwSold: 200, installCT: 330, mwInstalled: 500, batteriesCT: 400 },
-        { month: "April", projectSold: 1400, mwSold: 180, installCT: 310, mwInstalled: 450, batteriesCT: 380 },
-        { month: "May", projectSold: 1800, mwSold: 210, installCT: 340, mwInstalled: 520, batteriesCT: 420 },
-        { month: "June", projectSold: 1600, mwSold: 190, installCT: 320, mwInstalled: 480, batteriesCT: 390 },
-        { month: "July", projectSold: 1900, mwSold: 220, installCT: 350, mwInstalled: 530, batteriesCT: 430 },
-        { month: "August", projectSold: 2000, mwSold: 230, installCT: 360, mwInstalled: 550, batteriesCT: 450 },
-        { month: "September", projectSold: 1750, mwSold: 205, installCT: 335, mwInstalled: 505, batteriesCT: 415 },
-        { month: "October", projectSold: 1850, mwSold: 215, installCT: 345, mwInstalled: 515, batteriesCT: 425 },
-        { month: "November", projectSold: 1650, mwSold: 195, installCT: 325, mwInstalled: 485, batteriesCT: 395 },
-        { month: "December", projectSold: 1950, mwSold: 225, installCT: 355, mwInstalled: 545, batteriesCT: 455 }
-    ];
+    const [isAuthenticated, setAuthenticated] = useState(false);
+    const { authData, saveAuthData } = useAuth();
+    const [loading, setIsLoading] = useState(false)
+    const [salesData, setSalesData] = useState([
+        {
+            month: "",
+            projects_sold: 0,
+            mw_sold: 0,
+            install_ct: 0,
+            mw_installed: 0,
+            batteries_ct: 0,
+        },
+    ]);
+    const [ref, setRef] = useState(0);
+    useEffect(() => {
+        const isPasswordChangeRequired =
+            authData?.isPasswordChangeRequired?.toString();
+        setAuthenticated(isPasswordChangeRequired === 'false');
+    }, [authData]);
+
+    useEffect(() => {
+        if (isAuthenticated && open) {
+            const fetchData = async () => {
+
+                try {
+                    setIsLoading(true);
+                    const response = await reportingCaller(
+                        'get_production_targets_by_year',
+                        { "year": 2024 },
+                    );
+                    if (response.status === 200) {
+                        setSalesData(response?.data)
+                    } else if (response.status > 201) {
+                        toast.error(response.data.message);
+                    }
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            fetchData();
+        }
+    }, [isAuthenticated, open, ref]);
+
+    const data = salesData.map(item => ({
+        month: item.month,
+        projectSold: item.projects_sold,
+        mwSold: item.mw_sold,
+        installCT: item.install_ct,
+        mwInstalled: item.mw_installed,
+        batteriesCT: item.batteries_ct,
+    }));
+
 
     const grandTotal = data.reduce((totals, row) => ({
         projectSold: totals.projectSold + row.projectSold,
@@ -44,7 +90,7 @@ const EditModal = ({ open, handleClose }: any) => {
     }), { projectSold: 0, mwSold: 0, installCT: 0, mwInstalled: 0, batteriesCT: 0 });
 
     const [showInput, setShowInput] = useState<Record<string, InputState>>({});
-    console.log(showInput)
+
     const handleShow = (month: string, key: keyof InputState, value: number) => {
         setShowInput((prevState) => {
             const currentMonthState = prevState[month] || {};
@@ -68,9 +114,75 @@ const EditModal = ({ open, handleClose }: any) => {
             },
         }));
     };
-    const currentMonth = new Date().getMonth();
-    console.log(currentMonth, new Date().getMonth(), "hgfhf")
 
+    const year = 2024;
+
+    const convertData = () => {
+        const convertedData = Object.entries(showInput).map(([month, data]) => {
+            const {
+                showprojectSold,
+                projectSold,
+                showmwSold,
+                mwSold,
+                showinstallCT,
+                installCT,
+                showmwInstalled,
+                mwInstalled,
+                showbatteriesCT,
+                batteriesCT,
+            } = data;
+
+            const monthNumber = new Date(Date.parse(month + " 1")).getMonth() + 1;
+
+            const result = {
+                year,
+                month: monthNumber,
+                projects_sold: showprojectSold ? projectSold : undefined,
+                mw_sold: showmwSold ? mwSold : undefined,
+                install_ct: showinstallCT ? installCT : undefined,
+                mw_installed: showmwInstalled ? mwInstalled : undefined,
+                batteries_ct: showbatteriesCT ? batteriesCT : undefined,
+            };
+
+            // Remove fields with undefined values
+            Object.keys(result).forEach((key) => {
+                if ((result as any)[key] === undefined) {
+                    delete (result as any)[key];
+                }
+            });
+
+            return result;
+        });
+
+        return convertedData;
+    };
+
+   const dataTarget = convertData()
+
+   console.log(dataTarget)
+
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        try {
+            const response = await reportingCaller(
+                'update_production_targets',
+                {
+                    "targets": dataTarget
+                },
+            );
+            if (response.status === 200) {
+                toast.success('Target Updated Succesfully');
+                setRef(ref+1);
+                handleClose();
+            } else if (response.status >= 201) {
+                toast.warn(response.message);
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+
+    };
 
 
     return (
@@ -328,7 +440,8 @@ const EditModal = ({ open, handleClose }: any) => {
                                 onClick={handleClose}
                                 type={'button'}
                             />
-                            <ActionButton title={'Save Changes'} onClick={() => { }} type={'submit'} />
+                            <ActionButton title={'Save Changes'} onClick={() => {handleSubmit}} type={'submit'} />
+                            {/* <button onClick={handleSubmit}>test button</button> */}
                         </div>
                     </div>
                 </div>

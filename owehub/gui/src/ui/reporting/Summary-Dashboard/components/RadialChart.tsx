@@ -2,41 +2,41 @@ import React from 'react'
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
+interface ProgressData {
+    [key: string]: {
+        target: number;
+        achieved: number;
+        percentage_achieved: number;
+    };
+}
 
-const RadialChart = () => {
+const RadialChart = ({radData}:any) => {
 
-    const data = [
-        {
-            name: 'Batteries CT',
-            Target: 50,
-            Achieved: 40,
-            fill: '#F9CA3E',
-        },
-        {
-            name: 'mW Installed',
-            Target: 60,
-            Achieved: 45,
-            fill: '#4ECF54',
-        },
-        {
-            name: 'Install CT',
-            Target: 70,
-            Achieved: 65,
-            fill: '#64B5F6',
-        },
-        {
-            name: 'mW Sold',
-            Target: 80,
-            Achieved: 75,
-            fill: '#ABDB42',
-        },
-        {
-            name: 'Project Sold',
-            Target: 90,
-            Achieved: 85,
-            fill: '#AD7BFF',
-        },
-    ];
+    const getColorByKey = (key:any) => {
+        switch (key) {
+          case 'Batteries Ct':
+            return '#F9CA3E';
+          case 'mW Installed':
+            return '#4ECF54';
+          case 'Install Ct':
+            return '#64B5F6';
+          case 'mW Sold':
+            return '#ABDB42';
+          case 'Projects Sold':
+            return '#AD7BFF';
+          default:
+            return '#000000';
+        }
+      };
+
+      const data = radData ? Object.entries(radData).map(([key, value]) => ({
+        name: key,
+        Target: (value as { target: number }).target,
+        Achieved: (value as { achieved: number }).achieved,
+        fill: getColorByKey(key),
+      })) : [];
+
+    
     const CustomTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;

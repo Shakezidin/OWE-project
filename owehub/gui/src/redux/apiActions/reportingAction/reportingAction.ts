@@ -83,3 +83,21 @@ export const fetchInstallReportData = createAsyncThunk(
       }
     }
   );
+
+
+
+  export const fetchSummaryData = createAsyncThunk(
+    'reporting/fetchSummary',
+    async (payload: { target_type: string; month: string, year: string }, { rejectWithValue }) => {
+      try {
+        const response = await reportingCaller('get_reports_achived', {
+          target_type: payload.target_type,
+          month: payload.month,
+          year:payload.year
+        });
+        return response;
+      } catch (error) {
+        return rejectWithValue('Failed to fetch summary data');
+      }
+    }
+  );
