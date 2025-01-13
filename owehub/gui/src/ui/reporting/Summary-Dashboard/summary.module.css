@@ -53,6 +53,9 @@
     width: 100%;
     margin-top: 14px;
     gap: 10px;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
 }
 
 .top_box_box {
@@ -167,6 +170,7 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     width: 100%;
+    min-height: 400px;
 }
 
 .bottom_box_chart1_sec {
@@ -174,6 +178,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    
     width: 100%;
 }
 

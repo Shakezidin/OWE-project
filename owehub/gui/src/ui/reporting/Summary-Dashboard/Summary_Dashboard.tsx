@@ -11,6 +11,9 @@ import EditModal from './components/EditModal';
 import { ICONS } from '../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { fetchSummaryData } from '../../../redux/apiActions/reportingAction/reportingAction';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
+import { Tooltip } from 'react-tooltip';
 interface Option {
     value: string;
     label: string;
@@ -136,7 +139,7 @@ const Summary_Dashboard = () => {
         setLine(!line);
     }
 
-    const [activePerc, setActivePerc] = useState('100');
+    const [activePerc, setActivePerc] = useState('100%');
     const handlePercButtonClick = (buttonName: any) => {
         setActivePerc(buttonName);
     };
@@ -152,33 +155,32 @@ const Summary_Dashboard = () => {
     //Api Integration
     const dispatch = useAppDispatch();
 
+    const [refre, setRefre] = useState(0);
+
     useEffect(() => {
         dispatch(fetchSummaryData({
-            "target_type": "75%",
-            "month": "January",
-            "year": "2024"
+            "target_type": activePerc,
+            "month": reportType.value,
+            "year": year.value
         }));
-    }, []);
+    }, [reportType, year, activePerc, refre]);
 
-    const { summaryData } = useAppSelector(
+    const { summaryData, loading } = useAppSelector(
         (state) => state.reportingSlice
     );
     const [summaryDataState, setSummaryDataState] = useState<DynamicSummaryData>({});
     const [progressData, setProgressData] = useState<ProgressData>({});
 
-   
+
     useEffect(() => {
         setSummaryDataState(summaryData?.data?.data?.summary)
         setProgressData(summaryData?.data?.data?.progress)
     }, [summaryData])
 
-   
-
-
 
     return (
         <>
-            <EditModal open={open} handleClose={handleClose} />
+            <EditModal refre={refre} setRefre={setRefre} year={parseInt(year.value)} open={open} handleClose={handleClose} />
             <div className={classes.top_dashboard}>
                 <div className={classes.top_box}>
                     <div className={classes.top_box_heading}>
@@ -186,16 +188,16 @@ const Summary_Dashboard = () => {
                         <div className={classes.top_box_drop}>
                             <div className={classes.bottom_box_chart2_head_buttons_sec}>
                                 <div
-                                    className={`${classes.bottom_box_button_sec} ${activePerc === '100' ? classes.active : ''}`}
+                                    className={`${classes.bottom_box_button_sec} ${activePerc === '100%' ? classes.active : ''}`}
                                     // style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
-                                    onClick={() => handlePercButtonClick('100')}
+                                    onClick={() => handlePercButtonClick('100%')}
                                 >
                                     100%
                                 </div>
                                 <div
-                                    className={`${classes.bottom_box_button_sec} ${activePerc === '75' ? classes.active : ''}`}
+                                    className={`${classes.bottom_box_button_sec} ${activePerc === '75%' ? classes.active : ''}`}
                                     // style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
-                                    onClick={() => handlePercButtonClick('75')}
+                                    onClick={() => handlePercButtonClick('75%')}
                                 >
                                     75%
                                 </div>
@@ -220,67 +222,108 @@ const Summary_Dashboard = () => {
                         </div>
                     </div>
                     <div className={classes.top_box_boxes}>
-                        <div className={classes.top_box_boxes}>
-                        
-                            {summaryDataState && Object.entries(summaryDataState).map(([key, data]) => (
-                                <div className={classes.top_box_box} key={key}>
-                                    <div className={classes.top_box_top}>
-                                        <div className={classes.top_box_head}>
-                                            <p>{key}</p>
-                                        </div>
-                                        {data && (
-                                            <>
-                                                <div className={classes.top_box_divs}>
-                                                    <div className={classes.top_box_head_left}>
-                                                        <h1>
-                                                            {Number.isInteger(data.achieved)
-                                                                ? data.achieved
-                                                                : data.achieved.toFixed(2)}
-                                                        </h1>
-                                                        <p>Achieved</p>
-                                                    </div>
-                                                    <div className={classes.top_box_head_right}>
-                                                        <h1>
-                                                            {Number.isInteger(data.target)
-                                                                ? data.target
-                                                                : data.target.toFixed(2)}
-                                                        </h1>
-                                                        <p>Target</p>
-                                                    </div>
+
+                        {(summaryData.loading) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                                <MicroLoader />
+                            </div>
+                        ) : progressData ? (
+                            <>
+                                <div className={classes.top_box_boxes}>
+
+                                    {summaryDataState && Object.entries(summaryDataState).map(([key, data]) => (
+                                        <div className={classes.top_box_box} key={key}>
+                                            <div className={classes.top_box_top}>
+                                                <div className={classes.top_box_head}>
+                                                    <p>{key}</p>
                                                 </div>
-                                            </>
-                                        )}
-                                    </div>
-                                    {data && (
-                                        <div className={classes.top_box_bottom}>
-                                            <p>Last Month Achieved</p>
-                                            <h3 style={{ color: "#ABDB42" }}>
-                                                {Number.isInteger(data.last_month_acheived)
-                                                    ? data.last_month_acheived
-                                                    : data.last_month_acheived.toFixed(2)}%
-                                            </h3>
+                                                {data && (
+                                                    <>
+                                                        <div className={classes.top_box_divs}>
+                                                            <div className={classes.top_box_head_left}>
+                                                                <h1>
+                                                                    {Number.isInteger(data.achieved)
+                                                                        ? data.achieved
+                                                                        : data.achieved.toFixed(2)}
+                                                                </h1>
+                                                                <p>Achieved</p>
+                                                            </div>
+                                                            <div className={classes.top_box_head_right}>
+                                                                <h1>
+                                                                    {Number.isInteger(data.target)
+                                                                        ? data.target
+                                                                        : data.target.toFixed(2)}
+                                                                </h1>
+                                                                <p>Target</p>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                            {data && (
+                                                <div className={classes.top_box_bottom}>
+                                                    <p>Last Month Achieved</p>
+                                                    <h3 style={{ color: "#ABDB42" }}>
+                                                        {Number.isInteger(data.last_month_acheived)
+                                                            ? data.last_month_acheived
+                                                            : data.last_month_acheived.toFixed(2)}%
+                                                    </h3>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <DataNotFound />
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className={classes.bottom_box}>
                     <div className={classes.bottom_box_chart1} >
                         <p>Monthly Progress</p>
-                        <div className={classes.bottom_box_chart1_sec} style={stylesGraph}>
-                            <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart radData={progressData}/></div>
-                            <RadarChartComponenet radData={progressData}/>
-                        </div>
+                        {(summaryData.loading) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                                <MicroLoader />
+                            </div>
+                        ) : progressData ? (
+                            <>
+                                <div className={classes.bottom_box_chart1_sec} style={stylesGraph}>
+                                    <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart year={year} radData={progressData} /></div>
+                                    <RadarChartComponenet radData={progressData} />
+                                </div>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <DataNotFound />
+                            </div>
+                        )}
 
                     </div>
                     <div className={classes.bottom_box_chart2} style={stylesGraph2}>
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
                             <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center", alignItems: "center" }}>
-                                <div className={classes.editModal} onClick={handleOpen}>
+                                <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
                                     <img src={ICONS.ReportEdit} alt="Edit" />
+                                    <Tooltip
+                                        style={{
+                                            zIndex: 20,
+                                            background: '#f7f7f7',
+                                            color: '#000',
+                                            fontSize: 12,
+                                            paddingBlock: 4,
+                                            fontWeight: "400"
+                                        }}
+                                        offset={8}
+                                        delayShow={800}
+                                        id="downip"
+                                        place="bottom"
+                                        content={"Edit Target"}
+
+                                    />
                                 </div>
                                 <div className={classes.bottom_box_chart2_head_buttons}>
                                     <div
@@ -319,16 +362,28 @@ const Summary_Dashboard = () => {
                             </div>
                         </div>
 
-
-                        {line ? <LineChartComp /> : <BarChartComp />}
-
-
-
-                        <div className={classes.bottom_graphchange_div}>
-                            <div className={classes.bottom_graphchange} onClick={handleChartClick}>
-                                {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                        {(summaryData.loading) ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: "38px" }}>
+                                <MicroLoader />
                             </div>
-                        </div>
+                        ) : progressData ? (
+                            <>
+                                {line ? <LineChartComp /> : <BarChartComp />}
+
+
+
+
+                                <div className={classes.bottom_graphchange_div}>
+                                    <div className={classes.bottom_graphchange} onClick={handleChartClick}>
+                                        {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <DataNotFound />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
