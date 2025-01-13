@@ -65,9 +65,9 @@ export const postCaller = async (
       if (error.response) return error.response.data;
 
       // handle network error
-      if (error.message)
-        return new Error(JSON.stringify(error.message));
-      console.log(error)
+      if (error.message === 'Network Error')
+        return new Error('No internet connection');
+      
     }
 
     throw new Error('Failed to fetch data');
@@ -101,9 +101,9 @@ export const configPostCaller = async (
 
       console.log(JSON.stringify(error))
       // handle network error
-      if (error.message === 'Network Error')
-        return new Error(error.message);
-    }
+      if (error.message === 'Network Error'){
+        return new Error('No internet connection');
+      }
 
     throw new Error('Failed to fetch data');
   }
