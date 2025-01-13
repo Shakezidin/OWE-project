@@ -67,7 +67,7 @@ export const postCaller = async (
       // handle network error
       if (error.message)
         return new Error(JSON.stringify(error.message));
-        console.log(error)
+      console.log(error)
     }
 
     throw new Error('Failed to fetch data');
@@ -99,9 +99,10 @@ export const configPostCaller = async (
     if (isAxiosError(error)) {
       if (error.response) return error.response.data;
 
+      console.log(JSON.stringify(error))
       // handle network error
       if (error.message === 'Network Error')
-        return new Error('No internet connection');
+        return new Error(error.message);
     }
 
     throw new Error('Failed to fetch data');
