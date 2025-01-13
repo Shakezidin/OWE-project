@@ -516,6 +516,15 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+
+	/****************************************/
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/bulk_import_users_csv",
+		apiHandler.HandleBulkImportUsersCsvRequest,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************
