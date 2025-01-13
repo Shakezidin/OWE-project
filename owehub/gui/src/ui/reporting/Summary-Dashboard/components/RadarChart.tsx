@@ -2,34 +2,15 @@ import React from 'react'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarAngleAxisProps, ResponsiveContainer, Legend } from 'recharts';
 
 
-const RadarChartComponenet = () => {
-  const data = [
-    {
-      subject: 'Project Sold',
-      Target: 150,
-      Achieve: 120,
-    },
-    {
-      subject: 'Batteries CT',
-      Target: 150,
-      Achieve: 98,
-    },
-    {
-      subject: 'mw Install',
-      Target: 150,
-      Achieve: 86,
-    },
-    {
-      subject: 'Install CT',
-      Target: 150,
-      Achieve: 99,
-    },
-    {
-      subject: 'mv Sold',
-      Target: 150,
-      Achieve: 85,
-    },
-  ];
+const RadarChartComponenet = ({radData}:any) => {
+ 
+  const data = radData
+  ? Object.entries(radData).map(([key, value]) => ({
+      subject: key,
+      Target: (value as { target: number }).target,
+      Achieve: (value as { achieved: number }).achieved,
+    }))
+  : [];
 
   const CustomTick = ({ payload, x, y, textAnchor }: any) => {
     const entry = data.find((item) => item.subject === payload.value);

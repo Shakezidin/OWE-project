@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classes from './summary.module.css'
 import SelectOption from '../../components/selectOption/SelectOption'
 import RadialChart from './components/RadialChart';
@@ -9,9 +9,26 @@ import { MdBarChart } from 'react-icons/md';
 import { FaChartLine } from 'react-icons/fa';
 import EditModal from './components/EditModal';
 import { ICONS } from '../../../resources/icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { fetchSummaryData } from '../../../redux/apiActions/reportingAction/reportingAction';
 interface Option {
     value: string;
     label: string;
+}
+interface DynamicSummaryData {
+    [key: string]: {
+        target: number;
+        achieved: number;
+        last_month_acheived: number;
+    };
+}
+
+interface ProgressData {
+    [key: string]: {
+        target: number;
+        achieved: number;
+        percentage_achieved: number;
+    };
 }
 
 const Summary_Dashboard = () => {
@@ -132,6 +149,33 @@ const Summary_Dashboard = () => {
         setOpen(false)
     }
 
+    //Api Integration
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(fetchSummaryData({
+            "target_type": "75%",
+            "month": "January",
+            "year": "2024"
+        }));
+    }, []);
+
+    const { summaryData } = useAppSelector(
+        (state) => state.reportingSlice
+    );
+    const [summaryDataState, setSummaryDataState] = useState<DynamicSummaryData>({});
+    const [progressData, setProgressData] = useState<ProgressData>({});
+
+   
+    useEffect(() => {
+        setSummaryDataState(summaryData?.data?.data?.summary)
+        setProgressData(summaryData?.data?.data?.progress)
+    }, [summaryData])
+
+   
+
+
+
     return (
         <>
             <EditModal open={open} handleClose={handleClose} />
@@ -176,110 +220,49 @@ const Summary_Dashboard = () => {
                         </div>
                     </div>
                     <div className={classes.top_box_boxes}>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>Project Sold</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
+                        <div className={classes.top_box_boxes}>
+                        
+                            {summaryDataState && Object.entries(summaryDataState).map(([key, data]) => (
+                                <div className={classes.top_box_box} key={key}>
+                                    <div className={classes.top_box_top}>
+                                        <div className={classes.top_box_head}>
+                                            <p>{key}</p>
+                                        </div>
+                                        {data && (
+                                            <>
+                                                <div className={classes.top_box_divs}>
+                                                    <div className={classes.top_box_head_left}>
+                                                        <h1>
+                                                            {Number.isInteger(data.achieved)
+                                                                ? data.achieved
+                                                                : data.achieved.toFixed(2)}
+                                                        </h1>
+                                                        <p>Achieved</p>
+                                                    </div>
+                                                    <div className={classes.top_box_head_right}>
+                                                        <h1>
+                                                            {Number.isInteger(data.target)
+                                                                ? data.target
+                                                                : data.target.toFixed(2)}
+                                                        </h1>
+                                                        <p>Target</p>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
+                                    {data && (
+                                        <div className={classes.top_box_bottom}>
+                                            <p>Last Month Achieved</p>
+                                            <h3 style={{ color: "#ABDB42" }}>
+                                                {Number.isInteger(data.last_month_acheived)
+                                                    ? data.last_month_acheived
+                                                    : data.last_month_acheived.toFixed(2)}%
+                                            </h3>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#ABDB42" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>mw Sold</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#ABDB42" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>Install CT</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#EE4A3F" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>mw Installed</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#ABDB42" }}>100%</h3>
-                            </div>
-                        </div>
-                        <div className={classes.top_box_box}>
-                            <div className={classes.top_box_top}>
-                                <div className={classes.top_box_head}>
-                                    <p>Batteries Ct</p>
-                                </div>
-                                <div className={classes.top_box_divs}>
-                                    <div className={classes.top_box_head_left}>
-                                        <h1>18,250</h1>
-                                        <p>Archives</p>
-                                    </div>
-                                    <div className={classes.top_box_head_right}>
-                                        <h1>20,250</h1>
-                                        <p>Target</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.top_box_bottom}>
-                                <p>last month target</p>
-                                <h3 style={{ color: "#EE4A3F" }}>100%</h3>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -287,8 +270,8 @@ const Summary_Dashboard = () => {
                     <div className={classes.bottom_box_chart1} >
                         <p>Monthly Progress</p>
                         <div className={classes.bottom_box_chart1_sec} style={stylesGraph}>
-                            <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart /></div>
-                            <RadarChartComponenet />
+                            <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart radData={progressData}/></div>
+                            <RadarChartComponenet radData={progressData}/>
                         </div>
 
                     </div>
