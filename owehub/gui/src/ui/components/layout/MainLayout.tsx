@@ -68,7 +68,7 @@ const MainLayout = () => {
   };
 
   /** check idle time  */
-  useIdleTimer({ onIdle: logoutUser, timeout: 60000 });
+  useIdleTimer({ onIdle: logoutUser, timeout: 30 * 60000 });
 
   /** reset paswword */
   useEffect(() => {
