@@ -206,8 +206,7 @@ const UserTable: React.FC<UserTableProps> = ({
                           ? `${el.dealer.slice(0, 15)}...`
                           : el.dealer
                         : 'NA'}
-                    </td>
-                    <Tooltip
+                        <Tooltip
                       style={{
                         zIndex: 103,
                         background: '#000',
@@ -222,6 +221,8 @@ const UserTable: React.FC<UserTableProps> = ({
                       content={el.dealer}
                       delayShow={200}
                     />
+                    </td>
+                    
                   </>
                 )}
 
