@@ -135,7 +135,7 @@ export const reportingCaller = async (
       if (error.response) return error.response.data;
 
       // handle network error
-      if (error.message === 'Network Error')
+      if (error.message === 'Network Error'){
         return new Error('No internet connection');
     }
 
