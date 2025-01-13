@@ -67,7 +67,7 @@ export const postCaller = async (
       // handle network error
       if (error.message)
         return new Error(JSON.stringify(error.message));
-        console.log(error.message);
+        console.log(error)
     }
 
     throw new Error('Failed to fetch data');
