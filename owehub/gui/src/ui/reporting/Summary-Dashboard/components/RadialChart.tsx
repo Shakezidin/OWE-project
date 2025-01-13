@@ -14,11 +14,11 @@ const RadialChart = ({ year, radData }: any) => {
 
     const getColorByKey = (key: any) => {
         switch (key) {
-            case 'Batteries Ct':
+            case 'Batteries':
                 return '#F9CA3E';
-            case 'mW Installed':
+            case 'Installs':
                 return '#4ECF54';
-            case 'Install Ct':
+            case 'mW Installed':
                 return '#64B5F6';
             case 'mW Sold':
                 return '#ABDB42';
@@ -67,7 +67,7 @@ const RadialChart = ({ year, radData }: any) => {
                                 fill="white"
                             />
                         </svg>
-                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>Target: {data.Target}</span>
+                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>{data.Target}-Target</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* Filled Circle for Achieved */}
@@ -79,7 +79,7 @@ const RadialChart = ({ year, radData }: any) => {
                                 fill={data.fill}
                             />
                         </svg>
-                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>Achieved: {data.Achieved}</span>
+                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>{data.Achieved}-Achieved</span>
                     </div>
                 </div>
             );

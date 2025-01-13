@@ -178,7 +178,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    
+
     width: 100%;
 }
 
@@ -244,7 +244,8 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
-.bottom_graphchange:hover{
+
+.bottom_graphchange:hover {
     transform: scale(1.08);
 }
 
@@ -312,4 +313,37 @@
 
 .editModal img:hover {
     transform: scale(1.06);
+}
+
+.bottom_box_chart1_sec {
+    width: 100%;
+    height: 463px;
+    padding: 1rem;
+    border-right: 1px dotted #D7D9DC
+}
+.bottom_box_chart_rad{
+    width: 100%;
+    height: 463px;
+    padding: 1rem;
+    border-right: 1px dotted #D7D9DC
+}
+
+@media screen and (max-width: 767px) {
+    .top_box_heading {
+        display: none;
+    }
+
+    .top_box_boxes {
+        flex-direction: column;
+    }
+
+    .top_box_box {
+        width: 100%;
+    }
+    .bottom_box_chart1_sec{
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        border-right: none;
+    }
 }

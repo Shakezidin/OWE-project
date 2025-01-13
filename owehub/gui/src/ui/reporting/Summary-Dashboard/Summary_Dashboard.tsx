@@ -14,6 +14,7 @@ import { fetchSummaryData } from '../../../redux/apiActions/reportingAction/repo
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Tooltip } from 'react-tooltip';
+import useWindowWidth from '../../../hooks/useWindowWidth';
 interface Option {
     value: string;
     label: string;
@@ -32,6 +33,17 @@ interface ProgressData {
         achieved: number;
         percentage_achieved: number;
     };
+}
+
+interface MonthlyOverviewItem {
+    month: string;
+    target: number;
+    achieved: number;
+}
+interface MonthlyStatsItem {
+    month: string;
+    target: number;
+    [key: string]: number | string;
 }
 
 const Summary_Dashboard = () => {
@@ -119,17 +131,23 @@ const Summary_Dashboard = () => {
         width: '100%',
         height: '463px',
         padding: "1rem",
-        borderRight: "1px dotted #D7D9DC"
+        borderRight: "1px dotted #D7D9DC",
 
     };
     const stylesGraph2 = {
         width: '100%',
         height: '500px',
         padding: "1rem",
-
+        "@media screen and (max-width: 767px)": {
+            height: 'auto',
+            borderRight: 'none',
+            borderBottom: "1px dotted #D7D9DC",
+            paddingBottom: "2rem",
+            marginBottom: "2rem"
+        }
     };
 
-    const [activeButton, setActiveButton] = useState('Project Sold');
+    const [activeButton, setActiveButton] = useState('projects_sold');
 
     const handleButtonClick = (buttonName: any) => {
         setActiveButton(buttonName);
@@ -139,7 +157,7 @@ const Summary_Dashboard = () => {
         setLine(!line);
     }
 
-    const [activePerc, setActivePerc] = useState('100%');
+    const [activePerc, setActivePerc] = useState('100');
     const handlePercButtonClick = (buttonName: any) => {
         setActivePerc(buttonName);
     };
@@ -159,23 +177,30 @@ const Summary_Dashboard = () => {
 
     useEffect(() => {
         dispatch(fetchSummaryData({
-            "target_type": activePerc,
+            "target_percentage": parseInt(activePerc),
+            "target_type": activeButton,
             "month": reportType.value,
             "year": year.value
         }));
-    }, [reportType, year, activePerc, refre]);
+    }, [reportType, year, activePerc, refre, activeButton]);
 
     const { summaryData, loading } = useAppSelector(
         (state) => state.reportingSlice
     );
     const [summaryDataState, setSummaryDataState] = useState<DynamicSummaryData>({});
     const [progressData, setProgressData] = useState<ProgressData>({});
-
-
+    const [monthlyOverviewData, setMonthlyOverviewData] = useState<MonthlyOverviewItem[]>([]);
+    const [monthlyStatsData, setMonthlyStatsData] = useState<MonthlyStatsItem[]>([]);
+   
     useEffect(() => {
         setSummaryDataState(summaryData?.data?.data?.summary)
         setProgressData(summaryData?.data?.data?.progress)
+        setMonthlyOverviewData(summaryData?.data?.data?.monthly_overview)
+        setMonthlyStatsData(summaryData?.data?.data?.monthly_stats)
     }, [summaryData])
+
+    const width = useWindowWidth();
+    const isMobile = width <= 767;
 
 
     return (
@@ -188,16 +213,16 @@ const Summary_Dashboard = () => {
                         <div className={classes.top_box_drop}>
                             <div className={classes.bottom_box_chart2_head_buttons_sec}>
                                 <div
-                                    className={`${classes.bottom_box_button_sec} ${activePerc === '100%' ? classes.active : ''}`}
+                                    className={`${classes.bottom_box_button_sec} ${activePerc === '100' ? classes.active : ''}`}
                                     // style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
-                                    onClick={() => handlePercButtonClick('100%')}
+                                    onClick={() => handlePercButtonClick('100')}
                                 >
                                     100%
                                 </div>
                                 <div
-                                    className={`${classes.bottom_box_button_sec} ${activePerc === '75%' ? classes.active : ''}`}
+                                    className={`${classes.bottom_box_button_sec} ${activePerc === '75' ? classes.active : ''}`}
                                     // style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
-                                    onClick={() => handlePercButtonClick('75%')}
+                                    onClick={() => handlePercButtonClick('75')}
                                 >
                                     75%
                                 </div>
@@ -290,8 +315,8 @@ const Summary_Dashboard = () => {
                             </div>
                         ) : progressData ? (
                             <>
-                                <div className={classes.bottom_box_chart1_sec} style={stylesGraph}>
-                                    <div className={classes.bottom_box_chart_rad} style={stylesGraph}><RadialChart year={year} radData={progressData} /></div>
+                                <div className={classes.bottom_box_chart1_sec}>
+                                    <div className={classes.bottom_box_chart_rad}><RadialChart year={year} radData={progressData} /></div>
                                     <RadarChartComponenet radData={progressData} />
                                 </div>
                             </>
@@ -325,40 +350,43 @@ const Summary_Dashboard = () => {
 
                                     />
                                 </div>
-                                <div className={classes.bottom_box_chart2_head_buttons}>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'Project Sold' ? classes.active : ''}`}
-                                        style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
-                                        onClick={() => handleButtonClick('Project Sold')}
-                                    >
-                                        Project Sold
+                                {!isMobile ?
+                                    <div className={classes.bottom_box_chart2_head_buttons}>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'projects_sold' ? classes.active : ''}`}
+                                            style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
+                                            onClick={() => handleButtonClick('projects_sold')}
+                                        >
+                                            Project Sold
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'mw_sold' ? classes.active : ''}`}
+                                            onClick={() => handleButtonClick('mw_sold')}
+                                        >
+                                            mW Sold
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'install_ct' ? classes.active : ''}`}
+                                            onClick={() => handleButtonClick('install_ct')}
+                                        >
+                                            Install Ct
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'mw_installed' ? classes.active : ''}`}
+                                            onClick={() => handleButtonClick('mw_installed')}
+                                        >
+                                            mW Installed
+                                        </div>
+                                        <div
+                                            className={`${classes.bottom_box_button} ${activeButton === 'batteries_ct' ? classes.active : ''}`}
+                                            style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
+                                            onClick={() => handleButtonClick('batteries_ct')}
+                                        >
+                                            Batteries CT
+                                        </div>
                                     </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'mW Sold' ? classes.active : ''}`}
-                                        onClick={() => handleButtonClick('mW Sold')}
-                                    >
-                                        mW Sold
-                                    </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'Install Ct' ? classes.active : ''}`}
-                                        onClick={() => handleButtonClick('Install Ct')}
-                                    >
-                                        Install Ct
-                                    </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'mW Installed' ? classes.active : ''}`}
-                                        onClick={() => handleButtonClick('mW Installed')}
-                                    >
-                                        mW Installed
-                                    </div>
-                                    <div
-                                        className={`${classes.bottom_box_button} ${activeButton === 'Batteries CT' ? classes.active : ''}`}
-                                        style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
-                                        onClick={() => handleButtonClick('Batteries CT')}
-                                    >
-                                        Batteries CT
-                                    </div>
-                                </div>
+                                    : ""
+                                }
                             </div>
                         </div>
 
@@ -368,7 +396,7 @@ const Summary_Dashboard = () => {
                             </div>
                         ) : progressData ? (
                             <>
-                                {line ? <LineChartComp /> : <BarChartComp />}
+                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyStatsData}/>}
 
 
 

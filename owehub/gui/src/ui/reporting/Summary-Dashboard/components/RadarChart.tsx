@@ -9,6 +9,7 @@ const RadarChartComponenet = ({radData}:any) => {
       subject: key,
       Target: (value as { target: number }).target,
       Achieve: (value as { achieved: number }).achieved,
+      Percent_Achieve: (value as { percentage_achieved: number }).percentage_achieved,
     }))
   : [];
 
@@ -24,7 +25,7 @@ const RadarChartComponenet = ({radData}:any) => {
           {/* Subject */}
           <tspan fill="#767676" fontWeight="400" fontSize="12px">{payload.value}</tspan>
           {/* Percentage */}
-          <tspan fill="#000000" fontWeight="500" fontSize="12px"> ({percentage}%)</tspan>
+          <tspan fill="#000000" fontWeight="500" fontSize="12px"> ({(entry.Percent_Achieve).toFixed(1)}%)</tspan>
         </text>
       );
     }
