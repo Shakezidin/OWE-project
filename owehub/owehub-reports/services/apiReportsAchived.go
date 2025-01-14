@@ -190,8 +190,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		totalAchieved.MwSold += acheived.MwSold
 
 		// get stats and overview data
-
-		statsItem, overviewItem := getMonthlyStatsAndOverview(acheivedData[i][dataReq.TargetType], targetData[i][dataReq.TargetType], targetMonth == dataReq.Month)
+		statsItem, overviewItem := getMonthlyStatsAndOverview(
+			targetData[i][dataReq.TargetType], acheivedData[i][dataReq.TargetType], targetMonth == dataReq.Month)
 		if overviewItem == nil || statsItem == nil {
 			continue
 		}
