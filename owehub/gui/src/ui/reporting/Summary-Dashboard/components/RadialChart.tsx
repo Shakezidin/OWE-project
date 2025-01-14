@@ -1,6 +1,7 @@
 import React from 'react'
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 interface ProgressData {
     [key: string]: {
@@ -79,7 +80,7 @@ const RadialChart = ({ year, radData }: any) => {
                                 fill={data.fill}
                             />
                         </svg>
-                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>{data.Achieved}-Achieved</span>
+                        <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>{(data.Achieved).toFixed(2)}-Achieved</span>
                     </div>
                 </div>
             );
@@ -88,19 +89,17 @@ const RadialChart = ({ year, radData }: any) => {
         return null;
     };
 
-
-
-
-
+    const width = useWindowWidth();
+    const isMobile = width <= 767;
 
 
     return (
         <ResponsiveContainer width="100%">
             <RadialBarChart
                 cx="50%"
-                cy="70%"
-                innerRadius="30%"
-                outerRadius="120%"
+                cy={isMobile ? "48%" : "70%"}
+                innerRadius={isMobile ? "26%" : "30%"}
+                outerRadius={isMobile ? "130%" : "140%"}
                 barSize={15}
                 data={data}
                 startAngle={180}
@@ -117,45 +116,64 @@ const RadialChart = ({ year, radData }: any) => {
                     }))}
                 />
 
-
-                {/* <Tooltip
-                    contentStyle={tooltipStyle}
-                    wrapperStyle={{
-                        outline: 'none',
-                        borderRadius: 0,
-                        padding: 0,
-                        boxShadow: 'none',
-                    }}
-                    formatter={(value, name) => [`${value}%`, `${name}`]}
-                /> */}
-
                 <Tooltip content={<CustomTooltip />} />
-
 
                 <Legend
                     iconSize={10}
                     layout="horizontal"
                     verticalAlign="bottom"
-                    wrapperStyle={{ bottom: "78px" }}
-                    formatter={(value) => (
-                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
-                            {value}
-                        </span>
+                    wrapperStyle={{ marginTop: '-10px', top: isMobile ? "196px" : "350px" }}
+                    content={() => (
+                        <div style={{ textAlign: 'center', marginTop: '-3px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '19px', marginBottom: '20px' }}>
+                                {data.slice(0, 3).map((item) => (
+                                    <div key={item.name} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <span
+                                            style={{
+                                                display: 'inline-block',
+                                                width: 10,
+                                                height: 10,
+                                                borderRadius: '50%',
+                                                backgroundColor: item.fill,
+                                                marginRight: 5,
+                                            }}
+                                        />
+                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                                            {item.name}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '-8px' }}>
+                                {data.slice(3).map((item) => (
+                                    <div key={item.name} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <span
+                                            style={{
+                                                display: 'inline-block',
+                                                width: 10,
+                                                height: 10,
+                                                borderRadius: '50%',
+                                                backgroundColor: item.fill,
+                                                marginRight: 5,
+                                            }}
+                                        />
+                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                                            {item.name}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     )}
-                    payload={data.map((item) => ({
-                        id: item.name,
-                        type: "circle",
-                        value: `${item.name}`,
-                        color: item.fill,
-                    }))}
                 />
+
 
                 <text
                     x="50%"
-                    y="67%"
+                    y={isMobile ? "47%" : "67%"}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    style={{ fontSize: '16px', fontWeight: 'bold' }}
+                    style={{ fontSize: isMobile ? '12px ':'16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
                 >
                     {year.label}
                 </text>

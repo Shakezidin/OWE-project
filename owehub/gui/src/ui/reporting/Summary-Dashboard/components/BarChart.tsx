@@ -2,80 +2,11 @@ import React from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import styles from './style.module.css';
 
-const BarChartComp = ({monthlyStatsData}:any) => {
-  console.log(monthlyStatsData,"gh")
-  // const data = [
-  //   {
-  //     name: "Jan",
-  //     Target: 100,
-  //     Completed: 105,
-  //     "More than Target": 5,
-  //   },
-  //   {
-  //     name: "Feb",
-  //     Target: 120,
-  //     Completed: 100,
-  //   },
-  //   {
-  //     name: "Mar",
-  //     Target: 140,
-  //     Inprogress: 3,
-  //   },
-  //   {
-  //     name: "Apr",
-  //     Target: 160,
-  //     Incomplete: 8,
-  //   },
-  //   {
-  //     name: "May",
-  //     Target: 180,
-  //     Completed: 170,
-  //   },
-  //   {
-  //     name: "Jun",
-  //     Target: 200,
-  //     Completed: 190,
-  //   },
-  //   {
-  //     name: "Jul",
-  //     Target: 220,
-  //     Inprogress: 3,
-  //   },
-  //   {
-  //     name: "Aug",
-  //     Target: 240,
-  //     Completed: 230,
+const BarChartComp = ({ monthlyStatsData }: any) => {
+  console.log(monthlyStatsData, "gh")
 
-  //   },
-  //   {
-  //     name: "Sep",
-  //     Target: 260,
-  //     Completed: 250,
-
-  //   },
-  //   {
-  //     name: "Oct",
-  //     Target: 280,
-  //     Completed: 270,
-
-  //   },
-  //   {
-  //     name: "Nov",
-  //     Target: 300,
-  //     Completed: 290,
-
-  //   },
-  //   {
-  //     name: "Dec",
-  //     Target: 320,
-  //     Completed: 322,
-  //     "More than Target": 2,
-  //   },
-  // ];
-
-
-  const data = monthlyStatsData.map((item:any) => ({
-    name: item.month,
+  const data = monthlyStatsData.map((item: any) => ({
+    name: item.month.slice(0, 3),
     Target: item.target,
     ...(item.completed && { Completed: item.completed }),
     ...(item.incomplete && { Incomplete: item.incomplete }),
@@ -93,7 +24,7 @@ const BarChartComp = ({monthlyStatsData}:any) => {
         className={styles.barChart}
         margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
         stackOffset="sign"
-      
+
       >
         <CartesianGrid
           vertical={false}
