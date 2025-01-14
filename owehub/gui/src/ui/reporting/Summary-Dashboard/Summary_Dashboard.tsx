@@ -361,7 +361,7 @@ const Summary_Dashboard = () => {
                     <div className={classes.bottom_box_chart2} style={stylesGraph2}>
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
-                            <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center", alignItems: "center" }}>
+                            <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "center", alignItems: "center" }}>
                                 <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
                                     <img src={ICONS.ReportEdit} alt="Edit" />
                                     <Tooltip
