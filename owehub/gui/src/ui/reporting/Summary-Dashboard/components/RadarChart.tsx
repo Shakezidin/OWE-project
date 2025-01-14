@@ -37,11 +37,11 @@ const RadarChartComponenet = ({ radData }: any) => {
 
   const width = useWindowWidth();
   const isMobile = width <= 767;
-
+  const isTablet = width <= 1024;
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "65%" : "80%"} data={data}>
+      <RadarChart cx="50%" cy="50%" outerRadius={(isTablet || isMobile) ? "65%" : "80%"} data={data}>
         <PolarGrid />
         <PolarAngleAxis
           dataKey="subject"
