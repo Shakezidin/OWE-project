@@ -327,10 +327,26 @@
     padding: 1rem;
     border-right: 1px dotted #D7D9DC
 }
+.bottom_box_chart_rad1{
+    width: 100%;
+    height: 463px;
+    padding: 1rem;
+}
 
 @media screen and (max-width: 767px) {
+    .bottom_box_chart_rad{
+        width: 100%;
+        height: 330px;
+        padding: 1rem;
+        border-right: 1px dotted #D7D9DC
+    }
+    .bottom_box_chart_rad1{
+        width: 100%;
+        height: 330px;
+        padding: 1rem;
+    }
     .top_box_heading {
-        display: none;
+        /* display: none; */
     }
 
     .top_box_boxes {
@@ -346,4 +362,11 @@
         height: auto;
         border-right: none;
     }
+
+    .bottom_box_button_sec {
+       
+        padding: 3px 7px 3px 7px;
+       
+    }
+   
 }

@@ -232,7 +232,7 @@ const Summary_Dashboard = () => {
                                 options={options}
                                 onChange={(value: any) => setReportType(value)}
                                 value={reportType}
-                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150, maxWidth:isMobile ? 67 : "" }}
                                 menuListStyles={{ fontWeight: 400 }}
                                 singleValueStyles={{ fontWeight: 400 }}
                             />
@@ -240,7 +240,7 @@ const Summary_Dashboard = () => {
                                 options={years}
                                 onChange={(value: any) => setYear(value)}
                                 value={year}
-                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150, maxWidth:isMobile ? 67 : ""  }}
                                 menuListStyles={{ fontWeight: 400 }}
                                 singleValueStyles={{ fontWeight: 400 }}
                             />
@@ -310,14 +310,14 @@ const Summary_Dashboard = () => {
                     <div className={classes.bottom_box_chart1} >
                         <p>Monthly Progress</p>
                         {(summaryData.loading) ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                            <div style={{ display: 'flex', justifyContent: 'center',marginTop:"60px", paddingTop: "18px" }}>
                                 <MicroLoader />
                             </div>
                         ) : progressData ? (
                             <>
                                 <div className={classes.bottom_box_chart1_sec}>
                                     <div className={classes.bottom_box_chart_rad}><RadialChart year={year} radData={progressData} /></div>
-                                    <RadarChartComponenet radData={progressData} />
+                                    <div className={classes.bottom_box_chart_rad1}><RadarChartComponenet radData={progressData} /></div>
                                 </div>
                             </>
                         ) : (
