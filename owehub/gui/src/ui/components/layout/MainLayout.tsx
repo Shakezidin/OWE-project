@@ -68,7 +68,8 @@ const MainLayout = () => {
   };
 
   /** check idle time  */
-  useIdleTimer({ onIdle: logoutUser, timeout: 600000 });
+  useIdleTimer({ onIdle: logoutUser, timeout: 30 * 60000 });
+
   /** reset paswword */
   useEffect(() => {
     const isPasswordChangeRequired =
@@ -77,7 +78,7 @@ const MainLayout = () => {
     setIsOpenChangePassword(isPasswordChangeRequired === 'true');
   }, [authData]);
 
- 
+
   /** check whether user exist or not */
   useEffect(() => {
     const email = authData?.email;

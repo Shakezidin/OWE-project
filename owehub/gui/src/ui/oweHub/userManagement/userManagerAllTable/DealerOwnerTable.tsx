@@ -137,7 +137,8 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                   <td>{el.name}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
-                  <td>{el.dealer}</td>
+                  <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
+                  <td>{el.dealer ? el.dealer : 'NA'}</td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >

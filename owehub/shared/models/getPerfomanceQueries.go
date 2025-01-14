@@ -467,7 +467,7 @@ func CsvDownloadRetrieveQueryFunc() string {
         cs.phone_number,cs.address,cs.state,
         scs.contracted_system_size_parent, 
         cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
-        ps.pto_granted as pto_date, ss.cancelled_date, cs.primary_sales_rep, 
+        ps.pto_granted as pto_date, cs.cancel_date, cs.primary_sales_rep, 
         cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 

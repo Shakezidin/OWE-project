@@ -17,22 +17,13 @@ import {
 import styles from './style.module.css';
 
 
-const LineChartComp = () => {
-    const lineChartData = [
-        { week: "Jan", "Progress": 10, "Target": 5 },
-        { week: "Feb", "Progress": 20, "Target": 15 },
-        { week: "Mar", "Progress": 8, "Target": 25 },
-        { week: "Apr", "Progress": 60, "Target": 15 },
-        { week: "May", "Progress": 50, "Target": 55 },
-        { week: "Jun", "Progress": 60, "Target": 65 },
-        { week: "Jul", "Progress": 70, "Target": 75 },
-        { week: "Aug", "Progress": 80, "Target": 85 },
-        { week: "Sep", "Progress": 90, "Target": 92 },
-        { week: "Oct", "Progress": 95, "Target": 97 },
-        { week: "Nov", "Progress": 98, "Target": 99 },
-        { week: "Dec", "Progress": 40, "Target": 60 },
-    ];
-
+const LineChartComp = ({monthData}:any) => {
+    
+    const lineChartData = monthData?.map((item: any) => ({
+        week: (item.month).slice(0, 3),
+        Progress: item.achieved,
+        Target: item.target,
+      }));
 
     const tooltipStyle = {
         fontSize: '10px',
@@ -86,7 +77,7 @@ const LineChartComp = () => {
                     dataKey="Progress"
                     stroke="#9DD428"
                     strokeWidth={2}
-                    dot={{ r: 3, fill: '#2C84FE' }}
+                    dot={{ r: 3, fill: '#9DD428' }}
                     activeDot={{ r: 4 }}
                 >
                     {/* <LabelList
