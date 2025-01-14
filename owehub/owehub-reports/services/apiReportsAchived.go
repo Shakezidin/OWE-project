@@ -86,7 +86,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			(COALESCE(p.batteries_ct, 0) * ($3 / 100))::INT AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
-		ON MONTHS.n = p.month AND p.year = $2
+		ON MONTHS.n = p.month AND p.year = $4
 		ORDER BY MONTHS.n
 	`, db.TableName_ProductionTargets)
 
@@ -351,6 +351,8 @@ func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSele
 		ok            bool
 	)
 
+	// overviewItem is simple
+
 	overviewItem.Achieved = achieved
 	overviewItem.Target = target
 
@@ -375,6 +377,8 @@ func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSele
 		}
 		achievedFloat = float64(achievedInt)
 	}
+
+	// now calculate stats
 
 	statsItem.Target = target
 
