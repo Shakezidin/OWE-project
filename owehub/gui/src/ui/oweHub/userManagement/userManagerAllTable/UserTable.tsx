@@ -84,12 +84,12 @@ const UserTable: React.FC<UserTableProps> = ({
   const UserManagementTableColumn = useMemo(() => {
     const col = [...UserColumns];
     if (selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER) {
-      col.splice(3, 0, {
-        name: 'dealer_owner',
-        displayName: 'Dealer',
-        type: 'string',
-        isCheckbox: false,
-      });
+      // col.splice(3, 0, {
+      //   name: 'dealer_owner',
+      //   displayName: 'Dealer',
+      //   type: 'string',
+      //   isCheckbox: false,
+      // });
     } else if (selectedValue === TYPE_OF_USER.ALL) {
       col.splice(3, 0, {
         name: 'role_name',
@@ -98,25 +98,6 @@ const UserTable: React.FC<UserTableProps> = ({
         isCheckbox: false,
       });
     }
-
-    // Added Manager column
-    const managerIndex = selectedValue === TYPE_OF_USER.ALL ? 4 : 3;
-    col.splice(managerIndex, 0, {
-      name: 'reporting_manager',
-      displayName: 'Manager',
-      type: 'string',
-      isCheckbox: false,
-    });
-
-    // Added Dealer column
-    const dealerIndex = selectedValue === TYPE_OF_USER.ALL ? 5 : 4;
-    col.splice(dealerIndex, 0, {
-      name: 'dealer',
-      displayName: 'Dealer',
-      type: 'string',
-      isCheckbox: false,
-    });
-
     return col;
   }, [selectedValue, UserColumns]);
 
@@ -191,43 +172,16 @@ const UserTable: React.FC<UserTableProps> = ({
                 {selectedValue === TYPE_OF_USER.ALL && (
                   <td>{el.role_name ? el.role_name : 'NA'}</td>
                 )}
-                {/* Manager column */}
-                {selectedValue === TYPE_OF_USER.ALL && (
-                  <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
-                )}
-                {/* Added Dealer column */}
-                {selectedValue === TYPE_OF_USER.ALL && (
-                  <>
-                    <td
-                      data-tooltip-id={el.dealer.length > 15 ? el.dealer : ''}
-                    >
-                      {el.dealer
-                        ? el.dealer.length > 15
-                          ? `${el.dealer.slice(0, 15)}...`
-                          : el.dealer
-                        : 'NA'}
-                        <Tooltip
-                      style={{
-                        zIndex: 103,
-                        background: '#000',
-                        color: '#f7f7f7',
-                        fontSize: 12,
-                        paddingBlock: 4,
-                        fontWeight: '400',
-                      }}
-                      offset={0}
-                      id={el.dealer}
-                      place="left"
-                      content={el.dealer}
-                      delayShow={200}
-                    />
-                    </td>
-                    
-                  </>
-                )}
 
                 <td>{el.email_id}</td>
+
                 <td>{el.mobile_number}</td>
+                {/* Manager column */}
+                <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
+                {/* Added Dealer column */}
+                <>
+                  <td>{el.dealer ? el.dealer : 'NA'}</td>
+                </>
 
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}

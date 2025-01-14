@@ -147,6 +147,35 @@ const Summary_Dashboard = () => {
         }
     };
 
+    const data = [
+        {
+            label: 'Projects Sold',
+            value: 'projects_sold',
+        },
+        {
+            label: 'MW Sold',
+            value: 'mw_sold',
+        },
+        {
+            label: 'Install Count',
+            value: 'install_ct',
+        },
+        {
+            label: 'MW Installed',
+            value: 'mw_installed',
+        },
+        {
+            label: 'Batteries Count',
+            value: 'batteries_ct',
+        },
+    ];
+    const [datas, setDatas] = useState<Option>(
+        {
+            label: 'Projects Sold',
+            value: 'projects_sold',
+        }
+    );
+
     const [activeButton, setActiveButton] = useState('projects_sold');
 
     const handleButtonClick = (buttonName: any) => {
@@ -191,7 +220,7 @@ const Summary_Dashboard = () => {
     const [progressData, setProgressData] = useState<ProgressData>({});
     const [monthlyOverviewData, setMonthlyOverviewData] = useState<MonthlyOverviewItem[]>([]);
     const [monthlyStatsData, setMonthlyStatsData] = useState<MonthlyStatsItem[]>([]);
-   
+
     useEffect(() => {
         setSummaryDataState(summaryData?.data?.data?.summary)
         setProgressData(summaryData?.data?.data?.progress)
@@ -232,7 +261,8 @@ const Summary_Dashboard = () => {
                                 options={options}
                                 onChange={(value: any) => setReportType(value)}
                                 value={reportType}
-                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                menuWidth={isMobile ? "120px" : "150px"}
                                 menuListStyles={{ fontWeight: 400 }}
                                 singleValueStyles={{ fontWeight: 400 }}
                             />
@@ -240,7 +270,8 @@ const Summary_Dashboard = () => {
                                 options={years}
                                 onChange={(value: any) => setYear(value)}
                                 value={year}
-                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 150 }}
+                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                menuWidth={isMobile ? "80px" : "150px"}
                                 menuListStyles={{ fontWeight: 400 }}
                                 singleValueStyles={{ fontWeight: 400 }}
                             />
@@ -310,14 +341,14 @@ const Summary_Dashboard = () => {
                     <div className={classes.bottom_box_chart1} >
                         <p>Monthly Progress</p>
                         {(summaryData.loading) ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: "60px", paddingTop: "18px" }}>
                                 <MicroLoader />
                             </div>
                         ) : progressData ? (
                             <>
                                 <div className={classes.bottom_box_chart1_sec}>
                                     <div className={classes.bottom_box_chart_rad}><RadialChart year={year} radData={progressData} /></div>
-                                    <RadarChartComponenet radData={progressData} />
+                                    <div className={classes.bottom_box_chart_rad1}><RadarChartComponenet radData={progressData} /></div>
                                 </div>
                             </>
                         ) : (
@@ -330,7 +361,7 @@ const Summary_Dashboard = () => {
                     <div className={classes.bottom_box_chart2} style={stylesGraph2}>
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
-                            <div style={{ display: "flex", flexDirection: "row", gap: "10px", justifyContent: "center", alignItems: "center" }}>
+                            <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "center", alignItems: "center" }}>
                                 <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
                                     <img src={ICONS.ReportEdit} alt="Edit" />
                                     <Tooltip
@@ -385,7 +416,16 @@ const Summary_Dashboard = () => {
                                             Batteries CT
                                         </div>
                                     </div>
-                                    : ""
+                                    :
+                                    <SelectOption
+                                        options={data}
+                                        onChange={(value: any) => {setDatas(value);handleButtonClick(value?.value)}}
+                                        value={datas}
+                                        controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                        menuWidth={isMobile ? "130px" : "150px"}
+                                        menuListStyles={{ fontWeight: 400 }}
+                                        singleValueStyles={{ fontWeight: 400 }}
+                                    />
                                 }
                             </div>
                         </div>
@@ -396,7 +436,7 @@ const Summary_Dashboard = () => {
                             </div>
                         ) : progressData ? (
                             <>
-                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyStatsData}/>}
+                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyStatsData} />}
 
 
 

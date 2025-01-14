@@ -136,7 +136,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                   {/* <td>{el.role_name}</td> */}
                   <td>{el.dealer || "N/A"}</td>
                   <td>{el.reporting_manager}</td>
-                  <td>{el.region}</td>
+                  <td>{el.region ? el.region : 'NA'}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
                   <td>{el.designation ? el.designation : 'NA'}</td>
