@@ -24,7 +24,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
         className={styles.barChart}
         margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
         stackOffset="sign"
-
+        barSize={74}
       >
         <CartesianGrid
           vertical={false}
