@@ -139,12 +139,12 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 				GROUP BY month
 			)
 		SELECT
-			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(PROJECTS_SOLD.val, 0) AS projects_sold,
-			COALESCE(KW_SOLD.val, 0) / 1000 AS mw_sold,
-			COALESCE(INSTALL_CT.val, 0) AS install_ct,
-			COALESCE(KW_INSTALLED.val, 0) / 1000 AS mw_installed,
-			COALESCE(BATTERIES_CT.val, 0) AS batteries_ct
+			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) 		AS month,
+			(COALESCE(PROJECTS_SOLD.val, 0) * ($3::INT * 0.01))::INT 	AS projects_sold,
+			COALESCE(KW_SOLD.val, 0) / 1000 * ($3::INT * 0.01)			AS mw_sold,
+			(COALESCE(INSTALL_CT.val, 0) * ($3::INT * 0.01))::INT		AS install_ct,
+			COALESCE(KW_INSTALLED.val, 0) / 1000 * ($3::INT * 0.01) 	AS mw_installed,
+			(COALESCE(BATTERIES_CT.val, 0) * ($3::INT * 0.01))::INT 	AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN PROJECTS_SOLD ON PROJECTS_SOLD.MONTH = MONTHS.N
 		LEFT JOIN KW_SOLD ON KW_SOLD.MONTH = MONTHS.N
@@ -153,7 +153,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		LEFT JOIN BATTERIES_CT ON BATTERIES_CT.MONTH = MONTHS.N
 		ORDER BY MONTHS.N
 	`
-	whereEleList = []interface{}{1, 12, dataReq.Year}
+	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year}
 
 	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
@@ -255,7 +255,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			// fetch/query last month data
 			// if January is selected, query for last December
 			if i == 0 {
-				whereEleList = []interface{}{12, 12, yearInt - 1}
+				whereEleList = []interface{}{12, 12, dataReq.TargetPercentage, yearInt - 1}
 				lastMonthAchieved, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
