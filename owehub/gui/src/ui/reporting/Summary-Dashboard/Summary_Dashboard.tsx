@@ -310,7 +310,7 @@ const Summary_Dashboard = () => {
                     <div className={classes.bottom_box_chart1} >
                         <p>Monthly Progress</p>
                         {(summaryData.loading) ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: "18px" }}>
+                            <div style={{ display: 'flex', justifyContent: 'center',marginTop:"60px", paddingTop: "18px" }}>
                                 <MicroLoader />
                             </div>
                         ) : progressData ? (
