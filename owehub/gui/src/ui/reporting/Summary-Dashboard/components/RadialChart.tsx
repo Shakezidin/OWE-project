@@ -95,7 +95,7 @@ const RadialChart = ({ year, radData }: any) => {
                 cx="50%"
                 cy="70%"
                 innerRadius="30%"
-                outerRadius="150%"
+                outerRadius="140%"
                 barSize={15}
                 data={data}
                 startAngle={180}
