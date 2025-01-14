@@ -116,6 +116,7 @@ func SetupOutlookWebhooks() error {
 			})
 			if err != nil {
 				log.FuncErrorTrace(0, "failed to create subscription with url %s, err: %v", endPt, err)
+				continue
 			}
 
 			webhook.SubscriptionId = *sub.GetId()
