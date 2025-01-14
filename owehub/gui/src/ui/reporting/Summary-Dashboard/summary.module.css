@@ -343,10 +343,10 @@
     .bottom_box_chart_rad1{
         width: 100%;
         height: 330px;
-        padding: 1rem;
+        padding: 0;
     }
     .top_box_heading {
-        /* display: none; */
+        gap: 12px;
     }
 
     .top_box_boxes {
