@@ -26,15 +26,21 @@ import (
  ******************************************************************************/
 func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                    error
-		dataReq                models.GetReportsTargetReq
-		yearInt                int
-		query                  string
-		whereEleList           []interface{}
-		targetData             []map[string]interface{}
-		acheivedData           []map[string]interface{}
-		lastMonthPercentageMap map[string]float64
-		apiResp                models.GetReportsTargetResp
+		err               error
+		dataReq           models.GetReportsTargetReq
+		yearInt           int
+		targetQuery       string
+		acheivedQuery     string
+		whereEleList      []interface{}
+		targetData        []map[string]interface{}
+		acheivedData      []map[string]interface{}
+		totalTarget       models.ProductionTargetOrAchievedItem
+		totalAchieved     models.ProductionTargetOrAchievedItem
+		totalPct          *models.ProductionTargetOrAchievedPercentage
+		lastMonthAchieved *models.ProductionTargetOrAchievedItem
+		lastMonthTarget   *models.ProductionTargetOrAchievedItem
+		lastMonthPct      *models.ProductionTargetOrAchievedPercentage
+		apiResp           models.GetReportsTargetResp
 	)
 
 	log.EnterFn(0, "HandleReportsTargetListRequest")
@@ -69,24 +75,24 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// query target data
-	query = fmt.Sprintf(`
-		WITH months(n) AS (SELECT generate_series(1, 12))
+	targetQuery = fmt.Sprintf(`
+		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) AS projects_sold,
-			COALESCE(p.mw_sold, 0) AS mw_sold,
-			COALESCE(p.install_ct, 0) AS install_ct,
-			COALESCE(p.mw_installed, 0) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) AS batteries_ct
+			(COALESCE(p.projects_sold, 0) * ($3 / 100))::INT AS projects_sold,
+			COALESCE(p.mw_sold, 0) * ($3 / 100) AS mw_sold,
+			(COALESCE(p.install_ct, 0) * ($3 / 100))::INT AS install_ct,
+			COALESCE(p.mw_installed, 0) * ($3 / 100) AS mw_installed,
+			(COALESCE(p.batteries_ct, 0) * ($3 / 100))::INT AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
-		ON MONTHS.n = p.month AND p.year = $1
+		ON MONTHS.n = p.month AND p.year = $2
 		ORDER BY MONTHS.n
 	`, db.TableName_ProductionTargets)
 
-	whereEleList = []interface{}{dataReq.Year}
+	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year}
 
-	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
@@ -94,7 +100,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// query achieved data
-	query = `
+	acheivedQuery = `
 		WITH 
 			MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
 			PROJECTS_SOLD AS (
@@ -139,12 +145,12 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 				GROUP BY month
 			)
 		SELECT
-			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) 		AS month,
-			(COALESCE(PROJECTS_SOLD.val, 0) * ($3::INT * 0.01))::INT 	AS projects_sold,
-			COALESCE(KW_SOLD.val, 0) / 1000 * ($3::INT * 0.01)			AS mw_sold,
-			(COALESCE(INSTALL_CT.val, 0) * ($3::INT * 0.01))::INT		AS install_ct,
-			COALESCE(KW_INSTALLED.val, 0) / 1000 * ($3::INT * 0.01) 	AS mw_installed,
-			(COALESCE(BATTERIES_CT.val, 0) * ($3::INT * 0.01))::INT 	AS batteries_ct
+			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(PROJECTS_SOLD.val, 0) AS projects_sold,
+			COALESCE(KW_SOLD.val, 0) / 1000 AS mw_sold,
+			COALESCE(INSTALL_CT.val, 0) AS install_ct,
+			COALESCE(KW_INSTALLED.val, 0) / 1000 AS mw_installed,
+			COALESCE(BATTERIES_CT.val, 0) AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN PROJECTS_SOLD ON PROJECTS_SOLD.MONTH = MONTHS.N
 		LEFT JOIN KW_SOLD ON KW_SOLD.MONTH = MONTHS.N
@@ -153,37 +159,14 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		LEFT JOIN BATTERIES_CT ON BATTERIES_CT.MONTH = MONTHS.N
 		ORDER BY MONTHS.N
 	`
-	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year}
+	whereEleList = []interface{}{1, 12, dataReq.Year}
 
-	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
 		return
 	}
-
-	var (
-		// total target
-		targetProjectsSold int64
-		targetMwSold       float64
-		targetInstallCt    int64
-		targetMwInstalled  float64
-		targetBatteriesCt  int64
-
-		// total achieved
-		achievedProjectsSold int64
-		achievedMwSold       float64
-		achievedInstallCt    int64
-		achievedMwInstalled  float64
-		achievedBatteriesCt  int64
-
-		// percentage
-		projectsSoldPct float64
-		mwSoldPct       float64
-		installCtPct    float64
-		mwInstalledPct  float64
-		batteriesCtPct  float64
-	)
 
 	for i := 0; i < 12; i++ {
 		targetMonth, ok := targetData[i]["month"].(string)
@@ -191,199 +174,264 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			log.FuncErrorTrace(0, "Failed to get target month for index %+v", i)
 			continue
 		}
+		target := getProductionTargetOrAchievedItem(targetData[i])
+		acheived := getProductionTargetOrAchievedItem(acheivedData[i])
 
-		targetProjectsSold += targetData[i]["projects_sold"].(int64)
-		targetMwSold += targetData[i]["mw_sold"].(float64)
-		targetInstallCt += targetData[i]["install_ct"].(int64)
-		targetMwInstalled += targetData[i]["mw_installed"].(float64)
-		targetBatteriesCt += targetData[i]["batteries_ct"].(int64)
+		// keep track of totals
 
-		achievedProjectsSold += acheivedData[i]["projects_sold"].(int64)
-		achievedMwSold += acheivedData[i]["mw_sold"].(float64)
-		achievedInstallCt += acheivedData[i]["install_ct"].(int64)
-		achievedMwInstalled += acheivedData[i]["mw_installed"].(float64)
-		achievedBatteriesCt += acheivedData[i]["batteries_ct"].(int64)
+		totalTarget.InstallCt += target.InstallCt
+		totalTarget.MwInstalled += target.MwInstalled
+		totalTarget.ProjectsSold += target.ProjectsSold
+		totalTarget.MwSold += target.MwSold
 
-		overviewItem := models.GetReportsTargetRespOverviewItem{Month: targetMonth}
+		totalAchieved.InstallCt += acheived.InstallCt
+		totalAchieved.MwInstalled += acheived.MwInstalled
+		totalAchieved.ProjectsSold += acheived.ProjectsSold
+		totalAchieved.MwSold += acheived.MwSold
 
-		overviewItem.Achieved = acheivedData[i][dataReq.TargetType]
-		overviewItem.Target = targetData[i][dataReq.TargetType]
+		// get stats and overview data
 
-		apiResp.MonthlyOverview = append(apiResp.MonthlyOverview, overviewItem)
-
-		statsItem := models.GetReportsTargetRespStatsItem{Month: targetMonth}
-
-		if achived, ok := overviewItem.Achieved.(int64); ok {
-			target := overviewItem.Target.(int64)
-
-			statsItem.Target = target
-
-			if targetMonth == dataReq.Month {
-				statsItem.Inprogress = achived
-			} else {
-				if achived > target {
-					statsItem.MoreThanTarget = achived - target
-				}
-				if achived <= target {
-					statsItem.Incomplete = target - achived
-					statsItem.Completed = achived
-				}
-			}
+		statsItem, overviewItem := getMonthlyStatsAndOverview(acheivedData[i][dataReq.TargetType], targetData[i][dataReq.TargetType], targetMonth == dataReq.Month)
+		if overviewItem == nil || statsItem == nil {
+			continue
 		}
-		if achived, ok := overviewItem.Achieved.(float64); ok {
-			target := overviewItem.Target.(float64)
+		overviewItem.Month = targetMonth
+		statsItem.Month = targetMonth
 
-			statsItem.Target = target
+		apiResp.MonthlyOverview = append(apiResp.MonthlyOverview, *overviewItem)
+		apiResp.MonthlyStats = append(apiResp.MonthlyStats, *statsItem)
 
-			if targetMonth == dataReq.Month {
-				statsItem.Inprogress = achived
-			} else {
-				if achived > target {
-					statsItem.MoreThanTarget = achived - target
-				}
-				if achived <= target {
-					statsItem.Incomplete = target - achived
-					statsItem.Completed = achived
-				}
-			}
-		}
-
-		apiResp.MonthlyStats = append(apiResp.MonthlyStats, statsItem)
-
+		// assign summary data for selected month
 		if targetMonth == dataReq.Month {
+			// begin FETCHING LAST MONTH DATA
 
-			// fetch/query last month data
-			// if January is selected, query for last December
+			// if January is selected, fetch from last year December
 			if i == 0 {
+				whereEleList = []interface{}{12, 12, yearInt - 1}
+				rawAcheived, err := db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
+					continue
+				}
+
 				whereEleList = []interface{}{12, 12, dataReq.TargetPercentage, yearInt - 1}
-				lastMonthAchieved, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+				rawTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
 					continue
 				}
-				if len(lastMonthAchieved) == 0 {
-					log.FuncErrorTrace(0, "Failed to retrieve data from DB")
-					continue
-				}
 
-				query = fmt.Sprintf("SELECT * FROM %s WHERE MONTH = 12 AND YEAR = %d", db.TableName_ProductionTargets, yearInt)
-				lastMonthTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-
-				if err != nil {
-					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
-					continue
-				}
-				lastMonthPercentageMap = make(map[string]float64)
-
-				if len(lastMonthTarget) > 0 {
-					if lastMonthTarget[0]["projects_sold"].(int64) > 0 {
-						lastMonthPercentageMap["projects_sold"] = float64(lastMonthAchieved[0]["projects_sold"].(int64)) / float64(lastMonthTarget[0]["projects_sold"].(int64)) * 100.00
-					}
-					if lastMonthTarget[0]["mw_sold"].(float64) > 0 {
-						lastMonthPercentageMap["mw_sold"] = float64(lastMonthAchieved[0]["mw_sold"].(float64)) / float64(lastMonthTarget[0]["mw_sold"].(float64)) * 100.00
-					}
-					if lastMonthTarget[0]["install_ct"].(int64) > 0 {
-						lastMonthPercentageMap["install_ct"] = float64(lastMonthAchieved[0]["install_ct"].(int64)) / float64(lastMonthTarget[0]["install_ct"].(int64)) * 100.00
-					}
-					if lastMonthTarget[0]["mw_installed"].(float64) > 0 {
-						lastMonthPercentageMap["mw_installed"] = float64(lastMonthAchieved[0]["mw_installed"].(float64)) / float64(lastMonthTarget[0]["mw_installed"].(float64)) * 100.00
-					}
-					if lastMonthTarget[0]["batteries_ct"].(int64) > 0 {
-						lastMonthPercentageMap["batteries_ct"] = float64(lastMonthAchieved[0]["batteries_ct"].(int64)) / float64(lastMonthTarget[0]["batteries_ct"].(int64)) * 100.00
-					}
-				}
+				lastMonthAchieved = getProductionTargetOrAchievedItem(rawAcheived[0])
+				lastMonthTarget = getProductionTargetOrAchievedItem(rawTarget[0])
 			} else {
-				lastMonthPercentageMap = make(map[string]float64)
-				if targetData[i-1]["projects_sold"].(int64) > 0 {
-					lastMonthPercentageMap["projects_sold"] = float64(acheivedData[i-1]["projects_sold"].(int64)) / float64(targetData[i-1]["projects_sold"].(int64)) * 100.00
-				}
-				if targetData[i-1]["mw_sold"].(float64) > 0 {
-					lastMonthPercentageMap["mw_sold"] = float64(acheivedData[i-1]["mw_sold"].(float64)) / float64(targetData[i-1]["mw_sold"].(float64)) * 100.00
-				}
-				if targetData[i-1]["install_ct"].(int64) > 0 {
-					lastMonthPercentageMap["install_ct"] = float64(acheivedData[i-1]["install_ct"].(int64)) / float64(targetData[i-1]["install_ct"].(int64)) * 100.00
-				}
-				if targetData[i-1]["mw_installed"].(float64) > 0 {
-					lastMonthPercentageMap["mw_installed"] = float64(acheivedData[i-1]["mw_installed"].(float64)) / float64(targetData[i-1]["mw_installed"].(float64)) * 100.00
-				}
-				if targetData[i-1]["batteries_ct"].(int64) > 0 {
-					lastMonthPercentageMap["batteries_ct"] = float64(acheivedData[i-1]["batteries_ct"].(int64)) / float64(targetData[i-1]["batteries_ct"].(int64)) * 100.00
-				}
+				lastMonthAchieved = getProductionTargetOrAchievedItem(acheivedData[i-1])
+				lastMonthTarget = getProductionTargetOrAchievedItem(targetData[i-1])
 			}
+			// end FETCHING LAST MONTH DATA
 
+			lastMonthPct = getProductionAchievedPercentage(lastMonthTarget, lastMonthAchieved)
 			apiResp.Summary = map[string]models.GetReportsTargetRespSummaryItem{
 				"Projects Sold": {
-					Target:            targetData[i]["projects_sold"].(int64),
-					Achieved:          acheivedData[i]["projects_sold"].(int64),
-					LastMonthAcheived: lastMonthPercentageMap["projects_sold"],
+					Target:            target.ProjectsSold,
+					Achieved:          acheived.ProjectsSold,
+					LastMonthAcheived: lastMonthPct.ProjectsSold,
 				},
-				"MW Sold": {
-					Target:            targetData[i]["mw_sold"].(float64),
-					Achieved:          acheivedData[i]["mw_sold"].(float64),
-					LastMonthAcheived: lastMonthPercentageMap["mw_sold"],
+				"mW Sold": {
+					Target:            target.MwSold,
+					Achieved:          acheived.MwSold,
+					LastMonthAcheived: lastMonthAchieved.MwSold,
 				},
-				"Installed Contracting": {
-					Target:            targetData[i]["install_ct"].(int64),
-					Achieved:          acheivedData[i]["install_ct"].(int64),
-					LastMonthAcheived: lastMonthPercentageMap["install_ct"],
+				"Install Ct": {
+					Target:            target.InstallCt,
+					Achieved:          acheived.InstallCt,
+					LastMonthAcheived: lastMonthPct.InstallCt,
 				},
-				"MW Installed": {
-					Target:            targetData[i]["mw_installed"].(float64),
-					Achieved:          acheivedData[i]["mw_installed"].(float64),
-					LastMonthAcheived: lastMonthPercentageMap["mw_installed"],
+				"mW Installed": {
+					Target:            target.MwInstalled,
+					Achieved:          acheived.MwInstalled,
+					LastMonthAcheived: lastMonthPct.MwInstalled,
 				},
-				"Batteries": {
-					Target:            targetData[i]["batteries_ct"].(int64),
-					Achieved:          acheivedData[i]["batteries_ct"].(int64),
-					LastMonthAcheived: lastMonthPercentageMap["batteries_ct"],
+				"Batteries Ct": {
+					Target:            target.BatteriesCt,
+					Achieved:          acheived.BatteriesCt,
+					LastMonthAcheived: lastMonthPct.BatteriesCt,
 				},
 			}
 		}
 	}
 
-	if targetProjectsSold > 0 {
-		projectsSoldPct = float64(achievedProjectsSold) / float64(targetProjectsSold) * 100
-	}
-	if targetMwSold > 0 {
-		mwSoldPct = float64(achievedMwSold) / float64(targetMwSold) * 100
-	}
-	if targetInstallCt > 0 {
-		installCtPct = float64(achievedInstallCt) / float64(targetInstallCt) * 100
-	}
-	if targetMwInstalled > 0 {
-		mwInstalledPct = float64(achievedMwInstalled) / float64(targetMwInstalled) * 100
-	}
-	if targetBatteriesCt > 0 {
-		batteriesCtPct = float64(achievedBatteriesCt) / float64(targetBatteriesCt) * 100
-	}
-
+	totalPct = getProductionAchievedPercentage(&totalTarget, &totalAchieved)
 	apiResp.Progress = map[string]models.GetReportsTargetRespProgressItem{
 		"Projects Sold": {
-			Target:             targetProjectsSold,
-			Achieved:           achievedProjectsSold,
-			PercentageAchieved: projectsSoldPct,
+			Target:             totalTarget.ProjectsSold,
+			Achieved:           totalAchieved.ProjectsSold,
+			PercentageAchieved: totalPct.ProjectsSold,
 		},
 		"mW Sold": {
-			Target:             targetMwSold,
-			Achieved:           achievedMwSold,
-			PercentageAchieved: mwSoldPct,
+			Target:             totalTarget.MwSold,
+			Achieved:           totalAchieved.MwSold,
+			PercentageAchieved: totalPct.MwSold,
 		},
-		"Installs": {
-			Target:             targetInstallCt,
-			Achieved:           achievedInstallCt,
-			PercentageAchieved: installCtPct,
+		"Install Ct": {
+			Target:             totalTarget.InstallCt,
+			Achieved:           totalAchieved.InstallCt,
+			PercentageAchieved: totalPct.InstallCt,
 		},
 		"mW Installed": {
-			Target:             targetMwInstalled,
-			Achieved:           achievedMwInstalled,
-			PercentageAchieved: mwInstalledPct,
+			Target:             totalTarget.MwInstalled,
+			Achieved:           totalAchieved.MwInstalled,
+			PercentageAchieved: totalPct.MwInstalled,
 		},
-		"Batteries": {
-			Target:             targetBatteriesCt,
-			Achieved:           achievedBatteriesCt,
-			PercentageAchieved: batteriesCtPct,
+		"Batteries Ct": {
+			Target:             totalTarget.BatteriesCt,
+			Achieved:           totalAchieved.BatteriesCt,
+			PercentageAchieved: totalPct.BatteriesCt,
 		},
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Report target data", http.StatusOK, apiResp)
+}
+
+// Extract and Assert Production Target or Production Achieved keys to relevant numeric types from the raw db record
+func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models.ProductionTargetOrAchievedItem {
+	var (
+		item models.ProductionTargetOrAchievedItem
+		err  error
+	)
+
+	log.EnterFn(0, "HandleReportsTargetListRequest")
+	defer func() { log.ExitFn(0, "HandleReportsTargetListRequest", err) }()
+
+	projectsSold, ok := rawRecord["projects_sold"].(int64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast projects_sold from type %T to int64", rawRecord["projects_sold"])
+	}
+
+	mwSold, ok := rawRecord["mw_sold"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast mw_sold from type %T to float64", rawRecord["mw_sold"])
+	}
+
+	installCt, ok := rawRecord["install_ct"].(int64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast install_ct from type %T to int64", rawRecord["install_ct"])
+
+	}
+
+	mwInstalled, ok := rawRecord["mw_installed"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast mw_installed from type %T to float64", rawRecord["mw_installed"])
+	}
+
+	batteriesCt, ok := rawRecord["batteries_ct"].(int64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast batteries_ct from type %T to int64", rawRecord["batteries_ct"])
+	}
+
+	item.ProjectsSold = projectsSold
+	item.MwSold = mwSold
+	item.InstallCt = installCt
+	item.MwInstalled = mwInstalled
+	item.BatteriesCt = batteriesCt
+	return &item
+}
+
+// Get Monthly Stats(Completed, Incomplete, In Progress) and Overview(Target, Achieved)
+// for a given month by given 2 numerics: target and achieved
+//
+// Specific to HandleReportsTargetListRequest api
+func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSelectedMonth bool) (
+	*models.GetReportsTargetRespStatsItem, *models.GetReportsTargetRespOverviewItem) {
+	var (
+		targetFloat   float64
+		achievedFloat float64
+		isInt         bool
+		statsItem     models.GetReportsTargetRespStatsItem
+		overviewItem  models.GetReportsTargetRespOverviewItem
+		ok            bool
+	)
+
+	overviewItem.Achieved = achieved
+	overviewItem.Target = target
+
+	// first convert target and achieved to float64 if not already for easier comparision
+
+	if targetFloat, ok = target.(float64); !ok {
+		isInt = true
+		targetInt, ok := target.(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "target is not an int64 or float64")
+			return nil, nil
+		}
+		targetFloat = float64(targetInt)
+	}
+
+	if achievedFloat, ok = achieved.(float64); !ok {
+		isInt = true
+		achievedInt, ok := achieved.(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "achieved is not an int64 or float64")
+			return nil, nil
+		}
+		achievedFloat = float64(achievedInt)
+	}
+
+	statsItem.Target = target
+
+	if isSelectedMonth {
+		statsItem.Inprogress = achieved
+		return &statsItem, &overviewItem
+	}
+
+	if achievedFloat > targetFloat {
+		statsItem.MoreThanTarget = achievedFloat - targetFloat
+
+		// cast to int64 if target and achieved are int64
+		if isInt {
+			statsItem.MoreThanTarget = int64(statsItem.MoreThanTarget.(float64))
+		}
+		return &statsItem, &overviewItem
+	}
+
+	statsItem.Incomplete = targetFloat - achievedFloat
+
+	// cast to int64 if target and achieved are int64
+	if isInt {
+		statsItem.Incomplete = int64(statsItem.Incomplete.(float64))
+	}
+	statsItem.Completed = achievedFloat
+	return &statsItem, &overviewItem
+}
+
+// Calculate Production Achieved percentage (target/achieved * 100)
+func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedItem,
+	acheived *models.ProductionTargetOrAchievedItem) *models.ProductionTargetOrAchievedPercentage {
+	var (
+		pct models.ProductionTargetOrAchievedPercentage
+	)
+
+	if target == nil || acheived == nil {
+		return &pct
+	}
+
+	if target.ProjectsSold > 0 {
+		pct.ProjectsSold = float64(acheived.ProjectsSold) / float64(target.ProjectsSold) * 100
+	}
+
+	if target.MwSold > 0 {
+		pct.MwSold = float64(acheived.MwSold) / float64(target.MwSold) * 100
+	}
+
+	if target.InstallCt > 0 {
+		pct.InstallCt = float64(acheived.InstallCt) / float64(target.InstallCt) * 100
+	}
+
+	if target.MwInstalled > 0 {
+		pct.MwInstalled = float64(acheived.MwInstalled) / float64(target.MwInstalled) * 100
+	}
+
+	if target.BatteriesCt > 0 {
+		pct.BatteriesCt = float64(acheived.BatteriesCt) / float64(target.BatteriesCt) * 100
+	}
+	return &pct
 }
