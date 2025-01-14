@@ -211,6 +211,7 @@
   padding: 8px 12px 8px 12px;
   color: #377cf6;
   cursor: pointer;
+  height: 36px;
   transition: all 0.3s ease;
 }
 
