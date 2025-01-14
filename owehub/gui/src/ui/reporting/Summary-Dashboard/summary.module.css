@@ -340,6 +340,7 @@
       width: 100%;
       height: 330px;
       padding: 1rem;
+      border-right:none;
       border-bottom: 1px dotted #D7D9DC;
     }
   

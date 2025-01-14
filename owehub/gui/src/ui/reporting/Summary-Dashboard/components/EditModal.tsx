@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { reportingCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 
 
@@ -224,7 +225,9 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
             return updatedState;
         });
     }, [open, refre]);
-
+    const width = useWindowWidth();
+    const isMobile = width <= 767;
+    const isTablet = width <= 1024;
 
     return (
         <>
@@ -529,7 +532,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                     onClick={handleClose}
                                     type={'button'}
                                 />
-                                <ActionButton disabled={load} title={'Save Changes'} onClick={handleSubmit} type={'submit'} />
+                                <ActionButton disabled={load} title={isMobile ? 'Save':'Save Changes'} onClick={handleSubmit} type={'submit'} />
                             </div>
                         </div>
                     </div>
