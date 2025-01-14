@@ -372,6 +372,9 @@
     .bottom_box_button_sec {
       padding: 3px 7px 3px 7px;
     }
+    .bottom_graphchange_div{
+        margin-top: -7px;
+    }
   }
   
   @media screen and (min-width: 768px) and (max-width: 1025px) {

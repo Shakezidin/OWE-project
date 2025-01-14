@@ -532,7 +532,13 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                     onClick={handleClose}
                                     type={'button'}
                                 />
-                                <ActionButton disabled={load} title={isMobile ? 'Save':'Save Changes'} onClick={handleSubmit} type={'submit'} />
+                                <ActionButton
+                                 style={{
+                                    backgroundColor: (load || !(dataTarget.length > 0)) ? "#4062CA" : "",
+                                    transform: (load || !(dataTarget.length > 0)) ? "none" : "",
+                                    cursor: (load || !(dataTarget.length > 0)) ? "not-allowed" : "",
+                                  }}
+                                 disabled={load || !(dataTarget.length > 0)} title={isMobile ? 'Save':'Save Changes'} onClick={handleSubmit} type={'submit'} />
                             </div>
                         </div>
                     </div>
