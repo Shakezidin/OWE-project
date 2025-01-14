@@ -311,13 +311,17 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
+                                                                            maxLength={6}
+                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
+                                                                            }}
                                                                             value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
                                                                                     ...prevState,
                                                                                     [row.month]: {
                                                                                         ...prevState[row.month],
-                                                                                        projectSold: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                        projectSold: Number(e.target.value),
                                                                                     },
                                                                                 }))
                                                                             }
@@ -352,13 +356,17 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
+                                                                            maxLength={6}
+                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
+                                                                              }}
                                                                             value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
                                                                                     ...prevState,
                                                                                     [row.month]: {
                                                                                         ...prevState[row.month],
-                                                                                        mwSold: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                        mwSold: Number(e.target.value),
                                                                                     },
                                                                                 }))
                                                                             }
@@ -394,6 +402,10 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
+                                                                            maxLength={6}
+                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
+                                                                              }}
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
@@ -437,16 +449,21 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
+                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
+                                                                              }}
                                                                             value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
                                                                                     ...prevState,
                                                                                     [row.month]: {
                                                                                         ...prevState[row.month],
-                                                                                        mwInstalled: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                        mwInstalled: Number(e.target.value),
                                                                                     },
                                                                                 }))
+
                                                                             }
+                                                                            maxLength={6}
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'mwInstalled')}
@@ -478,13 +495,17 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
+                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
+                                                                              }}
+                                                                            maxLength={6}
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
                                                                                     ...prevState,
                                                                                     [row.month]: {
                                                                                         ...prevState[row.month],
-                                                                                        batteriesCT: e.target.value === '' ? undefined : Number(e.target.value),
+                                                                                        batteriesCT: Number(e.target.value),
                                                                                     },
                                                                                 }))
                                                                             }
@@ -533,12 +554,12 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                     type={'button'}
                                 />
                                 <ActionButton
-                                 style={{
-                                    backgroundColor: (load || !(dataTarget.length > 0)) ? "#4062CA" : "",
-                                    transform: (load || !(dataTarget.length > 0)) ? "none" : "",
-                                    cursor: (load || !(dataTarget.length > 0)) ? "not-allowed" : "",
-                                  }}
-                                 disabled={load || !(dataTarget.length > 0)} title={isMobile ? 'Save':'Save Changes'} onClick={handleSubmit} type={'submit'} />
+                                    style={{
+                                        backgroundColor: (load || !(dataTarget.length > 0)) ? "#4062CA" : "",
+                                        transform: (load || !(dataTarget.length > 0)) ? "none" : "",
+                                        cursor: (load || !(dataTarget.length > 0)) ? "not-allowed" : "",
+                                    }}
+                                    disabled={load || !(dataTarget.length > 0)} title={isMobile ? 'Save' : 'Save Changes'} onClick={handleSubmit} type={'submit'} />
                             </div>
                         </div>
                     </div>
