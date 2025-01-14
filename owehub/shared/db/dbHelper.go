@@ -413,3 +413,49 @@ func convertToType(value interface{}, columnType *sql.ColumnType) (interface{}, 
 		return nil, fmt.Errorf("unsupported column type: %v", columnType.ScanType().Kind())
 	}
 }
+
+/******************************************************************************
+ * FUNCTION:        startTransaction
+ * DESCRIPTION:     Initiates a database transaction
+ * INPUT:           dbIdx uint8
+ * RETURNS:         *sql.Tx, error
+ ******************************************************************************/
+func StartTransaction(dbIdx uint8) (*sql.Tx, error) {
+	var err error
+	log.EnterFn(0, "startTransaction")
+	defer func() { log.ExitFn(0, "startTransaction", err) }()
+
+	con, err := getDBConnection(dbIdx, OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "startTransaction Failed to get %v Connection with err = %v", OWEDB, err)
+		return nil, err
+	}
+
+	tx, err := con.CtxH.Begin()
+	if err != nil {
+		log.FuncErrorTrace(0, "startTransaction Failed to begin transaction with err = %v", err)
+		return nil, err
+	}
+
+	return tx, nil
+}
+
+/******************************************************************************
+* FUNCTION:        commitTransaction
+* DESCRIPTION:     Commits a database transaction
+* INPUT:           tx *sql.Tx
+* RETURNS:         error
+******************************************************************************/
+func CommitTransaction(tx *sql.Tx) error {
+	var err error
+	log.EnterFn(0, "commitTransaction")
+	defer func() { log.ExitFn(0, "commitTransaction", err) }()
+
+	err = tx.Commit()
+	if err != nil {
+		log.FuncErrorTrace(0, "commitTransaction Failed to commit transaction with err = %v", err)
+		return err
+	}
+
+	return nil
+}

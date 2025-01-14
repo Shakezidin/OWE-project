@@ -136,7 +136,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
 		if len(createUserReq.TablesPermissions) > 0 {
 			// retrieve db username from mobile number
-			username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
+			username = fmt.Sprintf("OWE_%s", createUserReq.EmailId)
 
 			// make sure that user with username doesnt already exist
 			dbUserCheckQuery := "SELECT count(*) FROM PG_USER WHERE USENAME = $1"
@@ -306,5 +306,5 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	appserver.FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
+appserver.FormAndSendHttpResp(resp,	 "User Created Successfully", http.StatusOK, nil)
 }

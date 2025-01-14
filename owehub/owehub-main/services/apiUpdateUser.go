@@ -12,7 +12,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -37,11 +36,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		err                   error
 		updateUserReq         models.UpdateUserReq
 		queryParameters       []interface{}
-		result                []interface{}
-		userInfoResult        []map[string]interface{}
-		tablepermissionsModel []TablePermission
 		tablesPermissionsJSON []byte
-		userName              string
 	)
 
 	log.EnterFn(0, "HandleupdateUserRequest")
@@ -71,29 +66,10 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	emailId := req.Context().Value("emailid").(string)
 	updateUserReq.EmailId = emailId
 
-	if len(updateUserReq.Name) <= 0 {
-		//(len(updateUserReq.EmailId) <= 0) || can not update this
-		//(len(updateUserReq.MobileNumber) <= 0) || can not update this
-		//(len(updateUserReq.Country) <= 0) ||
-		//(len(updateUserReq.Designation) <= 0) ||
-		//(len(updateUserReq.RoleName) <= 0) ||
-		//(len(updateUserReq.ReportingManager) <= 0) ||
-		//(len(updateUserReq.DealerOwner) <= 0) ||
-		//(len(updateUserReq.StreetAddress) <= 0) ||
-		//(len(updateUserReq.State) <= 0) ||
-		//(len(updateUserReq.City) <= 0) ||
-		//(len(updateUserReq.Zipcode) <= 0) {\
-		//(len(updateUserReq.UserStatus) <= 0) ||
-		//(len(updateUserReq.Description) <= 0) {
+	if len(updateUserReq.EmailId) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if len(updateUserReq.UserCode) <= 0 {
-		err = fmt.Errorf("Invalid UserCode, unable to proceed")
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Invalid UserCode, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -106,121 +82,50 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	// setup user info logging
-	logUserApi, closeUserLog := initUserApiLogging(req)
-	defer func() { closeUserLog(err) }()
+	prevDataQuery := fmt.Sprintf(`SELECT * FROM user_details WHERE email_id = '%v'`, updateUserReq.EmailId)
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, prevDataQuery, nil)
+	if err != nil || len(data) == 0 {
+		log.FuncErrorTrace(0, "failed to get the mobile number from db, email: %v, err: %v", updateUserReq.EmailId, err)
+		appserver.FormAndSendHttpResp(resp, "Something is not right", http.StatusInternalServerError, nil)
+		return
+	}
 
-	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
-		// Join selected parts with underscores
+	username := fmt.Sprintf("OWE_%s", updateUserReq.EmailId)
+	prevRole, err := getUserRole(updateUserReq.EmailId)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get previous role for user %s: %v", updateUserReq.EmailId, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve user details", http.StatusInternalServerError, nil)
+		return
+	}
 
-		query := fmt.Sprintf(
-			"SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';",
-			updateUserReq.EmailId,
-		)
-		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-		if err != nil || len(data) <= 0 {
-			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
-			return
-		}
+	isDBRole := updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin"
+	wasPrevDBRole := prevRole == "DB User" || prevRole == "Admin"
 
-		tablepermissions, ok := data[0]["tables_permissions"].([]byte)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get tables_permissions for email ID %v. Item: %+v\n", updateUserReq.EmailId, data)
-			return
-		}
-
-		userName, ok = data[0]["name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get username for email ID %v. Item: %+v\n", updateUserReq.EmailId, data)
-			return
-		}
-
-		err = json.Unmarshal(tablepermissions, &tablepermissionsModel)
+	if updateUserReq.TablesPermissions != nil {
+		tablesPermissionsJSON, err = json.Marshal(updateUserReq.TablesPermissions)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to unmarshal tables_permissions JSON data: %s\n", err)
+			log.FuncErrorTrace(0, "Failed to marshall table permission while create user,  err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 			return
-		}
-
-		newusername := strings.Join(strings.Fields(updateUserReq.Name)[0:2], "_")
-		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")
-
-		// Construct SQL statements to revoke privileges and drop the role (user)
-		sqlStatement := fmt.Sprintf(
-			"REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; ALTER ROLE %s RENAME TO %s;",
-			oldusername,
-			oldusername,
-			newusername,
-		)
-
-		// Execute the SQL statement
-		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
-			appserver.FormAndSendHttpResp(resp, "Failed to revoke user privilages", http.StatusInternalServerError, nil)
-			return
-			// Handle the error as needed, such as logging or returning an HTTP response
-		} else {
-			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", oldusername)
-			// Optionally, you can log a success message or perform additional actions
-		}
-
-		log.FuncErrorTrace(0, "updateUserReq.TablesPermissions %+v", updateUserReq.TablesPermissions)
-		for _, item := range updateUserReq.TablesPermissions {
-			switch item.PrivilegeType {
-			case "View":
-				sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, newusername)
-			case "Edit":
-				sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, newusername)
-			case "Full":
-				sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, newusername)
-			}
-
-			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
-
-			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
-			if err != nil {
-				sqlStatement := fmt.Sprintf("ALTER ROLE %s RENAME TO %s;", newusername, oldusername)
-				// Execute the SQL statement
-				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-				if err != nil {
-					log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
-					// Handle the error as needed, such as logging or returning an HTTP response
-				}
-
-				for _, item := range tablepermissionsModel {
-					switch item.PrivilegeType {
-					case "View":
-						sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, oldusername)
-					case "Edit":
-						sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, oldusername)
-					case "Full":
-						sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, oldusername)
-					}
-
-					log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
-
-					err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-					if err != nil {
-						log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
-						// Handle the error as needed, such as logging or returning an HTTP response
-					}
-
-				}
-				log.FuncErrorTrace(0, "Failed to update user with err: %v", err)
-				appserver.FormAndSendHttpResp(resp, "Failed to update the user db privilages", http.StatusInternalServerError, nil)
-				return
-			}
-
 		}
 	}
 
+	/*
+		Transaction starts here
+	*/
+	tx, err := db.StartTransaction(db.OweHubDbIndex)
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		} else if err != nil {
+			tx.Rollback()
+		}
+	}()
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateUserReq.Name)
-	// queryParameters = append(queryParameters, updateUserReq.MobileNumber)
-	// queryParameters = append(queryParameters, updateUserReq.EmailId)
-	// queryParameters = append(queryParameters, updateUserReq.PasswordChangeReq)
+	queryParameters = append(queryParameters, updateUserReq.MobileNumber)
+	queryParameters = append(queryParameters, updateUserReq.EmailId)
+	queryParameters = append(queryParameters, updateUserReq.PasswordChangeReq)
 	queryParameters = append(queryParameters, updateUserReq.ReportingManager)
 	queryParameters = append(queryParameters, updateUserReq.DealerOwner)
 	queryParameters = append(queryParameters, updateUserReq.RoleName)
@@ -237,86 +142,211 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateUserReq.Dealer)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
-	// Call the database function
-	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateUserFunction, queryParameters)
-	if err != nil || len(result) <= 0 {
-		newusername := strings.Join(strings.Fields(updateUserReq.Name)[0:2], "_")
-		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")
-		sqlStatement := fmt.Sprintf("ALTER ROLE %s RENAME TO %s;", newusername, oldusername)
-		// Execute the SQL statement
-		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
-			// Handle the error as needed, such as logging or returning an HTTP response
-		}
-
-		for _, item := range tablepermissionsModel {
-			switch item.PrivilegeType {
-			case "View":
-				sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, oldusername)
-			case "Edit":
-				sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, oldusername)
-			case "Full":
-				sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, oldusername)
-			}
-
-			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
-
-			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
-				// Handle the error as needed, such as logging or returning an HTTP response
-			}
-
-		}
+	result, err := db.CallDBFunction(db.OweHubDbIndex, db.UpdateUserFunction, queryParameters)
+	if err != nil || len(result) == 0 {
 		log.FuncErrorTrace(0, "Failed to Update User in DB with err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update User in Database due to internal error.", http.StatusInternalServerError, nil)
 		return
 	}
 
-	// records updated user in user logs
-	userInfoResult, err = db.ReteriveFromDB(
-		db.OweHubDbIndex,
-		"SELECT mobile_number, db_username FROM user_details WHERE email_id = $1",
-		[]interface{}{updateUserReq.EmailId},
-	)
+	switch {
+	case isDBRole && !wasPrevDBRole:
+		if err := CreateDBUser(username, "Welcome@123"); err != nil {
+			tx.Rollback()
+			log.FuncErrorTrace(0, "Failed to create DB user %s: %v", username, err)
+			appserver.FormAndSendHttpResp(resp, "Error creating database user", http.StatusInternalServerError, nil)
+			return
+		}
 
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to Retrieve User Details from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		if err := grantPermissions(username, updateUserReq.TablesPermissions); err != nil {
+			log.FuncErrorTrace(0, "Failed to grant initial permissions for new user %s: %v", username, err)
+			if dropErr := DeleteDBUser(username); dropErr != nil {
+				tx.Rollback()
+				log.FuncErrorTrace(0, "Failed to cleanup user after permission grant failure %s: %v", username, dropErr)
+			}
+			appserver.FormAndSendHttpResp(resp, "Error setting user permissions", http.StatusInternalServerError, nil)
+			return
+		}
+		updateUserReq.PasswordChangeReq = true
+
+	case !isDBRole && wasPrevDBRole:
+		if err := DeleteDBUser(username); err != nil {
+			tx.Rollback()
+			log.FuncErrorTrace(0, "Failed to delete DB user %s: %v", username, err)
+			appserver.FormAndSendHttpResp(resp, "Error removing database user", http.StatusInternalServerError, nil)
+			return
+		}
 		return
-	}
 
-	if len(userInfoResult) == 0 {
-		err = fmt.Errorf("Failed to Retrieve User Details from DB")
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
-		return
-	}
-
-	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
-		tablePermissionStringParts := make([]string, len(tablepermissionsModel))
-		for i, perm := range tablepermissionsModel {
-			tablePermissionStringParts[i] = fmt.Sprintf("%s(%s)", perm.TableName, strings.ToLower(perm.PrivilegeType))
+	case isDBRole && wasPrevDBRole:
+		if err := revokeAllTablePermissions(username, updateUserReq.RevokeTablePermission); err != nil {
+			tx.Rollback()
+			log.FuncErrorTrace(0, "Failed to revoke permissions for user %s: %v", username, err)
+			appserver.FormAndSendHttpResp(resp, "Error updating user permissions", http.StatusInternalServerError, nil)
+			return
 		}
 
-		details := map[string]string{
-			"name":              updateUserReq.Name,
-			"table_permissions": strings.Join(tablePermissionStringParts, ", "),
-			"mobile_number":     userInfoResult[0]["mobile_number"].(string),
-			"db_username":       userInfoResult[0]["db_username"].(string),
+		if err := grantPermissions(username, updateUserReq.TablesPermissions); err != nil {
+			tx.Rollback()
+			log.FuncErrorTrace(0, "Failed to grant permissions for user %s: %v", username, err)
+			appserver.FormAndSendHttpResp(resp, "Error updating user permissions", http.StatusInternalServerError, nil)
+			return
 		}
-		logUserApi(fmt.Sprintf("Updated user %s in owehubdb and owedb with data - %+v", updateUserReq.EmailId, details))
-	} else {
-		details := map[string]string{
-			"name":          updateUserReq.Name,
-			"mobile_number": userInfoResult[0]["mobile_number"].(string),
-		}
-		logUserApi(fmt.Sprintf("Updated user %s in owehubdb with data - %+v", updateUserReq.EmailId, details))
 	}
+	/*
+		Transaction commits here
+		if any of the grant or revoke db user
+		fails we have assed rollback for those
+		conditions, if none is hit its committed
+	*/
+	tx.Commit()
 
-	data := result[0].(map[string]interface{})
-	log.DBTransDebugTrace(0, "User updated with Id: %+v", data["result"])
-
-	appserver.FormAndSendHttpResp(resp, "User Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("User %v Updated Successfully", updateUserReq.EmailId), http.StatusOK, nil)
 }
+
+/* Function to get the users previous data */
+func getUserRole(emailID string) (string, error) {
+	query := `SELECT role FROM user_details WHERE email_id = $1`
+	params := []interface{}{emailID}
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, params)
+	if err != nil || len(data) == 0 {
+		return "", fmt.Errorf("failed to get user role: %v", err)
+	}
+	role, ok := data[0]["role"].(string)
+	if !ok {
+		return "", fmt.Errorf("invalid role type in result")
+	}
+	return role, nil
+}
+
+/* Function to creaye user if user does not exists in db */
+func CreateDBUser(username, password string) error {
+	sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, password)
+	err := db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create DB user %s: %v", username, err)
+		return err
+	}
+	log.FuncInfoTrace(0, "Successfully created DB user: %s", username)
+	return nil
+}
+
+/* Function to delete user if user exists in db */
+func DeleteDBUser(username string) error {
+	exists, err := checkDBUserExists(username)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to check DB user existence %s: %v", username, err)
+		return fmt.Errorf("failed to check user existence: %v", err)
+	}
+	if !exists {
+		log.FuncInfoTrace(0, "DB user %s does not exist, skipping deletion", username)
+		return nil
+	}
+
+	err = dropDBUser(username)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to drop DB user %s: %v", username, err)
+	}
+	return err
+}
+
+/* Function to check if user exists in db */
+func checkDBUserExists(username string) (bool, error) {
+	query := "SELECT count(*) FROM pg_user WHERE usename = $1"
+	params := []interface{}{username}
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, params)
+	if err != nil {
+		return false, err
+	}
+	count, ok := data[0]["count"].(int64)
+	if !ok {
+		return false, fmt.Errorf("invalid count type in result")
+	}
+	return count > 0, nil
+}
+
+/* Function to drop user from db */
+func dropDBUser(username string) error {
+	dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER IF EXISTS %s",
+		username, username)
+	return db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
+}
+
+/* Function to revoke permission to the user */
+func revokeAllTablePermissions(username string, tables []models.TablePermission) error {
+	for _, table := range tables {
+		sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON %s FROM %s", table.TableName, username)
+		if err := db.ExecQueryDB(db.RowDataDBIndex, sqlStatement); err != nil {
+			log.FuncErrorTrace(0, "Failed to revoke permissions for table %s from user %s: %v",
+				table.TableName, username, err)
+			return fmt.Errorf("failed to revoke permissions on table %s: %v", table.TableName, err)
+		}
+	}
+	log.FuncInfoTrace(0, "Successfully revoked permissions for user %s", username)
+	return nil
+}
+
+/* Function to grant permission to the user */
+func grantPermissions(username string, permissions []models.TablePermission) error {
+	for _, perm := range permissions {
+		var sqlStatement string
+		switch perm.PrivilegeType {
+		case "View":
+			sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s", perm.TableName, username)
+		case "Edit":
+			sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s", perm.TableName, username)
+		case "Full":
+			sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s", perm.TableName, username)
+		default:
+			return fmt.Errorf("invalid privilege type: %s", perm.PrivilegeType)
+		}
+
+		if err := db.ExecQueryDB(db.RowDataDBIndex, sqlStatement); err != nil {
+			log.FuncErrorTrace(0, "Failed to grant %s permission on table %s to user %s: %v",
+				perm.PrivilegeType, perm.TableName, username, err)
+			return err
+		}
+	}
+	log.FuncInfoTrace(0, "Successfully granted permissions for user %s", username)
+	return nil
+}
+
+// // prevPhon := data[0]["mobile_number"].(string)
+// prevRole := data[0]["role"].(string)
+// username := fmt.Sprintf("OWE_%s", updateUserReq.EmailId)
+
+// // if role is changed to admin / DB User
+// // if role is changed from admin / DB User
+// if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
+// 	if prevRole != "DB User" || prevRole != "Admin" {
+// 		//* for new users let it be default pswrd with an option to change after
+// 		err = CreateDBUser(username, "Welcome@123")
+// 		if err != nil {
+// 			log.FuncInfoTrace(0, "error updating user, err: %v, email: %v", err, updateUserReq.EmailId)
+// 			appserver.FormAndSendHttpResp(resp, "Error Updating User in Database due to internal error.", http.StatusInternalServerError, nil)
+// 			return
+// 		}
+// 	}
+// 	/*
+// 		This will remove permissions and grant permissions
+// 	*/
+// 	revokeAllTablePermissions(username, updateUserReq.RevokeTablePermission)
+// 	grantPermissions(userName, updateUserReq.TablesPermissions)
+// } else if prevRole == "DB User" || prevRole == "Admin" {
+// 	if updateUserReq.RoleName != "DB User" || updateUserReq.RoleName != "Admin" {
+// 		err = DeleteDBUser(username)
+// 		if err != nil {
+// 			log.FuncInfoTrace(0, "error updating user, err: %v, email: %v", err, updateUserReq.EmailId)
+// 			appserver.FormAndSendHttpResp(resp, "Error Updating User in Database due to internal error.", http.StatusInternalServerError, nil)
+// 			return
+// 		}
+// 	} else {
+// 		revokeAllTablePermissions(username, updateUserReq.RevokeTablePermission)
+// 		err = grantPermissions(userName, updateUserReq.TablesPermissions)
+// 		if err != nil {
+// 			log.FuncInfoTrace(0, "error updating user, err: %v, email: %v", err, updateUserReq.EmailId)
+// 			appserver.FormAndSendHttpResp(resp, "Error Updating User in Database due to internal error.", http.StatusInternalServerError, nil)
+// 			return
+// 		}
+// 	}
+// }
