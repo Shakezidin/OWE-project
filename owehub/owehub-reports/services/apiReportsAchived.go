@@ -79,11 +79,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			(COALESCE(p.projects_sold, 0) * ($3 / 100))::INT AS projects_sold,
-			COALESCE(p.mw_sold, 0) * ($3 / 100) AS mw_sold,
-			(COALESCE(p.install_ct, 0) * ($3 / 100))::INT AS install_ct,
-			COALESCE(p.mw_installed, 0) * ($3 / 100) AS mw_installed,
-			(COALESCE(p.batteries_ct, 0) * ($3 / 100))::INT AS batteries_ct
+			(COALESCE(p.projects_sold, 0) * ($3 / 100.00))::INT AS projects_sold,
+			COALESCE(p.mw_sold, 0) * ($3 / 100.00) AS mw_sold,
+			(COALESCE(p.install_ct, 0) * ($3 / 100.00))::INT AS install_ct,
+			COALESCE(p.mw_installed, 0) * ($3 / 100.00) AS mw_installed,
+			(COALESCE(p.batteries_ct, 0) * ($3 / 100.00))::INT AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
 		ON MONTHS.n = p.month AND p.year = $4
