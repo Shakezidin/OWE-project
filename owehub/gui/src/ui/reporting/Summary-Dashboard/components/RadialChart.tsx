@@ -118,9 +118,9 @@ const RadialChart = ({ year, radData }: any) => {
                     iconSize={10}
                     layout="horizontal"
                     verticalAlign="bottom"
-                    wrapperStyle={{ marginTop: '20px' }}  // Added top margin
+                    wrapperStyle={{ marginTop: '-10px' }}
                     content={() => (
-                        <div style={{ textAlign: 'center', marginTop: '3px' }}>
+                        <div style={{ textAlign: 'center', marginTop: '-3px' }}>
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '19px', marginBottom: '20px' }}>
                                 {data.slice(0, 3).map((item) => (
                                     <div key={item.name} style={{ display: 'flex', alignItems: 'center' }}>

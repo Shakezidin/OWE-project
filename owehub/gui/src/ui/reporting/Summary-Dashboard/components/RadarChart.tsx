@@ -20,12 +20,12 @@ const RadarChartComponenet = ({ radData }: any) => {
       const formattedPercentage = percentage % 1 === 0 ? percentage.toFixed(0) : percentage.toFixed(2);
 
       return (
-        <text x={x} y={y-5} textAnchor={textAnchor}>
+        <text x={x} y={y-8} textAnchor={textAnchor}>
           {/* First row: Dot and Percentage */}
           <tspan fill="#377CF6" fontWeight="bold" fontSize="14px">● </tspan>
           <tspan fill="#000000" fontWeight="500" fontSize="12px">{formattedPercentage}%</tspan>
           {/* Second row: Subject */}
-          <tspan x={x + 5} y={y + 7} fill="#767676" fontWeight="400" fontSize="12px">
+          <tspan x={x + 5} y={y + 5} fill="#767676" fontWeight="400" fontSize="12px">
             {payload.value}
           </tspan>
         </text>
