@@ -20,7 +20,7 @@ import styles from './style.module.css';
 const LineChartComp = ({monthData}:any) => {
     
     const lineChartData = monthData?.map((item: any) => ({
-        week: item.month,
+        week: (item.month).slice(0, 3),
         Progress: item.achieved,
         Target: item.target,
       }));
@@ -77,7 +77,7 @@ const LineChartComp = ({monthData}:any) => {
                     dataKey="Progress"
                     stroke="#9DD428"
                     strokeWidth={2}
-                    dot={{ r: 3, fill: '#2C84FE' }}
+                    dot={{ r: 3, fill: '#9DD428' }}
                     activeDot={{ r: 4 }}
                 >
                     {/* <LabelList

@@ -35,6 +35,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
 
+
   const role = localStorage.getItem('role');
 
   const filteredList = () => {
@@ -46,10 +47,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           isStaging !== 'staging' &&
-          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+          ( item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -64,11 +65,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE || 
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
         ) {
         } else if (
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
         ) {
           newArr[0].mob.push(item);
         }
@@ -82,13 +83,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD &&
-          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
         ) {
           newArr[0].mob.push(item);
         }
@@ -106,13 +107,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD &&
-          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.SUMMARY_DASBOARD
         ) {
           newArr[0].mob.push(item);
         }
@@ -121,13 +122,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (item.path !== ROUTES.USER_MANAEMENT) {
+        if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.SUMMARY_DASBOARD) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
           ) {
           } else if(item.path !== ROUTES.REPORTING) {
             newArr[0].mob.push(item);
@@ -147,13 +148,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.COMMISSION_DASHBOARD &&
-            item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING
+            item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
           ) {
             newArr[0].mob.push(item);
           }
@@ -172,12 +173,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD && item.path !== ROUTES.REPORTING
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
           ) {
             newArr[0].mob.push(item);
           }
@@ -192,14 +193,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS &&
-          item.path !== ROUTES.LEAD_MANAGEMENT && item.path !== ROUTES.REPORTING
+          item.path !== ROUTES.LEAD_MANAGEMENT && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
         ) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -210,13 +211,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     } else {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (item.path !== ROUTES.USER_MANAEMENT) {
+        if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.SUMMARY_DASBOARD) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE ||
               item.path === ROUTES.SALES_REP_SCHEDULER ||
-              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
+              item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
           ) {
           } else {
             newArr[0].mob.push(item);
