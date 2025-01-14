@@ -91,16 +91,16 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
         batteriesCT: item.batteries_ct,
     }));
 
-
+    const [showInput, setShowInput] = useState<Record<string, InputState>>({});
     const grandTotal = data.reduce((totals, row) => ({
-        projectSold: totals.projectSold + row.projectSold,
-        mwSold: totals.mwSold + row.mwSold,
-        installCT: totals.installCT + row.installCT,
-        mwInstalled: totals.mwInstalled + row.mwInstalled,
-        batteriesCT: totals.batteriesCT + row.batteriesCT,
+        projectSold: totals.projectSold + (showInput[row.month]?.projectSold ?? row.projectSold),
+        mwSold: totals.mwSold + (showInput[row.month]?.mwSold ?? row.mwSold),
+        installCT: totals.installCT + (showInput[row.month]?.installCT ?? row.installCT),
+        mwInstalled: totals.mwInstalled + (showInput[row.month]?.mwInstalled ?? row.mwInstalled),
+        batteriesCT: totals.batteriesCT + (showInput[row.month]?.batteriesCT ?? row.batteriesCT),
     }), { projectSold: 0, mwSold: 0, installCT: 0, mwInstalled: 0, batteriesCT: 0 });
 
-    const [showInput, setShowInput] = useState<Record<string, InputState>>({});
+
 
     const handleShow = (month: string, key: keyof InputState, value: number) => {
         setShowInput((prevState) => {
@@ -220,6 +220,11 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                     showinstallCT: false,
                     showmwInstalled: false,
                     showbatteriesCT: false,
+                    projectSold: undefined,
+                    mwSold: undefined,
+                    installCT: undefined,
+                    mwInstalled: undefined,
+                    batteriesCT: undefined
                 };
             }
             return updatedState;
@@ -228,7 +233,17 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
     const width = useWindowWidth();
     const isMobile = width <= 767;
     const isTablet = width <= 1024;
-
+    useEffect(() => {
+        const handleEscapeKey = (event: any) => {
+            if (event.key === 'Escape') {
+                handleClose();
+            }
+        };
+        document.addEventListener('keydown', handleEscapeKey);
+        return () => {
+            document.removeEventListener('keydown', handleEscapeKey);
+        };
+    }, []);
     return (
         <>
             {open &&
@@ -359,7 +374,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             maxLength={6}
                                                                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                              }}
+                                                                            }}
                                                                             value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
@@ -405,7 +420,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             maxLength={6}
                                                                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                              }}
+                                                                            }}
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
@@ -451,7 +466,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             type="number"
                                                                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                              }}
+                                                                            }}
                                                                             value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
                                                                             onChange={(e) =>
                                                                                 setShowInput((prevState) => ({
@@ -497,7 +512,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             type="number"
                                                                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                              }}
+                                                                            }}
                                                                             maxLength={6}
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
                                                                             onChange={(e) =>
