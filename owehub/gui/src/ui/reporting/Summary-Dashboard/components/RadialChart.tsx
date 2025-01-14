@@ -91,15 +91,16 @@ const RadialChart = ({ year, radData }: any) => {
 
     const width = useWindowWidth();
     const isMobile = width <= 767;
+    const isTablet = width <= 1024;
 
 
     return (
         <ResponsiveContainer width="100%">
             <RadialBarChart
                 cx="50%"
-                cy={isMobile ? "48%" : "70%"}
-                innerRadius={isMobile ? "26%" : "30%"}
-                outerRadius={isMobile ? "130%" : "140%"}
+                cy={(isTablet || isMobile) ? "48%" : "70%"}
+                innerRadius={(isTablet || isMobile) ? "26%" : "30%"}
+                outerRadius={(isTablet || isMobile) ? "130%" : "140%"}
                 barSize={15}
                 data={data}
                 startAngle={180}
@@ -122,7 +123,7 @@ const RadialChart = ({ year, radData }: any) => {
                     iconSize={10}
                     layout="horizontal"
                     verticalAlign="bottom"
-                    wrapperStyle={{ marginTop: '-10px', top: isMobile ? "196px" : "350px" }}
+                    wrapperStyle={{ marginTop: '-10px', top: isMobile ? "196px" : isTablet ? "280px" : "350px"}}
                     content={() => (
                         <div style={{ textAlign: 'center', marginTop: '-3px' }}>
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '19px', marginBottom: '20px' }}>
@@ -170,10 +171,10 @@ const RadialChart = ({ year, radData }: any) => {
 
                 <text
                     x="50%"
-                    y={isMobile ? "47%" : "67%"}
+                    y={isMobile ? "47%" : isTablet ? "47%" : "67%"}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    style={{ fontSize: isMobile ? '12px ':'16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
+                    style={{ fontSize: (isMobile) ? '12px ':'16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
                 >
                     {year.label}
                 </text>
