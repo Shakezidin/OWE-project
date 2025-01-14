@@ -100,7 +100,7 @@ const RadialChart = ({ year, radData }: any) => {
                 cx="50%"
                 cy={isMobile ? "48%" : isTablet ? "52%" : "70%"}
                 innerRadius={(isTablet || isMobile) ? "26%" : "30%"}
-                outerRadius={(isTablet || isMobile) ? "130%" : "140%"}
+                outerRadius={(isTablet || isMobile) ? "120%" : "140%"}
                 barSize={15}
                 data={data}
                 startAngle={180}

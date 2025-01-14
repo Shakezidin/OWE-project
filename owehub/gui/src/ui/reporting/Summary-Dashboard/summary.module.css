@@ -416,6 +416,9 @@
   .bottom_graphchange_div {
     margin-top: -7px;
   }
+  .top_dashboard {
+    margin: 10px;
+  }
 }
 
 @media screen and (min-width: 768px) and (max-width: 1025px) {
