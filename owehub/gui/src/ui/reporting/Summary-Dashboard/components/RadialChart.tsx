@@ -98,7 +98,7 @@ const RadialChart = ({ year, radData }: any) => {
         <ResponsiveContainer width="100%">
             <RadialBarChart
                 cx="50%"
-                cy={(isTablet || isMobile) ? "48%" : "70%"}
+                cy={isMobile ? "48%" : isTablet ? "52%" : "70%"}
                 innerRadius={(isTablet || isMobile) ? "26%" : "30%"}
                 outerRadius={(isTablet || isMobile) ? "130%" : "140%"}
                 barSize={15}
