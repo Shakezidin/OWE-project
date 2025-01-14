@@ -66,6 +66,16 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		appserver.FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
 		return
 	}
+	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
+		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
+		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
+		if len(dataReq.DealerName) == 0 {
+
+			log.FuncErrorTrace(0, "no dealer name selected")
+			appserver.FormAndSendHttpResp(resp, "LeaderBoard csv Data", http.StatusOK, nil, RecordCount)
+			return
+		}
+	}
 
 	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) &&
 		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
@@ -109,7 +119,17 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 			return
 		}
-		dataReq.DealerName = dealerNames
+		dealerNameSet := make(map[string]bool)
+		for _, dealer := range dealerNames {
+			dealerNameSet[dealer] = true
+		}
+
+		for _, dealerNameFromUI := range dataReq.DealerName {
+			if !dealerNameSet[dealerNameFromUI] {
+				appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+				return
+			}
+		}
 	}
 
 	// Dynamic dealer names and date range from frontend request
