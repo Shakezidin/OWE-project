@@ -84,12 +84,12 @@ const UserTable: React.FC<UserTableProps> = ({
   const UserManagementTableColumn = useMemo(() => {
     const col = [...UserColumns];
     if (selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER) {
-      col.splice(3, 0, {
-        name: 'dealer_owner',
-        displayName: 'Dealer',
-        type: 'string',
-        isCheckbox: false,
-      });
+      // col.splice(3, 0, {
+      //   name: 'dealer_owner',
+      //   displayName: 'Dealer',
+      //   type: 'string',
+      //   isCheckbox: false,
+      // });
     } else if (selectedValue === TYPE_OF_USER.ALL) {
       col.splice(3, 0, {
         name: 'role_name',
