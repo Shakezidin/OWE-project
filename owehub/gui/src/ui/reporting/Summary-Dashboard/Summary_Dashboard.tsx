@@ -233,7 +233,7 @@ const Summary_Dashboard = () => {
                                 onChange={(value: any) => setReportType(value)}
                                 value={reportType}
                                 controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
-                                menuWidth= {isMobile ? "120px" : "auto"}
+                                menuWidth= {isMobile ? "120px" : "150px"}
                                 menuListStyles={{ fontWeight: 400 }}
                                 singleValueStyles={{ fontWeight: 400 }}
                             />
@@ -242,7 +242,7 @@ const Summary_Dashboard = () => {
                                 onChange={(value: any) => setYear(value)}
                                 value={year}
                                 controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150  }}
-                                menuWidth= {isMobile ? "80px" : "auto"}
+                                menuWidth= {isMobile ? "80px" : "150px"}
                                 menuListStyles={{ fontWeight: 400 }}
                                 singleValueStyles={{ fontWeight: 400 }}
                             />
