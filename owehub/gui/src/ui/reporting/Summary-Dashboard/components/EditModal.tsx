@@ -100,7 +100,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
         batteriesCT: totals.batteriesCT + (showInput[row.month]?.batteriesCT ?? row.batteriesCT),
     }), { projectSold: 0, mwSold: 0, installCT: 0, mwInstalled: 0, batteriesCT: 0 });
 
-    
+
 
     const handleShow = (month: string, key: keyof InputState, value: number) => {
         setShowInput((prevState) => {
@@ -220,6 +220,11 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                     showinstallCT: false,
                     showmwInstalled: false,
                     showbatteriesCT: false,
+                    projectSold: undefined,
+                    mwSold: undefined,
+                    installCT: undefined,
+                    mwInstalled: undefined,
+                    batteriesCT: undefined
                 };
             }
             return updatedState;
