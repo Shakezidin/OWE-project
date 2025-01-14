@@ -98,13 +98,6 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-main-service/v1/import_user_csv",
-		apiHandler.HandleImportUsersCsvRequest,
-		false,
-		[]types.UserGroup{types.GroupAdminDealer},
-	},
-	{
-		strings.ToUpper("POST"),
 		"/owe-main-service/v1/db_tables",
 		apiHandler.HandleGetTableRequest,
 		true,

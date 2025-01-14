@@ -1,5 +1,6 @@
 import React from 'react'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarAngleAxisProps, ResponsiveContainer, Legend } from 'recharts';
+import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 
 const RadarChartComponenet = ({ radData }: any) => {
@@ -20,7 +21,7 @@ const RadarChartComponenet = ({ radData }: any) => {
       const formattedPercentage = percentage % 1 === 0 ? percentage.toFixed(0) : percentage.toFixed(2);
 
       return (
-        <text x={x} y={y-8} textAnchor={textAnchor}>
+        <text x={x} y={y - 8} textAnchor={textAnchor}>
           {/* First row: Dot and Percentage */}
           <tspan fill="#377CF6" fontWeight="bold" fontSize="14px">● </tspan>
           <tspan fill="#000000" fontWeight="500" fontSize="12px">{formattedPercentage}%</tspan>
@@ -34,19 +35,18 @@ const RadarChartComponenet = ({ radData }: any) => {
     return null;
   };
 
-
-
+  const width = useWindowWidth();
+  const isMobile = width <= 767;
+  const isTablet = width <= 1024;
 
   return (
-
     <ResponsiveContainer width="100%" height="100%">
-      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+      <RadarChart cx="50%" cy="50%" outerRadius={(isTablet || isMobile) ? "65%" : "80%"} data={data}>
         <PolarGrid />
         <PolarAngleAxis
           dataKey="subject"
           tick={<CustomTick />}
         />
-
         <Radar
           name="Achieve"
           dataKey="Achieve"

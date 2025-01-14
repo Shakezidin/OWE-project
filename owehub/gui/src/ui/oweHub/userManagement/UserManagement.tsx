@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import UserPieChart from './pieChart/UserPieChart';
 import UserOnboardingCreation from './userOnboard/UserOnboardCreation';
+import ImportUser from './userOnboard/ImportUser';
 import { AddNewButton } from '../../components/button/AddNewButton';
+import { ImportButton } from '../../components/button/ImportButton';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   fetchUserListBasedOnRole,
@@ -38,6 +40,7 @@ import useAuth from '../../../hooks/useAuth';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const [openn, setOpenn] = useState<boolean>(false)
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,9 +94,15 @@ const UserManagement: React.FC = () => {
   const [isClicked1, setIsClicked1] = useState(false);
 
   const handleOpen = () => setOpen(true);
+  const handleImport = () => setOpenn(true);
   const handleClose = () => {
     dispatch(userResetForm());
     setOpen(false);
+  };
+  const handleClosee = () => {
+    dispatch(userResetForm());
+    setOpenn(false);
+    
   };
   /** fetch onboarding users data*/
   useEffect(() => {
@@ -399,6 +408,21 @@ const UserManagement: React.FC = () => {
           setLogoUrl={setLogoUrl}
         />
       )}
+        {openn && (
+        <ImportUser
+          handleClose={handleClosee}
+         
+       
+      
+           
+          tablePermissions={tablePermissions}
+         
+         
+          onSubmitCreateUser={onSubmitCreateUser}
+          
+         
+        />
+      )}
       <div className="barchart-section">
         <UserPieChart
           onboardingList={userOnboardingList}
@@ -417,6 +441,14 @@ const UserManagement: React.FC = () => {
               title={'Add New'}
               onClick={() => {
                 handleOpen();
+              }}
+            />
+          }
+          ImportBtn={
+            <ImportButton
+              title={'Import'}
+              onClick={() => {
+                handleImport();
               }}
             />
           }
