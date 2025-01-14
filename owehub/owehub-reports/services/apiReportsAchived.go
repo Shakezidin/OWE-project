@@ -122,7 +122,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			INSTALL_CT AS (
 				SELECT
 					DATE_PART('MONTH', PV_COMPLETION_DATE) AS month,
-					COUNT(DISTINCT CUSTOMER_UNIQUE_ID) AS val
+					COUNT(*) AS val
 				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
 				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
 				GROUP BY month
