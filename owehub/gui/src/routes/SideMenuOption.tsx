@@ -13,6 +13,7 @@ import { MdOutlinePermMedia } from "react-icons/md";
 import { FaCalculator } from "react-icons/fa";
 import { ICONS } from '../resources/icons/Icons';
 import { TbReportSearch } from "react-icons/tb";
+import { GoGoal } from 'react-icons/go';
 const mob = {
   mob: [
     {
@@ -108,8 +109,18 @@ const mob = {
       sidebarProps: {
         displayText: 'Leads',
         icon: (
+         
           // <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
           <img src={ICONS.MenuLead} style={{ marginLeft: '3px' }} className="hover-icon" width={20} height={20} alt="sidebar-menu-logo" />
+        ),
+      },
+    },
+    {
+      path: ROUTES.SUMMARY_DASBOARD,
+      sidebarProps: {
+        displayText: 'OWE Goals',
+        icon: (
+          <GoGoal size={18} style={{ flexShrink: '0' }}/>
         ),
       },
     },
