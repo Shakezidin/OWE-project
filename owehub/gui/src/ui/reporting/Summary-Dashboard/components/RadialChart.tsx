@@ -1,6 +1,7 @@
 import React from 'react'
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 interface ProgressData {
     [key: string]: {
@@ -88,14 +89,17 @@ const RadialChart = ({ year, radData }: any) => {
         return null;
     };
 
+    const width = useWindowWidth();
+    const isMobile = width <= 767;
+
 
     return (
         <ResponsiveContainer width="100%">
             <RadialBarChart
                 cx="50%"
-                cy="70%"
-                innerRadius="30%"
-                outerRadius="140%"
+                cy={isMobile ? "48%" : "70%"}
+                innerRadius={isMobile ? "26%" : "30%"}
+                outerRadius={isMobile ? "130%" : "140%"}
                 barSize={15}
                 data={data}
                 startAngle={180}
@@ -118,7 +122,7 @@ const RadialChart = ({ year, radData }: any) => {
                     iconSize={10}
                     layout="horizontal"
                     verticalAlign="bottom"
-                    wrapperStyle={{ marginTop: '-10px' }}
+                    wrapperStyle={{ marginTop: '-10px', top: isMobile ? "196px" : "350px" }}
                     content={() => (
                         <div style={{ textAlign: 'center', marginTop: '-3px' }}>
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '19px', marginBottom: '20px' }}>
@@ -166,10 +170,10 @@ const RadialChart = ({ year, radData }: any) => {
 
                 <text
                     x="50%"
-                    y="67%"
+                    y={isMobile ? "47%" : "67%"}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    style={{ fontSize: '16px', fontWeight: 'bold' }}
+                    style={{ fontSize: isMobile ? '12px ':'16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
                 >
                     {year.label}
                 </text>
