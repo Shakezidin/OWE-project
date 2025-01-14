@@ -228,7 +228,17 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
     const width = useWindowWidth();
     const isMobile = width <= 767;
     const isTablet = width <= 1024;
-
+    useEffect(() => {
+        const handleEscapeKey = (event: any) => {
+          if (event.key === 'Escape') {
+            handleClose();
+          }
+        };
+        document.addEventListener('keydown', handleEscapeKey);
+        return () => {
+          document.removeEventListener('keydown', handleEscapeKey);
+        };
+      }, []);
     return (
         <>
             {open &&
