@@ -3,9 +3,12 @@ CREATE OR REPLACE FUNCTION update_user(
     p_mobile_number VARCHAR(20),
     p_email_id VARCHAR(255),
     p_password_change_req BOOLEAN,
+   
     p_reporting_manager VARCHAR(255),
     p_dealer_owner VARCHAR(255),
+   
     p_role_name VARCHAR(50),
+    
     p_user_status VARCHAR(50),
     p_designation VARCHAR(255),
     p_description VARCHAR(501),
@@ -16,7 +19,8 @@ CREATE OR REPLACE FUNCTION update_user(
     p_zipcode VARCHAR(255),
     p_country VARCHAR(50),
     p_user_code VARCHAR(255),
-    p_dealer VARCHAR(255),
+    
+    p_dealer_name VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -28,12 +32,12 @@ DECLARE
     v_zipcode_id INT;
 BEGIN
     -- Get dealer ID if dealer is provided
-    IF p_dealer IS NOT NULL AND p_dealer != '' THEN
+    IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
         SELECT id INTO v_dealer_id
         FROM v_dealer
-        WHERE dealer_code = p_dealer;
+        WHERE dealer_name = p_dealer_name;
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'Dealer with code % not found', p_dealer;
+            RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
         END IF;
     END IF;
 

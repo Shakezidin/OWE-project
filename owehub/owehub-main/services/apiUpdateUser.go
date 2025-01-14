@@ -110,9 +110,9 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	/*
+	/************************
 		Transaction starts here
-	*/
+	************************/
 	tx, err := db.StartTransaction(db.OweHubDbIndex)
 	defer func() {
 		if r := recover(); r != nil {
