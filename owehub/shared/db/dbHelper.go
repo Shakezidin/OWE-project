@@ -459,3 +459,86 @@ func CommitTransaction(tx *sql.Tx) error {
 
 	return nil
 }
+
+/******************************************************************************
+ * FUNCTION:    CallDBFunctionWithTx
+ * DESCRIPTION: This function will call DB function within a transaction
+ * INPUT:       tx *sql.Tx, functionName string, params []interface{}
+ * RETURNS:     []map[string]interface{}, error
+ ******************************************************************************/
+func CallDBFunctionWithTx(tx *sql.Tx, functionName string, parameters []interface{}) ([]map[string]interface{}, error) {
+	log.EnterFn(0, "CallDBFunctionWithTx")
+	defer func() { log.ExitFn(0, "CallDBFunctionWithTx", err) }()
+
+	log.FuncDebugTrace(0, "CallDBFunctionWithTx functionName: %v parameters: %+v", functionName, parameters)
+
+	var args []string
+	for i, param := range parameters {
+		switch v := param.(type) {
+		case []string:
+			args = append(args, fmt.Sprintf("$%d::TEXT[]", i+1))
+			var textArray pgtype.TextArray
+			err := textArray.Set(v)
+			if err != nil {
+				log.FuncErrorTrace(0, "Error setting TextArray: %v\n", err)
+				continue
+			}
+			parameters[i] = textArray
+		case pgtype.JSONB:
+			args = append(args, fmt.Sprintf("$%d::jsonb", i+1))
+		default:
+			args = append(args, fmt.Sprintf("$%d", i+1))
+		}
+	}
+
+	query := fmt.Sprintf("SELECT %s(%s) AS result", functionName, strings.Join(args, ", "))
+	log.FuncDebugTrace(0, "CallDBFunctionWithTx query: %v parameters: %+v", query, parameters)
+
+	rows, err := tx.Query(query, parameters...)
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunctionWithTx Query Failed with error = %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	columns, err := rows.Columns()
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunctionWithTx No columns found error = %v", err)
+		return nil, err
+	}
+
+	types, err := rows.ColumnTypes()
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunctionWithTx failed to get Column Type error = %v", err)
+		return nil, err
+	}
+
+	var outData []map[string]interface{}
+	resultSlice := make([]interface{}, len(columns))
+	for i := range resultSlice {
+		resultSlice[i] = new(interface{})
+	}
+
+	for rows.Next() {
+		err := rows.Scan(resultSlice...)
+		if err != nil {
+			log.FuncErrorTrace(0, "CallDBFunctionWithTx failed to get row data error = %v", err)
+			return nil, err
+		}
+
+		rowData := make(map[string]interface{})
+		for i, value := range resultSlice {
+			columnName := columns[i]
+			columnType := types[i]
+			convertedValue, err := convertToType(*value.(*interface{}), columnType)
+			if err != nil {
+				log.FuncErrorTrace(0, "CallDBFunctionWithTx failed convert data columnType: %v error: %v", columnType, err)
+				return nil, err
+			}
+			rowData[columnName] = convertedValue
+		}
+		outData = append(outData, rowData)
+	}
+
+	return outData, nil
+}

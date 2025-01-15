@@ -10,12 +10,12 @@ type UpdateUserReq struct {
 	Name                  string            `json:"name"`
 	EmailId               string            `json:"email_id"`
 	MobileNumber          string            `json:"mobile_number"`
-	Designation           string            `json:"designation"`
-	RoleName              string            `json:"role_name"`
 	PasswordChangeReq     bool              `json:"password_change_required"`
 	ReportingManager      string            `json:"reporting_manager"`
 	DealerOwner           string            `json:"dealer_owner"`
+	RoleName              string            `json:"role_name"`
 	UserStatus            string            `json:"user_status"`
+	Designation           string            `json:"designation"`
 	Description           string            `json:"description"`
 	Region                string            `json:"region"`
 	StreetAddress         string            `json:"street_address"`
@@ -24,9 +24,11 @@ type UpdateUserReq struct {
 	Zipcode               string            `json:"zipcode"`
 	Country               string            `json:"country"`
 	UserCode              string            `json:"user_code"`
-	Dealer                string            `json:"dealer_name"`
+	Dealer                string            `json:"dealer"`
+	DealerLogo            string            `json:"dealer_logo"`
 	TablesPermissions     []TablePermission `json:"tables_permissions"`
-	RevokeTablePermission []TablePermission `json:"revoke_permissions"`
+	TeamName              string            `json:"team_name"`
+	RevokeTablePermission []TablePermission `json:"revoke_table_permission"`
 }
 
 type DeleteUsers struct {
