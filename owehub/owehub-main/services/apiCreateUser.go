@@ -306,5 +306,5 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	appserver.FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
+appserver.FormAndSendHttpResp(resp,	 "User Created Successfully", http.StatusOK, nil)
 }

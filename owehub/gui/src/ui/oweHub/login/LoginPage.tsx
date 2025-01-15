@@ -27,6 +27,7 @@ import Lottie from 'lottie-react';
 import PowerAnimation from '../../../resources/assets/power_anime.json';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
+import { encryptData, decryptData } from '../../../utiles/Encryption';
 
 export const LoginPage = () => {
   const { authData, saveAuthData } = useAuth();
@@ -59,8 +60,9 @@ export const LoginPage = () => {
   /** handle local storage */
   useEffect(() => {
     if (authData?.isRememberMe === 'true') {
-      handleInputChange('email_id', authData?.email);
-      handleInputChange('password', authData?.password);
+      
+      handleInputChange('email_id', authData.email);
+      handleInputChange('password', authData.password);
       handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
     }
   }, [authData]);
@@ -97,6 +99,7 @@ export const LoginPage = () => {
             time_to_expire_minutes,
             is_password_change_required,
           } = result.data;
+     
 
           const loginResponse: AuthData = {
             role: role_name,

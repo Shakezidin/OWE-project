@@ -128,9 +128,9 @@ func CalcAmtPaidByDealer(dealerPayments []oweconfig.DealerPaymentsStruct, dealer
 	return amtPaid
 }
 
-func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, uniqueId string) (amtPaid float64) {
+func CalcAmtPaidByDealerForProjectId(dealerPayments []oweconfig.DealerPaymentsStruct, uniqueId string, dealer string) (amtPaid float64) {
 	for _, entry := range dealerPayments {
-		if entry.UniqueId == uniqueId {
+		if entry.UniqueId == uniqueId && entry.SalesPartner == dealer {
 			// Handle currency prefix and potential negative sign
 			paymentAmountStr := entry.PaymentAmount
 
