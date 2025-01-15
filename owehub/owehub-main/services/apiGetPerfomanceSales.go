@@ -42,7 +42,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		SiteSurveyD        string
 		SiteSurveyComD     string
 		CadD               string
-		CadCompleteD       string
+		PlanSetCompleteD   string
 		permitSubmittedD   string
 		IcSubmitD          string
 		PermitApprovedD    string
@@ -265,12 +265,12 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 			CadD = CadReady.Format("2006-01-02")
 		}
 
-		CadCompleteDate, ok := item["cad_complete_date"].(time.Time)
+		PlanSetCompleteDate, ok := item["plan_set_complete_day"].(time.Time)
 		if !ok {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			CadCompleteD = ""
+			PlanSetCompleteD = ""
 		} else {
-			CadCompleteD = CadCompleteDate.Format("2006-01-02")
+			PlanSetCompleteD = PlanSetCompleteDate.Format("2006-01-02")
 		}
 
 		PvSubmittedDate, ok := item["permit_submitted_date"].(time.Time)
@@ -449,9 +449,9 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		_, SiteSurveyCountT, _, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
-		_, CadDesignCountT, _ := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
+		_, CadDesignCountT, _ := getCadColor(CadD, PlanSetCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
-		_, PerimittingCountT, _ := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
+		_, PerimittingCountT, _ := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, PlanSetCompleteD)
 		PerimittingCount += PerimittingCountT
 		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD, RoofingStatus)
 		RoofingCount += RoofingCountT

@@ -15,9 +15,9 @@ const RadialChart = ({ year, radData }: any) => {
 
     const getColorByKey = (key: any) => {
         switch (key) {
-            case 'Batteries':
+            case 'Batteries Ct':
                 return '#F9CA3E';
-            case 'Installs':
+            case 'Install Ct':
                 return '#4ECF54';
             case 'mW Installed':
                 return '#64B5F6';
@@ -139,7 +139,7 @@ const RadialChart = ({ year, radData }: any) => {
                                                 marginRight: 5,
                                             }}
                                         />
-                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: isMobile ? '10px' : '12px' }}>
                                             {item.name}
                                         </span>
                                     </div>
@@ -158,7 +158,7 @@ const RadialChart = ({ year, radData }: any) => {
                                                 marginRight: 5,
                                             }}
                                         />
-                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: isMobile ? '10px' : '12px' }}>
                                             {item.name}
                                         </span>
                                     </div>

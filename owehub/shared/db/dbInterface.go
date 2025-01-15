@@ -58,6 +58,7 @@ const (
 	TableName_v_dealer               string = "v_dealer"
 	TableName_slackconfig            string = "slackconfig"
 	TableName_Sales_Rep_DBhub        string = "sales_rep_dbhub_schema"
+	UpdateExistingUser               string = "update_existing_user"
 
 	/* Battery Backup Calculator Tables and Procedures */
 	CreateBatteryBackupCalcProspectInfo string = "create_prospect_info"

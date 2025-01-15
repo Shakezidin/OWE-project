@@ -15,6 +15,22 @@ type GetReportsTargetReq struct {
 	Year             string `json:"year"`
 }
 
+type ProductionTargetOrAchievedItem struct {
+	ProjectsSold int64   `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    int64   `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  int64   `json:"batteries_ct"`
+}
+
+type ProductionTargetOrAchievedPercentage struct {
+	ProjectsSold float64 `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    float64 `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  float64 `json:"batteries_ct"`
+}
+
 type GetReportsTargetRespSummaryItem struct {
 	Target            interface{} `json:"target"`
 	Achieved          interface{} `json:"achieved"`

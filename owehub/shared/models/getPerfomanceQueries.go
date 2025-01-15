@@ -91,7 +91,7 @@ func SalesMetricsRetrieveQueryFunc() string {
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
             planset_cad_schema.item_created_on AS cad_ready,
-            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
+            planset_cad_schema.plan_set_complete_day AS plan_set_complete_day,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
