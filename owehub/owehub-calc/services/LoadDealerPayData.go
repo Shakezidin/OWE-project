@@ -119,7 +119,7 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	drawMax, Rl := CalcDrawMaxRedLineCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, financeCompany, ST, ContractDate)
 	DrawPerc := CalcDrawPercCommissionDealerPay(partnerPaySchedule.PartnerPayScheduleData, DealerCode, ContractDate)
 	credit := GetCreditByUniqueID(dealerCredit.DealerCreditsData, uniqueID)
-	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, uniqueID)
+	amt_paid := CalcAmtPaidByDealerForProjectId(dealerPayments.DealerPaymentsData, uniqueID, DealerCode)
 	totalGrossCommission := CalcTotalGrossCommissionDealerPay(NetEpc, Rl, SystemSize)
 	dlrOvrdAmount := CalcDealerOvrdCommissionDealerPay(dealerovrd.DealerOverrideData, DealerCode)
 	LoanFee := CalcLoanFeeCommissionDealerPay(financeSchedule.FinanceScheduleData, financeType, financeCompany, ST)
