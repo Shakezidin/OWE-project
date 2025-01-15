@@ -82,7 +82,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Internal server error", http.StatusInternalServerError, nil)
 		return
 	}
-	log.FuncInfoTrace(0, "HERE I AM")
+
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
@@ -125,10 +125,8 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	prevUserCreatedAt, ok := prevUserData["created_at"].(time.Time)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get prev created at: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Something is not right!!", http.StatusBadRequest, nil)
-		return
 	}
-	
+
 	prevUserName := fmt.Sprintf("OWE_%s", prevMobile)
 	var dbUsername string
 	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {

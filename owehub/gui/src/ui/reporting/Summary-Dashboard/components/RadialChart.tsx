@@ -139,7 +139,7 @@ const RadialChart = ({ year, radData }: any) => {
                                                 marginRight: 5,
                                             }}
                                         />
-                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: isMobile ? '10px' : '12px' }}>
                                             {item.name}
                                         </span>
                                     </div>
@@ -158,7 +158,7 @@ const RadialChart = ({ year, radData }: any) => {
                                                 marginRight: 5,
                                             }}
                                         />
-                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: '12px' }}>
+                                        <span style={{ color: '#767676', fontWeight: '400', fontSize: isMobile ? '10px' : '12px' }}>
                                             {item.name}
                                         </span>
                                     </div>

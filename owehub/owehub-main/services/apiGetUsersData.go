@@ -469,6 +469,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(" AND ")
 			}
 			switch column {
+			case "email_id":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.email_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
