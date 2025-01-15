@@ -467,6 +467,7 @@ func CommitTransaction(tx *sql.Tx) error {
  * RETURNS:     []map[string]interface{}, error
  ******************************************************************************/
 func CallDBFunctionWithTx(tx *sql.Tx, functionName string, parameters []interface{}) ([]map[string]interface{}, error) {
+	var err error
 	log.EnterFn(0, "CallDBFunctionWithTx")
 	defer func() { log.ExitFn(0, "CallDBFunctionWithTx", err) }()
 

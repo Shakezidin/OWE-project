@@ -1,3 +1,8 @@
+/**************************************************************************
+ * File       	   : apiUpdateUser.go
+ * DESCRIPTION     : This file contains API to update users
+ * DATE            : 15-January-2025
+ **************************************************************************/
 package services
 
 import (
@@ -118,7 +123,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		dbUsername,
 		updateUserReq.MobileNumber,
 		emailId,
-		prevPassword, // Use previous password
+		prevPassword,
 		false,
 		updateUserReq.ReportingManager,
 		updateUserReq.DealerOwner,
@@ -227,21 +232,6 @@ func handleDBUserPermissionUpdate(username string, newPermissions []models.Table
 	return nil
 }
 
-/* Function to get the users previous data */
-func getUserRole(emailID string) (string, error) {
-	query := `SELECT role FROM user_details WHERE email_id = $1`
-	params := []interface{}{emailID}
-	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, params)
-	if err != nil || len(data) == 0 {
-		return "", fmt.Errorf("failed to get user role: %v", err)
-	}
-	role, ok := data[0]["role"].(string)
-	if !ok {
-		return "", fmt.Errorf("invalid role type in result")
-	}
-	return role, nil
-}
-
 /* Function to creaye user if user does not exists in db */
 func CreateDBUser(username, password string) error {
 	sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, password)
@@ -333,43 +323,3 @@ func grantPermissions(username string, permissions []models.TablePermission) err
 	log.FuncInfoTrace(0, "Successfully granted permissions for user %s", username)
 	return nil
 }
-
-// // prevPhon := data[0]["mobile_number"].(string)
-// prevRole := data[0]["role"].(string)
-// username := fmt.Sprintf("OWE_%s", updateUserReq.EmailId)
-
-// // if role is changed to admin / DB User
-// // if role is changed from admin / DB User
-// if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
-// 	if prevRole != "DB User" || prevRole != "Admin" {
-// 		//* for new users let it be default pswrd with an option to change after
-// 		err = CreateDBUser(username, "Welcome@123")
-// 		if err != nil {
-// 			log.FuncInfoTrace(0, "error updating user, err: %v, email: %v", err, updateUserReq.EmailId)
-// 			appserver.FormAndSendHttpResp(resp, "Error Updating User in Database due to internal error.", http.StatusInternalServerError, nil)
-// 			return
-// 		}
-// 	}
-// 	/*
-// 		This will remove permissions and grant permissions
-// 	*/
-// 	revokeAllTablePermissions(username, updateUserReq.RevokeTablePermission)
-// 	grantPermissions(userName, updateUserReq.TablesPermissions)
-// } else if prevRole == "DB User" || prevRole == "Admin" {
-// 	if updateUserReq.RoleName != "DB User" || updateUserReq.RoleName != "Admin" {
-// 		err = DeleteDBUser(username)
-// 		if err != nil {
-// 			log.FuncInfoTrace(0, "error updating user, err: %v, email: %v", err, updateUserReq.EmailId)
-// 			appserver.FormAndSendHttpResp(resp, "Error Updating User in Database due to internal error.", http.StatusInternalServerError, nil)
-// 			return
-// 		}
-// 	} else {
-// 		revokeAllTablePermissions(username, updateUserReq.RevokeTablePermission)
-// 		err = grantPermissions(userName, updateUserReq.TablesPermissions)
-// 		if err != nil {
-// 			log.FuncInfoTrace(0, "error updating user, err: %v, email: %v", err, updateUserReq.EmailId)
-// 			appserver.FormAndSendHttpResp(resp, "Error Updating User in Database due to internal error.", http.StatusInternalServerError, nil)
-// 			return
-// 		}
-// 	}
-// }
