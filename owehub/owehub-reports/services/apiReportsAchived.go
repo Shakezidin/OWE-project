@@ -109,6 +109,9 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					COUNT(DISTINCT UNIQUE_ID) AS val
 				FROM CUSTOMERS_CUSTOMERS_SCHEMA
 				WHERE DATE_PART('YEAR', SALE_DATE) = $3
+				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND UNIQUE_ID IS NOT NULL
+				AND UNIQUE_ID != ''
 				GROUP BY month
 			),
 			KW_SOLD AS (
@@ -117,6 +120,9 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					SUM(COALESCE(NULLIF(CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) AS val
 				FROM CUSTOMERS_CUSTOMERS_SCHEMA
 				WHERE DATE_PART('YEAR', SALE_DATE) = $3
+				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND UNIQUE_ID IS NOT NULL
+				AND UNIQUE_ID != ''
 				GROUP BY month
 			),
 			INSTALL_CT AS (
@@ -125,6 +131,9 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					COUNT(*) AS val
 				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
 				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
+				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND CUSTOMER_UNIQUE_ID IS NOT NULL
+				AND CUSTOMER_UNIQUE_ID != ''
 				GROUP BY month
 			),
 			KW_INSTALLED AS (
@@ -133,6 +142,9 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					SUM(COALESCE(NULLIF(SYSTEM_SIZE, '')::FLOAT, 0)) AS val
 				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
 				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
+				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND CUSTOMER_UNIQUE_ID IS NOT NULL
+				AND CUSTOMER_UNIQUE_ID != ''
 				GROUP BY month
 			),
 			BATTERIES_CT AS (
@@ -142,6 +154,9 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 				FROM PLANSET_CAD_SCHEMA P
 				JOIN CUSTOMERS_CUSTOMERS_SCHEMA C ON C.UNIQUE_ID = P.OUR_NUMBER
 				WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
+				AND C.PROJECT_STATUS IN ('ACTIVE', '')
+				AND C.UNIQUE_ID IS NOT NULL
+				AND C.UNIQUE_ID != ''
 				GROUP BY month
 			)
 		SELECT
@@ -183,11 +198,13 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		totalTarget.MwInstalled += target.MwInstalled
 		totalTarget.ProjectsSold += target.ProjectsSold
 		totalTarget.MwSold += target.MwSold
+		totalTarget.BatteriesCt += target.BatteriesCt
 
 		totalAchieved.InstallCt += acheived.InstallCt
 		totalAchieved.MwInstalled += acheived.MwInstalled
 		totalAchieved.ProjectsSold += acheived.ProjectsSold
 		totalAchieved.MwSold += acheived.MwSold
+		totalAchieved.BatteriesCt += acheived.BatteriesCt
 
 		// get stats and overview data
 		statsItem, overviewItem := getMonthlyStatsAndOverview(
@@ -351,7 +368,7 @@ func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSele
 		ok            bool
 	)
 
-	// overviewItem is simple
+	// overviewItem is simply kept as is
 
 	overviewItem.Achieved = achieved
 	overviewItem.Target = target
