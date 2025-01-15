@@ -27,6 +27,7 @@ import Lottie from 'lottie-react';
 import PowerAnimation from '../../../resources/assets/power_anime.json';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
+import { encryptData, decryptData } from '../../../utiles/Encryption';
 
 export const LoginPage = () => {
   const { authData, saveAuthData } = useAuth();
@@ -59,8 +60,10 @@ export const LoginPage = () => {
   /** handle local storage */
   useEffect(() => {
     if (authData?.isRememberMe === 'true') {
-      handleInputChange('email_id', authData?.email);
-      handleInputChange('password', authData?.password);
+     
+      const decryptedPassword = decryptData(authData.password);
+      handleInputChange('email_id', authData.email);
+      handleInputChange('password', decryptedPassword);
       handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
     }
   }, [authData]);
@@ -97,6 +100,7 @@ export const LoginPage = () => {
             time_to_expire_minutes,
             is_password_change_required,
           } = result.data;
+          const encryptedPassword = encryptData(credentials.password);
 
           const loginResponse: AuthData = {
             role: role_name,
@@ -104,7 +108,7 @@ export const LoginPage = () => {
             email: email_id,
             type: access_token,
             token: access_token,
-            password: credentials.password,
+            password: encryptedPassword,
             dealer: dealer_name,
             expirationTimeInMin: time_to_expire_minutes,
             expirationTime: (
