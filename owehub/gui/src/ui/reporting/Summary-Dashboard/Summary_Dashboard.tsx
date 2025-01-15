@@ -49,33 +49,33 @@ interface MonthlyStatsItem {
 const Summary_Dashboard = () => {
     const [reportType, setReportType] = useState<Option>(
         {
-            label: 'November',
-            value: 'November',
+            label: 'January',
+            value: 'January',
         }
     );
     const [year, setYear] = useState<Option>(
         {
-            label: '2024',
-            value: '2024',
+            label: '2025',
+            value: '2025',
         }
     );
     const years = [
         {
-            label: '2022',
-            value: '2022',
-        },
-        {
-            label: '2023',
-            value: '2023',
-        },
-        {
-            label: '2024',
-            value: '2024',
-        },
-        {
             label: '2025',
             value: '2025',
-        }
+        },
+        {
+            label: '2026',
+            value: '2026',
+        },
+        {
+            label: '2027',
+            value: '2027',
+        },
+        {
+            label: '2028',
+            value: '2028',
+        },
     ]
     const options = [
         {
@@ -230,6 +230,8 @@ const Summary_Dashboard = () => {
 
     const width = useWindowWidth();
     const isMobile = width <= 767;
+    const desiredOrder = ["Projects Sold", "mW Sold", "Install Ct", "mW Installed", "Batteries Ct"];
+
 
 
     return (
@@ -240,41 +242,69 @@ const Summary_Dashboard = () => {
                     <div className={classes.top_box_heading}>
                         <p>Summary</p>
                         <div className={classes.top_box_drop}>
-                            <div className={classes.bottom_box_chart2_head_buttons_sec}>
-                                <div
-                                    className={`${classes.bottom_box_button_sec} ${activePerc === '100' ? classes.active : ''}`}
-                                    // style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
-                                    onClick={() => handlePercButtonClick('100')}
-                                >
-                                    100%
+
+                            <div className={classes.ed_perc}>
+                                <div className={classes.bottom_box_chart2_head_buttons_sec}>
+                                    <div
+                                        className={`${classes.bottom_box_button_sec} ${activePerc === '100' ? classes.active : ''}`}
+                                        // style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
+                                        onClick={() => handlePercButtonClick('100')}
+                                    >
+                                        100%
+                                    </div>
+                                    <div
+                                        className={`${classes.bottom_box_button_sec} ${activePerc === '75' ? classes.active : ''}`}
+                                        // style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
+                                        onClick={() => handlePercButtonClick('75')}
+                                    >
+                                        75%
+                                    </div>
                                 </div>
-                                <div
-                                    className={`${classes.bottom_box_button_sec} ${activePerc === '75' ? classes.active : ''}`}
-                                    // style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
-                                    onClick={() => handlePercButtonClick('75')}
-                                >
-                                    75%
+
+                                <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
+                                    <img src={ICONS.ReportEdit} alt="Edit" />
+                                    <Tooltip
+                                        style={{
+                                            zIndex: 20,
+                                            background: '#f7f7f7',
+                                            color: '#000',
+                                            fontSize: 12,
+                                            paddingBlock: 4,
+                                            fontWeight: "400"
+                                        }}
+                                        offset={8}
+                                        delayShow={800}
+                                        id="downip"
+                                        place="bottom"
+                                        content={"Edit Target"}
+
+                                    />
                                 </div>
                             </div>
 
-                            <SelectOption
-                                options={options}
-                                onChange={(value: any) => setReportType(value)}
-                                value={reportType}
-                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
-                                menuWidth={isMobile ? "120px" : "150px"}
-                                menuListStyles={{ fontWeight: 400 }}
-                                singleValueStyles={{ fontWeight: 400 }}
-                            />
-                            <SelectOption
-                                options={years}
-                                onChange={(value: any) => setYear(value)}
-                                value={year}
-                                controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
-                                menuWidth={isMobile ? "80px" : "150px"}
-                                menuListStyles={{ fontWeight: 400 }}
-                                singleValueStyles={{ fontWeight: 400 }}
-                            />
+                            <div className={classes.sel_opt}>
+                                <SelectOption
+                                    options={options}
+                                    onChange={(value: any) => setReportType(value)}
+                                    value={reportType}
+                                    controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                    menuWidth={isMobile ? "120px" : "150px"}
+                                    menuListStyles={{ fontWeight: 400 }}
+                                    singleValueStyles={{ fontWeight: 400 }}
+                                />
+                                <SelectOption
+                                    options={years}
+                                    onChange={(value: any) => setYear(value)}
+                                    value={year}
+                                    controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                    menuWidth={isMobile ? "80px" : "150px"}
+                                    menuListStyles={{ fontWeight: 400 }}
+                                    singleValueStyles={{ fontWeight: 400 }}
+                                />
+                            </div>
+
+
+
                         </div>
                     </div>
                     <div className={classes.top_box_boxes}>
@@ -287,47 +317,52 @@ const Summary_Dashboard = () => {
                             <>
                                 <div className={classes.top_box_boxes}>
 
-                                    {summaryDataState && Object.entries(summaryDataState).map(([key, data]) => (
-                                        <div className={classes.top_box_box} key={key}>
-                                            <div className={classes.top_box_top}>
-                                                <div className={classes.top_box_head}>
-                                                    <p>{key}</p>
+                                    {summaryDataState && Object.entries(summaryDataState)
+                                        .filter(([key]) => desiredOrder.includes(key))
+                                        .sort(([a], [b]) => desiredOrder.indexOf(a) - desiredOrder.indexOf(b))
+                                        .map(([key, data]) => (
+                                            <div className={classes.top_box_box} key={key}>
+                                                <div className={classes.top_box_top}>
+                                                    <div className={classes.top_box_head}>
+                                                        <p>{key}</p>
+                                                    </div>
+                                                    {data && (
+                                                        <>
+                                                            <div className={classes.top_box_divs}>
+                                                                <div className={classes.top_box_head_left}>
+                                                                    <h1>
+                                                                        {Number.isInteger(data.achieved)
+                                                                            ? data.achieved
+                                                                            : data.achieved.toFixed(2)}
+                                                                    </h1>
+                                                                    <p>Achieved</p>
+                                                                </div>
+                                                                <div className={classes.top_box_head_right}>
+                                                                    <h1>
+                                                                        {Number.isInteger(data.target)
+                                                                            ? data.target
+                                                                            : data.target.toFixed(2)}
+                                                                    </h1>
+                                                                    <p>Target</p>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
                                                 {data && (
-                                                    <>
-                                                        <div className={classes.top_box_divs}>
-                                                            <div className={classes.top_box_head_left}>
-                                                                <h1>
-                                                                    {Number.isInteger(data.achieved)
-                                                                        ? data.achieved
-                                                                        : data.achieved.toFixed(2)}
-                                                                </h1>
-                                                                <p>Achieved</p>
-                                                            </div>
-                                                            <div className={classes.top_box_head_right}>
-                                                                <h1>
-                                                                    {Number.isInteger(data.target)
-                                                                        ? data.target
-                                                                        : data.target.toFixed(2)}
-                                                                </h1>
-                                                                <p>Target</p>
-                                                            </div>
-                                                        </div>
-                                                    </>
+                                                    <div className={classes.top_box_bottom}>
+                                                        <p>Last Month Achieved</p>
+                                                        <h3 style={{ color: "#ABDB42" }}>
+                                                            {Number.isInteger(data.last_month_acheived)
+                                                                ? data.last_month_acheived
+                                                                : data.last_month_acheived.toFixed(2)}%
+                                                        </h3>
+                                                    </div>
                                                 )}
                                             </div>
-                                            {data && (
-                                                <div className={classes.top_box_bottom}>
-                                                    <p>Last Month Achieved</p>
-                                                    <h3 style={{ color: "#ABDB42" }}>
-                                                        {Number.isInteger(data.last_month_acheived)
-                                                            ? data.last_month_acheived
-                                                            : data.last_month_acheived.toFixed(2)}%
-                                                    </h3>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                        ))}
+
+
                                 </div>
                             </>
                         ) : (
@@ -362,9 +397,10 @@ const Summary_Dashboard = () => {
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
                             <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "center", alignItems: "center" }}>
-                                <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
-                                    <img src={ICONS.ReportEdit} alt="Edit" />
-                                    <Tooltip
+                                <div className={classes.bottom_graphchange} onClick={handleChartClick} data-tooltip-id="down">
+                                    {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
+                                </div>
+                                <Tooltip
                                         style={{
                                             zIndex: 20,
                                             background: '#f7f7f7',
@@ -375,12 +411,11 @@ const Summary_Dashboard = () => {
                                         }}
                                         offset={8}
                                         delayShow={800}
-                                        id="downip"
+                                        id="down"
                                         place="bottom"
-                                        content={"Edit Target"}
+                                        content={"Change View"}
 
                                     />
-                                </div>
                                 {!isMobile ?
                                     <div className={classes.bottom_box_chart2_head_buttons}>
                                         <div
@@ -419,7 +454,7 @@ const Summary_Dashboard = () => {
                                     :
                                     <SelectOption
                                         options={data}
-                                        onChange={(value: any) => {setDatas(value);handleButtonClick(value?.value)}}
+                                        onChange={(value: any) => { setDatas(value); handleButtonClick(value?.value) }}
                                         value={datas}
                                         controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
                                         menuWidth={isMobile ? "130px" : "150px"}
@@ -442,9 +477,7 @@ const Summary_Dashboard = () => {
 
 
                                 <div className={classes.bottom_graphchange_div}>
-                                    <div className={classes.bottom_graphchange} onClick={handleChartClick}>
-                                        {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
-                                    </div>
+
                                 </div>
                             </>
                         ) : (

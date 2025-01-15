@@ -506,23 +506,29 @@ const DateFilter = ({
           }}
         />
       </div>
-      <Tooltip
-        style={{
-          zIndex: 103,
-          background: '#f7f7f7',
-          color: '#000',
-          fontSize: 12,
-          paddingBlock: 4,
-          fontWeight: '400',
-        }}
-        offset={8}
-        id="lead-calendar"
-        place="bottom"
-        content="Calendar"
-        delayShow={200}
-        className='pagination-tooltip'
-      />
-      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper" data-tooltip-id="lead-calendar">
+      {!disabled && (
+        <Tooltip
+          style={{
+            zIndex: 103,
+            background: '#f7f7f7',
+            color: '#000',
+            fontSize: 12,
+            paddingBlock: 4,
+            fontWeight: '400',
+          }}
+          offset={8}
+          id="lead-calendar"
+          place="top"
+          content="Calendar"
+          delayShow={200}
+          className="pagination-tooltip"
+        />
+      )}
+      <div
+        ref={wrapperRef}
+        className="leaderboard-data__datepicker-wrapper"
+        data-tooltip-id="lead-calendar"
+      >
         <span
           role="button"
           onClick={() => setShowCalendar((prev) => !prev)}
@@ -531,7 +537,7 @@ const DateFilter = ({
           <Calendar disabled={disabled} />
         </span>
         {showCalendar && !disabled && (
-          <div className="leaderboard-data__datepicker-content" >
+          <div className="leaderboard-data__datepicker-content">
             <DateRange
               editableDateInputs={true}
               onChange={(item) => {
@@ -1156,7 +1162,7 @@ const Table = ({
                     </span>
                     <p className="rank-sm-text">NTP</p>
                   </div>
-                 
+
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
@@ -1240,7 +1246,11 @@ const Table = ({
                               ? 'sale_rep'
                               : groupBy,
                           dealer:
-                            groupBy === 'primary_sales_rep' || groupBy === 'team' || groupBy ==='setter' ? item.dealer : '',
+                            groupBy === 'primary_sales_rep' ||
+                            groupBy === 'team' ||
+                            groupBy === 'setter'
+                              ? item.dealer
+                              : '',
                           name: item.rep_name,
                           rank: item.rank,
                           sale: item.sale,
