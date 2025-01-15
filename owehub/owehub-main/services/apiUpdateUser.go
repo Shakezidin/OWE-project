@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 /******************************************************************************
@@ -81,6 +82,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Internal server error", http.StatusInternalServerError, nil)
 		return
 	}
+	log.FuncInfoTrace(0, "HERE I AM")
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
@@ -120,8 +122,14 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 		return
 	}
+	prevUserCreatedAt, ok := prevUserData["created_at"].(time.Time)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get prev created at: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Something is not right!!", http.StatusBadRequest, nil)
+		return
+	}
+	
 	prevUserName := fmt.Sprintf("OWE_%s", prevMobile)
-
 	var dbUsername string
 	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
 		dbUsername = username
@@ -152,6 +160,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		false,
 		tablesPermissionsJSON,
 		prevUserCode,
+		prevUserCreatedAt,
 	)
 
 	deleteQuery := "DELETE FROM user_details WHERE email_id = $1"
@@ -319,7 +328,7 @@ func DeleteDBUser(username string) error {
 
 /* Function to check if user exists in db */
 func checkDBUserExists(username string) (bool, error) {
-	query := "SELECT count(*) FROM pg_user WHERE usename = $1"
+	query := "SELECT count(*) FROM pg_user WHERE usename =  LOWER($1)"
 	params := []interface{}{username}
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, params)
 	if err != nil {
