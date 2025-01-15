@@ -24,12 +24,13 @@ import (
 ******************************************************************************/
 func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                   error
-		updateUserReq         models.UpdateUserReq
-		queryParameters       []interface{}
-		tablesPermissionsJSON []byte
-		prevUserData          map[string]interface{}
-		username              string
+		err                    error
+		updateUserReq          models.UpdateUserReq
+		queryParameters        []interface{}
+		tablesPermissionsJSON  []byte
+		prevUserData           map[string]interface{}
+		username               string
+		passwordChangeRequired bool
 	)
 
 	log.EnterFn(0, "HandleUpdateUserRequest")
@@ -57,6 +58,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	emailId := updateUserReq.EmailId
+	mobile := updateUserReq.MobileNumber
 	prevUserQuery := fmt.Sprintf(`
         SELECT ud.*, ur.role_name 
         FROM user_details ud 
@@ -96,7 +98,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	username = fmt.Sprintf("OWE_%s", emailId)
+	username = fmt.Sprintf("OWE_%s", mobile)
 	prevRole := prevUserData["role_name"].(string)
 	isNewDBRole := updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin"
 	wasPrevDBRole := prevRole == "DB User" || prevRole == "Admin"
@@ -112,6 +114,13 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 		return
 	}
+	prevMobile, ok := prevUserData["mobile_number"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get prev mobile number: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
+		return
+	}
+	prevUserName := fmt.Sprintf("OWE_%s", prevMobile)
 
 	var dbUsername string
 	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
@@ -170,6 +179,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			appserver.FormAndSendHttpResp(resp, "Failed to create database user", http.StatusInternalServerError, nil)
 			return
 		}
+		passwordChangeRequired = true
 
 	case !isNewDBRole && wasPrevDBRole:
 		/*
@@ -185,9 +195,28 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		/*
 			If the new role is  DB User or Admin and previous role also is, in that case we update db user permission
 		*/
-		if err := handleDBUserPermissionUpdate(username, updateUserReq.TablesPermissions, updateUserReq.RevokeTablePermission); err != nil {
+		passwordChangeRequired, err = handleDBUserPermissionUpdate(prevUserName, username, updateUserReq.TablesPermissions, updateUserReq.RevokeTablePermission)
+		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update DB user permissions: %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to update database permissions", http.StatusInternalServerError, nil)
+			return
+		}
+	}
+
+	/*
+		This added logic is used when
+		1. When the user was not previously user with DB access
+		2. When there wan no previous db username
+
+		In this case we set the password with default password, for added protection we ask the user to change
+		password on new login, setting new password
+	*/
+	if passwordChangeRequired {
+		updateQuery := "UPDATE user_details SET password_change_required = true WHERE email_id = $1"
+		_, err = tx.Exec(updateQuery, emailId)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update password change required flag: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to update user", http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -222,14 +251,39 @@ func handleDBUserDeletion(username string) error {
 	return DeleteDBUser(username)
 }
 
-func handleDBUserPermissionUpdate(username string, newPermissions []models.TablePermission, revokePermissions []models.TablePermission) error {
+func handleDBUserPermissionUpdate(prevUsername, username string, newPermissions []models.TablePermission, revokePermissions []models.TablePermission) (passwordChangeRequired bool, err error) {
+	/*
+		If the user already is admin / DB User, but the present username is not the same
+		then we create a new pg user and gives the permission
+
+		If user does not exist with the new username, then we create a new username and
+		if there is a prev username that is not the same we delete it
+	*/
+	exists, err := checkDBUserExists(username)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to check DB user existence %s: %v", username, err)
+		return false, fmt.Errorf("failed to check user existence: %v", err)
+	}
+	if !exists {
+		if (prevUsername != username) && len(prevUsername) > 0 {
+			if err := handleDBUserDeletion(prevUsername); err != nil {
+				return false, fmt.Errorf("failed to delete user: %v", err)
+			}
+		}
+		err = handleDBUserCreation(username, newPermissions)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+
 	if err := revokeAllTablePermissions(username, revokePermissions); err != nil {
-		return fmt.Errorf("failed to revoke permissions: %v", err)
+		return false, fmt.Errorf("failed to revoke permissions: %v", err)
 	}
 	if err := grantPermissions(username, newPermissions); err != nil {
-		return fmt.Errorf("failed to grant new permissions: %v", err)
+		return false, fmt.Errorf("failed to grant new permissions: %v", err)
 	}
-	return nil
+	return false, nil
 }
 
 /* Function to creaye user if user does not exists in db */
