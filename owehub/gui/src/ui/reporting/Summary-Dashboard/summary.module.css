@@ -229,8 +229,8 @@
 }
 
 .bottom_graphchange {
-  height: 2rem;
-  width: 2rem;
+  height: 36px;
+  width: 36px;
   border-radius: 50%;
   border: 0.5px solid #cee0ff;
   background-color: #ecf3ff;
@@ -331,6 +331,20 @@
   padding: 1rem;
 }
 
+.ed_perc {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.sel_opt {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
 @media screen and (max-width: 767px) {
   .bottom_box_chart_rad {
     width: 100%;
@@ -342,6 +356,13 @@
 
   .top_box_heading p {
     margin-top: 3px;
+  }
+
+  .ed_perc {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
   }
 
   .bottom_box_chart_rad {
@@ -369,6 +390,9 @@
   .top_box_box {
     width: 100%;
   }
+  .top_box_drop{
+    flex-direction: column;
+  }
 
   .bottom_box_chart1_sec {
     display: flex;
@@ -417,6 +441,7 @@
   .bottom_graphchange_div {
     margin-top: -7px;
   }
+
   .top_dashboard {
     margin: 3px;
   }

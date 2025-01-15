@@ -8,10 +8,10 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
   const data = monthlyStatsData.map((item: any) => ({
     name: item.month.slice(0, 3),
     Target: item.target,
-    ...(item.completed && { Completed: item.completed }),
-    ...(item.incomplete && { Incomplete: item.incomplete }),
-    ...(item.more_than_target && { "More than Target": item.more_than_target }),
-    ...(item.in_progress && { Inprogress: item.in_progress }),
+    ...(item.completed && { Achieved: item.completed }),
+    ...(item.incomplete && { "Not Achieved": item.incomplete }),
+    ...(item.more_than_target && { "Achieved more than target": item.more_than_target }),
+    ...(item.in_progress && { "Current Month": item.in_progress }),
   }));
 
   return (
@@ -96,10 +96,10 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
         />
 
         <Bar stackId="a" dataKey="Target" fill="#D5E4FF" />
-        <Bar stackId="a" dataKey="Completed" fill="#ABDB42" />
-        <Bar stackId="a" dataKey="Incomplete" fill='#EE4A3F' />
-        <Bar stackId="a" dataKey="Inprogress" fill="#4585F7" />
-        <Bar stackId="a" dataKey="More than Target" fill="#CBFF5C" />
+        <Bar stackId="a" dataKey="Achieved" fill="#ABDB42" />
+        <Bar stackId="a" dataKey="Not Achieved" fill='#EE4A3F' />
+        <Bar stackId="a" dataKey="Current Month" fill="#4585F7" />
+        <Bar stackId="a" dataKey="Achieved more than target" fill="#CBFF5C" />
 
       </BarChart>
     </ResponsiveContainer>
