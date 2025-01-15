@@ -61,7 +61,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		SiteSurveyD        string
 		SiteSurveyComD     string
 		CadD               string
-		CadCompleteD       string
+		PlanSetCompleteD   string
 		permitSubmittedD   string
 		IcSubmitD          string
 		PermitApprovedD    string
@@ -295,12 +295,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			CadD = CadReady.Format("2006-01-02")
 		}
 
-		CadCompleteDate, ok := item["cad_complete_date"].(time.Time)
+		PlanSetCompleteDate, ok := item["plan_set_complete_day"].(time.Time)
 		if !ok {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			CadCompleteD = ""
+			PlanSetCompleteD = ""
 		} else {
-			CadCompleteD = CadCompleteDate.Format("2006-01-02")
+			PlanSetCompleteD = PlanSetCompleteDate.Format("2006-01-02")
 		}
 
 		PvSubmittedDate, ok := item["permit_submitted_date"].(time.Time)
@@ -489,11 +489,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		SiteSurveyCount += SiteSurveyCountT
 
-		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
+		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, PlanSetCompleteD, SiteSurveyComD)
 
 		CadDesignCount += CadDesignCountT
 
-		permitColor, PerimittingCountT, PermittingDate := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
+		permitColor, PerimittingCountT, PermittingDate := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, PlanSetCompleteD)
 
 		PerimittingCount += PerimittingCountT
 
@@ -1138,28 +1138,28 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string, string) {
+func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contract_date string) (string, int64, string, string) {
 	var count int64
-	if contract_date != "" && completedDate == "" {
+	if contract_date != "" && siteSurveycompletedDate == "" {
 		count = 1
 	}
-	if completedDate != "" {
-		return green, count, completedDate, "Completed"
-	} else if scheduledDate != "" {
-		return blue, count, scheduledDate, "Scheduled"
+	if siteSurveycompletedDate != "" {
+		return green, count, siteSurveycompletedDate, "Completed"
+	} else if siteSurveyscheduledDate != "" {
+		return blue, count, siteSurveyscheduledDate, "Scheduled"
 	}
 	return grey, count, "", ""
 }
 
-func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
+func getCadColor(cadCreatedDate, planSetcompletedDate, site_survey_completed_date string) (string, int64, string) {
 	var count int64
-	if site_survey_completed_date != "" && completedDate == "" {
+	if site_survey_completed_date != "" && planSetcompletedDate == "" {
 		count = 1
 	}
-	if completedDate != "" {
-		return green, count, completedDate
-	} else if createdDate != "" {
-		return blue, count, createdDate
+	if planSetcompletedDate != "" {
+		return green, count, planSetcompletedDate
+	} else if cadCreatedDate != "" {
+		return blue, count, cadCreatedDate
 	}
 	return grey, count, ""
 }
@@ -1232,9 +1232,9 @@ func parseDateTime(dateStr string) time.Time {
 	return t
 }
 
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, planSetCompleteDate string) (string, int64, string) {
 	var count int64
-	if CadCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
+	if planSetCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
 		count = 1
 	}
 
@@ -1259,9 +1259,9 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 	return grey, count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, icAprroveddDate string) (string, int64, string, string) {
 	var count int64
-	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
+	if permittedcompletedDate != "" && icAprroveddDate != "" && pvInstallCompletedDate == "" {
 		count = 1
 	}
 
