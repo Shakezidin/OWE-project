@@ -115,6 +115,7 @@ func ResetPasswordsForUsers(userEmails []string, hashedPassword string) error {
 		hashedPassword, emailList,
 	)
 
+	
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		return fmt.Errorf("failed to update passwords: %v", err)
