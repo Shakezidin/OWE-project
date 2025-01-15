@@ -7,6 +7,7 @@ import (
 	oweconfig "OWEApp/shared/oweconfig"
 	"fmt"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -104,6 +105,10 @@ func CalculateDlrPayProject(dlrPayData oweconfig.InitialStruct, financeSchedule 
 	epc := ContractDolDol / (SystemSize * 1000)
 	adderBreakDown := cleanAdderBreakDownAndTotal(dlrPayData.AdderBreakDown)
 	OtherAdderStr := getString(adderBreakDown, "Total")
+	if OtherAdderStr == "" {
+		adderBreakDown = cleanAdderBreakDownAndTotalTwo(dlrPayData.AdderBreakDown)
+		OtherAdderStr = getString(adderBreakDown, "Total")
+	}
 	OtherAdder := parseDollarStringToFloat(OtherAdderStr)
 	NetEpc := (ContractDolDol - OtherAdder) / (SystemSize * 1000)
 	financeType := dlrPayData.FinanceType
@@ -191,6 +196,45 @@ func cleanAdderBreakDownAndTotal(data string) map[string]string {
 			result[key] = value
 		}
 	}
+	// log.FuncErrorTrace(0, "data = %v ", result)
+	return result
+}
+
+func cleanAdderBreakDownAndTotalTwo(data string) map[string]string {
+	result := make(map[string]string)
+	if len(data) == 0 {
+		return result
+	}
+
+	// Remove '**' and clean the string
+	data = strings.ReplaceAll(data, "**", "")
+
+	// Regular expression to match key-value pairs like "key: value"
+	re := regexp.MustCompile(`([A-Za-z0-9\s\-\(\)]+):\s*([0-9]+)`)
+
+	// Find all matches of key-value pairs
+	matches := re.FindAllStringSubmatch(data, -1)
+
+	// Iterate over all matches and populate the result map
+	for _, match := range matches {
+		if len(match) == 3 {
+			key := strings.TrimSpace(match[1])
+			value := strings.TrimSpace(match[2])
+
+			// If the key is 'Total', we capture the value for 'Total'
+			if key == "Total" {
+				result[key] = value
+				break // Stop further processing once 'Total' is found
+			}
+
+			// Otherwise, just add the key-value pair to the map
+			result[key] = value
+		}
+	}
+
+	// Log the result for debugging
+	// log.FuncErrorTrace(0, "data = %v ", result)
+
 	return result
 }
 
