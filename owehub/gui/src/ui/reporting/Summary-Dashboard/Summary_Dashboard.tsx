@@ -230,6 +230,8 @@ const Summary_Dashboard = () => {
 
     const width = useWindowWidth();
     const isMobile = width <= 767;
+    const desiredOrder = ["Projects Sold", "mW Sold", "Install Ct", "mW Installed", "Batteries Ct"];
+
 
 
     return (
@@ -315,47 +317,52 @@ const Summary_Dashboard = () => {
                             <>
                                 <div className={classes.top_box_boxes}>
 
-                                    {summaryDataState && Object.entries(summaryDataState).map(([key, data]) => (
-                                        <div className={classes.top_box_box} key={key}>
-                                            <div className={classes.top_box_top}>
-                                                <div className={classes.top_box_head}>
-                                                    <p>{key}</p>
+                                    {summaryDataState && Object.entries(summaryDataState)
+                                        .filter(([key]) => desiredOrder.includes(key))
+                                        .sort(([a], [b]) => desiredOrder.indexOf(a) - desiredOrder.indexOf(b))
+                                        .map(([key, data]) => (
+                                            <div className={classes.top_box_box} key={key}>
+                                                <div className={classes.top_box_top}>
+                                                    <div className={classes.top_box_head}>
+                                                        <p>{key}</p>
+                                                    </div>
+                                                    {data && (
+                                                        <>
+                                                            <div className={classes.top_box_divs}>
+                                                                <div className={classes.top_box_head_left}>
+                                                                    <h1>
+                                                                        {Number.isInteger(data.achieved)
+                                                                            ? data.achieved
+                                                                            : data.achieved.toFixed(2)}
+                                                                    </h1>
+                                                                    <p>Achieved</p>
+                                                                </div>
+                                                                <div className={classes.top_box_head_right}>
+                                                                    <h1>
+                                                                        {Number.isInteger(data.target)
+                                                                            ? data.target
+                                                                            : data.target.toFixed(2)}
+                                                                    </h1>
+                                                                    <p>Target</p>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
                                                 {data && (
-                                                    <>
-                                                        <div className={classes.top_box_divs}>
-                                                            <div className={classes.top_box_head_left}>
-                                                                <h1>
-                                                                    {Number.isInteger(data.achieved)
-                                                                        ? data.achieved
-                                                                        : data.achieved.toFixed(2)}
-                                                                </h1>
-                                                                <p>Achieved</p>
-                                                            </div>
-                                                            <div className={classes.top_box_head_right}>
-                                                                <h1>
-                                                                    {Number.isInteger(data.target)
-                                                                        ? data.target
-                                                                        : data.target.toFixed(2)}
-                                                                </h1>
-                                                                <p>Target</p>
-                                                            </div>
-                                                        </div>
-                                                    </>
+                                                    <div className={classes.top_box_bottom}>
+                                                        <p>Last Month Achieved</p>
+                                                        <h3 style={{ color: "#ABDB42" }}>
+                                                            {Number.isInteger(data.last_month_acheived)
+                                                                ? data.last_month_acheived
+                                                                : data.last_month_acheived.toFixed(2)}%
+                                                        </h3>
+                                                    </div>
                                                 )}
                                             </div>
-                                            {data && (
-                                                <div className={classes.top_box_bottom}>
-                                                    <p>Last Month Achieved</p>
-                                                    <h3 style={{ color: "#ABDB42" }}>
-                                                        {Number.isInteger(data.last_month_acheived)
-                                                            ? data.last_month_acheived
-                                                            : data.last_month_acheived.toFixed(2)}%
-                                                    </h3>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                        ))}
+
+
                                 </div>
                             </>
                         ) : (
@@ -390,9 +397,25 @@ const Summary_Dashboard = () => {
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
                             <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "center", alignItems: "center" }}>
-                                <div className={classes.bottom_graphchange} onClick={handleChartClick}>
+                                <div className={classes.bottom_graphchange} onClick={handleChartClick} data-tooltip-id="down">
                                     {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
                                 </div>
+                                <Tooltip
+                                        style={{
+                                            zIndex: 20,
+                                            background: '#f7f7f7',
+                                            color: '#000',
+                                            fontSize: 12,
+                                            paddingBlock: 4,
+                                            fontWeight: "400"
+                                        }}
+                                        offset={8}
+                                        delayShow={800}
+                                        id="down"
+                                        place="bottom"
+                                        content={"Change View"}
+
+                                    />
                                 {!isMobile ?
                                     <div className={classes.bottom_box_chart2_head_buttons}>
                                         <div
