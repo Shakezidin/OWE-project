@@ -52,11 +52,13 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           height={50}
           tickSize={10}
           dy={4}
-          interval={0} />
+          interval={0} tickFormatter={formatLargeNumber}/>
+          
         <YAxis
           className={styles.axis}
           tickSize={10}
           tickLine={{ stroke: 'black', strokeWidth: 1 }}
+          tickFormatter={formatLargeNumber}
         />
         <Tooltip
           cursor={{ fill: '#F5F8FF' }}
