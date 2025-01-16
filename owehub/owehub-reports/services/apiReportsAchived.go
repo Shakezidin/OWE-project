@@ -14,7 +14,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math"
 	"net/http"
 	"strconv"
 )
@@ -256,8 +255,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			lastMonthPct = getProductionAchievedPercentage(lastMonthTarget, lastMonthAchieved)
 			apiResp.Summary = map[string]models.GetReportsTargetRespSummaryItem{
 				"Projects Sold": {
-					Target:            getAsInt(target.ProjectsSold),
-					Achieved:          getAsInt(acheived.ProjectsSold),
+					Target:            target.ProjectsSold,
+					Achieved:          acheived.ProjectsSold,
 					LastMonthAcheived: lastMonthPct.ProjectsSold,
 				},
 				"mW Sold": {
@@ -266,8 +265,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					LastMonthAcheived: lastMonthPct.MwSold,
 				},
 				"Install Ct": {
-					Target:            getAsInt(target.InstallCt),
-					Achieved:          getAsInt(acheived.InstallCt),
+					Target:            target.InstallCt,
+					Achieved:          acheived.InstallCt,
 					LastMonthAcheived: lastMonthPct.InstallCt,
 				},
 				"mW Installed": {
@@ -276,8 +275,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					LastMonthAcheived: lastMonthPct.MwInstalled,
 				},
 				"Batteries Ct": {
-					Target:            getAsInt(target.BatteriesCt),
-					Achieved:          getAsInt(acheived.BatteriesCt),
+					Target:            target.BatteriesCt,
+					Achieved:          acheived.BatteriesCt,
 					LastMonthAcheived: lastMonthPct.BatteriesCt,
 				},
 			}
@@ -287,8 +286,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	totalPct = getProductionAchievedPercentage(&totalTarget, &totalAchieved)
 	apiResp.Progress = map[string]models.GetReportsTargetRespProgressItem{
 		"Projects Sold": {
-			Target:             getAsInt(totalTarget.ProjectsSold),
-			Achieved:           getAsInt(totalAchieved.ProjectsSold),
+			Target:             totalTarget.ProjectsSold,
+			Achieved:           totalAchieved.ProjectsSold,
 			PercentageAchieved: totalPct.ProjectsSold,
 		},
 		"mW Sold": {
@@ -297,8 +296,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			PercentageAchieved: totalPct.MwSold,
 		},
 		"Install Ct": {
-			Target:             getAsInt(totalTarget.InstallCt),
-			Achieved:           getAsInt(totalAchieved.InstallCt),
+			Target:             totalTarget.InstallCt,
+			Achieved:           totalAchieved.InstallCt,
 			PercentageAchieved: totalPct.InstallCt,
 		},
 		"mW Installed": {
@@ -307,8 +306,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			PercentageAchieved: totalPct.MwInstalled,
 		},
 		"Batteries Ct": {
-			Target:             getAsInt(totalTarget.BatteriesCt),
-			Achieved:           getAsInt(totalAchieved.BatteriesCt),
+			Target:             totalTarget.BatteriesCt,
+			Achieved:           totalAchieved.BatteriesCt,
 			PercentageAchieved: totalPct.BatteriesCt,
 		},
 	}
@@ -420,12 +419,4 @@ func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedIt
 		pct.BatteriesCt = acheived.BatteriesCt / target.BatteriesCt * 100
 	}
 	return &pct
-}
-
-// Get float value as integer if after decimal pt. is .00
-func getAsInt(floatVal float64) interface{} {
-	if floatVal == math.Round(floatVal) {
-		return int64(floatVal)
-	}
-	return floatVal
 }
