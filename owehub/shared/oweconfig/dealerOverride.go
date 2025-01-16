@@ -63,8 +63,8 @@ func GetDealerOverrideConfigFromDB(dataFilter models.DataRequestBody) (dlrOverri
 
 	for _, item := range data {
 		DealerOverrideStructList := DealerOverrideStruct{
-			ItemID:    getInt64(item, "item_id"),
-			PodioLink: getString(item, "podio_link"),
+			ItemID:    getInt64(item, "record_id"),
+			PodioLink: getString(item, "record_url"),
 			SubDealer: getString(item, "sub_dealer"),
 			Dealer:    getString(item, "dealer"),
 			PayRate:   getFloat64(item, "pay_rate"),

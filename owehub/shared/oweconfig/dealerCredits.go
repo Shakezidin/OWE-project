@@ -64,8 +64,8 @@ func GetDealerCreditsConfigFromDB(dataFilter models.DataRequestBody) (dlrCreditR
 	for _, item := range data {
 		DealerCreditsStructList := DealerCreditsStruct{
 
-			ItemID:       getInt64(item, "item_id"),
-			PodioLink:    getString(item, "podio_link"),
+			ItemID:       getInt64(item, "record_id"),
+			PodioLink:    getString(item, "record_url"),
 			Customer:     getString(item, "customer"),
 			UniqueId:     getString(item, "unique_id"),
 			CreditDate:   getTime(item, "credit_date"),
