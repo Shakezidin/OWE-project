@@ -47,7 +47,7 @@ export const decryptData = (encryptedData) => {
     if (parsedData && typeof parsedData === 'object') {
       return parsedData;
     } else {
-      console.log(parsedData);
+       
       return null; // Return a fallback value or null
     }
   } catch (error) {
