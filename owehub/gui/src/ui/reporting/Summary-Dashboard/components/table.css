@@ -151,7 +151,9 @@
 .edit_input input {
   border: none;
   border-bottom: 1px solid #e2e2e2;
-  max-width: 48px;
+  width: auto;
+  min-width: 40px; 
+  max-width: 150px;
 }
 
 .edit_input input:focus {

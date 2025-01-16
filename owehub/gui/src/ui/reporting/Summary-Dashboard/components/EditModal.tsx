@@ -327,19 +327,21 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                            }}
+                                                                            
                                                                             value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
-                                                                            onChange={(e) =>
-                                                                                setShowInput((prevState) => ({
-                                                                                    ...prevState,
-                                                                                    [row.month]: {
-                                                                                        ...prevState[row.month],
-                                                                                        projectSold: Number(e.target.value),
-                                                                                    },
-                                                                                }))
-                                                                            }
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                const beforeDecimal = value.split('.')[0];
+                                                                                if (beforeDecimal.length <= 8) {
+                                                                                    setShowInput((prevState) => ({
+                                                                                        ...prevState,
+                                                                                        [row.month]: {
+                                                                                            ...prevState[row.month],
+                                                                                            projectSold: Number(value),
+                                                                                        },
+                                                                                    }));
+                                                                                }
+                                                                            }}
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'projectSold')}
@@ -372,19 +374,21 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                            }}
+
                                                                             value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
-                                                                            onChange={(e) =>
-                                                                                setShowInput((prevState) => ({
-                                                                                    ...prevState,
-                                                                                    [row.month]: {
-                                                                                        ...prevState[row.month],
-                                                                                        mwSold: Number(e.target.value),
-                                                                                    },
-                                                                                }))
-                                                                            }
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                const beforeDecimal = value.split('.')[0];
+                                                                                if (beforeDecimal.length <= 8) {
+                                                                                    setShowInput((prevState) => ({
+                                                                                        ...prevState,
+                                                                                        [row.month]: {
+                                                                                            ...prevState[row.month],
+                                                                                            mwSold: Number(value),
+                                                                                        },
+                                                                                    }));
+                                                                                }
+                                                                            }}
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'mwSold')}
@@ -418,19 +422,22 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                            }}
+                                                                            
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
-                                                                            onChange={(e) =>
-                                                                                setShowInput((prevState) => ({
-                                                                                    ...prevState,
-                                                                                    [row.month]: {
-                                                                                        ...prevState[row.month],
-                                                                                        installCT: Number(e.target.value),
-                                                                                    },
-                                                                                }))
-                                                                            }
+
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                const beforeDecimal = value.split('.')[0];
+                                                                                if (beforeDecimal.length <= 8) {
+                                                                                    setShowInput((prevState) => ({
+                                                                                        ...prevState,
+                                                                                        [row.month]: {
+                                                                                            ...prevState[row.month],
+                                                                                            installCT: Number(value),
+                                                                                        },
+                                                                                    }));
+                                                                                }
+                                                                            }}
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'installCT')}
@@ -464,21 +471,22 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
-                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                            }}
-                                                                            value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
-                                                                            onChange={(e) =>
-                                                                                setShowInput((prevState) => ({
-                                                                                    ...prevState,
-                                                                                    [row.month]: {
-                                                                                        ...prevState[row.month],
-                                                                                        mwInstalled: Number(e.target.value),
-                                                                                    },
-                                                                                }))
 
-                                                                            }
-                                                                            maxLength={6}
+                                                                            value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
+
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                const beforeDecimal = value.split('.')[0];
+                                                                                if (beforeDecimal.length <= 8) {
+                                                                                    setShowInput((prevState) => ({
+                                                                                        ...prevState,
+                                                                                        [row.month]: {
+                                                                                            ...prevState[row.month],
+                                                                                            mwInstalled: Number(value),
+                                                                                        },
+                                                                                    }));
+                                                                                }
+                                                                            }}
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'mwInstalled')}
@@ -510,20 +518,23 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
-                                                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 6);
-                                                                            }}
+                                                                            
                                                                             maxLength={6}
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
-                                                                            onChange={(e) =>
-                                                                                setShowInput((prevState) => ({
-                                                                                    ...prevState,
-                                                                                    [row.month]: {
-                                                                                        ...prevState[row.month],
-                                                                                        batteriesCT: Number(e.target.value),
-                                                                                    },
-                                                                                }))
-                                                                            }
+
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                const beforeDecimal = value.split('.')[0];
+                                                                                if (beforeDecimal.length <= 8) {
+                                                                                    setShowInput((prevState) => ({
+                                                                                        ...prevState,
+                                                                                        [row.month]: {
+                                                                                            ...prevState[row.month],
+                                                                                            batteriesCT: Number(value),
+                                                                                        },
+                                                                                    }));
+                                                                                }
+                                                                            }}
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'batteriesCT')}
