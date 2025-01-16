@@ -250,18 +250,18 @@ const Summary_Dashboard = () => {
                                         // style={{ borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}
                                         onClick={() => handlePercButtonClick('100')}
                                     >
-                                        100%
+                                        100
                                     </div>
                                     <div
                                         className={`${classes.bottom_box_button_sec} ${activePerc === '75' ? classes.active : ''}`}
                                         // style={{ borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
                                         onClick={() => handlePercButtonClick('75')}
                                     >
-                                        75%
+                                        75
                                     </div>
                                 </div>
 
-                                <div className={classes.editModal} onClick={handleOpen} data-tooltip-id="downip">
+                                <div className={classes.editModal} onClick={handleOpen} data-tooltip-id={isMobile ? "N/A" : "downip"}>
                                     <img src={ICONS.ReportEdit} alt="Edit" />
                                     <Tooltip
                                         style={{
@@ -397,7 +397,7 @@ const Summary_Dashboard = () => {
                         <div className={classes.bottom_box_chart2_head}>
                             <h1>Overview</h1>
                             <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem", justifyContent: "center", alignItems: "center" }}>
-                                <div className={classes.bottom_graphchange} onClick={handleChartClick} data-tooltip-id="down">
+                                <div className={classes.bottom_graphchange} onClick={handleChartClick} data-tooltip-id={isMobile ? "N/A" : "down"}>
                                     {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
                                 </div>
                                 <Tooltip
