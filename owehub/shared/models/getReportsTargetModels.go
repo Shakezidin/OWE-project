@@ -16,11 +16,11 @@ type GetReportsTargetReq struct {
 }
 
 type ProductionTargetOrAchievedItem struct {
-	ProjectsSold int64   `json:"projects_sold"`
+	ProjectsSold float64 `json:"projects_sold"`
 	MwSold       float64 `json:"mw_sold"`
-	InstallCt    int64   `json:"install_ct"`
+	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
-	BatteriesCt  int64   `json:"batteries_ct"`
+	BatteriesCt  float64 `json:"batteries_ct"`
 }
 
 type ProductionTargetOrAchievedPercentage struct {
