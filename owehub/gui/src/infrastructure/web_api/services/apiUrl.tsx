@@ -155,9 +155,11 @@ export const reportingCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        setTimeout(() => {
-          logoutUser();
-        }, 2000);
+        if (error.response.status === 401) {
+          setTimeout(() => {
+            logoutUser();
+          }, 2000);
+        }
         return error.response.data;
       }
       // handle network error
