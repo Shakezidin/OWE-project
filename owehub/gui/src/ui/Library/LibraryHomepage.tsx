@@ -17,7 +17,6 @@ import FolderView from './components/FolderView/FolderView';
 import { FaXmark } from 'react-icons/fa6';
 import VideosView from './components/VideosView/VideosView';
 import DeleteFileModal from './Modals/DeleteFileModal';
-import { getCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import Cookies from 'js-cookie';
 import axios from 'axios';
