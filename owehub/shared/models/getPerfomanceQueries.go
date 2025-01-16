@@ -86,7 +86,8 @@ func SalesRepRetrieveQueryFunc() string {
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT
-            DISTINCT customers_customers_schema.unique_id,
+            DISTINCT ON(customers_customers_schema.unique_id)
+			customers_customers_schema.unique_id,
             customers_customers_schema.customer_name AS home_owner,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
