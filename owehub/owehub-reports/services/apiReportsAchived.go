@@ -109,7 +109,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					COUNT(DISTINCT UNIQUE_ID) AS val
 				FROM CUSTOMERS_CUSTOMERS_SCHEMA
 				WHERE DATE_PART('YEAR', SALE_DATE) = $3
-				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND PROJECT_STATUS != 'DUPLICATE'
 				AND UNIQUE_ID IS NOT NULL
 				AND UNIQUE_ID != ''
 				GROUP BY month
@@ -120,7 +120,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					SUM(COALESCE(NULLIF(CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) AS val
 				FROM CUSTOMERS_CUSTOMERS_SCHEMA
 				WHERE DATE_PART('YEAR', SALE_DATE) = $3
-				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND PROJECT_STATUS != 'DUPLICATE'
 				AND UNIQUE_ID IS NOT NULL
 				AND UNIQUE_ID != ''
 				GROUP BY month
@@ -131,7 +131,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					COUNT(*) AS val
 				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
 				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
-				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND PROJECT_STATUS != 'DUPLICATE'
 				AND CUSTOMER_UNIQUE_ID IS NOT NULL
 				AND CUSTOMER_UNIQUE_ID != ''
 				GROUP BY month
@@ -142,21 +142,27 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					SUM(COALESCE(NULLIF(SYSTEM_SIZE, '')::FLOAT, 0)) AS val
 				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
 				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
-				AND PROJECT_STATUS IN ('ACTIVE', '')
+				AND PROJECT_STATUS != 'DUPLICATE'
 				AND CUSTOMER_UNIQUE_ID IS NOT NULL
 				AND CUSTOMER_UNIQUE_ID != ''
 				GROUP BY month
 			),
 			BATTERIES_CT AS (
 				SELECT
-					DATE_PART('MONTH', C.SALE_DATE) AS month,
-					SUM(COALESCE(NULLIF(BATTERY_QTY, '')::FLOAT, 0))::INTEGER AS val
-				FROM PLANSET_CAD_SCHEMA P
-				JOIN CUSTOMERS_CUSTOMERS_SCHEMA C ON C.UNIQUE_ID = P.OUR_NUMBER
-				WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
-				AND C.PROJECT_STATUS IN ('ACTIVE', '')
-				AND C.UNIQUE_ID IS NOT NULL
-				AND C.UNIQUE_ID != ''
+					DATE_PART('MONTH', SALE_DATE) AS month,
+					SUM((
+						LENGTH(adder_breakdown_total)
+							- LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'powerwall', '', 'gi'))
+					) / LENGTH('powerwall'))
+					+ SUM((
+						LENGTH(adder_breakdown_total) 
+							- LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi'))
+					)/ LENGTH('enphase battery')
+					) 
+					AS VAL
+				FROM NTP_NTP_SCHEMA
+				WHERE DATE_PART('YEAR', SALE_DATE) = $3
+				and PROJECT_STATUS != 'DUPLICATE'
 				GROUP BY month
 			)
 		SELECT
@@ -256,7 +262,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 				"mW Sold": {
 					Target:            target.MwSold,
 					Achieved:          acheived.MwSold,
-					LastMonthAcheived: lastMonthAchieved.MwSold,
+					LastMonthAcheived: lastMonthPct.MwSold,
 				},
 				"Install Ct": {
 					Target:            target.InstallCt,
