@@ -24,13 +24,14 @@ export interface LoginResponse {
   message: string;
 }
 
-// Logout utility function
+ // Logout utility function
 const logoutUser = () => {
- // Clear the token
+  localStorage.removeItem('token'); // Clear the token
   localStorage.removeItem('userName');
-  console.log("check logout")
-   // Redirect to the login page
+  localStorage.removeItem('role');
+  window.location.href = '/login'; // Redirect to the login page
 };
+
 
 export const login = async (
   credentials: Credentials
