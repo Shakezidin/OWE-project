@@ -69,15 +69,15 @@ func GetFinanceScheduleConfigFromDB(dataFilter models.DataRequestBody) (financeS
 	for _, item := range data {
 		FinanceScheduleStructList := FinanceScheduleStruct{
 
-			ItemID:           getInt64(item, "item_id"),
-			PodioLink:        getString(item, "podio_link"),
+			ItemID:           getInt64(item, "record_id"),
+			PodioLink:        getString(item, "record_url"),
 			FinanceTypeRef:   getString(item, "finance_type_ref"),
 			FinanceType:      getString(item, " finance_type"),
 			FinanceTypeUid:   getString(item, " finance_type_uid"),
 			CommissionsRate:  getFloat64(item, "commissions_rate"),
 			FinanceFee:       getFloat64(item, "finance_fee"),
 			OweFinanceFee:    getFloat64(item, "owe_finance_fee"),
-			State3:           getString(item, "state_3"),
+			State3:           getString(item, "state"),
 			ActiveDateStart:  getTime(item, "active_date_start"),
 			ActiveDateEnd:    getTime(item, "active_date_end"),
 			FinanceCompany:   getString(item, "finance_company"),

@@ -10,7 +10,8 @@ import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import useAuth from '../../../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
-import { MdOutlineLockReset } from "react-icons/md";
+import { MdOutlineLockReset } from 'react-icons/md';
+import { Tooltip } from 'react-tooltip';
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -21,7 +22,7 @@ interface UserTableProps {
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   selectedValue?: string;
-  handlePasswordReset:(id?:string)=>void;
+  handlePasswordReset: (id?: string) => void;
 }
 const AccountExecutiveTable: React.FC<UserTableProps> = ({
   data,
@@ -32,7 +33,7 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
   setSelectedRows,
   setSelectAllChecked,
   selectedValue,
-  handlePasswordReset
+  handlePasswordReset,
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -40,7 +41,7 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [email, setEmail] = useState('');
   const { authData } = useAuth();
-  const {role_name} = useAppSelector(state=>state.auth)
+  const { role_name } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const handleSort = (key: string) => {
@@ -167,11 +168,35 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
-                <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
+                <td 
+                    data-tooltip-id={el.dealer?.length > 15 ? `dealer-${el.dealer}` : undefined}
+                    style={{ position: 'relative' }}
+                  >
+                    {el.dealer?.length > 15 ? `${el.dealer.slice(0, 15)}...` : el.dealer || 'NA'}
+                    {el.dealer?.length > 15 && (
+                      <Tooltip
+                        id={`dealer-${el.dealer}`}
+                        style={{
+                          zIndex: 103,
+                          background: '#000',
+                          color: '#f7f7f7',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: '400',
+                        }}
+                        offset={0}
+                        place="left"
+                        content={el.dealer}
+                        delayShow={100}
+                      />
+                    )}
+                  </td>                
+                  <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}
                 </td>
                 <td>
-                  <div className="action-icon" style={{gap:4}}>
+                  <div className="action-icon" style={{ gap: 4 }}>
                     <div
                       className=""
                       style={{
@@ -184,15 +209,18 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
                         }
                       }}
                     >
-                      <img
-                        src={ICONS.deleteIcon}
-                        alt=""
-                        
-                      />
+                      <img src={ICONS.deleteIcon} alt="" />
                     </div>
-                   {(role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER) && <div className='reset_hover_btn' style={{cursor:"pointer"}} onClick={()=>handlePasswordReset(el.email_id)}>
-                      <MdOutlineLockReset color='#667085' size={24} />
-                    </div>}
+                    {(role_name === TYPE_OF_USER.ADMIN ||
+                      role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                      <div
+                        className="reset_hover_btn"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handlePasswordReset(el.email_id)}
+                      >
+                        <MdOutlineLockReset color="#667085" size={24} />
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>

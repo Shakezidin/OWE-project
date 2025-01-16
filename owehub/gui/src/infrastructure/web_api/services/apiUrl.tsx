@@ -7,6 +7,7 @@ import {
 } from '../../../core/models/api_models/RequestModel';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { EndPoints } from '../api_client/EndPoints';
+import { toast } from 'react-toastify';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
@@ -22,6 +23,15 @@ export interface LoginResponse {
   status: number;
   message: string;
 }
+
+ // Logout utility function
+const logoutUser = () => {
+  localStorage.removeItem('token'); // Clear the token
+  localStorage.removeItem('userName');
+  localStorage.removeItem('role');
+  window.location.href = '/login'; // Redirect to the login page
+};
+
 
 export const login = async (
   credentials: Credentials
@@ -62,7 +72,15 @@ export const postCaller = async (
     console.log('axios error', error);
 
     if (isAxiosError(error)) {
-      if (error.response) return error.response.data;
+      if (error.response) {
+        if (error.response.status === 401) {
+          setTimeout(() => {
+            logoutUser();
+          }, 2000);
+        }
+
+        return error.response.data;
+      }
 
       // handle network error
      if (error.message)
@@ -98,7 +116,14 @@ export const configPostCaller = async (
     console.log('axios error', error);
 
     if (isAxiosError(error)) {
-      if (error.response) return error.response.data;
+      if (error.response) {
+        if (error.response.status === 401) {
+          setTimeout(() => {
+            logoutUser();
+          }, 2000);
+        }
+        return error.response.data;
+      }
 
       // handle network error
       if (error.message === 'Network Error')
@@ -132,8 +157,14 @@ export const reportingCaller = async (
     console.log('axios error', error);
 
     if (isAxiosError(error)) {
-      if (error.response) return error.response.data;
-
+      if (error.response) {
+        if (error.response.status === 401) {
+          setTimeout(() => {
+            logoutUser();
+          }, 2000);
+        }
+        return error.response.data;
+      }
       // handle network error
       if (error.message === 'Network Error')
         return new Error('No internet connection');
@@ -141,34 +172,4 @@ export const reportingCaller = async (
 
     throw new Error('Failed to fetch data');
   }
-};
-
-export const getCaller = async (endpoint: string): Promise<any> => {
-  const config: AxiosRequestConfig = {
-    headers: {
-      Authorization: `${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  };
-  try {
-    const response: AxiosResponse = await axios.get(
-      `${BASE_URL}/${endpoint}`,
-      config
-    );
-    return response.data; // Return the data from the response
-  } catch (error) {
-    throw new Error('Failed to fetch data');
-  }
-};
-
-export const putCaller = async (endpoint: string, data: any) => {
-  const response = await fetch(`${BASE_URL}/${endpoint}`, {
-    method: HTTP_METHOD.PUT,
-    headers: {
-      Authorization: ` ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-  return response.json();
 };

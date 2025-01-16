@@ -86,12 +86,13 @@ func SalesRepRetrieveQueryFunc() string {
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT
+            DISTINCT ON(customers_customers_schema.unique_id)
+			customers_customers_schema.unique_id,
             customers_customers_schema.customer_name AS home_owner,
-            customers_customers_schema.unique_id,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
             planset_cad_schema.item_created_on AS cad_ready,
-            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
+            planset_cad_schema.plan_set_complete_day AS plan_set_complete_day,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
@@ -467,7 +468,7 @@ func CsvDownloadRetrieveQueryFunc() string {
         cs.phone_number,cs.address,cs.state,
         scs.contracted_system_size_parent, 
         cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
-        ps.pto_granted as pto_date, ss.cancelled_date, cs.primary_sales_rep, 
+        ps.pto_granted as pto_date, cs.cancel_date, cs.primary_sales_rep, 
         cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 

@@ -80,8 +80,8 @@ func GetFinanceTypesConfigFromDB(dataFilter models.DataRequestBody) (financeType
 
 	for _, item := range data {
 		FinanceTypesStructList := FinanceTypesStruct{
-			ItemID:                   getInt64(item, "item_id"),
-			PodioLink:                getString(item, "podio_link"),
+			ItemID:                   getInt64(item, "record_id"),
+			PodioLink:                getString(item, "record_url"),
 			FinanceTypeName:          getString(item, "finance_type_name"),
 			FType:                    getString(item, "f_type	"),
 			FinanceCompany:           getString(item, "finance_company"),

@@ -11,6 +11,7 @@ import useAuth from '../../../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 import { MdOutlineLockReset } from "react-icons/md";
+import { Tooltip } from 'react-tooltip';
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -166,7 +167,31 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
-                <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
+                <td 
+                    data-tooltip-id={el.dealer?.length > 15 ? `dealer-${el.dealer}` : undefined}
+                    style={{ position: 'relative' }}
+                  >
+                    {el.dealer?.length > 15 ? `${el.dealer.slice(0, 15)}...` : el.dealer || 'NA'}
+                    {el.dealer?.length > 15 && (
+                      <Tooltip
+                        id={`dealer-${el.dealer}`}
+                        style={{
+                          zIndex: 103,
+                          background: '#000',
+                          color: '#f7f7f7',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: '400',
+                        }}
+                        offset={0}
+                        place="left"
+                        content={el.dealer}
+                        delayShow={100}
+                      />
+                    )}
+                  </td>                
+                  <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}
                 </td>
                 <td>
