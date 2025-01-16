@@ -61,6 +61,7 @@ interface UserTableProos {
   setCurrentPage1: React.Dispatch<SetStateAction<number>>;
   activeSalesRep: string;
   handleCrossClick: () => void;
+  handleEdit: () => void;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -82,6 +83,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   setSearchTerm,
   activeSalesRep,
   handleCrossClick,
+  handleEdit
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
@@ -215,6 +217,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
             handlePasswordReset={handlePasswordReset}
+            handleEdit={handleEdit}
           />
         );
       case TYPE_OF_USER.ADMIN:
@@ -232,6 +235,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
             handlePasswordReset={handlePasswordReset}
+            handleEdit={handleEdit}
           />
         );
       case TYPE_OF_USER.FINANCE_ADMIN:
@@ -249,6 +253,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
             handlePasswordReset={handlePasswordReset}
+            handleEdit={handleEdit}
           />
         );
       case TYPE_OF_USER.DB_USER:
@@ -280,6 +285,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickDelete(item);
             }}
             selectedRows={selectedRows}
+            handleEdit={handleEdit}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}

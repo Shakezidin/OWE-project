@@ -37,6 +37,7 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
+import UserUpdate from './userOnboard/UpdateUser';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -45,6 +46,7 @@ const UserManagement: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [isEdit,setIsEdit] = useState(false)
   const dispatch = useAppDispatch();
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
@@ -95,10 +97,17 @@ const UserManagement: React.FC = () => {
 
   const handleOpen = () => setOpen(true);
   const handleImport = () => setOpenn(true);
+  const handleEdit = () => setIsEdit(true);
   const handleClose = () => {
     dispatch(userResetForm());
     setOpen(false);
   };
+
+  const handleCloseEdit = () => {
+    dispatch(userResetForm());
+    setIsEdit(false)
+
+  }
   const handleClosee = () => {
     dispatch(userResetForm());
     setOpenn(false);
@@ -408,6 +417,25 @@ const UserManagement: React.FC = () => {
           setLogoUrl={setLogoUrl}
         />
       )}
+
+    {isEdit && (
+        <UserUpdate
+          handleClose={handleCloseEdit}
+          dealerList={dealerOwenerList}
+          regionList={regionList}
+          editMode={false}
+          selectedOption={selectedOption}
+          tablePermissions={tablePermissions}
+          setTablePermissions={setTablePermissions}
+          userOnboard={null}
+          onSubmitCreateUser={onSubmitCreateUser}
+          onChangeRole={(role, value) => {
+            console.log('formData', formData);
+            onChangeRole(role, value);
+          }}
+          setLogoUrl={setLogoUrl}
+        />
+      )}
         {openn && (
         <ImportUser
           handleClose={handleClosee}
@@ -453,6 +481,7 @@ const UserManagement: React.FC = () => {
             />
           }
           activeSalesRep={activeSalesRep}
+          handleEdit={handleEdit}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
