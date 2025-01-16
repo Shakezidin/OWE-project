@@ -71,8 +71,8 @@ func GetPartnerPayScheduleConfigFromDB(dataFilter models.DataRequestBody) (partn
 	for _, item := range data {
 		PartnerPayScheduleStructList := PartnerPayScheduleStruct{
 
-			ItemID:                       getInt64(item, "item_id"),
-			PodioLink:                    getString(item, "podio_link"),
+			ItemID:                       getInt64(item, "record_id"),
+			PodioLink:                    getString(item, "record_url"),
 			SppsRef:                      getString(item, "spps_ref"),
 			Sug:                          getString(item, "sug"),
 			Sales_partner:                getString(item, "sales_partner"),

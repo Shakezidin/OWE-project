@@ -50,7 +50,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           ( item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
-            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS || item.path === ROUTES.SUMMARY_DASBOARD)
+            item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.MAP_ADDRESS)
         ) {
         } else {
           newArr[0].mob.push(item);
