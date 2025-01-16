@@ -108,7 +108,7 @@ const RadialChart = ({ year, radData }: any) => {
             >
                 <RadialBar
                     background={{ fill: '#FFFFFF' }}
-                    dataKey="Achieved"  // Updated to reflect progress
+                    dataKey="Achieved"
                     strokeWidth={2}
                     cornerRadius={10}
                     
@@ -118,18 +118,24 @@ const RadialChart = ({ year, radData }: any) => {
                     }))}
                     label={{
                         position: 'insideBottom',
-                        color:'#000',
-                        stroke:"#000",
+                        color: '#000',
+                        stroke: "#000",
                         fill: '#000',
-                        formatter: (value:any) => `${(value).toFixed(0)}`,
+                        formatter: (value:any) => {
+                            if (value >= 1_000_000) {
+                                return `${(value / 1_000_000).toFixed(1)}M`;
+                            } else if (value >= 1_000) {
+                                return `${(value / 1_000).toFixed(1)}K`;
+                            }
+                            return `${(value).toFixed(0)}`;
+                        },
                         fontSize: 9,
-                        fontWeight: 200, // Add font weight
+                        fontWeight: 200,
                         style: {
-                           
                             fontSize: '9px',
                             fontWeight: 100,
                         }
-                    }}
+                    }}  
                 />
 
                 
