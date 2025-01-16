@@ -155,14 +155,19 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                 batteries_ct: batteriesCT
             };
 
-            // Remove fields with undefined values
-            Object.keys(result).forEach((key) => {
-                if ((result as any)[key] === undefined) {
-                    delete (result as any)[key];
-                }
-            });
+            const importantKeys = ["projects_sold", "mw_sold", "install_ct", "mw_installed", "batteries_ct"];
 
-            return result;
+            const cleanedResult = Object.fromEntries(
+                Object.entries(result).filter(([key, value]) =>
+                    importantKeys.includes(key) ? value !== undefined : true
+                )
+            );
+
+            if (importantKeys.some(key => cleanedResult[key] !== undefined)) {
+                return cleanedResult;
+            }
+
+            
         });
 
         return convertedData;
@@ -210,25 +215,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
     const prevYear = currentYear > parseInt(year);
 
     useEffect(() => {
-        setShowInput((prevState) => {
-            const updatedState: Record<string, InputState> = {};
-            for (const month in prevState) {
-                updatedState[month] = {
-                    ...prevState[month],
-                    showprojectSold: false,
-                    showmwSold: false,
-                    showinstallCT: false,
-                    showmwInstalled: false,
-                    showbatteriesCT: false,
-                    projectSold: undefined,
-                    mwSold: undefined,
-                    installCT: undefined,
-                    mwInstalled: undefined,
-                    batteriesCT: undefined
-                };
-            }
-            return updatedState;
-        });
+        setShowInput({});
     }, [open, refre]);
     const width = useWindowWidth();
     const isMobile = width <= 767;
@@ -327,7 +314,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-                                                                            
+
                                                                             value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
                                                                             onChange={(e) => {
                                                                                 const value = e.target.value;
@@ -422,7 +409,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-                                                                            
+
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
 
                                                                             onChange={(e) => {
@@ -518,7 +505,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
-                                                                            
+
                                                                             maxLength={6}
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
 
