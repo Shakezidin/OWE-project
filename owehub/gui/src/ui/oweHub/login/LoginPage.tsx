@@ -57,16 +57,28 @@ export const LoginPage = () => {
     }));
   };
 
-  /** handle local storage */
-  useEffect(() => {
-    if (authData?.isRememberMe === 'true') {
-      
-      handleInputChange('email_id', authData.email);
-      handleInputChange('password', authData.password);
-      handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
-    }
-  }, [authData]);
+ /** handle local storage */
+useEffect(() => {
+  if (authData?.isRememberMe === 'true') {
+    const savedAuthData = localStorage.getItem('authData');
+    if (savedAuthData) {
+      try {
+        const parsedAuthData = JSON.parse(savedAuthData);
+        const decryptedPassword = decryptData(parsedAuthData.password);
 
+        handleInputChange('email_id', parsedAuthData.email || ''); // Fallback to empty string
+        handleInputChange('password', decryptedPassword || ''); // Fallback to empty string
+        handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
+      } catch (error) {
+        console.error('Error parsing or decrypting auth data:', error);
+      }
+    }
+  }
+}, [authData]);
+
+
+  
+  
   /** email validation */
   const isValidEmail = (email: string) => {
     // Regular expression pattern for validating email addresses
@@ -99,7 +111,7 @@ export const LoginPage = () => {
             time_to_expire_minutes,
             is_password_change_required,
           } = result.data;
-     
+        const encryptedPassword = encryptData(credentials.password)
 
           const loginResponse: AuthData = {
             role: role_name,
@@ -107,7 +119,7 @@ export const LoginPage = () => {
             email: email_id,
             type: access_token,
             token: access_token,
-            password: credentials.password,
+            password: encryptedPassword,
             dealer: dealer_name,
             expirationTimeInMin: time_to_expire_minutes,
             expirationTime: (

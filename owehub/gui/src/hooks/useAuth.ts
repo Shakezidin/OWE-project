@@ -12,7 +12,7 @@ export interface AuthData {
   email: string | null;
   type: string;
   token: string;
-  password: string;
+  password: any;
   dealer: string;
   expirationTimeInMin: string;
   expirationTime: string;

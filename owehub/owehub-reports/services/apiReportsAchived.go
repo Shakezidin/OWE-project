@@ -79,11 +79,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			(COALESCE(p.projects_sold, 0) * ($3 / 100.00))::INT AS projects_sold,
+			COALESCE(p.projects_sold, 0) * ($3 / 100.00) AS projects_sold,
 			COALESCE(p.mw_sold, 0) * ($3 / 100.00) AS mw_sold,
-			(COALESCE(p.install_ct, 0) * ($3 / 100.00))::INT AS install_ct,
+			COALESCE(p.install_ct, 0) * ($3 / 100.00) AS install_ct,
 			COALESCE(p.mw_installed, 0) * ($3 / 100.00) AS mw_installed,
-			(COALESCE(p.batteries_ct, 0) * ($3 / 100.00))::INT AS batteries_ct
+			COALESCE(p.batteries_ct, 0) * ($3 / 100.00) AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
 		ON MONTHS.n = p.month AND p.year = $4
@@ -167,11 +167,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			)
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(PROJECTS_SOLD.val, 0) AS projects_sold,
+			COALESCE(PROJECTS_SOLD.val, 0)::FLOAT AS projects_sold,
 			COALESCE(KW_SOLD.val, 0) / 1000 AS mw_sold,
-			COALESCE(INSTALL_CT.val, 0) AS install_ct,
+			COALESCE(INSTALL_CT.val, 0)::FLOAT AS install_ct,
 			COALESCE(KW_INSTALLED.val, 0) / 1000 AS mw_installed,
-			COALESCE(BATTERIES_CT.val, 0) AS batteries_ct
+			COALESCE(BATTERIES_CT.val, 0)::FLOAT AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN PROJECTS_SOLD ON PROJECTS_SOLD.MONTH = MONTHS.N
 		LEFT JOIN KW_SOLD ON KW_SOLD.MONTH = MONTHS.N
@@ -214,10 +214,10 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 
 		// get stats and overview data
 		statsItem, overviewItem := getMonthlyStatsAndOverview(
-			targetData[i][dataReq.TargetType], acheivedData[i][dataReq.TargetType], targetMonth == dataReq.Month)
-		if overviewItem == nil || statsItem == nil {
-			continue
-		}
+			targetData[i][dataReq.TargetType].(float64),
+			acheivedData[i][dataReq.TargetType].(float64),
+			targetMonth == dataReq.Month)
+
 		overviewItem.Month = targetMonth
 		statsItem.Month = targetMonth
 
@@ -319,15 +319,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models.ProductionTargetOrAchievedItem {
 	var (
 		item models.ProductionTargetOrAchievedItem
-		err  error
 	)
 
-	log.EnterFn(0, "HandleReportsTargetListRequest")
-	defer func() { log.ExitFn(0, "HandleReportsTargetListRequest", err) }()
-
-	projectsSold, ok := rawRecord["projects_sold"].(int64)
+	projectsSold, ok := rawRecord["projects_sold"].(float64)
 	if !ok {
-		log.FuncErrorTrace(0, "Failed to cast projects_sold from type %T to int64", rawRecord["projects_sold"])
+		log.FuncErrorTrace(0, "Failed to cast projects_sold from type %T to float64", rawRecord["projects_sold"])
 	}
 
 	mwSold, ok := rawRecord["mw_sold"].(float64)
@@ -335,10 +331,9 @@ func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models
 		log.FuncErrorTrace(0, "Failed to cast mw_sold from type %T to float64", rawRecord["mw_sold"])
 	}
 
-	installCt, ok := rawRecord["install_ct"].(int64)
+	installCt, ok := rawRecord["install_ct"].(float64)
 	if !ok {
-		log.FuncErrorTrace(0, "Failed to cast install_ct from type %T to int64", rawRecord["install_ct"])
-
+		log.FuncErrorTrace(0, "Failed to cast install_ct from type %T to float64", rawRecord["install_ct"])
 	}
 
 	mwInstalled, ok := rawRecord["mw_installed"].(float64)
@@ -346,9 +341,9 @@ func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models
 		log.FuncErrorTrace(0, "Failed to cast mw_installed from type %T to float64", rawRecord["mw_installed"])
 	}
 
-	batteriesCt, ok := rawRecord["batteries_ct"].(int64)
+	batteriesCt, ok := rawRecord["batteries_ct"].(float64)
 	if !ok {
-		log.FuncErrorTrace(0, "Failed to cast batteries_ct from type %T to int64", rawRecord["batteries_ct"])
+		log.FuncErrorTrace(0, "Failed to cast batteries_ct from type %T to float64", rawRecord["batteries_ct"])
 	}
 
 	item.ProjectsSold = projectsSold
@@ -363,15 +358,11 @@ func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models
 // for a given month by given 2 numerics: target and achieved
 //
 // Specific to HandleReportsTargetListRequest api
-func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSelectedMonth bool) (
+func getMonthlyStatsAndOverview(target float64, achieved float64, isSelectedMonth bool) (
 	*models.GetReportsTargetRespStatsItem, *models.GetReportsTargetRespOverviewItem) {
 	var (
-		targetFloat   float64
-		achievedFloat float64
-		isInt         bool
-		statsItem     models.GetReportsTargetRespStatsItem
-		overviewItem  models.GetReportsTargetRespOverviewItem
-		ok            bool
+		statsItem    models.GetReportsTargetRespStatsItem
+		overviewItem models.GetReportsTargetRespOverviewItem
 	)
 
 	// overviewItem is simply kept as is
@@ -379,30 +370,7 @@ func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSele
 	overviewItem.Achieved = achieved
 	overviewItem.Target = target
 
-	// first convert target and achieved to float64 if not already for easier comparision
-
-	if targetFloat, ok = target.(float64); !ok {
-		isInt = true
-		targetInt, ok := target.(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "target is not an int64 or float64")
-			return nil, nil
-		}
-		targetFloat = float64(targetInt)
-	}
-
-	if achievedFloat, ok = achieved.(float64); !ok {
-		isInt = true
-		achievedInt, ok := achieved.(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "achieved is not an int64 or float64")
-			return nil, nil
-		}
-		achievedFloat = float64(achievedInt)
-	}
-
 	// now calculate stats
-
 	statsItem.Target = target
 
 	if isSelectedMonth {
@@ -410,23 +378,13 @@ func getMonthlyStatsAndOverview(target interface{}, achieved interface{}, isSele
 		return &statsItem, &overviewItem
 	}
 
-	if achievedFloat > targetFloat {
-		statsItem.MoreThanTarget = achievedFloat - targetFloat
-
-		// cast to int64 if target and achieved are int64
-		if isInt {
-			statsItem.MoreThanTarget = int64(statsItem.MoreThanTarget.(float64))
-		}
+	if achieved > target {
+		statsItem.MoreThanTarget = achieved - target
 		return &statsItem, &overviewItem
 	}
 
-	statsItem.Incomplete = targetFloat - achievedFloat
-
-	// cast to int64 if target and achieved are int64
-	if isInt {
-		statsItem.Incomplete = int64(statsItem.Incomplete.(float64))
-	}
-	statsItem.Completed = achievedFloat
+	statsItem.Incomplete = target - achieved
+	statsItem.Completed = achieved
 	return &statsItem, &overviewItem
 }
 
@@ -442,23 +400,23 @@ func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedIt
 	}
 
 	if target.ProjectsSold > 0 {
-		pct.ProjectsSold = float64(acheived.ProjectsSold) / float64(target.ProjectsSold) * 100
+		pct.ProjectsSold = acheived.ProjectsSold / target.ProjectsSold * 100
 	}
 
 	if target.MwSold > 0 {
-		pct.MwSold = float64(acheived.MwSold) / float64(target.MwSold) * 100
+		pct.MwSold = acheived.MwSold / target.MwSold * 100
 	}
 
 	if target.InstallCt > 0 {
-		pct.InstallCt = float64(acheived.InstallCt) / float64(target.InstallCt) * 100
+		pct.InstallCt = acheived.InstallCt / target.InstallCt * 100
 	}
 
 	if target.MwInstalled > 0 {
-		pct.MwInstalled = float64(acheived.MwInstalled) / float64(target.MwInstalled) * 100
+		pct.MwInstalled = acheived.MwInstalled / target.MwInstalled * 100
 	}
 
 	if target.BatteriesCt > 0 {
-		pct.BatteriesCt = float64(acheived.BatteriesCt) / float64(target.BatteriesCt) * 100
+		pct.BatteriesCt = acheived.BatteriesCt / target.BatteriesCt * 100
 	}
 	return &pct
 }
