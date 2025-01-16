@@ -1,5 +1,5 @@
 import React from 'react'
-import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
+import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps, Label } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import useWindowWidth from '../../../../hooks/useWindowWidth';
 
@@ -108,14 +108,38 @@ const RadialChart = ({ year, radData }: any) => {
             >
                 <RadialBar
                     background={{ fill: '#FFFFFF' }}
-                    dataKey="Achieved"  // Updated to reflect progress
+                    dataKey="Achieved"
                     strokeWidth={2}
                     cornerRadius={10}
+                    
                     data={data.map(item => ({
                         ...item,
                         stroke: item.fill,
                     }))}
+                    label={{
+                        position: 'insideBottom',
+                        color: '#000',
+                        stroke: "#000",
+                        fill: '#000',
+                        formatter: (value:any) => {
+                            if (value >= 1_000_000) {
+                                return `${(value / 1_000_000).toFixed(1)}M`;
+                            } else if (value >= 1_000) {
+                                return `${(value / 1_000).toFixed(1)}K`;
+                            }
+                            return `${(value).toFixed(0)}`;
+                        },
+                        fontSize: 9,
+                        fontWeight: 200,
+                        style: {
+                            fontSize: '9px',
+                            fontWeight: 100,
+                        }
+                    }}  
                 />
+
+                
+
 
                 <Tooltip content={<CustomTooltip />} />
 
@@ -123,7 +147,7 @@ const RadialChart = ({ year, radData }: any) => {
                     iconSize={10}
                     layout="horizontal"
                     verticalAlign="bottom"
-                    wrapperStyle={{ marginTop: '-10px', top: isMobile ? "196px" : isTablet ? "280px" : "350px"}}
+                    wrapperStyle={{ marginTop: '-10px', top: isMobile ? "196px" : isTablet ? "280px" : "350px" }}
                     content={() => (
                         <div style={{ textAlign: 'center', marginTop: '-3px' }}>
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '19px', marginBottom: '20px' }}>
@@ -174,7 +198,7 @@ const RadialChart = ({ year, radData }: any) => {
                     y={isMobile ? "47%" : isTablet ? "47%" : "67%"}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    style={{ fontSize: (isMobile) ? '12px ':'16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
+                    style={{ fontSize: (isMobile) ? '12px ' : '16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
                 >
                     {year.label}
                 </text>

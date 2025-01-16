@@ -84,7 +84,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			continue
 		}
 
-		projectsSold, ok := item["projects_sold"].(int64)
+		projectsSold, ok := item["projects_sold"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get 'projects_sold' Item: %+v\n", item)
 		}
@@ -94,7 +94,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get 'mw_sold' Item: %+v\n", item)
 		}
 
-		installCt, ok := item["install_ct"].(int64)
+		installCt, ok := item["install_ct"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get 'install_ct' Item: %+v\n", item)
 		}
@@ -104,7 +104,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get 'mw_installed' Item: %+v\n", item)
 		}
 
-		batteriesCt, ok := item["batteries_ct"].(int64)
+		batteriesCt, ok := item["batteries_ct"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get 'batteries_ct' Item: %+v\n", item)
 		}

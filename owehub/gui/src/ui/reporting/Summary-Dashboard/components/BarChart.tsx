@@ -52,11 +52,13 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           height={50}
           tickSize={10}
           dy={4}
-          interval={0} />
+          interval={0} tickFormatter={formatLargeNumber}/>
+          
         <YAxis
           className={styles.axis}
           tickSize={10}
           tickLine={{ stroke: 'black', strokeWidth: 1 }}
+          tickFormatter={formatLargeNumber}
         />
         <Tooltip
           cursor={{ fill: '#F5F8FF' }}
@@ -126,6 +128,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              bottom:"14px"
             }}
           />
         </Bar>
@@ -146,6 +149,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"4px"
             }}
           />
         </Bar>
@@ -166,6 +170,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"4px"
             }}
           />
         </Bar>
@@ -186,6 +191,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"4px"
             }}
           />
         </Bar>
@@ -206,6 +212,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"15px"
             }}
           />
         </Bar>
