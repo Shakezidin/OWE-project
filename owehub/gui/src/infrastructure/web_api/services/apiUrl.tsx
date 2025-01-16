@@ -26,10 +26,10 @@ export interface LoginResponse {
 
 // Logout utility function
 const logoutUser = () => {
-  localStorage.removeItem('token'); // Clear the token
+ // Clear the token
   localStorage.removeItem('userName');
-  localStorage.removeItem('role');
-  window.location.href = '/login'; // Redirect to the login page
+  console.log("check logout")
+   // Redirect to the login page
 };
 
 export const login = async (
