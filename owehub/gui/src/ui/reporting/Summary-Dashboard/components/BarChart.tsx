@@ -128,6 +128,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              bottom:"14px"
             }}
           />
         </Bar>
@@ -148,6 +149,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"4px"
             }}
           />
         </Bar>
@@ -168,6 +170,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"4px"
             }}
           />
         </Bar>
@@ -188,6 +191,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"4px"
             }}
           />
         </Bar>
@@ -208,6 +212,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
               fill: '#000',
               fontSize: isMobile ? 6 : 12,
               fontWeight: isMobile ? '300' : '400',
+              marginBottom:"15px"
             }}
           />
         </Bar>
