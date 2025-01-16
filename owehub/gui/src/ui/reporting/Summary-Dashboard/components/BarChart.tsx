@@ -111,7 +111,8 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
         <Bar stackId="a" dataKey="Target" fill="#4585F7">
           <LabelList
             dataKey="Target"
-            position="center"
+            
+            position="insideTop"
             formatter={(value: any) =>
               value !== 0
                 ? typeof value === 'number'
