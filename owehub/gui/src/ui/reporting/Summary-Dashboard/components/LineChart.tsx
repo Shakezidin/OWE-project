@@ -82,7 +82,7 @@ const LineChartComp = ({ monthData }: any) => {
                         dataKey="Target"
                         position="bottom"
                         fill="#4585F7"
-                        fontSize={8}
+                        fontSize={10}
                         offset={5}
                         formatter={(value: number) => `${value.toFixed(0)}`}
                     />
@@ -98,9 +98,9 @@ const LineChartComp = ({ monthData }: any) => {
                 >
                     <LabelList
                         dataKey="Achieved"
-                        position="bottom"
+                        position="top"
                         fill="#9DD428"
-                        fontSize={8}
+                        fontSize={10}
                         offset={5}
                         formatter={(value: number) => `${value.toFixed(0)}`}
                     />
