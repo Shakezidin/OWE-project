@@ -67,8 +67,8 @@ func GetDealerPaymentsConfigFromDB(dataFilter models.DataRequestBody) (dlrPaymen
 	for _, item := range data {
 		DealerPaymentsStructList := DealerPaymentsStruct{
 
-			ItemID:        getInt64(item, "item_id"),
-			PodioLink:     getString(item, "podio_link"),
+			ItemID:        getInt64(item, "record_id"),
+			PodioLink:     getString(item, "record_url"),
 			Customer:      getString(item, "customer"),
 			UniqueId:      getString(item, "unique_id"),
 			SalesPartner:  getString(item, "sales_partner"),
