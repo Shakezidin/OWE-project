@@ -9,10 +9,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
   const data = monthlyStatsData.map((item: any) => ({
     name: item.month.slice(0, 3),
     Target: item.target,
-    ...(item.completed && { Achieved: item.completed }),
-    ...(item.incomplete && { "Not Achieved": item.incomplete }),
-    ...(item.more_than_target && { "Achieved more than target": item.more_than_target }),
-    ...(item.in_progress && { "Current Month": item.in_progress }),
+    ...(item.in_progress && { "Achieved": item.in_progress }),
   }));
 
   const width = useWindowWidth();
@@ -111,7 +108,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           }}
         />
 
-        <Bar stackId="a" dataKey="Target" fill="#D5E4FF">
+        <Bar stackId="a" dataKey="Target" fill="#4585F7">
           <LabelList
             dataKey="Target"
             position="center"
@@ -132,7 +129,8 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
             }}
           />
         </Bar>
-        <Bar stackId="a" dataKey="Achieved" fill="#ABDB42">
+       
+        <Bar stackId="a" dataKey="Achieved" fill="#9DD428">
           <LabelList
             dataKey="Achieved"
             position="center"
@@ -153,69 +151,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
             }}
           />
         </Bar>
-        <Bar stackId="a" dataKey="Not Achieved" fill="#EE4A3F">
-          <LabelList
-            dataKey="Not Achieved"
-            position="center"
-            formatter={(value: any) =>
-              value !== 0
-                ? typeof value === 'number'
-                  ? isMobile
-                    ? formatLargeNumber(value)
-                    : value.toFixed(0)
-                  : value
-                : ''
-            }
-            style={{
-              fill: '#000',
-              fontSize: isMobile ? 6 : 12,
-              fontWeight: isMobile ? '300' : '400',
-              marginBottom:"4px"
-            }}
-          />
-        </Bar>
-        <Bar stackId="a" dataKey="Current Month" fill="#4585F7">
-          <LabelList
-            dataKey="Current Month"
-            position="center"
-            formatter={(value: any) =>
-              value !== 0
-                ? typeof value === 'number'
-                  ? isMobile
-                    ? formatLargeNumber(value)
-                    : value.toFixed(0)
-                  : value
-                : ''
-            }
-            style={{
-              fill: '#000',
-              fontSize: isMobile ? 6 : 12,
-              fontWeight: isMobile ? '300' : '400',
-              marginBottom:"4px"
-            }}
-          />
-        </Bar>
-        <Bar stackId="a" dataKey="Achieved more than target" fill="#CBFF5C">
-          <LabelList
-            dataKey="Achieved more than target"
-            position="center"
-            formatter={(value: any) =>
-              value !== 0
-                ? typeof value === 'number'
-                  ? isMobile
-                    ? formatLargeNumber(value)
-                    : value.toFixed(0)
-                  : value
-                : ''
-            }
-            style={{
-              fill: '#000',
-              fontSize: isMobile ? 6 : 12,
-              fontWeight: isMobile ? '300' : '400',
-              marginBottom:"15px"
-            }}
-          />
-        </Bar>
+        
 
       </BarChart>
     </ResponsiveContainer>
