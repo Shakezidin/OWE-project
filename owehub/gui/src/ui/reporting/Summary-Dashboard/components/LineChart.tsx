@@ -56,9 +56,11 @@ const LineChartComp = ({ monthData }: any) => {
                         borderRadius: 4,
                         padding: 8,
                         fontSize: 10,
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
                     }}
+                    formatter={(value) => (value !== undefined ? parseFloat(value as string).toFixed(2) : '0.00')}
                 />
+
                 <Legend
                     layout="horizontal"
                     align="center"
