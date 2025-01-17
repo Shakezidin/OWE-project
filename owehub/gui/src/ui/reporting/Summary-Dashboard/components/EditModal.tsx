@@ -414,8 +414,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -473,8 +473,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -533,8 +533,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -593,8 +593,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -653,8 +653,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
