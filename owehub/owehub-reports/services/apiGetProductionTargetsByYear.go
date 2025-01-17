@@ -66,11 +66,11 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			COALESCE(p.batteries_ct, 0) AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
-		ON MONTHS.n = p.month AND p.year = $1
+		ON MONTHS.n = p.month AND p.target_percentage = $1 AND p.year = $2
 		ORDER BY MONTHS.n
 	`, db.TableName_ProductionTargets)
 
-	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.Year})
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TargetPercentage, dataReq.Year})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)

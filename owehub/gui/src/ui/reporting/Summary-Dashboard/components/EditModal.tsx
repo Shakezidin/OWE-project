@@ -28,7 +28,7 @@ interface InputState {
 
 
 
-const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
+const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any) => {
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
     const [loading, setIsLoading] = useState(false)
@@ -59,7 +59,10 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                     setIsLoading(true);
                     const response = await reportingCaller(
                         'get_production_targets_by_year',
-                        { "year": year },
+                        {
+                             "year": year,
+                             target_percentage: parseInt(activePerc) 
+                        },
                     );
                     if (response.status === 200) {
                         setSalesData(response?.data)
@@ -271,7 +274,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
             const response = await reportingCaller(
                 'update_production_targets',
                 {
-                    "targets": mergedData
+                    "targets": mergedData,
+                     target_percentage: parseInt(activePerc) 
                 },
             );
             if (response.status === 200) {
@@ -391,7 +395,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.projectSold ?? row.projectSold}
+                                                                        {showInput[row.month]?.projectSold ?? ((row.projectSold % 1 !== 0) ? row.projectSold.toFixed(2) : row.projectSold )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showprojectSold && (
@@ -414,8 +418,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -450,7 +454,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.mwSold ?? row.mwSold}
+                                                                        {showInput[row.month]?.mwSold ??  ((row.mwSold % 1 !== 0) ? row.mwSold.toFixed(2) : row.mwSold )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showmwSold && (
@@ -473,8 +477,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -509,7 +513,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.installCT ?? row.installCT}
+                                                                        {showInput[row.month]?.installCT ??  ((row.installCT % 1 !== 0) ? row.installCT.toFixed(2) : row.installCT )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showinstallCT && (
@@ -533,8 +537,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -570,7 +574,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.mwInstalled ?? row.mwInstalled}
+                                                                        {showInput[row.month]?.mwInstalled ??  ((row.mwInstalled % 1 !== 0) ? row.mwInstalled.toFixed(2) : row.mwInstalled )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showmwInstalled && (
@@ -593,8 +597,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -628,7 +632,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.batteriesCT ?? row.batteriesCT}
+                                                                        {showInput[row.month]?.batteriesCT ??  ((row.batteriesCT % 1 !== 0) ? row.batteriesCT.toFixed(2) : row.batteriesCT )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showbatteriesCT && (
@@ -653,8 +657,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     },
                                                                                 }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {

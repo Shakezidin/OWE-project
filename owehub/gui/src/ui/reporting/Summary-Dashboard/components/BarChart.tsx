@@ -15,13 +15,27 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
   const width = useWindowWidth();
   const isMobile = width <= 767;
 
-  const formatLargeNumber = (value: number) => {
-    if (value >= 1000000) {
-      return (value / 1000000).toFixed(1) + 'M';
-    } else if (value >= 1000) {
-      return (value / 1000).toFixed(1) + 'K';
+  const formatLargeNumber = (value: number | undefined) => {
+    if (typeof value === 'number') {
+      if (isMobile) {
+        if (value >= 1000000) {
+          return (value / 1000000).toFixed(1) + 'M';
+        } else if (value >= 1000) {
+          return (value / 1000).toFixed(1) + 'K';
+        } else {
+          return value % 1 !== 0 ? value.toFixed(1) : value.toString();
+        }
+      } else {
+        if (value >= 1000000) {
+          return Math.round(value / 1000000) + 'M';
+        } else if (value >= 1000) {
+          return Math.round(value / 1000) + 'K';
+        } else {
+          return value.toString();
+        }
+      }
     } else {
-      return value.toString();
+      return '';
     }
   };
 
@@ -35,7 +49,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
         className={styles.barChart}
         margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
         stackOffset="sign"
-        barSize={74}
+        barSize={54}
       >
         <CartesianGrid
           vertical={false}
@@ -49,7 +63,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           height={50}
           tickSize={10}
           dy={4}
-          interval={0} tickFormatter={formatLargeNumber} />
+          interval={0} />
 
         <YAxis
           className={styles.axis}
@@ -106,15 +120,13 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           )}
           wrapperStyle={{
             paddingBottom: '10px',
-            cursor: 'pointer',
           }}
         />
 
-        <Bar stackId="a" dataKey="Target" fill="#4585F7">
+        <Bar dataKey="Target" fill="#4585F7">
           <LabelList
             dataKey="Target"
-
-            position="insideTop"
+            position="top"
             formatter={(value: any) =>
               value !== 0
                 ? typeof value === 'number'
@@ -133,10 +145,10 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           />
         </Bar>
 
-        <Bar stackId="a" dataKey="Achieved" fill="#9DD428">
+        <Bar dataKey="Achieved" fill="#9DD428">
           <LabelList
             dataKey="Achieved"
-            position="center"
+            position="top"
             formatter={(value: any) =>
               value !== 0
                 ? typeof value === 'number'
@@ -148,7 +160,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
             }
             style={{
               fill: '#000',
-              fontSize: isMobile ? 6 : 12,
+              fontSize: isMobile ? 6 : 10,
               fontWeight: isMobile ? '300' : '400',
               marginBottom: "4px"
             }}

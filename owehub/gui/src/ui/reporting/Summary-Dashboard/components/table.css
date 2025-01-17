@@ -171,3 +171,14 @@
     width: 360px;
   }
 }
+
+.radial-bar-label {
+  position: absolute; /* 'insideBottom' isn't a standard CSS position, using absolute instead */
+  color: #000;
+  stroke: #000;
+  fill: #000;
+  font-size: 9px;
+  font-weight: 200;
+  text-anchor: middle; /* Centers the text horizontally */
+  dominant-baseline: central; /* Centers the text vertically */
+}
