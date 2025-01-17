@@ -419,7 +419,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                                 }));
                                                                                 const value = e.target.value;
                                                                                 const [beforeDecimal, afterDecimal] = value.split('.');
-                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -478,7 +478,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                                 }));
                                                                                 const value = e.target.value;
                                                                                 const [beforeDecimal, afterDecimal] = value.split('.');
-                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -538,7 +538,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                                 }));
                                                                                 const value = e.target.value;
                                                                                 const [beforeDecimal, afterDecimal] = value.split('.');
-                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -598,7 +598,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                                 }));
                                                                                 const value = e.target.value;
                                                                                 const [beforeDecimal, afterDecimal] = value.split('.');
-                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -658,7 +658,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                                 }));
                                                                                 const value = e.target.value;
                                                                                 const [beforeDecimal, afterDecimal] = value.split('.');
-                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 2)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
