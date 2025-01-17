@@ -38,7 +38,16 @@ import {
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
 import UserUpdate from './userOnboard/UpdateUser';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
+interface UserData {
+  name?: string;
+  email_id?: string;
+  mobile_number?: string;
+  role_name?: string;
+  dealer?: string;
+  description?: string;
+}
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openn, setOpenn] = useState<boolean>(false)
@@ -94,10 +103,52 @@ const UserManagement: React.FC = () => {
 
   const [isClicked, setIsClicked] = useState(false);
   const [isClicked1, setIsClicked1] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false)
+    const [editData, setEditData] = useState<any>([]);
 
   const handleOpen = () => setOpen(true);
   const handleImport = () => setOpenn(true);
-  const handleEdit = () => setIsEdit(true);
+  
+  const handleEdit = async (id?: string) => {
+    setIsEdit(true);
+  
+    const requestData = {
+      page_number: 1,
+      page_size: 25,
+      filters: [
+        {
+          Column: "email_id",
+          Operation: "=",
+          Data: id || null, // Use `id` or a fallback value
+        },
+      ],
+    };
+  
+    setLoadingEdit(true);
+  
+    try {
+      // API call using postCaller
+      const response = await postCaller("get_users", requestData);
+  
+      if (response.status > 201) {
+        toast.error(response.message);
+        setLoadingEdit(false);
+        setEditData([])
+        return;
+      }
+  
+      // Process and store the fetched data
+      setEditData(response.data.users_data_list);
+      console.log(response.data.users_data_list, "editData");
+    } catch (error) {
+      console.error("Error", error);
+      toast.error("An error occurred while fetching user data");
+    } finally {
+      setLoadingEdit(false);
+    }
+  };
+
+  
   const handleClose = () => {
     dispatch(userResetForm());
     setOpen(false);
@@ -434,11 +485,13 @@ const UserManagement: React.FC = () => {
             onChangeRole(role, value);
           }}
           setLogoUrl={setLogoUrl}
+          editData={editData}
         />
       )}
         {openn && (
         <ImportUser
           handleClose={handleClosee}
+          
          
        
       
@@ -482,6 +535,7 @@ const UserManagement: React.FC = () => {
           }
           activeSalesRep={activeSalesRep}
           handleEdit={handleEdit}
+          editData={editData}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}

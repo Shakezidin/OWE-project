@@ -25,7 +25,9 @@ import React, {
   import PhoneInput from 'react-phone-input-2';
   import 'react-phone-input-2/lib/style.css';
   import useAuth from '../../../../hooks/useAuth';
+  import {toast} from 'react-toastify'
   import { fetchUserListBasedOnRole } from '../../../../redux/apiActions/userManagement/userManagementActions';
+  import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
   
   interface createUserProps {
     editMode: boolean;
@@ -39,8 +41,18 @@ import React, {
     tablePermissions: {};
     setTablePermissions: Dispatch<SetStateAction<{}>>;
     setLogoUrl: any;
+    editData:any
   }
   
+  interface UserData {
+    name?: string;
+    email_id?: string;
+    mobile_number?: string;
+    role_name?: string;
+    dealer?: string;
+    description?: string;
+  }
+
   const  UserUpdate: React.FC<createUserProps> = ({
     handleClose,
     onSubmitCreateUser,
@@ -51,6 +63,7 @@ import React, {
     tablePermissions,
     setTablePermissions,
     setLogoUrl,
+    editData
   }) => {
     const dispatch = useAppDispatch();
     const { authData } = useAuth();
@@ -61,7 +74,7 @@ import React, {
       (state) => state.createOnboardUser
     );
     const {
-       loading,
+       
        userOnboardingList,
        userRoleBasedList,
        userPerformanceList,
@@ -70,6 +83,10 @@ import React, {
     const [selectTable, setSelectTable] = useState<boolean>(false);
     const tables = useAppSelector((state) => state.dataTableSlice.option);
     const [emailError, setEmailError] = useState('');
+    const [loading, setLoading] = useState(false);
+    
+
+  
   
     /** handle change for role */
     const handleChange = (newValue: any, fieldName: string) => {
@@ -176,38 +193,17 @@ import React, {
       dispatch(getDataTableName({ get_all_table: true }));
     }, []);
 
+   
+    console.log(editData, "editData")
 
     useEffect(() => {
-        const data = {
-            page_number: 1,
-            page_size: 25,
-            filters: [
-                {
-                    Column: "email_id",
-                    Operation: "=",
-                    Data: "testramandealer@gmail.commmm",
-                },
-            ],
-        };
-
-        const fetchList = async () => {
-            try {
-                await dispatch(fetchUserListBasedOnRole(data));
-            } catch (error) {
-                console.error("Failed to fetch user list:", error);
-            }
-        };
-
-        fetchList();
-    }, [dispatch]); 
-
-    useEffect(() => {
-        if (userRoleBasedList && userRoleBasedList.length > 0) {
-          const userData = userRoleBasedList[0]; // Assuming first entry
+      if (editData.length > 0) {
+        const userData = editData[0];
+        if (userData) {
           const nameParts = userData.name?.trim().split(' ') || [];
-          const firstName = nameParts[0] || ''; // First part as first name
-          const lastName = nameParts.slice(1).join(' ') || ''; // Remaining parts as last name
-      
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+          
           dispatch(updateUserForm({ field: 'first_name', value: firstName }));
           dispatch(updateUserForm({ field: 'last_name', value: lastName }));
           dispatch(updateUserForm({ field: 'email_id', value: userData.email_id || '' }));
@@ -215,9 +211,10 @@ import React, {
           dispatch(updateUserForm({ field: 'role_name', value: userData.role_name || '' }));
           dispatch(updateUserForm({ field: 'dealer', value: userData.dealer || '' }));
           dispatch(updateUserForm({ field: 'description', value: userData.description || '' }));
-          // Add other fields as required
         }
-      }, [userRoleBasedList, dispatch]);
+      }
+    }, [editData, dispatch]);
+    
       
       
       

@@ -20,7 +20,7 @@ interface UserTableProps {
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
   handlePasswordReset: (id?: string) => void;
-  handleEdit: () => void;
+  handleEdit: (id?: string) => void;
   selectAllChecked: boolean;
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
@@ -216,7 +216,10 @@ const UserTable: React.FC<UserTableProps> = ({
                       <div
                         className="reset_hover_btn"
                         style={{ cursor: 'pointer' }}
-                        onClick={handleEdit}
+                        onClick={() => {
+                          handleEdit(el.email_id);
+                        
+                        }}
 
                       >
                         <Tooltip
