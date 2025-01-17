@@ -395,7 +395,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.projectSold ?? row.projectSold}
+                                                                        {showInput[row.month]?.projectSold ?? ((row.projectSold % 1 !== 0) ? row.projectSold.toFixed(2) : row.projectSold )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showprojectSold && (
@@ -454,7 +454,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.mwSold ?? row.mwSold}
+                                                                        {showInput[row.month]?.mwSold ??  ((row.mwSold % 1 !== 0) ? row.mwSold.toFixed(2) : row.mwSold )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showmwSold && (
@@ -513,7 +513,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.installCT ?? row.installCT}
+                                                                        {showInput[row.month]?.installCT ??  ((row.installCT % 1 !== 0) ? row.installCT.toFixed(2) : row.installCT )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showinstallCT && (
@@ -574,7 +574,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.mwInstalled ?? row.mwInstalled}
+                                                                        {showInput[row.month]?.mwInstalled ??  ((row.mwInstalled % 1 !== 0) ? row.mwInstalled.toFixed(2) : row.mwInstalled )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showmwInstalled && (
@@ -632,7 +632,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.batteriesCT ?? row.batteriesCT}
+                                                                        {showInput[row.month]?.batteriesCT ??  ((row.batteriesCT % 1 !== 0) ? row.batteriesCT.toFixed(2) : row.batteriesCT )}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showbatteriesCT && (
