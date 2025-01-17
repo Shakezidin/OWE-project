@@ -236,7 +236,7 @@ const Summary_Dashboard = () => {
 
     return (
         <>
-            <EditModal refre={refre} setRefre={setRefre} year={parseInt(year.value)} open={open} handleClose={handleClose} />
+            <EditModal activePerc={activePerc} refre={refre} setRefre={setRefre} year={parseInt(year.value)} open={open} handleClose={handleClose} />
             <div className={classes.top_dashboard}>
                 <div className={classes.top_box}>
                     <div className={classes.top_box_heading}>
@@ -382,7 +382,7 @@ const Summary_Dashboard = () => {
                         ) : progressData ? (
                             <>
                                 <div className={classes.bottom_box_chart1_sec}>
-                                    <div className={classes.bottom_box_chart_rad}><RadialChart year={year} radData={progressData} /></div>
+                                    <div className={classes.bottom_box_chart_rad}><RadialChart year={reportType} radData={progressData} /></div>
                                     <div className={classes.bottom_box_chart_rad1}><RadarChartComponenet radData={progressData} /></div>
                                 </div>
                             </>
