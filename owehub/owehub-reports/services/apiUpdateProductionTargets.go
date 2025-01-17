@@ -75,7 +75,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		whereEleList = append(whereEleList,
 			item.Month,
 			item.Year,
-			item.TargetPercentage,
+			dataReq.TargetPercentage,
 			item.ProjectsSold,
 			item.MwSold,
 			item.InstallCt,
