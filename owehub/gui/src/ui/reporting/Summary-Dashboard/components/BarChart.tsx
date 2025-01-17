@@ -63,7 +63,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           height={50}
           tickSize={10}
           dy={4}
-          interval={0} tickFormatter={formatLargeNumber} />
+          interval={0} />
 
         <YAxis
           className={styles.axis}
