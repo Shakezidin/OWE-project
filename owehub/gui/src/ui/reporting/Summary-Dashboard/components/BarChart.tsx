@@ -106,15 +106,13 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           )}
           wrapperStyle={{
             paddingBottom: '10px',
-            cursor: 'pointer',
           }}
         />
 
-        <Bar stackId="a" dataKey="Target" fill="#4585F7">
+        <Bar dataKey="Target" fill="#4585F7">
           <LabelList
             dataKey="Target"
-
-            position="insideTop"
+            position="top"
             formatter={(value: any) =>
               value !== 0
                 ? typeof value === 'number'
@@ -133,10 +131,10 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           />
         </Bar>
 
-        <Bar stackId="a" dataKey="Achieved" fill="#9DD428">
+        <Bar dataKey="Achieved" fill="#9DD428">
           <LabelList
             dataKey="Achieved"
-            position="center"
+            position="top"
             formatter={(value: any) =>
               value !== 0
                 ? typeof value === 'number'
@@ -148,7 +146,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
             }
             style={{
               fill: '#000',
-              fontSize: isMobile ? 6 : 12,
+              fontSize: isMobile ? 6 : 10,
               fontWeight: isMobile ? '300' : '400',
               marginBottom: "4px"
             }}
