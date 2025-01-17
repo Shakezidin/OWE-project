@@ -28,7 +28,7 @@ interface InputState {
 
 
 
-const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
+const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any) => {
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
     const [loading, setIsLoading] = useState(false)
@@ -59,7 +59,10 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                     setIsLoading(true);
                     const response = await reportingCaller(
                         'get_production_targets_by_year',
-                        { "year": year },
+                        {
+                             "year": year,
+                             target_percentage: parseInt(activePerc) 
+                        },
                     );
                     if (response.status === 200) {
                         setSalesData(response?.data)
@@ -271,7 +274,8 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
             const response = await reportingCaller(
                 'update_production_targets',
                 {
-                    "targets": mergedData
+                    "targets": mergedData,
+                     target_percentage: parseInt(activePerc) 
                 },
             );
             if (response.status === 200) {

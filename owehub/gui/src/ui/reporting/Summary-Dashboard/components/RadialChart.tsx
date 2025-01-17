@@ -143,30 +143,6 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
             ...item,
             stroke: item.fill,
           }))}
-          // label={{
-          //   position: 'insideBottom',
-          //   color: '#000',
-          //   stroke: "#000",
-          //   fill: '#000',
-          //   // formatter: (value: number) => {
-          //   //     const tolerance = 0.1;
-               
-          //   //     const item = data.find((d: ChartDataItem) => {
-          //   //       console.log(d)
-          //   //       return Math.abs(d.DisplayPercentage - value) < tolerance;
-          //   //     });
-             
-          //   //     if (!item) return '';
-          //   //     return formatValue(value, item.Achieved);
-          //   //   },              
-          //   fontSize: 9,
-          //   fontWeight: 200,
-          //   style: {
-          //     fontSize: '9px',
-          //     fontWeight: 100,
-          //   }
-          // }}
-           
         />
  
         <Tooltip content={<CustomTooltip />} />
@@ -227,7 +203,7 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
           dominantBaseline="middle"
           style={{ fontSize: (isMobile) ? '12px ' : '16px', fontWeight: isMobile ? 'semi-bold' : 'bold' }}
         >
-          {year.label}
+          {(year.label).slice(0, 3)}
         </text>
       </RadialBarChart>
     </ResponsiveContainer>
