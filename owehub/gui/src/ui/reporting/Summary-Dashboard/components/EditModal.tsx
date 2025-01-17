@@ -27,6 +27,7 @@ interface InputState {
 }
 
 
+
 const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
@@ -126,20 +127,20 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
         }));
     };
 
+    const [showInputTest, setShowInputTest] = useState<Record<string, InputState>>({});
+
+
+
 
 
     const convertData = () => {
+
         const convertedData = Object.entries(showInput).map(([month, data]) => {
             const {
-                showprojectSold,
                 projectSold,
-                showmwSold,
                 mwSold,
-                showinstallCT,
                 installCT,
-                showmwInstalled,
                 mwInstalled,
-                showbatteriesCT,
                 batteriesCT,
             } = data;
 
@@ -167,7 +168,48 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                 return cleanedResult;
             }
 
-            
+
+        });
+
+        return convertedData;
+    };
+
+    const convertData2 = () => {
+
+        const convertedData = Object.entries(showInputTest).map(([month, data]) => {
+            const {
+                projectSold,
+                mwSold,
+                installCT,
+                mwInstalled,
+                batteriesCT,
+            } = data;
+
+            const monthNumber = new Date(Date.parse(month + " 1")).getMonth() + 1;
+
+            const result = {
+                year,
+                month: monthNumber,
+                projects_sold: projectSold,
+                mw_sold: mwSold,
+                install_ct: installCT,
+                mw_installed: mwInstalled,
+                batteries_ct: batteriesCT
+            };
+
+            const importantKeys = ["projects_sold", "mw_sold", "install_ct", "mw_installed", "batteries_ct"];
+
+            const cleanedResult = Object.fromEntries(
+                Object.entries(result).filter(([key, value]) =>
+                    importantKeys.includes(key) ? value !== undefined : true
+                )
+            );
+
+            if (importantKeys.some(key => cleanedResult[key] !== undefined)) {
+                return cleanedResult;
+            }
+
+
         });
 
         return convertedData;
@@ -179,9 +221,46 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
 
 
 
-    const dataTarget = convertData()
-    console.log(dataTarget, "dataTarget")
-    console.log(showInput, "showInput")
+
+    const mergeArraysByIndex = (data1: any[], data2: any[]) => {
+        return data1.map((item, index) => ({
+            ...item,
+            ...(data2[index] || {}) // Merge if index exists in data2
+        }));
+    };
+
+    const dataTarget = convertData();
+    const dataTarget2 = convertData2();
+
+    const mergeArrayData = (data1: any, data2: any) => {
+        if (!data1?.length || !data2?.length) return [];
+
+        return data1.map((firstObj:any, index:any) => {
+            const secondObj = data2[index];
+
+            if (!secondObj) return firstObj;
+
+            // Merge objects, taking new keys from secondObj
+            return {
+                ...firstObj,
+                ...Object.fromEntries(
+                    Object.entries(secondObj).filter(([key]) => !(key in firstObj))
+                )
+            };
+        });
+    };
+
+
+
+
+    const mergedData = React.useMemo(() => {
+        return mergeArrayData(dataTarget, dataTarget2);
+    }, [dataTarget, dataTarget2]);
+
+   
+
+
+
 
 
     const [load, setLoad] = useState(false)
@@ -192,7 +271,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
             const response = await reportingCaller(
                 'update_production_targets',
                 {
-                    "targets": dataTarget
+                    "targets": mergedData
                 },
             );
             if (response.status === 200) {
@@ -216,7 +295,9 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
 
     useEffect(() => {
         setShowInput({});
+        setShowInputTest({});
     }, [open, refre]);
+
     const width = useWindowWidth();
     const isMobile = width <= 767;
     const isTablet = width <= 1024;
@@ -231,6 +312,10 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
             document.removeEventListener('keydown', handleEscapeKey);
         };
     }, []);
+
+
+
+
     return (
         <>
             {open &&
@@ -317,14 +402,26 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
 
                                                                             value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
                                                                             onChange={(e) => {
+                                                                                setShowInputTest((prevState) => ({
+                                                                                    ...prevState,
+                                                                                    [row.month]: {
+                                                                                        ...prevState[row.month],
+                                                                                        projectSold: row.projectSold,
+                                                                                        mwSold: row.mwSold,
+                                                                                        mwInstalled: row.mwInstalled,
+                                                                                        batteriesCT: row.batteriesCT,
+                                                                                        installCT: row.installCT
+                                                                                    },
+                                                                                }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
                                                                                             ...prevState[row.month],
                                                                                             projectSold: Number(value),
+
                                                                                         },
                                                                                     }));
                                                                                 }
@@ -364,9 +461,20 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
 
                                                                             value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
                                                                             onChange={(e) => {
+                                                                                setShowInputTest((prevState) => ({
+                                                                                    ...prevState,
+                                                                                    [row.month]: {
+                                                                                        ...prevState[row.month],
+                                                                                        projectSold: row.projectSold,
+                                                                                        mwSold: row.mwSold,
+                                                                                        mwInstalled: row.mwInstalled,
+                                                                                        batteriesCT: row.batteriesCT,
+                                                                                        installCT: row.installCT
+                                                                                    },
+                                                                                }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -413,9 +521,20 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
 
                                                                             onChange={(e) => {
+                                                                                setShowInputTest((prevState) => ({
+                                                                                    ...prevState,
+                                                                                    [row.month]: {
+                                                                                        ...prevState[row.month],
+                                                                                        projectSold: row.projectSold,
+                                                                                        mwSold: row.mwSold,
+                                                                                        mwInstalled: row.mwInstalled,
+                                                                                        batteriesCT: row.batteriesCT,
+                                                                                        installCT: row.installCT
+                                                                                    },
+                                                                                }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -462,9 +581,20 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
 
                                                                             onChange={(e) => {
+                                                                                setShowInputTest((prevState) => ({
+                                                                                    ...prevState,
+                                                                                    [row.month]: {
+                                                                                        ...prevState[row.month],
+                                                                                        projectSold: row.projectSold,
+                                                                                        mwSold: row.mwSold,
+                                                                                        mwInstalled: row.mwInstalled,
+                                                                                        batteriesCT: row.batteriesCT,
+                                                                                        installCT: row.installCT
+                                                                                    },
+                                                                                }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -510,9 +640,21 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
 
                                                                             onChange={(e) => {
+
+                                                                                setShowInputTest((prevState) => ({
+                                                                                    ...prevState,
+                                                                                    [row.month]: {
+                                                                                        ...prevState[row.month],
+                                                                                        projectSold: row.projectSold,
+                                                                                        mwSold: row.mwSold,
+                                                                                        mwInstalled: row.mwInstalled,
+                                                                                        batteriesCT: row.batteriesCT,
+                                                                                        installCT: row.installCT
+                                                                                    },
+                                                                                }));
                                                                                 const value = e.target.value;
-                                                                                const beforeDecimal = value.split('.')[0];
-                                                                                if (beforeDecimal.length <= 8) {
+                                                                                const [beforeDecimal, afterDecimal] = value.split('.');
+                                                                                if (beforeDecimal.length <= 8 && (!afterDecimal || afterDecimal.length <= 3)) {
                                                                                     setShowInput((prevState) => ({
                                                                                         ...prevState,
                                                                                         [row.month]: {
@@ -522,6 +664,7 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                                                                     }));
                                                                                 }
                                                                             }}
+
                                                                         />
                                                                         <TiTick
                                                                             onClick={() => handleHide(row.month, 'batteriesCT')}
@@ -545,11 +688,11 @@ const EditModal = ({ refre, setRefre, year, open, handleClose }: any) => {
                                             <tfoot>
                                                 <tr style={{ position: "sticky", bottom: "0" }}>
                                                     <th>Total</th>
-                                                    <th>{grandTotal.projectSold}</th>
-                                                    <th>{grandTotal.mwSold}</th>
-                                                    <th>{grandTotal.installCT}</th>
-                                                    <th>{grandTotal.mwInstalled}</th>
-                                                    <th>{grandTotal.batteriesCT}</th>
+                                                    <th>{(grandTotal.projectSold).toFixed(2)}</th>
+                                                    <th>{(grandTotal.mwSold).toFixed(2)}</th>
+                                                    <th>{(grandTotal.installCT).toFixed(2)}</th>
+                                                    <th>{(grandTotal.mwInstalled).toFixed(2)}</th>
+                                                    <th>{(grandTotal.batteriesCT).toFixed(2)}</th>
                                                 </tr>
                                             </tfoot>
                                         </>

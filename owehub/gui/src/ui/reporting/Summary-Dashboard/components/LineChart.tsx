@@ -17,13 +17,13 @@ import {
 import styles from './style.module.css';
 
 
-const LineChartComp = ({monthData}:any) => {
-    
+const LineChartComp = ({ monthData }: any) => {
+
     const lineChartData = monthData?.map((item: any) => ({
         week: (item.month).slice(0, 3),
-        "Current Month": item.achieved,
         Target: item.target,
-      }));
+        "Achieved": item.achieved,
+    }));
 
     const tooltipStyle = {
         fontSize: '10px',
@@ -56,30 +56,22 @@ const LineChartComp = ({monthData}:any) => {
                         borderRadius: 4,
                         padding: 8,
                         fontSize: 10,
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
                     }}
+                    formatter={(value) => (value !== undefined ? parseFloat(value as string).toFixed(2) : '0.00')}
                 />
+
                 <Legend
                     layout="horizontal"
                     align="center"
-                    verticalAlign="top"
+                    verticalAlign="bottom"
                     className={styles.legend}
                     wrapperStyle={{
                         paddingBottom: '20px',
                         fontSize: '12px',
                         fontFamily: 'poppins',
-                        cursor: 'pointer',
                     }} />
-                <Line
-                    type="monotone"
-                    dataKey="Current Month"
-                    stroke="#9DD428"
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: '#9DD428' }}
-                    activeDot={{ r: 4 }}
-                >
-                    
-                </Line>
+
                 <Line
                     type="monotone"
                     dataKey="Target"
@@ -88,7 +80,32 @@ const LineChartComp = ({monthData}:any) => {
                     dot={{ r: 3, fill: '#2C84FE' }}
                     activeDot={{ r: 4 }}
                 >
-                    
+                    <LabelList
+                        dataKey="Target"
+                        position="bottom"
+                        fill="#4585F7"
+                        fontSize={10}
+                        offset={5}
+                        formatter={(value: number) => `${value.toFixed(0)}`}
+                    />
+                </Line>
+
+                <Line
+                    type="monotone"
+                    dataKey="Achieved"
+                    stroke="#9DD428"
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: '#9DD428' }}
+                    activeDot={{ r: 4 }}
+                >
+                    <LabelList
+                        dataKey="Achieved"
+                        position="top"
+                        fill="#9DD428"
+                        fontSize={10}
+                        offset={5}
+                        formatter={(value: number) => `${value.toFixed(0)}`}
+                    />
                 </Line>
             </LineChart>
         </ResponsiveContainer>

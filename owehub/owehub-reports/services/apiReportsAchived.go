@@ -34,12 +34,10 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		whereEleList      []interface{}
 		targetData        []map[string]interface{}
 		acheivedData      []map[string]interface{}
-		totalTarget       models.ProductionTargetOrAchievedItem
-		totalAchieved     models.ProductionTargetOrAchievedItem
-		totalPct          *models.ProductionTargetOrAchievedPercentage
 		lastMonthAchieved *models.ProductionTargetOrAchievedItem
 		lastMonthTarget   *models.ProductionTargetOrAchievedItem
 		lastMonthPct      *models.ProductionTargetOrAchievedPercentage
+		thisMonthPct      *models.ProductionTargetOrAchievedPercentage
 		apiResp           models.GetReportsTargetResp
 	)
 
@@ -198,20 +196,6 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		target := getProductionTargetOrAchievedItem(targetData[i])
 		acheived := getProductionTargetOrAchievedItem(acheivedData[i])
 
-		// keep track of totals
-
-		totalTarget.InstallCt += target.InstallCt
-		totalTarget.MwInstalled += target.MwInstalled
-		totalTarget.ProjectsSold += target.ProjectsSold
-		totalTarget.MwSold += target.MwSold
-		totalTarget.BatteriesCt += target.BatteriesCt
-
-		totalAchieved.InstallCt += acheived.InstallCt
-		totalAchieved.MwInstalled += acheived.MwInstalled
-		totalAchieved.ProjectsSold += acheived.ProjectsSold
-		totalAchieved.MwSold += acheived.MwSold
-		totalAchieved.BatteriesCt += acheived.BatteriesCt
-
 		// get stats and overview data
 		statsItem, overviewItem := getMonthlyStatsAndOverview(
 			targetData[i][dataReq.TargetType].(float64),
@@ -280,36 +264,36 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					LastMonthAcheived: lastMonthPct.BatteriesCt,
 				},
 			}
-		}
-	}
 
-	totalPct = getProductionAchievedPercentage(&totalTarget, &totalAchieved)
-	apiResp.Progress = map[string]models.GetReportsTargetRespProgressItem{
-		"Projects Sold": {
-			Target:             totalTarget.ProjectsSold,
-			Achieved:           totalAchieved.ProjectsSold,
-			PercentageAchieved: totalPct.ProjectsSold,
-		},
-		"mW Sold": {
-			Target:             totalTarget.MwSold,
-			Achieved:           totalAchieved.MwSold,
-			PercentageAchieved: totalPct.MwSold,
-		},
-		"Install Ct": {
-			Target:             totalTarget.InstallCt,
-			Achieved:           totalAchieved.InstallCt,
-			PercentageAchieved: totalPct.InstallCt,
-		},
-		"mW Installed": {
-			Target:             totalTarget.MwInstalled,
-			Achieved:           totalAchieved.MwInstalled,
-			PercentageAchieved: totalPct.MwInstalled,
-		},
-		"Batteries Ct": {
-			Target:             totalTarget.BatteriesCt,
-			Achieved:           totalAchieved.BatteriesCt,
-			PercentageAchieved: totalPct.BatteriesCt,
-		},
+			thisMonthPct = getProductionAchievedPercentage(target, acheived)
+			apiResp.Progress = map[string]models.GetReportsTargetRespProgressItem{
+				"Projects Sold": {
+					Target:             target.ProjectsSold,
+					Achieved:           acheived.ProjectsSold,
+					PercentageAchieved: thisMonthPct.ProjectsSold,
+				},
+				"mW Sold": {
+					Target:             target.MwSold,
+					Achieved:           acheived.MwSold,
+					PercentageAchieved: thisMonthPct.MwSold,
+				},
+				"Install Ct": {
+					Target:             target.InstallCt,
+					Achieved:           acheived.InstallCt,
+					PercentageAchieved: thisMonthPct.InstallCt,
+				},
+				"mW Installed": {
+					Target:             target.MwInstalled,
+					Achieved:           acheived.MwInstalled,
+					PercentageAchieved: thisMonthPct.MwInstalled,
+				},
+				"Batteries Ct": {
+					Target:             target.BatteriesCt,
+					Achieved:           acheived.BatteriesCt,
+					PercentageAchieved: thisMonthPct.BatteriesCt,
+				},
+			}
+		}
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Report target data", http.StatusOK, apiResp)

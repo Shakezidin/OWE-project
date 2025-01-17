@@ -155,8 +155,9 @@ func SalesMetricsRetrieveQueryFunc() string {
 func CsvSalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT
+            DISTINCT ON(customers_customers_schema.unique_id)
+			customers_customers_schema.unique_id,
             customers_customers_schema.customer_name AS home_owner,
-            customers_customers_schema.unique_id,
             customers_customers_schema.email_address AS customer_email,
             customers_customers_schema.phone_number AS customer_phone_number,
             customers_customers_schema.address,
