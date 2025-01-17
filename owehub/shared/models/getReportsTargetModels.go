@@ -68,7 +68,8 @@ type GetReportsTargetResp struct {
 // Get production targets by year models
 
 type ProductionTargetsByYearReq struct {
-	Year int `json:"year"`
+	Year             int `json:"year"`
+	TargetPercentage int `json:"target_percentage"`
 }
 
 type ProductionTargetsByYearRespItem struct {
@@ -83,13 +84,14 @@ type ProductionTargetsByYearRespItem struct {
 // Update production targets models
 
 type UpdateProductionTargetsReqItem struct {
-	Year         int     `json:"year"`
-	Month        int     `json:"month"`
-	ProjectsSold float64 `json:"projects_sold"`
-	MwSold       float64 `json:"mw_sold"`
-	InstallCt    float64 `json:"install_ct"`
-	MwInstalled  float64 `json:"mw_installed"`
-	BatteriesCt  float64 `json:"batteries_ct"`
+	Year             int     `json:"year"`
+	Month            int     `json:"month"`
+	TargetPercentage int     `json:"target_percentage"`
+	ProjectsSold     float64 `json:"projects_sold"`
+	MwSold           float64 `json:"mw_sold"`
+	InstallCt        float64 `json:"install_ct"`
+	MwInstalled      float64 `json:"mw_installed"`
+	BatteriesCt      float64 `json:"batteries_ct"`
 }
 
 type UpdateProductionTargetsReq struct {

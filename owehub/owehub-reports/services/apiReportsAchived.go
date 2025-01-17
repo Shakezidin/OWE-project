@@ -77,14 +77,14 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) * ($3 / 100.00) AS projects_sold,
-			COALESCE(p.mw_sold, 0) * ($3 / 100.00) AS mw_sold,
-			COALESCE(p.install_ct, 0) * ($3 / 100.00) AS install_ct,
-			COALESCE(p.mw_installed, 0) * ($3 / 100.00) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) * ($3 / 100.00) AS batteries_ct
+			COALESCE(p.projects_sold, 0) AS projects_sold,
+			COALESCE(p.mw_sold, 0) AS mw_sold,
+			COALESCE(p.install_ct, 0) AS install_ct,
+			COALESCE(p.mw_installed, 0) AS mw_installed,
+			COALESCE(p.batteries_ct, 0) AS batteries_ct
 		FROM MONTHS
 		LEFT JOIN %s p
-		ON MONTHS.n = p.month AND p.year = $4
+		ON MONTHS.n = p.month AND p.target_percentage = $3 AND p.year = $4
 		ORDER BY MONTHS.n
 	`, db.TableName_ProductionTargets)
 
