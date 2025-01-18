@@ -61,6 +61,27 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
+	/* Project status out of this will be rejected */
+	allowedStatuses := map[string]bool{
+		"JEOPARDY": true,
+		"HOLD":     true,
+		"ACTIVE":   true,
+	}
+
+	if len(dataReq.ProjectStatus) == 0 {
+		log.FuncErrorTrace(0, "empty project status: %v", err)
+		appserver.FormAndSendHttpResp(resp, "empty project status", http.StatusBadRequest, nil)
+		return
+	}
+
+	for _, status := range dataReq.ProjectStatus {
+		if !allowedStatuses[status] {
+			log.FuncErrorTrace(0, "invalid project status: %s", status)
+			appserver.FormAndSendHttpResp(resp, "invalid project status", http.StatusBadRequest, nil)
+			return
+		}
+	}
+
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
 		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
@@ -84,7 +105,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		}
 	}
 
-	pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter)
+	projectStatus := joinNames(dataReq.ProjectStatus)
+	pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter, projectStatus)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
