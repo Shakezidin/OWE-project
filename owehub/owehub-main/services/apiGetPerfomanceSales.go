@@ -69,7 +69,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if len(dataReq.ProjectStatus) == 0 {
-		log.FuncErrorTrace(0, "empty project status: %v", err)
+		log.FuncErrorTrace(0, "empty  project status: %v", err)
 		appserver.FormAndSendHttpResp(resp, "empty project status", http.StatusBadRequest, nil)
 		return
 	}
