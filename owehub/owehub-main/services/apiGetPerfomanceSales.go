@@ -105,7 +105,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		}
 	}
 
-	pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter)
+	projectStatus := joinNames(dataReq.ProjectStatus)
+	pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter, projectStatus)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
