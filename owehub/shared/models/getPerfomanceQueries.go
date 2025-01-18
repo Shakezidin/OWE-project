@@ -574,8 +574,8 @@ func PipelineTileDataAboveQuery(filterUserQuery string) string {
                 ON cust.our = pto.customer_unique_id
             
         
-            WHERE
-                cust.project_status = 'ACTIVE'
+             WHERE
+                cust.project_status IN (%v)
                 AND %v 
         ),
 
