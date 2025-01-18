@@ -177,6 +177,9 @@ import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
 import QCAudit from "../assets/QCAudit.png"
 import QcLineLead from '../../resources/assets/QcLineLead.svg';
 import ReportEdit from '../../resources/assets/ReportEdit.svg';
+import logoDesignTool from '../../resources/assets/logoDesignTool.svg';
+import profileImg from '../../resources/assets/profileDesign.svg';
+
 
 
 export const ICONS = {
@@ -371,4 +374,6 @@ export const ICONS = {
   ScheduleRepeat: ScheduleRepeat,
   QcLineLead:QcLineLead,
   ReportEdit:ReportEdit,
+  logoDesignTool:logoDesignTool,
+  profileImg:profileImg
 };
