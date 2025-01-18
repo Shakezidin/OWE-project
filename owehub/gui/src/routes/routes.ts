@@ -118,5 +118,6 @@ export const ROUTES = {
   AHJ:'/reporting/ahj',
   PERMIT_REDLINE:'/reporting/permit-redline',
   DYNAMIC_REPORT:'/reporting/:id',
-  SUMMARY_DASBOARD:'/summary-dashboard'
+  SUMMARY_DASBOARD:'/summary-dashboard',
+  DESIGNING_TOOL:'/DESIGNING-TOOL'
 };
