@@ -484,7 +484,7 @@ func CsvDownloadRetrieveQueryFunc() string {
 	return filtersBuilder.String()
 }
 
-func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
+func PipelineTileDataAboveQuery(filterUserQuery string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH time_intervals AS (
             SELECT
@@ -575,7 +575,7 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
             
         
             WHERE
-                cust.project_status IN (%v)
+                cust.project_status = 'ACTIVE'
                 AND %v 
         ),
 
@@ -693,6 +693,6 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
         WHERE queue_status IS NOT NULL
         GROUP BY queue_status
         ORDER BY distinct_customer_count DESC;
- `, projectStatus, filterUserQuery)
+ `, filterUserQuery)
 	return PipelineTileDataQuery
 }
