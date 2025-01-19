@@ -29,11 +29,14 @@ import React, {
   import { fetchUserListBasedOnRole } from '../../../../redux/apiActions/userManagement/userManagementActions';
   import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
   
+  type TablePermissions = Record<string, 'View' | 'Edit' | 'Full'>;
+
   interface createUserProps {
     editMode: boolean;
     handleClose: () => void;
     userOnboard: CreateUserModel | null;
-    onSubmitCreateUser: (e: any) => void;
+    
+    onSubmitUpdateUser: (e: any) => void;
     onChangeRole: (role: string, value: string) => void;
     dealerList: any[];
     regionList: any[];
@@ -41,7 +44,7 @@ import React, {
     tablePermissions: {};
     setTablePermissions: Dispatch<SetStateAction<{}>>;
     setLogoUrl: any;
-    editData:any
+    editData?:any
   }
   
   interface UserData {
@@ -55,7 +58,7 @@ import React, {
 
   const  UserUpdate: React.FC<createUserProps> = ({
     handleClose,
-    onSubmitCreateUser,
+    onSubmitUpdateUser,
     onChangeRole,
     dealerList,
     regionList,
@@ -170,24 +173,56 @@ import React, {
         dispatch(updateUserForm({ field: name, value }));
       }
     };
-  
+ 
+
     useEffect(() => {
-      if (selectedOption.value === TYPE_OF_USER.ADMIN) {
-        setDbAcess(true);
-        const set = new Set(
-          Array.from({ length: tables?.length }).map((_, i: number) => i)
-        );
-        setSelected(set);
-        const obj: { [key: string]: string } = {};
-        tables.forEach((table: { table_name: string }) => {
-          obj[table.table_name] = 'Full';
-        });
-        setTablePermissions(obj);
-      } else {
-        setTablePermissions({});
-        setDbAcess(false);
+      if (editData.length > 0) {
+        // Extract userData from editData
+        const userData = editData[0]; 
+        if (userData?.table_permission.length > 0) {
+          setDbAcess(true);
+          const permissions: TablePermissions = {};
+          const selectedIndices = new Set<number>();
+    
+          // Iterate over userData.table_permission
+          userData.table_permission.forEach((perm: { table_name: string; privilege_type: string }) => {
+            permissions[perm.table_name] = perm.privilege_type as 'View' | 'Edit' | 'Full';
+    
+            // Find the index of the matching table in `tables`
+            const index = tables.findIndex((table: { table_name: string }) => table.table_name === perm.table_name);
+            if (index !== -1) selectedIndices.add(index);
+          });
+    
+          // Update state with derived permissions and selected indices
+          setTablePermissions(permissions);
+          setSelected(selectedIndices);
+        }
       }
-    }, [selectedOption, tables]);
+    }, [editData, tables]);
+    
+    
+    
+    
+
+
+    
+    // useEffect(() => {
+    //   if (selectedOption.value === TYPE_OF_USER.ADMIN) {
+    //     setDbAcess(true);
+    //     const set = new Set(
+    //       Array.from({ length: tables?.length }).map((_, i: number) => i)
+    //     );
+    //     setSelected(set);
+    //     const obj: { [key: string]: string } = {};
+    //     tables.forEach((table: { table_name: string }) => {
+    //       obj[table.table_name] = 'Full';
+    //     });
+    //     setTablePermissions(obj);
+    //   } else {
+    //     setTablePermissions({});
+    //     setDbAcess(false);
+    //   }
+    // }, [selectedOption, tables]);
   
     useEffect(() => {
       dispatch(getDataTableName({ get_all_table: true }));
@@ -195,6 +230,8 @@ import React, {
 
    
     console.log(editData, "editData")
+    console.log(tablePermissions,"tablePermissions");
+    console.log(selected, "selecteddd")
 
     useEffect(() => {
       if (editData.length > 0) {
@@ -217,7 +254,7 @@ import React, {
     
       
       
-      
+      console.log(editData, "editData")
    
     /** render ui */
   
@@ -231,7 +268,7 @@ import React, {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmitCreateUser(tablePermissions);
+            onSubmitUpdateUser(tablePermissions);
           }}
           className="modal"
         >
@@ -349,7 +386,7 @@ import React, {
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}
                           name={'email_id'}
-                          disabled={formData.isEdit}
+                          disabled={true}
                         />
                         {emailError && (
                           <div className="error-message">{emailError}</div>
@@ -480,6 +517,7 @@ import React, {
                             setSelectTable={setSelectTable}
                             setTablePermissions={setTablePermissions}
                             tablePermissions={tablePermissions}
+                            editData={editData}
                           />
                         )}
                       </div>
@@ -546,7 +584,7 @@ import React, {
               onClick={handleClose}
               type={'button'}
             />
-            <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
+            <ActionButton title={'Update'} onClick={() => {}} type={'submit'} />
           </div>
         </form>
       </div>
