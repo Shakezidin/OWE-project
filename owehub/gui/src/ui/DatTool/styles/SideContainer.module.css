@@ -5,16 +5,49 @@
     max-width: 282px;
     background-color: #2A2626;
     color: #ffff;
-    padding: 18px;
+    padding: 0px 18px 18px;
     border-radius: 28px;
+    max-height: 70vh;
+    min-width: 18vw;
+    overflow-y: scroll;
 }
+
+.container::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+  }
+  .container::-webkit-scrollbar {
+    display: initial;
+  }
+  
+  .container::-webkit-scrollbar-thumb {
+    background-color: #377CF6;
+    border-radius: 28px;
+  }
+  
+  .container::-webkit-scrollbar-button {
+    display: initial;
+  }
+  
+  .container::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  .container::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+
 
 .heading{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 15px;
+    padding: 18px 15px;
+    position: sticky;
+    top: 0;
+    background: #2A2626;
 }
 .searchBox input{
     all: unset;
