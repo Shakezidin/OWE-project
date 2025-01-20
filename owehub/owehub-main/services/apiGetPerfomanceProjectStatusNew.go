@@ -138,7 +138,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	projectStatus := joinNames(dataReq.ProjectStatus)
 	queueStatus = buildQueueStatus(dataReq.SelectedMilestone)
 	if len(dataReq.UniqueIds) > 0 {
-		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds, dataReq.UniqueIds)
+		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
 
 	pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
@@ -147,7 +147,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
+	} else if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+		return
 	}
+
 
 	for _, item := range data {
 		UniqueId, ok := item["customer_record_id"].(string)
