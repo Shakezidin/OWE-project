@@ -10,24 +10,29 @@ import {
 } from 'recharts';
 import useWindowWidth from '../../../../hooks/useWindowWidth';
 
+
 const RadarChartComponenet = ({ radData }: any) => {
   // Transform and normalize data
   const data = radData
     ? Object.entries(radData).map(([key, value]) => {
-        const percentAchieved = (value as { percentage_achieved: number }).percentage_achieved;
-        const scaledValue = Math.log10(percentAchieved + 1) * 30;
-        const normalizedValue = Math.max(scaledValue, 10);
+      const percentAchieved = (value as { percentage_achieved: number }).percentage_achieved;
+      const scaledValue = Math.log10(percentAchieved + 1) * 30;
+      const normalizedValue = Math.max(scaledValue, 10);
 
-        return {
-          subject: key,
-          Target: (value as { target: number }).target,
-          Achieve: (value as { achieved: number }).achieved,
-          Percent_Achieve: percentAchieved,
-          // Add normalized value for scaling
-          Normalized_Achieve: normalizedValue,
-        };
-      })
+      return {
+        subject: key,
+        Target: (value as { target: number }).target,
+        Achieve: (value as { achieved: number }).achieved,
+        Percent_Achieve: percentAchieved,
+        // Add normalized value for scaling
+        Normalized_Achieve: normalizedValue,
+        show: true
+      };
+    })
     : [];
+  
+
+  const newData = [...data];
 
   const CustomTick = ({ payload, x, y, textAnchor }: any) => {
     const entry = data.find((item) => item.subject === payload.value);
@@ -67,14 +72,17 @@ const RadarChartComponenet = ({ radData }: any) => {
   const isMobile = width <= 767;
   const isTablet = width <= 1024;
 
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RadarChart
         cx="50%"
         cy="50%"
         outerRadius={(isTablet || isMobile) ? "65%" : "80%"}
-        data={data}
+        data={newData}
+        
       >
+      
         <PolarGrid />
         <PolarAngleAxis
           dataKey="subject"
@@ -83,15 +91,7 @@ const RadarChartComponenet = ({ radData }: any) => {
         <Radar
           name="Achieve"
           dataKey="Normalized_Achieve"
-          stroke="#377CF6"
-          fill="#377CF6"
-          fillOpacity={0.4}
-          dot={{
-            fill: '#377CF6',
-            stroke: '#377CF6',
-            strokeWidth: 4,
-            r: 2,
-          }}
+          fillOpacity={0}
         />
         <Legend
           payload={[
