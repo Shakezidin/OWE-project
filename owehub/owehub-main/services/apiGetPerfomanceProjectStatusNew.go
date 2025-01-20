@@ -128,6 +128,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
+	/* 
+		These below codes sets the filter
+		1. Project status - [ACTIVE, HOLD, JEOPARDY]
+		2. Queue status - [either of the 7 milestone]
+		3. Search based on unique id / customer name
+	*/
+
 	projectStatus := joinNames(dataReq.ProjectStatus)
 	queueStatus = buildQueueStatus(dataReq.SelectedMilestone)
 	if len(dataReq.UniqueIds) > 0 {
@@ -217,6 +224,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InspectionClr: inspectionColor,
 			ActivationClr: activationColor,
 		}
+
+		log.FuncInfoTrace(0, "DATA -> %v", perfomanceResponse) //*DELETE
+
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 

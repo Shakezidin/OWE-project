@@ -918,12 +918,10 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
             WHERE qc.customer_unique_id = c.unique_id
         )
     )
-
     SELECT 
-    *
-    FROM queue_customers q
-    LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id
-    ;
+        *
+        FROM queue_customers q
+        LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id;
  `, projectStatus, filterUserQuery, queueStatus, searchValue)
 	return PipelineTileDataQuery
 }
