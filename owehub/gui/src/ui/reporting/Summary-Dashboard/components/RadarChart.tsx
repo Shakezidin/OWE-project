@@ -13,24 +13,42 @@ import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 const RadarChartComponenet = ({ radData }: any) => {
   // Transform and normalize data
+  // const data = radData
+  //   ? Object.entries(radData).map(([key, value]) => {
+  //     const percentAchieved = (value as { percentage_achieved: number }).percentage_achieved;
+  //     const newPerc = Number((percentAchieved).toFixed(0)) >= 100 ? 100 : Number(percentAchieved).toFixed(0)
+
+  //     return {
+  //       subject: key,
+  //       Target: (value as { target: number }).target,
+  //       Achieve: (value as { achieved: number }).achieved,
+  //       Percent_Achieve: percentAchieved,
+  //       // Add normalized value for scaling
+  //       Normalized_Achieve: newPerc,
+  //       show: true
+  //     };
+  //   })
+  //   : [];
+
+  const maxValue = 100; // Fixed max for scaling
+
   const data = radData
     ? Object.entries(radData).map(([key, value]) => {
       const percentAchieved = (value as { percentage_achieved: number }).percentage_achieved;
-      const scaledValue = Math.log10(percentAchieved + 1) * 30;
-      const normalizedValue = Math.max(scaledValue, 10);
+      const clampedValue = Math.min(percentAchieved, maxValue);
 
       return {
         subject: key,
         Target: (value as { target: number }).target,
         Achieve: (value as { achieved: number }).achieved,
         Percent_Achieve: percentAchieved,
-        // Add normalized value for scaling
-        Normalized_Achieve: normalizedValue,
+        Normalized_Achieve: (clampedValue / maxValue) * 100, // Scale relative to 100
         show: true
       };
     })
     : [];
-  
+
+
 
   const newData = [...data];
 
@@ -80,9 +98,8 @@ const RadarChartComponenet = ({ radData }: any) => {
         cy="50%"
         outerRadius={(isTablet || isMobile) ? "65%" : "80%"}
         data={newData}
-        
       >
-      
+
         <PolarGrid />
         <PolarAngleAxis
           dataKey="subject"
@@ -91,7 +108,15 @@ const RadarChartComponenet = ({ radData }: any) => {
         <Radar
           name="Achieve"
           dataKey="Normalized_Achieve"
-          fillOpacity={0}
+          stroke="#377CF6"
+          fill="#377CF6"
+          fillOpacity={0.4}
+          dot={{
+            fill: '#377CF6',
+            stroke: '#377CF6',
+            strokeWidth: 4,
+            r: 2,
+          }}
         />
         <Legend
           payload={[
