@@ -37,10 +37,10 @@ const Header: React.FC<HeaderProps> = ({ onMenuSelect }) => {
             Structural
           </li>
           <li
-            className={activeMenu === 'Address' ? styles.active : ''}
-            onClick={() => handleMenuClick('Address')}
+            className={activeMenu === 'Adders' ? styles.active : ''}
+            onClick={() => handleMenuClick('Adders')}
           >
-            Address
+            Adders
           </li>
           <li
             className={activeMenu === 'Notes' ? styles.active : ''}

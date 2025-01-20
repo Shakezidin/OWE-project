@@ -1,55 +1,62 @@
 .header{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0; 
+  z-index: 1000;
+  width: 100%; 
+  background-color: #F3F2F9;
+
+  padding: 15px 40px;
 }
 
 .menuContainer {
-    flex-grow: 1;
-  }
-  
-  .menuItems {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    list-style-type: none; /* This removes the bullet points */
-    margin: 0;
-    padding: 0;
-  }
-  
-  .menuItems li {
-    cursor: pointer;
-    padding: 7px 30px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
-  .menuItems li:hover {
-    background-color: #2A2626; /* Slight hover effect */
-    color: #FFFF;
-    border-radius: 24px;
-  }
+  flex-grow: 1;
+}
 
-  .menuItems li.active{
-    background-color: #2A2626; /* Slight hover effect */
-    color: #FFFF;
-    border-radius: 24px;
-  }
+.menuItems {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  list-style-type: none; /* This removes the bullet points */
+  margin: 0;
+  padding: 0;
+}
 
-  .headerLast{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
+.menuItems li {
+  cursor: pointer;
+  padding: 7px 30px;
+  font-size: 14px;
+  font-weight: 500;
+}
 
-  .iconContainer{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #FFFF;
-    padding: 8px;
-    border-radius: 50px;
-  }
+.menuItems li:hover {
+  background-color: #2A262633; /* Slight hover effect */
+  color: #FFFF;
+  border-radius: 24px;
+}
+
+.menuItems li.active{
+  background-color: #2A2626; /* Slight hover effect */
+  color: #FFFF;
+  border-radius: 24px;
+}
+
+.headerLast{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.iconContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFFF;
+  padding: 8px;
+  border-radius: 50px;
+}
