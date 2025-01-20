@@ -93,7 +93,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "cust", dataReq)
+	roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "cust", dataReq.DealerNames)
 	if err != nil {
 		if !strings.Contains("<not an error>", err.Error()) || !strings.Contains("<emptyerror>", err.Error()) {
 			log.FuncErrorTrace(0, "error creating user role query %v", err)

@@ -30,7 +30,7 @@ import (
 	9. Sales Rep
 */
 
-func HandleDataFilterOnUserRoles(email, userRole, customerTableAlias string, dataReq models.PerfomanceTileDataReq) (string, error) {
+func HandleDataFilterOnUserRoles(email, userRole, customerTableAlias string, DealerNames []string) (string, error) {
 
 	var (
 		err        error
@@ -48,7 +48,7 @@ func HandleDataFilterOnUserRoles(email, userRole, customerTableAlias string, dat
 		For other roles we get the dealer name from DB
 	*/
 	if userRole == string(types.RoleAdmin) || userRole == string(types.RoleFinAdmin) || userRole == string(types.RoleAccountExecutive) || userRole == string(types.RoleAccountManager) {
-		if len(dataReq.DealerNames) <= 0 {
+		if len(DealerNames) <= 0 {
 			return "", fmt.Errorf("<not an error> empty dealer names in req present, user: %v", email)
 		}
 	} else {
@@ -56,10 +56,10 @@ func HandleDataFilterOnUserRoles(email, userRole, customerTableAlias string, dat
 		if err != nil {
 			return "", err
 		}
-		dataReq.DealerNames = []string{dealerName}
+		DealerNames = []string{dealerName}
 	}
 
-	filter, err = createFilterForRoles(email, userRole, userName, customerTableAlias, dataReq.DealerNames)
+	filter, err = createFilterForRoles(email, userRole, userName, customerTableAlias, DealerNames)
 	return filter, nil
 }
 
