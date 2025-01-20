@@ -63,7 +63,8 @@ const Summary_Dashboard = () => {
 
     const [states, setStates] = useState<Option[]>([]);
 
-    const isShowDropdown = (role === 'Admin')
+    const isShowDropdown = false
+    // (role === 'Admin')
     useEffect(() => {
         if (
             role === 'Admin' ||
@@ -265,9 +266,11 @@ const Summary_Dashboard = () => {
             "target_percentage": parseInt(activePerc),
             "target_type": activeButton,
             "month": reportType.value,
-            "year": year.value
+            "year": year.value,
+            state: selectedState.value,
+            account_manager: ""
         }));
-    }, [reportType, year, activePerc, refre, activeButton]);
+    }, [reportType, year,selectedState, activePerc, refre, activeButton]);
 
     const { summaryData, loading } = useAppSelector(
         (state) => state.reportingSlice
