@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './styles/DesigningTool.module.css';
+import styles from './styles/DatTool.module.css';
 import Header from './components/Header';
 import SideContainer from './components/SideContainer';
 import GeneralPage from './pages/GeneralPage';
@@ -8,7 +8,7 @@ import AddressPage from './pages/AddressPage';
 import NotesPage from './pages/NotesPage';
 import OtherPage from './pages/OtherPage';
 
-const DesigningTool: React.FC = () => {
+const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
 
   const renderPage = () => {
@@ -36,4 +36,4 @@ const DesigningTool: React.FC = () => {
   );
 };
 
-export default DesigningTool;
+export default DatTool;

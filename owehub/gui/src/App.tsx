@@ -68,7 +68,7 @@ import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
-import DesigningTool from './ui/DesigningTool/DesigningTool';
+import DatTool from './ui/DatTool/DatTool';
 
 
 function App() {
@@ -252,7 +252,7 @@ function App() {
             element={<SchedulerBar />}
           />
           <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
-          <Route path={ROUTES.DESIGNING_TOOL} element={<DesigningTool />} />
+          <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>
