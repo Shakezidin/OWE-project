@@ -15,6 +15,9 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Tooltip } from 'react-tooltip';
 import useWindowWidth from '../../../hooks/useWindowWidth';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import useAuth from '../../../hooks/useAuth';
 interface Option {
     value: string;
     label: string;
@@ -47,6 +50,60 @@ interface MonthlyStatsItem {
 }
 
 const Summary_Dashboard = () => {
+    const { authData, getUpdatedAuthData } = useAuth();
+    const role = authData?.role;
+
+    const tableData = {
+        tableNames: [
+            'states',
+        ],
+    };
+
+    const [newFormData, setNewFormData] = useState<any>([]);
+
+    const [states, setStates] = useState<Option[]>([]);
+
+    const isShowDropdown = false
+    // (role === 'Admin')
+    useEffect(() => {
+        if (
+            role === 'Admin' ||
+            isShowDropdown
+        ) {
+            getNewFormData();
+        }
+    }, [role]);
+    const getNewFormData = async () => {
+        const res = await postCaller(EndPoints.get_newFormData, tableData);
+        if (res.status > 200) {
+            return;
+        }
+        setNewFormData(res.data);
+
+
+
+        const statesData: Option[] = (res.data.states as string[]).map((state) => ({
+            label: state,
+            value: state
+        }));
+        setStates(statesData);
+    };
+
+    const [selectedState, setSelectedState] = useState<Option>(
+        { label: 'All States', value: 'All' }
+    );
+
+    const [selectedAM, setSelectedAm] = useState<Option>(
+        { label: "All AM's", value: 'All' }
+    );
+
+    console.log(selectedState, "selectedState")
+
+
+
+
+
+
     const [reportType, setReportType] = useState<Option>(
         {
             label: 'January',
@@ -209,9 +266,11 @@ const Summary_Dashboard = () => {
             "target_percentage": parseInt(activePerc),
             "target_type": activeButton,
             "month": reportType.value,
-            "year": year.value
+            "year": year.value,
+            state: selectedState.value,
+            account_manager: ""
         }));
-    }, [reportType, year, activePerc, refre, activeButton]);
+    }, [reportType, year,selectedState, activePerc, refre, activeButton]);
 
     const { summaryData, loading } = useAppSelector(
         (state) => state.reportingSlice
@@ -236,7 +295,7 @@ const Summary_Dashboard = () => {
 
     return (
         <>
-            <EditModal activePerc={activePerc} refre={refre} setRefre={setRefre} year={parseInt(year.value)} open={open} handleClose={handleClose} />
+            <EditModal selectedState={selectedState} selectedAM={selectedAM} activePerc={activePerc} refre={refre} setRefre={setRefre} year={parseInt(year.value)} open={open} handleClose={handleClose} />
             <div className={classes.top_dashboard}>
                 <div className={classes.top_box}>
                     <div className={classes.top_box_heading}>
@@ -280,9 +339,31 @@ const Summary_Dashboard = () => {
 
                                     />
                                 </div>
+                                {isShowDropdown &&
+                                    <SelectOption
+                                        options={states}
+                                        onChange={(value: any) => { setSelectedState(value); setSelectedState({ label: 'All States', value: 'All' }) }}
+                                        value={selectedAM}
+                                        controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                        menuWidth={isMobile ? "120px" : "150px"}
+                                        menuListStyles={{ fontWeight: 400 }}
+                                        singleValueStyles={{ fontWeight: 400 }}
+                                    />
+                                }
                             </div>
 
                             <div className={classes.sel_opt}>
+                                {isShowDropdown &&
+                                    <SelectOption
+                                        options={states}
+                                        onChange={(value: any) => { setSelectedState(value); setSelectedAm({ label: "All AM's", value: 'All' }) }}
+                                        value={selectedState}
+                                        controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
+                                        menuWidth={isMobile ? "120px" : "150px"}
+                                        menuListStyles={{ fontWeight: 400 }}
+                                        singleValueStyles={{ fontWeight: 400 }}
+                                    />
+                                }
                                 <SelectOption
                                     options={options}
                                     onChange={(value: any) => setReportType(value)}
@@ -294,7 +375,7 @@ const Summary_Dashboard = () => {
                                 />
                                 <SelectOption
                                     options={years}
-                                    onChange={(value: any) => setYear(value)}
+                                    onChange={(value: any) => { setYear(value) }}
                                     value={year}
                                     controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
                                     menuWidth={isMobile ? "80px" : "150px"}
@@ -401,21 +482,21 @@ const Summary_Dashboard = () => {
                                     {!line ? <FaChartLine size={15} style={{ marginRight: "-2px" }} color="#377CF6" /> : <MdBarChart size={15} style={{ marginRight: "-2px" }} color="#377CF6" />}
                                 </div>
                                 <Tooltip
-                                        style={{
-                                            zIndex: 20,
-                                            background: '#f7f7f7',
-                                            color: '#000',
-                                            fontSize: 12,
-                                            paddingBlock: 4,
-                                            fontWeight: "400"
-                                        }}
-                                        offset={8}
-                                        delayShow={800}
-                                        id="down"
-                                        place="bottom"
-                                        content={"Change View"}
+                                    style={{
+                                        zIndex: 20,
+                                        background: '#f7f7f7',
+                                        color: '#000',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                        fontWeight: "400"
+                                    }}
+                                    offset={8}
+                                    delayShow={800}
+                                    id="down"
+                                    place="bottom"
+                                    content={"Change View"}
 
-                                    />
+                                />
                                 {!isMobile ?
                                     <div className={classes.bottom_box_chart2_head_buttons}>
                                         <div

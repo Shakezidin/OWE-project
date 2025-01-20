@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import useWindowWidth from '../../../../hooks/useWindowWidth';
- 
+
 interface ProgressDataItem {
   target: number;
   achieved: number;
   percentage_achieved?: number;
 }
- 
+
 interface ProgressData {
   [key: string]: ProgressDataItem;
 }
- 
+
 interface ChartDataItem {
   name: string;
   Target: number;
@@ -21,7 +21,7 @@ interface ChartDataItem {
   DisplayPercentage: number;
   fill: string;
 }
- 
+
 const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) => {
   const getColorByKey = (key: string) => {
     switch (key) {
@@ -39,89 +39,96 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
         return '#000000';
     }
   };
- 
-  const data = radData ? Object.entries(radData).map(([key, value]) => {
-    const percentageAchieved = (value.achieved / value.target) * 100;
-   
-    const displayPercentage = percentageAchieved >= 100 ? 100 : percentageAchieved;
- 
+
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const apiData = radData ? Object.entries(radData).map(([key, value]) => {
     return {
       name: key,
       Target: value.target,
       Achieved: value.achieved,
-      AchievedPercentage: percentageAchieved,
-      DisplayPercentage: displayPercentage,
+      DisplayPercentage: Number((value.percentage_achieved)?.toFixed(2)) >= 100 ? 100 : (value.percentage_achieved)?.toFixed(2),
       fill: getColorByKey(key),
+      tooltip: true
     };
   }) : [];
- 
+
+  const dummyData = [
+    {
+      name: 'Dummy 1',
+      Target: 100,
+      Achieved: 75,
+      AchievedPercentage: 75,
+      DisplayPercentage: 100,
+      fill: '#fff',
+      tooltip: false
+    },
+
+  ];
+
+  const data = [...apiData, ...dummyData];
+
   const CustomTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
- 
-      return (
-        <div
-          style={{
-            fontSize: '10px',
-            padding: '2px',
-            borderRadius: '4px',
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "start",
-            alignItems: "start",
-          }}
-        >
-          <p style={{ fontWeight: "500", fontSize: "12px", color: "#101828", marginRight: '-10px' }}>
-            {data.name}
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <svg width="12" height="12" style={{ marginRight: '5px' }}>
-              <circle
-                cx="6"
-                cy="6"
-                r="5"
-                stroke={data.fill}
-                strokeWidth="1"
-                fill="white"
-              />
-            </svg>
-            <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>
-              {(data.Target).toFixed(2)} - Target
-            </span>
+      if (data.tooltip) {
+        return (
+          <div
+            style={{
+              fontSize: '10px',
+              padding: '2px',
+              borderRadius: '4px',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              alignItems: "start",
+            }}
+          >
+            <p style={{ fontWeight: "500", fontSize: "12px", color: "#101828", marginRight: '-10px' }}>
+              {data.name}
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <svg width="12" height="12" style={{ marginRight: '5px' }}>
+                <circle
+                  cx="6"
+                  cy="6"
+                  r="5"
+                  stroke={data.fill}
+                  strokeWidth="1"
+                  fill="white"
+                />
+              </svg>
+              <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>
+                {(data.Target).toFixed(2)} - Target
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <svg width="12" height="12" style={{ marginRight: '5px' }}>
+                <circle
+                  cx="6"
+                  cy="6"
+                  r="5"
+                  fill={data.fill}
+                />
+              </svg>
+              <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>
+                {(data.Achieved).toFixed(2)} - Achieved
+              </span>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <svg width="12" height="12" style={{ marginRight: '5px' }}>
-              <circle
-                cx="6"
-                cy="6"
-                r="5"
-                fill={data.fill}
-              />
-            </svg>
-            <span style={{ fontWeight: "500", fontSize: "12px", color: "#767676" }}>
-              {(data.Achieved).toFixed(2)} - Achieved
-            </span>
-          </div>
-        </div>
-      );
+        );
+      }
     }
     return null;
   };
- 
+
   const width = useWindowWidth();
   const isMobile = width <= 767;
   const isTablet = width <= 1024;
- 
-  const formatValue = (value: number, originalValue: number): string => {
-    if (originalValue >= 1_000_000) {
-      return `${(originalValue / 1_000_000).toFixed(1)}M`;
-    } else if (originalValue >= 1_000) {
-      return `${(originalValue / 1_000).toFixed(1)}K`;
-    }
-    return originalValue.toFixed(0);
-  };
-  
- 
+
+
+  const [showTooltip, setShowTooltip] = useState<boolean>(false);
+
   return (
     <ResponsiveContainer width="100%">
       <RadialBarChart
@@ -143,10 +150,23 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
             ...item,
             stroke: item.fill,
           }))}
+          onMouseEnter={(data) => {
+            setShowTooltip(data.tooltip)
+            if (!data.tooltip) {
+              return null;
+            }
+          }}
+          onMouseLeave={(data) => {
+            setShowTooltip(false)
+          }}
         />
- 
-        <Tooltip content={<CustomTooltip />} />
- 
+
+        {showTooltip && (
+          <Tooltip content={<CustomTooltip />} />
+        )}
+
+
+
         <Legend
           iconSize={10}
           layout="horizontal"
@@ -186,16 +206,18 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
                         marginRight: 5,
                       }}
                     />
-                    <span style={{ color: '#767676', fontWeight: '400', fontSize: isMobile ? '10px' : '12px' }}>
-                      {item.name}
-                    </span>
+                    {item.tooltip &&
+                      <span style={{ color: '#767676', fontWeight: '400', fontSize: isMobile ? '10px' : '12px' }}>
+                        {item.name}
+                      </span>
+                    }
                   </div>
                 ))}
               </div>
             </div>
           )}
         />
- 
+
         <text
           x="50%"
           y={isMobile ? "47%" : isTablet ? "47%" : "67%"}
@@ -209,5 +231,5 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
     </ResponsiveContainer>
   );
 };
- 
+
 export default RadialChart;

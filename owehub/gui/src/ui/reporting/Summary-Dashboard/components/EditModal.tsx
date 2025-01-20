@@ -28,7 +28,7 @@ interface InputState {
 
 
 
-const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any) => {
+const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year, open, handleClose }: any) => {
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
     const [loading, setIsLoading] = useState(false)
@@ -61,7 +61,7 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                         'get_production_targets_by_year',
                         {
                              "year": year,
-                             target_percentage: parseInt(activePerc) 
+                             target_percentage: parseInt(activePerc),
                         },
                     );
                     if (response.status === 200) {
@@ -131,10 +131,6 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
     };
 
     const [showInputTest, setShowInputTest] = useState<Record<string, InputState>>({});
-
-
-
-
 
     const convertData = () => {
 
@@ -218,13 +214,6 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
         return convertedData;
     };
 
-
-
-
-
-
-
-
     const mergeArraysByIndex = (data1: any[], data2: any[]) => {
         return data1.map((item, index) => ({
             ...item,
@@ -253,19 +242,11 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
         });
     };
 
-
-
-
     const mergedData = React.useMemo(() => {
         return mergeArrayData(dataTarget, dataTarget2);
     }, [dataTarget, dataTarget2]);
 
    
-
-
-
-
-
     const [load, setLoad] = useState(false)
 
     const handleSubmit = async () => {
@@ -403,7 +384,12 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-
+                                                                            min={0}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === '-') {
+                                                                                  e.preventDefault();
+                                                                                }
+                                                                              }}
                                                                             value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
                                                                             onChange={(e) => {
                                                                                 setShowInputTest((prevState) => ({
@@ -462,7 +448,12 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-
+                                                                            min={0}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === '-') {
+                                                                                  e.preventDefault();
+                                                                                }
+                                                                              }}
                                                                             value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
                                                                             onChange={(e) => {
                                                                                 setShowInputTest((prevState) => ({
@@ -521,7 +512,12 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                         <input
                                                                             type="number"
                                                                             maxLength={6}
-
+                                                                            min={0}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === '-') {
+                                                                                  e.preventDefault();
+                                                                                }
+                                                                              }}
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
 
                                                                             onChange={(e) => {
@@ -581,9 +577,13 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
-
+                                                                            min={0}
                                                                             value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
-
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === '-') {
+                                                                                  e.preventDefault();
+                                                                                }
+                                                                              }}
                                                                             onChange={(e) => {
                                                                                 setShowInputTest((prevState) => ({
                                                                                     ...prevState,
@@ -639,7 +639,12 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                                                     <div className="edit_input">
                                                                         <input
                                                                             type="number"
-
+                                                                            min={0}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === '-') {
+                                                                                  e.preventDefault();
+                                                                                }
+                                                                              }}
                                                                             maxLength={6}
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
 
@@ -715,11 +720,11 @@ const EditModal = ({activePerc, refre, setRefre, year, open, handleClose }: any)
                                 />
                                 <ActionButton
                                     style={{
-                                        backgroundColor: (load || !(dataTarget.length > 0)) ? "#4062CA" : "",
-                                        transform: (load || !(dataTarget.length > 0)) ? "none" : "",
-                                        cursor: (load || !(dataTarget.length > 0)) ? "not-allowed" : "",
+                                        backgroundColor: (load || !(mergedData.length > 0)) ? "#4062CA" : "",
+                                        transform: (load || !(mergedData.length > 0)) ? "none" : "",
+                                        cursor: (load || !(mergedData.length > 0)) ? "not-allowed" : "",
                                     }}
-                                    disabled={load || !(dataTarget.length > 0)} title={isMobile ? 'Save' : 'Save Changes'} onClick={handleSubmit} type={'submit'} />
+                                    disabled={load || !(mergedData.length > 0)} title={isMobile ? 'Save' : 'Save Changes'} onClick={handleSubmit} type={'submit'} />
                             </div>
                         </div>
                     </div>
