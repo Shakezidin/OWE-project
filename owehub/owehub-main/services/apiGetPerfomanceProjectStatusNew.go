@@ -128,7 +128,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
-	/* 
+	/*
 		These below codes sets the filter
 		1. Project status - [ACTIVE, HOLD, JEOPARDY]
 		2. Queue status - [either of the 7 milestone]
@@ -137,6 +137,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	projectStatus := joinNames(dataReq.ProjectStatus)
 	queueStatus = buildQueueStatus(dataReq.SelectedMilestone)
+	searchValue = ""
 	if len(dataReq.UniqueIds) > 0 {
 		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
@@ -153,9 +154,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
-
 	for _, item := range data {
-		UniqueId, ok := item["customer_record_id"].(string)
+
+		UniqueId, ok := item["customer_unique_id"].(string)
 		if !ok || UniqueId == "" {
 			continue
 		}
@@ -204,13 +205,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceResponse := models.PerfomanceResponse{
 			UniqueId:          UniqueId,
 			Customer:          Customer,
-			SiteSurevyDate:    SiteSurevyDate,
-			CadDesignDate:     CadDesignDate,
-			PermittingDate:    PermittingDate,
-			RoofingDate:       RoofingDate,
-			InstallDate:       InstallDate,
-			InspectionDate:    InspectionDate,
-			ActivationDate:    ActivationDate,
+			SiteSurevyDate:    formatDate(SiteSurevyDate),
+			CadDesignDate:     formatDate(CadDesignDate),
+			PermittingDate:    formatDate(PermittingDate),
+			RoofingDate:       formatDate(RoofingDate),
+			InstallDate:       formatDate(InstallDate),
+			InspectionDate:    formatDate(InspectionDate),
+			ActivationDate:    formatDate(ActivationDate),
 			SiteSurveyColour:  surveyColor,
 			CADDesignColour:   cadColor,
 			PermittingColour:  permitColor,
@@ -289,6 +290,14 @@ func buildQueueStatus(milestone string) string {
 		return ""
 	}
 	return fmt.Sprintf(" AND queue_status = '%v' ", status)
+}
+
+func formatDate(t time.Time) *string {
+	if t.IsZero() {
+		return nil
+	}
+	formatted := t.Format("2006-01-02")
+	return &formatted
 }
 
 /*

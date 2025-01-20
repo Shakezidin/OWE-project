@@ -798,12 +798,12 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 ON cust.our = pto.customer_unique_id
             
         
-             WHERE
+              WHERE
                 cust.project_status IN (%v)
                 AND %v
         ),
 
-        all_queues AS (
+       all_queues AS (
             SELECT
                 ti.*,
                 'NTP Queue' AS queue_status
@@ -835,13 +835,23 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                         AND ti.install_completed_date IS NULL
                     THEN 'Permit Queue'
                     
+                    WHEN ti.ic_approval_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.install_completed_date IS NULL
+                    THEN 'IC Queue'
+                    
                     WHEN ti.install_completed_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NULL
                     THEN 'Install (Scheduling) Queue'
                     
-
+                    WHEN ti.install_completed_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.ic_approval_date IS NOT NULL
+                        AND ti.pv_install_day_window IS NOT NULL
+                    THEN 'Install (Pending) Queue'
+                    
                     WHEN ti.install_completed_date IS NOT NULL
                         AND ti.fin_approved_date IS NULL
                         AND ti.pto_granted_new IS NULL
@@ -867,7 +877,7 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                             'No Roof work required for Solar,No Roof work required for Solar'
                         )
                     THEN 'Roofing Queue'
-
+                    
                     ELSE NULL
                 END AS queue_status
             FROM time_intervals ti
@@ -927,7 +937,7 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
 }
 
 func PipelineNTPQuery(uniqueIds []string) string {
-	PipelineNTPQuery := fmt.Sprintf(`
+	PipelineNTPQuery := `
         WITH base_query AS (
             SELECT 
                 customers_customers_schema.unique_id, 
@@ -979,6 +989,6 @@ func PipelineNTPQuery(uniqueIds []string) string {
             base_query b
         LEFT JOIN 
             prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
-`)
+    `
 	return PipelineNTPQuery
 }
