@@ -382,13 +382,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-main-service/v1/get_peroformancecsvdownload",
-		apiHandler.HandleGetPerformanceCsvDownloadRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-main-service/v1/get_peroformancecsvdownload",
+	// 	apiHandler.HandleGetPerformanceCsvDownloadRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupEveryOne},
+	// },
 	{
 		strings.ToUpper("POST"),
 		"/owe-main-service/v1/get_leaderboardcsvdownload",
@@ -410,13 +410,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-main-service/v1/get_calender_data",
-		apiHandler.HandleGetCalenderDataRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-main-service/v1/get_calender_data",
+	// 	apiHandler.HandleGetCalenderDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupEveryOne},
+	// },
 	{
 		strings.ToUpper("POST"),
 		"/owe-main-service/v1/get_calender_csv_download",
