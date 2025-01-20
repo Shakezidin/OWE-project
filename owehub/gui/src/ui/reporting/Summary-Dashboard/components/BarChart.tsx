@@ -23,7 +23,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
         } else if (value >= 1000) {
           return (value / 1000).toFixed(1) + 'K';
         } else {
-          return value % 1 !== 0 ? value.toFixed(1) : value.toString();
+          return value % 1 !== 0 ? value.toFixed(0) : value.toString();
         }
       } else {
         if (value >= 1000000) {
@@ -132,7 +132,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
                 ? typeof value === 'number'
                   ? isMobile
                     ? formatLargeNumber(value)
-                    : value.toFixed(0)
+                    : ((value % 1 !== 0) ? value.toFixed(2) : value)
                   : value
                 : ''
             }
@@ -154,7 +154,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
                 ? typeof value === 'number'
                   ? isMobile
                     ? formatLargeNumber(value)
-                    : value.toFixed(0)
+                    :  ((value % 1 !== 0) ? value.toFixed(2) : value)
                   : value
                 : ''
             }
