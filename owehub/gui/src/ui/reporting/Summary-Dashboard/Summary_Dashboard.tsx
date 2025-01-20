@@ -63,7 +63,7 @@ const Summary_Dashboard = () => {
 
     const [states, setStates] = useState<Option[]>([]);
 
-    const isShowDropdown = (role === 'Admin')
+    const isShowDropdown = false
     // (role === 'Admin')
     useEffect(() => {
         if (
