@@ -80,7 +80,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "account_manager":
 			query = `
 				SELECT 
-					U.name
+					U.name AS data
 				FROM 
 					user_roles AS R
 				INNER JOIN 
