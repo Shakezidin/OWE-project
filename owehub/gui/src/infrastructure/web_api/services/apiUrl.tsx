@@ -83,9 +83,11 @@ export const postCaller = async (
       }
 
       // handle network error
-      if (error.message === 'Network Error')
-        return new Error('No internet connection');
+     if (error.message)
+      return new Error(JSON.stringify(error.message));
+      console.log(error)
     }
+    
 
     throw new Error('Failed to fetch data');
   }
