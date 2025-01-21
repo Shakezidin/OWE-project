@@ -631,7 +631,7 @@ useEffect(()=>{
     },
     {
       id: 6,
-      title: 'Inspection',
+      title: 'MPU',
       value: titleData.inspection_count,
       pending: 'inspection',
     },
