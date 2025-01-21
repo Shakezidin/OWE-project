@@ -122,7 +122,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "error creating user role query %v", err)
 			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 			return
-		} else if strings.Contains("<emptyerror>", err.Error()) {
+		} else if strings.Contains("<emptyerror>", err.Error()) || strings.Contains("<not an error>", err.Error()) {
 			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
 			return
 		}
@@ -231,8 +231,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			ActivationClr: activationColor,
 		}
 
-		log.FuncInfoTrace(0, "DATA -> %v", perfomanceResponse) //*DELETE
-
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 
@@ -292,12 +290,12 @@ func buildQueueStatus(milestone string) string {
 	return fmt.Sprintf(" AND queue_status = '%v' ", status)
 }
 
-func formatDate(t time.Time) *string {
+func formatDate(t time.Time) string {
 	if t.IsZero() {
-		return nil
+		return ""
 	}
 	formatted := t.Format("2006-01-02")
-	return &formatted
+	return formatted
 }
 
 /*
