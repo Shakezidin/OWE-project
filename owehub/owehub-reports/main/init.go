@@ -194,7 +194,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-reports-service/v1/get_production_targets_by_year",
 		apiHandler.HandleGetProductionTargetsByYearRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupAdmin, types.GroupAdminAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
