@@ -78,7 +78,6 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 	saleRepNameQuery := fmt.Sprintf("SELECT name FROM user_details where email_id = '%v'", dataReq.Email)
 	query := models.CsvDownloadRetrieveQueryFunc()
 
-	log.FuncErrorTrace(0, "roleee = %v", dataReq.Role)
 	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, saleRepNameQuery, nil)
 		if err != nil {
