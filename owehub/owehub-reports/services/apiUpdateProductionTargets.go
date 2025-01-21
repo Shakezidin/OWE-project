@@ -31,6 +31,9 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		whereEleList       []interface{}
 		valuesPlaceholders []string
 		query              string
+		userId             interface{}
+		roleName           string
+		data               []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateProductionTargetsRequest")
@@ -57,6 +60,69 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
+	userId = nil
+	// Get authenticated user's email from the request context
+	authenticatedUserEmail := req.Context().Value("emailid").(string)
+	// Get role name from the request context
+	roleName = req.Context().Value("rolename").(string)
+
+	// Determine account manager condition based on role and request data
+	if roleName == "Admin" && dataReq.AccountManager != "" {
+		// query for user id for Account Manager
+		query =
+			` select user_id
+		 from user_details join
+    	 user_roles on  user_roles.role_id = user_details.role_id
+		 where user_roles.role_name = 'Account Manager' and user_details.name = $1
+	 `
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.AccountManager})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "User ID is blank for %s", authenticatedUserEmail)
+			appserver.FormAndSendHttpResp(resp, "user id is blank", http.StatusBadRequest, nil)
+			return
+		}
+
+		amId, ok := data[0]["user_id"].(int64) //account manager id
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get 'userID' Item: %+v\n", data)
+		}
+
+		userId = amId
+	}
+	if roleName != "Admin" {
+		// query for user id for Authenticated user
+		query = `
+		SELECT ud.user_id
+		FROM user_details ud
+		where email_id = $1;
+	`
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedUserEmail})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "User ID is blank for %s", authenticatedUserEmail)
+			appserver.FormAndSendHttpResp(resp, "user id is blank", http.StatusBadRequest, nil)
+			return
+		}
+
+		auId, ok := data[0]["user_id"].(int64) // authenticated user id
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get 'userID' Item: %+v\n", data)
+		}
+		userId = auId
+	}
+
 	// Construct the upsert query
 	// Example:
 	// INSERT INTO production_targets (month, year, target_percentage, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
@@ -76,6 +142,8 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 			item.Month,
 			item.Year,
 			dataReq.TargetPercentage,
+			userId,
+			dataReq.State,
 			item.ProjectsSold,
 			item.MwSold,
 			item.InstallCt,
@@ -91,9 +159,9 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	query = fmt.Sprintf(`
-		INSERT INTO %s (month, year, target_percentage, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
+		INSERT INTO %s (month, year, target_percentage,user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
 		VALUES %s
-		ON CONFLICT (month, year, target_percentage) DO UPDATE SET
+		ON CONFLICT (month, year, target_percentage, user_id, state) DO UPDATE SET
 			projects_sold = EXCLUDED.projects_sold,
 			mw_sold = EXCLUDED.mw_sold,
 			install_ct = EXCLUDED.install_ct,

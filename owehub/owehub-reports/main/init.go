@@ -187,21 +187,21 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-reports-service/v1/get_reports_achived",
 		apiHandler.HandleReportsTargetListRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupAdminAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/get_production_targets_by_year",
 		apiHandler.HandleGetProductionTargetsByYearRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupAdminAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/update_production_targets",
 		apiHandler.HandleUpdateProductionTargetsRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupAdminAccounts},
 	},
 }
 
