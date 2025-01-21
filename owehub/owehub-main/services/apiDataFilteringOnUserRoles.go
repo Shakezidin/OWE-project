@@ -93,6 +93,7 @@ func createFilterForRoles(email, userRole, userName, customerTableAlias string, 
 		if err != nil {
 			return "", err
 		}
+		salesRepNames = append(salesRepNames, userName)
 		joinedSalesRepNames := joinNames(salesRepNames)
 		filtersBuilder.WriteString(fmt.Sprintf(" %s.dealer IN (", customerTableAlias))
 		filtersBuilder.WriteString(joinedDealerNames)
@@ -143,8 +144,7 @@ func fetchSalesRepNames(email string) ([]string, error) {
 	whereEleList = append(whereEleList, email)
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, saleRepUnderRolesQuery, whereEleList)
-	if len(data) == 0 || err != nil {
-		err = fmt.Errorf("<emptyerror> no sales rep under the user %v", email)
+	if err != nil {
 		return nil, err
 	}
 	for _, item := range data {
