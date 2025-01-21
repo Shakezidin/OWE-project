@@ -31,23 +31,14 @@ import (
 
 func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                 error
-		dataReq             models.GetCalenderDataReq
-		data                []map[string]interface{}
-		whereEleList        []interface{}
-		queryWithFiler      string
-		filter              string
-		RecordCount         int64
-		contractD           string
-		PvInstallCreateD    string
-		PvInstallCompleteD  string
-		SiteSurevyD         string
-		siteSurveyCmpletedD string
-		BatteryScheduleD    string
-		BatteryCompleteD    string
-		PermitApprovedD     string
-		IcaprvdD            string
-		SaleRepList         []interface{}
+		err            error
+		dataReq        models.GetCalenderDataReq
+		data           []map[string]interface{}
+		whereEleList   []interface{}
+		queryWithFiler string
+		filter         string
+		RecordCount    int64
+		SaleRepList    []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetCalenderDataRequest")
@@ -164,82 +155,20 @@ FROM
 			// continue
 		}
 
-		ContractDate, ok := item["contract_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			contractD = ""
-		} else {
-			contractD = ContractDate.Format("2006-01-02 15:04:05")
-		}
+		ContractDate, _ := item["contract_date"].(time.Time)
+		PvInstallCreateDate, _ := item["pv_install_created_date"].(time.Time)
+		PvInstallCompleteDate, _ := item["pv_install_completed_date"].(time.Time)
+		SiteSurevyDate, _ := item["site_survey_scheduled_date"].(time.Time)
+		siteSurveyCmpletedDate, _ := item["site_survey_completed_date"].(time.Time)
+		BatteryScheduleDate, _ := item["battery_scheduled_date"].(time.Time)
+		BatteryCompleteDate, _ := item["battery_complete_date"].(time.Time)
+		PermitApprovedDate, _ := item["permit_approved_date"].(time.Time)
+		IcAPprovedDate, _ := item["ic_approved_date"].(time.Time)
 
-		PvInstallCreateDate, ok := item["pv_install_created_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			PvInstallCreateD = ""
-		} else {
-			PvInstallCreateD = PvInstallCreateDate.Format("2006-01-02 15:04:05")
-		}
+		_, surveyDate, surveryStatus := getSurveyColor(SiteSurevyDate, siteSurveyCmpletedDate, ContractDate)
+		_, installDate, installStatus := installColor(PvInstallCreateDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompleteDate, PermitApprovedDate, IcAPprovedDate)
 
-		PvInstallCompleteDate, ok := item["pv_install_completed_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			PvInstallCompleteD = ""
-		} else {
-			PvInstallCompleteD = PvInstallCompleteDate.Format("2006-01-02 15:04:05")
-		}
-
-		SiteSurevyDate, ok := item["site_survey_scheduled_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			SiteSurevyD = ""
-		} else {
-			SiteSurevyD = SiteSurevyDate.Format("2006-01-02 15:04:05")
-		}
-
-		siteSurveyCmpletedDate, ok := item["site_survey_completed_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			siteSurveyCmpletedD = ""
-		} else {
-			siteSurveyCmpletedD = siteSurveyCmpletedDate.Format("2006-01-02 15:04:05")
-		}
-
-		BatteryScheduleDate, ok := item["battery_scheduled_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			BatteryScheduleD = ""
-		} else {
-			BatteryScheduleD = BatteryScheduleDate.Format("2006-01-02 15:04:05")
-		}
-
-		BatteryCompleteDate, ok := item["battery_complete_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			BatteryCompleteD = ""
-		} else {
-			BatteryCompleteD = BatteryCompleteDate.Format("2006-01-02 15:04:05")
-		}
-
-		PermitApprovedDate, ok := item["permit_approved_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get InstallReadyDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			PermitApprovedD = ""
-		} else {
-			PermitApprovedD = PermitApprovedDate.Format("2006-01-02 15:04:05")
-		}
-
-		IcAPprovedDate, ok := item["ic_approved_date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get roofing complete date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			IcaprvdD = ""
-		} else {
-			IcaprvdD = IcAPprovedDate.Format("2006-01-02 15:04:05")
-		}
-
-		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
-		_, _, installDate, installStatus := CalenderInstallStatus(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
-
-		if dataReq.StartDate != "" && dataReq.EndDate != "" && (installDate != "" || surveyDate != "") {
+		if dataReq.StartDate != "" && dataReq.EndDate != "" && (!installDate.IsZero() || !surveyDate.IsZero()) {
 			// Parse StartDate and EndDate
 			startDate, err1 := time.Parse("2006-01-02", dataReq.StartDate)
 			endDate, err2 := time.Parse("2006-01-02", dataReq.EndDate)
@@ -252,18 +181,26 @@ FROM
 			// Adjust endDate to include the entire day
 			endDate = endDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
 
-			if surveyDate != "" {
-				parsedSurveyDate, err := time.Parse("2006-01-02 15:04:05", surveyDate)
-				if err != nil || parsedSurveyDate.Before(startDate) || parsedSurveyDate.After(endDate) {
-					surveyDate = ""
+			if !surveyDate.IsZero() {
+				if err != nil || surveyDate.Before(startDate) || surveyDate.After(endDate) {
+					surveyDate = time.Time{}
 				}
 			}
 
-			if installDate != "" {
-				parsedInstallDate, err := time.Parse("2006-01-02 15:04:05", installDate)
-				if err != nil || parsedInstallDate.Before(startDate) || parsedInstallDate.After(endDate) {
-					installDate = ""
+			if !installDate.IsZero() {
+				if err != nil || installDate.Before(startDate) || installDate.After(endDate) {
+					installDate = time.Time{}
 				}
+			}
+
+			surveyDateStr := ""
+			if !surveyDate.IsZero() {
+				surveyDateStr = surveyDate.Format("2006-01-02")
+			}
+
+			installDateStr := ""
+			if !installDate.IsZero() {
+				installDateStr = installDate.Format("2006-01-02")
 			}
 
 			// Create and append to the calendar data list
@@ -273,19 +210,28 @@ FROM
 				Address:       Address,
 				HomeOwner:     HomeOwner,
 				InstallStatus: installStatus,
-				SurveyDate:    surveyDate,
-				InstallDate:   installDate,
+				SurveyDate:    surveyDateStr,
+				InstallDate:   installDateStr,
 			}
 			calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 		} else {
+			surveyDateStr := ""
+			if !surveyDate.IsZero() {
+				surveyDateStr = surveyDate.Format("2006-01-02")
+			}
+
+			installDateStr := ""
+			if !installDate.IsZero() {
+				installDateStr = installDate.Format("2006-01-02")
+			}
 			calenderData := models.GetCalenderData{
 				UniqueId:      UniqueId,
 				SurveyStatus:  surveryStatus,
 				Address:       Address,
 				HomeOwner:     HomeOwner,
 				InstallStatus: installStatus,
-				SurveyDate:    surveyDate,
-				InstallDate:   installDate,
+				SurveyDate:    surveyDateStr,
+				InstallDate:   installDateStr,
 			}
 			calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 		}

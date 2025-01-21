@@ -118,17 +118,17 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "cust", dataReq.DealerNames)
 	if err != nil {
-		if !strings.Contains("<not an error>", err.Error()) || !strings.Contains("<emptyerror>", err.Error()) {
+		if !strings.Contains("<not an error>", err.Error()) && !strings.Contains("<emptyerror>", err.Error()) {
 			log.FuncErrorTrace(0, "error creating user role query %v", err)
 			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 			return
-		} else if strings.Contains("<emptyerror>", err.Error()) {
+		} else if strings.Contains("<emptyerror>", err.Error()) || strings.Contains("<not an error>", err.Error()) {
 			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
 			return
 		}
 	}
 
-	/* 
+	/*
 		These below codes sets the filter
 		1. Project status - [ACTIVE, HOLD, JEOPARDY]
 		2. Queue status - [either of the 7 milestone]
@@ -137,8 +137,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	projectStatus := joinNames(dataReq.ProjectStatus)
 	queueStatus = buildQueueStatus(dataReq.SelectedMilestone)
+	searchValue = ""
 	if len(dataReq.UniqueIds) > 0 {
-		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds, dataReq.UniqueIds)
+		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
 
 	pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
@@ -147,10 +148,15 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
+	} else if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+		return
 	}
 
 	for _, item := range data {
-		UniqueId, ok := item["customer_record_id"].(string)
+
+		UniqueId, ok := item["customer_unique_id"].(string)
 		if !ok || UniqueId == "" {
 			continue
 		}
@@ -199,13 +205,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceResponse := models.PerfomanceResponse{
 			UniqueId:          UniqueId,
 			Customer:          Customer,
-			SiteSurevyDate:    SiteSurevyDate,
-			CadDesignDate:     CadDesignDate,
-			PermittingDate:    PermittingDate,
-			RoofingDate:       RoofingDate,
-			InstallDate:       InstallDate,
-			InspectionDate:    InspectionDate,
-			ActivationDate:    ActivationDate,
+			SiteSurevyDate:    formatDate(SiteSurevyDate),
+			CadDesignDate:     formatDate(CadDesignDate),
+			PermittingDate:    formatDate(PermittingDate),
+			RoofingDate:       formatDate(RoofingDate),
+			InstallDate:       formatDate(InstallDate),
+			InspectionDate:    formatDate(InspectionDate),
+			ActivationDate:    formatDate(ActivationDate),
 			SiteSurveyColour:  surveyColor,
 			CADDesignColour:   cadColor,
 			PermittingColour:  permitColor,
@@ -224,8 +230,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InspectionClr: inspectionColor,
 			ActivationClr: activationColor,
 		}
-
-		log.FuncInfoTrace(0, "DATA -> %v", perfomanceResponse) //*DELETE
 
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
@@ -283,7 +287,15 @@ func buildQueueStatus(milestone string) string {
 	default:
 		return ""
 	}
-	return fmt.Sprintf(" AND queue_status = '%v' ", status)
+	return fmt.Sprintf(" WHERE q.queue_status = '%v' ", status)
+}
+
+func formatDate(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+	formatted := t.Format("2006-01-02")
+	return formatted
 }
 
 /*

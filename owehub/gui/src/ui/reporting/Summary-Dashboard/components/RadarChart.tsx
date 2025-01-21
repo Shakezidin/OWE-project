@@ -43,7 +43,8 @@ const RadarChartComponenet = ({ radData }: any) => {
         Achieve: (value as { achieved: number }).achieved,
         Percent_Achieve: percentAchieved,
         Normalized_Achieve: (clampedValue / maxValue) * 100, // Scale relative to 100
-        show: true
+        show: true,
+        B: 100
       };
     })
     : [];
@@ -100,11 +101,12 @@ const RadarChartComponenet = ({ radData }: any) => {
         data={newData}
       >
 
-        <PolarGrid />
+        <PolarGrid stroke='#D5E4FF' />
         <PolarAngleAxis
           dataKey="subject"
           tick={<CustomTick />}
         />
+        <Radar name="Lily" dataKey="B" stroke="#D5E4FF" fill="#fff" fillOpacity={0} />
         <Radar
           name="Achieve"
           dataKey="Normalized_Achieve"

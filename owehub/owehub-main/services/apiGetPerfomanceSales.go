@@ -95,11 +95,11 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "cust", dataReq.DealerNames)
 	if err != nil {
-		if !strings.Contains("<not an error>", err.Error()) || !strings.Contains("<emptyerror>", err.Error()) {
+		if !strings.Contains("<not an error>", err.Error()) && !strings.Contains("<emptyerror>", err.Error()) {
 			log.FuncErrorTrace(0, "error creating user role query %v", err)
 			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 			return
-		} else if strings.Contains("<emptyerror>", err.Error()) {
+		} else if strings.Contains("<emptyerror>", err.Error()) || strings.Contains("<not an error>", err.Error()) {
 			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceResponse, RecordCount)
 			return
 		}
