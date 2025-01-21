@@ -36,7 +36,7 @@ BEGIN
     -- admin can see all targets
     IF v_user_role = 'Admin' THEN
         RETURN QUERY
-            SELECT * FROM production_targets WHERE user_id IS NULL;
+            SELECT * FROM production_targets WHERE user_id = 1;
     -- account manager
     ELSIF v_user_role = 'Account Manager' THEN
         RETURN QUERY
