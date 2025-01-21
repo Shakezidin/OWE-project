@@ -77,6 +77,19 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		var dbIndex uint8 = db.OweHubDbIndex
 
 		switch tableName {
+		case "account_manager":
+			query = `
+				SELECT 
+					U.name AS data
+				FROM 
+					user_roles AS R
+				INNER JOIN 
+					user_details AS U
+				ON 
+					R.role_id = U.role_id
+				WHERE 
+					R.role_name = 'Account Manager'
+			`
 		case "partners":
 			query = "SELECT partner_name as data FROM " + db.TableName_partners
 		case "installers":

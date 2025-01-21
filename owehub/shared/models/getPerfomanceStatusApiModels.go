@@ -6,8 +6,6 @@
 
 package models
 
-import "time"
-
 type EmptyReq struct{}
 
 type PerfomanceStatusReqOld struct {
@@ -56,31 +54,31 @@ type PerfomanceTileDataResponse struct {
 }
 
 type PerfomanceResponse struct {
-	UniqueId          string    `json:"unqiue_id"`
-	Customer          string    `json:"customer"`
-	SiteSurevyDate    time.Time `json:"site_survey_date"`
-	CadDesignDate     time.Time `json:"cad_design_date"`
-	PermittingDate    time.Time `json:"permitting_date"`
-	RoofingDate       time.Time `json:"roofing_date"`
-	InstallDate       time.Time `json:"install_date"`
-	ElectricalDate    time.Time `json:"electrical_date"`
-	InspectionDate    time.Time `json:"inspection_date"`
-	ActivationDate    time.Time `json:"activation_date"`
-	SiteSurveyColour  string    `json:"site_survey_colour"`
-	CADDesignColour   string    `json:"cad_design_colour"`
-	PermittingColour  string    `json:"permitting_colour"`
-	RoofingColour     string    `json:"roofing_colour"`
-	InstallColour     string    `json:"install_colour"`
-	ElectricalColour  string    `json:"electrical_colour"`
-	InspectionsColour string    `json:"inspectionsColour"`
-	ActivationColour  string    `json:"activation_colour"`
-	CADLink           string    `json:"cad_link"`
-	DATLink           string    `json:"dat_link"`
-	PodioLink         string    `json:"podio_link"`
-	CoStatus          string    `json:"co_status"`
-	Ntp               NTP       `json:"ntp"`
-	Qc                QC        `json:"qc"`
-	NTPdate           string    `json:"ntp_date"`
+	UniqueId          string `json:"unqiue_id"`
+	Customer          string `json:"customer"`
+	SiteSurevyDate    string `json:"site_survey_date"`
+	CadDesignDate     string `json:"cad_design_date"`
+	PermittingDate    string `json:"permitting_date"`
+	RoofingDate       string `json:"roofing_date"`
+	InstallDate       string `json:"install_date"`
+	ElectricalDate    string `json:"electrical_date"`
+	InspectionDate    string `json:"inspection_date"`
+	ActivationDate    string `json:"activation_date"`
+	SiteSurveyColour  string `json:"site_survey_colour"`
+	CADDesignColour   string `json:"cad_design_colour"`
+	PermittingColour  string `json:"permitting_colour"`
+	RoofingColour     string `json:"roofing_colour"`
+	InstallColour     string `json:"install_colour"`
+	ElectricalColour  string `json:"electrical_colour"`
+	InspectionsColour string `json:"inspectionsColour"`
+	ActivationColour  string `json:"activation_colour"`
+	CADLink           string `json:"cad_link"`
+	DATLink           string `json:"dat_link"`
+	PodioLink         string `json:"podio_link"`
+	CoStatus          string `json:"co_status"`
+	Ntp               NTP    `json:"ntp"`
+	Qc                QC     `json:"qc"`
+	NTPdate           string `json:"ntp_date"`
 	// Aging Report fields remain as string
 	Days_Pending_NTP         string `json:"days_ntp,omitempty"`
 	Days_Pending_Permits     string `json:"days_permits,omitempty"`

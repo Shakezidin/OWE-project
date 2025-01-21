@@ -486,7 +486,7 @@ func CsvDownloadRetrieveQueryFunc() string {
 
 func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
-    WITH time_intervals AS (
+     WITH time_intervals AS (
             SELECT
                 --=====================
                 -- Basic info
@@ -546,7 +546,9 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                 --=====================
                 roofing.record_created_on AS roofing_created_date,
                 roofing.work_completed_date AS roofing_completed_date,
-                roofing.app_status AS roofing_status
+                roofing.app_status AS roofing_status,
+                roofing.no_roof_work_needed_date_h AS no_roof_work_needed,
+                roofing.roof_work_needed_date as roof_work_needed
 
             FROM customers_customers_schema AS cust
             
@@ -575,8 +577,8 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
             
         
              WHERE
-                cust.project_status IN (%v)
-                AND %v 
+            cust.project_status IN (%v)
+               AND %v 
         ),
 
         all_queues AS (
@@ -620,6 +622,8 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NULL
+                        AND ti.no_roof_work_needed IS NOT NULL
+                        AND ti.roof_work_needed IS NOT NULL
                     THEN 'Install (Scheduling) Queue'
                     
                     WHEN ti.install_complete_date IS NULL
@@ -640,18 +644,7 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                     
                     WHEN ti.roofing_created_date IS NOT NULL 
                         AND ti.roofing_completed_date IS NULL 
-                        AND ti.roofing_status NOT IN (
-                            'Customer Managed-COMPLETE', 'COMPLETE', 
-                            'No Roof work required for Solar', 
-                            'No Roof work required for Solar,CANCEL', 
-                            'No Roof work required for Solar,COMPLETE', 
-                            'No Roof work required for Solar,COMPLETE,COMPLETE', 
-                            'No Roof work required for Solar,COMPLETE,COMPLETE,COMPLETE', 
-                            'No Roof work required for Solar,Customer Managed-COMPLETE', 
-                            'No Roof work required for Solar,Customer Managed', 
-                            'No Roof work required for Solar,COMPLETE,No Roof work required for Solar', 
-                            'No Roof work required for Solar,No Roof work required for Solar'
-                        )
+                        AND ti.roof_work_needed IS NOT NULL
                     THEN 'Roofing Queue'
                     
                     ELSE NULL
@@ -712,6 +705,13 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 cust.customer_name AS home_owner,
                 cust.dealer,
                 cust.primary_sales_rep,
+                cust.email_address AS customer_email,
+                cust.phone_number AS customer_phone_number,
+                cust.address,
+                cust.state,
+                cust.total_system_cost AS contract_total,
+                cust.contracted_system_size AS system_size,
+
                 --=====================
                 -- NTP date
                 --=====================
@@ -770,7 +770,9 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 --=====================
                 roofing.record_created_on AS roofing_created_date,
                 roofing.work_completed_date AS roofing_completed_date,
-                roofing.app_status AS roofing_status
+                roofing.app_status AS roofing_status,
+                roofing.no_roof_work_needed_date_h AS no_roof_work_needed,
+                roofing.roof_work_needed_date as roof_work_needed
 
             FROM customers_customers_schema AS cust
             
@@ -798,12 +800,12 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 ON cust.our = pto.customer_unique_id
             
         
-             WHERE
+              WHERE
                 cust.project_status IN (%v)
                 AND %v
         ),
 
-        all_queues AS (
+       all_queues AS (
             SELECT
                 ti.*,
                 'NTP Queue' AS queue_status
@@ -835,13 +837,25 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                         AND ti.install_completed_date IS NULL
                     THEN 'Permit Queue'
                     
+                    WHEN ti.ic_approval_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.install_completed_date IS NULL
+                    THEN 'IC Queue'
+                    
                     WHEN ti.install_completed_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NULL
+                        AND ti.no_roof_work_needed IS NOT NULL
+                        AND ti.roof_work_needed IS NOT NULL
                     THEN 'Install (Scheduling) Queue'
                     
-
+                    WHEN ti.install_completed_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.ic_approval_date IS NOT NULL
+                        AND ti.pv_install_day_window IS NOT NULL
+                    THEN 'Install (Pending) Queue'
+                    
                     WHEN ti.install_completed_date IS NOT NULL
                         AND ti.fin_approved_date IS NULL
                         AND ti.pto_granted_new IS NULL
@@ -854,20 +868,9 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                     
                     WHEN ti.roofing_created_date IS NOT NULL 
                         AND ti.roofing_completed_date IS NULL 
-                        AND ti.roofing_status NOT IN (
-                            'Customer Managed-COMPLETE', 'COMPLETE', 
-                            'No Roof work required for Solar', 
-                            'No Roof work required for Solar,CANCEL', 
-                            'No Roof work required for Solar,COMPLETE', 
-                            'No Roof work required for Solar,COMPLETE,COMPLETE', 
-                            'No Roof work required for Solar,COMPLETE,COMPLETE,COMPLETE', 
-                            'No Roof work required for Solar,Customer Managed-COMPLETE', 
-                            'No Roof work required for Solar,Customer Managed', 
-                            'No Roof work required for Solar,COMPLETE,No Roof work required for Solar', 
-                            'No Roof work required for Solar,No Roof work required for Solar'
-                        )
+                        AND ti.roof_work_needed IS NOT NULL
                     THEN 'Roofing Queue'
-
+                    
                     ELSE NULL
                 END AS queue_status
             FROM time_intervals ti
@@ -903,7 +906,6 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
         FROM final_queues
         WHERE queue_status IS NOT NULL
         %v
-        %v
     ),
     electrical_services AS (
         SELECT
@@ -919,15 +921,16 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
         )
     )
     SELECT 
+        DISTINCT ON(q.customer_unique_id)
         *
         FROM queue_customers q
-        LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id;
- `, projectStatus, filterUserQuery, queueStatus, searchValue)
+        LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id %v;
+ `, projectStatus, filterUserQuery, searchValue, queueStatus)
 	return PipelineTileDataQuery
 }
 
 func PipelineNTPQuery(uniqueIds []string) string {
-	PipelineNTPQuery := fmt.Sprintf(`
+	PipelineNTPQuery := `
         WITH base_query AS (
             SELECT 
                 customers_customers_schema.unique_id, 
@@ -979,6 +982,6 @@ func PipelineNTPQuery(uniqueIds []string) string {
             base_query b
         LEFT JOIN 
             prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
-`)
+    `
 	return PipelineNTPQuery
 }
