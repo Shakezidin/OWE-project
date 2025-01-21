@@ -13,6 +13,8 @@ type GetReportsTargetReq struct {
 	TargetPercentage int    `json:"target_percentage"`
 	Month            string `json:"month"`
 	Year             string `json:"year"`
+	State            string `json:"state"`
+	AccountManager   string `json:"account_manager"`
 }
 
 type ProductionTargetOrAchievedItem struct {
