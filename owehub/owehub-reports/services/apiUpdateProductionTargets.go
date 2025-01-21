@@ -31,7 +31,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		whereEleList       []interface{}
 		valuesPlaceholders []string
 		query              string
-		userId             interface{}
+		userId             int64
 		roleName           string
 		data               []map[string]interface{}
 	)
@@ -60,7 +60,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
-	userId = nil
+	userId = 1 // admin user id
 	// Get authenticated user's email from the request context
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	// Get role name from the request context

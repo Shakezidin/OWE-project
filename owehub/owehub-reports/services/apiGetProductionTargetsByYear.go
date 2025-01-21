@@ -66,7 +66,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 	roleName = req.Context().Value("rolename").(string)
 
 	// Determine account manager condition based on role and request data
-	amCondition := "AND user_id IS NULL"
+	amCondition := "AND user_id = -1"
 	if roleName == "Admin" && dataReq.AccountManager != "" {
 		// query for user id for Account Manager
 		query =
