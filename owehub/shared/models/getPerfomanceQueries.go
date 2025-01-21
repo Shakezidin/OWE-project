@@ -906,7 +906,6 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
         FROM final_queues
         WHERE queue_status IS NOT NULL
         %v
-        %v
     ),
     electrical_services AS (
         SELECT
@@ -922,10 +921,11 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
         )
     )
     SELECT 
+        DISTINCT ON(q.customer_unique_id)
         *
         FROM queue_customers q
-        LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id;
- `, projectStatus, filterUserQuery, queueStatus, searchValue)
+        LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id %v;
+ `, projectStatus, filterUserQuery, searchValue, queueStatus)
 	return PipelineTileDataQuery
 }
 

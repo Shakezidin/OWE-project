@@ -287,7 +287,7 @@ func buildQueueStatus(milestone string) string {
 	default:
 		return ""
 	}
-	return fmt.Sprintf(" AND queue_status = '%v' ", status)
+	return fmt.Sprintf(" WHERE q.queue_status = '%v' ", status)
 }
 
 func formatDate(t time.Time) string {
