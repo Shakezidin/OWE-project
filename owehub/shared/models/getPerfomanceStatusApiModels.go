@@ -56,14 +56,14 @@ type PerfomanceTileDataResponse struct {
 type PerfomanceResponse struct {
 	UniqueId          string `json:"unqiue_id"`
 	Customer          string `json:"customer"`
-	SiteSurevyDate    *string `json:"site_survey_date"`
-	CadDesignDate     *string `json:"cad_design_date"`
-	PermittingDate    *string `json:"permitting_date"`
-	RoofingDate       *string `json:"roofing_date"`
-	InstallDate       *string `json:"install_date"`
-	ElectricalDate    *string `json:"electrical_date"`
-	InspectionDate    *string `json:"inspection_date"`
-	ActivationDate    *string `json:"activation_date"`
+	SiteSurevyDate    string `json:"site_survey_date"`
+	CadDesignDate     string `json:"cad_design_date"`
+	PermittingDate    string `json:"permitting_date"`
+	RoofingDate       string `json:"roofing_date"`
+	InstallDate       string `json:"install_date"`
+	ElectricalDate    string `json:"electrical_date"`
+	InspectionDate    string `json:"inspection_date"`
+	ActivationDate    string `json:"activation_date"`
 	SiteSurveyColour  string `json:"site_survey_colour"`
 	CADDesignColour   string `json:"cad_design_colour"`
 	PermittingColour  string `json:"permitting_colour"`
