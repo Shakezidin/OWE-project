@@ -39,6 +39,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		lastMonthPct      *models.ProductionTargetOrAchievedPercentage
 		thisMonthPct      *models.ProductionTargetOrAchievedPercentage
 		apiResp           models.GetReportsTargetResp
+		state             string
 	)
 
 	log.EnterFn(0, "HandleReportsTargetListRequest")
@@ -71,122 +72,164 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request Body", http.StatusBadRequest, nil)
 		return
 	}
+	// Get authenticated user's email from the request context
+	authenticatedUserEmail := req.Context().Value("emailid").(string)
+	// Get role name from the request context
+	roleName := req.Context().Value("rolename").(string)
+	amCondition := "AND user_id = 1"
+	if roleName == "Admin" && dataReq.AccountManager != "" {
+		// query for user id for Account Manager
+		targetQuery =
+			` select user_id
+	  from user_details join
+	  user_roles on  user_roles.role_id = user_details.role_id
+	  where user_roles.role_name = 'Account Manager' and user_details.name = $1
+  `
 
-	// query target data
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, []interface{}{dataReq.AccountManager})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "User ID is blank for %s", authenticatedUserEmail)
+			appserver.FormAndSendHttpResp(resp, "user id is blank", http.StatusBadRequest, nil)
+			return
+
+		}
+
+		userID, ok := data[0]["user_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get 'userID' Item: %+v\n", data)
+		}
+
+		amCondition = fmt.Sprintf("AND user_id = %d", userID)
+	}
+	if roleName != "Admin" {
+		amCondition = ""
+	}
+	// Query to retrieve production targets
 	targetQuery = fmt.Sprintf(`
-		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
-		SELECT
-			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) AS projects_sold,
-			COALESCE(p.mw_sold, 0) AS mw_sold,
-			COALESCE(p.install_ct, 0) AS install_ct,
-			COALESCE(p.mw_installed, 0) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) AS batteries_ct
-		FROM MONTHS
-		LEFT JOIN %s p
-		ON MONTHS.n = p.month AND p.target_percentage = $3 AND p.year = $4
-		ORDER BY MONTHS.n
-	`, db.TableName_ProductionTargets)
+		  WITH months(n) AS (SELECT generate_series(1, 12))
+		  SELECT
+			  TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
+			  COALESCE(p.projects_sold, 0) AS projects_sold,
+			  COALESCE(p.mw_sold, 0) AS mw_sold,
+			  COALESCE(p.install_ct, 0) AS install_ct,
+			  COALESCE(p.mw_installed, 0) AS mw_installed,
+			  COALESCE(p.batteries_ct, 0) AS batteries_ct
+		  FROM months
+		  LEFT JOIN get_production_targets_hierarchy($1) p
+		  ON months.n = p.month AND p.target_percentage = $2 AND p.year = $3 AND p.state = $4 %s
+		  ORDER BY months.n
+	  `, amCondition)
+	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, []interface{}{authenticatedUserEmail, dataReq.TargetPercentage, dataReq.Year, dataReq.State})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+		return
+	}
 
-	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year}
-
-	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
 		return
 	}
+	accountManagerName := dataReq.AccountManager
+	state = dataReq.State
 
-	// query achieved data
 	acheivedQuery = `
-		WITH 
-			MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
-			PROJECTS_SOLD AS (
-				SELECT
-					DATE_PART('MONTH', SALE_DATE) AS month,
-					COUNT(DISTINCT UNIQUE_ID) AS val
-				FROM CUSTOMERS_CUSTOMERS_SCHEMA
-				WHERE DATE_PART('YEAR', SALE_DATE) = $3
-				AND PROJECT_STATUS != 'DUPLICATE'
-				AND UNIQUE_ID IS NOT NULL
-				AND UNIQUE_ID != ''
-				GROUP BY month
-			),
-			KW_SOLD AS (
-				SELECT
-					DATE_PART('MONTH', SALE_DATE) AS month,
-					SUM(COALESCE(NULLIF(CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) AS val
-				FROM CUSTOMERS_CUSTOMERS_SCHEMA
-				WHERE DATE_PART('YEAR', SALE_DATE) = $3
-				AND PROJECT_STATUS != 'DUPLICATE'
-				AND UNIQUE_ID IS NOT NULL
-				AND UNIQUE_ID != ''
-				GROUP BY month
-			),
-			INSTALL_CT AS (
-				SELECT
-					DATE_PART('MONTH', PV_COMPLETION_DATE) AS month,
-					COUNT(*) AS val
-				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
-				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
-				AND PROJECT_STATUS != 'DUPLICATE'
-				AND CUSTOMER_UNIQUE_ID IS NOT NULL
-				AND CUSTOMER_UNIQUE_ID != ''
-				GROUP BY month
-			),
-			KW_INSTALLED AS (
-				SELECT
-					DATE_PART('MONTH', PV_COMPLETION_DATE) AS month,
-					SUM(COALESCE(NULLIF(SYSTEM_SIZE, '')::FLOAT, 0)) AS val
-				FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA
-				WHERE DATE_PART('YEAR', PV_COMPLETION_DATE) = $3
-				AND PROJECT_STATUS != 'DUPLICATE'
-				AND CUSTOMER_UNIQUE_ID IS NOT NULL
-				AND CUSTOMER_UNIQUE_ID != ''
-				GROUP BY month
-			),
-			BATTERIES_CT AS (
-				SELECT
-					DATE_PART('MONTH', SALE_DATE) AS month,
-					SUM((
-						LENGTH(adder_breakdown_total)
-							- LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'powerwall', '', 'gi'))
-					) / LENGTH('powerwall'))
-					+ SUM((
-						LENGTH(adder_breakdown_total) 
-							- LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi'))
-					)/ LENGTH('enphase battery')
-					) 
-					AS VAL
-				FROM NTP_NTP_SCHEMA
-				WHERE DATE_PART('YEAR', SALE_DATE) = $3
-				and PROJECT_STATUS != 'DUPLICATE'
-				GROUP BY month
-			)
-		SELECT
-			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(PROJECTS_SOLD.val, 0)::FLOAT AS projects_sold,
-			COALESCE(KW_SOLD.val, 0) / 1000 AS mw_sold,
-			COALESCE(INSTALL_CT.val, 0)::FLOAT AS install_ct,
-			COALESCE(KW_INSTALLED.val, 0) / 1000 AS mw_installed,
-			COALESCE(BATTERIES_CT.val, 0)::FLOAT AS batteries_ct
-		FROM MONTHS
-		LEFT JOIN PROJECTS_SOLD ON PROJECTS_SOLD.MONTH = MONTHS.N
-		LEFT JOIN KW_SOLD ON KW_SOLD.MONTH = MONTHS.N
-		LEFT JOIN INSTALL_CT ON INSTALL_CT.MONTH = MONTHS.N
-		LEFT JOIN KW_INSTALLED ON KW_INSTALLED.MONTH = MONTHS.N
-		LEFT JOIN BATTERIES_CT ON BATTERIES_CT.MONTH = MONTHS.N
-		ORDER BY MONTHS.N
-	`
-	whereEleList = []interface{}{1, 12, dataReq.Year}
-
+ WITH 
+	 MONTHS(N) AS (
+		 SELECT GENERATE_SERIES($1::INT, $2::INT)
+	 ),
+	 STATES AS(
+ SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
+ WHERE CASE WHEN $4::TEXT!='' THEN 
+ STATE_ID=$4::TEXT
+ ELSE 
+ TRUE
+ END
+	 ),
+	 AM AS (
+		 SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
+		 FROM SALES_PARTNER_DBHUB_SCHEMA
+		 WHERE CASE WHEN $5::TEXT != '' THEN
+			 ACCOUNT_MANAGER = $5::TEXT
+		 ELSE
+			 TRUE
+		 END
+	 ),
+	 CUSTOMERS AS (
+		 SELECT
+			 DATE_PART('MONTH', C.SALE_DATE) AS month,
+			 COUNT(DISTINCT C.UNIQUE_ID) AS projects_sold,
+			 SUM(COALESCE(NULLIF(C.CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_sold
+		 FROM CUSTOMERS_CUSTOMERS_SCHEMA C
+		 WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
+		   AND C.PROJECT_STATUS != 'DUPLICATE'
+		   AND C.UNIQUE_ID IS NOT NULL
+		   AND C.UNIQUE_ID != ''
+		   AND C.DEALER IN (SELECT DEALER FROM AM)
+		   AND C.STATE IN (SELECT STATES FROM STATES )
+		 GROUP BY month
+	 ),
+	 PV AS (
+		 SELECT
+			 DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
+			 COUNT(*) AS install_ct,
+			 SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_installed
+		 FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
+		 WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
+		   AND P.PROJECT_STATUS != 'DUPLICATE'
+		   AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
+		   AND P.CUSTOMER_UNIQUE_ID != ''
+		   AND P.DEALER IN (SELECT DEALER FROM AM)
+		   AND P.STATE IN (SELECT STATES FROM STATES )
+		 GROUP BY month
+	 ),
+	 NTP AS (
+		 SELECT
+			 DATE_PART('MONTH', SALE_DATE) AS month,
+			 SUM((
+				 LENGTH(adder_breakdown_total) 
+				 - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'powerwall', '', 'gi'))
+			 ) / LENGTH('powerwall')) 
+			 + SUM((
+				 LENGTH(adder_breakdown_total) 
+				 - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi'))
+			 ) / LENGTH('enphase battery')) AS batteries_ct
+		 FROM NTP_NTP_SCHEMA AS N
+		 WHERE DATE_PART('YEAR', N.SALE_DATE) = $3
+		   AND N.PROJECT_STATUS != 'DUPLICATE'
+		   AND N.DEALER IN (SELECT DEALER FROM AM)
+		   AND N.STATE IN (SELECT STATES FROM STATES )
+		 GROUP BY month
+	 )
+ SELECT
+	 TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
+	 COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
+	 COALESCE(CUSTOMERS.kw_sold, 0) / 1000 AS mw_sold,
+	 COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
+	 COALESCE(PV.kw_installed, 0) / 1000 AS mw_installed,
+	 COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct
+ FROM MONTHS
+ LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
+ LEFT JOIN PV ON PV.month = MONTHS.n
+ LEFT JOIN NTP ON NTP.month = MONTHS.n
+ ORDER BY MONTHS.n
+	 `
+	whereEleList = []interface{}{1, 12, dataReq.Year, state, accountManagerName}
+	log.FuncDebugTrace(0, "about to fetch data from db")
 	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
 		return
 	}
-
+	log.FuncDebugTrace(0, "this is data achievd from db %#v", acheivedData)
 	for i := 0; i < 12; i++ {
 		targetMonth, ok := targetData[i]["month"].(string)
 		if !ok {
@@ -214,7 +257,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 
 			// if January is selected, fetch from last year December
 			if i == 0 {
-				whereEleList = []interface{}{12, 12, yearInt - 1}
+				whereEleList = []interface{}{12, 12, yearInt - 1, state, accountManagerName}
 				rawAcheived, err := db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
