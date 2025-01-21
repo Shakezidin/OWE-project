@@ -75,9 +75,12 @@ const Summary_Dashboard = () => {
             getNewFormData();
         }
     }, [role]);
+    const [drop, setDrop] = useState(false);
     const getNewFormData = async () => {
+        setDrop(true)
         const res = await postCaller(EndPoints.get_newFormData, tableData);
         if (res.status > 200) {
+            setDrop(false)
             return;
         }
         setNewFormData(res.data);
@@ -102,6 +105,7 @@ const Summary_Dashboard = () => {
           : [{ label: "All AM's", value: 'All' }];
         setStates(statesData);
         setAM(amData);
+        setDrop(false)
     };
 
     const [selectedState, setSelectedState] = useState<Option>(
@@ -363,6 +367,7 @@ const Summary_Dashboard = () => {
                                         menuWidth={isMobile ? "120px" : "150px"}
                                         menuListStyles={{ fontWeight: 400 }}
                                         singleValueStyles={{ fontWeight: 400 }}
+                                        disabled={drop}
                                     />
                                 }
                             </div>
@@ -378,6 +383,7 @@ const Summary_Dashboard = () => {
                                         menuWidth={isMobile ? "120px" : "150px"}
                                         menuListStyles={{ fontWeight: 400 }}
                                         singleValueStyles={{ fontWeight: 400 }}
+                                        disabled={drop}
                                     />
                                 }
                                 <SelectOption
@@ -388,6 +394,7 @@ const Summary_Dashboard = () => {
                                     menuWidth={isMobile ? "120px" : "150px"}
                                     menuListStyles={{ fontWeight: 400 }}
                                     singleValueStyles={{ fontWeight: 400 }}
+                                    disabled={drop}
                                 />
                                 <SelectOption
                                     options={years}
@@ -397,6 +404,7 @@ const Summary_Dashboard = () => {
                                     menuWidth={isMobile ? "80px" : "150px"}
                                     menuListStyles={{ fontWeight: 400 }}
                                     singleValueStyles={{ fontWeight: 400 }}
+                                    disabled={drop}
                                 />
                             </div>
 
