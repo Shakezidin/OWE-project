@@ -193,6 +193,16 @@ FROM
 				}
 			}
 
+			surveyDateStr := ""
+			if !surveyDate.IsZero() {
+				surveyDateStr = surveyDate.Format("2006-01-02")
+			}
+
+			installDateStr := ""
+			if !installDate.IsZero() {
+				installDateStr = installDate.Format("2006-01-02")
+			}
+
 			// Create and append to the calendar data list
 			calenderData := models.GetCalenderData{
 				UniqueId:      UniqueId,
@@ -200,19 +210,28 @@ FROM
 				Address:       Address,
 				HomeOwner:     HomeOwner,
 				InstallStatus: installStatus,
-				SurveyDate:    surveyDate.Format("2006-01-02"),
-				InstallDate:   installDate.Format("2006-01-02"),
+				SurveyDate:    surveyDateStr,
+				InstallDate:   installDateStr,
 			}
 			calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 		} else {
+			surveyDateStr := ""
+			if !surveyDate.IsZero() {
+				surveyDateStr = surveyDate.Format("2006-01-02")
+			}
+
+			installDateStr := ""
+			if !installDate.IsZero() {
+				installDateStr = installDate.Format("2006-01-02")
+			}
 			calenderData := models.GetCalenderData{
 				UniqueId:      UniqueId,
 				SurveyStatus:  surveryStatus,
 				Address:       Address,
 				HomeOwner:     HomeOwner,
 				InstallStatus: installStatus,
-				SurveyDate:    surveyDate.Format("2006-01-02"),
-				InstallDate:   installDate.Format("2006-01-02"),
+				SurveyDate:    surveyDateStr,
+				InstallDate:   installDateStr,
 			}
 			calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 		}
