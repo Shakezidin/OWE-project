@@ -56,14 +56,16 @@ const Summary_Dashboard = () => {
     const tableData = {
         tableNames: [
             'states',
+            'account_manager'
         ],
     };
 
     const [newFormData, setNewFormData] = useState<any>([]);
 
     const [states, setStates] = useState<Option[]>([]);
+    const [am, setAM] = useState<Option[]>([]);
 
-    const isShowDropdown = false
+    const isShowDropdown = (role === 'Admin')
     // (role === 'Admin')
     useEffect(() => {
         if (
@@ -82,11 +84,24 @@ const Summary_Dashboard = () => {
 
 
 
-        const statesData: Option[] = (res.data.states as string[]).map((state) => ({
-            label: state,
-            value: state
-        }));
+        const statesData: Option[] = [
+            { label: 'All States', value: 'All' },
+            ...(res?.data?.states as string[]).map((state) => ({
+              label: state,
+              value: state
+            }))
+          ];
+          const amData: Option[] = res?.data?.account_manager
+          ? [
+              { label: "All AM's", value: 'All' },
+              ...(res.data.account_manager as string[]).map((state) => ({
+                label: state,
+                value: state,
+              }))
+            ]
+          : [{ label: "All AM's", value: 'All' }];
         setStates(statesData);
+        setAM(amData);
     };
 
     const [selectedState, setSelectedState] = useState<Option>(
@@ -268,9 +283,9 @@ const Summary_Dashboard = () => {
             "month": reportType.value,
             "year": year.value,
             state: selectedState.value,
-            account_manager: ""
+            account_manager: selectedAM.value
         }));
-    }, [reportType, year,selectedState, activePerc, refre, activeButton]);
+    }, [reportType, year, selectedState, activePerc, refre, activeButton]);
 
     const { summaryData, loading } = useAppSelector(
         (state) => state.reportingSlice
@@ -341,8 +356,8 @@ const Summary_Dashboard = () => {
                                 </div>
                                 {isShowDropdown &&
                                     <SelectOption
-                                        options={states}
-                                        onChange={(value: any) => { setSelectedState(value); setSelectedState({ label: 'All States', value: 'All' }) }}
+                                        options={am}
+                                        onChange={(value: any) => { setSelectedAm(value); setSelectedState({ label: 'All States', value: 'All' }) }}
                                         value={selectedAM}
                                         controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
                                         menuWidth={isMobile ? "120px" : "150px"}
@@ -351,6 +366,7 @@ const Summary_Dashboard = () => {
                                     />
                                 }
                             </div>
+
 
                             <div className={classes.sel_opt}>
                                 {isShowDropdown &&
@@ -552,7 +568,7 @@ const Summary_Dashboard = () => {
                             </div>
                         ) : progressData ? (
                             <>
-                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyStatsData} />}
+                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyOverviewData} />}
 
 
 
