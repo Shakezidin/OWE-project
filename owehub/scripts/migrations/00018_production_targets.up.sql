@@ -46,6 +46,3 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
-
-table production_targets add column user_id integer;
-alter table production_targets add column state text;
