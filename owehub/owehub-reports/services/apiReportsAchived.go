@@ -16,6 +16,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 /******************************************************************************
@@ -77,14 +78,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	// Get role name from the request context
 	roleName := req.Context().Value("rolename").(string)
 	amCondition := "AND user_id = 1"
-	if roleName == "Admin" && dataReq.AccountManager != "" {
+	if roleName == "Admin" && strings.ToLower(dataReq.AccountManager) != "all" {
 		// query for user id for Account Manager
 		targetQuery =
-			` select user_id
-	  from user_details join
-	  user_roles on  user_roles.role_id = user_details.role_id
-	  where user_roles.role_name = 'Account Manager' and user_details.name = $1
-  `
+			`select user_id from user_details join user_roles on  user_roles.role_id = user_details.role_id
+	  		where user_roles.role_name = 'Account Manager' and user_details.name = $1`
 
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, []interface{}{dataReq.AccountManager})
 		if err != nil {
@@ -141,26 +139,17 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	state = dataReq.State
 
 	acheivedQuery = `
- WITH 
-	 MONTHS(N) AS (
-		 SELECT GENERATE_SERIES($1::INT, $2::INT)
-	 ),
+ 	WITH MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
 	 STATES AS(
- SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
- WHERE CASE WHEN $4::TEXT!='' THEN 
- STATE_ID=$4::TEXT
- ELSE 
- TRUE
- END
+		SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
+		WHERE CASE WHEN LOWER($4) = 'all' THEN TRUE
+		ELSE STATE_NAME = $4 END
 	 ),
 	 AM AS (
 		 SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
 		 FROM SALES_PARTNER_DBHUB_SCHEMA
-		 WHERE CASE WHEN $5::TEXT != '' THEN
-			 ACCOUNT_MANAGER = $5::TEXT
-		 ELSE
-			 TRUE
-		 END
+		 WHERE CASE WHEN LOWER($5) = 'all' THEN TRUE
+		 ELSE ACCOUNT_MANAGER = $5 END
 	 ),
 	 CUSTOMERS AS (
 		 SELECT
@@ -208,18 +197,18 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		   AND N.STATE IN (SELECT STATES FROM STATES )
 		 GROUP BY month
 	 )
- SELECT
-	 TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
-	 COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
-	 COALESCE(CUSTOMERS.kw_sold, 0) / 1000 AS mw_sold,
-	 COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
-	 COALESCE(PV.kw_installed, 0) / 1000 AS mw_installed,
-	 COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct
- FROM MONTHS
- LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
- LEFT JOIN PV ON PV.month = MONTHS.n
- LEFT JOIN NTP ON NTP.month = MONTHS.n
- ORDER BY MONTHS.n
+		SELECT
+			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
+			COALESCE(CUSTOMERS.kw_sold, 0) / 1000 AS mw_sold,
+			COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
+			COALESCE(PV.kw_installed, 0) / 1000 AS mw_installed,
+			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct
+		FROM MONTHS
+		LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
+		LEFT JOIN PV ON PV.month = MONTHS.n
+		LEFT JOIN NTP ON NTP.month = MONTHS.n
+		ORDER BY MONTHS.n
 	 `
 	whereEleList = []interface{}{1, 12, dataReq.Year, state, accountManagerName}
 	log.FuncDebugTrace(0, "about to fetch data from db")
