@@ -128,7 +128,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
-
 	/*
 		These below codes sets the filter
 		1. Project status - [ACTIVE, HOLD, JEOPARDY]
@@ -405,8 +404,6 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 	log.EnterFn(0, "HandleGetAgingReport")
 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
 
-	log.FuncErrorTrace(0, "map first: %#v", AgRp)
-
 	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
 
 	if len(AgRp) > 0 {
@@ -440,7 +437,7 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 	for _, agRp := range data {
 		uniqueId, ok := agRp["unique_id"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
+			// log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
 			continue
 		}
 
@@ -485,7 +482,7 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 		resp[uniqueId] = resp1
 	}
 
-	log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
+	// log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
 	return resp, nil
 }
 
@@ -500,7 +497,7 @@ func getFieldText(data map[string]interface{}, field string) string {
 	if value, ok := data[field]; ok {
 		return value.(string)
 	}
-	log.FuncErrorTrace(0, "[agngRpData] error while fetching data for %s", field)
+	// log.FuncErrorTrace(0, "[agngRpData] error while fetching data for %s", field)
 	return ""
 }
 
