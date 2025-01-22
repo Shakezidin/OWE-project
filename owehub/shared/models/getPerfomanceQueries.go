@@ -507,17 +507,25 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                 survey.twond_visit_date       AS twond_visit_date,
                 survey.twond_completion_date  AS twond_completion_date,
 
-                CASE 
-                WHEN survey.twond_visit_date IS NOT NULL 
-                    THEN survey.twond_completion_date
-                ELSE survey.survey_completion_date
+               CASE 
+                    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                        AND survey.twond_visit_date IS NULL)
+                        THEN NULL
+                    WHEN survey.twond_visit_date IS NOT NULL
+                        THEN survey.twond_completion_date
+                  ELSE survey.survey_completion_date
                 END AS survey_final_completion_date,
 
                 --=====================
                 -- CAD
                 --=====================
+                cad.item_created_on AS cad_ready,
                 cad.plan_set_complete_day AS cad_complete_date,
                 cad.active_inactive       AS cad_active_status,
+                cad.plan_set_status,
+                cad.plan_set_version AS cad_version,
+                cad.project_status_new,
+
 
                 --=====================
                 -- Permit
@@ -600,11 +608,13 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                         AND ti.install_complete_date IS NULL
                     THEN 'Survey Queue'
                     
-                    WHEN ti.cad_complete_date IS NULL
-                        AND ti.survey_final_completion_date IS NOT NULL
-                        AND ti.permit_approval_date IS NULL
-                        AND ti.ic_approval_date IS NULL
-                        AND ti.install_complete_date IS NULL
+                   WHEN ti.cad_complete_date IS NULL
+						and ti.plan_set_status NOT IN ('Plan Set Complete')
+						and ti.cad_active_status IN ('Active')
+						AND ti.project_status_new IN ('ACTIVE')
+						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3', 
+					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7', 
+					'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
                     THEN 'CAD Queue'
                     
                     WHEN ti.permit_approval_date IS NULL
@@ -622,8 +632,8 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NULL
-                        AND ti.no_roof_work_needed IS NOT NULL
-                        AND ti.roof_work_needed IS NOT NULL
+                        AND ( ti.no_roof_work_needed IS NOT NULL
+                        OR (ti.roof_work_needed IS NOT NULL AND ti.roofing_completed_date IS NOT NULL))
                     THEN 'Install (Scheduling) Queue'
                     
                     WHEN ti.install_complete_date IS NULL
@@ -725,9 +735,12 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 survey.twond_completion_date  AS twond_completion_date,
 
                 CASE 
-                WHEN survey.twond_visit_date IS NOT NULL 
-                    THEN survey.twond_completion_date
-                ELSE survey.survey_completion_date
+                    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                        AND survey.twond_visit_date IS NULL)
+                        THEN NULL
+                    WHEN survey.twond_visit_date IS NOT NULL
+                        THEN survey.twond_completion_date
+                  ELSE survey.survey_completion_date
                 END AS survey_final_completion_date,
 
                 --=====================
@@ -736,6 +749,9 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 cad.item_created_on AS cad_ready,
                 cad.plan_set_complete_day AS cad_complete_date,
                 cad.active_inactive       AS cad_active_status,
+                cad.plan_set_status,
+                cad.plan_set_version AS cad_version,
+                cad.project_status_new,
 
                 --=====================
                 -- Permit
@@ -825,10 +841,12 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                     THEN 'Survey Queue'
                     
                     WHEN ti.cad_complete_date IS NULL
-                        AND ti.survey_final_completion_date IS NOT NULL
-                        AND ti.permit_approval_date IS NULL
-                        AND ti.ic_approval_date IS NULL
-                        AND ti.install_completed_date IS NULL
+						and ti.plan_set_status NOT IN ('Plan Set Complete')
+						and ti.cad_active_status IN ('Active')
+						AND ti.project_status_new IN ('ACTIVE')
+						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3', 
+					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7', 
+					'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
                     THEN 'CAD Queue'
                     
                     WHEN ti.permit_approval_date IS NULL
@@ -846,8 +864,8 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NULL
-                        AND ti.no_roof_work_needed IS NOT NULL
-                        AND ti.roof_work_needed IS NOT NULL
+                        AND ( ti.no_roof_work_needed IS NOT NULL
+                        OR (ti.roof_work_needed IS NOT NULL AND ti.roofing_completed_date IS NOT NULL))
                     THEN 'Install (Scheduling) Queue'
                     
                     WHEN ti.install_completed_date IS NULL
