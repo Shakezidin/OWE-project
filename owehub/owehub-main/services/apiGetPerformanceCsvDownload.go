@@ -92,12 +92,12 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "cust", dataReq.DealerNames)
 	if err != nil {
-		if !strings.Contains("<not an error>", err.Error()) && !strings.Contains("<emptyerror>", err.Error()) {
+		if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
 			log.FuncErrorTrace(0, "error creating user role query %v", err)
 			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 			return
-		} else if strings.Contains("<emptyerror>", err.Error()) || strings.Contains("<not an error>", err.Error()) {
-			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
+		} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
+			appserver.FormAndSendHttpResp(resp, "perfomance csv Data", http.StatusOK, perfomanceList, RecordCount)
 			return
 		}
 	}

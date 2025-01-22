@@ -118,11 +118,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "cust", dataReq.DealerNames)
 	if err != nil {
-		if !strings.Contains("<not an error>", err.Error()) && !strings.Contains("<emptyerror>", err.Error()) {
+		if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
 			log.FuncErrorTrace(0, "error creating user role query %v", err)
 			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
 			return
-		} else if strings.Contains("<emptyerror>", err.Error()) || strings.Contains("<not an error>", err.Error()) {
+		} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
 			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
 			return
 		}
@@ -404,8 +404,6 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 	log.EnterFn(0, "HandleGetAgingReport")
 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
 
-	log.FuncErrorTrace(0, "map first: %#v", AgRp)
-
 	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
 
 	if len(AgRp) > 0 {
@@ -439,7 +437,7 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 	for _, agRp := range data {
 		uniqueId, ok := agRp["unique_id"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
+			// log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
 			continue
 		}
 
@@ -484,7 +482,7 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 		resp[uniqueId] = resp1
 	}
 
-	log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
+	// log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
 	return resp, nil
 }
 
@@ -499,7 +497,7 @@ func getFieldText(data map[string]interface{}, field string) string {
 	if value, ok := data[field]; ok {
 		return value.(string)
 	}
-	log.FuncErrorTrace(0, "[agngRpData] error while fetching data for %s", field)
+	// log.FuncErrorTrace(0, "[agngRpData] error while fetching data for %s", field)
 	return ""
 }
 

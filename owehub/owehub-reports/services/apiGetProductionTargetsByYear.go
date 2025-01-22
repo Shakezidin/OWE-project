@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 /******************************************************************************
@@ -67,7 +68,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 
 	// Determine account manager condition based on role and request data
 	amCondition := "AND user_id = 1"
-	if roleName == "Admin" && dataReq.AccountManager != "" {
+	if roleName == "Admin" && strings.ToLower(dataReq.AccountManager) != "all" {
 		// query for user id for Account Manager
 		query =
 			` select user_id
@@ -87,7 +88,6 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "User ID is blank for %s", authenticatedUserEmail)
 			appserver.FormAndSendHttpResp(resp, "user id is blank", http.StatusBadRequest, nil)
 			return
-
 		}
 
 		userID, ok := data[0]["user_id"].(int64)
