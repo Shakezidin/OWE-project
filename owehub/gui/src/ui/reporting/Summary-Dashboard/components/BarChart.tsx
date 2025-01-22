@@ -6,10 +6,11 @@ import useWindowWidth from '../../../../hooks/useWindowWidth';
 const BarChartComp = ({ monthlyStatsData }: any) => {
   console.log(monthlyStatsData, "gh")
 
+
   const data = monthlyStatsData.map((item: any) => ({
     name: item.month.slice(0, 3),
     Target: item.target,
-    ...(item.in_progress && { "Achieved": item.in_progress }),
+    "Achieved": item.achieved,
   }));
 
   const width = useWindowWidth();
@@ -154,7 +155,7 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
                 ? typeof value === 'number'
                   ? isMobile
                     ? formatLargeNumber(value)
-                    :  ((value % 1 !== 0) ? value.toFixed(2) : value)
+                    : ((value % 1 !== 0) ? value.toFixed(2) : value)
                   : value
                 : ''
             }

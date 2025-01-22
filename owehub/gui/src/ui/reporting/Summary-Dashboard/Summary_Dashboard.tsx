@@ -56,14 +56,16 @@ const Summary_Dashboard = () => {
     const tableData = {
         tableNames: [
             'states',
+            'account_manager'
         ],
     };
 
     const [newFormData, setNewFormData] = useState<any>([]);
 
     const [states, setStates] = useState<Option[]>([]);
+    const [am, setAM] = useState<Option[]>([]);
 
-    const isShowDropdown = false
+    const isShowDropdown = (role === 'Admin')
     // (role === 'Admin')
     useEffect(() => {
         if (
@@ -73,20 +75,37 @@ const Summary_Dashboard = () => {
             getNewFormData();
         }
     }, [role]);
+    const [drop, setDrop] = useState(false);
     const getNewFormData = async () => {
+        setDrop(true)
         const res = await postCaller(EndPoints.get_newFormData, tableData);
         if (res.status > 200) {
+            setDrop(false)
             return;
         }
         setNewFormData(res.data);
 
 
 
-        const statesData: Option[] = (res.data.states as string[]).map((state) => ({
-            label: state,
-            value: state
-        }));
+        const statesData: Option[] = [
+            { label: 'All States', value: 'All' },
+            ...(res?.data?.states as string[]).map((state) => ({
+              label: state,
+              value: state
+            }))
+          ];
+          const amData: Option[] = res?.data?.account_manager
+          ? [
+              { label: "All AM's", value: 'All' },
+              ...(res.data.account_manager as string[]).map((state) => ({
+                label: state,
+                value: state,
+              }))
+            ]
+          : [{ label: "All AM's", value: 'All' }];
         setStates(statesData);
+        setAM(amData);
+        setDrop(false)
     };
 
     const [selectedState, setSelectedState] = useState<Option>(
@@ -268,9 +287,9 @@ const Summary_Dashboard = () => {
             "month": reportType.value,
             "year": year.value,
             state: selectedState.value,
-            account_manager: ""
+            account_manager: selectedAM.value
         }));
-    }, [reportType, year,selectedState, activePerc, refre, activeButton]);
+    }, [reportType, year, selectedState, activePerc, refre, activeButton]);
 
     const { summaryData, loading } = useAppSelector(
         (state) => state.reportingSlice
@@ -341,16 +360,18 @@ const Summary_Dashboard = () => {
                                 </div>
                                 {isShowDropdown &&
                                     <SelectOption
-                                        options={states}
-                                        onChange={(value: any) => { setSelectedState(value); setSelectedState({ label: 'All States', value: 'All' }) }}
+                                        options={am}
+                                        onChange={(value: any) => { setSelectedAm(value); setSelectedState({ label: 'All States', value: 'All' }) }}
                                         value={selectedAM}
                                         controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
                                         menuWidth={isMobile ? "120px" : "150px"}
                                         menuListStyles={{ fontWeight: 400 }}
                                         singleValueStyles={{ fontWeight: 400 }}
+                                        disabled={drop}
                                     />
                                 }
                             </div>
+
 
                             <div className={classes.sel_opt}>
                                 {isShowDropdown &&
@@ -362,6 +383,7 @@ const Summary_Dashboard = () => {
                                         menuWidth={isMobile ? "120px" : "150px"}
                                         menuListStyles={{ fontWeight: 400 }}
                                         singleValueStyles={{ fontWeight: 400 }}
+                                        disabled={drop}
                                     />
                                 }
                                 <SelectOption
@@ -372,6 +394,7 @@ const Summary_Dashboard = () => {
                                     menuWidth={isMobile ? "120px" : "150px"}
                                     menuListStyles={{ fontWeight: 400 }}
                                     singleValueStyles={{ fontWeight: 400 }}
+                                    disabled={drop}
                                 />
                                 <SelectOption
                                     options={years}
@@ -381,6 +404,7 @@ const Summary_Dashboard = () => {
                                     menuWidth={isMobile ? "80px" : "150px"}
                                     menuListStyles={{ fontWeight: 400 }}
                                     singleValueStyles={{ fontWeight: 400 }}
+                                    disabled={drop}
                                 />
                             </div>
 
@@ -552,7 +576,7 @@ const Summary_Dashboard = () => {
                             </div>
                         ) : progressData ? (
                             <>
-                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyStatsData} />}
+                                {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyOverviewData} />}
 
 
 

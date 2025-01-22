@@ -28,7 +28,7 @@ interface InputState {
 
 
 
-const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year, open, handleClose }: any) => {
+const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, year, open, handleClose }: any) => {
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
     const [loading, setIsLoading] = useState(false)
@@ -60,8 +60,11 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                     const response = await reportingCaller(
                         'get_production_targets_by_year',
                         {
-                             "year": year,
-                             target_percentage: parseInt(activePerc),
+                            "year": year,
+                            target_percentage: parseInt(activePerc),
+                            "state": selectedState.value,
+                            "account_manager": selectedAM.value
+
                         },
                     );
                     if (response.status === 200) {
@@ -82,7 +85,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
 
             fetchData();
         }
-    }, [isAuthenticated, year, open, refre]);
+    }, [isAuthenticated, selectedAM, selectedState, year, open, refre]);
 
 
 
@@ -227,7 +230,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
     const mergeArrayData = (data1: any, data2: any) => {
         if (!data1?.length || !data2?.length) return [];
 
-        return data1.map((firstObj:any, index:any) => {
+        return data1.map((firstObj: any, index: any) => {
             const secondObj = data2[index];
 
             if (!secondObj) return firstObj;
@@ -246,7 +249,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
         return mergeArrayData(dataTarget, dataTarget2);
     }, [dataTarget, dataTarget2]);
 
-   
+
     const [load, setLoad] = useState(false)
 
     const handleSubmit = async () => {
@@ -256,7 +259,9 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                 'update_production_targets',
                 {
                     "targets": mergedData,
-                     target_percentage: parseInt(activePerc) 
+                    target_percentage: parseInt(activePerc),
+                    "state": selectedState.value,
+                    "account_manager": selectedAM.value
                 },
             );
             if (response.status === 200) {
@@ -376,7 +381,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.projectSold ?? ((row.projectSold % 1 !== 0) ? row.projectSold.toFixed(2) : row.projectSold )}
+                                                                        {showInput[row.month]?.projectSold ?? ((row.projectSold % 1 !== 0) ? row.projectSold.toFixed(2) : row.projectSold)}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showprojectSold && (
@@ -387,9 +392,9 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             min={0}
                                                                             onKeyDown={(e) => {
                                                                                 if (e.key === '-') {
-                                                                                  e.preventDefault();
+                                                                                    e.preventDefault();
                                                                                 }
-                                                                              }}
+                                                                            }}
                                                                             value={showInput[row.month]?.projectSold !== undefined ? showInput[row.month]?.projectSold : row.projectSold}
                                                                             onChange={(e) => {
                                                                                 setShowInputTest((prevState) => ({
@@ -440,7 +445,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.mwSold ??  ((row.mwSold % 1 !== 0) ? row.mwSold.toFixed(2) : row.mwSold )}
+                                                                        {showInput[row.month]?.mwSold ?? ((row.mwSold % 1 !== 0) ? row.mwSold.toFixed(2) : row.mwSold)}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showmwSold && (
@@ -451,9 +456,9 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             min={0}
                                                                             onKeyDown={(e) => {
                                                                                 if (e.key === '-') {
-                                                                                  e.preventDefault();
+                                                                                    e.preventDefault();
                                                                                 }
-                                                                              }}
+                                                                            }}
                                                                             value={showInput[row.month]?.mwSold !== undefined ? showInput[row.month]?.mwSold : row.mwSold}
                                                                             onChange={(e) => {
                                                                                 setShowInputTest((prevState) => ({
@@ -504,7 +509,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.installCT ??  ((row.installCT % 1 !== 0) ? row.installCT.toFixed(2) : row.installCT )}
+                                                                        {showInput[row.month]?.installCT ?? ((row.installCT % 1 !== 0) ? row.installCT.toFixed(2) : row.installCT)}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showinstallCT && (
@@ -515,9 +520,9 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             min={0}
                                                                             onKeyDown={(e) => {
                                                                                 if (e.key === '-') {
-                                                                                  e.preventDefault();
+                                                                                    e.preventDefault();
                                                                                 }
-                                                                              }}
+                                                                            }}
                                                                             value={showInput[row.month]?.installCT !== undefined ? showInput[row.month]?.installCT : row.installCT}
 
                                                                             onChange={(e) => {
@@ -570,7 +575,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.mwInstalled ??  ((row.mwInstalled % 1 !== 0) ? row.mwInstalled.toFixed(2) : row.mwInstalled )}
+                                                                        {showInput[row.month]?.mwInstalled ?? ((row.mwInstalled % 1 !== 0) ? row.mwInstalled.toFixed(2) : row.mwInstalled)}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showmwInstalled && (
@@ -581,9 +586,9 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             value={showInput[row.month]?.mwInstalled !== undefined ? showInput[row.month]?.mwInstalled : row.mwInstalled}
                                                                             onKeyDown={(e) => {
                                                                                 if (e.key === '-') {
-                                                                                  e.preventDefault();
+                                                                                    e.preventDefault();
                                                                                 }
-                                                                              }}
+                                                                            }}
                                                                             onChange={(e) => {
                                                                                 setShowInputTest((prevState) => ({
                                                                                     ...prevState,
@@ -632,7 +637,7 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             }
                                                                         }}
                                                                     >
-                                                                        {showInput[row.month]?.batteriesCT ??  ((row.batteriesCT % 1 !== 0) ? row.batteriesCT.toFixed(2) : row.batteriesCT )}
+                                                                        {showInput[row.month]?.batteriesCT ?? ((row.batteriesCT % 1 !== 0) ? row.batteriesCT.toFixed(2) : row.batteriesCT)}
                                                                     </div>
                                                                 )}
                                                                 {showInput[row.month]?.showbatteriesCT && (
@@ -642,9 +647,9 @@ const EditModal = ({selectedState, selectedAM, activePerc, refre, setRefre, year
                                                                             min={0}
                                                                             onKeyDown={(e) => {
                                                                                 if (e.key === '-') {
-                                                                                  e.preventDefault();
+                                                                                    e.preventDefault();
                                                                                 }
-                                                                              }}
+                                                                            }}
                                                                             maxLength={6}
                                                                             value={showInput[row.month]?.batteriesCT !== undefined ? showInput[row.month]?.batteriesCT : row.batteriesCT}
 

@@ -67,7 +67,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 	roleName = req.Context().Value("rolename").(string)
 
 	// Determine account manager condition based on role and request data
-	if roleName == "Admin" && dataReq.AccountManager != "" {
+	if roleName == "Admin" && strings.ToLower(dataReq.AccountManager) != "all" {
 		// query for user id for Account Manager
 		query =
 			` select user_id

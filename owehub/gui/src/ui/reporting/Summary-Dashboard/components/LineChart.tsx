@@ -17,6 +17,7 @@ import {
 import styles from './style.module.css';
 
 
+
 const LineChartComp = ({ monthData }: any) => {
 
     const lineChartData = monthData?.map((item: any) => ({
