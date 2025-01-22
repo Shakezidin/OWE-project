@@ -183,14 +183,14 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	//temporory
 	if dataReq.GroupBy == "team" {
-		dataReq.GroupBy = "split_part(ss.team_region_untd, '/'::text, 1)"
+		dataReq.GroupBy = "split_part(srs.team_region_untd, '/'::text, 1)"
 	} else if dataReq.GroupBy == "region" {
-		dataReq.GroupBy = "split_part(ss.team_region_untd, '/'::text, 2)"
+		dataReq.GroupBy = "split_part(srs.team_region_untd, '/'::text, 2)"
 	} else {
 		dataReq.GroupBy = fmt.Sprintf("cs.%v", dataReq.GroupBy)
 	}
 
-	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(ss.team_region_untd, '/'::text, 2)" {
+	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(srs.team_region_untd, '/'::text, 2)" {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, cs.dealer as dealer, ", dataReq.GroupBy)
 	} else {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
@@ -433,10 +433,10 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		}
 	}
 
-	filtersBuilder.WriteString(` FROM customers_customers_schema cs 
-								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+	filtersBuilder.WriteString(` FROM customers_customers_schema cs
+								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+								LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
 								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id`)
 	// if len(dealerIn) > 16 {
 	// 	filtersBuilder.WriteString(" WHERE ")
@@ -468,7 +468,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
 	}
 
-	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(ss.team_region_untd, '/'::text, 2)" {
+	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(srs.team_region_untd, '/'::text, 2)" {
 		if dataReq.GroupBy != "dealer" {
 			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v, cs.dealer HAVING", dataReq.GroupBy))
 		} else {
