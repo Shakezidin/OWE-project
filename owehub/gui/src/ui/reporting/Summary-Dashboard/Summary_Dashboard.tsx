@@ -56,7 +56,8 @@ const Summary_Dashboard = () => {
     const tableData = {
         tableNames: [
             'states',
-            'account_manager'
+            'account_manager',
+            'available_states'
         ],
     };
 
@@ -89,20 +90,22 @@ const Summary_Dashboard = () => {
 
         const statesData: Option[] = [
             { label: 'All States', value: 'All' },
-            ...(res?.data?.states as string[]).map((state) => ({
-              label: state,
-              value: state
-            }))
-          ];
-          const amData: Option[] = res?.data?.account_manager
-          ? [
-              { label: "All AM's", value: 'All' },
-              ...(res.data.account_manager as string[]).map((state) => ({
+            ...(res?.data?.available_states as string[])
+              .filter((state) => state !== '')
+              .map((state) => ({
                 label: state,
-                value: state,
+                value: state
               }))
+          ];
+        const amData: Option[] = res?.data?.account_manager
+            ? [
+                { label: "All AM's", value: 'All' },
+                ...(res.data.account_manager as string[]).map((state) => ({
+                    label: state,
+                    value: state,
+                }))
             ]
-          : [{ label: "All AM's", value: 'All' }];
+            : [{ label: "All AM's", value: 'All' }];
         setStates(statesData);
         setAM(amData);
         setDrop(false)
@@ -574,7 +577,7 @@ const Summary_Dashboard = () => {
                             <div style={{ display: 'flex', justifyContent: 'center', marginTop: "38px" }}>
                                 <MicroLoader />
                             </div>
-                        ) : progressData ? (
+                        ) : monthlyOverviewData ? (
                             <>
                                 {line ? <LineChartComp monthData={monthlyOverviewData} /> : <BarChartComp monthlyStatsData={monthlyOverviewData} />}
 
