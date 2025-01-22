@@ -105,6 +105,7 @@ const UserManagement: React.FC = () => {
   const [isClicked1, setIsClicked1] = useState(false);
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [editData, setEditData] = useState<any>([]);
+  const [updateTablePermission, setUpdateTablePermission] = useState<any>({})
 
   const handleOpen = () => setOpen(true);
   const handleImport = () => setOpenn(true);
@@ -139,6 +140,7 @@ const UserManagement: React.FC = () => {
 
       // Process and store the fetched data
       setEditData(response.data.users_data_list);
+      setUpdateTablePermission(response.data.users_data_list[0].table_permission)
       console.log(response.data.users_data_list, 'editData');
     } catch (error) {
       console.error('Error', error);
@@ -387,7 +389,7 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  /** submit button */
+  /** Update button */
   const onSubmitUpdateUser = (tablePermissions: any) => {
     const arrayOfPermissions = Object.entries(tablePermissions).map(
       ([tableName, permission]) => ({
@@ -404,7 +406,7 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  /** API call to submit */
+  /** API call to update */
   const updateUserRequest = async (tablePermissions: any) => {
     console.log(formData, 'formData');
 
@@ -415,9 +417,11 @@ const UserManagement: React.FC = () => {
         const response = await postCaller('update_user', {
           ...data,
           tables_permissions: tablePermissions,
+          revoke_table_permission: updateTablePermission || null ,
           description: formData.description.trim(),
           dealer_logo: logoUrl,
           podio_checked: null,
+        
         });
 
         // Handle response
@@ -499,6 +503,7 @@ const UserManagement: React.FC = () => {
   };
   console.log(userRoleBasedList, 'userRoleBasedList');
   console.log(formData, 'formdata');
+  console.log(updateTablePermission, "updatePermission")
   /** render UI */
   return (
     <>
