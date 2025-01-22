@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styles from './styles/DatTool.module.css';
 import Header from './components/Header';
-import SideContainer from './components/SideContainer';
 import GeneralPage from './pages/GeneralPage';
 import StructuralPage from './pages/StructuralPage';
 import AddressPage from './pages/AddressPage';
 import NotesPage from './pages/NotesPage';
 import OtherPage from './pages/OtherPage';
+import SideContainer from './components/SideContainer';
 
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
@@ -29,8 +29,13 @@ const DatTool: React.FC = () => {
   return (
     <div className={styles.mainContainer}>
       <Header onMenuSelect={setSelectedPage} />
-      <div className={styles.contentContainer}>
-        {renderPage()}
+      <div className={styles.layoutContainer}>
+        <div className={styles.sidebar}>
+          <SideContainer />
+        </div>
+        <div className={styles.contentContainer}>
+          {renderPage()}
+        </div>
       </div>
     </div>
   );

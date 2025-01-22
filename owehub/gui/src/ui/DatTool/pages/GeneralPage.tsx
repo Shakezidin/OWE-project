@@ -8,7 +8,7 @@ function GeneralPage() {
         flexDirection:'row',
         gap:'18px'
     }}>
-      <SideContainer />
+   
       <div>General</div>
     </div>
   );

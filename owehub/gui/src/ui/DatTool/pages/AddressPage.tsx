@@ -8,7 +8,7 @@ function AddressPage() {
       flexDirection:'row',
       gap:'18px'
   }}>
-    <SideContainer />
+ 
     <div>AddressPage</div>
   </div>
   )

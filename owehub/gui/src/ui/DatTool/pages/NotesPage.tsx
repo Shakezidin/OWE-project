@@ -8,7 +8,7 @@ function NotesPage() {
       flexDirection:'row',
       gap:'18px'
   }}>
-    <SideContainer />
+    
     <div>Notes Page</div>
   </div>
   )

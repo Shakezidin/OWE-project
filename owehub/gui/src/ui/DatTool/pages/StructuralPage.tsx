@@ -46,10 +46,8 @@ function StructuralPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', gap: '18px' }}>
-      <div>
-        <SideContainer />
-      </div>
+    <div>
+     
       <div className={styles.container}>
         <div className={styles.titleContainer}></div>
         <div className={styles.flexContainer}>

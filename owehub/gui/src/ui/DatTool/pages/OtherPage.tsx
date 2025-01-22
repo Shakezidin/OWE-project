@@ -8,7 +8,7 @@ function OtherPage() {
       flexDirection:'row',
       gap:'18px'
   }}>
-    <SideContainer />
+   
     <div>OthersPage</div>
   </div>
   )
