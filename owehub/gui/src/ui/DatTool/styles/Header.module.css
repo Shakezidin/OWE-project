@@ -4,12 +4,10 @@
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: 0; 
-  z-index: 1000;
+  z-index: 20;
   width: 100%; 
   background-color: #F3F2F9;
-
-  padding: 15px 40px;
+  padding: 1rem 2rem;
 }
 
 .menuContainer {
@@ -19,27 +17,29 @@
 .menuItems {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  list-style-type: none; /* This removes the bullet points */
+  gap: 1.5rem;
+  list-style-type: none; 
   margin: 0;
   padding: 0;
 }
 
 .menuItems li {
-  cursor: pointer;
   padding: 7px 30px;
   font-size: 14px;
   font-weight: 500;
+  color: #2A2626;
+  cursor: pointer;
+  transition: all 150ms ease;
 }
 
 .menuItems li:hover {
-  background-color: #2A262633; /* Slight hover effect */
+  background-color: rgba(42, 38, 38, 0.2); 
   color: #FFFF;
   border-radius: 24px;
 }
 
 .menuItems li.active{
-  background-color: #2A2626; /* Slight hover effect */
+  background-color: #2A2626; 
   color: #FFFF;
   border-radius: 24px;
 }
@@ -57,6 +57,17 @@
   justify-content: center;
   align-items: center;
   background-color: #FFFF;
-  padding: 8px;
+  padding: 6px;
   border-radius: 50px;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.iconContainer:hover{
+  transform: scale(1.05);
+}
+
+.iconContainer svg{
+  color: #434343;
+  transform: scaleX(-1) rotate(-35deg);
 }

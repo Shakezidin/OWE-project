@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { GoBell } from 'react-icons/go';
 import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/Header.module.css';
+import { MdRefresh } from 'react-icons/md';
 
 interface HeaderProps {
   onMenuSelect: (page: string) => void;
@@ -59,15 +58,11 @@ const Header: React.FC<HeaderProps> = ({ onMenuSelect }) => {
 
       <div className={styles.headerLast}>
         <div className={styles.iconContainer}>
-          <GoBell />
+          <MdRefresh size={18} />
         </div>
-        <div className={styles.iconContainer}>
-          <BsThreeDotsVertical />
-        </div>
-        <img src={ICONS.profileImg} alt="profile-img" />
       </div>
     </div>
   );
 };
 
-export default Header;  
+export default Header;
