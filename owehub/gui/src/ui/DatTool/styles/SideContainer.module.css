@@ -1,0 +1,126 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 282px;
+    background-color: #2A2626;
+    color: #ffff;
+    padding: 0px 18px 18px;
+    border-radius: 28px;
+    max-height: 70vh;
+    min-width: 18vw;
+    overflow-y: scroll;
+}
+
+.container::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+  }
+  .container::-webkit-scrollbar {
+    display: initial;
+  }
+  
+  .container::-webkit-scrollbar-thumb {
+    background-color: #377CF6;
+    border-radius: 28px;
+  }
+  
+  .container::-webkit-scrollbar-button {
+    display: initial;
+  }
+  
+  .container::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  .container::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+
+
+.heading{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 15px;
+    position: sticky;
+    top: 0;
+    background: #2A2626;
+}
+.searchBox input{
+    all: unset;
+    width: 86%;
+    background-color: #39393F;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 8px 16px;
+
+
+
+}
+
+.content_one{
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.content_two{
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
+}
+
+.content_three{
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    margin-top: 10px;
+
+}
+
+.dataBox{
+    color: #bbbb;
+    background-color: #39393F;
+    border-radius: 18px;
+    padding: 20px 18px;
+}
+
+.headingName{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 21px;
+}
+
+.dataBox:hover{
+    background-color: #377CF6;
+    color: #ffff;
+}
+
+
+
+/* .searchBox input::placeholder{
+    padding: 4px 8px;
+} */
+
+/* .searchBox input {
+    all: unset;
+    width: 100%;
+    outline: none;
+    border: none; 
+    background-color: #39393F;
+    padding: 4px 8px;
+    border-radius: 16px;
+
+  }
+    .searchBox input:focus {
+  }
+
+  .searchBox input::placeholder {
+    color: #888;
+    font-style: italic;
+    font-size: 14px; 
+  } */
