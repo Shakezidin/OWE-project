@@ -15,7 +15,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 /******************************************************************************
@@ -26,12 +25,13 @@ import (
  ******************************************************************************/
 func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err      error
-		query    string
-		dataReq  models.ProductionTargetsByYearReq
-		apiResp  []models.ProductionTargetsByYearRespItem
-		data     []map[string]interface{}
-		roleName string
+		err          error
+		query        string
+		dataReq      models.ProductionTargetsByYearReq
+		apiResp      []models.ProductionTargetsByYearRespItem
+		data         []map[string]interface{}
+		whereEleList []interface{}
+		targetUserId int64
 	)
 
 	log.EnterFn(0, "HandleGetProductionTargetsByYearRequest")
@@ -61,64 +61,33 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
-	// Get authenticated user's email from the request context
-	authenticatedUserEmail := req.Context().Value("emailid").(string)
-	// Get role name from the request context
-	roleName = req.Context().Value("rolename").(string)
-
-	// Determine account manager condition based on role and request data
-	amCondition := "AND user_id = 1"
-	if roleName == "Admin" && strings.ToLower(dataReq.AccountManager) != "all" {
-		// query for user id for Account Manager
-		query =
-			` select user_id
-		 from user_details join
-    	 user_roles on  user_roles.role_id = user_details.role_id
-		 where user_roles.role_name = 'Account Manager' and user_details.name = $1
-	 `
-
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.AccountManager})
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
-			return
-		}
-
-		if len(data) == 0 {
-			log.FuncErrorTrace(0, "User ID is blank for %s", authenticatedUserEmail)
-			appserver.FormAndSendHttpResp(resp, "user id is blank", http.StatusBadRequest, nil)
-			return
-		}
-
-		userID, ok := data[0]["user_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get 'userID' Item: %+v\n", data)
-		}
-
-		amCondition = fmt.Sprintf("AND user_id = %d", userID)
-	}
-	if roleName != "Admin" {
-		amCondition = ""
+	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
+		return
 	}
 
 	// Query to retrieve production targets
-	query = fmt.Sprintf(`
-		 WITH months(n) AS (SELECT generate_series(1, 12))
-		 SELECT
-			 TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			 COALESCE(p.projects_sold, 0) AS projects_sold,
-			 COALESCE(p.mw_sold, 0) AS mw_sold,
-			 COALESCE(p.install_ct, 0) AS install_ct,
-			 COALESCE(p.mw_installed, 0) AS mw_installed,
-			 COALESCE(p.batteries_ct, 0) AS batteries_ct
-		 FROM months
-		 LEFT JOIN get_production_targets_hierarchy($1) p
-		 ON months.n = p.month AND p.target_percentage = $2 AND p.year = $3 AND p.state = $4 %s
-		 ORDER BY months.n
-	 `, amCondition)
+	query = `
+		WITH months(n) AS (SELECT generate_series(1, 12))
+		SELECT
+			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(p.projects_sold, 0) AS projects_sold,
+			COALESCE(p.mw_sold, 0) AS mw_sold,
+			COALESCE(p.install_ct, 0) AS install_ct,
+			COALESCE(p.mw_installed, 0) AS mw_installed,
+			COALESCE(p.batteries_ct, 0) AS batteries_ct
+		FROM months
+		LEFT JOIN production_targets p
+		ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.state = $3 AND p.user_id = $4
+		ORDER BY months.n
+	`
+
+	whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
 
 	// Retrieve production target data
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedUserEmail, dataReq.TargetPercentage, dataReq.Year, dataReq.State})
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
