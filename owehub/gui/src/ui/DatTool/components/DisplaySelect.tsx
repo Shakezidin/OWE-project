@@ -28,7 +28,6 @@ const DisplaySelect: React.FC<DisplaySelectProps> = ({ label, value }) => {
     <div className={styles.selectedContainer}>
       <div className={styles.selectedLabel}>{label}</div>
       <div className={styles.selectedContent}>{value}</div>
-      {/* <span style={valueStyles}>{label}: {value}</span> */}
     </div>
   );
 };
