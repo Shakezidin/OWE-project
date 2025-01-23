@@ -16,7 +16,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 /******************************************************************************
@@ -30,6 +29,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		err               error
 		dataReq           models.GetReportsTargetReq
 		yearInt           int
+		targetUserId      int64
 		targetQuery       string
 		acheivedQuery     string
 		whereEleList      []interface{}
@@ -73,57 +73,31 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request Body", http.StatusBadRequest, nil)
 		return
 	}
-	// Get authenticated user's email from the request context
-	authenticatedUserEmail := req.Context().Value("emailid").(string)
-	// Get role name from the request context
-	roleName := req.Context().Value("rolename").(string)
-	amCondition := "AND user_id = 1"
-	if roleName == "Admin" && strings.ToLower(dataReq.AccountManager) != "all" {
-		// query for user id for Account Manager
-		targetQuery =
-			`select user_id from user_details join user_roles on  user_roles.role_id = user_details.role_id
-	  		where user_roles.role_name = 'Account Manager' and user_details.name = $1`
 
-		data, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, []interface{}{dataReq.AccountManager})
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
-			return
-		}
-
-		if len(data) == 0 {
-			log.FuncErrorTrace(0, "User ID is blank for %s", authenticatedUserEmail)
-			appserver.FormAndSendHttpResp(resp, "user id is blank", http.StatusBadRequest, nil)
-			return
-
-		}
-
-		userID, ok := data[0]["user_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get 'userID' Item: %+v\n", data)
-		}
-
-		amCondition = fmt.Sprintf("AND user_id = %d", userID)
+	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
+		return
 	}
-	if roleName != "Admin" {
-		amCondition = ""
-	}
+
 	// Query to retrieve production targets
-	targetQuery = fmt.Sprintf(`
-		  WITH months(n) AS (SELECT generate_series(1, 12))
-		  SELECT
-			  TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			  COALESCE(p.projects_sold, 0) AS projects_sold,
-			  COALESCE(p.mw_sold, 0) AS mw_sold,
-			  COALESCE(p.install_ct, 0) AS install_ct,
-			  COALESCE(p.mw_installed, 0) AS mw_installed,
-			  COALESCE(p.batteries_ct, 0) AS batteries_ct
-		  FROM months
-		  LEFT JOIN get_production_targets_hierarchy($1) p
-		  ON months.n = p.month AND p.target_percentage = $2 AND p.year = $3 AND p.state = $4 %s
-		  ORDER BY months.n
-	  `, amCondition)
-	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, []interface{}{authenticatedUserEmail, dataReq.TargetPercentage, dataReq.Year, dataReq.State})
+	targetQuery = `
+		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
+		SELECT
+			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(p.projects_sold, 0) AS projects_sold,
+			COALESCE(p.mw_sold, 0) AS mw_sold,
+			COALESCE(p.install_ct, 0) AS install_ct,
+			COALESCE(p.mw_installed, 0) AS mw_installed,
+			COALESCE(p.batteries_ct, 0) AS batteries_ct
+		FROM months
+		LEFT JOIN production_targets p
+		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.state = $5 AND p.user_id = $6
+		ORDER BY months.n
+	  `
+	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
+	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
@@ -144,12 +118,14 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
 		WHERE CASE WHEN LOWER($4) = 'all' THEN TRUE
 		ELSE STATE_NAME = $4 END
+		UNION SELECT '' WHERE LOWER($4) = 'all' 
 	 ),
 	 AM AS (
-		 SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
-		 FROM SALES_PARTNER_DBHUB_SCHEMA
-		 WHERE CASE WHEN LOWER($5) = 'all' THEN TRUE
-		 ELSE ACCOUNT_MANAGER = $5 END
+		SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
+		FROM SALES_PARTNER_DBHUB_SCHEMA
+		WHERE CASE WHEN LOWER($5) = 'all' THEN TRUE
+		ELSE ACCOUNT_MANAGER = $5 END
+		UNION SELECT '' WHERE LOWER($5) = 'all' 
 	 ),
 	 CUSTOMERS AS (
 		 SELECT
@@ -253,7 +229,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					continue
 				}
 
-				whereEleList = []interface{}{12, 12, dataReq.TargetPercentage, yearInt - 1}
+				whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, yearInt - 1, dataReq.State, targetUserId}
 				rawTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
