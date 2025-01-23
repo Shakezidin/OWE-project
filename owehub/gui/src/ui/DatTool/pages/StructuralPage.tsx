@@ -96,7 +96,7 @@ const StructuralPage: React.FC = () => {
                 <div className={styles.headingIcon}>
                   <div className={styles.wordContainer}>MP3</div>
                   <div className={styles.iconContainer}>
-                    {editStructuralInfo ? <HiMiniXMark /> : <IoMdAdd />}
+                    {editStructuralInfo ? <HiMiniXMark  onClick={()=>setEditStructuralInfo(!editStructuralInfo)}/> : <IoMdAdd />}
                   </div>
                   <div
                     className={` ${editStructuralInfo ? styles.active : styles.iconContainer}`}
