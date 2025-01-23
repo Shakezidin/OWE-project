@@ -84,7 +84,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		ORDER BY months.n
 	`
 
-	whereEleList = []interface{}{targetUserId, dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
+	whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
 
 	// Retrieve production target data
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
