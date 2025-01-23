@@ -1,460 +1,425 @@
-import React from 'react';
-import { AiOutlineEdit } from 'react-icons/ai';
+import React, { useState } from 'react';
+import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 
-const cardStyle = {
-  backgroundColor: 'white',
-  borderRadius: '28px',
-  padding: '24px',
-  marginBottom: '20px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-  width: '100%',
+interface Styles {
+  [key: string]: React.CSSProperties;
+}
+
+const styles: Styles = {
+  cardStyle: {
+    backgroundColor: 'white',
+    borderRadius: '28px',
+    padding: '24px',
+    marginBottom: '20px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+    width: '100%',
+  },
+  sectionHeaderStyle: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px',
+  },
+  titleStyle: {
+    fontSize: '16px',
+    fontWeight: '600',
+    color: '#333',
+    margin: 0,
+  },
+  editButtonStyle: {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    color: '#434343',
+  },
+  actionButtonsStyle: {
+    display: 'flex',
+    gap: '8px',
+  },
+  saveButtonStyle: {
+    background: '#377CF6',
+    borderRadius:'50%',
+    fontSize:10,
+    height: 20,
+    width: 20,
+    paddingTop:2,
+    border: 'none',
+    cursor: 'pointer',
+    color: '#FFF',
+  },
+  cancelButtonStyle: {
+    background: '#FAFAFF',
+    borderRadius:'50%',
+    fontSize:10,
+    height: 20,
+    width: 20,
+    paddingTop:2,
+    border: 'none',
+    cursor: 'pointer',
+    color: '#293540',
+  },
+  gridStyle: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '20px',
+  },
+  fieldGroupStyle: {
+    marginBottom: '16px',
+  },
+  labelStyle: {
+    fontSize: '14px',
+    color: '#666',
+    marginBottom: '4px',
+  },
+  valueStyle: {
+    fontSize: '14px',
+    color: '#333',
+    display: 'flex',
+    gap: '50px',
+  },
+  inputStyle: {
+    width: '100%',
+    padding: '4px 8px',
+    fontSize: '14px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    color: '#333',
+  },
 };
 
-const sectionHeaderStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: '20px',
-};
+interface MPPTValue {
+  'S.1': string;
+  'S.2': string;
+}
 
-const titleStyle = {
-  fontSize: '16px',
-  fontWeight: '600',
-  color: '#333',
-  margin: 0,
-};
+interface Fields {
+  [key: string]: string | MPPTValue;
+}
 
-const editButtonStyle = {
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  color: '#FF6B6B',
-};
+interface CardProps {
+  title: string;
+  fields: Fields;
+  onSave: (fields: Fields) => void;
+  customGrid?: (
+    isEditing: boolean,
+    editedFields: Fields,
+    handleFieldChange: (key: string, value: string | MPPTValue) => void,
+    handleEdit: () => void,
+    handleCancel: () => void
+  ) => React.ReactNode;
+}
 
-const gridStyle = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: '20px',
-};
+const renderStringInverterGrid = (
+  isEditing: boolean,
+  editedFields: Fields,
+  handleFieldChange: (key: string, value: string | MPPTValue) => void,
+  handleSave: () => void,
+  handleCancel: () => void
+) => (
+  <div style={styles.cardStyle}>
+    <div style={styles.sectionHeaderStyle}>
+      <h2 style={styles.titleStyle}>String Inverter Configuration</h2>
+      {isEditing ? (
+        <div style={styles.actionButtonsStyle}>
+          <button style={styles.cancelButtonStyle} onClick={handleCancel}>
+            <AiOutlineClose size={15} />
+          </button>
+          <button style={styles.saveButtonStyle} onClick={handleSave}>
+            <AiOutlineCheck size={15} />
+          </button>
+        </div>
+      ) : (
+        <button style={styles.editButtonStyle} onClick={() => handleSave()}>
+          <AiOutlineEdit />
+        </button>
+      )}
+    </div>
+    <div style={styles.gridStyle}>
+      <div style={styles.fieldGroupStyle}>
+        <div style={styles.labelStyle}>Inverter</div>
+        {isEditing ? (
+          <input
+            style={styles.inputStyle}
+            value={editedFields['Inverter'] as string}
+            onChange={(e) => handleFieldChange('Inverter', e.target.value)}
+          />
+        ) : (
+          <div style={styles.valueStyle}>{String(editedFields['Inverter'])}</div>
+        )}
+      </div>
+      <div style={styles.fieldGroupStyle}>
+        <div style={styles.labelStyle}>Max</div>
+        {isEditing ? (
+          <input
+            style={styles.inputStyle}
+            value={editedFields['Max'] as string}
+            onChange={(e) => handleFieldChange('Max', e.target.value)}
+          />
+        ) : (
+          <div style={styles.valueStyle}>{String(editedFields['Max']) || '---'}</div>
+        )}
+      </div>
+    </div>
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '20px',
+      marginTop: '20px'
+    }}>
+      {[...Array(8)].map((_, i) => (
+        <div key={i} style={styles.fieldGroupStyle}>
+          <div style={styles.labelStyle}>{`MPPT${i + 1}`}</div>
+          {isEditing ? (
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                style={{ ...styles.inputStyle, flex: 1 }}
+                value={(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.1']}
+                onChange={(e) => handleFieldChange(`MPPT${i + 1}`, {
+                  ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
+                  'S.1': e.target.value
+                })}
+                placeholder="S.1"
+              />
+              <input
+                style={{ ...styles.inputStyle, flex: 1 }}
+                value={(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.2']}
+                onChange={(e) => handleFieldChange(`MPPT${i + 1}`, {
+                  ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
+                  'S.2': e.target.value
+                })}
+                placeholder="S.2"
+              />
+            </div>
+          ) : (
+            <div style={styles.valueStyle}>
+              <div>S.1 {(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.1'] || '---'}</div>
+              <div>S.2 {(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.2'] || '---'}</div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
-const fieldGroupStyle = {
-  marginBottom: '16px',
-};
+const Card: React.FC<CardProps> = ({ title, fields, onSave, customGrid }) => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editedFields, setEditedFields] = useState<Fields>(fields);
 
-const labelStyle = {
-  fontSize: '14px',
-  color: '#666',
-  marginBottom: '4px',
-};
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
 
-const valueStyle = {
-  fontSize: '14px',
-  color: '#333',
-  display:'flex',
-  gap: '50px',
-};
+  const handleSave = () => {
+    onSave(editedFields);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedFields(fields);
+    setIsEditing(false);
+  };
+
+  const handleFieldChange = (key: string, value: string | MPPTValue) => {
+    setEditedFields({
+      ...editedFields,
+      [key]: value
+    });
+  };
+
+  if (customGrid) {
+    return customGrid(isEditing, editedFields, handleFieldChange, handleEdit, handleCancel) as JSX.Element;
+  }
+
+  return (
+    <div style={styles.cardStyle}>
+      <div style={styles.sectionHeaderStyle}>
+        <h2 style={styles.titleStyle}>{title}</h2>
+        {isEditing ? (
+          <div style={styles.actionButtonsStyle}>
+            <button style={styles.cancelButtonStyle} onClick={handleCancel}>
+              <AiOutlineClose size={15} />
+            </button>
+            <button style={styles.saveButtonStyle} onClick={handleSave}>
+              <AiOutlineCheck size={15} />
+            </button>
+          </div>
+        ) : (
+          <button style={styles.editButtonStyle} onClick={handleEdit}>
+            <AiOutlineEdit />
+          </button>
+        )}
+      </div>
+      <div style={styles.gridStyle}>
+        {Object.entries(fields).map(([key, value]) => (
+          <div key={key} style={styles.fieldGroupStyle}>
+            <div style={styles.labelStyle}>{key}</div>
+            {isEditing ? (
+              <input
+                style={styles.inputStyle}
+                value={value as string}
+                onChange={(e) => handleFieldChange(key, e.target.value)}
+              />
+            ) : (
+              <div style={styles.valueStyle}>
+                {typeof value === 'object' ? `S.1: ${value['S.1']}, S.2: ${value['S.2']}` : value || '---'}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function OtherPage() {
+  const [electricalEquipment, setElectricalEquipment] = useState<Fields>({
+    'New Or Existing': 'New',
+    'Busbar Rating': '200',
+    'Available Backfeed': '40',
+    'Panel Brand': 'Lelon',
+    'Main Breaker Rating': '200',
+    'Required Backfeed': ''
+  });
+
+  const [electricalSystem, setElectricalSystem] = useState<Fields>({
+    'System Phase': '',
+    'Service Entrance': '',
+    'Meter Enclosure Type': 'Meter/Main Combo',
+    'System Voltage': '',
+    'Service Rating': ''
+  });
+
+  const [siteInfo, setSiteInfo] = useState<Fields>({
+    'PV Conduit Run': 'Exterior',
+    'Number of Stories': '2',
+    'Points of Interconnection': '2',
+    'Drywall Cut Needed': 'Yes',
+    'Trenching Required': 'Yes'
+  });
+
+  const [roofCoverage, setRoofCoverage] = useState<Fields>({
+    'Total Roof Area': '',
+    'Area of EXIST Modules': '',
+    'Area of New Modules': '',
+    'Coverage Percentage': '50%'
+  });
+
+  const [pvInterconnection, setPvInterconnection] = useState<Fields>({
+    'Type': 'Lug Connection',
+    'Location': 'Meter',
+    'Supply/load Side': 'Supply Side',
+    'Sub - Location Tap Details': ''
+  });
+
+  const [essInterconnection, setEssInterconnection] = useState<Fields>({
+    'Backup Type': 'Full Home',
+    'Fed By': 'Breaker',
+    'Transfer Switch': 'Tesla Backup Gateway 2'
+  });
+
+  const [stringInverter, setStringInverter] = useState<Fields>({
+    'Inverter': 'Tesla Inverter 7.6kW',
+    'Max': '',
+    ...Object.fromEntries([...Array(8)].map((_, i) => [
+      `MPPT${i + 1}`,
+      { 'S.1': '', 'S.2': '' }
+    ]))
+  });
+
+  const [servicePanelInfo, setServicePanelInfo] = useState<Fields>({
+    'Panel Brand': 'Lelon',
+    'Main Breaker Rating': '200',
+    'Available Backfeed': '40',
+    'Busbar Rating': '200',
+    'Required Backfeed': ''
+  });
+
+  const [measurementConversion, setMeasurementConversion] = useState<Fields>({
+    'Length': '',
+    'Height': '',
+    'Width': '',
+    'Other': ''
+  });
+
+  const [existingPvSystem, setExistingPvSystem] = useState<Fields>({
+    'Module Quantity': '40',
+    'Wattage': '320 W DC',
+    'Model#': 'Longi LR6-60HPH-32M',
+    'Module Area': '18.04 sqft',
+    'Inverter 1 Quantity': '1',
+    'Inverter 1 Output(A)': '21A AC',
+    'Inverter 1 Model#': 'Solar Edge SE5000H-US',
+    'Inverter 2 Quantity': '1',
+    'Inverter 2 Output(A)': '21A AC',
+    'Inverter 2 Model#': 'Solar Edge SE5000H-US',
+    'Existing Calculated Backfeed(w/o 125%)': ''
+  });
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '24px',
-        height: '100vh',
-        overflowY: 'scroll',
-      }}
-    >
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '24px',
+      height: '100vh',
+      overflowY: 'scroll',
+      padding: '24px',
+    }}>
       <div style={{ flex: 1, maxWidth: '50%' }}>
-        {/* Electrical Equipment Info */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>Electrical Equipment Info</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>New Or Existing</div>
-                <div style={valueStyle}>New</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Busbar Rating</div>
-                <div style={valueStyle}>200</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Available Backfeed</div>
-                <div style={valueStyle}>40</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Panel Brand</div>
-                <div style={valueStyle}>Lelon</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Main Breaker Rating</div>
-                <div style={valueStyle}>200</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Required Backfeed</div>
-                <div style={valueStyle}>---</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Electrical System Info */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>Electrical System Info</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>System Phase</div>
-                <div style={valueStyle}>---</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Service Entrance</div>
-                <div style={valueStyle}>---</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Meter Enclosure Type</div>
-                <div style={valueStyle}>Meter/Main Combo</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>System Voltage</div>
-                <div style={valueStyle}>---</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Service Rating</div>
-                <div style={valueStyle}>---</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Site Info */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>Site Info</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>PV Conduit Run</div>
-                <div style={valueStyle}>Exterior</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Number of Stories</div>
-                <div style={valueStyle}>2</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Points of Interconnection</div>
-                <div style={valueStyle}>2</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Drywall Cut Needed</div>
-                <div style={valueStyle}>Yes</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Trenching Required</div>
-                <div style={valueStyle}>Yes</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Roof Coverage Calculator */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>Roof Coverage Calculator</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Total Roof Area</div>
-                <div style={valueStyle}>---</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Area of EXIST Modules</div>
-                <div style={valueStyle}>---</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Area of New Modules</div>
-                <div style={valueStyle}>---</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Coverage Percentage</div>
-                <div style={valueStyle}>50%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PV only Interconnection */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>PV only Interconnection</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Type</div>
-                <div style={valueStyle}>Lug Connection</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Location</div>
-                <div style={valueStyle}>Meter</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Supply/load Side</div>
-                <div style={valueStyle}>Supply Side</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Sub - Location Tap Details</div>
-                <div style={valueStyle}>---</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ESS Interconnection */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>ESS Interconnection</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Backup Type</div>
-                <div style={valueStyle}>Full Home</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Fed By</div>
-                <div style={valueStyle}>Breaker</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Transfer Switch</div>
-                <div style={valueStyle}>Tesla Backup Gateway 2</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Card
+          title="Electrical Equipment Info"
+          fields={electricalEquipment}
+          onSave={setElectricalEquipment}
+        />
+        <Card
+          title="Electrical System Info"
+          fields={electricalSystem}
+          onSave={setElectricalSystem}
+        />
+        <Card
+          title="Site Info"
+          fields={siteInfo}
+          onSave={setSiteInfo}
+        />
+        <Card
+          title="Roof Coverage Calculator"
+          fields={roofCoverage}
+          onSave={setRoofCoverage}
+        />
+        <Card
+          title="PV only Interconnection"
+          fields={pvInterconnection}
+          onSave={setPvInterconnection}
+        />
+        <Card
+          title="ESS Interconnection"
+          fields={essInterconnection}
+          onSave={setEssInterconnection}
+        />
       </div>
 
       <div style={{ flex: 1, maxWidth: '50%' }}>
-          {/* String Inverter Configuration */}
-          <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>String Inverter Configuration</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Inverter</div>
-              <div style={valueStyle}>Tesla Inverter 7.6kW</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Max</div>
-              <div style={valueStyle}>---</div>
-            </div>
-          </div>
-          {/* MPPT Grid */}
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '20px',
-            marginTop: '20px'
-          }}>
-            {[...Array(8)].map((_, i) => (
-              <div key={i} style={fieldGroupStyle}>
-                <div style={labelStyle}>{`MPPT${i + 1}`}</div>
-                <div style={valueStyle}>
-                  <div>S.1 ---</div>
-                  <div>S.2 ---</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Service Panel Info */}
-        <div style={cardStyle}>
-          <div style={sectionHeaderStyle}>
-            <h2 style={titleStyle}>Roof Coverage Calculator</h2>
-            <AiOutlineEdit/>
-          </div>
-          <div style={gridStyle}>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Panel Brand</div>
-                <div style={valueStyle}>Lelon</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Main Breaker Rating</div>
-                <div style={valueStyle}>200</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Available Backfeed</div>
-                <div style={valueStyle}>40</div>
-              </div>
-            </div>
-            <div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Busbar Rating</div>
-                <div style={valueStyle}>200</div>
-              </div>
-              <div style={fieldGroupStyle}>
-                <div style={labelStyle}>Required Backfeed</div>
-                <div style={valueStyle}>---</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <div style={cardStyle}>
-        <div style={sectionHeaderStyle}>
-          <h2 style={titleStyle}>Roof Coverage Calculator</h2>
-          <AiOutlineEdit/>
-        </div>
-        <div style={gridStyle}>
-          <div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Total Roof Area</div>
-              <div style={valueStyle}>---</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Area of EXIST Modules</div>
-              <div style={valueStyle}>---</div>
-            </div>
-          </div>
-          <div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Area of New Modules</div>
-              <div style={valueStyle}>---</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Coverage Percentage</div>
-              <div style={valueStyle}>50%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Measurement Conversion */}
-      <div style={cardStyle}>
-        <div style={sectionHeaderStyle}>
-          <h2 style={titleStyle}>Measurement Conversion</h2>
-          <AiOutlineEdit/>
-        </div>
-        <div style={gridStyle}>
-          <div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Length</div>
-              <div style={valueStyle}>---</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Height</div>
-              <div style={valueStyle}>---</div>
-            </div>
-          </div>
-          <div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Width</div>
-              <div style={valueStyle}>---</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Other</div>
-              <div style={valueStyle}>---</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Existing PV System Info */}
-      <div style={cardStyle}>
-        <div style={sectionHeaderStyle}>
-          <h2 style={titleStyle}>Existing PV System Info</h2>
-          <AiOutlineEdit/>
-        </div>
-        <div style={gridStyle}>
-          <div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Module Quantity</div>
-              <div style={valueStyle}>40</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Wattage</div>
-              <div style={valueStyle}>320 W DC</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Inverter 1</div>
-              <div>
-                <div style={fieldGroupStyle}>
-                  <div style={labelStyle}>Quantity</div>
-                  <div style={valueStyle}>1</div>
-                </div>
-                <div style={fieldGroupStyle}>
-                  <div style={labelStyle}>Output(A)</div>
-                  <div style={valueStyle}>21A AC</div>
-                </div>
-              </div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Inverter 2</div>
-              <div>
-                <div style={fieldGroupStyle}>
-                  <div style={labelStyle}>Quantity</div>
-                  <div style={valueStyle}>1</div>
-                </div>
-                <div style={fieldGroupStyle}>
-                  <div style={labelStyle}>Output(A)</div>
-                  <div style={valueStyle}>21A AC</div>
-                </div>
-              </div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Existing Calculated Backfeed(w/o 125%)</div>
-              <div style={valueStyle}>Backfeed ---</div>
-            </div>
-          </div>
-          <div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Model#</div>
-              <div style={valueStyle}>Longi LR6-60HPH-32M</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Module Area</div>
-              <div style={valueStyle}>18.04 sqft</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Model#</div>
-              <div style={valueStyle}>Solar Edge SE5000H-US</div>
-            </div>
-            <div style={fieldGroupStyle}>
-              <div style={labelStyle}>Model#</div>
-              <div style={valueStyle}>Solar Edge SE5000H-US</div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <Card
+          title="String Inverter Configuration"
+          fields={stringInverter}
+          onSave={setStringInverter}
+          customGrid={renderStringInverterGrid}
+        />
+        <Card
+          title="Service Panel Info"
+          fields={servicePanelInfo}
+          onSave={setServicePanelInfo}
+        />
+        <Card
+          title="Measurement Conversion"
+          fields={measurementConversion}
+          onSave={setMeasurementConversion}
+        />
+        <Card
+          title="Existing PV System Info"
+          fields={existingPvSystem}
+          onSave={setExistingPvSystem}
+        />
       </div>
     </div>
   );
