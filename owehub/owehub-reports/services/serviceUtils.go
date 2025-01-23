@@ -1,7 +1,12 @@
 package services
 
 import (
+	"OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 	"OWEApp/shared/types"
+	"context"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -39,4 +44,67 @@ func getReportOfficeName(dbOfficeName string) string {
 		return dbOfficeName
 	}
 	return reportOfficeName
+}
+
+// Get user id by production targets logic:
+//
+// 1. Admins can set overall targets, all admins can see overall targets; so same user_id for all admins
+//
+// 2. Admins can see all targets for all user_ids (provided username is not "all")
+//
+// 3. Non admins can see only their own target
+func getProdTargetUserId(reqCtx context.Context, username string) (int64, error) {
+	var (
+		err          error
+		query        string
+		isAdmin      bool
+		data         []map[string]interface{}
+		whereEleList []interface{}
+	)
+
+	log.EnterFn(0, "getProdTargetUserId")
+	defer func() { log.ExitFn(0, "getProdTargetUserId", err) }()
+
+	authRole, ok := reqCtx.Value("rolename").(string)
+	if !ok {
+		return 0, fmt.Errorf("failed to get rolename from request")
+	}
+	authEmail, ok := reqCtx.Value("emailid").(string)
+	if !ok {
+		return 0, fmt.Errorf("failed to get emailid from request")
+	}
+	isAdmin = authRole == string(types.RoleAdmin)
+
+	// admins; overall targets
+	if isAdmin && strings.ToLower(username) == "all" {
+		return 1, nil
+	}
+
+	// admin can see targets by username
+	if isAdmin && strings.ToLower(username) != "all" {
+		query = "SELECT user_id FROM user_details WHERE name = $1"
+		whereEleList = []interface{}{username}
+	}
+
+	if !isAdmin {
+		query = "SELECT user_id FROM user_details WHERE email_id = $1"
+		whereEleList = []interface{}{authEmail}
+	}
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "failed to get user id for %s, err: %v", username, err)
+		return 0, fmt.Errorf("failed to get data from DB")
+	}
+
+	if len(data) == 0 {
+		return 0, fmt.Errorf("user %s not found", username)
+	}
+
+	userId, ok := data[0]["user_id"].(int64)
+	if !ok {
+		return 0, fmt.Errorf("failed to get user id for %s", username)
+	}
+
+	return userId, nil
 }
