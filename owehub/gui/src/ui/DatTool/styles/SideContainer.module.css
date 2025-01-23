@@ -98,6 +98,13 @@
   color: #ffff;
 }
 
+.dataBox:hover .content_one,
+.dataBox:hover .content_two,
+.dataBox:hover .content_three {
+  color: var(--white-color);
+  cursor: pointer;
+}
+
 .searchBox {
   margin-top: -8px;
   margin-bottom: 10px;
