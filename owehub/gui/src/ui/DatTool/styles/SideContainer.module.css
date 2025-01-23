@@ -5,7 +5,7 @@
   background-color: #2a2626;
   color: #ffff;
   padding: 0px 16px 16px;
-  border-radius: 28px;
+  border-radius: 26px;
   height: calc(100vh - 216px);
   overflow-y: scroll;
 }
