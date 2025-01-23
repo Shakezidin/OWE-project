@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import SideContainer from '../components/SideContainer';
-import { VscDebugRestart } from 'react-icons/vsc';
 import styles from '../styles/StructuralPage.module.css';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { IoMdAdd } from 'react-icons/io';
@@ -47,7 +45,6 @@ function StructuralPage() {
 
   return (
     <div>
-     
       <div className={styles.container}>
         <div className={styles.titleContainer}></div>
         <div className={styles.flexContainer}>
@@ -158,14 +155,14 @@ function StructuralPage() {
               <div className={styles.endContainertwo}>
                 <p>Spacing</p>
                 <div className={styles.endContainerWrapper}>
-                <div >
-                  <p className={styles.selectedContent}>P</p>
-                  <p className={styles.selectedLabel}>48</p>
-                </div>
-                <div >
-                  <p className={styles.selectedContent}>L</p>
-                  <p className={styles.selectedLabel}>--</p>
-                </div>
+                  <div>
+                    <p className={styles.selectedContent}>P</p>
+                    <p className={styles.selectedLabel}>48</p>
+                  </div>
+                  <div>
+                    <p className={styles.selectedContent}>L</p>
+                    <p className={styles.selectedLabel}>--</p>
+                  </div>
                 </div>
               </div>
             </div>

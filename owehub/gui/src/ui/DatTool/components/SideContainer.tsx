@@ -26,7 +26,7 @@ const SideContainer: React.FC = () => {
       <div className={styles.heading}>
         <div className={styles.headingName}>Project List</div>
         <div>
-          <TbArrowsSort />
+          <TbArrowsSort size={18} />
         </div>
       </div>
       <div className={styles.searchBox}>

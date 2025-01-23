@@ -1,26 +1,20 @@
-.mainContainer{
-    padding: 0px 20px;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+.mainContainer {
+  margin: -19px;
+  display: flex;
+  flex-direction: column;
 }
 
-.layoutContainer{
-    display: flex;
-    flex-direction: row;
-    gap:20px
+.layoutContainer {
+  display: flex;
+  flex-direction: row;
 }
 
-.sidebar{
-  
-    flex: 0 0 20%;  
+.sidebar {
+  width: 22%;
+  padding: 1.2rem;
 }
 
-.contentContainer{
-    flex: 1;
-    display: flex;
-    flex-direction:column;
-    gap: 20px
-
+.contentContainer {
+  padding: 1.2rem 1.2rem 1.2rem 0;
+  width: 100%;
 }
