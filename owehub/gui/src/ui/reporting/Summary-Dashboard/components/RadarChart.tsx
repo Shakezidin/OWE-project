@@ -12,37 +12,40 @@ import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 
 const RadarChartComponenet = ({ radData }: any) => {
-  // Transform and normalize data
-  // const data = radData
-  //   ? Object.entries(radData).map(([key, value]) => {
-  //     const percentAchieved = (value as { percentage_achieved: number }).percentage_achieved;
-  //     const newPerc = Number((percentAchieved).toFixed(0)) >= 100 ? 100 : Number(percentAchieved).toFixed(0)
-
-  //     return {
-  //       subject: key,
-  //       Target: (value as { target: number }).target,
-  //       Achieve: (value as { achieved: number }).achieved,
-  //       Percent_Achieve: percentAchieved,
-  //       // Add normalized value for scaling
-  //       Normalized_Achieve: newPerc,
-  //       show: true
-  //     };
-  //   })
-  //   : [];
-
-  const maxValue = 100; // Fixed max for scaling
-
+  
   const data = radData
     ? Object.entries(radData).map(([key, value]) => {
-      const percentAchieved = (value as { percentage_achieved: number }).percentage_achieved;
-      const clampedValue = Math.min(percentAchieved, maxValue);
+      const target = (value as { target: number }).target;
+      const achieved = (value as { achieved: number }).achieved;
+      
+      let percentAchieved: number;
+
+      if (target === 0 && achieved > 0) {
+        percentAchieved = 100;
+      } else if (target === 0 && achieved === 0) {
+        percentAchieved = 0;
+      } else {
+        percentAchieved = (achieved / target) * 100;
+        percentAchieved = percentAchieved;
+      }
+      
+      let norm: number;
+
+      if (target === 0 && achieved > 0) {
+        norm = 100;
+      } else if (target === 0 && achieved === 0) {
+        norm = 0;
+      } else {
+        norm = (achieved / target) * 100;
+        norm = percentAchieved >= 100 ? 100 : percentAchieved;
+      }
 
       return {
         subject: key,
         Target: (value as { target: number }).target,
         Achieve: (value as { achieved: number }).achieved,
         Percent_Achieve: percentAchieved,
-        Normalized_Achieve: (clampedValue / maxValue) * 100, // Scale relative to 100
+        Normalized_Achieve: norm,
         show: true,
         B: 100
       };

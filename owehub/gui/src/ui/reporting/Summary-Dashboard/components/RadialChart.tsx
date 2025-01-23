@@ -43,11 +43,21 @@ const RadialChart = ({ year, radData }: { year: any; radData: ProgressData }) =>
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const apiData = radData ? Object.entries(radData).map(([key, value]) => {
+    let displayPercentage;
+    if (value.target === 0 && value.achieved > 0) {
+      displayPercentage = 100;
+    } else if (value.target === 0 && value.achieved === 0) {
+      displayPercentage = 0;
+    } else {
+      const percentage = (value.achieved / value.target) * 100;
+      displayPercentage = percentage >= 100 ? 100 : percentage.toFixed(2);
+    }
+  
     return {
       name: key,
       Target: value.target,
       Achieved: value.achieved,
-      DisplayPercentage: Number((value.percentage_achieved)?.toFixed(2)) >= 100 ? 100 : (value.percentage_achieved)?.toFixed(2),
+      DisplayPercentage: displayPercentage,
       fill: getColorByKey(key),
       tooltip: true
     };
