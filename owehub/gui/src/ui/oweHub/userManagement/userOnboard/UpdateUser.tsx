@@ -176,10 +176,10 @@ import React, {
  
 
     useEffect(() => {
-      if (editData.length > 0) {
+      if (editData?.length > 0) {
         // Extract userData from editData
         const userData = editData[0]; 
-        if (userData?.table_permission.length > 0) {
+        if (userData?.table_permission?.length > 0) {
           setDbAcess(true);
           const permissions: TablePermissions = {};
           const selectedIndices = new Set<number>();
@@ -234,7 +234,7 @@ import React, {
     console.log(selected, "selecteddd")
 
     useEffect(() => {
-      if (editData.length > 0) {
+      if (editData?.length > 0) {
         const userData = editData[0];
         if (userData) {
           const nameParts = userData.name?.trim().split(' ') || [];

@@ -13,6 +13,7 @@ interface Endpoints {
   resetPassword: string;
   changePassword: string;
   checkUser: string;
+  dbStatus:string;
   // get config
   commission: string;
   dealer: string;
@@ -85,6 +86,7 @@ export const EndPoints: Endpoints = {
   resetPassword: 'forgot_password',
   changePassword: 'change_password',
   checkUser: 'user_exists',
+  dbStatus:'is_owedb_ready',
   // get config endpoints
   commission: 'get_commissions',
   active: 'active',

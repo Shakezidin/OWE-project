@@ -11,6 +11,7 @@ import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/use
 import { MdOutlineLockReset } from "react-icons/md";
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { Tooltip } from 'react-tooltip';
+import EditUser from '../../../../resources/assets/edituser.svg';
 interface SaleManagerProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -20,6 +21,7 @@ interface SaleManagerProps {
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   handlePasswordReset:(id?:string)=>void;
+  handleEdit: (id?: string) => void;
 }
 
 const SalesManagerTable: React.FC<SaleManagerProps> = ({
@@ -30,7 +32,8 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
   selectedRows,
   setSelectedRows,
   setSelectAllChecked,
-  handlePasswordReset
+  handlePasswordReset,
+  handleEdit
 }) => {
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -76,6 +79,11 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
     }
     dispatch(shuffleArray(sortedData));
   };
+
+   const environment = process.env.REACT_APP_ENV;
+      const isEditVisible =
+      (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
+      environment === 'staging';
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}
@@ -168,6 +176,40 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                   </td>
                   <td>
                     <div className="action-icon" style={{gap:4}}>
+                      {isEditVisible && (
+                    <div
+                        className="reset_hover_btn"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          handleEdit(el.email_id);
+                        }}
+                      >
+                        <Tooltip
+                           style={{
+                            zIndex: 103,
+                            background: '#f7f7f7',
+                            color: '#000',
+                            fontSize: 12,
+                            paddingBlock: 4,
+                            fontWeight: '400',
+                            
+                          }}
+                          offset={8}
+                          id="edit_user"
+                          place="left"
+                          content="Edit"
+                          delayShow={200}
+                          className="pagination-tooltip"
+                        />
+                        <img
+                          src={EditUser} // Replace with the correct path to the edit icon
+                          alt="Edit User"
+                          data-tooltip-id="edit_user"
+                          style={{ color: 'rgb(102, 112, 133)', width: 18, height: 18 }}
+                        />
+                      </div>
+                      )
+     }
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}

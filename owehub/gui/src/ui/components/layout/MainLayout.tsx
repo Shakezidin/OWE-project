@@ -14,7 +14,7 @@ import {
 } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
-import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
+import { checkUserExists, checkDbStatus } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
@@ -98,6 +98,20 @@ const MainLayout = () => {
         });
     }
   }, [dispatch, navigate, authData]);
+
+    /** check whether db down or not */
+    useEffect(() => {
+        dispatch(checkDbStatus())
+          .then((response: any) => {
+            if (response.payload) {
+              console.log(response.payload,"efnkf")
+            } 
+          })
+          .catch((error: any) => {
+            console.error('Error', error);
+          });
+      
+    }, [dispatch, navigate, authData]);
 
   useEffect(() => {
     if (isTablet) {
