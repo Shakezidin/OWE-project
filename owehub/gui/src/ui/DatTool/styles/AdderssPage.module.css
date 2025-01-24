@@ -1,0 +1,157 @@
+/* TOP PART */
+
+.adderssPageTopPart{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: #FFFFFF;
+    padding:2rem 3rem;
+    border-radius: 28px;
+}
+.adderssPageTopPart_leftText_Adders{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #2A2626;
+}
+.adderssPageTopPart_leftText_text{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #565656;
+}
+
+.adderssPageTopPart_rightText_amount{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 36px;
+    color: #2A2626;
+}
+.adderssPageTopPart_rightText_popUpText{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
+    color: #377CF6;
+    text-decoration: underline;
+    text-align: end;
+}
+
+/* MAIN CONTENT */
+.adderssPageMainPart{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.adderssPageMainPart_left{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap:1rem;
+    width: 40%;
+
+}
+.adderssPageMainPart_leftBarContainer{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:1rem 2rem 1rem 1rem;
+    background-color: #FFFFFF;
+    border-radius: 18px;
+
+}
+.adderssPageMainPart_leftBarContainer_heading{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 21px;
+    color: #2A2626;
+
+}
+.adderssPageMainPart_leftBarContainer_staticText{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #565656;
+}
+.adderssPageMainPart_leftBarContainer_price{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #2A2626;
+}
+
+/* RIGHT PART */
+
+.adderssPageMainPart_Right{
+    width:60%;
+    background-color: #FFFFFF;
+    border-radius: 28px;
+    padding:1rem 2rem ;
+}
+.adderssPageMainPart_rightBarContainer{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding:1rem 0;
+}
+.adderssPageMainPart_rightContainer{
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.adderssPageMainPart_expressionContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 98.84px;
+    width: 100%;
+    background-color: #FAFAFF;
+    backdrop-filter: blur(4px);
+    padding:0.5rem 0;
+    border-radius: 4px;
+    
+
+
+}
+.adderssPageMainPart_rightBarContainer_heading{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #2A2626;
+
+}
+.adderssPageMainPart_text,.adderssPageMainPart_decrement,.adderssPageMainPart_increment{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
+    color: #2A2626;
+}
+.adderssPageMainPart_decrement,.adderssPageMainPart_increment
+{
+    cursor: pointer;
+    width: 70%;
+}
+.adderssPageMainPart_price{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #2A2626;
+
+}

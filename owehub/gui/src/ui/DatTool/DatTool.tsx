@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styles from './styles/DatTool.module.css';
+
 import Header from './components/Header';
 import GeneralPage from './pages/GeneralPage';
 import StructuralPage from './pages/StructuralPage';
-import AddressPage from './pages/AddressPage';
+import AddressPage from './pages/AdderssPage';
 import NotesPage from './pages/NotesPage';
 import OtherPage from './pages/OtherPage';
 import SideContainer from './components/SideContainer';
@@ -15,7 +16,7 @@ const DatTool: React.FC = () => {
     switch (selectedPage) {
       case 'Structural':
         return <StructuralPage />;
-      case 'Address':
+      case 'Adders':
         return <AddressPage />;
       case 'Notes':
         return <NotesPage />;
