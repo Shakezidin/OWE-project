@@ -29,6 +29,8 @@ interface InputState {
 
 
 const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, year, open, handleClose }: any) => {
+    
+   
     const [isAuthenticated, setAuthenticated] = useState(false);
     const { authData, saveAuthData } = useAuth();
     const [loading, setIsLoading] = useState(false)
@@ -245,6 +247,7 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
         });
     };
 
+
     const mergedData = React.useMemo(() => {
         return mergeArrayData(dataTarget, dataTarget2);
     }, [dataTarget, dataTarget2]);
@@ -303,7 +306,10 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
         };
     }, []);
 
-
+    const role = authData?.role;
+    const isOther = (role !== 'Admin')
+    const isAllSelected = ((selectedState.value === 'All') && (selectedAM.value === 'All'))
+    
 
 
     return (
@@ -374,9 +380,9 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
                                                             <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
                                                                 {!showInput[row.month]?.showprojectSold && (
                                                                     <div
-                                                                        style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                        style={{ cursor: (isPastMonth || prevYear || isOther || isAllSelected) ? "" : "pointer" }}
                                                                         onClick={() => {
-                                                                            if (!(isPastMonth || prevYear)) {
+                                                                            if (!(isPastMonth || prevYear || isOther || isAllSelected)) {
                                                                                 handleShow(row.month, 'projectSold', row.projectSold);
                                                                             }
                                                                         }}
@@ -438,9 +444,9 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
                                                             <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
                                                                 {!showInput[row.month]?.showmwSold && (
                                                                     <div
-                                                                        style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                        style={{ cursor: (isPastMonth || prevYear || isOther  || isAllSelected) ? "" : "pointer" }}
                                                                         onClick={() => {
-                                                                            if (!(isPastMonth || prevYear)) {
+                                                                            if (!(isPastMonth || prevYear || isOther || isAllSelected)) {
                                                                                 handleShow(row.month, 'mwSold', row.mwSold);
                                                                             }
                                                                         }}
@@ -502,9 +508,9 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
                                                             <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
                                                                 {!showInput[row.month]?.showinstallCT && (
                                                                     <div
-                                                                        style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                        style={{ cursor: (isPastMonth || prevYear || isOther  || isAllSelected) ? "" : "pointer" }}
                                                                         onClick={() => {
-                                                                            if (!(isPastMonth || prevYear)) {
+                                                                            if (!(isPastMonth || prevYear || isOther || isAllSelected)) {
                                                                                 handleShow(row.month, 'installCT', row.installCT);
                                                                             }
                                                                         }}
@@ -568,9 +574,9 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
                                                             <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
                                                                 {!showInput[row.month]?.showmwInstalled && (
                                                                     <div
-                                                                        style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                        style={{ cursor: (isPastMonth || prevYear || isOther || isAllSelected) ? "" : "pointer" }}
                                                                         onClick={() => {
-                                                                            if (!(isPastMonth || prevYear)) {
+                                                                            if (!(isPastMonth || prevYear || isOther || isAllSelected)) {
                                                                                 handleShow(row.month, 'mwInstalled', row.mwInstalled);
                                                                             }
                                                                         }}
@@ -630,9 +636,9 @@ const EditModal = ({ selectedState, selectedAM, activePerc, refre, setRefre, yea
                                                             <td className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}>
                                                                 {!showInput[row.month]?.showbatteriesCT && (
                                                                     <div
-                                                                        style={{ cursor: (isPastMonth || prevYear) ? "" : "pointer" }}
+                                                                        style={{ cursor: (isPastMonth || prevYear || isOther || isAllSelected) ? "" : "pointer" }}
                                                                         onClick={() => {
-                                                                            if (!(isPastMonth || prevYear)) {
+                                                                            if (!(isPastMonth || prevYear || isOther || isAllSelected)) {
                                                                                 handleShow(row.month, 'batteriesCT', row.batteriesCT);
                                                                             }
                                                                         }}

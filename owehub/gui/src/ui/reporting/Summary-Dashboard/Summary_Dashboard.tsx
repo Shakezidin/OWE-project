@@ -79,7 +79,7 @@ const Summary_Dashboard = () => {
     const [am, setAM] = useState<Option[]>([]);
 
     const isShowDropdown = (role === 'Admin')
-    // (role === 'Admin')
+    
     useEffect(() => {
         if (
             role === 'Admin' ||
@@ -130,9 +130,7 @@ const Summary_Dashboard = () => {
         { label: "OWE", value: 'All' }
     );
 
-    console.log(selectedState, "selectedState")
-
-
+  
 
 
 
