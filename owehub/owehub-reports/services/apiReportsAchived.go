@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 /******************************************************************************
@@ -32,6 +33,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		yearInt            int
 		targetUserId       int64
 		accountManagerName string
+		targetStateCnd     string
 		targetQuery        string
 		acheivedQuery      string
 		whereEleList       []interface{}
@@ -108,22 +110,32 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		accountManagerName = data[0]["name"].(string)
 	}
 
+	targetStateCnd = "p.state = $6"
+
+	// if "all" state and "all" AM selected, show sum of all states, i.e. company wide goals
+	if authenticatedRole == string(types.RoleAdmin) && strings.ToLower(dataReq.AccountManager) == "all" &&
+		strings.ToLower(dataReq.State) == "all" {
+		targetStateCnd = "$6 = $6" // TRUE; no need to check state
+	}
+
 	// Query to retrieve production targets
-	targetQuery = `
+	targetQuery = fmt.Sprintf(`
 		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) AS projects_sold,
-			COALESCE(p.mw_sold, 0) AS mw_sold,
-			COALESCE(p.install_ct, 0) AS install_ct,
-			COALESCE(p.mw_installed, 0) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) AS batteries_ct
+			COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
+			COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
+			COALESCE(SUM(p.install_ct), 0) AS install_ct,
+			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
 		FROM months
 		LEFT JOIN production_targets p
-		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.state = $5 AND p.user_id = $6
+		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.user_id = $5 AND %s
+		GROUP BY months.n
 		ORDER BY months.n
-	  `
-	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
+	`, targetStateCnd)
+
+	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year, targetUserId, dataReq.State}
 	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
@@ -212,7 +224,6 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		ORDER BY MONTHS.n
 	 `
 	whereEleList = []interface{}{1, 12, dataReq.Year, dataReq.State, accountManagerName}
-	log.FuncDebugTrace(0, "about to fetch data from db")
 	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
@@ -254,7 +265,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					continue
 				}
 
-				whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, yearInt - 1, dataReq.State, targetUserId}
+				whereEleList = []interface{}{12, 12, dataReq.TargetPercentage, yearInt - 1, targetUserId, dataReq.State}
 				rawTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
