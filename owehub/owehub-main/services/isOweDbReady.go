@@ -3,7 +3,7 @@
 * DESCRIPTION           : This file contains code which will show status of
 *                         owe database
 *
-* DATE                  : 21-Jan-2024
+* DATE                  : 24-Jan-2024
 ******************************************************************************/
 
 package services
@@ -20,7 +20,6 @@ func HandleForwardIsOweDbReadyRequest(resp http.ResponseWriter, req *http.Reques
     log.EnterFn(0, "HandleForwardIsOweDbReadyRequest")
     defer func() { log.ExitFn(0, "HandleForwardIsOweDbReadyRequest", nil) }()
 
-
     owe_db_url := "http://66.42.100.177:80/api/IsOweDbReady"
     owe_db_resp, err := http.Post(owe_db_url, "application/json", nil)
     if err != nil {
@@ -30,7 +29,6 @@ func HandleForwardIsOweDbReadyRequest(resp http.ResponseWriter, req *http.Reques
     }
     defer owe_db_resp.Body.Close()
 
-    // Read the response body
     body, err := ioutil.ReadAll(owe_db_resp.Body)
     if err != nil {
         log.FuncErrorTrace(0, "Failed to read response from existing API: %v", err)
@@ -38,7 +36,6 @@ func HandleForwardIsOweDbReadyRequest(resp http.ResponseWriter, req *http.Reques
         return
     }
 
-    // Forward the response to the frontend
     resp.Header().Set("Content-Type", "application/json")
     resp.WriteHeader(owe_db_resp.StatusCode)
     resp.Write(body)
