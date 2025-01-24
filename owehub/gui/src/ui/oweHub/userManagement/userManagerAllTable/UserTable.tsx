@@ -12,12 +12,15 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { Tooltip } from 'react-tooltip';
+import { CiEdit } from "react-icons/ci";
+
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
   handlePasswordReset: (id?: string) => void;
+  handleEdit: (id?: string) => void;
   selectAllChecked: boolean;
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
@@ -34,6 +37,7 @@ const UserTable: React.FC<UserTableProps> = ({
   setSelectAllChecked,
   selectedValue,
   handlePasswordReset,
+  handleEdit
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -207,6 +211,41 @@ const UserTable: React.FC<UserTableProps> = ({
                 </td>
                 <td>
                   <div className="action-icon" style={{ gap: 4 }}>
+                  {(role_name === TYPE_OF_USER.ADMIN ||
+                      role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                      <div
+                        className="reset_hover_btn"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          handleEdit(el.email_id);
+                        
+                        }}
+
+                      >
+                        <Tooltip
+                          style={{
+                            zIndex: 103,
+                            background: '#f7f7f7',
+                            color: '#000',
+                            fontSize: 12,
+                            paddingBlock: 4,
+                            fontWeight: '400',
+                          }}
+                          offset={8}
+                          id="edit_user"
+                          place="left"
+                          content="Edit"
+                          delayShow={200}
+                          className="pagination-tooltip"
+                        />
+                        <CiEdit
+                          color="#667085"
+                          size={24}
+                          
+                          data-tooltip-id="edit_user"
+                        />
+                      </div>
+                    )}
                     <div
                       className=""
                       style={{
