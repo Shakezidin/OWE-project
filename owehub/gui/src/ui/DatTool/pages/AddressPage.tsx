@@ -1,5 +1,4 @@
 import React from 'react'
-import SideContainer from '../components/SideContainer'
 
 function AddressPage() {
   return (
@@ -14,4 +13,4 @@ function AddressPage() {
   )
 }
 
-export default AddressPage
+export default AddressPage;

@@ -15,7 +15,7 @@ const DatTool: React.FC = () => {
     switch (selectedPage) {
       case 'Structural':
         return <StructuralPage />;
-      case 'Address':
+      case 'Adders':
         return <AddressPage />;
       case 'Notes':
         return <NotesPage />;
