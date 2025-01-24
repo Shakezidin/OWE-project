@@ -42,7 +42,7 @@ const CustomSelect: React.FC<SelectProps> = ({ label, options, value, onChange }
       alignItems: 'center',
       border: 'none',
       borderRadius: '50px',
-      padding: '3px 6px',
+      padding: '0px 4px',
       fontSize: '12px',
       fontWeight:'500',
       lineHeight:'18px',
@@ -79,6 +79,8 @@ const CustomSelect: React.FC<SelectProps> = ({ label, options, value, onChange }
     placeholder: (provided: any) => ({
       ...provided,
       color: '#888',
+      padding: '0px 4px',
+
     }),
   };
 
