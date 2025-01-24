@@ -484,7 +484,7 @@ function OtherPage() {
         display: 'flex',
         flexDirection: 'row',
         gap: '1.2rem',
-        height: '100vh',
+        height: 'calc(100vh - 216px)',
         overflowY: 'scroll',
       }}
     >

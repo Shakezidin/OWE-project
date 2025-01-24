@@ -1,4 +1,4 @@
-.genMain{
+.genMain {
   height: calc(100vh - 216px);
   overflow-y: scroll;
 }
@@ -144,7 +144,7 @@
   justify-content: space-between;
 }
 
-.gOneRightTopDesc p{
+.gOneRightTopDesc p {
   font-weight: 500;
   margin-right: 2px;
 }
@@ -229,7 +229,6 @@
 .genSecCont {
   margin-top: 1.2rem;
   display: flex;
-  align-items: center;
   gap: 1.2rem;
 }
 
@@ -272,4 +271,52 @@
   border-radius: 26px;
   padding: 1.2rem;
   flex: 1;
+}
+
+.genSecRightHdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.genSecRightHdr p {
+  font-weight: 500;
+}
+
+.verticalBorder {
+  width: 0.5px;
+  height: 100%;
+  border-left: 1px dashed #dadaff;
+}
+
+.genSecRightMain {
+  background-color: #f3f3ff;
+  margin-top: 1.2rem;
+  border-radius: 26px;
+  padding: 1.2rem;
+  display: flex;
+  gap: 4rem;
+}
+
+.genSecRightMain p {
+  color: #565656;
+  font-size: 12px;
+}
+
+.genSecRightMain p:nth-child(2) {
+  color: var(--input-border-color);
+  font-weight: 500;
+}
+
+.genSecRightMainLft, .genSecRightMainRht{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.acdc{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

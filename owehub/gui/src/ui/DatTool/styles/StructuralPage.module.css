@@ -31,7 +31,6 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
 }
 
 .headingIcon {
@@ -44,34 +43,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: white;
-    padding: 2px 4px;
+  padding: 2px 4px;
   border-radius: 50px;
   font-size: 11px;
   font-weight: 500;
   line-height: 16.5px;
 }
 
-.iconContainer:hover{
-    background-color: #D5E4FF;
+.iconContainer:hover {
+  background-color: #d5e4ff;
 }
 
-.iconContainer:active{
-    background-color: #377CF6;
+.iconContainer:active {
+  background-color: #377cf6;
 }
 
-.active{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #377CF6;
-    color: #fff;
-    padding: 8px;
-    border-radius: 50px;
-    transition: background-color 0.3s ease;
+.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #377cf6;
+  color: #fff;
+  padding: 8px;
+  border-radius: 50px;
+  transition: background-color 0.3s ease;
 }
-
 
 .headingContainer p {
   font-size: 16px;
@@ -82,13 +80,9 @@
 .flexContainer {
   display: flex;
   gap: 24px;
-  /* height: calc(100vh - 216px);
-  overflow-y: scroll; */
-    /* overflow-y: scroll; */
   border-radius: 18px;
-  /* padding: 1.2rem 24px; */
   height: calc(100vh - 216px);
-    overflow: scroll;
+  overflow: scroll;
 }
 
 .boxOne {
@@ -100,12 +94,11 @@
   border-radius: 18px;
 }
 
-.boxTwo{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-
+.boxTwo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
 .boxTwoWrap {
@@ -115,7 +108,6 @@
   gap: 20px;
   /* max-height: 70vh;
     overflow: scroll; */
-
 }
 
 .selectedContainer {
@@ -155,7 +147,7 @@
   display: flex;
   flex-direction: column;
   background-color: #ffff;
-  padding:20px 25px 0px 25px;
+  padding: 20px 25px 0px 25px;
   border-radius: 18px;
   gap: 18px;
 }
@@ -166,9 +158,9 @@
   padding: 20px 25px;
   border-radius: 18px;
   display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
-    gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 15px;
 }
 
 .endContainertwo {
@@ -189,7 +181,7 @@
 
 .attachmentContainer,
 .rackingContainer,
-.roofStructure{
+.roofStructure {
   padding: 20px;
   border-radius: 18px;
   background-color: #ffffff;
@@ -205,13 +197,6 @@
   justify-content: space-between;
 }
 
-.attachmentSelect {
-  /* display: grid;
-    grid-template-columns: repeat(2, 1fr); */
-  /* display: flex;
-    flex-direction: column; */
-}
-
 .attachmentHeader p {
   font-weight: 600;
   font-size: 16px;
@@ -219,8 +204,6 @@
   color: #2a2626;
 }
 .attachmentSelectDIv {
-  /* display: flex;
-    flex-direction: row; */
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -242,7 +225,6 @@
   border-radius: 18px;
   background-color: #ffffff;
   width: 100%;
-
 }
 .UploadIcon {
   display: flex;
@@ -275,34 +257,34 @@
   gap: 15px;
 }
 
-.UploadIconContent{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-right: 50px;
+.UploadIconContent {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-right: 50px;
 }
-.previewImage{
-    height: 70px;
-    width: 70px;
-    border-radius: 6px;
-}
-
-.removeImageButton{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffff;
-    padding: 1px;
-    border-radius: 50px;
-    position: relative;
-    left: 57px;
-    top: 10px;
-    border: none;
-    cursor: pointer;
+.previewImage {
+  height: 70px;
+  width: 70px;
+  border-radius: 6px;
 }
 
-.imagePreviewContainer{
-    display: flex;
-    gap: 10px;
-    margin-right: 20px;
+.removeImageButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffff;
+  padding: 1px;
+  border-radius: 50px;
+  position: relative;
+  left: 57px;
+  top: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.imagePreviewContainer {
+  display: flex;
+  gap: 10px;
+  margin-right: 20px;
 }
