@@ -406,15 +406,15 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
 		switch dataReq.Type {
 		case "count":
-			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v AND cs.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN cs.unique_id ELSE NULL END) AS sale, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND ns.%v AND ns.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN cs.unique_id ELSE NULL END) AS ntp, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v AND cs.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN cs.unique_id ELSE NULL END) AS cancel, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v AND pis.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN cs.unique_id ELSE NULL END) AS install", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN cs.unique_id ELSE NULL END) AS sale, ", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND ns.%v THEN cs.unique_id ELSE NULL END) AS ntp, ", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN cs.unique_id ELSE NULL END) AS cancel, ", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v THEN cs.unique_id ELSE NULL END) AS install", len(whereEleList)-1, len(whereEleList), dealerIn))
 		case "kw":
-			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v AND cs.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN scs.contracted_system_size_parent ELSE 0 END) AS sale, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND ns.%v AND ns.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN scs.contracted_system_size_parent ELSE 0 END) AS ntp, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v AND cs.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v AND pis.project_status != 'DUPLICATE' AND LOWER(ns.app_status) NOT ILIKE LOWER('%%DUPLICATE%%') THEN scs.contracted_system_size_parent ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS sale, ", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND ns.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS ntp, ", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList), dealerIn))
+			filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList), dealerIn))
 		}
 	} else {
 		switch dataReq.Type {
@@ -434,10 +434,15 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	}
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs
-								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
-								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
-								LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id`)
+									LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+										AND ns.app_status NOT ILIKE '%DUPLICATE%'
+									LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+										AND pis.app_status NOT ILIKE '%DUPLICATE%'
+									LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+									LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+									AND scs.project_status NOT ILIKE '%DUPLICATE%'
+									WHERE cs.project_status NOT ILIKE '%DUPLICATE%' `)
+	whereAdded = true
 	// if len(dealerIn) > 16 {
 	// 	filtersBuilder.WriteString(" WHERE ")
 	// 	filtersBuilder.WriteString(dealerIn)
