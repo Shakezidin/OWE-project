@@ -1,151 +1,184 @@
 .edittar_mod_top {
-    flex-basis: calc(100%);
-    border-radius: 8px;
-    background-color: #fff;
-    /* background-color: #EDFFF0; */
-    max-width: 630px;
-    height: auto;
-    min-height: 400px;
-    padding-bottom: 14px;
+  flex-basis: calc(100%);
+  border-radius: 8px;
+  background-color: #fff;
+  /* background-color: #EDFFF0; */
+  max-width: 630px;
+  height: auto;
+  min-height: 400px;
+  padding-bottom: 14px;
 }
 
-.editTar-header{
-    display: flex;
-    justify-content: space-between;
-    padding-inline: 14px;
-    padding-top: 15px;
-    background-color: #E3EDFF;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  .editTar-header p{
-    font-size: 14px;
-    font-weight: 600;
-  }
+.editTar-header {
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 14px;
+  padding-top: 15px;
+  background-color: #E3EDFF;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editTar-header p {
+  font-size: 14px;
+  font-weight: 600;
+}
 
 .pastMonth {
   background-color: #f0f0f0;
   color: #888;
 }
 
-.grey-custom-table tr:hover{
+.grey-custom-table tr:hover {
   background-color: #fff;
 }
 
 
 
 .editTarget-table-container {
-    min-width: 550px;
+  min-width: 550px;
+  overflow-x: auto;
+}
+
+.editTarget-table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+.editTarget-table-container::-webkit-scrollbar {
+  display: initial;
+}
+
+.editTarget-table-container::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.editTarget-table-container::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.editTarget-table-container::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.editTarget-table-container::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+.grey-table-main-container h3 {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.editTarget-custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.editTarget-custom-table table tbody tr td {
+  min-width: 20px;
+}
+
+.editTarget-custom-table th,
+.editTarget-custom-table td {
+  padding: 8px 8px;
+  text-align: center;
+  border-bottom: 1px solid #EBF4FD;
+  border-right: 1px solid #EBF4FD;
+  color: #3E3E3E !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.editTarget-custom-table .viraj {
+  color: #B0B0B0 !important;
+}
+
+
+
+.editTarget-custom-table th {
+  background-color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.editTarget-custom-table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+.editTarget-custom-table tr:hover {
+  background-color: #ffffff;
+}
+
+.editTarget-custom-table tfoot th {
+  background-color: #F5F5F5;
+  border-bottom: none;
+  font-weight: 500;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+
+.editTarget-custom-table .pastmonth tr {
+  background-color: #f0f0f0;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.button-sec-target {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid #EBF4FD;
+}
+
+.edit_input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.edit_input input {
+  border: none;
+  border-bottom: 1px solid #e2e2e2;
+  width: auto;
+  min-width: 40px; 
+  max-width: 150px;
+}
+
+.edit_input input:focus {
+  outline: none;
+  border-bottom: 1px solid #b7b6b6;
+}
+
+@media screen and (max-width: 767px) {
+  .editTarget-table-container {
+    min-width: 350px;
     overflow-x: auto;
   }
-  .editTarget-table-container::-webkit-scrollbar {
-    width: 8px;
-    height: 6px;
-  }
-  .editTarget-table-container::-webkit-scrollbar {
-    display: initial;
-  }
-  
-  .editTarget-table-container::-webkit-scrollbar-thumb {
-    background-color: rgb(173, 173, 173);
-    border-radius: 30px;
-  }
-  .editTarget-table-container::-webkit-scrollbar-button {
-    display: initial;
-  }
-  .editTarget-table-container::-webkit-scrollbar {
-    -ms-overflow-style: initial;
-    scrollbar-width: thin;
-  }
-  .editTarget-table-container::-webkit-scrollbar-corner {
-    background-color: transparent;
-  }
-  
-  .grey-table-main-container h3 {
-    margin-bottom: 8px;
-    text-align: center;
-  }
-  
-  .editTarget-custom-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .editTarget-custom-table table tbody tr td {
-    min-width: 20px;
-  }
-  
-  .editTarget-custom-table th,
-  .editTarget-custom-table td {
-    padding: 8px 8px;
-    text-align: center;
-    border-bottom: 1px solid #EBF4FD;
-    border-right: 1px solid #EBF4FD;
-    color: #3E3E3E !important;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .editTarget-custom-table .viraj{
-    color: #B0B0B0 !important;
-  }
 
-  
-  
-  .editTarget-custom-table th {
-    background-color: #fff;
-    font-weight: 600;
-    font-size: 12px;
+  .edittar_mod_top {
+    width: 360px;
   }
-  
-  .editTarget-custom-table tr:nth-child(even) {
-    background-color: #ffffff;
-  }
-  
-  .editTarget-custom-table tr:hover {
-    background-color: #ffffff;
-  }
-  
-  .editTarget-custom-table tfoot th {
-    background-color: #F5F5F5;
-    border-bottom: none;
-    font-weight: 500;
-    font-size: 12px;
-    white-space: nowrap;
-  }
-  
-  
-  .editTarget-custom-table .pastmonth tr{
-    background-color: #f0f0f0;
-    color: #888;
-    cursor: not-allowed;
-  }
+}
 
-  .button-sec-target{
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    justify-content: center;
-    align-items: center;
-    padding-top: 10px;
-    border-top: 1px solid #EBF4FD;
-  }
-
-  .edit_input{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .edit_input input{
-    border: none;
-    border-bottom: 1px solid #e2e2e2;
-    max-width: 48px;
-  }
-  .edit_input input:focus{
-    outline: none;
-    border-bottom: 1px solid #b7b6b6;
-  }
+.radial-bar-label {
+  position: absolute; /* 'insideBottom' isn't a standard CSS position, using absolute instead */
+  color: #000;
+  stroke: #000;
+  fill: #000;
+  font-size: 9px;
+  font-weight: 200;
+  text-anchor: middle; /* Centers the text horizontally */
+  dominant-baseline: central; /* Centers the text vertically */
+}

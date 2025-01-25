@@ -1,6 +1,9 @@
 package models
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func SalesRepRetrieveQueryFunc() string {
 	salerRepRetrieveQuery := `
@@ -86,12 +89,13 @@ func SalesRepRetrieveQueryFunc() string {
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT
+            DISTINCT ON(customers_customers_schema.unique_id)
+			customers_customers_schema.unique_id,
             customers_customers_schema.customer_name AS home_owner,
-            customers_customers_schema.unique_id,
             survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
             survey_survey_schema.survey_completion_date AS site_survey_completed_date,
             planset_cad_schema.item_created_on AS cad_ready,
-            planset_cad_schema.plan_set_complete_day AS cad_complete_date,
+            planset_cad_schema.plan_set_complete_day AS plan_set_complete_day,
             permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
             ic_ic_pto_schema.ic_submitted_date AS ic_submitted_date,
             pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
@@ -154,8 +158,9 @@ func SalesMetricsRetrieveQueryFunc() string {
 func CsvSalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT
+            DISTINCT ON(customers_customers_schema.unique_id)
+			customers_customers_schema.unique_id,
             customers_customers_schema.customer_name AS home_owner,
-            customers_customers_schema.unique_id,
             customers_customers_schema.email_address AS customer_email,
             customers_customers_schema.phone_number AS customer_phone_number,
             customers_customers_schema.address,
@@ -467,7 +472,7 @@ func CsvDownloadRetrieveQueryFunc() string {
         cs.phone_number,cs.address,cs.state,
         scs.contracted_system_size_parent, 
         cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
-        ps.pto_granted as pto_date, ss.cancelled_date, cs.primary_sales_rep, 
+        ps.pto_granted as pto_date, cs.cancel_date, cs.primary_sales_rep, 
         cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
@@ -477,4 +482,524 @@ func CsvDownloadRetrieveQueryFunc() string {
         `)
 
 	return filtersBuilder.String()
+}
+
+func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
+	PipelineTileDataQuery := fmt.Sprintf(`
+     WITH time_intervals AS (
+            SELECT
+                --=====================
+                -- Basic info
+                --=====================
+                cust.record_id AS customer_record_id,
+                cust.our        AS customer_unique_id,
+                cust.sale_date  AS sale_date,
+                cust.project_status AS customer_project_status,
+                --=====================
+                -- NTP date
+                --=====================
+                ntp.ntp_complete_date AS ntp_complete_date,
+
+                --=====================
+                -- Two-Visit Survey fields
+                --=====================
+                survey.survey_completion_date AS survey_completion_date,
+                survey.twond_visit_date       AS twond_visit_date,
+                survey.twond_completion_date  AS twond_completion_date,
+
+               CASE 
+                    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                        AND survey.twond_visit_date IS NULL)
+                        THEN NULL
+                    WHEN survey.twond_visit_date IS NOT NULL
+                        THEN survey.twond_completion_date
+                  ELSE survey.survey_completion_date
+                END AS survey_final_completion_date,
+
+                --=====================
+                -- CAD
+                --=====================
+                cad.item_created_on AS cad_ready,
+                cad.plan_set_complete_day AS cad_complete_date,
+                cad.active_inactive       AS cad_active_status,
+                cad.plan_set_status,
+                cad.plan_set_version AS cad_version,
+                cad.project_status_new,
+
+
+                --=====================
+                -- Permit
+                --=====================
+                permit.pv_approved        AS permit_approval_date,
+
+                --=====================
+                -- IC
+                --=====================
+                ic.ic_approved_date       AS ic_approval_date,
+
+                --=====================
+                -- Install
+                --=====================
+                install.pv_completion_date    AS install_complete_date,
+                install.pv_install_day_window AS pv_install_day_window,
+
+                --=====================
+                -- FIN & PTO
+                --=====================
+                fin.approved_date AS fin_approved_date,
+                pto.pto_granted   AS pto_granted_new,
+
+                --=====================
+                -- Roofing Request
+                --=====================
+                roofing.record_created_on AS roofing_created_date,
+                roofing.work_completed_date AS roofing_completed_date,
+                roofing.app_status AS roofing_status,
+                roofing.no_roof_work_needed_date_h AS no_roof_work_needed,
+                roofing.roof_work_needed_date as roof_work_needed
+
+            FROM customers_customers_schema AS cust
+            
+            -- Original Joins
+            LEFT JOIN ntp_ntp_schema AS ntp
+                ON cust.our = ntp.unique_id
+            LEFT JOIN survey_survey_schema AS survey
+                ON cust.our = survey.customer_unique_id
+            LEFT JOIN planset_cad_schema AS cad
+                ON cust.our = cad.our_number
+                AND cad.active_inactive = 'Active'
+            LEFT JOIN permit_fin_pv_permits_schema AS permit
+                ON cust.our = permit.customer_unique_id
+            LEFT JOIN ic_ic_pto_schema AS ic
+                ON cust.our = ic.customer_unique_id
+            LEFT JOIN pv_install_install_subcontracting_schema AS install
+                ON cust.our = install.customer_unique_id
+        LEFT JOIN roofing_request_install_subcontracting_schema AS roofing
+                ON cust.our = roofing.customer_unique_id
+            
+            -- New FIN & PTO Joins
+            LEFT JOIN fin_permits_fin_schema AS fin
+                ON cust.our = fin.customer_unique_id
+            LEFT JOIN pto_ic_schema AS pto
+                ON cust.our = pto.customer_unique_id
+            
+        
+             WHERE
+            cust.project_status IN (%v)
+               AND %v 
+        ),
+
+        all_queues AS (
+            SELECT
+                ti.*,
+                'NTP Queue' AS queue_status
+            FROM time_intervals ti
+            WHERE ti.ntp_complete_date IS NULL
+
+            UNION ALL
+
+            SELECT
+                ti.*,
+                CASE
+                    WHEN ti.survey_final_completion_date IS NULL
+                        AND ti.cad_complete_date IS NULL
+                        AND ti.permit_approval_date IS NULL
+                        AND ti.ic_approval_date IS NULL
+                        AND ti.install_complete_date IS NULL
+                    THEN 'Survey Queue'
+                    
+                   WHEN ti.cad_complete_date IS NULL
+						and ti.plan_set_status NOT IN ('Plan Set Complete')
+						and ti.cad_active_status IN ('Active')
+						AND ti.project_status_new IN ('ACTIVE')
+						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3', 
+					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7', 
+					'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
+                    THEN 'CAD Queue'
+                    
+                    WHEN ti.permit_approval_date IS NULL
+                        AND ti.cad_complete_date IS NOT NULL
+                        AND ti.ic_approval_date IS NULL
+                        AND ti.install_complete_date IS NULL
+                    THEN 'Permit Queue'
+                    
+                    WHEN ti.ic_approval_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.install_complete_date IS NULL
+                    THEN 'IC Queue'
+                    
+                    WHEN ti.install_complete_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.ic_approval_date IS NOT NULL
+                        AND ti.pv_install_day_window IS NULL
+                        AND ( ti.no_roof_work_needed IS NOT NULL
+                        OR (ti.roof_work_needed IS NOT NULL AND ti.roofing_completed_date IS NOT NULL))
+                    THEN 'Install (Scheduling) Queue'
+                    
+                    WHEN ti.install_complete_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.ic_approval_date IS NOT NULL
+                        AND ti.pv_install_day_window IS NOT NULL
+                    THEN 'Install (Pending) Queue'
+                    
+                    WHEN ti.install_complete_date IS NOT NULL
+                        AND ti.fin_approved_date IS NULL
+                        AND ti.pto_granted_new IS NULL
+                    THEN 'Inspections Queue'
+                    
+                    WHEN ti.install_complete_date IS NOT NULL
+                        AND ti.fin_approved_date IS NOT NULL
+                        AND ti.pto_granted_new IS NULL
+                    THEN 'Activation Queue'
+                    
+                    WHEN ti.roofing_created_date IS NOT NULL 
+                        AND ti.roofing_completed_date IS NULL 
+                        AND ti.roof_work_needed IS NOT NULL
+                    THEN 'Roofing Queue'
+                    
+                    ELSE NULL
+                END AS queue_status
+            FROM time_intervals ti
+        ),
+
+        final_queues AS (
+            SELECT
+                aq.*,
+                CASE
+                    WHEN aq.queue_status = 'NTP Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.sale_date)
+                    WHEN aq.queue_status = 'Survey Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.sale_date)
+                    WHEN aq.queue_status = 'CAD Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.survey_final_completion_date)
+                    WHEN aq.queue_status = 'Permit Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.cad_complete_date)
+                    WHEN aq.queue_status = 'IC Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.permit_approval_date)
+                    WHEN aq.queue_status IN ('Install (Scheduling) Queue', 'Install (Pending) Queue')
+                    THEN DATE_PART('day', CURRENT_DATE - GREATEST(aq.permit_approval_date, aq.ic_approval_date))
+                    WHEN aq.queue_status = 'Inspections Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.install_complete_date)
+                    WHEN aq.queue_status = 'Activation Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.fin_approved_date)
+                    WHEN aq.queue_status = 'Roofing Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.roofing_completed_date)
+                    ELSE NULL
+                END AS queue_days
+            FROM all_queues aq
+        )
+
+        SELECT 
+            queue_status,
+            COUNT(DISTINCT customer_unique_id) AS distinct_customer_count
+        FROM final_queues
+        WHERE queue_status IS NOT NULL
+        GROUP BY queue_status
+        ORDER BY distinct_customer_count DESC;
+ `, projectStatus, filterUserQuery)
+	return PipelineTileDataQuery
+}
+
+func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	PipelineTileDataQuery := fmt.Sprintf(`
+    WITH queue_customers AS (
+        WITH time_intervals AS (
+            SELECT
+                --=====================
+                -- Basic info
+                --=====================
+                distinct cust.record_id AS customer_record_id,
+                cust.our        AS customer_unique_id,
+                cust.sale_date  AS sale_date,
+                cust.project_status AS customer_project_status,
+                cust.customer_name AS home_owner,
+                cust.dealer,
+                cust.primary_sales_rep,
+                cust.email_address AS customer_email,
+                cust.phone_number AS customer_phone_number,
+                cust.address,
+                cust.state,
+                cust.total_system_cost AS contract_total,
+                cust.contracted_system_size AS system_size,
+
+                --=====================
+                -- NTP date
+                --=====================
+                ntp.ntp_complete_date AS ntp_complete_date,
+
+                --=====================
+                -- Two-Visit Survey fields
+                --=====================
+                survey.original_survey_scheduled_date AS site_survey_scheduled_date,
+                survey.twond_visit_date       AS twond_visit_date,
+                survey.twond_completion_date  AS twond_completion_date,
+
+                CASE 
+                    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                        AND survey.twond_visit_date IS NULL)
+                        THEN NULL
+                    WHEN survey.twond_visit_date IS NOT NULL
+                        THEN survey.twond_completion_date
+                  ELSE survey.survey_completion_date
+                END AS survey_final_completion_date,
+
+                --=====================
+                -- CAD
+                --=====================
+                cad.item_created_on AS cad_ready,
+                cad.plan_set_complete_day AS cad_complete_date,
+                cad.active_inactive       AS cad_active_status,
+                cad.plan_set_status,
+                cad.plan_set_version AS cad_version,
+                cad.project_status_new,
+
+                --=====================
+                -- Permit
+                --=====================
+                permit.pv_submitted     AS permit_submitted_date,
+                permit.pv_approved        AS permit_approval_date,
+
+                --=====================
+                -- IC
+                --=====================
+                ic.ic_submitted_date,
+                ic.ic_approved_date       AS ic_approval_date,
+
+                --=====================
+                -- Install
+                --=====================
+                install.created_on AS pv_install_created_date,
+                install.pv_completion_date    AS install_completed_date,
+                install.pv_install_day_window AS pv_install_day_window,
+
+                --=====================
+                -- FIN & PTO
+                --=====================
+                pto.submitted AS pto_submitted_date,
+                pto.pto_granted   AS pto_granted_new,
+                fin.approved_date AS fin_approved_date,
+                fin.created_on AS fin_created_date,
+                fin.pv_fin_date AS fin_pass_date,
+
+                --=====================
+                -- Roofing Request
+                --=====================
+                roofing.record_created_on AS roofing_created_date,
+                roofing.work_completed_date AS roofing_completed_date,
+                roofing.app_status AS roofing_status,
+                roofing.no_roof_work_needed_date_h AS no_roof_work_needed,
+                roofing.roof_work_needed_date as roof_work_needed
+
+            FROM customers_customers_schema AS cust
+            
+            -- Original Joins
+            LEFT JOIN ntp_ntp_schema AS ntp
+                ON cust.our = ntp.unique_id
+            LEFT JOIN survey_survey_schema AS survey
+                ON cust.our = survey.customer_unique_id
+            LEFT JOIN planset_cad_schema AS cad
+                ON cust.our = cad.our_number
+                AND cad.active_inactive = 'Active'
+            LEFT JOIN permit_fin_pv_permits_schema AS permit
+                ON cust.our = permit.customer_unique_id
+            LEFT JOIN ic_ic_pto_schema AS ic
+                ON cust.our = ic.customer_unique_id
+            LEFT JOIN pv_install_install_subcontracting_schema AS install
+                ON cust.our = install.customer_unique_id
+            LEFT JOIN roofing_request_install_subcontracting_schema AS roofing
+               ON cust.our = roofing.customer_unique_id
+            
+            -- New FIN & PTO Joins
+            LEFT JOIN fin_permits_fin_schema AS fin
+                ON cust.our = fin.customer_unique_id
+            LEFT JOIN pto_ic_schema AS pto
+                ON cust.our = pto.customer_unique_id
+            
+        
+              WHERE
+                cust.project_status IN (%v)
+                AND %v
+        ),
+
+       all_queues AS (
+            SELECT
+                ti.*,
+                'NTP Queue' AS queue_status
+            FROM time_intervals ti
+            WHERE ti.ntp_complete_date IS NULL
+
+            UNION ALL
+
+            SELECT
+                ti.*,
+                CASE
+                    WHEN ti.survey_final_completion_date IS NULL
+                        AND ti.cad_complete_date IS NULL
+                        AND ti.permit_approval_date IS NULL
+                        AND ti.ic_approval_date IS NULL
+                        AND ti.install_completed_date IS NULL
+                    THEN 'Survey Queue'
+                    
+                    WHEN ti.cad_complete_date IS NULL
+						and ti.plan_set_status NOT IN ('Plan Set Complete')
+						and ti.cad_active_status IN ('Active')
+						AND ti.project_status_new IN ('ACTIVE')
+						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3', 
+					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7', 
+					'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
+                    THEN 'CAD Queue'
+                    
+                    WHEN ti.permit_approval_date IS NULL
+                        AND ti.cad_complete_date IS NOT NULL
+                        AND ti.ic_approval_date IS NULL
+                        AND ti.install_completed_date IS NULL
+                    THEN 'Permit Queue'
+                    
+                    WHEN ti.ic_approval_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.install_completed_date IS NULL
+                    THEN 'IC Queue'
+                    
+                    WHEN ti.install_completed_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.ic_approval_date IS NOT NULL
+                        AND ti.pv_install_day_window IS NULL
+                        AND ( ti.no_roof_work_needed IS NOT NULL
+                        OR (ti.roof_work_needed IS NOT NULL AND ti.roofing_completed_date IS NOT NULL))
+                    THEN 'Install (Scheduling) Queue'
+                    
+                    WHEN ti.install_completed_date IS NULL
+                        AND ti.permit_approval_date IS NOT NULL
+                        AND ti.ic_approval_date IS NOT NULL
+                        AND ti.pv_install_day_window IS NOT NULL
+                    THEN 'Install (Pending) Queue'
+                    
+                    WHEN ti.install_completed_date IS NOT NULL
+                        AND ti.fin_approved_date IS NULL
+                        AND ti.pto_granted_new IS NULL
+                    THEN 'Inspections Queue'
+                    
+                    WHEN ti.install_completed_date IS NOT NULL
+                        AND ti.fin_approved_date IS NOT NULL
+                        AND ti.pto_granted_new IS NULL
+                    THEN 'Activation Queue'
+                    
+                    WHEN ti.roofing_created_date IS NOT NULL 
+                        AND ti.roofing_completed_date IS NULL 
+                        AND ti.roof_work_needed IS NOT NULL
+                    THEN 'Roofing Queue'
+                    
+                    ELSE NULL
+                END AS queue_status
+            FROM time_intervals ti
+        ),
+
+        final_queues AS (
+            SELECT
+                aq.*,
+                CASE
+                    WHEN aq.queue_status = 'NTP Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.sale_date)
+                    WHEN aq.queue_status = 'Survey Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.sale_date)
+                    WHEN aq.queue_status = 'CAD Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.survey_final_completion_date)
+                    WHEN aq.queue_status = 'Permit Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.cad_complete_date)
+                    WHEN aq.queue_status = 'IC Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.permit_approval_date)
+                    WHEN aq.queue_status IN ('Install (Scheduling) Queue', 'Install (Pending) Queue')
+                    THEN DATE_PART('day', CURRENT_DATE - GREATEST(aq.permit_approval_date, aq.ic_approval_date))
+                    WHEN aq.queue_status = 'Inspections Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.install_completed_date)
+                    WHEN aq.queue_status = 'Activation Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.fin_approved_date)        
+                    WHEN aq.queue_status = 'Roofing Queue'
+                    THEN DATE_PART('day', CURRENT_DATE - aq.roofing_completed_date)
+                    ELSE NULL
+                END AS queue_days
+            FROM all_queues aq
+        )
+        SELECT *
+        FROM final_queues
+        WHERE queue_status IS NOT NULL
+        %v
+    ),
+    electrical_services AS (
+        SELECT
+            c.unique_id AS customer_unique_id,
+            b.battery_installation_date AS battery_scheduled_date,
+            b.completion_date AS battery_complete_date
+        FROM customers_customers_schema c
+        LEFT JOIN batteries_service_electrical_schema b ON c.unique_id = b.customer_unique_id
+        WHERE EXISTS (
+            SELECT 1 
+            FROM queue_customers qc 
+            WHERE qc.customer_unique_id = c.unique_id
+        )
+    )
+    SELECT 
+        DISTINCT ON(q.customer_unique_id)
+        *
+        FROM queue_customers q
+        LEFT JOIN electrical_services e ON e.customer_unique_id = q.customer_unique_id %v;
+ `, projectStatus, filterUserQuery, searchValue, queueStatus)
+	return PipelineTileDataQuery
+}
+
+func PipelineNTPQuery(uniqueIds []string) string {
+	PipelineNTPQuery := `
+        WITH base_query AS (
+            SELECT 
+                customers_customers_schema.unique_id, 
+                customers_customers_schema.current_live_cad, 
+                customers_customers_schema.system_sold_er, 
+                customers_customers_schema.podio_link,
+                ntp_ntp_schema.production_discrepancy, 
+                ntp_ntp_schema.finance_ntp_of_project, 
+                ntp_ntp_schema.utility_bill_uploaded, 
+                ntp_ntp_schema.powerclerk_signatures_complete, 
+                ntp_ntp_schema.change_order_status,
+                customers_customers_schema.utility_company,
+                customers_customers_schema.state,
+                split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
+            FROM 
+                customers_customers_schema
+            LEFT JOIN ntp_ntp_schema 
+                ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+            WHERE 
+                customers_customers_schema.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+        )
+        SELECT 
+            b.*, 
+            CASE 
+                WHEN b.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
+                ELSE 'Not Needed' 
+            END AS powerclerk_sent_az,
+            CASE 
+                WHEN prospects_customers_schema.payment_method = 'Cash' THEN prospects_customers_schema.ach_waiver_sent_and_signed_cash_only
+                ELSE 'Not Needed'
+            END AS ach_waiver_sent_and_signed_cash_only,
+            CASE 
+                WHEN b.state = 'NM :: New Mexico' THEN prospects_customers_schema.green_area_nm_only
+                ELSE 'Not Needed'
+            END AS green_area_nm_only,
+            CASE 
+                WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_credit_approved_loan_or_lease
+                ELSE 'Not Needed'
+            END AS finance_credit_approved_loan_or_lease,
+            CASE 
+                WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_agreement_completed_loan_or_lease
+                ELSE 'Not Needed'
+            END AS finance_agreement_completed_loan_or_lease,
+            CASE 
+                WHEN prospects_customers_schema.payment_method IN ('Cash', 'Loan') THEN prospects_customers_schema.owe_documents_completed
+                ELSE 'Not Needed'
+            END AS owe_documents_completed
+        FROM 
+            base_query b
+        LEFT JOIN 
+            prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
+    `
+	return PipelineNTPQuery
 }

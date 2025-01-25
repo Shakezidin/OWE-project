@@ -8,13 +8,16 @@ package services
 
 import (
 	"OWEApp/shared/appserver"
+	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
+	"strconv"
+	"strings"
 )
 
 /******************************************************************************
@@ -25,11 +28,22 @@ import (
  ******************************************************************************/
 func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err     error
-		dataReq models.GetReportsTargetReq
-		// data           []map[string]interface{}
-		apiResp        models.GetReportsTargetResp
-		requestedMonth time.Time
+		err                error
+		dataReq            models.GetReportsTargetReq
+		yearInt            int
+		targetUserId       int64
+		accountManagerName string
+		targetStateCnd     string
+		targetQuery        string
+		acheivedQuery      string
+		whereEleList       []interface{}
+		targetData         []map[string]interface{}
+		acheivedData       []map[string]interface{}
+		lastMonthAchieved  *models.ProductionTargetOrAchievedItem
+		lastMonthTarget    *models.ProductionTargetOrAchievedItem
+		lastMonthPct       *models.ProductionTargetOrAchievedPercentage
+		thisMonthPct       *models.ProductionTargetOrAchievedPercentage
+		apiResp            models.GetReportsTargetResp
 	)
 
 	log.EnterFn(0, "HandleReportsTargetListRequest")
@@ -56,438 +70,381 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	requestedMonth, err = time.Parse("January", dataReq.Month)
+	yearInt, err = strconv.Atoi(dataReq.Year)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse month err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Invalid month provided", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request Body err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request Body", http.StatusBadRequest, nil)
 		return
 	}
 
-	log.FuncDebugTrace(0, "Requested Month: %v", requestedMonth.Format("1"))
-
-	// Return Dummy Data For Now
-	apiResp.Summary = map[string]models.GetReportsTargetRespSummaryItem{
-		"Projects Sold": {
-			Target:            26780,
-			Achieved:          18250,
-			LastMonthAcheived: 100,
-		},
-		"mW Sold": {
-			Target:            110.10,
-			Achieved:          214.93129312,
-			LastMonthAcheived: 109.9912133899,
-		},
-		"Install Ct": {
-			Target:            11250,
-			Achieved:          12500,
-			LastMonthAcheived: 70,
-		},
-		"mW Installed": {
-			Target:            8901.21,
-			Achieved:          10000,
-			LastMonthAcheived: 90,
-		},
-		"Batteries Ct": {
-			Target:            3100,
-			Achieved:          5000,
-			LastMonthAcheived: 100,
-		},
+	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+		return
 	}
 
-	// fill dummy values but accurate percentages
-	apiResp.Progress = map[string]models.GetReportsTargetRespProgressItem{
-		"Projects Sold": {
-			Target:             26780,
-			Achieved:           18250,
-			PercentageAchieved: (18250 / 26780) * 100,
-		},
-		"mW Sold": {
-			Target:             110.10,
-			Achieved:           214.93129312,
-			PercentageAchieved: (214.93129312 / 110.10) * 100,
-		},
-		"Install Ct": {
-			Target:             11250,
-			Achieved:           12500,
-			PercentageAchieved: (12500 / 11250) * 100,
-		},
-		"mW Installed": {
-			Target:             8901.21,
-			Achieved:           10000,
-			PercentageAchieved: (10000 / 8901.21) * 100,
-		},
-		"Batteries Ct": {
-			Target:             3100,
-			Achieved:           5000,
-			PercentageAchieved: (5000 / 3100) * 100,
-		},
+	// get account manager name (if admin, then get from request body, else get name of authenticated user)
+
+	authenticatedRole := req.Context().Value("rolename").(string)
+	authenticatedEmail := req.Context().Value("emailid").(string)
+
+	if authenticatedRole == string(types.RoleAdmin) {
+		accountManagerName = dataReq.AccountManager
 	}
 
-	apiResp.MonthlyOverview = map[string][]models.GetReportsTargetRespMonthlyItem{
-		"Projects Sold": {
-			{
-				Month:    "Jan",
-				Target:   26780,
-				Achieved: 18250,
-			},
-			{
-				Month:    "Feb",
-				Target:   24000,
-				Achieved: 20000,
-			},
-			{
-				Month:    "Mar",
-				Target:   32000,
-				Achieved: 33000,
-			},
-			{
-				Month:    "Apr",
-				Target:   36000,
-				Achieved: 40000,
-			},
-			{
-				Month:    "May",
-				Target:   40000,
-				Achieved: 20000,
-			},
-		},
-		"mW Sold": {
-			{
-				Month:    "Jan",
-				Target:   110.10,
-				Achieved: 214.93129312,
-			},
-			{
-				Month:    "Feb",
-				Target:   110.10,
-				Achieved: 214.93129312,
-			},
-			{
-				Month:    "Mar",
-				Target:   110.10,
-				Achieved: 214.93129312,
-			},
-			{
-				Month:    "Apr",
-				Target:   110.10,
-				Achieved: 214.93129312,
-			},
-			{
-				Month:    "May",
-				Target:   110.10,
-				Achieved: 214.93129312,
-			},
-			{Month: "Jun"},
-			{Month: "Jul"},
-			{Month: "Aug"},
-			{Month: "Sep"},
-			{Month: "Oct"},
-			{Month: "Nov"},
-			{Month: "Dec"},
-		},
-		"Install Ct": {
-			{
-				Month:    "Jan",
-				Target:   11250,
-				Achieved: 12500,
-			},
-			{
-				Month:    "Feb",
-				Target:   11250,
-				Achieved: 12500,
-			},
-			{
-				Month:    "Mar",
-				Target:   11250,
-				Achieved: 12500,
-			},
-			{
-				Month:    "Apr",
-				Target:   11250,
-				Achieved: 12500,
-			},
-			{
-				Month:    "May",
-				Target:   11250,
-				Achieved: 12500,
-			},
-			{Month: "Jun"},
-			{Month: "Jul"},
-			{Month: "Aug"},
-			{Month: "Sep"},
-			{Month: "Oct"},
-			{Month: "Nov"},
-			{Month: "Dec"},
-		},
-		"mW Installed": {
-			{
-				Month:    "Jan",
-				Target:   8901.21,
-				Achieved: 10000,
-			},
-			{
-				Month:    "Feb",
-				Target:   8901.21,
-				Achieved: 10000,
-			},
-			{
-				Month:    "Mar",
-				Target:   8901.21,
-				Achieved: 10000,
-			},
-			{
-				Month:    "Apr",
-				Target:   8901.21,
-				Achieved: 10000,
-			},
-			{
-				Month:    "May",
-				Target:   8901.21,
-				Achieved: 10000,
-			},
-			{Month: "Jun"},
-			{Month: "Jul"},
-			{Month: "Aug"},
-			{Month: "Sep"},
-			{Month: "Oct"},
-			{Month: "Nov"},
-			{Month: "Dec"},
-		},
-		"Batteries Ct": {
-			{
-				Month:    "Jan",
-				Target:   3100,
-				Achieved: 5000,
-			},
-			{
-				Month:    "Feb",
-				Target:   3100,
-				Achieved: 5000,
-			},
-			{
-				Month:    "Mar",
-				Target:   3100,
-				Achieved: 5000,
-			},
-			{
-				Month:    "Apr",
-				Target:   3100,
-				Achieved: 5000,
-			},
-			{Month: "Jun"},
-			{Month: "Jul"},
-			{Month: "Aug"},
-			{Month: "Sep"},
-			{Month: "Oct"},
-			{Month: "Nov"},
-			{Month: "Dec"},
-		},
+	// if authenticated user is account manager, get account manager name from db
+	if authenticatedRole == string(types.RoleAccountManager) {
+		query := "SELECT name FROM user_details WHERE email_id = $1"
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get account manager name from db err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get account manager name from db", http.StatusBadRequest, nil)
+			return
+		}
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "Failed to get account manager name from db")
+			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		accountManagerName = data[0]["name"].(string)
+	}
+
+	targetStateCnd = "p.state = $6"
+
+	// if "all" state and "all" AM selected, show sum of all states, i.e. company wide goals
+	if authenticatedRole == string(types.RoleAdmin) && strings.ToLower(dataReq.AccountManager) == "all" &&
+		strings.ToLower(dataReq.State) == "all" {
+		targetStateCnd = "$6 = $6" // TRUE; no need to check state
+	}
+
+	// Query to retrieve production targets
+	targetQuery = fmt.Sprintf(`
+		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
+		SELECT
+			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
+			COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
+			COALESCE(SUM(p.install_ct), 0) AS install_ct,
+			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
+		FROM months
+		LEFT JOIN production_targets p
+		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.user_id = $5 AND %s
+		GROUP BY months.n
+		ORDER BY months.n
+	`, targetStateCnd)
+
+	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year, targetUserId, dataReq.State}
+	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
+		return
+	}
+
+	acheivedQuery = `
+ 	WITH MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
+	 STATES AS(
+		SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
+		WHERE CASE WHEN LOWER($4) = 'all' THEN TRUE
+		ELSE STATE_NAME = $4 END
+		UNION SELECT '' WHERE LOWER($4) = 'all' 
+	 ),
+	 AM AS (
+		SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
+		FROM SALES_PARTNER_DBHUB_SCHEMA
+		WHERE CASE WHEN LOWER($5) = 'all' THEN TRUE
+		ELSE ACCOUNT_MANAGER = $5 END
+		UNION SELECT '' WHERE LOWER($5) = 'all' 
+	 ),
+	 CUSTOMERS AS (
+		 SELECT
+			 DATE_PART('MONTH', C.SALE_DATE) AS month,
+			 COUNT(DISTINCT C.UNIQUE_ID) AS projects_sold,
+			 SUM(COALESCE(NULLIF(C.CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_sold
+		 FROM CUSTOMERS_CUSTOMERS_SCHEMA C
+		 WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
+		   AND C.PROJECT_STATUS != 'DUPLICATE'
+		   AND C.UNIQUE_ID IS NOT NULL
+		   AND C.UNIQUE_ID != ''
+		   AND C.DEALER IN (SELECT DEALER FROM AM)
+		   AND C.STATE IN (SELECT STATES FROM STATES )
+		 GROUP BY month
+	 ),
+	 PV AS (
+		 SELECT
+			 DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
+			 COUNT(*) AS install_ct,
+			 SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_installed
+		 FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
+		 WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
+		   AND P.PROJECT_STATUS != 'DUPLICATE'
+		   AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
+		   AND P.CUSTOMER_UNIQUE_ID != ''
+		   AND P.DEALER IN (SELECT DEALER FROM AM)
+		   AND P.STATE IN (SELECT STATES FROM STATES )
+		 GROUP BY month
+	 ),
+	 NTP AS (
+		 SELECT
+			 DATE_PART('MONTH', SALE_DATE) AS month,
+			 SUM((
+				 LENGTH(adder_breakdown_total) 
+				 - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'powerwall', '', 'gi'))
+			 ) / LENGTH('powerwall')) 
+			 + SUM((
+				 LENGTH(adder_breakdown_total) 
+				 - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi'))
+			 ) / LENGTH('enphase battery')) AS batteries_ct
+		 FROM NTP_NTP_SCHEMA AS N
+		 WHERE DATE_PART('YEAR', N.SALE_DATE) = $3
+		   AND N.PROJECT_STATUS != 'DUPLICATE'
+		   AND N.DEALER IN (SELECT DEALER FROM AM)
+		   AND N.STATE IN (SELECT STATES FROM STATES )
+		 GROUP BY month
+	 )
+		SELECT
+			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
+			COALESCE(CUSTOMERS.kw_sold, 0) / 1000 AS mw_sold,
+			COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
+			COALESCE(PV.kw_installed, 0) / 1000 AS mw_installed,
+			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct
+		FROM MONTHS
+		LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
+		LEFT JOIN PV ON PV.month = MONTHS.n
+		LEFT JOIN NTP ON NTP.month = MONTHS.n
+		ORDER BY MONTHS.n
+	 `
+	whereEleList = []interface{}{1, 12, dataReq.Year, dataReq.State, accountManagerName}
+	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
+		return
+	}
+	log.FuncDebugTrace(0, "this is data achievd from db %#v", acheivedData)
+	for i := 0; i < 12; i++ {
+		targetMonth, ok := targetData[i]["month"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get target month for index %+v", i)
+			continue
+		}
+		target := getProductionTargetOrAchievedItem(targetData[i])
+		acheived := getProductionTargetOrAchievedItem(acheivedData[i])
+
+		// get stats and overview data
+		statsItem, overviewItem := getMonthlyStatsAndOverview(
+			targetData[i][dataReq.TargetType].(float64),
+			acheivedData[i][dataReq.TargetType].(float64),
+			targetMonth == dataReq.Month)
+
+		overviewItem.Month = targetMonth
+		statsItem.Month = targetMonth
+
+		apiResp.MonthlyOverview = append(apiResp.MonthlyOverview, *overviewItem)
+		apiResp.MonthlyStats = append(apiResp.MonthlyStats, *statsItem)
+
+		// assign summary data for selected month
+		if targetMonth == dataReq.Month {
+			// begin FETCHING LAST MONTH DATA
+
+			// if January is selected, fetch from last year December
+			if i == 0 {
+				whereEleList = []interface{}{12, 12, yearInt - 1, dataReq.State, accountManagerName}
+				rawAcheived, err := db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
+					continue
+				}
+
+				whereEleList = []interface{}{12, 12, dataReq.TargetPercentage, yearInt - 1, targetUserId, dataReq.State}
+				rawTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
+					continue
+				}
+
+				lastMonthAchieved = getProductionTargetOrAchievedItem(rawAcheived[0])
+				lastMonthTarget = getProductionTargetOrAchievedItem(rawTarget[0])
+			} else {
+				lastMonthAchieved = getProductionTargetOrAchievedItem(acheivedData[i-1])
+				lastMonthTarget = getProductionTargetOrAchievedItem(targetData[i-1])
+			}
+			// end FETCHING LAST MONTH DATA
+
+			lastMonthPct = getProductionAchievedPercentage(lastMonthTarget, lastMonthAchieved)
+			apiResp.Summary = map[string]models.GetReportsTargetRespSummaryItem{
+				"Projects Sold": {
+					Target:            target.ProjectsSold,
+					Achieved:          acheived.ProjectsSold,
+					LastMonthAcheived: lastMonthPct.ProjectsSold,
+				},
+				"mW Sold": {
+					Target:            target.MwSold,
+					Achieved:          acheived.MwSold,
+					LastMonthAcheived: lastMonthPct.MwSold,
+				},
+				"Install Ct": {
+					Target:            target.InstallCt,
+					Achieved:          acheived.InstallCt,
+					LastMonthAcheived: lastMonthPct.InstallCt,
+				},
+				"mW Installed": {
+					Target:            target.MwInstalled,
+					Achieved:          acheived.MwInstalled,
+					LastMonthAcheived: lastMonthPct.MwInstalled,
+				},
+				"Batteries Ct": {
+					Target:            target.BatteriesCt,
+					Achieved:          acheived.BatteriesCt,
+					LastMonthAcheived: lastMonthPct.BatteriesCt,
+				},
+			}
+
+			thisMonthPct = getProductionAchievedPercentage(target, acheived)
+			apiResp.Progress = map[string]models.GetReportsTargetRespProgressItem{
+				"Projects Sold": {
+					Target:             target.ProjectsSold,
+					Achieved:           acheived.ProjectsSold,
+					PercentageAchieved: thisMonthPct.ProjectsSold,
+				},
+				"mW Sold": {
+					Target:             target.MwSold,
+					Achieved:           acheived.MwSold,
+					PercentageAchieved: thisMonthPct.MwSold,
+				},
+				"Install Ct": {
+					Target:             target.InstallCt,
+					Achieved:           acheived.InstallCt,
+					PercentageAchieved: thisMonthPct.InstallCt,
+				},
+				"mW Installed": {
+					Target:             target.MwInstalled,
+					Achieved:           acheived.MwInstalled,
+					PercentageAchieved: thisMonthPct.MwInstalled,
+				},
+				"Batteries Ct": {
+					Target:             target.BatteriesCt,
+					Achieved:           acheived.BatteriesCt,
+					PercentageAchieved: thisMonthPct.BatteriesCt,
+				},
+			}
+		}
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Report target data", http.StatusOK, apiResp)
+}
 
-	// // targetData := models.GetReportsTargetModel{}
+// Extract and Assert Production Target or Production Achieved keys to relevant numeric types from the raw db record
+func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models.ProductionTargetOrAchievedItem {
+	var (
+		item models.ProductionTargetOrAchievedItem
+	)
 
-	// targetQuery := fmt.Sprintf(`SELECT
-	// 					month,
-	// 					projects_sold AS target_projects_sold,
-	// 					mw_sold AS target_mw_sold,
-	// 					install_count AS target_install_count,
-	// 					mw_installed AS target_mw_installed,
-	// 					batteries_count AS target_batteries_count
-	// 				FROM
-	// 					milestones_targets
-	// 				WHERE
-	// 					year = '%v' AND target_type = '%v'
-	// 				ORDER BY
-	// 					month_order(month);
-	// 				`, dataReq.Year, dataReq.TargetType)
+	projectsSold, ok := rawRecord["projects_sold"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast projects_sold from type %T to float64", rawRecord["projects_sold"])
+	}
 
-	// // retrieving value from owe_db from here
-	// data, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, nil)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
-	// 	return
-	// }
+	mwSold, ok := rawRecord["mw_sold"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast mw_sold from type %T to float64", rawRecord["mw_sold"])
+	}
 
-	// var milestoneTarget []models.MilestoneTarget
+	installCt, ok := rawRecord["install_ct"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast install_ct from type %T to float64", rawRecord["install_ct"])
+	}
 
-	// // Loop through the data and assign values to variables
-	// for _, item := range data {
-	// 	// Retrieve and cast "month"
-	// 	month, ok := item["month"].(string)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'month' Item: %+v\n", item)
-	// 		continue
-	// 	}
+	mwInstalled, ok := rawRecord["mw_installed"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast mw_installed from type %T to float64", rawRecord["mw_installed"])
+	}
 
-	// 	// Retrieve and cast "target_projects_sold"
-	// 	targetProjectsSold, ok := item["target_projects_sold"].(float64) // Adjust type based on DB value
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'target_projects_sold' Item: %+v\n", item)
-	// 		// continue
-	// 	}
+	batteriesCt, ok := rawRecord["batteries_ct"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast batteries_ct from type %T to float64", rawRecord["batteries_ct"])
+	}
 
-	// 	// Retrieve and cast "target_mw_sold"
-	// 	targetMwSold, ok := item["target_mw_sold"].(float64)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'target_mw_sold' Item: %+v\n", item)
-	// 		// continue
-	// 	}
+	item.ProjectsSold = projectsSold
+	item.MwSold = mwSold
+	item.InstallCt = installCt
+	item.MwInstalled = mwInstalled
+	item.BatteriesCt = batteriesCt
+	return &item
+}
 
-	// 	// Retrieve and cast "target_install_count"
-	// 	targetInstallCount, ok := item["target_install_count"].(float64)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'target_install_count' Item: %+v\n", item)
-	// 		// continue
-	// 	}
+// Get Monthly Stats(Completed, Incomplete, In Progress) and Overview(Target, Achieved)
+// for a given month by given 2 numerics: target and achieved
+//
+// Specific to HandleReportsTargetListRequest api
+func getMonthlyStatsAndOverview(target float64, achieved float64, isSelectedMonth bool) (
+	*models.GetReportsTargetRespStatsItem, *models.GetReportsTargetRespOverviewItem) {
+	var (
+		statsItem    models.GetReportsTargetRespStatsItem
+		overviewItem models.GetReportsTargetRespOverviewItem
+	)
 
-	// 	// Retrieve and cast "target_mw_installed"
-	// 	targetMwInstalled, ok := item["target_mw_installed"].(float64)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'target_mw_installed' Item: %+v\n", item)
-	// 		// continue
-	// 	}
+	// overviewItem is simply kept as is
 
-	// 	// Retrieve and cast "target_batteries_count"
-	// 	targetBatteriesCount, ok := item["target_batteries_count"].(float64)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'target_batteries_count' Item: %+v\n", item)
-	// 		// continue
-	// 	}
+	overviewItem.Achieved = achieved
+	overviewItem.Target = target
 
-	// 	milestoneTarget = append(milestoneTarget, models.MilestoneTarget{
-	// 		Month:                month,
-	// 		TargetProjectsSold:   targetProjectsSold,
-	// 		TargetMwSold:         targetMwSold,
-	// 		TargetInstallCount:   targetInstallCount,
-	// 		TargetMwInstalled:    targetMwInstalled,
-	// 		TargetBatteriesCount: targetBatteriesCount,
-	// 	})
-	// }
+	// now calculate stats
+	statsItem.Target = target
 
-	// query1 := fmt.Sprintf(`
-	// 	WITH monthly_counts AS (
-	// 		SELECT
-	// 			EXTRACT(MONTH FROM c.sale_date) AS month,
-	// 			COUNT(*) AS month_sale_count,
-	// 			SUM(COALESCE(NULLIF(c.contracted_system_size, '')::FLOAT, 0)) AS month_system_size
-	// 		FROM
-	// 			customers_customers_schema c
-	// 		WHERE
-	// 			EXTRACT(YEAR FROM c.sale_date) = %v
-	// 			AND EXTRACT(MONTH FROM c.sale_date) <= %v
-	// 		GROUP BY
-	// 			EXTRACT(MONTH FROM c.sale_date)
-	// 	)
-	// 	SELECT
-	// 		TO_CHAR(TO_DATE(month::TEXT, 'MM'), 'Mon') AS month,
-	// 		SUM(month_sale_count) AS sale_count,
-	// 		SUM(month_system_size) AS kw_sale_count
-	// 	FROM
-	// 		monthly_counts
-	// 	GROUP BY
-	// 		month
-	// 	ORDER BY
-	// 		month;`, dataReq.Year, dataReq.Month)
+	if isSelectedMonth {
+		statsItem.Inprogress = achieved
+		return &statsItem, &overviewItem
+	}
 
-	// // Retrieving sales data
-	// data, err = db.ReteriveFromDB(db.OweHubDbIndex, query1, nil)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get sales data from DB err: %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Failed to get sales data", http.StatusBadRequest, nil)
-	// 	return
-	// }
+	if achieved > target {
+		statsItem.MoreThanTarget = achieved - target
+		return &statsItem, &overviewItem
+	}
 
-	// var monthlySales []models.MonthlySale
+	statsItem.Incomplete = target - achieved
+	statsItem.Completed = achieved
+	return &statsItem, &overviewItem
+}
 
-	// // Loop through the sales data and assign values to variables
-	// for _, row := range data {
-	// 	month, ok := row["month"].(string)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'month' Item: %+v\n", row)
-	// 		continue
-	// 	}
+// Calculate Production Achieved percentage (target/achieved * 100)
+func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedItem,
+	acheived *models.ProductionTargetOrAchievedItem) *models.ProductionTargetOrAchievedPercentage {
+	var (
+		pct models.ProductionTargetOrAchievedPercentage
+	)
 
-	// 	saleCount, ok := row["sale_count"].(float64)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'sale_count' Item: %+v\n", row)
-	// 		continue
-	// 	}
+	if target == nil || acheived == nil {
+		return &pct
+	}
 
-	// 	kwSaleCount, ok := row["kw_sale_count"].(float64)
-	// 	if !ok {
-	// 		log.FuncErrorTrace(0, "Failed to get 'kw_sale_count' Item: %+v\n", row)
-	// 		continue
-	// 	}
+	if target.ProjectsSold > 0 {
+		pct.ProjectsSold = acheived.ProjectsSold / target.ProjectsSold * 100
+	}
 
-	// 	monthlySales = append(monthlySales, models.MonthlySale{
-	// 		Month:       month,
-	// 		SaleCount:   saleCount,
-	// 		KwSaleCount: kwSaleCount,
-	// 	})
-	// }
-	// // Step 1: Create a map for milestoneTarget for fast lookup by month
-	// targetMap := make(map[string]models.MilestoneTarget)
-	// for _, target := range milestoneTarget {
-	// 	targetMap[target.Month] = target
-	// }
+	if target.MwSold > 0 {
+		pct.MwSold = acheived.MwSold / target.MwSold * 100
+	}
 
-	// // Step 2: Initialize variables
-	// var totalSaleCount, totalKwSaleCount, targetSaleCount, targetKwSaleCount float64
-	// var monthlyAchievement []models.MonthlyAchievement
+	if target.InstallCt > 0 {
+		pct.InstallCt = acheived.InstallCt / target.InstallCt * 100
+	}
 
-	// // Step 3: Calculate the total sales and KW sales up to the given month
-	// for _, monthData := range monthlySales {
-	// 	// Calculate total sales and KW sales for the entire year
-	// 	totalSaleCount += monthData.SaleCount
-	// 	totalKwSaleCount += monthData.KwSaleCount
+	if target.MwInstalled > 0 {
+		pct.MwInstalled = acheived.MwInstalled / target.MwInstalled * 100
+	}
 
-	// 	// Find the target data for the given month using the map
-	// 	targetData, found := targetMap[monthData.Month]
-	// 	if found {
-	// 		// Calculate the percentage achievement for the month
-	// 		targetProjectsSold := targetData.TargetProjectsSold
-	// 		targetMwSold := targetData.TargetMwSold
-
-	// 		// Calculate the percentage of target achieved for sales and KW
-	// 		percentageSaleAchieved := 0.0
-	// 		percentageKwAchieved := 0.0
-
-	// 		if targetProjectsSold > 0 {
-	// 			percentageSaleAchieved = (monthData.SaleCount / targetProjectsSold) * 100
-	// 		}
-
-	// 		if targetMwSold > 0 {
-	// 			percentageKwAchieved = (monthData.KwSaleCount / targetMwSold) * 100
-	// 		}
-
-	// 		// Add monthly achievement to the list
-	// 		monthlyAchievement = append(monthlyAchievement, models.MonthlyAchievement{
-	// 			Month:                  monthData.Month,
-	// 			ActualSaleCount:        monthData.SaleCount,
-	// 			ActualKwSaleCount:      monthData.KwSaleCount,
-	// 			TargetProjectsSold:     targetProjectsSold,
-	// 			TargetMwSold:           targetMwSold,
-	// 			PercentageSaleAchieved: percentageSaleAchieved,
-	// 			PercentageKwAchieved:   percentageKwAchieved,
-	// 		})
-
-	// 		// Calculate total target sales and KW sales up to the given month
-	// 		targetSaleCount += targetProjectsSold
-	// 		targetKwSaleCount += targetMwSold
-	// 	}
-	// }
-
-	// apiResp = models.ReportTargetResponse{
-	// 	MonthlySales:       monthlySales,
-	// 	TotalSaleCount:     totalSaleCount,
-	// 	TotalKwSaleCount:   totalKwSaleCount,
-	// 	TargetSaleCount:    targetSaleCount,
-	// 	TargetKwSaleCount:  targetKwSaleCount,
-	// 	MonthlyAchievement: monthlyAchievement, // Include the monthly achievements in the response
-	// }
-	// appserver.FormAndSendHttpResp(resp, "Success", http.StatusOK, apiResp)
-
+	if target.BatteriesCt > 0 {
+		pct.BatteriesCt = acheived.BatteriesCt / target.BatteriesCt * 100
+	}
+	return &pct
 }

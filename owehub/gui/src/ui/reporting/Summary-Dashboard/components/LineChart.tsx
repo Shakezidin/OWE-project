@@ -17,22 +17,14 @@ import {
 import styles from './style.module.css';
 
 
-const LineChartComp = () => {
-    const lineChartData = [
-        { week: "Jan", "Progress": 10, "Target": 5 },
-        { week: "Feb", "Progress": 20, "Target": 15 },
-        { week: "Mar", "Progress": 8, "Target": 25 },
-        { week: "Apr", "Progress": 60, "Target": 15 },
-        { week: "May", "Progress": 50, "Target": 55 },
-        { week: "Jun", "Progress": 60, "Target": 65 },
-        { week: "Jul", "Progress": 70, "Target": 75 },
-        { week: "Aug", "Progress": 80, "Target": 85 },
-        { week: "Sep", "Progress": 90, "Target": 92 },
-        { week: "Oct", "Progress": 95, "Target": 97 },
-        { week: "Nov", "Progress": 98, "Target": 99 },
-        { week: "Dec", "Progress": 40, "Target": 60 },
-    ];
 
+const LineChartComp = ({ monthData }: any) => {
+
+    const lineChartData = monthData?.map((item: any) => ({
+        week: (item.month).slice(0, 3),
+        Target: item.target,
+        "Achieved": item.achieved,
+    }));
 
     const tooltipStyle = {
         fontSize: '10px',
@@ -65,39 +57,22 @@ const LineChartComp = () => {
                         borderRadius: 4,
                         padding: 8,
                         fontSize: 10,
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
                     }}
-                    formatter={(value) => `${Number(value)}`}
-                    labelFormatter={(value) => `Week ${Number(value) + 1}`}
+                    formatter={(value) => (value !== undefined ? parseFloat(value as string).toFixed(2) : '0.00')}
                 />
+
                 <Legend
                     layout="horizontal"
                     align="center"
-                    verticalAlign="top"
+                    verticalAlign="bottom"
                     className={styles.legend}
                     wrapperStyle={{
                         paddingBottom: '20px',
                         fontSize: '12px',
                         fontFamily: 'poppins',
-                        cursor: 'pointer',
                     }} />
-                <Line
-                    type="monotone"
-                    dataKey="Progress"
-                    stroke="#9DD428"
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: '#2C84FE' }}
-                    activeDot={{ r: 4 }}
-                >
-                    {/* <LabelList
-                        dataKey="Progress"
-                        position="top"
-                        fill="#2C84FE"
-                        fontSize={10}
-                        offset={5}
-                        formatter={(value: number) => `${value.toFixed(0)}%`}
-                    /> */}
-                </Line>
+
                 <Line
                     type="monotone"
                     dataKey="Target"
@@ -106,14 +81,32 @@ const LineChartComp = () => {
                     dot={{ r: 3, fill: '#2C84FE' }}
                     activeDot={{ r: 4 }}
                 >
-                    {/* <LabelList
+                    <LabelList
                         dataKey="Target"
-                        position="top"
-                        fill="#2C84FE"
+                        position="bottom"
+                        fill="#4585F7"
                         fontSize={10}
                         offset={5}
-                        formatter={(value: number) => `${value.toFixed(0)}%`}
-                    /> */}
+                        formatter={(value: number) => `${value.toFixed(0)}`}
+                    />
+                </Line>
+
+                <Line
+                    type="monotone"
+                    dataKey="Achieved"
+                    stroke="#9DD428"
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: '#9DD428' }}
+                    activeDot={{ r: 4 }}
+                >
+                    <LabelList
+                        dataKey="Achieved"
+                        position="top"
+                        fill="#9DD428"
+                        fontSize={10}
+                        offset={5}
+                        formatter={(value: number) => `${value.toFixed(0)}`}
+                    />
                 </Line>
             </LineChart>
         </ResponsiveContainer>

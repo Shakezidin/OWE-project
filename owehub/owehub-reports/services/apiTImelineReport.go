@@ -515,7 +515,10 @@ func HandleGetTimelineInstallToFinReportRequest(resp http.ResponseWriter, req *h
 	}
 
 	query := fmt.Sprintf(`SELECT
-    		DATE_PART('week', fin.pv_fin_date) AS install_week,
+			CASE
+					WHEN DATE_PART('quarter', fin.pv_fin_date)= 4 AND DATE_PART('week', fin.pv_fin_date) = 1 THEN 52
+					ELSE DATE_PART('week', fin.pv_fin_date)
+				END AS install_week,
     		CASE 
         		WHEN EXTRACT(DAY FROM (fin.pv_fin_date - pvi.pv_completion_date)) BETWEEN 0 AND 15 THEN '0-15 days'
         		WHEN EXTRACT(DAY FROM (fin.pv_fin_date - pvi.pv_completion_date)) BETWEEN 16 AND 30 THEN '16-30 days'

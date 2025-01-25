@@ -31,6 +31,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		whereEleList       []interface{}
 		valuesPlaceholders []string
 		query              string
+		targetUserId       int64
 	)
 
 	log.EnterFn(0, "HandleUpdateProductionTargetsRequest")
@@ -57,11 +58,17 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
+	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	if err != nil {
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
+		return
+	}
+
 	// Construct the upsert query
 	// Example:
-	// INSERT INTO production_targets (month, year, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
+	// INSERT INTO production_targets (month, year, target_percentage, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
 	// VALUES ($1, $2, $3, $4, $5, $6, $7), ($8, $9, $10, $11, $12, $13, $14)
-	// ON CONFLICT (month, year) DO UPDATE SET
+	// ON CONFLICT (month, year, target_percentage) DO UPDATE SET
 	// 	projects_sold = excluded.projects_sold,
 	// 	mw_sold = excluded.mw_sold,
 	// 	install_ct = excluded.install_ct,
@@ -75,6 +82,9 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		whereEleList = append(whereEleList,
 			item.Month,
 			item.Year,
+			dataReq.TargetPercentage,
+			targetUserId,
+			dataReq.State,
 			item.ProjectsSold,
 			item.MwSold,
 			item.InstallCt,
@@ -90,9 +100,9 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	query = fmt.Sprintf(`
-		INSERT INTO %s (month, year, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
+		INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
 		VALUES %s
-		ON CONFLICT (month, year) DO UPDATE SET
+		ON CONFLICT (month, year, target_percentage, user_id, state) DO UPDATE SET
 			projects_sold = EXCLUDED.projects_sold,
 			mw_sold = EXCLUDED.mw_sold,
 			install_ct = EXCLUDED.install_ct,

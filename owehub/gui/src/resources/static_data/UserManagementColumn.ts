@@ -9,6 +9,7 @@ export const UserManagementTableColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
+  
   {
     name: 'email_id',
     displayName: 'Email',
@@ -18,6 +19,18 @@ export const UserManagementTableColumn: Column[] = [
   {
     name: 'mobile_number',
     displayName: 'Phone Number',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'manager',
+    displayName: 'Manager',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'dealer',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },
@@ -40,12 +53,6 @@ export const UserAppointmentTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'reporting_manager',
-    displayName: 'Reporting To',
-    type: 'string',
-    isCheckbox: false,
-  },
-  {
     name: 'email_id',
     displayName: 'Email ID',
     type: 'string',
@@ -54,6 +61,12 @@ export const UserAppointmentTableColumn: Column[] = [
   {
     name: 'mobile_number',
     displayName: 'Phone Number',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'reporting_manager',
+    displayName: 'Manager',
     type: 'string',
     isCheckbox: false,
   },
@@ -109,6 +122,12 @@ export const UserDealerTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
+    name: 'reporting_manager',
+    displayName: 'Manager',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
     name: 'dealer',
     displayName: 'Dealer',
     type: 'string',
@@ -127,23 +146,12 @@ export const UserRegionalTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
   {
-    name: 'dealer_owner',
-    displayName: 'Dealer',
+    name: 'team_name',
+    displayName: 'Designation',
     type: 'string',
     isCheckbox: false,
   },
-  {
-    name: 'reporting_manager',
-    displayName: 'Reporting Manager',
-    type: 'string',
-    isCheckbox: false,
-  },
-  {
-    name: 'Region',
-    displayName: 'Region',
-    type: 'string',
-    isCheckbox: false,
-  },
+
   {
     name: 'email_id',
     displayName: 'Email ID',
@@ -157,11 +165,24 @@ export const UserRegionalTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'team_name',
-    displayName: 'Designation',
+    name: 'Region',
+    displayName: 'Region',
     type: 'string',
     isCheckbox: false,
   },
+  {
+    name: 'reporting_manager',
+    displayName: 'Manager',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'dealer_owner',
+    displayName: 'Dealer',
+    type: 'string',
+    isCheckbox: false,
+  },
+
 
   {
     name: 'description',
@@ -199,6 +220,18 @@ export const UserSaleMangerTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
+    name: 'reporting_manager',
+    displayName: 'Manager',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'dealer_owner',
+    displayName: 'Dealer',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
     name: 'description',
     displayName: 'Description',
     type: 'string',
@@ -210,20 +243,8 @@ export const UserSaleRepresentTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
   {
-    name: 'dealer_owner',
-    displayName: 'Dealer',
-    type: 'string',
-    isCheckbox: false,
-  },
-  {
     name: 'team_name',
     displayName: 'Designation',
-    type: 'string',
-    isCheckbox: false,
-  },
-  {
-    name: 'reporting_manager',
-    displayName: 'Reporting To',
     type: 'string',
     isCheckbox: false,
   },
@@ -236,6 +257,18 @@ export const UserSaleRepresentTableColumn: Column[] = [
   {
     name: 'mobile_number',
     displayName: 'Phone Number',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'reporting_manager',
+    displayName: 'Manager',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'dealer_owner',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },

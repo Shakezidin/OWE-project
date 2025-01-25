@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 import { MdOutlineLockReset } from "react-icons/md";
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { Tooltip } from 'react-tooltip';
 interface SalesRepresentativeProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -131,9 +132,32 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   <td>{el.name}</td>
                   <td>{el.dealer || "N/A"}</td>
                   <td>{el.designation}</td>
-                  <td>{el.reporting_manager}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
+                  <td>{el.reporting_manager}</td>
+                  <td 
+                    data-tooltip-id={el.dealer?.length > 15 ? `dealer-${el.dealer}` : undefined}
+                    style={{ position: 'relative' }}
+                  >
+                    {el.dealer?.length > 15 ? `${el.dealer.slice(0, 15)}...` : el.dealer || 'NA'}
+                    {el.dealer?.length > 15 && (
+                      <Tooltip
+                        id={`dealer-${el.dealer}`}
+                        style={{
+                          zIndex: 103,
+                          background: '#000',
+                          color: '#f7f7f7',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: '400',
+                        }}
+                        offset={0}
+                        place="left"
+                        content={el.dealer}
+                        delayShow={100}
+                      />
+                    )}
+                  </td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >

@@ -8,31 +8,37 @@ package models
 
 type EmptyReq struct{}
 
+type PerfomanceStatusReqOld struct {
+	PageNumber        int    `json:"page_number"`
+	PageSize          int    `json:"page_size"`
+	SelectedMilestone string `json:"selected_milestone"`
+	Email             string
+	UniqueIds         []string `json:"unique_ids"`
+	ProjectLimit      int
+	DealerNames       []string `json:"dealer_names"`
+	IntervalDays      string
+	ItemLastSeen      int64    `json:"item_last_seen"`
+	StartDate         string   `json:"start_date"`
+	EndDate           string   `json:"end_date"`
+	ProjectStatus     []string `json:"project_status"`
+}
+
 type PerfomanceStatusReq struct {
-	PageNumber                int    `json:"page_number"`
-	PageSize                  int    `json:"page_size"`
-	SelectedMilestone         string `json:"selected_milestone"`
-	Email                     string
-	UniqueIds                 []string `json:"unique_ids"`
-	ProjectLimit              int
-	DealerNames               []string `json:"dealer_names"`
-	IntervalDays              string
-	ItemLastSeen              int64    `json:"item_last_seen"`
-	StartDate                 string   `json:"start_date"`
-	EndDate                   string   `json:"end_date"`
-	ProjectStatus             []string `json:"project_status"`
-	Fields                    []string `json:"fields,omitempty"`
-	Project_Pending_StartDate int64    `json:"pending_start_date,omitempty"`
-	Project_Pending_EndDate   int64    `json:"pending_end_date,omitempty"`
+	PageNumber              int    `json:"page_number"`
+	PageSize                int    `json:"page_size"`
+	SelectedMilestone       string `json:"selected_milestone"`
+	Email                   string
+	UniqueIds               []string `json:"unique_ids"`
+	DealerNames             []string `json:"dealer_names"`
+	ProjectStatus           []string `json:"project_status"`
+	Fields                  []string `json:"fields,omitempty"`
+	ProjectPendingStartDate int64    `json:"pending_start_date,omitempty"`
+	ProjectPendingEndDate   int64    `json:"pending_end_date,omitempty"`
 }
 
 type PerfomanceTileDataReq struct {
 	Email         string
-	ProjectLimit  int
 	DealerNames   []string `json:"dealer_names"`
-	IntervalDays  string
-	StartDate     string   `json:"start_date"`
-	EndDate       string   `json:"end_date"`
 	ProjectStatus []string `json:"project_status"`
 }
 
@@ -73,7 +79,7 @@ type PerfomanceResponse struct {
 	Ntp               NTP    `json:"ntp"`
 	Qc                QC     `json:"qc"`
 	NTPdate           string `json:"ntp_date"`
-	// Aging Report
+	// Aging Report fields remain as string
 	Days_Pending_NTP         string `json:"days_ntp,omitempty"`
 	Days_Pending_Permits     string `json:"days_permits,omitempty"`
 	Days_Pending_Install     string `json:"days_install,omitempty"`

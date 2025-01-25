@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 import { MdOutlineLockReset } from "react-icons/md";
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { Tooltip } from 'react-tooltip';
 interface AppointmentSetterProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -138,10 +139,40 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                   </td>
                   <td>{el.name}</td>
                   <td>{el.role_name ? el.role_name : 'NA'}</td>
-                  <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
                   <td>{el.email_id ? el.email_id : 'NA'}</td>
                   <td>{el.mobile_number ? el.mobile_number : 'NA'}</td>
-                  <td>{el.dealer ? el.dealer : 'NA'}</td>
+                  <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
+                  <td 
+                    data-tooltip-id={el.dealer?.length > 15 ? `dealer-${el.dealer}` : undefined}
+                    style={{ position: 'relative' }}
+                  >
+                    {el.dealer?.length > 15 ? `${el.dealer.slice(0, 15)}...` : el.dealer || 'NA'}
+                    {el.dealer?.length > 15 && (
+                      <Tooltip
+                        id={`dealer-${el.dealer}`}
+                        style={{
+                          zIndex: 103,
+                          background: '#000',
+                          color: '#f7f7f7',
+                          fontSize: 12,
+                          paddingBlock: 4,
+                          fontWeight: '400',
+                        }}
+                        offset={0}
+                        place="left"
+                        content={el.dealer}
+                        delayShow={100}
+                      />
+                    )}
+                  </td>
+
+                  {/* <td>
+                      {el.startDate ? el.startDate: 'NA'} 
+                    </td>
+                    <td >
+                      {el.endDate ? el.endDate : 'NA'}
+                    </td> */}
+
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >

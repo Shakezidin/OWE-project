@@ -107,4 +107,30 @@
     margin-top: 20px;
   
   }
+
+  @media screen and (max-width: 767px){
+    .axis{
+      font-size: 8px;
+      font-weight: 500;
+    }
+  }
+
+  .recharts-radial-bar-label {
+    fill: #000000 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    color: #000000 !important;
+}
+
+.radial-bar-label {
+  position: absolute; /* 'insideBottom' isn't a standard CSS position, using absolute instead */
+  color: #000;
+  stroke: #000;
+  fill: #000;
+  font-size: 9px;
+  font-weight: 200;
+  text-anchor: middle; /* Centers the text horizontally */
+  dominant-baseline: central; /* Centers the text vertically */
+}
+
   

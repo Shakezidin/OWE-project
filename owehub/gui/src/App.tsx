@@ -173,8 +173,14 @@ function App() {
               path={ROUTES.REPORTING_QUALITY_PER_OFFICE}
               element={<QualityPerOffice />}
             />
-            <Route path={ROUTES.PERMIT_REDLINE} element={<PermitRedLine />} />
-            <Route path={ROUTES.DYNAMIC_REPORT} element={<DynDashboard />} />
+            <Route
+              path={ROUTES.PERMIT_REDLINE}
+              element={<PermitRedLine />}
+            />
+            <Route
+              path={ROUTES.DYNAMIC_REPORT}
+              element={<DynDashboard />}
+            />
             <Route
               path={ROUTES.REPORTING_REASON_FOR_INCOMPLETE}
               element={<ReasonOfIncomplete />}

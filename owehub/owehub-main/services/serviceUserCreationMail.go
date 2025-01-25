@@ -54,10 +54,6 @@ func SendMailToClient(email string, username string) (err error) {
       "
     >
       <div style="text-align: center; padding-bottom: 20px">
-        <img
-          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
-           width="300"
-        />
         <h1 style="font-size: 24px; color: #333333; margin: 0">
           Welcome to Our World Energy
         </h1>
@@ -121,7 +117,7 @@ func SendMailToClient(email string, username string) (err error) {
         <p>&copy; 2024 Our World Energy. All rights reserved.</p>
 
         <img
-          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
+          src="https://res.cloudinary.com/duscqq0ii/image/upload/v1737059485/1664759243008_np5w0v.jpg"
 		  width="300"
         />
       </div>
@@ -154,7 +150,7 @@ func SendMailToClient(email string, username string) (err error) {
  * INPUT:			email, username
  * RETURNS:    		error
  ******************************************************************************/
- func SendPasswordResetSuccessMailToClient(email string, username string) (err error) {
+func SendPasswordResetSuccessMailToClient(email string, username string) (err error) {
 
 	log.EnterFn(0, "SendPasswordResetSuccessMailToClient")
 	defer func() { log.ExitFn(0, "SendPasswordResetSuccessMailToClient", nil) }()
@@ -186,10 +182,6 @@ func SendMailToClient(email string, username string) (err error) {
       "
     >
       <div style="text-align: center; padding-bottom: 20px">
-        <img
-          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
-          width="300"
-        />
         <h1 style="font-size: 24px; color: #333333; margin: 0">
           Password Reset Successful
         </h1>
@@ -226,7 +218,7 @@ func SendMailToClient(email string, username string) (err error) {
       >
         <p>&copy; 2024 Our World Energy. All rights reserved.</p>
         <img
-          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
+          src="https://res.cloudinary.com/duscqq0ii/image/upload/v1737059485/1664759243008_np5w0v.jpg"
           width="300"
         />
       </div>
@@ -250,7 +242,6 @@ func SendMailToClient(email string, username string) (err error) {
 
 	return nil
 }
-
 
 /******************************************************************************
  * FUNCTION:		SendMailToUserFromUI

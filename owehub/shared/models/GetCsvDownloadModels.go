@@ -13,7 +13,8 @@ type GetCsvDownload struct {
 	EndDate           string   `json:"end_date"`
 	PageNumber        int      `json:"page_number"`
 	PageSize          int      `json:"page_size"`
-	DealerName        []string `json:"dealer_names"`
+	DealerNames       []string `json:"dealer_names"`
+	UniqueIds         []string `json:"unique_ids"`
 	SelectedMilestone string   `json:"selected_milestone"`
 	GroupBy           string   `json:"group_by"`
 	ProjectStatus     []string `json:"project_status"`

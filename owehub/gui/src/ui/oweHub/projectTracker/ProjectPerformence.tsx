@@ -429,7 +429,7 @@ const ProjectPerformence = () => {
     },
     {
       id: 6,
-      title: 'Inspection',
+      title: 'MPU/FIN',
       value: titleData.inspection_count,
       pending: 'inspection',
     },
@@ -530,6 +530,7 @@ const ProjectPerformence = () => {
     };
   }, []);
   return (
+     
     <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">

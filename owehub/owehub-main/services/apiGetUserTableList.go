@@ -64,21 +64,42 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 
 	tableList := models.TableList{}
 	if dataReq.GetAllTable {
-		tables := []models.Table{
-			{TableName: "adders2_adder_schema"},
-			{TableName: "field_ops_metrics_schema"},
-			{TableName: "finance_metrics_schema"},
-			{TableName: "internal_ops_metrics_schema"},
-			{TableName: "next_steps_schema"},
-			{TableName: "sales_metrics_schema"},
-			{TableName: "ntp_ntp_schema"},
-			{TableName: "customers_customers_schema"},
+		allTableQuery := `SELECT table_name as db_tables
+		FROM information_schema.tables
+		WHERE table_schema = 'public'
+		AND table_type = 'BASE TABLE' ORDER BY table_name;`
+
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, allTableQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get User table list data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get User table list data from DB", http.StatusBadRequest, nil)
+			return
 		}
 
-		// Append the new tables to the tableList
-		tableList.DbTables = append(tableList.DbTables, tables...)
+		for i, row := range data {
+			log.FuncErrorTrace(0, "Processing row %d: %v", i, row)
+
+			if dbTables, ok := row["db_tables"]; ok {
+				var tableName string
+				switch v := dbTables.(type) {
+				case string:
+					tableName = v
+				case []byte:
+					tableName = string(v)
+				default:
+					log.FuncErrorTrace(0, "Row %d: Unexpected type for db_tables: %T, value: %v", i, dbTables, dbTables)
+					continue
+				}
+
+				// Append the table name directly
+				tableList.DbTables = append(tableList.DbTables, models.Table{TableName: tableName})
+			} else {
+				log.FuncErrorTrace(0, "Row %d: db_tables field missing in row: %v", i, row)
+			}
+		}
+
 		// Send the response
-		log.FuncInfoTrace(0, "Number of User table List fetched : %v list %+v", len(tableList.DbTables), tableList)
+		log.FuncInfoTrace(0, "Number of User table List fetched : %v list %+v", len(tableList.DbTables), tableList.DbTables)
 		appserver.FormAndSendHttpResp(resp, "User table list", http.StatusOK, tableList)
 		return
 	}

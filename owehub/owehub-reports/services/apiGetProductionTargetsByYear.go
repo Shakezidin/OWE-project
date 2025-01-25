@@ -15,25 +15,31 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 /******************************************************************************
  * FUNCTION:		HandleGetProductionTargetsByYearRequest
- * DESCRIPTION:     handler for get production targets by year request
+ * DESCRIPTION:     Handler for get production targets by year request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err     error
-		query   string
-		dataReq models.ProductionTargetsByYearReq
-		apiResp []models.ProductionTargetsByYearRespItem
+		err            error
+		query          string
+		dataReq        models.ProductionTargetsByYearReq
+		apiResp        []models.ProductionTargetsByYearRespItem
+		data           []map[string]interface{}
+		whereEleList   []interface{}
+		targetUserId   int64
+		targetStateCnd string
 	)
 
 	log.EnterFn(0, "HandleGetProductionTargetsByYearRequest")
 	defer func() { log.ExitFn(0, "HandleGetProductionTargetsByYearRequest", err) }()
 
+	// Check if request body is null
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null")
 		log.FuncErrorTrace(0, "%v", err)
@@ -41,6 +47,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	// Read request body
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request Body err: %v", err)
@@ -48,6 +55,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	// Unmarshal the request body into the dataReq struct
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request Body err: %v", err)
@@ -55,28 +63,48 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
+		return
+	}
+
+	targetStateCnd = "p.state = $4"
+
+	// if "all" state and "all" AM selected, show sum of all states, i.e. company wide goals
+	if targetUserId == 1 && strings.ToLower(dataReq.AccountManager) == "all" && strings.ToLower(dataReq.State) == "all" {
+		targetStateCnd = "$4 = $4" // TRUE; no need to check state
+	}
+
+	// Query to retrieve production targets
 	query = fmt.Sprintf(`
 		WITH months(n) AS (SELECT generate_series(1, 12))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) AS projects_sold,
-			COALESCE(p.mw_sold, 0) AS mw_sold,
-			COALESCE(p.install_ct, 0) AS install_ct,
-			COALESCE(p.mw_installed, 0) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) AS batteries_ct
-		FROM MONTHS
-		LEFT JOIN %s p
-		ON MONTHS.n = p.month AND p.year = $1
-		ORDER BY MONTHS.n
-	`, db.TableName_ProductionTargets)
+			COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
+            COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
+			COALESCE(SUM(p.install_ct), 0) AS install_ct,
+			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
+		FROM months
+		LEFT JOIN production_targets p
+		ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.user_id = $3 AND %s
+		GROUP BY months.n
+		ORDER BY months.n
+	`, targetStateCnd)
 
-	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.Year})
+	whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, targetUserId, dataReq.State}
+
+	// Retrieve production target data
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
+	// Populate the response items
 	for _, item := range data {
 		month, ok := item["month"].(string)
 		if !ok {
@@ -84,7 +112,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			continue
 		}
 
-		projectsSold, ok := item["projects_sold"].(int64)
+		projectsSold, ok := item["projects_sold"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get 'projects_sold' Item: %+v\n", item)
 		}
@@ -94,7 +122,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get 'mw_sold' Item: %+v\n", item)
 		}
 
-		installCt, ok := item["install_ct"].(int64)
+		installCt, ok := item["install_ct"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get 'install_ct' Item: %+v\n", item)
 		}
@@ -104,11 +132,12 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get 'mw_installed' Item: %+v\n", item)
 		}
 
-		batteriesCt, ok := item["batteries_ct"].(int64)
+		batteriesCt, ok := item["batteries_ct"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get 'batteries_ct' Item: %+v\n", item)
 		}
 
+		// Append the response item
 		apiResp = append(apiResp, models.ProductionTargetsByYearRespItem{
 			Month:        month,
 			ProjectsSold: projectsSold,
@@ -118,5 +147,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			BatteriesCt:  batteriesCt,
 		})
 	}
+
+	// Send response with production targets data
 	appserver.FormAndSendHttpResp(resp, "Production targets by year", http.StatusOK, apiResp)
 }

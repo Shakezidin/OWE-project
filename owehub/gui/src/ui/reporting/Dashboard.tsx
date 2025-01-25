@@ -265,13 +265,10 @@ const Dashboard: React.FC = () => {
                                       fontSize: 12,
                                       paddingBlock: 4,
                                     }}
-                                    delayShow={400}
                                     offset={8}
                                     id={item.title}
                                     place="bottom"
-                                    content={item.title}
-                                    
-                                    
+                                    content={item.title} 
                                   />
 
                                   <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>

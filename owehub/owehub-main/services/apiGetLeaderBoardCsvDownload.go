@@ -26,12 +26,8 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		err                   error
 		dataReq               models.GetCsvDownload
 		data                  []map[string]interface{}
-		whereEleList          []interface{}
-		queryWithFiler        string
-		filter                string
 		RecordCount           int64
 		query                 string
-		dealerIn              string
 		dealerOwnerFetchQuery string
 	)
 
@@ -70,6 +66,16 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		appserver.FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
 		return
 	}
+	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
+		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
+		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
+		if len(dataReq.DealerNames) == 0 {
+
+			log.FuncErrorTrace(0, "no dealer name selected")
+			appserver.FormAndSendHttpResp(resp, "LeaderBoard csv Data", http.StatusOK, nil, RecordCount)
+			return
+		}
+	}
 
 	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) &&
 		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
@@ -99,7 +105,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			return
 		}
 
-		dataReq.DealerName = append(dataReq.DealerName, dealerName)
+		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 	}
 
 	if dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleAccountExecutive) {
@@ -113,125 +119,250 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 			return
 		}
-		dataReq.DealerName = dealerNames
-	}
-
-	// query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date, primary_sales_rep, secondary_sales_rep FROM consolidated_data_view"
-	query = models.CsvDownloadRetrieveQueryFunc()
-	dealerIn = "cs.dealer IN("
-	for i, data := range dataReq.DealerName {
-		if i > 0 {
-			dealerIn += ","
+		dealerNameSet := make(map[string]bool)
+		for _, dealer := range dealerNames {
+			dealerNameSet[dealer] = true
 		}
-		escapedDealerName := strings.ReplaceAll(data, "'", "''")
-		dealerIn += fmt.Sprintf("'%s'", escapedDealerName)
-	}
-	dealerIn += ")"
-	filter, whereEleList = PrepareLeaderCsvDateFilters(dataReq, dealerIn)
 
-	if filter != "" {
-		queryWithFiler = query + filter
-	} else {
-		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
-		return
+		for _, dealerNameFromUI := range dataReq.DealerNames {
+			if !dealerNameSet[dealerNameFromUI] {
+				appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+				return
+			}
+		}
 	}
 
-	// retrieving value from owe_db from here
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
-		return
+	// Dynamic dealer names and date range from frontend request
+	dealerIn := []string{}
+	for _, data := range dataReq.DealerNames {
+		escapedDealerName := strings.ReplaceAll(data, "'", "''") // Escape single quotes
+		dealerIn = append(dealerIn, escapedDealerName)
 	}
 
+	// Format the start and end dates
 	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
 	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
+	endDate = endDate.Add(24*time.Hour - time.Second) // Ensure the end date includes the entire day
 
-	endDate = endDate.Add(24*time.Hour - time.Second)
+	// Prepare the parameters for the query
+	whereEleList := []interface{}{
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+	}
+
+	// Construct the dealer names string for the IN clause
+	dealerInQuery := "'" + strings.Join(dealerIn, "','") + "'"
+
+	// Prepare the final query string with the dynamically constructed dealer list
+	query = `
+	SELECT 
+    unique_id AS cancel_unique_id,
+    cancel_date,
+	NULL::text AS customers_unique_id,
+    NULL::timestamp AS sale_date,
+    NULL::timestamp AS ntp_complete_date,  -- Cast to text
+    NULL::text AS ntp_unique_id,
+    NULL::timestamp AS pv_completion_date,  -- Cast to text
+    NULL::text AS pv_unique_id
+FROM 
+    customers_customers_schema
+WHERE 
+    dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
+    AND project_status != 'DUPLICATE'
+    AND cancel_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+                        AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
+
+UNION ALL
+
+SELECT 
+	NULL::text AS cancel_unique_id,
+	NULL::timestamp AS cancel_date,
+    unique_id AS customers_unique_id,
+    sale_date,
+    NULL::timestamp AS ntp_complete_date,  
+    NULL::text AS ntp_unique_id,
+    NULL::timestamp AS pv_completion_date,  
+    NULL::text AS pv_unique_id
+FROM 
+    customers_customers_schema
+WHERE 
+    dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
+    AND project_status != 'DUPLICATE'
+    AND sale_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+                        AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
+
+UNION ALL
+
+SELECT 
+	NULL::text AS cancel_unique_id,
+	NULL::timestamp AS cancel_date,
+    NULL::text AS customers_unique_id,
+    NULL::timestamp AS sale_date,
+    ntp_complete_date AS ntp_complete_date,  
+    unique_id::text AS ntp_unique_id, 
+    NULL::timestamp AS pv_completion_date,
+    NULL::text AS pv_unique_id
+FROM 
+    ntp_ntp_schema
+WHERE 
+    dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
+    AND project_status != 'DUPLICATE'
+    AND ntp_complete_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+                               AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
+
+UNION ALL
+
+SELECT 
+	NULL::text AS cancel_unique_id,
+	NULL::timestamp AS cancel_date,
+    NULL::text AS customers_unique_id,
+    NULL::timestamp AS sale_date,
+    NULL::timestamp AS ntp_complete_date,
+    NULL::text AS ntp_unique_id,
+    pv_completion_date AS pv_completion_date,  
+    customer_unique_id::text AS pv_unique_id  
+FROM 
+    pv_install_install_subcontracting_schema
+WHERE 
+    dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
+    AND project_status != 'DUPLICATE'
+    AND pv_completion_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+                               AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS');
+`
+
+	// Execute the query to get the required unique_id and dates
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data", http.StatusBadRequest, nil)
+		return
+	}
+
+	uniqueIDs := make(map[string][]map[string]interface{}) // Store key-value pairs for each unique_id
 
 	for _, item := range data {
-		// Check sale_date
-		if saleDate, ok := item["sale_date"].(time.Time); ok {
-			if saleDate.Before(startDate) || saleDate.After(endDate) {
-				item["sale_date"] = nil // Set to null if out of range
+		if customerUniqueID, ok := item["customers_unique_id"].(string); ok && customerUniqueID != "" {
+			// Initialize an empty slice for the customerUniqueID if it doesn't exist
+			if _, exists := uniqueIDs[customerUniqueID]; !exists {
+				uniqueIDs[customerUniqueID] = []map[string]interface{}{}
+			}
+
+			// Add sale_date to the map for the customerUniqueID
+			if saleDate, ok := item["sale_date"].(time.Time); ok {
+				uniqueIDs[customerUniqueID] = append(uniqueIDs[customerUniqueID], map[string]interface{}{"sale_date": saleDate})
 			}
 		}
 
-		// Check cancelled_date
-		if cancelledDate, ok := item["cancelled_date"].(time.Time); ok {
-			if cancelledDate.Before(startDate) || cancelledDate.After(endDate) {
-				item["cancelled_date"] = nil // Set to null if out of range
+		if ntpUniqueID, ok := item["ntp_unique_id"].(string); ok && ntpUniqueID != "" {
+			// Initialize an empty slice for the ntpUniqueID if it doesn't exist
+			if _, exists := uniqueIDs[ntpUniqueID]; !exists {
+				uniqueIDs[ntpUniqueID] = []map[string]interface{}{}
+			}
+
+			// Add ntp_complete_date to the map for the ntpUniqueID
+			if ntpCompleteDate, ok := item["ntp_complete_date"].(time.Time); ok {
+				uniqueIDs[ntpUniqueID] = append(uniqueIDs[ntpUniqueID], map[string]interface{}{"ntp_complete_date": ntpCompleteDate})
 			}
 		}
 
-		// Check pv_completion_date
-		if pvCompletionDate, ok := item["pv_completion_date"].(time.Time); ok {
-			if pvCompletionDate.Before(startDate) || pvCompletionDate.After(endDate) {
-				item["pv_completion_date"] = nil // Set to null if out of range
+		if pvUniqueID, ok := item["pv_unique_id"].(string); ok && pvUniqueID != "" {
+			// Initialize an empty slice for the pvUniqueID if it doesn't exist
+			if _, exists := uniqueIDs[pvUniqueID]; !exists {
+				uniqueIDs[pvUniqueID] = []map[string]interface{}{}
+			}
+
+			// Add pv_completion_date to the map for the pvUniqueID
+			if pvCompletionDate, ok := item["pv_completion_date"].(time.Time); ok {
+				uniqueIDs[pvUniqueID] = append(uniqueIDs[pvUniqueID], map[string]interface{}{"pv_completion_date": pvCompletionDate})
 			}
 		}
 
-		// Check ntp_complete_date
-		if ntpCompleteDate, ok := item["ntp_complete_date"].(time.Time); ok {
-			if ntpCompleteDate.Before(startDate) || ntpCompleteDate.After(endDate) {
-				item["ntp_complete_date"] = nil // Set to null if out of range
+		if cancelUniqueID, ok := item["cancel_unique_id"].(string); ok && cancelUniqueID != "" {
+			// Initialize an empty slice for the pvUniqueID if it doesn't exist
+			if _, exists := uniqueIDs[cancelUniqueID]; !exists {
+				uniqueIDs[cancelUniqueID] = []map[string]interface{}{}
+			}
+
+			// Add pv_completion_date to the map for the pvUniqueID
+			if cancelDate, ok := item["cancel_date"].(time.Time); ok {
+				uniqueIDs[cancelUniqueID] = append(uniqueIDs[cancelUniqueID], map[string]interface{}{"cancel_date": cancelDate})
 			}
 		}
+
 	}
 
-	RecordCount = int64(len(data))
-	// data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	// Prepare a query to fetch detailed customer data based on the unique_ids
+	queryWithUniqueIDs := `
+SELECT DISTINCT cs.unique_id, cs.customer_name AS home_owner, cs.email_address,
+       cs.phone_number, cs.address, cs.state,
+       scs.contracted_system_size_parent, 
+       ps.pto_granted AS pto_date, cs.primary_sales_rep, 
+       cs.secondary_sales_rep, cs.total_system_cost AS contract_total
+FROM customers_customers_schema cs 
+LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
+LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
+LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id
+WHERE cs.unique_id IN (`
 
-	// log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
-	appserver.FormAndSendHttpResp(resp, "csv Data", http.StatusOK, data, RecordCount)
-}
+	// Add all unique_ids to the query dynamically
+	first := true
+	for uniqueID := range uniqueIDs {
+		if !first {
+			queryWithUniqueIDs += ","
+		}
+		queryWithUniqueIDs += fmt.Sprintf("'%s'", uniqueID)
+		first = false
+	}
+	queryWithUniqueIDs += ")"
 
-func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn string) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareDateFilters")
-	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
-
-	var filtersBuilder strings.Builder
-	whereAdded := false
-	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
-		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
-		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
-
-		endDate = endDate.Add(24*time.Hour - time.Second)
-
-		whereEleList = append(whereEleList,
-			startDate.Format("02-01-2006 00:00:00"),
-			endDate.Format("02-01-2006 15:04:05"),
-		)
-
-		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" ((cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (ss.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')) OR", len(whereEleList)-1, len(whereEleList)))
-		filtersBuilder.WriteString(fmt.Sprintf(" (ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')))", len(whereEleList)-1, len(whereEleList)))
-		whereAdded = true
+	// Execute the second query to get detailed data for the unique_ids
+	detailedData, err := db.ReteriveFromDB(db.RowDataDBIndex, queryWithUniqueIDs, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get detailed customer data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get detailed customer data", http.StatusBadRequest, nil)
+		return
 	}
 
-	if len(dealerIn) > 16 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
+	// Loop through the detailedData fetched from the second query
+	for _, item := range detailedData {
+		if uniqueID, ok := item["unique_id"].(string); ok && uniqueID != "" {
+			// Check if the unique_id exists in the uniqueIDs map
+			if queryResults, found := uniqueIDs[uniqueID]; found {
+				// Loop through the slice of maps for each unique_id
+				for _, queryResult := range queryResults {
+					// Check and assign sale_date if it exists in the map
+					if saleDate, ok := queryResult["sale_date"].(time.Time); ok {
+						item["sale_date"] = saleDate
+					}
+
+					// Check and assign cancel_date if it exists in the map
+					if cancelDate, ok := queryResult["cancel_date"].(time.Time); ok {
+						item["cancelled_date"] = cancelDate
+					}
+
+					// Check and assign ntp_complete_date if it exists in the map
+					if ntpCompleteDate, ok := queryResult["ntp_complete_date"].(time.Time); ok {
+						item["ntp_complete_date"] = ntpCompleteDate
+					}
+
+					// Check and assign pv_completion_date if it exists in the map
+					if pvCompletionDate, ok := queryResult["pv_completion_date"].(time.Time); ok {
+						item["pv_completion_date"] = pvCompletionDate
+					}
+				}
+			} else {
+				log.FuncErrorTrace(0, "No data found for unique_id: %s", uniqueID)
+			}
 		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
+			log.FuncErrorTrace(0, "Invalid or missing unique_id in detailedData")
 		}
-		filtersBuilder.WriteString(dealerIn)
 	}
 
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
-	}
-	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
-
-	filters = filtersBuilder.String()
-	return filters, whereEleList
+	// Send the data as a response
+	RecordCount = int64(len(detailedData))
+	appserver.FormAndSendHttpResp(resp, "Detailed customer data", http.StatusOK, detailedData, RecordCount)
 }
 
 func FetchLeaderBoardDealerForAmAe(dataReq models.GetCsvDownload, userRole interface{}) ([]string, error) {

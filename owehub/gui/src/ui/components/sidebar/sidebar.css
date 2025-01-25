@@ -16,7 +16,6 @@
   scroll-behavior: smooth;
   height: calc(100vh - 63px);
   padding-bottom: 46px;
-  scrollbar-width: none;
 }
 
 .side-bar-container::-webkit-scrollbar {

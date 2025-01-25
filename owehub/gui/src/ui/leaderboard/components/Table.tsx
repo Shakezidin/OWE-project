@@ -494,22 +494,24 @@ const DateFilter = ({
           }}
         />
       </div>
-      <Tooltip
-        style={{
-          zIndex: 103,
-          background: '#f7f7f7',
-          color: '#000',
-          fontSize: 12,
-          paddingBlock: 4,
-          fontWeight: '400',
-        }}
-        offset={8}
-        id="lead-calendar"
-        place="bottom"
-        content="Calendar"
-        delayShow={200}
-        className="pagination-tooltip"
-      />
+      {!disabled && (
+        <Tooltip
+          style={{
+            zIndex: 103,
+            background: '#f7f7f7',
+            color: '#000',
+            fontSize: 12,
+            paddingBlock: 4,
+            fontWeight: '400',
+          }}
+          offset={8}
+          id="lead-calendar"
+          place="top"
+          content="Calendar"
+          delayShow={200}
+          className="pagination-tooltip"
+        />
+      )}
       <div
         ref={wrapperRef}
         className="leaderboard-data__datepicker-wrapper"

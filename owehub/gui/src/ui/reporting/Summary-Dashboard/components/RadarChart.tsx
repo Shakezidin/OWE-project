@@ -1,70 +1,118 @@
-import React from 'react'
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarAngleAxisProps, ResponsiveContainer, Legend } from 'recharts';
+import React from 'react';
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  ResponsiveContainer,
+  Legend,
+  PolarRadiusAxis,
+} from 'recharts';
+import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 
-const RadarChartComponenet = () => {
-  const data = [
-    {
-      subject: 'Project Sold',
-      Target: 150,
-      Achieve: 120,
-    },
-    {
-      subject: 'Batteries CT',
-      Target: 150,
-      Achieve: 98,
-    },
-    {
-      subject: 'mw Install',
-      Target: 150,
-      Achieve: 86,
-    },
-    {
-      subject: 'Install CT',
-      Target: 150,
-      Achieve: 99,
-    },
-    {
-      subject: 'mv Sold',
-      Target: 150,
-      Achieve: 85,
-    },
-  ];
+const RadarChartComponenet = ({ radData }: any) => {
+  
+  const data = radData
+    ? Object.entries(radData).map(([key, value]) => {
+      const target = (value as { target: number }).target;
+      const achieved = (value as { achieved: number }).achieved;
+      
+      let percentAchieved: number;
+
+      if (target === 0 && achieved > 0) {
+        percentAchieved = 100;
+      } else if (target === 0 && achieved === 0) {
+        percentAchieved = 0;
+      } else {
+        percentAchieved = (achieved / target) * 100;
+        percentAchieved = percentAchieved;
+      }
+      
+      let norm: number;
+
+      if (target === 0 && achieved > 0) {
+        norm = 100;
+      } else if (target === 0 && achieved === 0) {
+        norm = 0;
+      } else {
+        norm = (achieved / target) * 100;
+        norm = percentAchieved >= 100 ? 100 : percentAchieved;
+      }
+
+      return {
+        subject: key,
+        Target: (value as { target: number }).target,
+        Achieve: (value as { achieved: number }).achieved,
+        Percent_Achieve: percentAchieved,
+        Normalized_Achieve: norm,
+        show: true,
+        B: 100
+      };
+    })
+    : [];
+
+
+
+  const newData = [...data];
 
   const CustomTick = ({ payload, x, y, textAnchor }: any) => {
     const entry = data.find((item) => item.subject === payload.value);
     if (entry) {
-      const percentage = ((entry.Achieve / entry.Target) * 100).toFixed(1);
+      const percentage = entry.Percent_Achieve;
+      const formattedPercentage = percentage % 1 === 0 ? percentage.toFixed(0) : percentage.toFixed(2);
 
       return (
-        <text x={x} y={y} textAnchor={textAnchor}>
-          {/* Dot with custom color */}
-          <tspan fill="#377CF6" fontWeight="bold" fontSize="14px">● </tspan>
-          {/* Subject */}
-          <tspan fill="#767676" fontWeight="400" fontSize="12px">{payload.value}</tspan>
-          {/* Percentage */}
-          <tspan fill="#000000" fontWeight="500" fontSize="12px"> ({percentage}%)</tspan>
-        </text>
+        <g>
+          <text
+            x={x}
+            y={y - 15}
+            textAnchor={textAnchor}
+            style={{ fontSize: '12px' }}
+          >
+            <tspan fill="#377CF6" fontWeight="bold">●</tspan>
+            <tspan dx="2" fill="#000000" fontWeight="500">
+              {formattedPercentage}%
+            </tspan>
+          </text>
+          <text
+            x={x}
+            y={y + 5}
+            textAnchor={textAnchor}
+            fill="#767676"
+            style={{ fontSize: '12px', fontWeight: '400' }}
+          >
+            {payload.value}
+          </text>
+        </g>
       );
     }
     return null;
   };
 
+  const width = useWindowWidth();
+  const isMobile = width <= 767;
+  const isTablet = width <= 1024;
 
 
   return (
-
     <ResponsiveContainer width="100%" height="100%">
-      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-        <PolarGrid />
+      <RadarChart
+        cx="50%"
+        cy="50%"
+        outerRadius={(isTablet || isMobile) ? "65%" : "80%"}
+        data={newData}
+      >
+
+        <PolarGrid stroke='#D5E4FF' />
         <PolarAngleAxis
           dataKey="subject"
           tick={<CustomTick />}
         />
-
+        <Radar name="Lily" dataKey="B" stroke="#D5E4FF" fill="#fff" fillOpacity={0} />
         <Radar
           name="Achieve"
-          dataKey="Achieve"
+          dataKey="Normalized_Achieve"
           stroke="#377CF6"
           fill="#377CF6"
           fillOpacity={0.4}
@@ -91,11 +139,9 @@ const RadarChartComponenet = () => {
           )}
           iconSize={10}
         />
-
-
       </RadarChart>
     </ResponsiveContainer>
   );
-}
+};
 
-export default RadarChartComponenet
+export default RadarChartComponenet;

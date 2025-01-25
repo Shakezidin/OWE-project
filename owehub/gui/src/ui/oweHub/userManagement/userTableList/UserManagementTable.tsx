@@ -39,6 +39,7 @@ import Swal from 'sweetalert2';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
+import useAuth from '../../../../hooks/useAuth';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -54,6 +55,7 @@ interface UserTableProos {
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onClickMultiDelete: () => void;
   AddBtn?: React.ReactNode;
+  ImportBtn?: React.ReactNode;
   currentPage1: number;
   setCurrentPage1: React.Dispatch<SetStateAction<number>>;
   activeSalesRep: string;
@@ -72,6 +74,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   setSelectAllChecked,
   onClickMultiDelete,
   AddBtn,
+  ImportBtn,
   setCurrentPage1,
   currentPage1,
   searchTerm,
@@ -82,6 +85,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
+  const { authData, clearAuthData } = useAuth();
+
+  const userRole = authData?.role;
+ 
 
   const count = useAppSelector((state) => state.userManagement.totalCount);
   const { loading, dealerList, dealerCount } = useAppSelector(
@@ -462,6 +469,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               }}
             />
             {!activeSalesRep && <div>{AddBtn}</div>}
+            {userRole === TYPE_OF_USER.ADMIN &&  <div>{ImportBtn}</div>}
+
           </div>
 
           <div className="user_user-type">
@@ -524,6 +533,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 </div>
               </div>
             )}
+            
             <Tooltip
               style={{
                 zIndex: 103,
@@ -570,6 +580,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 />
               </svg>
             </button>
+           
           </div>
         </div>
       </div>

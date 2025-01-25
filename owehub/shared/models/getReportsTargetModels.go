@@ -9,9 +9,28 @@ package models
 // Get Reports Achieved (homepage) models
 
 type GetReportsTargetReq struct {
-	TargetType string `json:"target_type"`
-	Month      string `json:"month"`
-	Year       string `json:"year"`
+	TargetType       string `json:"target_type"`
+	TargetPercentage int    `json:"target_percentage"`
+	Month            string `json:"month"`
+	Year             string `json:"year"`
+	State            string `json:"state"`
+	AccountManager   string `json:"account_manager"`
+}
+
+type ProductionTargetOrAchievedItem struct {
+	ProjectsSold float64 `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    float64 `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  float64 `json:"batteries_ct"`
+}
+
+type ProductionTargetOrAchievedPercentage struct {
+	ProjectsSold float64 `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    float64 `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  float64 `json:"batteries_ct"`
 }
 
 type GetReportsTargetRespSummaryItem struct {
@@ -26,31 +45,44 @@ type GetReportsTargetRespProgressItem struct {
 	PercentageAchieved float64     `json:"percentage_achieved"`
 }
 
-type GetReportsTargetRespMonthlyItem struct {
+type GetReportsTargetRespOverviewItem struct {
 	Month    string      `json:"month"`
 	Target   interface{} `json:"target"`
-	Achieved interface{} `json:"achieved,omitempty"`
+	Achieved interface{} `json:"achieved"`
+}
+
+type GetReportsTargetRespStatsItem struct {
+	Month          string      `json:"month"`
+	Completed      interface{} `json:"completed,omitempty"`
+	Incomplete     interface{} `json:"incomplete,omitempty"`
+	Inprogress     interface{} `json:"in_progress,omitempty"`
+	MoreThanTarget interface{} `json:"more_than_target,omitempty"`
+	Target         interface{} `json:"target,omitempty"`
 }
 
 type GetReportsTargetResp struct {
-	Summary         map[string]GetReportsTargetRespSummaryItem   `json:"summary"`
-	Progress        map[string]GetReportsTargetRespProgressItem  `json:"progress"`
-	MonthlyOverview map[string][]GetReportsTargetRespMonthlyItem `json:"monthly_overview"`
+	Summary         map[string]GetReportsTargetRespSummaryItem  `json:"summary"`
+	Progress        map[string]GetReportsTargetRespProgressItem `json:"progress"`
+	MonthlyOverview []GetReportsTargetRespOverviewItem          `json:"monthly_overview"`
+	MonthlyStats    []GetReportsTargetRespStatsItem             `json:"monthly_stats"`
 }
 
 // Get production targets by year models
 
 type ProductionTargetsByYearReq struct {
-	Year int `json:"year"`
+	Year             int    `json:"year"`
+	TargetPercentage int    `json:"target_percentage"`
+	State            string `json:"state"`
+	AccountManager   string `json:"account_manager"`
 }
 
 type ProductionTargetsByYearRespItem struct {
 	Month        string  `json:"month"`
-	ProjectsSold int64   `json:"projects_sold"`
+	ProjectsSold float64 `json:"projects_sold"`
 	MwSold       float64 `json:"mw_sold"`
-	InstallCt    int64   `json:"install_ct"`
+	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
-	BatteriesCt  int64   `json:"batteries_ct"`
+	BatteriesCt  float64 `json:"batteries_ct"`
 }
 
 // Update production targets models
@@ -58,15 +90,18 @@ type ProductionTargetsByYearRespItem struct {
 type UpdateProductionTargetsReqItem struct {
 	Year         int     `json:"year"`
 	Month        int     `json:"month"`
-	ProjectsSold int64   `json:"projects_sold"`
+	ProjectsSold float64 `json:"projects_sold"`
 	MwSold       float64 `json:"mw_sold"`
-	InstallCt    int64   `json:"install_ct"`
+	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
-	BatteriesCt  int64   `json:"batteries_ct"`
+	BatteriesCt  float64 `json:"batteries_ct"`
 }
 
 type UpdateProductionTargetsReq struct {
-	Targets []UpdateProductionTargetsReqItem `json:"targets"`
+	TargetPercentage int                              `json:"target_percentage"`
+	Targets          []UpdateProductionTargetsReqItem `json:"targets"`
+	State            string                           `json:"state"`
+	AccountManager   string                           `json:"account_manager"`
 }
 
 // type MonthlyData struct {

@@ -1,77 +1,42 @@
 import React from 'react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, LabelList } from 'recharts';
 import styles from './style.module.css';
+import useWindowWidth from '../../../../hooks/useWindowWidth';
 
-const BarChartComp = () => {
-  const data = [
-    {
-      name: "Jan",
-      Target: 100,
-      Completed: 105,
-      "More than Target": 5,
-    },
-    {
-      name: "Feb",
-      Target: 120,
-      Completed: 100,
-    },
-    {
-      name: "Mar",
-      Target: 140,
-      Inprogress: 3,
-    },
-    {
-      name: "Apr",
-      Target: 160,
-      Incomplete: 8,
-    },
-    {
-      name: "May",
-      Target: 180,
-      Completed: 170,
-    },
-    {
-      name: "Jun",
-      Target: 200,
-      Completed: 190,
-    },
-    {
-      name: "Jul",
-      Target: 220,
-      Inprogress: 3,
-    },
-    {
-      name: "Aug",
-      Target: 240,
-      Completed: 230,
+const BarChartComp = ({ monthlyStatsData }: any) => {
+ 
+  const data = monthlyStatsData.map((item: any) => ({
+    name: item.month.slice(0, 3),
+    Target: item.target,
+    "Achieved": item.achieved,
+  }));
 
-    },
-    {
-      name: "Sep",
-      Target: 260,
-      Completed: 250,
+  const width = useWindowWidth();
+  const isMobile = width <= 767;
 
-    },
-    {
-      name: "Oct",
-      Target: 280,
-      Completed: 270,
-
-    },
-    {
-      name: "Nov",
-      Target: 300,
-      Completed: 290,
-
-    },
-    {
-      name: "Dec",
-      Target: 320,
-      Completed: 322,
-      "More than Target": 2,
-    },
-  ];
-
+  const formatLargeNumber = (value: number | undefined) => {
+    if (typeof value === 'number') {
+      if (isMobile) {
+        if (value >= 1000000) {
+          return (value / 1000000).toFixed(1) + 'M';
+        } else if (value >= 1000) {
+          return (value / 1000).toFixed(1) + 'K';
+        } else {
+          return value % 1 !== 0 ? value.toFixed(0) : value.toString();
+        }
+      } else {
+        if (value >= 1000000) {
+          return Math.round(value / 1000000) + 'M';
+        } else if (value >= 1000) {
+          return Math.round(value / 1000) + 'K';
+        } else {
+          return value.toString();
+        }
+      }
+    } else {
+      return '';
+    }
+  };
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -83,7 +48,7 @@ const BarChartComp = () => {
         className={styles.barChart}
         margin={{ top: 22, right: 18, left: 0, bottom: 0 }}
         stackOffset="sign"
-      
+        barSize={54}
       >
         <CartesianGrid
           vertical={false}
@@ -98,13 +63,15 @@ const BarChartComp = () => {
           tickSize={10}
           dy={4}
           interval={0} />
+
         <YAxis
           className={styles.axis}
           tickSize={10}
           tickLine={{ stroke: 'black', strokeWidth: 1 }}
+          tickFormatter={formatLargeNumber}
         />
         <Tooltip
-          cursor={{ fill: '#E7F0FF' }}
+          cursor={{ fill: '#F5F8FF' }}
           wrapperStyle={{
             outline: 'none',
             borderRadius: 4,
@@ -128,8 +95,10 @@ const BarChartComp = () => {
                     }}
                   />
                   <span style={{ color: '#292929', fontWeight: 500, fontSize: 12 }}>
-                    {`${entry.name}: ${entry.value}`}
+                    {`${entry.name}: ${entry.value !== undefined ? parseFloat(entry.value as string).toFixed(2) : '0.00'}`}
                   </span>
+
+
                 </div>
               ))}
             </div>
@@ -150,15 +119,53 @@ const BarChartComp = () => {
           )}
           wrapperStyle={{
             paddingBottom: '10px',
-            cursor: 'pointer',
           }}
         />
 
-        <Bar stackId="a" dataKey="Target" fill="#D5E4FF" />
-        <Bar stackId="a" dataKey="Completed" fill="#ABDB42" />
-        <Bar stackId="a" dataKey="Incomplete" fill='#EE4A3F' />
-        <Bar stackId="a" dataKey="Inprogress" fill="#4585F7" />
-        <Bar stackId="a" dataKey="More than Target" fill="#CBFF5C" />
+        <Bar dataKey="Target" fill="#4585F7">
+          <LabelList
+            dataKey="Target"
+            position="top"
+            formatter={(value: any) =>
+              value !== 0
+                ? typeof value === 'number'
+                  ? isMobile
+                    ? formatLargeNumber(value)
+                    : ((value % 1 !== 0) ? value.toFixed(2) : value)
+                  : value
+                : ''
+            }
+            style={{
+              fill: '#000',
+              fontSize: isMobile ? 6 : 12,
+              fontWeight: isMobile ? '300' : '400',
+              bottom: "14px"
+            }}
+          />
+        </Bar>
+
+        <Bar dataKey="Achieved" fill="#9DD428">
+          <LabelList
+            dataKey="Achieved"
+            position="top"
+            formatter={(value: any) =>
+              value !== 0
+                ? typeof value === 'number'
+                  ? isMobile
+                    ? formatLargeNumber(value)
+                    : ((value % 1 !== 0) ? value.toFixed(2) : value)
+                  : value
+                : ''
+            }
+            style={{
+              fill: '#000',
+              fontSize: isMobile ? 6 : 10,
+              fontWeight: isMobile ? '300' : '400',
+              marginBottom: "4px"
+            }}
+          />
+        </Bar>
+
 
       </BarChart>
     </ResponsiveContainer>
