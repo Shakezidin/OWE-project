@@ -763,6 +763,7 @@ useEffect(()=>{
   }, []);
 
   return (
+     
     <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">
