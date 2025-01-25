@@ -883,6 +883,41 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 	return PipelineDataQuery
 }
 
+func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	PipelineDataQuery := fmt.Sprintf(`
+        SELECT
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+	        cad.item_created_on AS cad_ready,
+	        cad.plan_set_complete_day AS cad_complete_date,
+	    CASE 
+		    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+			    AND survey.twond_visit_date IS NULL)
+			    THEN NULL
+		    WHEN survey.twond_visit_date IS NOT NULL
+			    THEN survey.twond_completion_date
+		    ELSE survey.survey_completion_date
+	    END AS survey_final_completion_date
+        FROM
+	        planset_cad_schema AS cad
+        LEFT JOIN
+	        customers_customers_schema AS cust ON cad.our_number = cust.unique_id
+        LEFT JOIN
+	        survey_survey_schema AS survey ON cad.our_number = survey.customer_unique_id
+        WHERE
+	        cad.active_inactive = 'Active'
+            AND cad.plan_set_status != 'Plan Set Complete'
+            AND cad.project_status IN (%v)
+            AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
+            AND cad.plan_set_version NOT IN (
+			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
+			    'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
+	            AND %v %v
+            ;`, projectStatus, filterUserQuery, searchValue)
+
+	return PipelineDataQuery
+}
+
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH queue_customers AS (
