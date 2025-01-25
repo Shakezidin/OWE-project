@@ -856,6 +856,33 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 	return PipelineTileDataQuery
 }
 
+func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	PipelineDataQuery := fmt.Sprintf(`
+        SELECT
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            cust.sale_date,
+            survey.original_survey_scheduled_date AS site_survey_scheduled_date,
+	        CASE 
+		        WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+			        AND survey.twond_visit_date IS NULL)
+			        THEN NULL
+		        WHEN survey.twond_visit_date IS NOT NULL
+			        THEN survey.twond_completion_date
+		        ELSE survey.survey_completion_date
+	        END AS survey_final_completion_date
+        FROM
+	        survey_survey_schema AS survey
+        LEFT JOIN
+	        customers_customers_schema AS cust ON survey.customer_unique_id = cust.unique_id
+        WHERE
+	        survey.project_status IN (%v) AND
+	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete')  AND
+	        %v %v;
+        `, projectStatus, filterUserQuery, searchValue)
+	return PipelineDataQuery
+}
+
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH queue_customers AS (

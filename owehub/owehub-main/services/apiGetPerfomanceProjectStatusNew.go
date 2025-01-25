@@ -142,7 +142,22 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
 
-	pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
+	//pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
+	switch dataReq.SelectedMilestone {
+	case "survey":
+		pipelineQuery = models.PipelineSurveyDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "cad":
+	case "permit":
+	case "roof":
+	case "install":
+	case "inspection":
+	case "activation":
+	default:
+		log.FuncErrorTrace(0, "Invalid Milestone %v selected", dataReq.SelectedMilestone)
+		appserver.FormAndSendHttpResp(resp, "Please select a valid milestone", http.StatusBadRequest, nil)
+		return
+	}
+
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
