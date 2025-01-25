@@ -105,14 +105,71 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		}
 	}
 
+	var dataTemp []map[string]interface{}
 	projectStatus := joinNames(dataReq.ProjectStatus)
-	pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter, projectStatus)
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	//pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter, projectStatus)
+	pipelineQuery = models.PipelineSurveyTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get perfomance survey tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance survey tile data", http.StatusBadRequest, nil)
 		return
 	}
+	data = append(data, dataTemp...)
+
+	pipelineQuery = models.PipelineCadTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance CAD tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance CAD tile data", http.StatusBadRequest, nil)
+		return
+	}
+	data = append(data, dataTemp...)
+
+	pipelineQuery = models.PipelinePermitTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance Permit tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance Permit tile data", http.StatusBadRequest, nil)
+		return
+	}
+	data = append(data, dataTemp...)
+
+	pipelineQuery = models.PipelineRoofingTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance Roofing tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance Roofing tile data", http.StatusBadRequest, nil)
+		return
+	}
+	data = append(data, dataTemp...)
+
+	pipelineQuery = models.PipelineInstallTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance Install tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance Install tile data", http.StatusBadRequest, nil)
+		return
+	}
+	data = append(data, dataTemp...)
+
+	pipelineQuery = models.PipelineInspectionTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance Inspection tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance Inspection tile data", http.StatusBadRequest, nil)
+		return
+	}
+	data = append(data, dataTemp...)
+
+	pipelineQuery = models.PipelineActivationTileData(roleFilter, projectStatus)
+	dataTemp, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance Activation tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance Activation tile data", http.StatusBadRequest, nil)
+		return
+	}
+	data = append(data, dataTemp...)
 
 	var performanceResponse models.PerfomanceTileDataResponse
 
