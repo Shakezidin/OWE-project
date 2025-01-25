@@ -76,6 +76,19 @@ const Summary_Dashboard = () => {
         })
         ),
     ];
+
+    // hardcoded list of ams'
+    const amOptions = [
+        {
+        label: 'OWE',
+        value: 'All',
+        },
+        ...['Taylor Ramsthel', 'Josh Morton', 'Adam Doty'].map((am) => ({
+        label: am,
+        value: am,
+        })),
+    ];
+
     const [am, setAM] = useState<Option[]>([]);
 
     const isShowDropdown = (role === 'Admin')
@@ -372,7 +385,7 @@ const Summary_Dashboard = () => {
                                 </div>
                                 {isShowDropdown &&
                                     <SelectOption
-                                        options={am}
+                                        options={amOptions}
                                         onChange={(value: any) => { setSelectedAm(value); setSelectedState({ label: 'All States', value: 'All' }) }}
                                         value={selectedAM}
                                         controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
