@@ -185,7 +185,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			 SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_installed
 		 FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
 		 WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
-		   AND P.PROJECT_STATUS != 'DUPLICATE'
+		   AND P.APP_STATUS != 'DUPLICATE'
 		   AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
 		   AND P.CUSTOMER_UNIQUE_ID != ''
 		   AND P.DEALER IN (SELECT DEALER FROM AM)
@@ -205,7 +205,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			 ) / LENGTH('enphase battery')) AS batteries_ct
 		 FROM NTP_NTP_SCHEMA AS N
 		 WHERE DATE_PART('YEAR', N.SALE_DATE) = $3
-		   AND N.PROJECT_STATUS != 'DUPLICATE'
+		   AND N.APP_STATUS != 'DUPLICATE'
 		   AND N.DEALER IN (SELECT DEALER FROM AM)
 		   AND N.STATE IN (SELECT STATES FROM STATES )
 		 GROUP BY month
