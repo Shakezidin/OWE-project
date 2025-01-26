@@ -139,7 +139,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	queueStatus = buildQueueStatus(dataReq.SelectedMilestone)
 	searchValue = ""
 	if len(dataReq.UniqueIds) > 0 {
-		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
+		searchValue = fmt.Sprintf(" AND (cust.customer_name ILIKE '%%%s%%' OR cust.unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
 
 	//pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
@@ -149,7 +149,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	case "cad":
 		pipelineQuery = models.PipelineCadDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
 	case "permit":
+		pipelineQuery = models.PipelinePermitDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
 	case "roof":
+		pipelineQuery = models.PipelineRoofingDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
 	case "install":
 	case "inspection":
 	case "activation":
