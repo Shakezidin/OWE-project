@@ -17,6 +17,15 @@ const SideContainer: React.FC = () => {
     { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
     { name: 'GreenTech Innovations', projectID: 'OUR 13669', address: '23 Green Valley, Nashville, TN 37080, United States' },
     { name: 'Bright Future Academy', projectID: 'OUR 13670', address: '45 Future Blvd, Hermitage, TN 37076, United States' },
+    { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
+    { name: 'GreenTech Innovations', projectID: 'OUR 13669', address: '23 Green Valley, Nashville, TN 37080, United States' },
+    { name: 'Bright Future Academy', projectID: 'OUR 13670', address: '45 Future Blvd, Hermitage, TN 37076, United States' },
+    { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
+    { name: 'GreenTech Innovations', projectID: 'OUR 13669', address: '23 Green Valley, Nashville, TN 37080, United States' },
+    { name: 'Bright Future Academy', projectID: 'OUR 13670', address: '45 Future Blvd, Hermitage, TN 37076, United States' },
+    { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
+    { name: 'GreenTech Innovations', projectID: 'OUR 13669', address: '23 Green Valley, Nashville, TN 37080, United States' },
+    { name: 'Bright Future Academy', projectID: 'OUR 13670', address: '45 Future Blvd, Hermitage, TN 37076, United States' },
     // Add more data here
   ];
 
