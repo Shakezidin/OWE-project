@@ -42,17 +42,18 @@ const Header = ({ onMenuSelect,setOpenRefresh }:any) => {
             Adders
           </li>
           <li
-            className={activeMenu === 'Notes' ? styles.active : ''}
-            onClick={() => handleMenuClick('Notes')}
-          >
-            Notes
-          </li>
-          <li
             className={activeMenu === 'Other' ? styles.active : ''}
             onClick={() => handleMenuClick('Other')}
           >
             Other
           </li>
+          <li
+            className={activeMenu === 'Notes' ? styles.active : ''}
+            onClick={() => handleMenuClick('Notes')}
+          >
+            Notes
+          </li>
+          
         </ul>
       </nav>
 
