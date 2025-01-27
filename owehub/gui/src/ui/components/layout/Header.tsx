@@ -49,7 +49,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isStaging = process.env.REACT_APP_ENV;
 
   const handleLogout = () => {
-    // clearAuthData();
     dispatch(logout());
     navigate('/login');
   };
@@ -120,13 +119,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               style={{
                 height: toggleOpen ? 30 : 45,
                 paddingLeft: toggleOpen ? 10 : '',
-                // marginInline: toggleOpen ? 'auto' : undefined,
               }}
             />
           )}
-          {/* {toggleOpen || isTablet ? null : (
-            <h3 style={{ color: 'black' }}>OWE HUB</h3>
-          )} */}
 
           {!isTablet && (
             <div
@@ -176,8 +171,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               alignSelf: 'center',
               display: isTablet ? 'flex' : 'none',
               alignItems: 'center',
-              // paddingLeft: toggleOpen ? 10 : '',
-              // marginInline: toggleOpen ? 'auto' : undefined,
             }}
           />
           <></>
@@ -191,8 +184,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             display: isTablet ? 'flex' : 'none',
             alignItems: 'center',
             paddingLeft: '1rem',
-            // paddingLeft: toggleOpen ? 10 : '',
-            // marginInline: toggleOpen ? 'auto' : undefined,
           }}
         />
       </div>

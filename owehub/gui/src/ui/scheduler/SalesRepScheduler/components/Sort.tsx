@@ -29,7 +29,10 @@ const Sort: React.FC<SortProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -43,27 +46,29 @@ const Sort: React.FC<SortProps> = ({
     setIsOpen(false);
   };
 
-  useEscapeKey(() => setIsOpen(false)); // Example usage
-
+  useEscapeKey(() => setIsOpen(false));
 
   return (
-    <div ref={dropdownRef} className={styles.sortContainer}
->
+    <div ref={dropdownRef} className={styles.sortContainer}>
       <div
-        className={`${styles.sortIcon} ${isOpen ? styles.active : ''}`}  data-tooltip-id="Sort"
+        className={`${styles.sortIcon} ${isOpen ? styles.active : ''}`}
+        data-tooltip-id="Sort"
         onClick={() => setIsOpen(!isOpen)}
       >
         <HiSortDescending size={19} />
-        {/* <span>{options.find(option => option.value === selectedValue)?.label}</span> */}
       </div>
       {isOpen && (
         <div className={styles.sortDropdown}>
           {options.map((option) => (
             <div
               key={option.value}
-              className={`${styles.sortOption} ${selectedValue === option.value ? styles.selected : ''}`} // Combine classes
+              className={`${styles.sortOption} ${selectedValue === option.value ? styles.selected : ''}`}
               onClick={() => handleSortChange(option.value)}
-              style={selectedValue === option.value ? selectedOptionStyle : optionStyle}
+              style={
+                selectedValue === option.value
+                  ? selectedOptionStyle
+                  : optionStyle
+              }
             >
               {option.label}
             </div>
@@ -71,14 +76,14 @@ const Sort: React.FC<SortProps> = ({
         </div>
       )}
 
-<Tooltip
+      <Tooltip
         style={{
           zIndex: 20,
           background: '#f7f7f7',
           color: '#000',
           fontSize: 12,
           paddingBlock: 4,
-          fontWeight: "400"
+          fontWeight: '400',
         }}
         offset={5}
         delayShow={300}

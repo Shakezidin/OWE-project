@@ -1,5 +1,4 @@
 .banner-main {
-  /* height: 165px; */
   padding: 1.5rem 0;
   width: 100%;
   overflow: hidden;
@@ -12,21 +11,16 @@
   padding: 0 8px;
 }
 
-.leaderboard-input::placeholder{
+.leaderboard-input::placeholder {
   color: var(--grey-border-color);
 }
 
 .upload-notice {
   color: #ff4d4d;
-  /* A softer red */
   font-size: 14px;
-  /* Makes it a bit larger than the default */
   font-weight: 500;
-  /* Adds some weight to the text */
   margin-top: 5px;
-  /* Adds space from elements above */
   display: block;
-  /* Ensures it stands out as a full line */
 }
 
 .bg-blue {
@@ -257,10 +251,12 @@
 
 .radiant-anime {
   position: absolute;
-  background-image: radial-gradient(farthest-corner at 40px 40px,
-      #f35 10%,
-      transparent 50%,
-      #43e 100%);
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    #f35 10%,
+    transparent 50%,
+    #43e 100%
+  );
   opacity: 0.7;
   filter: blur(40px);
   height: 100vh;
@@ -281,12 +277,14 @@
 
 .radiant-anime-2 {
   position: absolute;
-  background-image: radial-gradient(farthest-corner at 40px 40px,
-      #fdd68a 5%,
-      transparent 50%,
-      #11ff1b 100%,
-      #ffc805 100%,
-      #cefff0 100%);
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    #fdd68a 5%,
+    transparent 50%,
+    #11ff1b 100%,
+    #ffc805 100%,
+    #cefff0 100%
+  );
   opacity: 0.7;
   filter: blur(40px);
   height: 100vh;
@@ -444,7 +442,6 @@
 }
 
 @media (max-width: 400px) {
-
   .banner-left,
   .banner-right {
     padding-left: 10px !important;

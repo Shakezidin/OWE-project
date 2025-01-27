@@ -94,26 +94,6 @@ const QCModal: React.FC<TableProps> = ({
           </div>
           <div className="qc-modal-body">
             <div className="createQualCust">
-              {/* {qcData && (
-                <>
-                  {renderQCContent('PowerClerk Sent(AZ)', qcData.powerclerk_sent)}
-                  {renderQCContent(
-                    'ACH Waiver (Sent and Signed) (Cash Only)',
-                    qcData['ACH_waiver(sent_and_signed)(cash_only)']
-                  )}
-                  {renderQCContent('Green Area (NM Only)', qcData['green_area(nm_only)'])}
-                  {renderQCContent(
-                    'Finance Credit Approval (Loan or Lease)',
-                    qcData['finance_credit_approval(loan_or_lease)']
-                  )}
-                  {renderQCContent(
-                    'Finance Agreement Completed (Loan or Lease)',
-                    qcData['finance_agreement_completed(loan_or_lease)']
-                  )}
-                  {renderQCContent('OWE Documents Completed', qcData.OWE_documents_completed)}
-                </>
-              )} */}
-
               {qcData &&
                 Object.entries(qcData)
                   .filter(

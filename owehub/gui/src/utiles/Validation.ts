@@ -62,9 +62,6 @@ export const validateForm = (
     if (formData.report_to.length === 0) {
       errors.Report_Manager = true;
     }
-    //  else if (formData.team_name.length === 0) {
-    //   errors.Team_name = true;
-    // }
   }
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     if (formData.report_to.length === 0) {
@@ -77,7 +74,6 @@ export const validateForm = (
     }
   }
   // Add more validations for other fields
-
   return errors;
 };
 

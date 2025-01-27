@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-
 import '../../configure/configure.css';
 import './hooktable.css';
 import { FaArrowDown } from 'react-icons/fa6';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import DataTableHeader from '../../../components/tableHeader/DataTableHeader';
 import Pagination from '../../../components/pagination/Pagination';

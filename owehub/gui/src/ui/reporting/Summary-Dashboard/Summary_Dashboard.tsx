@@ -63,11 +63,36 @@ const Summary_Dashboard = () => {
 
     const [newFormData, setNewFormData] = useState<any>([]);
 
-    const [states, setStates] = useState<Option[]>([]);
+    // hardcoded list of states
+    const stateOptions = [
+        {
+        label: 'All States',
+        value: 'All',
+        },
+        ...['Colorado', 'Arizona', 'Texas', 'New Mexico', 'Nevada'].map(
+        (state) => ({
+            label: state,
+            value: state,
+        })
+        ),
+    ];
+
+    // hardcoded list of ams'
+    const amOptions = [
+        {
+        label: 'OWE',
+        value: 'All',
+        },
+        ...['Taylor Ramsthel', 'Josh Morton', 'Adam Doty'].map((am) => ({
+        label: am,
+        value: am,
+        })),
+    ];
+
     const [am, setAM] = useState<Option[]>([]);
 
     const isShowDropdown = (role === 'Admin')
-    // (role === 'Admin')
+    
     useEffect(() => {
         if (
             role === 'Admin' ||
@@ -99,14 +124,13 @@ const Summary_Dashboard = () => {
           ];
         const amData: Option[] = res?.data?.account_manager
             ? [
-                { label: "All AM's", value: 'All' },
+                { label: "OWE", value: 'All' },
                 ...(res.data.account_manager as string[]).map((state) => ({
                     label: state,
                     value: state,
                 }))
             ]
-            : [{ label: "All AM's", value: 'All' }];
-        setStates(statesData);
+            : [{ label: "OWE", value: 'All' }];
         setAM(amData);
         setDrop(false)
     };
@@ -116,12 +140,10 @@ const Summary_Dashboard = () => {
     );
 
     const [selectedAM, setSelectedAm] = useState<Option>(
-        { label: "All AM's", value: 'All' }
+        { label: "OWE", value: 'All' }
     );
 
-    console.log(selectedState, "selectedState")
-
-
+  
 
 
 
@@ -363,7 +385,7 @@ const Summary_Dashboard = () => {
                                 </div>
                                 {isShowDropdown &&
                                     <SelectOption
-                                        options={am}
+                                        options={amOptions}
                                         onChange={(value: any) => { setSelectedAm(value); setSelectedState({ label: 'All States', value: 'All' }) }}
                                         value={selectedAM}
                                         controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
@@ -379,8 +401,8 @@ const Summary_Dashboard = () => {
                             <div className={classes.sel_opt}>
                                 {isShowDropdown &&
                                     <SelectOption
-                                        options={states}
-                                        onChange={(value: any) => { setSelectedState(value); setSelectedAm({ label: "All AM's", value: 'All' }) }}
+                                        options={stateOptions}
+                                        onChange={(value: any) => { setSelectedState(value); setSelectedAm({ label: "OWE", value: 'All' }) }}
                                         value={selectedState}
                                         controlStyles={{ marginTop: 0, minHeight: 30, minWidth: isMobile ? 67 : 150 }}
                                         menuWidth={isMobile ? "120px" : "150px"}

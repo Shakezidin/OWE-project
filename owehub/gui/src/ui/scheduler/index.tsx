@@ -22,7 +22,15 @@ const Index = () => {
 
   return (
     <>
-      <div className={styles.firstDiv} style={{ marginLeft: '6px', marginTop: '6px', paddingRight: isMobile && !isClicked ? '23px': '' , paddingBottom: isMobile && !isClicked ? '0px': ''}}>
+      <div
+        className={styles.firstDiv}
+        style={{
+          marginLeft: '6px',
+          marginTop: '6px',
+          paddingRight: isMobile && !isClicked ? '23px' : '',
+          paddingBottom: isMobile && !isClicked ? '0px' : '',
+        }}
+      >
         <Breadcrumb
           head=""
           linkPara="Schedule"
@@ -31,13 +39,21 @@ const Index = () => {
           marginLeftMobile="12px"
         />
         {isMobile && !isClicked ? (
-          <div style={{ backgroundColor: !isClicked ? '#f5f5f5' : '' }} className={styles.pending_review_wrapper}>
+          <div
+            style={{ backgroundColor: !isClicked ? '#f5f5f5' : '' }}
+            className={styles.pending_review_wrapper}
+          >
             <PendingReview isClicked={isClicked} onToggleClick={handleClick} />
           </div>
-        ) : ''}
+        ) : (
+          ''
+        )}
       </div>
-      {isClicked ? (<PendingReview isClicked={isClicked} onToggleClick={handleClick} />): ''}
-       {/* <PendingReview isClicked={isClicked} onToggleClick={handleClick} /> */}
+      {isClicked ? (
+        <PendingReview isClicked={isClicked} onToggleClick={handleClick} />
+      ) : (
+        ''
+      )}
 
       <div className={`flex justify-between mt2 items-start`}>
         <div className={styles.customer_wrapper_list}>
@@ -69,7 +85,9 @@ const Index = () => {
           <div className={styles.pending_review_wrapper}>
             <PendingReview isClicked={isClicked} onToggleClick={handleClick} />
           </div>
-        ) : ''}
+        ) : (
+          ''
+        )}
       </div>
     </>
   );

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import BackButtom from '../components/BackButtom';
-import SelectOption from '../../components/selectOption/SelectOption';
 import MicroLoader from '../../components/loader/MicroLoader';
-import LineGraph from '../components/LineGraph';
 import './ahj.css';
 import AhjBarChart from './BarChart';
 import BelowUpChartAhj from './LineChart';
-import CustomMultiSelect from './CustomMultiSelect';
 import { reportingCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import YearSelect from '../components/Dropdowns/YearSelect';
 import DataNotFound from '../../components/loader/DataNotFound';
@@ -21,23 +18,21 @@ interface Option {
 interface ApiData {
   index: number;
   value: {
-    "Out of SLA"?: number;
-    "Within SLA"?: number;
+    'Out of SLA'?: number;
+    'Within SLA'?: number;
   };
 }
 
 interface SLAData {
-  "Out of SLA Count": number;
-  "Out of SLA Percentage": number;
-  "Within SLA Count": number;
-  "Within SLA Percentage": number;
+  'Out of SLA Count': number;
+  'Out of SLA Percentage': number;
+  'Within SLA Count': number;
+  'Within SLA Percentage': number;
 }
 
 interface ApiResponse {
   [key: string]: SLAData;
 }
-
-
 
 const Ahj = () => {
   const [reportType, setReportType] = useState<Option>({
@@ -47,7 +42,7 @@ const Ahj = () => {
   const stylesGraph = {
     width: '100%',
     height: '463px',
-    padding: "1rem"
+    padding: '1rem',
   };
 
   const [officeSelect, setOfficeSelect] = useState([]);
@@ -82,8 +77,9 @@ const Ahj = () => {
   const [selectedState, setSelectedState] = useState<Option[]>([]);
   const [selectedQuarter, setSelectedQuarter] = useState<Option[]>([]);
 
-  const [summaryResponse, setSummaryResponse] = useState<ApiResponse | null>(null);
-
+  const [summaryResponse, setSummaryResponse] = useState<ApiResponse | null>(
+    null
+  );
 
   const [selectedYear, setSelectedYear] = useState<Option>({
     label: '2024',
@@ -100,29 +96,27 @@ const Ahj = () => {
 
   const [isFetch, setIsFetch] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [breakdownData, setBreakDownData] = useState('')
+  const [breakdownData, setBreakDownData] = useState('');
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setBreakDownData('')
-  }
+    setBreakDownData('');
+  };
 
   const handleBoxClick = (key: any, type: any) => {
     setModalOpen(true);
-    setBreakDownData(`${type} ${key}`)
+    setBreakDownData(`${type} ${key}`);
   };
-  console.log(breakdownData, "clicked data");
+  console.log(breakdownData, 'clicked data');
 
   useEffect(() => {
-    setSelectedQuarter(QuarterSet)
+    setSelectedQuarter(QuarterSet);
     setSelectLoading(true);
     const fetchData = async () => {
       try {
         const response = await reportingCaller('get_offices_list', {});
 
-
         if (response.status === 200) {
-
           const officeData = response.data.offices.map((office: any) => ({
             label: office,
             value: office,
@@ -133,15 +127,15 @@ const Ahj = () => {
             label: state,
             value: state,
           }));
-          setSelectedState(stateData)
-          setStateSet(stateData)
+          setSelectedState(stateData);
+          setStateSet(stateData);
           const ahjData = response.data.ahj.map((ahj: any) => ({
             label: ahj,
             value: ahj,
           }));
-          setSelectedAhj(ahjData)
-          setAhj(ahjData)
-          setIsFetch(true)
+          setSelectedAhj(ahjData);
+          setAhj(ahjData);
+          setIsFetch(true);
         } else {
           console.error('Error fetching data:', response.data.message);
           setSelectLoading(false);
@@ -161,23 +155,22 @@ const Ahj = () => {
       const fetchData = async () => {
         try {
           const response = await reportingCaller('get_timeline_ahj_fifteen', {
-            "year": selectedYear.value,
-            "state": selectedState.map((item) => item.value),
-            "office": selectedOffices.map((item) => item.value),
-            "ahj": selectedAhj.map((item) => item.value),
-            "quarter": selectedQuarter.map((item) => Number(item.value))
+            year: selectedYear.value,
+            state: selectedState.map((item) => item.value),
+            office: selectedOffices.map((item) => item.value),
+            ahj: selectedAhj.map((item) => item.value),
+            quarter: selectedQuarter.map((item) => Number(item.value)),
           });
-
 
           if (response.status === 200) {
             setApiResponse(response.data.data['Percentage AHJ +15 Days SLA']);
-            setTotalResponse(response.data.data['Total AHJ +15 Days SLA'])
-            setSummaryResponse(response.data.summary)
+            setTotalResponse(response.data.data['Total AHJ +15 Days SLA']);
+            setSummaryResponse(response.data.summary);
 
             setLoading(false);
           } else {
             console.error('Error fetching data:', response.message);
-            toast.error(response.message)
+            toast.error(response.message);
             setLoading(false);
           }
         } catch (error) {
@@ -188,20 +181,32 @@ const Ahj = () => {
       };
       fetchData();
     }
-  }, [selectedOffices, selectedAhj, selectedState, selectedYear, selectedQuarter]);
-
+  }, [
+    selectedOffices,
+    selectedAhj,
+    selectedState,
+    selectedYear,
+    selectedQuarter,
+  ]);
 
   return (
     <>
-      <ProjectBreak isOpen1={false} handleClose={handleModalClose} breakdownData={breakdownData} />
+      <ProjectBreak
+        isOpen1={false}
+        handleClose={handleModalClose}
+        breakdownData={breakdownData}
+      />
       <div className="total-main-container">
         <div className="headingcount flex justify-between items-center">
           <BackButtom heading="AHJ +15 Days SLA" />
           <div className="report-header-dropdown flex-wrap">
-            {/* <div><DaySelect /></div> */}
             <div>
               <DropdownCheckBox
-                label={selectedOffices.length === 1 ? "1 Office" : `${selectedOffices.length} Offices`}
+                label={
+                  selectedOffices.length === 1
+                    ? '1 Office'
+                    : `${selectedOffices.length} Offices`
+                }
                 placeholder={'Search Offices'}
                 selectedOptions={selectedOffices}
                 options={officeSelect}
@@ -214,7 +219,7 @@ const Ahj = () => {
 
             <div>
               <DropdownCheckBox
-                label={"Quarter"}
+                label={'Quarter'}
                 placeholder={'Search Quarter'}
                 selectedOptions={selectedQuarter}
                 options={QuarterSet}
@@ -227,7 +232,11 @@ const Ahj = () => {
 
             <div>
               <DropdownCheckBox
-                label={selectedState.length === 1 ? "1 State" : `${selectedState.length} States`}
+                label={
+                  selectedState.length === 1
+                    ? '1 State'
+                    : `${selectedState.length} States`
+                }
                 placeholder={'Search States'}
                 selectedOptions={selectedState}
                 options={stateSet}
@@ -248,7 +257,11 @@ const Ahj = () => {
 
             <div>
               <DropdownCheckBox
-                label={selectedAhj.length === 1 ? "1 AHJ" : `${selectedAhj.length} AHJs`}
+                label={
+                  selectedAhj.length === 1
+                    ? '1 AHJ'
+                    : `${selectedAhj.length} AHJs`
+                }
                 placeholder={'Search AHJ'}
                 selectedOptions={selectedAhj}
                 options={ahj}
@@ -258,54 +271,62 @@ const Ahj = () => {
                 disabled={selectloading || loading}
               />
             </div>
-
           </div>
         </div>
 
         <div className="reports-yscroll">
-          {(loading || !isFetch) ? (
+          {loading || !isFetch ? (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <MicroLoader />
             </div>
           ) : totalResponse ? (
             <>
               <div className="ahj-box">
-                {summaryResponse && Object.entries(summaryResponse).map(([key, value]) => (
-                  <div key={key} className="ahj-box-first">
-                    <div
-                      className="ahj-box-first-green"
-                      onClick={() => handleBoxClick(key.toUpperCase(), 'Within SLA')}
-                    >
-                      <p>Within SLA % ({key.toUpperCase()})</p>
-                      <h4>{(value['Within SLA Percentage']).toFixed(2)}%</h4>
+                {summaryResponse &&
+                  Object.entries(summaryResponse).map(([key, value]) => (
+                    <div key={key} className="ahj-box-first">
+                      <div
+                        className="ahj-box-first-green"
+                        onClick={() =>
+                          handleBoxClick(key.toUpperCase(), 'Within SLA')
+                        }
+                      >
+                        <p>Within SLA % ({key.toUpperCase()})</p>
+                        <h4>{value['Within SLA Percentage'].toFixed(2)}%</h4>
+                      </div>
+                      <div
+                        className="ahj-box-first-green"
+                        onClick={() =>
+                          handleBoxClick(key.toUpperCase(), 'Within SLA')
+                        }
+                      >
+                        <p>Within SLA Count ({key.toUpperCase()})</p>
+                        <h4>{value['Within SLA Count'].toFixed(2)}</h4>
+                      </div>
+                      <div
+                        className="ahj-box-first-red"
+                        onClick={() =>
+                          handleBoxClick(key.toUpperCase(), 'Out of SLA')
+                        }
+                      >
+                        <p>Out of SLA % ({key.toUpperCase()})</p>
+                        <h4>{value['Out of SLA Percentage'].toFixed(2)}%</h4>
+                      </div>
+                      <div
+                        className="ahj-box-first-red"
+                        onClick={() =>
+                          handleBoxClick(key.toUpperCase(), 'Out of SLA')
+                        }
+                      >
+                        <p>Out of SLA Count ({key.toUpperCase()})</p>
+                        <h4>{value['Out of SLA Count'].toFixed(2)}</h4>
+                      </div>
                     </div>
-                    <div
-                      className="ahj-box-first-green"
-                      onClick={() => handleBoxClick(key.toUpperCase(), 'Within SLA')}
-                    >
-                      <p>Within SLA Count ({key.toUpperCase()})</p>
-                      <h4>{(value['Within SLA Count']).toFixed(2)}</h4>
-                    </div>
-                    <div
-                      className="ahj-box-first-red"
-                      onClick={() => handleBoxClick(key.toUpperCase(), 'Out of SLA')}
-                    >
-                      <p>Out of SLA % ({key.toUpperCase()})</p>
-                      <h4>{(value['Out of SLA Percentage']).toFixed(2)}%</h4>
-                    </div>
-                    <div
-                      className="ahj-box-first-red"
-                      onClick={() => handleBoxClick(key.toUpperCase(), 'Out of SLA')}
-                    >
-                      <p>Out of SLA Count ({key.toUpperCase()})</p>
-                      <h4>{(value['Out of SLA Count']).toFixed(2)}</h4>
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="report-graphs" >
+                <div className="report-graphs">
                   <p className="rep-graph-heading">Percentage</p>
                   <div
                     className="report-graph"
@@ -321,7 +342,6 @@ const Ahj = () => {
                     <div className="main-graph" style={stylesGraph}>
                       <AhjBarChart data={apiResponse} />
                       <p className="chart-info-report">Week</p>
-
                     </div>
                   </div>
                 </div>

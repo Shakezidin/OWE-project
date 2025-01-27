@@ -47,7 +47,6 @@
   width: 30px;
   justify-content: center;
   height: 30px;
-  /* padding: 6px 10px 6px 10px; */
   border-radius: 0.25rem !important;
   cursor: pointer;
   border-radius: 2px;
@@ -70,7 +69,6 @@
   width: 30px;
   justify-content: center;
   height: 30px;
-  /* padding: 0rem 1rem 0rem 1rem; */
   border-radius: 2px;
 }
 .current-btn {
@@ -121,7 +119,6 @@
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
-  /* padding: 6px 12px; */
   min-width: 44px;
   min-height: 31.1px;
   text-align: center;

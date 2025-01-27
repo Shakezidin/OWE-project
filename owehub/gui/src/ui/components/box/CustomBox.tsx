@@ -6,9 +6,7 @@ interface CustomBoxProps {
   description: string;
   onClick: any;
 }
-/**
- * Custom box for image and text
- */
+
 const CustomBox = (props: CustomBoxProps) => {
   const { icon, title, description, onClick } = props;
   return (

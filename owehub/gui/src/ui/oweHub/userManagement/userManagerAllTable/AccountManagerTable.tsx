@@ -17,7 +17,6 @@ interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
-
   selectAllChecked: boolean;
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
@@ -29,7 +28,6 @@ interface UserTableProps {
 const AccountManagerTable: React.FC<UserTableProps> = ({
   data,
   onClickDelete,
-  onClickEdit,
   selectAllChecked,
   selectedRows,
   setSelectedRows,
@@ -150,7 +148,6 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
                       disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
-
                         toggleRowSelection(
                           i,
                           selectedRows,
@@ -163,8 +160,6 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
-                {/* <td>{el.role_name}</td> */}
-                {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
                   <td>{el.dealer_owner ? el.dealer_owner : 'NA'}</td>
                 )}

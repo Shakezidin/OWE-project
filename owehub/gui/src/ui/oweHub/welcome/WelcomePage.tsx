@@ -8,7 +8,6 @@
 
 import React, { useState } from 'react';
 import './WelcomePage.css';
-// import LogoImage from "../../../resources/assets/logo.png";
 import LaptopImage from '../../../resources/assets/laptop.svg';
 import { ReactComponent as CallIcon } from '../../../resources/assets/phone-fill.svg';
 import CustomBox from '../../components/box/CustomBox';
@@ -34,7 +33,6 @@ import { ReactComponent as Twitter } from '../../../resources/assets/twitter.svg
 import { ReactComponent as YouTube } from '../../../resources/assets/youTube.svg';
 import { ReactComponent as Instagram } from '../../../resources/assets/Instagram.svg';
 import BusinessLogo from '../../../resources/assets/business_logo.svg';
-
 import Typewriter from '../../components/animation/Typewriter';
 
 export const WelcomePage = () => {
@@ -234,29 +232,7 @@ export const WelcomePage = () => {
                 handleTabClick={(e) => handleTabClick(e)}
               />
             </div>
-            {/* <br /> */}
             <div className="landing-table">
-              {/* <table>
-                <tbody>
-                  <tr>
-                    {data.map((item) => (
-
-                      <td key={item.id}>
-                        <div className="table-box">
-                          <div className="welcomeRowTitle">{item.title}</div>
-                          <div>
-                            <span className="welcomeRowStep">{item.step}</span>{" "}
-                            <span className="welcomeRowTime">{item.time}</span>
-                          </div>
-                          <div className="welcomeRowDescription">
-                            {item.description}
-                          </div>
-                        </div>
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table> */}
               {data.map((item) => (
                 <div key={item.id}>
                   <div className="table-box">

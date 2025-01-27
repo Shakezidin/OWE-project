@@ -75,30 +75,15 @@ const ResetPassword = () => {
             Our World Revolves Around Powering Yours
           </p>
           <div className={'hrLine'} />
-          {/* <span className={'loginNormalTextDescription'}>
-            {'YOUR TRUSTED SOLAR EXPERTS'}
-          </span> */}
         </div>
 
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleEmailSubmit(e)}>
             <div className="loginTextView">
-              {/* <object
-                type="image/svg+xml"
-                className="loginImageLogo"
-                data={ICONS.LOGO}
-                aria-label="login-icon"
-                height={60}
-              ></object> */}
               <div className="loginLogowithText">
                 <LOGO_SMALL />
                 <span className={'loginHeader'}>OWE HUB</span>
               </div>
-              {/* <div className="loginUnderLine">
-                <UNDER_LINE />
-              </div> */}
-              {/* <span className="loginLogText">Enter Your Email Address</span> */}
-
               <div className="mt3 reset-input-wrap">
                 <Input
                   type={'text'}

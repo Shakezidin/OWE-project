@@ -37,13 +37,13 @@ const MainLayout = () => {
 
   const getToken = async () => {
     try {
-      const response = await postCaller("get_graph_api_access_token", {});
+      const response = await postCaller('get_graph_api_access_token', {});
       const token = await response.data.access_token;
       const tokenDuration = await response.data.expires_in;
-      const expTime = new Date(Date.now() + 100)
-      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60))
-      Cookies.set('myToken', token, { expires: expTime, path: "/" });
-      dispatch(setToken(token))
+      const expTime = new Date(Date.now() + 100);
+      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60));
+      Cookies.set('myToken', token, { expires: expTime, path: '/' });
+      dispatch(setToken(token));
     } catch (error) {
       console.error(error);
     }
@@ -52,9 +52,9 @@ const MainLayout = () => {
   useEffect(() => {
     const token = Cookies.get('myToken');
     if (!token) {
-      getToken()
+      getToken();
     }
-  }, [pathname])
+  }, [pathname]);
 
   /** logout  */
   const logoutUser = (message?: string) => {
@@ -125,9 +125,6 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
-      {/* {isStaging === 'staging' ? (
-        <ChatSupport isAuthenticated={isAuthenticated} />
-      ) : null} */}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}

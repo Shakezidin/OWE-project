@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
-import Switch from '../../components/Switch';
+
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
@@ -52,7 +52,6 @@ const PendingQueue = () => {
           selected_pending_stage: active,
           unique_ids: [debouncedSearch],
         });
-
         if (data.status > 201) {
           toast.error(data.message);
           return;
@@ -72,7 +71,6 @@ const PendingQueue = () => {
     if (status === 'Pending (Action Required)') {
       return styles.action_required_card;
     }
-
     switch (status) {
       case 'Pending':
         return styles.warning_card;
@@ -84,7 +82,6 @@ const PendingQueue = () => {
   };
 
   const totalPages = Math.ceil(totalcount / itemsPerPage);
-
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
 
@@ -93,19 +90,7 @@ const PendingQueue = () => {
       <div
         style={{ borderRadius: 16 }}
         className="flex items-center bg-white px2 justify-between"
-      >
-        {/* <div className="flex items-center">
-       
-          <Switch checked={pre} onChange={() => {
-            if (pre && active === 'qc') {
-              setActive('ntp')
-            }
-            setPre(prev => !prev)
-
-          }} />
-             <label htmlFor="" className='ml2'>Pre Sales</label>
-        </div> */}
-      </div>
+      ></div>
       {
         <div
           className={` ${pre ? styles.grid_3 : styles.grid_2} ${styles.pending_card_wrapper}`}
@@ -175,10 +160,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                        setActive('qc');
-                        setPage(1);
-                        setSearch('');
-                      }
+                          setActive('qc');
+                          setPage(1);
+                          setSearch('');
+                        }
                       : undefined
                   }
                 >
@@ -264,10 +249,12 @@ const PendingQueue = () => {
                 name="Search for Unique ID or Name"
                 onChange={(e) => {
                   const input = e.target.value;
-                  const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+                  // Allow only alphanumeric and spaces
+                  const regex = /^[a-zA-Z0-9\s]*$/;
 
                   if (regex.test(input)) {
-                    setSearch(input); // Only update state if input is valid
+                    // Only update state if input is valid
+                    setSearch(input);
                   }
                 }}
               />
@@ -304,7 +291,10 @@ const PendingQueue = () => {
                 dataPending.map((item: any, index: number) => (
                   <tr key={index}>
                     <td style={{ padding: '0px' }}>
-                      <div className="milestone-data" style={{paddingBottom: "1.5rem"}}>
+                      <div
+                        className="milestone-data"
+                        style={{ paddingBottom: '1.5rem' }}
+                      >
                         <Link
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
@@ -373,7 +363,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                        'Pending (Action Required)'
+                                      'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'
@@ -418,13 +408,13 @@ const PendingQueue = () => {
             <>
               <p className="page-heading">
                 Showing {startIndex} -{' '}
-                {endIndex > totalcount ? totalcount : endIndex} of{' '}
-                {totalcount} item
+                {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
+                item
               </p>
 
               <Pagination
                 currentPage={page}
-                totalPages={totalPages} // You need to calculate total pages
+                totalPages={totalPages}
                 paginate={(num) => setPage(num)}
                 currentPageData={dataPending}
                 goToNextPage={() => setPage(page + 1)}

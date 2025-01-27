@@ -32,7 +32,7 @@
   font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
-  border-radius: 50%; 
+  border-radius: 50%;
   transform: rotate(90deg);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: #377cf6;
@@ -47,7 +47,7 @@
 
 }
 
-.filtericonLead{
+.filtericonLead {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +55,7 @@
   padding: 8px;
   border-radius: 6px;
   cursor: pointer;
-  border-radius: 8px; 
+  border-radius: 8px;
   height: 36px;
   width: 36px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -84,7 +84,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
   width: 120px !important;
-  /* border-radius: 5px; */
 }
 
 
@@ -101,25 +100,15 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: normal;
-  /* text-align: justify !important; */
   width: 120px;
-  word-wrap: break-word; /* Ensures long words break into new lines */
-  white-space: normal; /* Allows text to wrap to the next line */
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .dropdownItem:hover {
   background-color: #d6e5ff;
-  /* border-radius: 4px; */
 }
 
-/* .selected {
-  background-color: #377cf6;
-  color: #ffffff;
-}
-.selected:hover {
-  background-color: #377cf6;
-  color: #ffffff;
-} */
 .selectedFilter {
   font-size: 12px;
   color: #000 !important;
@@ -132,7 +121,7 @@
   color: #fff !important;
   background-color: #377cf6 !important;
 }
-/* //////////////////////////////////////////////////////////////////////////////////////////////////// */
+
 
 .filtericonHistory {
   display: flex;
@@ -142,12 +131,13 @@
   border-radius: 50%;
   border: 1.2px solid #377cf6;
   cursor: pointer;
-  /* transition: all 0.3s ease; */
 }
+
 .filtericonHistory:hover {
   background-color: #ddebff;
   transform: scale(1.05);
 }
+
 .ICONSTYLETHREEDOT {
   width: auto;
   height: auto;
@@ -155,13 +145,16 @@
   align-items: center;
   justify-content: center;
 }
-.disabled{
+
+.disabled {
   color: grey !important;
   cursor: not-allowed !important;
 }
-.disabled:hover{
+
+.disabled:hover {
   background-color: #fff;
 }
+
 /* HERE FOR RESPONSIVESNESS */
 
 @media screen and (max-width: 1200px) {
@@ -170,30 +163,28 @@
   }
 }
 
-
-
-
 @media screen and (max-width: 768px) {
 
-.filtericonLead{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px; 
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  color: #ffffff;
-  background-color: #377cf6;
-  border: 1px solid #377cf6;
-  font-weight: 500;
-  margin-left: 8px;
-  transition: all 0.3s ease;
-}
-.filtericonLead:hover {
-  background-color: #4062CA;
-  transform: scale(1.05);
-}
+  .filtericonLead {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
+    background-color: #377cf6;
+    border: 1px solid #377cf6;
+    font-weight: 500;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .filtericonLead:hover {
+    background-color: #4062CA;
+    transform: scale(1.05);
+  }
 
 }
 
@@ -209,8 +200,6 @@
     border-radius: 50%;
     border: 1.2px solid #377cf6;
     cursor: pointer;
-
-    /* .buttonGroup INSIDE THIS GROUP WIDTH IS ALSO REMOVE */
   }
 
   .ICONSTYLETHREEDOT {
@@ -221,6 +210,7 @@
     justify-content: center;
   }
 }
+
 @media only screen and (min-width: 460px) and (max-width: 768px) {
   .filtericonHistory {
     display: flex;
@@ -233,6 +223,7 @@
     border: 1.2px solid #377cf6 !important;
     cursor: pointer;
   }
+
   .ICONSTYLETHREEDOT {
     width: auto;
     height: auto;
@@ -263,7 +254,6 @@
 .DropActionX:hover {
   transition: all 0.3s ease;
   background-color: #4062CA;
-
   transform: scale(1.05);
 }
 
@@ -288,7 +278,7 @@
     font-weight: 600;
     transition: all 0.3s ease;
   }
-  
+
   .DropActionX:hover {
     transition: all 0.3s ease;
     transform: scale(1.05);
@@ -303,14 +293,14 @@
     padding: 8px 8px;
     border-radius: 6px;
     cursor: pointer;
-    border-radius: 50%; 
+    border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     color: #377cf6;
     background-color: transparent;
     border: 1px solid #377cf6;
     transition: all 0.3s ease;
   }
-  
+
   .verticalDots2:hover {
     background-color: #d6e5ff;
     transform: scale(1.05);
@@ -318,33 +308,37 @@
 }
 
 @media (max-width:968px) {
-  
-  .mobile_tooltip{
+
+  .mobile_tooltip {
     display: none !important;
   }
 }
+
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
-  .filtericonLead{
+  .filtericonLead {
     height: 36px !important;
     width: 36px !important;
     border-radius: 8px !important;
     margin-left: 11px;
   }
 }
-@media only screen and (min-width: 540px) and (max-width: 555px) {
-  
-.filtericonLead{
-  width: 36px !important;
-  height: 36px !important;
 
+@media only screen and (min-width: 540px) and (max-width: 555px) {
+
+  .filtericonLead {
+    width: 36px !important;
+    height: 36px !important;
+
+  }
 }
-}
+
 @media only screen and (min-width: 340px) and (max-width: 539px) {
-  .filtericonLead{
+  .filtericonLead {
     width: 30px !important;
     height: 30px !important;
-  
+
   }
+
   .export_btn {
     width: 40px !important;
     height: 40px !important;

@@ -80,7 +80,8 @@
   word-wrap: break-word;
   white-space: normal;
 }
-.topdived p{
+
+.topdived p {
   font-size: 12px;
   font-weight: 400;
   color: #3e3e3e;
@@ -88,12 +89,14 @@
   word-wrap: break-word;
   white-space: normal;
 }
-.topdived{
+
+.topdived {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
+
 .TableContainer1 table tbody tr:hover {
   background-color: transparent !important;
 }
@@ -142,60 +145,51 @@
   background-color: #ddebff;
   transform: scale(1.05);
 }
+
 .EditPenIcon {
   margin-left: 20px;
-  padding: 8px; 
-  width: 14px; 
-  height: 14px; 
+  padding: 8px;
+  width: 14px;
+  height: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: #D7E5FD;
-  box-sizing: content-box; 
+  box-sizing: content-box;
   border-radius: 6px;
   cursor: pointer;
 }
+
 .SignEditBottonX {
   margin-left: 20px;
-  padding: 8px; 
-  width: 14px; 
-  height: 14px; 
+  padding: 8px;
+  width: 14px;
+  height: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: #377CF6;
-  box-sizing: content-box; 
+  box-sizing: content-box;
   border-radius: 6px;
   cursor: pointer;
 }
 
-.EditPenIcon img{
+.EditPenIcon img {
   transition: all 0.3s ease;
 }
 
-.SignEditBottonX img{
-  transition: all 0,3s ease;
+.SignEditBottonX img {
+  transition: all 0, 3s ease;
 }
-.SignEditBottonX img:hover{
-  transform: scale(1.05);
-}
-.EditPenIcon img:hover{
+
+.SignEditBottonX img:hover {
   transform: scale(1.05);
 }
 
-/* .CheckboxContainer { 
-  margin-left: 20px;
- 
+.EditPenIcon img:hover {
+  transform: scale(1.05);
 }
-.CheckboxContainer input[type='checkbox'] {
-  width: 18px !important;
-  height: 18px !important;
-  border-radius: 100px;
-  border: 1px solid #797979;
-  cursor: pointer;
-  transition: border 0.2s ease
- 
-} */
+
 .prop_send {
   display: flex;
   flex-direction: row;
@@ -241,22 +235,17 @@
   text-decoration: underline;
 }
 
-/* .slidebutton::after{
-    padding-top: 15px;
-    padding-bottom: 15px;
-} */
-
 .progress_status span {
   width: 119px;
   word-wrap: break-word;
   white-space: normal;
 }
+
 .progress_status {
   text-align: center;
 }
 
 @media (max-width: 600px) {
-
   .infoIcon {
     padding: 6px 6px;
     border-radius: 50%;
@@ -267,20 +256,23 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
+
   .FixedColumnMobile {
     position: sticky;
     right: -1px;
     display: table-cell;
     padding: 10px 5px 0 5px !important;
     border-left: 1.5px solid #E5E5E5;
-    border-bottom: 0.7px solid #E5E5E5; 
- 
+    border-bottom: 0.7px solid #E5E5E5;
+
   }
+
   .RowMobile {
     display: flex;
     flex-direction: row;
     right: 0;
   }
+
   .RowMobileTwo {
     padding-top: 8px;
     display: flex;
@@ -301,16 +293,16 @@
     border-radius: 6px;
     padding: 6px 12px;
     min-width: 91px;
-    
+
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-left: 10px;
   }
-  
+
 }
 
-.topofinfo{
+.topofinfo {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -332,11 +324,12 @@
   border: none;
   border-bottom: 1px solid #404040;
 }
+
 .dropdownContainerModal input:focus {
   outline: none;
 }
 
-.qcbuttoncont{
+.qcbuttoncont {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -351,16 +344,19 @@
   margin-top: 2px;
   transition: all 0.3s ease;
 }
-.qcbuttoncont p{
+
+.qcbuttoncont p {
   font-size: 12px;
   font-weight: 500;
 }
-.qcstaus{
+
+.qcstaus {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.qcactstatus{
+
+.qcactstatus {
   display: flex;
   justify-content: center;
   align-items: center;

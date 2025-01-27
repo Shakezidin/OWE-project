@@ -8,7 +8,7 @@
 }
 
 .form_conatiner::-webkit-scrollbar {
-  display: block !important; 
+  display: block !important;
 }
 
 .header_title {
@@ -216,7 +216,7 @@
     margin-inline: 12px;
   }
 
-  .calendar_h3{
+  .calendar_h3 {
     font-weight: 600;
     font-size: 16px;
     line-height: 24px;

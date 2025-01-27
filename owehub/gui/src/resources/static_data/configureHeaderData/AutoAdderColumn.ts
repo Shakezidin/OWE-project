@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const AutoAdderColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   { name: 'type', displayName: 'Type', type: 'string', isCheckbox: true },
   { name: 'gc', displayName: 'GC', type: 'string', isCheckbox: false },
   { name: 'exact', displayName: 'Exact', type: 'string', isCheckbox: false },

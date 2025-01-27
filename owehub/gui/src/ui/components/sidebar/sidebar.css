@@ -124,8 +124,6 @@
 }
 
 .side-bar-logo img {
-  /* width: 31px;
-  height: 31px; */
   width: auto;
   height: 45px;
   transform: scale(1.2);
@@ -170,7 +168,7 @@
   color: var(--input-border-color) !important;
 }
 
-.icon-shape:hover svg{
+.icon-shape:hover svg {
   color: var(--white-color) !important;
 }
 
@@ -236,12 +234,6 @@
   background: #ddebff;
 }
 
-/* .side-icon-container:hover svg,
-.side-icon-container:hover .side-icon-db,
-.side-icon-container:hover .tablinkk,
-.side-icon-container:hover p {
-  color: var(--coloumn-text-color) !important;
-} */
 .sidebar-small {
   display: flex;
   align-items: center;

@@ -165,7 +165,6 @@ const UserTable: React.FC<UserTableProps> = ({
                       disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
-
                         toggleRowSelection(
                           i,
                           selectedRows,
@@ -181,6 +180,11 @@ const UserTable: React.FC<UserTableProps> = ({
                 {selectedValue === TYPE_OF_USER.ALL && (
                   <td>{el.role_name ? el.role_name : 'NA'}</td>
                 )}
+                {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
+                  <td>{el.dealer ? el.dealer : 'NA'}</td>
+                )}
+                <td>{el.email_id}</td>
+                <td>{el.mobile_number}</td>
 
                 <td>{el.email_id}</td>
 

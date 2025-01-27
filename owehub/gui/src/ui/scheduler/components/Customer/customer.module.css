@@ -120,7 +120,6 @@
   color: #4372e9;
 }
 
-
 @media only screen and (max-width: 450px) {
   .customer_wrapper .customer_grid {
     display: grid;
@@ -128,33 +127,30 @@
     align-items: center;
   }
 
-  
-  .other_info_grid{
+  .other_info_grid {
     display: flex;
     flex-direction: row;
     gap: 44px;
   }
 
-  .mail_mobile{
+  .mail_mobile {
     display: flex !important;
     flex-direction: row !important;
   }
 
-  .customer_name{
+  .customer_name {
     font-size: 12px;
     font-weight: 600;
   }
 
-  .name_customer{
+  .name_customer {
     font-size: 14px !important;
-
   }
-  .primary_btn{
+  .primary_btn {
     margin-top: 24px;
-
   }
 
-  .appointment_status{
+  .appointment_status {
     font-size: 14px;
     font-weight: 600;
   }
@@ -163,12 +159,4 @@
     font-size: 12px;
     font-weight: 500;
   }
-/* 
-  .wrapper_map{
-    display: flex;
-    flex-direction: column-reverse;
-
-  } */
-
-
 }

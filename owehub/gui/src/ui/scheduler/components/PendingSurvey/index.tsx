@@ -5,7 +5,6 @@ import { TbChevronDown } from 'react-icons/tb';
 import { BiPhone } from 'react-icons/bi';
 import { CiMail } from 'react-icons/ci';
 import { IoLocationOutline } from 'react-icons/io5';
-import { LuClock } from 'react-icons/lu';
 import roofIcon from '../../../../resources/assets/roof_top.svg';
 import { ICONS } from '../../../../resources/icons/Icons';
 const Index = () => {

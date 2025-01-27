@@ -1,7 +1,9 @@
-
 .folderMain_wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Number of boxes per row */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(150px, 1fr)
+  ); /* Number of boxes per row */
   gap: 30px; /* Reduced gap */
   padding-inline: 24px;
   background-color: #ffffff;
@@ -12,7 +14,7 @@
 
 .folderMain_wrapperr {
   display: grid;
-  grid-template-columns: repeat(5,1fr); /* Number of boxes per row */
+  grid-template-columns: repeat(5, 1fr); /* Number of boxes per row */
   gap: 30px; /* Reduced gap */
   padding-inline: 24px;
   background-color: #ffffff;
@@ -21,7 +23,7 @@
   padding-bottom: 10px;
 }
 .folderDiv {
- width: 100%;
+  width: 100%;
 }
 .videoImage_wrapper {
   position: relative;
@@ -40,7 +42,7 @@
   align-items: center;
   justify-content: center;
   position: absolute;
- inset: 0;
+  inset: 0;
   visibility: hidden;
   transition: all 400ms;
   display: none;
@@ -49,13 +51,13 @@
   visibility: visible;
   cursor: pointer;
 }
-.transparent_play_botton{
-  height:90px;
-  width:90px;
+.transparent_play_botton {
+  height: 90px;
+  width: 90px;
 }
 .videosview_images {
   width: 100%;
-  height:  108px;
+  height: 108px;
   max-width: 280px;
   object-fit: cover;
   border-radius: 6px;
@@ -63,12 +65,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #F2F2F2;
-  
+  background-color: #f2f2f2;
 }
 
 .video_time {
-  
   border-radius: 4px;
   cursor: pointer;
   position: absolute;
@@ -106,7 +106,6 @@
   font-family: 'Inter';
   font-weight: 500;
   font-size: 12px;
-  /* line-height: 20px; */
 }
 .videoInfo_wrapper {
   display: flex;
@@ -147,36 +146,34 @@
   width: 0.9px;
 }
 
-.videos_LineVertical{
+.videos_LineVertical {
   color: rgb(16, 24, 40);
- 
-  
 }
 
-.vidTextWrapper{
+.vidTextWrapper {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   width: 100%;
   max-width: 280px;
   align-items: center;
 }
 
-.vidIcons{
+.vidIcons {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 40px;
   transition: all 300ms ease;
 }
-.icons_delete{
+.icons_delete {
   transition: all 300ms ease;
 }
-.icons_delete:hover{
+.icons_delete:hover {
   transform: scale(1.1);
 }
-.icons_download{
+.icons_download {
   transition: all 300ms ease;
 }
-.icons_download:hover{
+.icons_download:hover {
   transform: scale(1.1);
 }

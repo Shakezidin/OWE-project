@@ -43,7 +43,6 @@ interface Endpoints {
   create_autoadder: string;
   create_repaysettings: string;
   create_rateadjustments: string;
-
   get_newFormData: string;
   update_commission: string;
   update_autoadder: string;

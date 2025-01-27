@@ -8,8 +8,7 @@ import { ICONS } from '../../../resources/icons/Icons';
 import './dashboard.css';
 import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
-import { ROUTES } from '../../../routes/routes';
-import { useParams, useLocation, Routes } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdOutlineDone } from 'react-icons/md';
@@ -22,13 +21,6 @@ import { showAlert } from '../../components/alert/ShowAlert';
 import { checkLastPage } from '../../../utiles';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import useAuth from '../../../hooks/useAuth';
-
-interface User {
-  name: string;
-  phoneNumber: string;
-  emailId: string;
-  nameRemoved: string;
-}
 
 const TeamTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);

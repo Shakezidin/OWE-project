@@ -25,6 +25,7 @@
   cursor: pointer;
   transition: transform 0.3s ease;
 }
+
 .share-button:hover {
   transform: scale(1.05);
   background: #ec9d76;
@@ -143,6 +144,7 @@
 .below-des {
   overflow: hidden;
 }
+
 .card-title h2,
 .below-section p {
   overflow: hidden;
@@ -200,6 +202,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -244,10 +247,12 @@
 .collapse-btn {
   display: none;
 }
+
 @media (max-width: 968px) {
   .sm-hide {
     display: none !important;
   }
+
   .collapse-btn {
     display: block;
     width: 28px;
@@ -258,16 +263,19 @@
     color: #fff;
     border-radius: 50%;
   }
+
   .performance-cards .cards {
     column-gap: 3rem;
   }
 }
+
 .absolute-img {
   position: absolute;
   top: 15px;
   left: 50%;
   transform: translateX(-50%);
 }
+
 @media screen and (max-width: 767px) {
   .performance-cards {
     margin-top: 10px !important;
@@ -299,16 +307,20 @@
     transform: scale(1);
     grid-row-start: 1;
   }
+
   .card-two::before {
     height: 230%;
   }
+
   .card-two::after {
     height: 97%;
     top: 1.5%;
   }
+
   .share-button {
     left: 10px;
   }
+
   .share-button p {
     font-size: 12px;
   }

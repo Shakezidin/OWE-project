@@ -126,20 +126,6 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
             />
             {reportError && <div className="error-message">{reportError}</div>}
           </div>
-          {/* <div className="create-input-field" style={{ marginTop: '4px' }}>
-            <label className="inputLabel-select select-type-label">
-              Team Name
-            </label>
-            <SelectOption
-              options={teamsOption(newFormData)}
-              onChange={(newValue) =>
-                handleChangeForRegion(newValue, 'team_name')
-              }
-              value={teamsOption(newFormData)?.find(
-                (option) => option?.value === formData.team_name
-              )}
-            />
-          </div> */}
         </>
       )}
 

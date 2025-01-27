@@ -7,7 +7,6 @@ import perfomance_mask from '../lib/perfomance_mask.png';
 import onboarding_mask from '../lib/onboarding_mask.png';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import {
-  ALL_USER_ROLE_LIST,
   TYPE_OF_USER,
 } from '../../../../resources/static_data/Constant';
 interface UserPieChartProps {
@@ -30,7 +29,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   setSelectedOption,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  // const [isClicked, setIsClicked] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -41,7 +39,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   };
 
   const [isHovered1, setIsHovered1] = useState(false);
-  // const [isClicked1, setIsClicked1] = useState(false);
 
   const handleClick = (value: string) => {
     onValueChange(value);
@@ -183,7 +180,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     className="pie-circle-denote  mr1"
                     style={{ backgroundColor: user.fill }}
                   />
-
                   <div
                     style={{ fontSize: isTablet ? 12 : undefined }}
                     className={`grid-wrapper-list  text-dark  ${isTablet ? '' : 'h5'}`}
@@ -204,7 +200,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           </div>
         </div>
       </div>
-
       <div
         className="pie-section-2 flex-auto"
         style={{
@@ -297,7 +292,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       flexShrink: 0,
                     }}
                   />
-
                   <span
                     className="bold upl"
                     style={{
@@ -310,9 +304,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     {userPerformanceList?.[0]?.value}
                   </span>
                 </div>
-
                 <span className="mx1">-</span>
-
                 <h3
                   className="act-sr"
                   style={{ fontWeight: '500', lineHeight: '20px' }}
@@ -320,7 +312,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   Active Sales Rep
                 </h3>
               </div>
-
               <div
                 className={`flex items-center inactive-slrp  ${activeSalesRep === 'InActive' ? 'clicked1' : ''}`}
                 onMouseEnter={handleMouseEnter1}
@@ -342,7 +333,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       flexShrink: 0,
                     }}
                   />
-
                   <span
                     className="bold"
                     style={{

@@ -1,6 +1,5 @@
 .totalcard {
   display: flex;
-  /* justify-content: space-between; */
   gap: 1rem;
 }
 .graph-container .recharts-tooltip-wrapper {
@@ -9,7 +8,7 @@
   border-radius: 6px;
 }
 
-.reports-yscroll{
+.reports-yscroll {
   height: calc(100vh - 170px);
   overflow-y: scroll;
   scroll-behavior: smooth;
@@ -42,7 +41,6 @@
 .reports-yscroll::-webkit-scrollbar-corner {
   background-color: transparent;
 }
-
 
 .total-card-count {
   display: flex;
@@ -108,7 +106,6 @@
 .headingcount {
   padding: 1rem;
   align-items: center;
-  /* border-bottom: 1px solid #f0f0f0; */
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
   background-color: var(--white-color);
   border-top-left-radius: 16px;
@@ -180,7 +177,7 @@
   .order-mob-1 {
     order: 1;
   }
-  .order-mob-1 .performance-exportbtn{
+  .order-mob-1 .performance-exportbtn {
     margin-top: 0 !important;
   }
   .order-mob-2 {

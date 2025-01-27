@@ -11,11 +11,13 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 /******************************************************************************
@@ -26,21 +28,22 @@ import (
  ******************************************************************************/
 func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err               error
-		dataReq           models.GetReportsTargetReq
-		yearInt           int
-		targetUserId      int64
-		targetQuery       string
-		acheivedQuery     string
-		whereEleList      []interface{}
-		targetData        []map[string]interface{}
-		acheivedData      []map[string]interface{}
-		lastMonthAchieved *models.ProductionTargetOrAchievedItem
-		lastMonthTarget   *models.ProductionTargetOrAchievedItem
-		lastMonthPct      *models.ProductionTargetOrAchievedPercentage
-		thisMonthPct      *models.ProductionTargetOrAchievedPercentage
-		apiResp           models.GetReportsTargetResp
-		state             string
+		err                error
+		dataReq            models.GetReportsTargetReq
+		yearInt            int
+		targetUserId       int64
+		accountManagerName string
+		targetStateCnd     string
+		targetQuery        string
+		acheivedQuery      string
+		whereEleList       []interface{}
+		targetData         []map[string]interface{}
+		acheivedData       []map[string]interface{}
+		lastMonthAchieved  *models.ProductionTargetOrAchievedItem
+		lastMonthTarget    *models.ProductionTargetOrAchievedItem
+		lastMonthPct       *models.ProductionTargetOrAchievedPercentage
+		thisMonthPct       *models.ProductionTargetOrAchievedPercentage
+		apiResp            models.GetReportsTargetResp
 	)
 
 	log.EnterFn(0, "HandleReportsTargetListRequest")
@@ -77,26 +80,62 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
+	// get account manager name (if admin, then get from request body, else get name of authenticated user)
+
+	authenticatedRole := req.Context().Value("rolename").(string)
+	authenticatedEmail := req.Context().Value("emailid").(string)
+
+	if authenticatedRole == string(types.RoleAdmin) {
+		accountManagerName = dataReq.AccountManager
+	}
+
+	// if authenticated user is account manager, get account manager name from db
+	if authenticatedRole == string(types.RoleAccountManager) {
+		query := "SELECT name FROM user_details WHERE email_id = $1"
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get account manager name from db err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get account manager name from db", http.StatusBadRequest, nil)
+			return
+		}
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "Failed to get account manager name from db")
+			appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		accountManagerName = data[0]["name"].(string)
+	}
+
+	targetStateCnd = "p.state = $6"
+
+	// if "all" state and "all" AM selected, show sum of all states, i.e. company wide goals
+	if authenticatedRole == string(types.RoleAdmin) && strings.ToLower(dataReq.AccountManager) == "all" &&
+		strings.ToLower(dataReq.State) == "all" {
+		targetStateCnd = "$6 = $6" // TRUE; no need to check state
+	}
+
 	// Query to retrieve production targets
-	targetQuery = `
+	targetQuery = fmt.Sprintf(`
 		WITH months(n) AS (SELECT generate_series($1::INT, $2::INT))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) AS projects_sold,
-			COALESCE(p.mw_sold, 0) AS mw_sold,
-			COALESCE(p.install_ct, 0) AS install_ct,
-			COALESCE(p.mw_installed, 0) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) AS batteries_ct
+			COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
+			COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
+			COALESCE(SUM(p.install_ct), 0) AS install_ct,
+			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
 		FROM months
 		LEFT JOIN production_targets p
-		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.state = $5 AND p.user_id = $6
+		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.user_id = $5 AND %s
+		GROUP BY months.n
 		ORDER BY months.n
-	  `
-	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
+	`, targetStateCnd)
+
+	whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, dataReq.Year, targetUserId, dataReq.State}
 	targetData, err = db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
@@ -109,8 +148,6 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusInternalServerError, nil)
 		return
 	}
-	accountManagerName := dataReq.AccountManager
-	state = dataReq.State
 
 	acheivedQuery = `
  	WITH MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
@@ -148,7 +185,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			 SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_installed
 		 FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
 		 WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
-		   AND P.PROJECT_STATUS != 'DUPLICATE'
+		   AND P.APP_STATUS != 'DUPLICATE'
 		   AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
 		   AND P.CUSTOMER_UNIQUE_ID != ''
 		   AND P.DEALER IN (SELECT DEALER FROM AM)
@@ -168,7 +205,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			 ) / LENGTH('enphase battery')) AS batteries_ct
 		 FROM NTP_NTP_SCHEMA AS N
 		 WHERE DATE_PART('YEAR', N.SALE_DATE) = $3
-		   AND N.PROJECT_STATUS != 'DUPLICATE'
+		   AND N.APP_STATUS != 'DUPLICATE'
 		   AND N.DEALER IN (SELECT DEALER FROM AM)
 		   AND N.STATE IN (SELECT STATES FROM STATES )
 		 GROUP BY month
@@ -186,8 +223,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		LEFT JOIN NTP ON NTP.month = MONTHS.n
 		ORDER BY MONTHS.n
 	 `
-	whereEleList = []interface{}{1, 12, dataReq.Year, state, accountManagerName}
-	log.FuncDebugTrace(0, "about to fetch data from db")
+	whereEleList = []interface{}{1, 12, dataReq.Year, dataReq.State, accountManagerName}
 	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
@@ -222,14 +258,14 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 
 			// if January is selected, fetch from last year December
 			if i == 0 {
-				whereEleList = []interface{}{12, 12, yearInt - 1, state, accountManagerName}
+				whereEleList = []interface{}{12, 12, yearInt - 1, dataReq.State, accountManagerName}
 				rawAcheived, err := db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)
 					continue
 				}
 
-				whereEleList = []interface{}{1, 12, dataReq.TargetPercentage, yearInt - 1, dataReq.State, targetUserId}
+				whereEleList = []interface{}{12, 12, dataReq.TargetPercentage, yearInt - 1, targetUserId, dataReq.State}
 				rawTarget, err := db.ReteriveFromDB(db.OweHubDbIndex, targetQuery, whereEleList)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to retrieve data from DB err %v", err)

@@ -206,9 +206,9 @@ const FilterModal: React.FC<TableProps> = ({
         Column: filter.Column,
         Operation: filter.Operation,
         Data:
-        filter.type === "date"
-        ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}`
-        : filter.Data
+          filter.type === 'date'
+            ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}`
+            : filter.Data,
       }));
       const req = {
         page_number: page_number,
@@ -362,12 +362,6 @@ const FilterModal: React.FC<TableProps> = ({
                       )}
                     </div>
                     {index !== 0 && (
-                      // <div
-                      //     className="cross-btn"
-                      //     onClick={() => handleRemoveRow(index)}
-                      // >
-                      //     <img src={ICONS.cross} alt="" />
-                      // </div>
                       <div
                         className="fildelb-btn"
                         onClick={() => handleRemoveRow(index)}

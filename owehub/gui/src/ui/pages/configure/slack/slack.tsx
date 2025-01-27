@@ -3,14 +3,10 @@ import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchSlackConfigList } from '../../../../redux/apiActions/config/slackConfigAction';
-// import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
@@ -25,15 +21,10 @@ import SecurityToken from './SecurityToken';
 const Slack = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -202,10 +193,6 @@ const Slack = () => {
     }
   };
 
-  //   if (loading) {
-  //     return <div>Loading...</div>;
-  //   }
-
   console.log(slack_config_list, 'data dba');
   console.log(count, totalPages, 'count');
 
@@ -235,7 +222,7 @@ const Slack = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
           <table>
             <thead>

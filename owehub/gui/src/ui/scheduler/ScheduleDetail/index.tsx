@@ -333,7 +333,14 @@ const Index = () => {
         </div>
 
         {!isEditing && (
-          <div className="flex " style={{ gap: isMobile ? 7 : 15, marginLeft:isMobile? 18:'',marginRight: isMobile?18:'' }}>
+          <div
+            className="flex "
+            style={{
+              gap: isMobile ? 7 : 15,
+              marginLeft: isMobile ? 18 : '',
+              marginRight: isMobile ? 18 : '',
+            }}
+          >
             <SelectOption
               dropdownIndicatorStyles={{ display: 'none' }}
               controlStyles={{
@@ -400,7 +407,7 @@ const Index = () => {
       </div>
 
       <div className="mt3" style={{ marginTop: isMobile ? '18px' : 'initial' }}>
-      <div className={` flex flex-column ${styles.survery_users_container}`}>
+        <div className={` flex flex-column ${styles.survery_users_container}`}>
           <div className={`${styles.suvery_grid_wrapper}`}>
             <div
               className={` flex items-end justify-center  ${styles.surver_filter}`}

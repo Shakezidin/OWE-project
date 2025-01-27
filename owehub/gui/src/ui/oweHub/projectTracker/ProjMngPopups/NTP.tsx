@@ -2,12 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../Dropdown.css';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import { ICONS } from '../../../../resources/icons/Icons';
-
 interface TableProps {
   handleClose: () => void;
   isOpen?: boolean;
   projectDetail: any;
-  ntpValue:string;
+  ntpValue: string;
 }
 
 // Filter component
@@ -94,12 +93,20 @@ const NtpPopUp: React.FC<TableProps> = ({
       <div className="transparent-model">
         <div className="ntp-modal">
           <div className="qchead-section">
-           <div style={{display:"flex", gap:"30px", alignItems:"center"}}>
-           <h3 className="createProfileText" style={{ margin: 0 }}>
-              NTP
-            </h3>
-            <p style={{fontSize:'12px', fontWeight:'500', color:'#EBA900'}}>{ntpValue==='0 day pending' ? "" : ntpValue}</p>
-           </div>
+            <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+              <h3 className="createProfileText" style={{ margin: 0 }}>
+                NTP
+              </h3>
+              <p
+                style={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: '#EBA900',
+                }}
+              >
+                {ntpValue === '0 day pending' ? '' : ntpValue}
+              </p>
+            </div>
             <div
               className="createUserCrossButton"
               onClick={handleCloseModal}

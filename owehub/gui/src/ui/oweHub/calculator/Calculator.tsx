@@ -291,18 +291,6 @@ const Calculator: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // const handleBlur = (label: string, type: 'earnout' | 'equity') => {
-  //   if (type === 'earnout') {
-  //     if (earnoutValues[label] === '') {
-  //       setEarnoutValues((prev) => ({ ...prev, [label]: getDefaultValue(label, earnoutFilters) }));
-  //     }
-  //   } else {
-  //     if (equityValues[label] === '') {
-  //       setEquityValues((prev) => ({ ...prev, [label]: getDefaultValue(label, equityFilters) }));
-  //     }
-  //   }
-  // };
-
   const getDefaultValue = (label: string, filters: Filter[]): number => {
     const filter = filters.find((f) => f.label === label);
     return filter
@@ -352,7 +340,7 @@ const Calculator: React.FC = () => {
 
   return (
     <>
-      <div className='calc-wrapper'>
+      <div className="calc-wrapper">
         <div id="calc-header">
           <h2>CAGR Calculator</h2>
           <IoClose
@@ -413,15 +401,11 @@ const Calculator: React.FC = () => {
                         onChange={(e) =>
                           handleInputChange(label, e.target.value, 'earnout')
                         }
-                        // onBlur={() => handleBlur(label, 'earnout')}
                         className="number-input"
                         maxLength={3}
                         min={min}
                         max={max}
                       />
-                      {/* {label === 'Growth rate (per month)' && <span>%</span>}
-                    {label === 'Months until Earnout' && <span>months</span>}
-                    {label === 'Average system size' && <span>kw</span>} */}
                     </div>
                   </div>
                   <div className="filter">
@@ -512,7 +496,7 @@ const Calculator: React.FC = () => {
             <div
               className={`build-footer hide-mob ${!isEquity ? 'selected-tab' : ''}`}
             >
-              <button className='calc-btn-earn'>
+              <button className="calc-btn-earn">
                 <span>Earnout Amount</span>${calculateEarnout()}
               </button>
               <p className="footer-value" onClick={handleResetValues}>
@@ -545,8 +529,6 @@ const Calculator: React.FC = () => {
                         min={min}
                         max={max}
                       />
-                      {/* {label === 'CAGR' && <span>%</span>}
-                    {label === 'Years until Next Acquisition / IPO' && <span>Yrs</span>} */}
                     </div>
                   </div>
                   <div className="filter">
@@ -576,7 +558,7 @@ const Calculator: React.FC = () => {
               ))}
             </div>
             <div className="equity-footer">
-              <button className='calc-btn-growth'>
+              <button className="calc-btn-growth">
                 <span>Equity Growth</span>$
                 {calculateEquityGrowth(calculateEarnout())}
               </button>

@@ -62,8 +62,6 @@ export default [
     stagingOnly: false,
   },
 
- 
-
   {
     route: ROUTES.COMMISSION_DASHBOARD,
     element: DashboardPage,
@@ -74,10 +72,6 @@ export default [
       TYPE_OF_USER.ACCOUNT_MANAGER,
       TYPE_OF_USER.DEALER_OWNER,
       TYPE_OF_USER.SUB_DEALER_OWNER,
-      // TYPE_OF_USER.REGIONAL_MANGER,
-      // TYPE_OF_USER.SALE_MANAGER,
-      // TYPE_OF_USER.SALES_REPRESENTATIVE,
-      // TYPE_OF_USER.APPOINTMENT_SETTER
     ],
     stagingOnly: true,
   },
@@ -127,8 +121,6 @@ export default [
     available: [
       TYPE_OF_USER.ADMIN,
       TYPE_OF_USER.FINANCE_ADMIN,
-      // TYPE_OF_USER.DEALER_OWNER,
-      // TYPE_OF_USER.SUB_DEALER_OWNER,
     ],
     stagingOnly: false,
   },

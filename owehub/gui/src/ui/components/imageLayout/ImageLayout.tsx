@@ -1,6 +1,5 @@
 import React from 'react';
 import './ImageLayout.css'; // Import your CSS file for styling
-import { relative } from 'path';
 
 interface ImageLayoutProps {
   images: string[]; // Array of image URLs
@@ -17,13 +16,6 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
             gridColumn: index === 1 ? '2 / 3' : undefined,
           }}
         >
-          {/* <object
-              key={index}
-              className="leftView"
-              type="image/svg+xml"
-              data={image}
-              aria-label={`Left ${index + 1}`}
-              ></object> */}
           <img
             style={{ objectFit: 'cover' }}
             className="leftView m0"

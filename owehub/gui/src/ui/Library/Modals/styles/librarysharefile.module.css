@@ -67,8 +67,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* justify-content: center; */
-
   margin-top: 60px;
   gap: 12px;
 }
@@ -81,13 +79,11 @@
   cursor: pointer;
 }
 .survey_link_button {
-  /* border: 1px solid black; */
   width: 300px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 17px;
-  /* position: relative; */
 }
 .succicon_tick {
   background-color: #20963a;
