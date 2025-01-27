@@ -792,8 +792,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
                 ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND 
             install.app_status not in
                 ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')       AND
-            install.project_status in (%v) AND
-            %v`, projectStatus, filterUserQuery)
+            %v`, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -867,6 +866,7 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
+            DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.dealer,
@@ -1019,8 +1019,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
                 ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND 
             install.app_status not in
                 ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')      AND
-            install.project_status in (%v) AND
-            %v %v;`, projectStatus, filterUserQuery, searchValue)
+            %v %v;`, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
