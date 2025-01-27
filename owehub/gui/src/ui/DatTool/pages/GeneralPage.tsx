@@ -38,7 +38,7 @@ const GeneralPage = () => {
                   <p>Battery</p>
                 </div>
               </div>
-              {/* <hr /> */}
+              <div className={styles.verticalBorder}></div>
               <div className={styles.gOneLeftInfoTxt}>
                 <div>
                   <p>123.4 wt</p>
@@ -136,8 +136,7 @@ const GeneralPage = () => {
             </div>
             <div>
               <p>Module Type</p>
-              <p>Qcells Q.PEAK DUO BLK ML-G10+/
-              t 400W (Bifacial)</p>
+              <p>Qcells Q.PEAK DUO BLK ML-G10+/ t 400W (Bifacial)</p>
             </div>
             <div>
               <p>Inverter Type</p>
@@ -149,7 +148,7 @@ const GeneralPage = () => {
             </div>
             <div>
               <p>AC/DC System Size</p>
-              <p>12.98 AC     827.65 DC</p>
+              <p>12.98 AC 827.65 DC</p>
             </div>
             <div>
               <p>Total Production</p>
@@ -158,7 +157,78 @@ const GeneralPage = () => {
           </div>
         </div>
         <div className={styles.genSecRight}>
-          <p>DAT Information</p>
+          <div className={styles.genSecRightHdr}>
+            <p>DAT Information</p>
+            <div className={styles.editUser}>
+              <AiOutlineEdit />
+            </div>
+          </div>
+          <div className={styles.genSecRightMain}>
+            <div className={styles.genSecRightMainLft}>
+              <div>
+                <p>Module QTY</p>
+                <p>35</p>
+              </div>
+              <div>
+                <p>Module Type</p>
+                <p>Qcells Q.PEAK DUO BLK ML-G10+/t 400W (Bifacial)</p>
+              </div>
+              <div>
+                <p>Inverter Type</p>
+                <p>---</p>
+              </div>
+              <div>
+                <p>Battery Type</p>
+                <p>---</p>
+              </div>
+              <div>
+                <p>System Size</p>
+                <div className={styles.acdc}>
+                  <p>---</p>
+                  <p>AC</p>
+                  <p>---</p>
+                  <p>DC</p>
+                </div>
+              </div>
+              <div>
+                <p>Total Production</p>
+                <p>27835</p>
+              </div>
+              <div></div>
+            </div>
+            <div className={styles.genSecRightMainRht}>
+              <div>
+                <p>Design Version</p>
+                <p>2</p>
+              </div>
+              <div>
+                <p>Designer Name</p>
+                <p>Vansh Seedwan</p>
+              </div>
+              <div>
+                <p>Aurora ID.</p>
+                <p>---</p>
+              </div>
+              <div>
+                <p>Site Capture URL</p>
+                <p>---</p>
+              </div>
+              <div>
+                <p>Changes</p>
+                <div className={styles.acdc}>
+                  <p>---</p>
+                  <p>Layout</p>
+                  <p>---</p>
+                  <p>Production</p>
+                </div>
+              </div>
+              <div>
+                <p>Change Order Required</p>
+                <p>--</p>
+              </div>
+              <div></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

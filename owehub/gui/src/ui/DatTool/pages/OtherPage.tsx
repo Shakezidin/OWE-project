@@ -31,11 +31,11 @@ const styles: Styles = {
   editButtonStyle: {
     color: '#434343',
     background: '#FAFAFF',
-    borderRadius:'50%',
-    fontSize:10,
+    borderRadius: '50%',
+    fontSize: 10,
     height: 30,
     width: 30,
-    paddingTop:5,
+    paddingTop: 5,
     border: 'none',
     cursor: 'pointer',
   },
@@ -45,32 +45,32 @@ const styles: Styles = {
   },
   saveButtonStyle: {
     background: '#377CF6',
-    borderRadius:'50%',
-    fontSize:10,
+    borderRadius: '50%',
+    fontSize: 10,
     height: 30,
     width: 30,
-    paddingTop:5,
+    paddingTop: 5,
     border: 'none',
     cursor: 'pointer',
     color: '#FFF',
   },
   cancelButtonStyle: {
     background: '#FAFAFF',
-    borderRadius:'50%',
-    fontSize:10,
+    borderRadius: '50%',
+    fontSize: 10,
     height: 30,
     width: 30,
-    paddingTop:5,
+    paddingTop: 5,
     border: 'none',
     cursor: 'pointer',
     color: '#293540',
   },
-  labelStyle : {
+  labelStyle: {
     marginBottom: '5px',
-    fontSize:'12px',
-    fontWeight:'400',
-    lineHeight:'18px',
-    color:'#565656'
+    fontSize: '12px',
+    fontWeight: '400',
+    lineHeight: '18px',
+    color: '#565656',
   },
   gridStyle: {
     display: 'grid',
@@ -93,10 +93,22 @@ const styles: Styles = {
     border: '0px',
     borderRadius: '28px',
     color: '#333',
-    lineHeight:'18px',
-    fontFamily:'poppins',
+    lineHeight: '18px',
+    fontFamily: 'poppins',
     minHeight: '36px',
-    backgroundColor:'#F5F5FD'
+    backgroundColor: '#F5F5FD',
+  },
+  selectStyle: {
+    width: '100%',
+    padding: '4px 8px',
+    fontSize: '12px',
+    border: '0px',
+    borderRadius: '28px',
+    color: '#333',
+    lineHeight: '18px',
+    fontFamily: 'poppins',
+    minHeight: '36px',
+    backgroundColor: '#F5F5FD',
   },
 };
 
@@ -124,7 +136,8 @@ interface CardProps {
     editedFields: Fields,
     handleFieldChange: (key: string, value: string | MPPTValue) => void,
     handleEdit: () => void,
-    handleCancel: () => void
+    handleCancel: () => void,
+    handleSave: () => void
   ) => React.ReactNode;
 }
 
@@ -147,14 +160,30 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, fieldConfigs = {}, c
   };
 
   const handleFieldChange = (key: string, value: string | MPPTValue) => {
-    setEditedFields({
-      ...editedFields,
-      [key]: value
+    setEditedFields((prevFields) => {
+      const prevValue = prevFields[key];
+  
+      // If the new value is an object (MPPTValue), ensure the previous value is also an object before spreading
+      if (typeof value === 'object') {
+        return {
+          ...prevFields,
+          [key]: {
+            ...(typeof prevValue === 'object' ? prevValue : {}), // Ensure prevValue is an object
+            ...value, // Spread the new value
+          },
+        };
+      }
+  
+      // If the new value is a string, directly assign it
+      return {
+        ...prevFields,
+        [key]: value,
+      };
     });
   };
 
   if (customGrid) {
-    return customGrid(isEditing, editedFields, handleFieldChange, handleEdit, handleCancel) as JSX.Element;
+    return customGrid(isEditing, editedFields, handleFieldChange, handleEdit, handleCancel, handleSave) as JSX.Element;
   }
 
   const renderField = (key: string, value: string | MPPTValue) => {
@@ -162,9 +191,9 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, fieldConfigs = {}, c
 
     if (isEditing) {
       if (config.type === 'select' && config.options) {
-        const selectOptions = config.options.map(option => ({
+        const selectOptions = config.options.map((option) => ({
           value: option,
-          label: option
+          label: option,
         }));
 
         return (
@@ -178,20 +207,20 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, fieldConfigs = {}, c
       }
       return (
         <div>
-        <label style={styles.labelStyle}>{key}</label>
-        <input
-          style={styles.inputStyle}
-          value={value as string}
-          onChange={(e) => handleFieldChange(key, e.target.value)}
-        />
-      </div>
+          <label style={styles.labelStyle}>{key}</label>
+          <input
+            style={styles.inputStyle}
+            value={value as string}
+            onChange={(e) => handleFieldChange(key, e.target.value)}
+          />
+        </div>
       );
     }
 
     return (
-      <DisplaySelect 
-        label={key} 
-        value={typeof value === 'object' ? `S.1: ${value['S.1']}, S.2: ${value['S.2']}` : value || '---'} 
+      <DisplaySelect
+        label={key}
+        value={typeof value === 'object' ? `S.1: ${value['S.1']}, S.2: ${value['S.2']}` : value || '---'}
       />
     );
   };
@@ -211,7 +240,7 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, fieldConfigs = {}, c
           </div>
         ) : (
           <button style={styles.editButtonStyle} onClick={handleEdit}>
-            <AiOutlineEdit size={15}/>
+            <AiOutlineEdit size={15} />
           </button>
         )}
       </div>
@@ -268,7 +297,7 @@ function OtherPage() {
     'Available Backfeed': '40',
     'Panel Brand': 'Lelon',
     'Main Breaker Rating': '200',
-    'Required Backfeed': ''
+    'Required Backfeed': '',
   });
 
   const [electricalSystem, setElectricalSystem] = useState<Fields>({
@@ -276,7 +305,7 @@ function OtherPage() {
     'Service Entrance': '',
     'Meter Enclosure Type': 'Meter/Main Combo',
     'System Voltage': '',
-    'Service Rating': ''
+    'Service Rating': '',
   });
 
   const [siteInfo, setSiteInfo] = useState<Fields>({
@@ -284,36 +313,38 @@ function OtherPage() {
     'Number of Stories': '2',
     'Points of Interconnection': '2',
     'Drywall Cut Needed': 'Yes',
-    'Trenching Required': 'Yes'
+    'Trenching Required': 'Yes',
   });
 
   const [roofCoverage, setRoofCoverage] = useState<Fields>({
     'Total Roof Area': '',
     'Area of EXIST Modules': '',
     'Area of New Modules': '',
-    'Coverage Percentage': '50%'
+    'Coverage Percentage': '50%',
   });
 
   const [pvInterconnection, setPvInterconnection] = useState<Fields>({
-    'Type': 'Lug Connection',
-    'Location': 'Meter',
+    Type: 'Lug Connection',
+    Location: 'Meter',
     'Supply/load Side': 'Supply Side',
-    'Sub - Location Tap Details': ''
+    'Sub - Location Tap Details': '',
   });
 
   const [essInterconnection, setEssInterconnection] = useState<Fields>({
     'Backup Type': 'Full Home',
     'Fed By': 'Breaker',
-    'Transfer Switch': 'Tesla Backup Gateway 2'
+    'Transfer Switch': 'Tesla Backup Gateway 2',
   });
 
   const [stringInverter, setStringInverter] = useState<Fields>({
-    'Inverter': 'Tesla Inverter 7.6kW',
-    'Max': '',
-    ...Object.fromEntries([...Array(8)].map((_, i) => [
-      `MPPT${i + 1}`,
-      { 'S.1': '', 'S.2': '' }
-    ]))
+    Inverter: 'Tesla Inverter 7.6kW',
+    Max: '',
+    ...Object.fromEntries(
+      [...Array(8)].map((_, i) => [
+        `MPPT${i + 1}`,
+        { 'S.1': '', 'S.2': '' },
+      ])
+    ),
   });
 
   const [servicePanelInfo, setServicePanelInfo] = useState<Fields>({
@@ -321,19 +352,19 @@ function OtherPage() {
     'Main Breaker Rating': '200',
     'Available Backfeed': '40',
     'Busbar Rating': '200',
-    'Required Backfeed': ''
+    'Required Backfeed': '',
   });
 
   const [measurementConversion, setMeasurementConversion] = useState<Fields>({
-    'Length': '',
-    'Height': '',
-    'Width': '',
-    'Other': ''
+    Length: '',
+    Height: '',
+    Width: '',
+    Other: '',
   });
 
   const [existingPvSystem, setExistingPvSystem] = useState<Fields>({
     'Module Quantity': '40',
-    'Wattage': '320 W DC',
+    Wattage: '320 W DC',
     'Model#': 'Longi LR6-60HPH-32M',
     'Module Area': '18.04 sqft',
     'Inverter 1 Quantity': '1',
@@ -342,7 +373,7 @@ function OtherPage() {
     'Inverter 2 Quantity': '1',
     'Inverter 2 Output(A)': '21A AC',
     'Inverter 2 Model#': 'Solar Edge SE5000H-US',
-    'Existing Calculated Backfeed(w/o 125%)': ''
+    'Existing Calculated Backfeed(w/o 125%)': '',
   });
 
   const renderStringInverterGrid = (
@@ -350,7 +381,8 @@ function OtherPage() {
     editedFields: Fields,
     handleFieldChange: (key: string, value: string | MPPTValue) => void,
     handleEdit: () => void,
-    handleCancel: () => void
+    handleCancel: () => void,
+    handleSave: () => void
   ) => (
     <div style={styles.cardStyle}>
       <div style={styles.sectionHeaderStyle}>
@@ -360,12 +392,12 @@ function OtherPage() {
             <button style={styles.cancelButtonStyle} onClick={handleCancel}>
               <AiOutlineClose size={15} />
             </button>
-            <button style={styles.saveButtonStyle} onClick={handleEdit}>
+            <button style={styles.saveButtonStyle} onClick={handleSave}>
               <AiOutlineCheck size={15} />
             </button>
           </div>
         ) : (
-          <button style={styles.editButtonStyle}>
+          <button style={styles.editButtonStyle} onClick={handleEdit}>
             <AiOutlineEdit size={15} />
           </button>
         )}
@@ -398,12 +430,14 @@ function OtherPage() {
           )}
         </div>
       </div>
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '20px',
-        marginTop: '20px'
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '20px',
+          marginTop: '20px',
+        }}
+      >
         {[...Array(8)].map((_, i) => (
           <div key={i} style={styles.fieldGroupStyle}>
             <div style={styles.labelStyle}>{`MPPT${i + 1}`}</div>
@@ -412,19 +446,23 @@ function OtherPage() {
                 <input
                   style={{ ...styles.inputStyle, flex: 1 }}
                   value={(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.1']}
-                  onChange={(e) => handleFieldChange(`MPPT${i + 1}`, {
-                    ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
-                    'S.1': e.target.value
-                  })}
+                  onChange={(e) =>
+                    handleFieldChange(`MPPT${i + 1}`, {
+                      ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
+                      'S.1': e.target.value,
+                    })
+                  }
                   placeholder="S.1"
                 />
                 <input
                   style={{ ...styles.inputStyle, flex: 1 }}
                   value={(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.2']}
-                  onChange={(e) => handleFieldChange(`MPPT${i + 1}`, {
-                    ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
-                    'S.2': e.target.value
-                  })}
+                  onChange={(e) =>
+                    handleFieldChange(`MPPT${i + 1}`, {
+                      ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
+                      'S.2': e.target.value,
+                    })
+                  }
                   placeholder="S.2"
                 />
               </div>
@@ -441,14 +479,15 @@ function OtherPage() {
   );
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '24px',
-      height: '100vh',
-      overflowY: 'scroll',
-      padding: '24px',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '1.2rem',
+        height: 'calc(100vh - 216px)',
+        overflowY: 'scroll',
+      }}
+    >
       <div style={{ flex: 1, maxWidth: '50%' }}>
         <Card
           title="Electrical Equipment Info"
