@@ -59,10 +59,8 @@
 .ar-line-graph {
   display: flex;
   align-items: center;
-  /* margin-top: 0.4rem; */
   gap: 0.5rem;
-  /* align-content: center;
-  justify-content: center; */
+
 }
 .ar-filter-line {
   width: 36px !important;

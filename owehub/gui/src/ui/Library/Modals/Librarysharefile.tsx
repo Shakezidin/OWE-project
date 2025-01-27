@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import classes from './styles/librarysharefile.module.css';
-import { useNavigate } from 'react-router-dom';
 import { ICONS } from '../../../resources/icons/Icons';
 import { IoLinkOutline } from 'react-icons/io5';
 import { TiTick } from 'react-icons/ti';
-// import { CiLink } from "react-icons/ci";
 
 const Librarysharefile = () => {
   const [isVisible, setIsVisible] = useState(false);

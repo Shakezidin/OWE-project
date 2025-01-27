@@ -7,14 +7,12 @@ import PhoneInput from 'react-phone-input-2';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth';
-import {
-  Autocomplete,
-  useLoadScript,
-} from '@react-google-maps/api';
+import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 import { RiMapPinLine } from 'react-icons/ri';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import CustomSelect from '../components/CustomSelect';
+
 interface SaleData {
   id: number;
   name: string;
@@ -33,24 +31,22 @@ interface LocationInfo {
   project_status: string;
 }
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
-
-  interface EditModalProps {
-    leadData: any,
-    loading: boolean,
-    onClose: () => void,
-    refresh: number;
-    setRefresh: (value: number | ((prevValue: number) => number)) => void;
-  }
-
+interface EditModalProps {
+  leadData: any;
+  loading: boolean;
+  onClose: () => void;
+  refresh: number;
+  setRefresh: (value: number | ((prevValue: number) => number)) => void;
+}
 
 const FormModal: React.FC<EditModalProps> = ({
   leadData,
   loading,
   onClose,
   refresh,
-  setRefresh
+  setRefresh,
 }) => {
   const [saleData, setSaleData] = useState<SaleData[]>([]);
   const [setterData, setSetterData] = useState<SetterData[]>([]);
@@ -58,7 +54,7 @@ const FormModal: React.FC<EditModalProps> = ({
   const [selectedSetter, setSelectedSetter] = useState<SetterData | null>(null);
   const [saleId, setSaleId] = useState<number | string>(0);
   const [setterId, setSetterId] = useState<number | string>(0);
-  console.log(saleId, "dhsghgfdsfghdsfdhsghfdhs")
+  console.log(saleId, 'dhsghgfdsfghdsfdhsghfdhs');
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -71,16 +67,16 @@ const FormModal: React.FC<EditModalProps> = ({
   console.log(setterData, 'form data consoling ');
   useEffect(() => {
     if (leadData && setterData) {
-      const salesRepId = saleData.find(
-        (setter) => setter.name === leadData.sales_rep_name
-      )?.id || '';
+      const salesRepId =
+        saleData.find((setter) => setter.name === leadData.sales_rep_name)
+          ?.id || '';
 
-      const setterId = setterData.find(
-        (setter) => setter.name === leadData.setter_name
-      )?.id || '';
+      const setterId =
+        setterData.find((setter) => setter.name === leadData.setter_name)?.id ||
+        '';
 
-      console.log(salesRepId, "show this")
-  
+      console.log(salesRepId, 'show this');
+
       setFormData({
         first_name: leadData.first_name || '',
         last_name: leadData.last_name || '',
@@ -107,7 +103,8 @@ const FormModal: React.FC<EditModalProps> = ({
       // Only allow letters, spaces, $ and _
       const sanitizedValue = value.replace(/[^A-Za-z\s$_]/g, '');
 
-      if (sanitizedValue === value) { // Only update if no characters were stripped
+      if (sanitizedValue === value) {
+        // Only update if no characters were stripped
         setFormData((prevData) => ({
           ...prevData,
           [name]: value,
@@ -129,9 +126,7 @@ const FormModal: React.FC<EditModalProps> = ({
         ...prevData,
         [name]: trimmedValue,
       }));
-
-
-    } else if (name === "address") {
+    } else if (name === 'address') {
       const regex = /^[a-zA-Z0-9,\s]*$/;
       const consecutiveSpacesRegex = /\s{2,}/;
 
@@ -140,7 +135,7 @@ const FormModal: React.FC<EditModalProps> = ({
           ...prevData,
           [name]: value,
         }));
-        errors.address = ""
+        errors.address = '';
       }
     } else if (name === 'lead_source') {
       if (value === '' || allowedPattern.test(value)) {
@@ -190,10 +185,10 @@ const FormModal: React.FC<EditModalProps> = ({
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-    if (!selectedSale && (saleId == "")) {
+    if (!selectedSale && saleId == '') {
       errors.sales_rep = 'Sales Rep is required';
     }
-    if (!selectedSetter && (setterId == "")) {
+    if (!selectedSetter && setterId == '') {
       errors.setterError = 'Setter is required';
     }
     return errors;
@@ -204,7 +199,11 @@ const FormModal: React.FC<EditModalProps> = ({
     const errors = validateForm(formData);
     setErrors(errors);
 
-    if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
+    if (
+      Object.keys(errors).length === 0 &&
+      emailError === '' &&
+      phoneNumberError === ''
+    ) {
       setLoad(true);
 
       try {
@@ -220,15 +219,15 @@ const FormModal: React.FC<EditModalProps> = ({
             notes: formData.notes,
             lead_source: formData.lead_source,
             salerep_id: selectedSale ? selectedSale?.id : saleId,
-            setter_id: selectedSetter ? selectedSetter?.id : setterId
+            setter_id: selectedSetter ? selectedSetter?.id : setterId,
           },
           true
         );
-        
+
         if (response.status === 200) {
           toast.success('Lead Updated Successfully');
-          setRefresh((val) => val + 1)
-          onClose();  // Close the modal on successful submission
+          setRefresh((val) => val + 1);
+          onClose(); // Close the modal on successful submission
         } else if (response.status >= 201) {
           toast.warn(response.message);
         }
@@ -255,14 +254,14 @@ const FormModal: React.FC<EditModalProps> = ({
           const response = await postCaller(
             'get_users_under',
             {
-              "roles": ["Sale Representative", "Appointment Setter"]
+              roles: ['Sale Representative', 'Appointment Setter'],
             },
             true
           );
 
           if (response.status === 200) {
             setSaleData(response.data['Sale Representative']);
-            setSetterData(response.data['Appointment Setter'])
+            setSetterData(response.data['Appointment Setter']);
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -272,7 +271,6 @@ const FormModal: React.FC<EditModalProps> = ({
           setIsLoadSelect(false);
         }
       };
-
 
       fetchData();
     }
@@ -285,7 +283,7 @@ const FormModal: React.FC<EditModalProps> = ({
     setSelectedSetter(selectedOption);
     errors.setterError = '';
   };
-  console.log(selectedSale, "sdaghfgfhdsa")
+  console.log(selectedSale, 'sdaghfgfhdsa');
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
     libraries: ['places'],
@@ -310,7 +308,7 @@ const FormModal: React.FC<EditModalProps> = ({
     setSearchValue(selectedAddress);
   };
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
-    console.log(autocomplete, "")
+    console.log(autocomplete, '');
     autocompleteRef.current = autocomplete;
   };
   const [role, setRole] = useState('');
@@ -322,11 +320,19 @@ const FormModal: React.FC<EditModalProps> = ({
   }, []);
   return (
     <div className={classes.ScrollableDivRemove}>
-      <div style={{ paddingRight: "12px" }} className={`flex justify-between ${classes.h_screen}`}>
+      <div
+        style={{ paddingRight: '12px' }}
+        className={`flex justify-between ${classes.h_screen}`}
+      >
         <div className={classes.customer_wrapper_list}>
-          {loading ? <div style={{ height: '50vh' }} className="flex items-center justify-center">
-            <MicroLoader />
-          </div> :
+          {loading ? (
+            <div
+              style={{ height: '50vh' }}
+              className="flex items-center justify-center"
+            >
+              <MicroLoader />
+            </div>
+          ) : (
             <form onSubmit={handleSubmit}>
               <div className="modal-body">
                 <div className="scroll-user">
@@ -390,17 +396,22 @@ const FormModal: React.FC<EditModalProps> = ({
                             onChange={(value: any) => {
                               const phoneNumber = value.toString();
                               const numberLength = value.toString();
-                              const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
+                              const numberWithoutCountryCode =
+                                phoneNumber.replace(/^\+?\d{1,3}/, '');
                               if (/^0{8}/.test(numberWithoutCountryCode)) {
-                                setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
+                                setPhoneNumberError(
+                                  'Invalid number, number cannot consist of consecutive zeros.'
+                                );
                               }
-                              // if(phoneNumber.charAt(4) && phoneNumber.charAt(1) && phoneNumber.charAt(2) && phoneNumber.charAt(3)){
-                              //   setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
-                              // }
-                              else if (numberLength.length > 0 && numberLength.length < 11) {
-                                setPhoneNumberError("Please enter at least 10 digits.");
+                              else if (
+                                numberLength.length > 0 &&
+                                numberLength.length < 11
+                              ) {
+                                setPhoneNumberError(
+                                  'Please enter at least 10 digits.'
+                                );
                               } else {
-                                setPhoneNumberError("");
+                                setPhoneNumberError('');
                               }
                               setFormData((prevData) => ({
                                 ...prevData,
@@ -449,9 +460,14 @@ const FormModal: React.FC<EditModalProps> = ({
                       </div>
                       <div className={classes.salrep_input_container}>
                         <div className={classes.srs_new_create}>
-                          <div className={classes.custom_label_newlead}>Address</div>
-                          {isLoaded &&
-                            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                          <div className={classes.custom_label_newlead}>
+                            Address
+                          </div>
+                          {isLoaded && (
+                            <Autocomplete
+                              onLoad={onLoad}
+                              onPlaceChanged={onPlaceChanged}
+                            >
                               <div className={classes.inputWrap}>
                                 <input
                                   type="text"
@@ -475,12 +491,18 @@ const FormModal: React.FC<EditModalProps> = ({
                                       setSearchValue('');
                                       setFormData((prevFormData) => ({
                                         ...prevFormData,
-                                        address: "",
+                                        address: '',
                                       }));
                                       if (mapRef.current) {
-                                        const bounds = new google.maps.LatLngBounds();
+                                        const bounds =
+                                          new google.maps.LatLngBounds();
                                         locations.forEach((location) => {
-                                          bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                                          bounds.extend(
+                                            new google.maps.LatLng(
+                                              location.lat,
+                                              location.lng
+                                            )
+                                          );
                                         });
                                         mapRef.current.fitBounds(bounds);
                                       }
@@ -494,12 +516,14 @@ const FormModal: React.FC<EditModalProps> = ({
                                       border: 'none',
                                       cursor: 'pointer',
                                     }}
-                                  >
-                                  </button>
+                                  ></button>
                                 )}
-                                <RiMapPinLine className={`${classes.inputMap} ${isInputFocused ? classes.focused : ''}`} />
+                                <RiMapPinLine
+                                  className={`${classes.inputMap} ${isInputFocused ? classes.focused : ''}`}
+                                />
                               </div>
-                            </Autocomplete>}
+                            </Autocomplete>
+                          )}
                           {errors.address && (
                             <span
                               style={{
@@ -512,27 +536,34 @@ const FormModal: React.FC<EditModalProps> = ({
                           )}
                         </div>
                         {/* Setter Field */}
-                          <div className={classes.srs_new_create}>
-                            <div className={classes.custom_label_newlead}>Setter</div>
-                            <CustomSelect<SetterData>
-                                value={selectedSetter || setterData.find((option) => option.name === leadData.setter_name) || null}
-                                onChange={handleSetterChange}
-                                options={setterData}
-                                isVisible={true}
-                                placeholder="Select Setter"
-                                width="100%"
-                                getOptionLabel={(option) => option.name}
-                                getOptionValue={(option) => option.id.toString()}
-                              />
-                            {(setterError || errors.setterError) && (
-                              <div className="error">
-                                {setterError || errors.setterError}
-                              </div>
-                            )}
+                        <div className={classes.srs_new_create}>
+                          <div className={classes.custom_label_newlead}>
+                            Setter
                           </div>
+                          <CustomSelect<SetterData>
+                            value={
+                              selectedSetter ||
+                              setterData.find(
+                                (option) => option.name === leadData.setter_name
+                              ) ||
+                              null
+                            }
+                            onChange={handleSetterChange}
+                            options={setterData}
+                            isVisible={true}
+                            placeholder="Select Setter"
+                            width="100%"
+                            getOptionLabel={(option) => option.name}
+                            getOptionValue={(option) => option.id.toString()}
+                          />
+                          {(setterError || errors.setterError) && (
+                            <div className="error">
+                              {setterError || errors.setterError}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className={classes.salrep_input_container}>
-
                         <div className={classes.srs_new_create}>
                           <Input
                             type="text"
@@ -556,12 +587,27 @@ const FormModal: React.FC<EditModalProps> = ({
                         </div>
                         {/* Sales Rep Field */}
                         <div className={classes.srs_new_create}>
-                          <div className={classes.custom_label_newlead}>Sales Rep</div>
+                          <div className={classes.custom_label_newlead}>
+                            Sales Rep
+                          </div>
                           <CustomSelect<SaleData>
-                            value={selectedSale || saleData.find((option) => option.name === leadData.sales_rep_name) || null}
+                            value={
+                              selectedSale ||
+                              saleData.find(
+                                (option) =>
+                                  option.name === leadData.sales_rep_name
+                              ) ||
+                              null
+                            }
                             onChange={(newValue) => handleSaleChange(newValue)}
                             options={saleData}
-                            isVisible={role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.DEALER_OWNER || role === TYPE_OF_USER.SUB_DEALER_OWNER || role === TYPE_OF_USER.REGIONAL_MANGER || role === TYPE_OF_USER.SALE_MANAGER}
+                            isVisible={
+                              role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                              role === TYPE_OF_USER.REGIONAL_MANGER ||
+                              role === TYPE_OF_USER.SALE_MANAGER
+                            }
                             placeholder="Select Sales Rep"
                             width="100%"
                             getOptionLabel={(option) => option.name}
@@ -593,14 +639,16 @@ const FormModal: React.FC<EditModalProps> = ({
                             placeholder="Write"
                           ></textarea>
                           <p
-                            className={`character-count ${formData.notes.trim().length >= 300
-                              ? 'exceeded'
-                              : ''
-                              }`}
+                            className={`character-count ${
+                              formData.notes.trim().length >= 300
+                                ? 'exceeded'
+                                : ''
+                            }`}
                           >
                             {formData.notes.trim().length}/300 characters
                           </p>
-                        </div></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -616,7 +664,7 @@ const FormModal: React.FC<EditModalProps> = ({
                 </button>
               </div>
             </form>
-          }
+          )}
         </div>
       </div>
     </div>

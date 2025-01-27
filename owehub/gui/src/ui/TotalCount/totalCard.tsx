@@ -18,10 +18,14 @@ interface DataType {
 interface TotalCardProps {
   data: any;
   isLoading: boolean;
-  selectOption:any;
+  selectOption: any;
 }
 
-const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) => {
+const TotalCard: React.FC<TotalCardProps> = ({
+  data,
+  isLoading,
+  selectOption,
+}) => {
   const data1: DataType[] = [
     {
       name: 'Total Sales',
@@ -54,7 +58,8 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) 
       color: '#2DC278',
       bgColor: '#EAFFF5',
       percent: parseFloat((data?.install_increase_percent || 0).toFixed(2)),
-      arrow: data?.install_increase_percent < 0 ? <IoArrowDown /> : <IoArrowUp />,
+      arrow:
+        data?.install_increase_percent < 0 ? <IoArrowDown /> : <IoArrowUp />,
     },
   ];
 
@@ -75,9 +80,7 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) 
   return (
     <div className="totalcard">
       {isLoading ? (
-        <div
-          className="flex items-center justify-center mx-auto"
-        >
+        <div className="flex items-center justify-center mx-auto">
           <MicroLoader />
         </div>
       ) : (
@@ -120,10 +123,10 @@ const TotalCard: React.FC<TotalCardProps> = ({ data, isLoading, selectOption }) 
                       fontSize: '12px',
                       fontWeight: '500',
                       marginLeft: '20px',
-                      color: "#292B2E"
+                      color: '#292B2E',
                     }}
                   >
-                         {timePeriodText()}
+                    {timePeriodText()}
                   </p>
                 </div>
               </div>

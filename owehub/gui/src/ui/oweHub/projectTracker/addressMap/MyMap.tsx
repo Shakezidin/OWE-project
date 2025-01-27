@@ -8,32 +8,20 @@ import {
 } from '@react-google-maps/api';
 import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
-import { useNavigate } from 'react-router-dom';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { availableStates } from '../../../../core/models/data_models/SelectDataModel';
 import { toast } from 'react-toastify';
-import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
-import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { toZonedTime } from 'date-fns-tz';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { IoIosSearch } from 'react-icons/io';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import NotFound from '../../noRecordFound/NotFound';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import useAuth from '../../../../hooks/useAuth';
-
 import {
-  endOfWeek,
-  startOfMonth,
   startOfWeek,
-  startOfYear,
-  subDays,
-  format,
 } from 'date-fns';
-import Input from '../../../components/text_input/Input';
 import { RiMapPinLine } from 'react-icons/ri';
 
 const mapContainerStyle: React.CSSProperties = {
@@ -41,17 +29,12 @@ const mapContainerStyle: React.CSSProperties = {
   height: '100%',
   borderRadius: '16px',
 };
-
 interface LocationInfo {
   lat: number;
   lng: number;
   unique_id: string;
   home_owner: string;
   project_status: string;
-}
-interface StateOption {
-  label: string; // This is the name of the state
-  value: string; // This is the unique value for the state
 }
 export type DateRangeWithLabel = {
   label?: string;
@@ -69,39 +52,14 @@ const MyMapComponent: React.FC = () => {
   });
   const today = getCurrentDateInUserTimezone();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
-  const startOfThisMonth = startOfMonth(today);
-  const startOfThisYear = startOfYear(today);
-  const startOfLastMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() - 1,
-    1
-  );
-  const startOfThreeMonthsAgo = new Date(
-    today.getFullYear(),
-    today.getMonth() - 2,
-    1
-  );
-  const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
-  const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
-    weekStartsOn: 1,
-  });
-  const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
-    weekStartsOn: 1,
-  });
-
   const [locations, setLocations] = useState<LocationInfo[]>([]);
-  const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState<any>('');
   const { authData, getUpdatedAuthData } = useAuth();
-
-  const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
     null
   );
   const [loading, setLoading] = useState(false);
   const [isSearchDisabled, setIsSearchDisabled] = useState(false);
-
   const [projectCount, setProjectCount] = useState<number>(0);
   const [neighboring, setNeighboring] = useState<LocationInfo[]>([]); // Filtered locations
   const projectCountRef = useRef(projectCount);
@@ -112,14 +70,6 @@ const MyMapComponent: React.FC = () => {
     []
   ); // Filtered locations
   const role = authData?.role;
-  const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-
-  const [selectedPeriod, setSelectedPeriod] =
-    useState<DateRangeWithLabel | null>(null);
-  const [selectedRanges, setSelectedRanges] = useState([
-    { startDate: new Date(), endDate: new Date(), key: 'selection' },
-  ]);
-
   const [selectedDates, setSelectedDates] = useState<{
     startDate: Date | null;
     endDate: Date | null;
@@ -129,15 +79,7 @@ const MyMapComponent: React.FC = () => {
   });
   const [newFormData, setNewFormData] = useState({});
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const dateRangeRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLDivElement>(null);
-  const [toggledId, setToggledId] = useState<string | null>(null);
-
-  const toggleCalendar = () => {
-    setIsCalendarOpen((prevState) => !prevState);
-  };
   const [createRePayData, setCreatePayData] = useState({
     state: 'All',
     // other fields...
@@ -147,9 +89,7 @@ const MyMapComponent: React.FC = () => {
       try {
         setLoading(true);
         const requestData: any = {}; // Initialize an empty object
-
         const availableStateOptions = availableStates(newFormData);
-
         const data = await postCaller('get_user_address', {
           states:
             createRePayData.state === 'All'
@@ -158,12 +98,10 @@ const MyMapComponent: React.FC = () => {
                 ? ['']
                 : [createRePayData.state],
         });
-
         if (data.status > 201) {
           toast.error(data.message);
           return;
         }
-
         if (
           !data?.data ||
           !Array.isArray(data.data) ||
@@ -172,7 +110,6 @@ const MyMapComponent: React.FC = () => {
           setLocations([]);
           return;
         }
-
         const formattedData: LocationInfo[] = data.data
           .filter(
             (location: any) =>
@@ -188,7 +125,6 @@ const MyMapComponent: React.FC = () => {
             home_owner: location.home_owner,
             project_status: location.project_status,
           }));
-
         setLocations(formattedData);
       } catch (error) {
         console.error(error);
@@ -218,7 +154,6 @@ const MyMapComponent: React.FC = () => {
   const [selectedMiles, setSelectedMiles] = useState<any>(1); // Default to 10 miles
   const [isInputFocused, setInputFocused] = useState(false);
 
-
   // Handle change function
   const handleChange = (newValue: any) => {
     setCreatePayData({
@@ -228,7 +163,6 @@ const MyMapComponent: React.FC = () => {
     setSearchValue('');
     setSearchedLocation(null);
   };
-
   useEffect(() => {
     if (createRePayData.state !== 'All') {
       setIsSearchDisabled(true);
@@ -236,8 +170,6 @@ const MyMapComponent: React.FC = () => {
       setIsSearchDisabled(false);
     }
   }, [createRePayData.state]);
-
-
 
   // Function to calculate the distance between two points in miles
   const calculateDistanceInMiles = (
@@ -330,15 +262,12 @@ const MyMapComponent: React.FC = () => {
       if (createRePayData.state && createRePayData.state !== 'All') {
         const geocoder = new window.google.maps.Geocoder();
         const stateName = createRePayData.state;
-
         console.log(stateName, 'stateName');
-
         // Perform geocoding to get the state's coordinates
         geocoder.geocode({ address: stateName }, (results, status) => {
           if (status === 'OK' && results && results.length > 0) {
             const stateBounds = results[0].geometry.viewport;
             const stateCenter = results[0].geometry.location;
-
             // Update the map center and fit bounds to the new state's location
             setCenter({ lat: stateCenter.lat(), lng: stateCenter.lng() });
             mapRef.current?.fitBounds(stateBounds); // Use optional chaining to safely access fitBounds
@@ -350,16 +279,13 @@ const MyMapComponent: React.FC = () => {
         // If state is 'All', fit the map to the bounds of all locations
         const bounds = new window.google.maps.LatLngBounds();
         const locationsToShow = filteredLocations.length > 0 ? filteredLocations : locations;
-
         locationsToShow.forEach((location) => {
           bounds.extend({ lat: location.lat, lng: location.lng });
         });
-
         mapRef.current?.fitBounds(bounds); // Use optional chaining to safely access fitBounds
       }
     }
   }, [createRePayData.state, filteredLocations, locations, mapRef]);
-
 
   const onMarkerHover = useCallback(
     (location: LocationInfo) => {
@@ -546,7 +472,6 @@ const MyMapComponent: React.FC = () => {
     autocompleteRef.current = autocomplete;
   };
 
-
   return (
     <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
@@ -669,22 +594,8 @@ const MyMapComponent: React.FC = () => {
                 </div>
               ) : null}
             </div>
-
-            {/* Display total project count
-            {projectCount > 0 ? (
-              <div className={styles.projectCount}>
-                <h3 className={styles.totalProjects}>Total Projects : </h3>
-                <span className={styles.projectCountValue}>{projectCount}</span>
-              </div>
-            ) : null} */}
           </div>
         </div>
-
-        {/* <div className={styles.headerRight}>
-          <div className={styles.mapClose} onClick={handleCalcClose}>
-            <IoClose />
-          </div>
-        </div> */}
       </div>
 
       <div
@@ -714,31 +625,7 @@ const MyMapComponent: React.FC = () => {
                   maxZoom: 20, // Set max zoom level
                 }}
               >
-                {/* Searched location marker */}
-                {/* {center && (
-          <Marker
-            position={center}
-            icon={{
-              url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png', // Customize the icon if needed
-            }}
-          />
-        )} */}
-
-                {/* Searched location marker with different color */}
-                <></>
                 {searchedLocation && (
-                  // <Marker
-                  //   position={searchedLocation}
-                  //   icon={{
-                  //     path: 'M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z',
-                  //     fillColor: '#0D84F2', // color
-                  //     fillOpacity: 1,
-                  //     strokeColor: '#0059AC',
-                  //     strokeWeight: 1, // No outline
-                  //     scale: 2, // Scale to size
-                  //     anchor: new google.maps.Point(12, 24), // Anchor at the bottom of the marker
-                  //   }}
-                  // />
                   <div>
                     <Marker
                       position={searchedLocation}

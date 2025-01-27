@@ -6,7 +6,6 @@ import React, {
   SetStateAction,
 } from 'react';
 import './ArDropdownWithCheckboxes.css';
-import { useAppDispatch } from '../../../../redux/hooks';
 interface Option {
   label: string;
   value: string;

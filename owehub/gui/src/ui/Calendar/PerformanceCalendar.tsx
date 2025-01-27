@@ -511,14 +511,6 @@ const PerformanceCalendar: React.FC = () => {
     );
   };
 
-  const nextMonth = (): void => {
-    setCurrentMonth(addMonths(currentMonth, 1));
-  };
-
-  const prevMonth = (): void => {
-    setCurrentMonth(subMonths(currentMonth, 1));
-  };
-
   return (
     <>
       <div className="calendar">

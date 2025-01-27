@@ -65,44 +65,34 @@
   font-weight: 500;
 }
 
-
 @media only screen and (max-width: 450px) {
-  .pending_review_wrapper{
-    /* background-color: rgb(173, 173, 173); */
-    /* padding-right: 4px;
-    padding-left: 4px;
-    margin-right: 16px;
-    margin-left: 13px; */
+  .pending_review_wrapper {
     margin-bottom: 6px;
   }
 
-  .schedule_tab span{
+  .schedule_tab span {
     font-size: 11px !important;
-
   }
   .schedule_tab {
     width: 90px;
     height: 30px;
-
   }
 
-  .schedule_stats{
+  .schedule_stats {
     font-size: 11px !important;
     width: 20px;
     height: 20px;
   }
 
-  .customer_wrapper_list{
+  .customer_wrapper_list {
     padding-top: 15px;
     flex-basis: 100%;
     margin: 0px 20px;
   }
 
-  .firstDiv{
+  .firstDiv {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
   }
-  
 }

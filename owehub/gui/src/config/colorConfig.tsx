@@ -16,10 +16,8 @@ const colorConfig = {
   payColor: '#00D993',
   timeLineColor: '#D99C00',
   loanTypeColor: '#075BFF',
-
   defaultBoldTextColor: '#101828',
   defaultDescriptionTextColor: '#667085',
-
   header: {
     backgroundColor: 'white',
     color: 'black',

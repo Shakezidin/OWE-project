@@ -30,10 +30,8 @@ const TechnicalSupport: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<any>('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [selectedFileName, setSelectedFileName] = useState('');
   const [fileSizeError, setFileSizeError] = useState('');
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {

@@ -90,7 +90,8 @@ const QCPopUp: React.FC<TableProps> = ({
                     .filter(
                       ([key, value]) =>
                         key !== 'qc_action_required_count' && value
-                    ) // Filter out empty values
+                    )
+                    // Filter out empty values
                     .map(([key, value]) => (
                       <div key={key}>
                         {renderQCContent(formatTitle(key), value as string)}

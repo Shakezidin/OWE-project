@@ -1,9 +1,6 @@
 import React from 'react';
 import classes from './styles/createpropsal.module.css';
 import createPropsalImg from './Modals/Modalimages/imagefor.png';
-import searchIcon from './Modals/images (1).png';
-import searchIcon1 from './Modals/images.png';
-import searchIcon2 from './Modals/search-bar-01.png';
 const CreateProposal = () => {
   return (
     <div className={classes.gridcontainer}>

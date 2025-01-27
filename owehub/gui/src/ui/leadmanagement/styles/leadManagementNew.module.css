@@ -46,9 +46,7 @@
 /* Hide scrollbar for IE, Edge and Firefox */
 .customer_wrapper_list {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
 }
 
 .srs_new_create {
@@ -135,7 +133,6 @@
 .tentaclesicons {
   position: absolute;
   top: 65%;
-  /* right: 5px; */
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -143,12 +140,10 @@
   justify-content: center;
   pointer-events: none;
   padding-left: 77px;
-  /* Prevents clicking on the icons from affecting the input */
 }
 
 .tentaclesicons img {
   width: 12px;
-  /* Adjust the size of the icons as needed */
   height: 12px;
   cursor: pointer;
   pointer-events: auto;
@@ -157,12 +152,10 @@
 
 .tentaclesicons img:hover {
   transform: scale(1.2);
-  /* Apply scale transformation on hover */
 }
 
 .tentaclesicons img:first-child {
   margin-bottom: 2px;
-  /* Adjust the spacing between the icons */
 }
 
 .srActionButton {
@@ -172,7 +165,6 @@
   align-items: center;
   padding: 24px 0 24px 0;
   gap: 1rem;
-  /* border-top: 1px solid #d0d5dd; */
 }
 
 .mobileNumber {
@@ -190,12 +182,10 @@
 }
 
 .form_header {
-  /* margin-left: 20px; */
-
   margin-left: 14px;
 }
 @media (max-width: 768px) {
-  .h_screen{
+  .h_screen {
     margin-top: 10px;
   }
   .customer_wrapper_list {
@@ -257,7 +247,6 @@
   border-width: 1px;
 }
 
-
 .inputsearch:hover,
 .inputsearch:focus,
 .inputsearch:not(:placeholder-shown) {
@@ -270,17 +259,19 @@
 }
 
 .inputMap {
-  fill: var(--input-border-color); 
+  fill: var(--input-border-color);
 }
 
-.inputsearch:focus::placeholder, .inputsearch:hover::placeholder {
-  color: var(--primary-color); 
+.inputsearch:focus::placeholder,
+.inputsearch:hover::placeholder {
+  color: var(--primary-color);
 }
 
-.inputsearch:hover + .inputMap{
+.inputsearch:hover + .inputMap {
   fill: var(--primary-color);
 }
 
-.focused + .inputMap, .inputsearch.focused::placeholder {
-  fill: var(--primary-color); 
+.focused + .inputMap,
+.inputsearch.focused::placeholder {
+  fill: var(--primary-color);
 }

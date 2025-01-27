@@ -9,8 +9,8 @@ import { ImStatsBars2 } from 'react-icons/im';
 import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
 import { PiMapPin } from 'react-icons/pi';
-import { MdOutlinePermMedia } from "react-icons/md";
-import { FaCalculator } from "react-icons/fa";
+import { MdOutlinePermMedia } from 'react-icons/md';
+import { FaCalculator } from 'react-icons/fa';
 import { ICONS } from '../resources/icons/Icons';
 import { TbReportSearch } from "react-icons/tb";
 import { GoGoal } from 'react-icons/go';
@@ -76,8 +76,14 @@ const mob = {
       sidebarProps: {
         displayText: 'Dealer Pay',
         icon: (
-          // <BiDollar size={20} style={{ marginLeft: '5px' }} className="hover-icon"/>
-          <img src={ICONS.MenuDealer} style={{ marginLeft: '5px' }} className="hover-icon" width={20} height={20} alt="sidebar-dealer-logo" />
+          <img
+            src={ICONS.MenuDealer}
+            style={{ marginLeft: '5px' }}
+            className="hover-icon"
+            width={20}
+            height={20}
+            alt="sidebar-dealer-logo"
+          />
         ),
       },
     },
@@ -101,7 +107,6 @@ const mob = {
       sidebarProps: {
         displayText: 'Reports',
         icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
-
       },
     },
     {
@@ -167,14 +172,6 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
-
-    // {
-    //   path: ROUTES.CALENDAR,
-    //   sidebarProps: {
-    //     displayText: 'Performance Calendar',
-    //     icon: <FaRegCalendarCheck size={20} style={{ flexShrink: '0' }} />,
-    //   },
-    // },
   ],
 };
 

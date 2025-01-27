@@ -7,9 +7,7 @@ const useEscapeKey = (onClose: () => void) => {
         onClose();
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };

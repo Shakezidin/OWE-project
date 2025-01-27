@@ -457,15 +457,14 @@
   border-top: 18px solid #377cf6;
 }
 
-.span_date{
+.span_date {
   font-size: 20px;
   font-weight: 600;
 }
-.span_day{
+.span_day {
   font-size: 18px;
   font-weight: 500;
 }
-
 
 @media only screen and (max-width: 450px) {
   .date_grid_container {
@@ -476,69 +475,66 @@
 
   .active_date {
     padding: 0px 4px;
-  }  
+  }
 
   .inactive_date {
     padding: 0px 4px;
     min-width: auto;
-width: 100%;  
-} 
+    width: 100%;
+  }
 
-  .surveyor{
+  .surveyor {
     font-size: 12px;
     font-weight: 500;
-      }
+  }
 
-      .top_overlay{
-        font-size: 12px;
-        font-weight: 500;
-      }
+  .top_overlay {
+    font-size: 12px;
+    font-weight: 500;
+  }
 
+  .suvery_grid_wrapper {
+    display: grid;
+    grid-template-columns: 72px auto;
+  }
 
-      .suvery_grid_wrapper {
-        display: grid;
-        grid-template-columns: 72px auto;
-      }
+  .survey_progress_container {
+    display: grid;
+    grid-template-columns: 72px auto;
+  }
 
-      .survey_progress_container {
-        display: grid;
-        grid-template-columns: 72px auto;
-      }
+  .detail_heading {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 18px;
+    margin-left: 18px;
+  }
 
+  .refresh_btn {
+    width: 32px;
+    height: 28px;
+  }
 
-      .detail_heading{
-        font-size: 18px;
-        font-weight: 600;
-        margin-top: 18px;
-        margin-left: 18px;
-      }
+  .survery_users_container {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
 
-      .refresh_btn{
-        width: 32px;
-        height: 28px;
-      }
+  .time_slot_wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 13px;
+    width: 96%;
+  }
 
-      .survery_users_container{
-        margin-left: 18px;
-        margin-right: 18px;
-      }
+  .surveyor_name {
+    font-size: 11px;
+    font-weight: 500;
 
-      .time_slot_wrapper{
-        display: flex;
-        flex-direction: row;
-        gap: 13px;
-        width: 96%;      }
+    padding-left: 10px;
+  }
 
-        .surveyor_name {
-          font-size: 11px;
-          font-weight: 500;
-
-          padding-left: 10px;
-        }
-
-        .progress_bar {
-          grid-template-columns: repeat(20, 1fr);
-        }
-
-
+  .progress_bar {
+    grid-template-columns: repeat(20, 1fr);
+  }
 }

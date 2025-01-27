@@ -597,20 +597,9 @@ const RepDashBoardTable = ({
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-  // [
-  //   { value: 'All', label: 'All', key: 'all' },
-  //   { value: 'AP-OTH', label: 'AP-OTH', key: 'ap_oth' },
-  //   { value: 'AP-PDA', label: 'AP-PDA', key: 'ap_pda' },
-  //   { value: 'AP-ADV', label: 'AP-ADV', key: 'ap_adv' },
-  //   { value: 'AP-DED', label: 'AP-DED', key: 'ap_ded' },
-  //   { value: 'REP-COMM', label: 'REP-COMM', key: 'rep_comm' },
-  //   { value: 'REP BONUS', label: 'REP BONUS', key: 'rep_bonus' },
-  //   { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD', key: 'leader_ovrd' },
-  // ]
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,

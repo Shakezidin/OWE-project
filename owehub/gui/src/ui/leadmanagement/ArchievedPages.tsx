@@ -2,23 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './styles/Archive.module.css';
 import './styles/mediaQuery.css';
 import CrossICONBtn from './Modals/Modalimages/CrossBTNICON.png';
-
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
-import ArchiveModal from './Modals/LeaderManamentSucessModel';
-import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import { ICONS } from '../../resources/icons/Icons';
-import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { IoInformationOutline } from 'react-icons/io5';
-import LeadManamentSucessModel from './Modals/LeaderManamentSucessModel';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import useAuth from '../../hooks/useAuth';
@@ -28,8 +21,6 @@ import { Tooltip } from 'react-tooltip';
 interface PendingState {
   [key: number]: boolean;
 }
-
-
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -46,12 +37,7 @@ type Lead = {
   status: string;
 };
 
-
-
 const ArchivedPages = () => {
-  // const [isAuthenticated, setAuthenticated] = useState(false);
-  // const [loading, setIsLoading] = useState(false);
-
   const leads = [
     {
       id: '1',
@@ -61,20 +47,16 @@ const ArchivedPages = () => {
       address: '12778 Domingo Ct, 1233Parker, CO',
       status: 'Pending',
     },
-
   ];
 
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [leadId, setLeadId] = useState(0);
- 
-
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   const isMobile = width <= 767;
-
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(null);
@@ -103,9 +85,7 @@ const ArchivedPages = () => {
   };
   const handleCloseProfileModal = () => {
     setIsProfileOpen(false);
-
   };
-
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -116,10 +96,6 @@ const ArchivedPages = () => {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
-
-  const onClickCrossIconBotton = () => {
-    // setArchive(false);
-  };
 
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
@@ -146,10 +122,7 @@ const ArchivedPages = () => {
     (state) => state.leadManagmentSlice
   );
 
-
-
-
-  const [pending1, setPending1] = useState(false)
+  const [pending1, setPending1] = useState(false);
   const unArchiveLeads = async () => {
     setPending1(true);
     try {
@@ -174,37 +147,12 @@ const ArchivedPages = () => {
     }
     setPending1(false);
   };
-
-  const deleteLead = async (leadId: number) => {
-    // setPending2(true);
-    // try {
-    //   const response = await postCaller(
-    //     'delete_lead',
-    //     {
-    //       ids: [leadId],
-    //     },
-    //     true
-    //   );
-
-    //   if (response.status === 200) {
-    //     // setActiveIndex((prev) => prev + 1);
-    //     setSelectedLeads((prevSelectedLeads) =>
-    //       prevSelectedLeads.filter((id) => id !== leadId)
-    //     );
-    //     toast.success('Lead deleted successfully');
-    //   } else {
-    //     toast.warn(response.message);
-    //   }
-    // } catch (error) {
-    //   console.error('Error deleting lead:', error);
-    // }
-    // setPending2(false);
-  };
-
   const [pending3, setPending3] = useState<PendingState>({});
-
   const handleUnArchiveSelected = async (leadId: number) => {
-    setPending3((prevState: PendingState) => ({ ...prevState, [leadId]: true }));
+    setPending3((prevState: PendingState) => ({
+      ...prevState,
+      [leadId]: true,
+    }));
     try {
       const response = await postCaller(
         'toggle_archive',
@@ -226,7 +174,10 @@ const ArchivedPages = () => {
     } catch (error) {
       console.error('Error unarchiving lead:', error);
     }
-    setPending3((prevState: PendingState) => ({ ...prevState, [leadId]: false }));
+    setPending3((prevState: PendingState) => ({
+      ...prevState,
+      [leadId]: false,
+    }));
   };
   const [isArcOpen, setIsArcOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -265,14 +216,13 @@ const ArchivedPages = () => {
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
-  const dispatch = useAppDispatch()
-
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isAuthenticated) {
       const data = {
-        "progress_filter": "ALL",
-        "is_archived": true,
+        progress_filter: 'ALL',
+        is_archived: true,
         page_size: itemsPerPage,
         page_number: page,
       };
@@ -284,11 +234,11 @@ const ArchivedPages = () => {
   const navigate = useNavigate();
 
   const handleHome = () => {
-    navigate('/leadmng-dashboard')
-  }
+    navigate('/leadmng-dashboard');
+  };
   const resetSelection = () => {
-    setSelectedLeads([])
-  }
+    setSelectedLeads([]);
+  };
 
   return (
     <>
@@ -298,7 +248,6 @@ const ArchivedPages = () => {
         leadId={leadId}
       />
       <div>
-
         <div className={styles.card}>
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             <div className={styles.selectionHeader}>
@@ -319,13 +268,15 @@ const ArchivedPages = () => {
                   )}
                 </span>
                 <h4>
-                  {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
+                  {selectedLeads.length === 0 ? (
+                    ''
+                  ) : (
+                    <>{selectedLeads.length} </>
+                  )}
                   Archived
                 </h4>
               </div>
-
               {/* HERE CONDITIONAL BUTTONS AFTER 2 ITEMS SELECTED */}
-
               <div className={styles.SecondChildContain}>
                 <div className={styles.ConditionButtonArea}>
                   {selectedLeads.length > 0 ? (
@@ -346,22 +297,16 @@ const ArchivedPages = () => {
                           {pending1 ? 'Unarchiving...' : 'Unarchive'}
                         </button>
                       </div>{' '}
-                      
                     </div>
                   ) : (
                     <div
                       className={styles.ConditionalButtons}
                       style={{ visibility: 'hidden' }}
                     >
-                      <div className={styles.selectionHeader}>
-                      {/*   <button className={styles.archieveButtonA}>
-                          Archive
-                        </button>*/}
-                      </div>{' '}
+                      <div className={styles.selectionHeader}></div>{' '}
                     </div>
                   )}
                 </div>
-
                 {/* HERE NOT NEED TO EDITED */}
                 <div>
                   {selectedLeads.length === 0 ? (
@@ -375,7 +320,6 @@ const ArchivedPages = () => {
                     <img
                       className={styles.CrossICONBTNHover}
                       src={CrossICONBtn}
-                      // onClick={onClickCrossIconBotton}
                       style={{ display: 'none' }}
                     />
                   )}
@@ -390,7 +334,9 @@ const ArchivedPages = () => {
                 {isLoading ? (
                   <tr>
                     <td colSpan={leads.length}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
                         <MicroLoader />
                       </div>
                     </td>
@@ -400,16 +346,16 @@ const ArchivedPages = () => {
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${lead.status === 'Declined' ||
+                          className={`${
+                            lead.status === 'Declined' ||
                             lead.status === 'Action Needed'
-                            ? styles.history_list_inner
-                            : selectedLeads.length > 0 && isMobile
-                              ? styles.history_list_inner_Mobile_View
-                              : selectedLeads.length > 0 && isTablet
-                                ? styles.history_list_inner_Tablet_View
-                                : styles.history_list_inner
-                            }`}
-                        // onClick={handleOpenModal}
+                              ? styles.history_list_inner
+                              : selectedLeads.length > 0 && isMobile
+                                ? styles.history_list_inner_Mobile_View
+                                : selectedLeads.length > 0 && isTablet
+                                  ? styles.history_list_inner_Tablet_View
+                                  : styles.history_list_inner
+                          }`}
                         >
                           <label>
                             <input
@@ -430,46 +376,45 @@ const ArchivedPages = () => {
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
                               maxWidth: isMobile ? '100px' : '200px',
-                              lineHeight: "19px"
+                              lineHeight: '19px',
                             }}
                           >
                             <h2>
                               {lead.first_name} {lead.last_name}
                             </h2>
-                            {/* <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p> */}
                           </div>
-                          <div className={styles.phone_number}
+                          <div
+                            className={styles.phone_number}
                             style={{
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
                               maxWidth: '200px',
-                              lineHeight: "16px"
+                              lineHeight: '16px',
                             }}
                           >
                             {lead.phone_number}
                           </div>
-                          <div
-                           
-                           className={styles.email}>
+                          <div className={styles.email}>
                             <span
-                            style={{
-                              whiteSpace: 'pre-wrap',
-                              overflowWrap: 'break-word',
-                              maxWidth: isTablet ? '100px' : '200px',
-                              lineHeight: "16px"
-                            }}
-                            >{lead.email_id}</span>
+                              style={{
+                                whiteSpace: 'pre-wrap',
+                                overflowWrap: 'break-word',
+                                maxWidth: isTablet ? '100px' : '200px',
+                                lineHeight: '16px',
+                              }}
+                            >
+                              {lead.email_id}
+                            </span>
                           </div>
                           <div
                             style={{
                               whiteSpace: 'pre-wrap',
                               overflowWrap: 'break-word',
                               maxWidth: isMobile ? '100px' : '200px',
-                              lineHeight: "16px"
+                              lineHeight: '16px',
                             }}
-                            className={styles.address}>
-                            {/* {lead.street_address ? lead.street_address : 'N/A'} */}
-
+                            className={styles.address}
+                          >
                             {lead?.street_address
                               ? lead.street_address.length > 60
                                 ? `${lead.street_address.slice(0, 60)}...`
@@ -479,7 +424,9 @@ const ArchivedPages = () => {
                           {selectedLeads.length > 0 ? (
                             ' '
                           ) : (
-                            <div style={{marginTop:isMobile? "-10px" : "0"}}>
+                            <div
+                              style={{ marginTop: isMobile ? '-10px' : '0' }}
+                            >
                               <button
                                 className={styles.UnArchiveButton}
                                 onClick={() => {
@@ -487,39 +434,29 @@ const ArchivedPages = () => {
                                 }}
                                 disabled={selectedLeads.length > 1}
                                 style={{
-                                  pointerEvents: pending3[lead.leads_id] ? 'none' : 'auto',
+                                  pointerEvents: pending3[lead.leads_id]
+                                    ? 'none'
+                                    : 'auto',
                                   opacity: pending3[lead.leads_id] ? 0.6 : 1,
-                                  cursor: pending3[lead.leads_id] ? 'not-allowed' : 'pointer',
+                                  cursor: pending3[lead.leads_id]
+                                    ? 'not-allowed'
+                                    : 'pointer',
                                 }}
                               >
-                                {pending3[lead.leads_id] ? 'Unarchiving...' : 'Unarchive'}
+                                {pending3[lead.leads_id]
+                                  ? 'Unarchiving...'
+                                  : 'Unarchive'}
                               </button>
                             </div>
                           )}
-                          {/* {isMobile || isTablet ? (
-                            <div
-                              className={styles.chevron_down}
-                              onClick={() => handleChevronClick(lead['leads_id'])}
-                            >
-                              <img
-                                src={
-                                  toggledId.includes(lead['leads_id'])
-                                    ? ICONS.chevronUp
-                                    : ICONS.chevronDown
-                                }
-                                alt={
-                                  toggledId.includes(lead['leads_id'])
-                                    ? 'chevronUp-icon'
-                                    : 'chevronDown-icon'
-                                }
-                              />
-                            </div>
-                          ) 
-                          : ( */}
-                            {/* ''
-                          )} */}
                           {/* isProfileOpen */}
-                          <div className={styles.infoIcon} onClick={() => handleOpenProfileModal(lead.leads_id)} data-tooltip-id="info">
+                          <div
+                            className={styles.infoIcon}
+                            onClick={() =>
+                              handleOpenProfileModal(lead.leads_id)
+                            }
+                            data-tooltip-id="info"
+                          >
                             <IoInformationOutline />
                           </div>
                           <Tooltip
@@ -529,7 +466,6 @@ const ArchivedPages = () => {
                               color: '#000',
                               fontSize: 12,
                               paddingBlock: 4,
-                              
                             }}
                             offset={8}
                             id="info"
@@ -537,7 +473,6 @@ const ArchivedPages = () => {
                             content="Lead Info"
                           />
                         </td>
-
                       </tr>
                       {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
@@ -547,29 +482,32 @@ const ArchivedPages = () => {
                                 whiteSpace: 'pre-wrap',
                                 overflowWrap: 'break-word',
                                 width: '155px',
-                                lineHeight: "16px"
+                                lineHeight: '16px',
                               }}
-                              className={''}>{lead.phone_number}</div>
+                              className={''}
+                            >
+                              {lead.phone_number}
+                            </div>
                             <div
-                            style={{
-                              whiteSpace: 'pre-wrap',
-                              overflowWrap: 'break-word',
-                              maxWidth: isTablet ? '100px' : '200px',
-                              lineHeight: "16px"
-                            }}
-                             className={''}>
+                              style={{
+                                whiteSpace: 'pre-wrap',
+                                overflowWrap: 'break-word',
+                                maxWidth: isTablet ? '100px' : '200px',
+                                lineHeight: '16px',
+                              }}
+                              className={''}
+                            >
                               <span>{lead.email_id}</span>
                             </div>
-                            <div className={''}
+                            <div
+                              className={''}
                               style={{
                                 whiteSpace: 'pre-wrap',
                                 overflowWrap: 'break-word',
                                 maxWidth: '210px',
-                                lineHeight: "16px"
+                                lineHeight: '16px',
                               }}
                             >
-                              {/* {lead.street_address ? lead.street_address : 'N/A'} */}
-
                               {lead?.street_address
                                 ? lead.street_address.length > 60
                                   ? `${lead.street_address.slice(0, 60)}...`
@@ -582,17 +520,17 @@ const ArchivedPages = () => {
                       {toggledId === lead.id && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
-                            <div
-                              className={''}>{lead.phone}</div>
+                            <div className={''}>{lead.phone}</div>
                             <div className={''}>
                               <span>{lead.email_id}</span>
                             </div>
-                            <div className={''}
+                            <div
+                              className={''}
                               style={{
                                 whiteSpace: 'pre-wrap',
                                 overflowWrap: 'break-word',
                                 maxWidth: '200px',
-                                lineHeight: "16px"
+                                lineHeight: '16px',
                               }}
                             >
                               {lead?.street_address
@@ -600,10 +538,8 @@ const ArchivedPages = () => {
                                   ? `${lead.street_address.slice(0, 30)}...`
                                   : lead.street_address
                                 : 'N/A'}
-                              {/* {lead.street_address} */}
                             </div>
                           </td>
-
                         </tr>
                       )}
                     </React.Fragment>
@@ -617,17 +553,14 @@ const ArchivedPages = () => {
                 )}
               </tbody>
             </table>
-
-
           </div>
           {leadsData.length > 0 && (
-            <div className="page-heading-container">           
+            <div className="page-heading-container">
               <p className="page-heading">
-                  {startIndex} -
-                  {endIndex > totalcount! ? totalcount : endIndex} of{' '}
-                  {totalcount} item
-                </p>  
-                <div className={styles.PaginationFont}>         
+                {startIndex} -{endIndex > totalcount! ? totalcount : endIndex}{' '}
+                of {totalcount} item
+              </p>
+              <div className={styles.PaginationFont}>
                 <Pagination
                   currentPage={page}
                   totalPages={totalPage}
@@ -638,7 +571,7 @@ const ArchivedPages = () => {
                   perPage={itemsPerPage}
                   onPerPageChange={handlePerPageChange}
                 />
-                </div>
+              </div>
             </div>
           )}
         </div>

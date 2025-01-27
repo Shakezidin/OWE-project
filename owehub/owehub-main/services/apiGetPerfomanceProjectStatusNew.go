@@ -139,10 +139,31 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	queueStatus = buildQueueStatus(dataReq.SelectedMilestone)
 	searchValue = ""
 	if len(dataReq.UniqueIds) > 0 {
-		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
+		searchValue = fmt.Sprintf(" AND (cust.customer_name ILIKE '%%%s%%' OR cust.unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
 
-	pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
+	//pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
+	switch dataReq.SelectedMilestone {
+	case "survey":
+		pipelineQuery = models.PipelineSurveyDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "cad":
+		pipelineQuery = models.PipelineCadDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "permit":
+		pipelineQuery = models.PipelinePermitDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "roof":
+		pipelineQuery = models.PipelineRoofingDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "install":
+		pipelineQuery = models.PipelineInstallDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "inspection":
+		pipelineQuery = models.PipelineInspectionDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "activation":
+		pipelineQuery = models.PipelineActivationDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	default:
+		log.FuncErrorTrace(0, "Invalid Milestone %v selected", dataReq.SelectedMilestone)
+		appserver.FormAndSendHttpResp(resp, "Please select a valid milestone", http.StatusBadRequest, nil)
+		return
+	}
+
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
@@ -156,10 +177,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	for _, item := range data {
 
-		UniqueId, ok := item["customer_unique_id"].(string)
-		if !ok || UniqueId == "" {
+		UniqueId, _ := item["customer_unique_id"].(string)
+		/*if !ok || UniqueId == "" {
 			continue
-		}
+		}*/
 
 		Customer, _ := item["home_owner"].(string)
 

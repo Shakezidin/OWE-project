@@ -230,9 +230,6 @@ const FileTileView = ({ file, onDelete, onFilePreview, onCheck, selected }: IFil
           </div>
         </div>
         <div style={{ marginTop: 2 }} className={`flex  items-center justify-between ${styles.card_content}`}>
-          {/* <p>{(file!.size > 1024 * 1024)
-            ? `${(file!.size / (1024 * 1024)).toFixed(2)} MB`
-            : `${Math.round(file!.size / 1024)} KB`}</p> */}
           <p> {file?.createdDateTime && format(new Date(file?.createdDateTime), 'dd MMM, yy')} </p>
         </div>
       </div>

@@ -6,7 +6,7 @@
 }
 
 .sr-image-container::-webkit-scrollbar {
-  display: block !important; 
+  display: block !important;
 }
 
 .form-container {
@@ -20,21 +20,6 @@
   box-sizing: border-box;
   height: 100vh;
 }
-
-
-
-/* ::-webkit-scrollbar {
-  display: block !important;
-  width: 3px !important;
-}
-
-::-webkit-scrollbar-track {
-  background: white !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background: grey !important;
-} */
 
 .absolute_info_icon {
   position: absolute;
@@ -51,6 +36,7 @@
   max-width: 700px;
   margin: auto;
 }
+
 .prospect-input-field input,
 .prospect-input-field textarea {
   padding-block: 17px;
@@ -61,6 +47,7 @@
   padding-left: 24px;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
 }
+
 .sr-appliance-wrapper {
   border-radius: 8px;
   margin-top: 18px;
@@ -75,9 +62,11 @@
   padding-bottom: 12px;
   border-bottom: 1px solid #f2f2f2;
 }
+
 .text-sm {
   font-size: 14px;
 }
+
 .sr-appliance-body {
   padding-top: 11px;
 }
@@ -116,7 +105,7 @@
 
 .icon {
   margin-bottom: 10px;
-  width: 50px; /* Set the size of the icons to be the same */
+  width: 50px;
   height: 50px;
 }
 
@@ -165,6 +154,7 @@
   color: #fff;
   margin-top: 30px;
 }
+
 /* srImageUpload.css */
 .send-button:disabled {
   color: #919191;
@@ -173,9 +163,10 @@
 
 /* Ensure the default styles for the share button */
 .share-button {
-  background-color: gray; /* Default color when not enabled */
-  color: white; /* Default text color */
+  background-color: gray;
+  color: white;
 }
+
 .share-button.enabled {
   background-color: green;
   color: white;
@@ -184,10 +175,11 @@
 .camera-icon {
   font-size: 40px;
 }
+
 .img-remove {
   position: absolute;
-  top: -10px; /* Adjust as needed to position correctly */
-  right: -10px; /* Adjust as needed to position correctly */
+  top: -10px;
+  right: -10px;
   border-radius: 50%;
   border: none;
   font-size: 30px;
@@ -197,7 +189,7 @@
   width: 20px;
   height: 20px;
   background-color: #fff;
-  z-index: 1; /* Ensure the badge is above the thumbnail */
+  z-index: 1;
 }
 
 .uploaded-images {
@@ -222,8 +214,8 @@
 /* Updated .image-number styles */
 .image-number {
   position: absolute;
-  top: -10px; /* Adjust as needed to position correctly */
-  right: -10px; /* Adjust as needed to position correctly */
+  top: -10px;
+  right: -10px;
   background-color: white;
   color: black;
   padding: 5px;
@@ -234,15 +226,15 @@
   justify-content: center;
   width: 20px;
   height: 20px;
-  z-index: 1; /* Ensure the badge is above the thumbnail */
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for depth */
+  z-index: 1;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .lower-btns {
   display: flex;
-  justify-content: space-between; /* Distribute items evenly */
-  align-items: center; /* Center items vertically */
-  gap: 128px; /* Adjust as needed */
+  justify-content: space-between;
+  align-items: center;
+  gap: 128px;
 }
 
 .upper-btns {
@@ -256,17 +248,18 @@
   font-size: 40px;
   cursor: pointer;
 }
+
 .back-button {
   display: flex;
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
+  align-items: center;
+  justify-content: center;
   color: #bbb;
 
   cursor: pointer;
 }
 
 .back-icon {
-  margin-right: 5px; /* Adjust spacing between icon and text */
+  margin-right: 5px;
 }
 
 .back-icon {
@@ -279,7 +272,7 @@
   cursor: pointer;
   text-align: center;
   align-self: center;
-  margin-left: -80px; /* Adjust as needed */
+  margin-left: -80px;
 }
 
 .add-moree {
@@ -302,10 +295,8 @@
 .back-button {
   align-self: flex-start;
   margin: 20px;
-
   border: none;
   color: #bbb;
-
   cursor: pointer;
 }
 
@@ -428,6 +419,7 @@
     width: 40px;
     height: 40px;
   }
+
   .upper-btns {
     gap: 217px;
     margin-bottom: -22px;
@@ -439,9 +431,9 @@
 
   .lower-btns {
     display: flex;
-    justify-content: space-between; /* Distribute items evenly */
-    align-items: center; /* Center items vertically */
-    gap: 110px; /* Adjust as needed */
+    justify-content: space-between;
+    align-items: center;
+    gap: 110px;
     margin-top: 10px;
   }
 
@@ -525,12 +517,14 @@
     height: 35px;
     margin-left: 0;
   }
+
   .lower-btns {
     display: flex;
-    justify-content: space-between; /* Distribute items evenly */
-    align-items: center; /* Center items vertically */
-    gap: 55px; /* Adjust as needed */
+    justify-content: space-between;
+    align-items: center;
+    gap: 55px;
   }
+
   .img-remove {
     position: absolute;
     top: -5px;
@@ -539,6 +533,7 @@
     font-size: 20px;
     cursor: pointer;
   }
+
   .circle-inner {
     width: 29px;
     height: 29px;

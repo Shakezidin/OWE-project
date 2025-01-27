@@ -3,24 +3,18 @@ import Styles from './scheduledActivity.module.css';
 import { TbChevronDown } from 'react-icons/tb';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
-// import Select, {
-//   SelectOption,
-// } from '../../SalesRepScheduler/components/Select';
 import { FaXmark } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
 import useEscapeKey from '../../../../hooks/useEscape';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import SelectOption from '../../../components/selectOption/SelectOption';
-
 interface Appointment {
   name: string;
   email: string;
   contact_number: string;
   scheduled_time: string;
   status: 'Pending' | 'Approved';
-  state?: string; 
+  state?: string;
 }
-
 interface AppointmentData {
   date: string;
   appointment: Appointment[];
@@ -38,15 +32,17 @@ interface Option {
 
 interface ScheduledActivityProps {
   onClose: () => void;
-  isOpen: boolean; // Add this prop to control the animation state
+  isOpen: boolean;
 }
 
 function ScheduledActivity({ onClose }: ScheduledActivityProps) {
   const [selectedDate, setSelectedDate] = useState<number>(-1);
   const [collapse, setCollapse] = useState<number>(-1);
-  const [selectedState, setSelectedState] = useState<SelectOption>({ label: 'All State', value: 'All' });
+  const [selectedState, setSelectedState] = useState<SelectOption>({
+    label: 'All State',
+    value: 'All',
+  });
   const [isClosing, setIsClosing] = useState(false);
-  const navigate = useNavigate();
   const isMobile = useMatchMedia('(max-width:600px)');
 
   const appointmentsData: AppointmentData[] = [
@@ -59,7 +55,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '9:45 AM',
           status: 'Pending',
-          state: 'Arizona'
+          state: 'Arizona',
         },
         {
           name: 'Jacob Martin',
@@ -67,8 +63,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '11:45 AM',
           status: 'Pending',
-          state: 'Texas'
-
+          state: 'Texas',
         },
         {
           name: 'Jacob Martin',
@@ -76,7 +71,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '2:45 PM',
           status: 'Approved',
-          state: 'New Mexico'
+          state: 'New Mexico',
         },
       ],
     },
@@ -89,7 +84,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '9:45 AM',
           status: 'Pending',
-          state: 'Dallas'
+          state: 'Dallas',
         },
         {
           name: 'Jacob Martin',
@@ -97,7 +92,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '11:45 AM',
           status: 'Approved',
-          state: 'California'
+          state: 'California',
         },
       ],
     },
@@ -110,7 +105,7 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
           contact_number: '(831) 544-1235',
           scheduled_time: '9:45 AM',
           status: 'Pending',
-          state: 'New York'
+          state: 'New York',
         },
       ],
     },
@@ -120,30 +115,23 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
     },
   ];
 
-  // const stateOptions: SelectOption[] = [
-  //   { label: 'All', value: 'ALL' },
-  //   { label: 'Arizona', value: 'AZ' },
-  //   { label: 'Texas', value: 'TX' },
-  //   { label: 'New Mexico', value: 'NM' },
-  // ];
-
-   // Get unique states from appointments
-   const getAvailableStates = (): SelectOption[] => {
+  // Get unique states from appointments
+  const getAvailableStates = (): SelectOption[] => {
     const states = new Set<string>();
-    appointmentsData.forEach(data => {
-      data.appointment.forEach(apt => {
+    appointmentsData.forEach((data) => {
+      data.appointment.forEach((apt) => {
         if (apt.state) {
           states.add(apt.state);
         }
       });
     });
-    
+
     return [
       { label: 'All State', value: 'All' },
-      ...Array.from(states).map(state => ({
+      ...Array.from(states).map((state) => ({
         label: state,
-        value: state
-      }))
+        value: state,
+      })),
     ];
   };
 
@@ -156,11 +144,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
     }
   };
 
-  // const handleSelectChange = (options: SelectOption[]) => {
-  //   setSelectedOptions(options);
-  //   console.log(options);
-  // };
-
   const handleEdit = (appointment: Appointment) => {
     console.log('Edit:', appointment);
   };
@@ -171,7 +154,6 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
 
   const handleClose = () => {
     setIsClosing(true);
-    // Wait for animation to complete before calling onClose
     setTimeout(() => {
       onClose();
       setIsClosing(false);
@@ -182,16 +164,19 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
+  useEscapeKey(() => {
+    setCollapse(-1);
+  });
+  useEscapeKey(handleClose);
 
-  useEscapeKey(() => {setCollapse(-1)});
-    useEscapeKey(handleClose);
-  
   return (
-    <div className={`${Styles.main_container} ${isClosing ? Styles.closing : ''}`}>
+    <div
+      className={`${Styles.main_container} ${isClosing ? Styles.closing : ''}`}
+    >
       <div className={Styles.header}>
         <div className={Styles.title}>Scheduled Activity</div>
         <div className={Styles.header_right}>
-        <SelectOption
+          <SelectOption
             options={getAvailableStates()}
             controlStyles={{
               marginTop: 0,
@@ -211,11 +196,11 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
             }}
             menuListStyles={{
               fontWeight: 500,
-              fontSize:'13px',
+              fontSize: '13px',
             }}
             singleValueStyles={{
               fontWeight: 500,
-              fontSize:'13px',
+              fontSize: '13px',
             }}
             width="130px"
           />
@@ -315,15 +300,12 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
                           </div>
                         </div>
                         <div
-                        className={`${isMobile ? Styles.hide : Styles.second_container}`}
+                          className={`${isMobile ? Styles.hide : Styles.second_container}`}
                         >
                           <div className={Styles.scheduled_date}>
                             Scheduled Date & Time{' '}
                           </div>
-                          <div
-                            className={`${Styles.dateAndTime}`}
-                            
-                          >
+                          <div className={`${Styles.dateAndTime}`}>
                             {' '}
                             <div>{data.date}</div>
                             <div> {appointment.scheduled_time}</div>
@@ -352,47 +334,51 @@ function ScheduledActivity({ onClose }: ScheduledActivityProps) {
                           </div>
                         </div>
                         {/* ////////////////////////////////Phone Layout//////////////////////////// */}
-
-                        <div className={isMobile ? Styles.mobile_view : Styles.hide} >
-                            <div className={Styles.scheduled_date}>
+                        <div
+                          className={
+                            isMobile ? Styles.mobile_view : Styles.hide
+                          }
+                        >
+                          <div className={Styles.scheduled_date}>
                             Scheduled Date & Time{' '}
                           </div>
                           <div className={Styles.viewMobile}>
-                          <div
-                            className={`${Styles.dateAndTime}`}
-                            
-                          >
-                            {' '}
-                            <div className={Styles.time}> {appointment.scheduled_time}</div>
-                            <div className={Styles.date}>{data.date}</div>
-                          </div>
-                          <div>
-                            {appointment.status === 'Pending' ? (
-                              <div className={Styles.button_container}>
-                                <button
-                                  className={Styles.button_cancel}
-                                  onClick={() => handleEdit(appointment)}
-                                >
-                                  Cancel site survey
-                                </button>
-                                <button
-                                  className={Styles.button_edit}
-                                  onClick={() => handleCancel(appointment)}
-                                >
-                                  Edit
-                                </button>
+                            <div className={`${Styles.dateAndTime}`}>
+                              {' '}
+                              <div className={Styles.time}>
+                                {' '}
+                                {appointment.scheduled_time}
                               </div>
-                            ) : (
-                              <div style={{marginRight:'20px'}} className={Styles.approved}>
-                                <span>Approved</span>
-                              </div>
-                            )}
-                          </div>
-
-
+                              <div className={Styles.date}>{data.date}</div>
+                            </div>
+                            <div>
+                              {appointment.status === 'Pending' ? (
+                                <div className={Styles.button_container}>
+                                  <button
+                                    className={Styles.button_cancel}
+                                    onClick={() => handleEdit(appointment)}
+                                  >
+                                    Cancel site survey
+                                  </button>
+                                  <button
+                                    className={Styles.button_edit}
+                                    onClick={() => handleCancel(appointment)}
+                                  >
+                                    Edit
+                                  </button>
+                                </div>
+                              ) : (
+                                <div
+                                  style={{ marginRight: '20px' }}
+                                  className={Styles.approved}
+                                >
+                                  <span>Approved</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                    {/* ////////////////////////////////Phone Layout//////////////////////////// */}
+                        {/* ////////////////////////////////Phone Layout//////////////////////////// */}
                       </div>
                     ))
                   ) : (

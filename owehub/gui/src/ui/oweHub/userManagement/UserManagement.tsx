@@ -36,7 +36,6 @@ import {
   ALL_USER_ROLE_LIST as USERLIST,
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
-import useAuth from '../../../hooks/useAuth';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -49,11 +48,9 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
-  const { authData } = useAuth();
-
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
-  console.log(selectedOption, "selectedoption")
+  console.log(selectedOption, 'selectedoption');
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
@@ -90,9 +87,6 @@ const UserManagement: React.FC = () => {
     setActiveSalesRep('');
   };
 
-  const [isClicked, setIsClicked] = useState(false);
-  const [isClicked1, setIsClicked1] = useState(false);
-
   const handleOpen = () => setOpen(true);
   const handleImport = () => setOpenn(true);
   const handleClose = () => {
@@ -107,8 +101,7 @@ const UserManagement: React.FC = () => {
   /** fetch onboarding users data*/
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchUserOnboarding()); // Using dispatch
-      // await dispatch(createTablePermission());
+      await dispatch(fetchUserOnboarding());
     };
 
     fetchData();
@@ -120,58 +113,11 @@ const UserManagement: React.FC = () => {
     }
   }, [selectedOption]);
 
-  /** role based get data */
-
-  // useEffect(() => {
-  //   const data = {
-  //     page_number: page,
-  //     page_size: 25,
-  //     filters: [
-  //       {
-  //         Column: 'role_name',
-  //         Operation: '=',
-  //         Data: selectedOption.value,
-  //       },
-  //       {
-  //         Column: 'name',
-  //         Operation: 'cont',
-  //         Data: searchTerm,
-  //       },
-  //     ],
-  //   };
-
-  //   const dataa = {
-  //     page_number: page,
-  //     page_size: 25,
-  //     filters: [
-  //       {
-  //         Column: 'dealer_name',
-  //         Operation: 'cont',
-  //         Data: searchTerm,
-  //       },
-  //     ],
-  //   };
-  //   const fetchList = async () => {
-  //     await dispatch(fetchUserListBasedOnRole(data));
-  //   };
-
-  //   if (selectedOption.value !== 'Partner') {
-  //     fetchList();
-  //   }
-
-  //   const fetchDealer = async () => {
-  //     await dispatch(fetchDealerList(dataa));
-  //   };
-  //   if (selectedOption.value === 'Partner') {
-  //     fetchDealer();
-  //   }
-  // }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
-
   useEffect(() => {
     const data = {
       page_number: page,
       page_size: 25,
-      sales_rep_status:activeSalesRep,
+      sales_rep_status: activeSalesRep,
       filters: [
         {
           Column: 'name',
@@ -215,7 +161,14 @@ const UserManagement: React.FC = () => {
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
-  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm, activeSalesRep]);
+  }, [
+    selectedOption,
+    createUserResult,
+    deleteUserResult,
+    page,
+    searchTerm,
+    activeSalesRep,
+  ]);
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -259,8 +212,6 @@ const UserManagement: React.FC = () => {
     setActiveSalesRep(value);
   };
 
-
-  
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
     const arrayOfPermissions = Object.entries(tablePermissions).map(
@@ -386,7 +337,7 @@ const UserManagement: React.FC = () => {
     }
   };
   console.log(userRoleBasedList, 'userRoleBasedList');
-  console.log(formData, "formdata")
+  console.log(formData, 'formdata');
   /** render UI */
   return (
     <>
@@ -433,7 +384,6 @@ const UserManagement: React.FC = () => {
           activeSalesRep={activeSalesRep}
         />
       </div>
-
       <div className="onboardrow">
         <UserManagementTable
           AddBtn={
@@ -499,9 +449,7 @@ const UserManagement: React.FC = () => {
             }
           }}
           onClickEdit={(item: UserRoleBasedListModel) => {
-            // console.log("row data",item)
             const [firstName, lastName] = item.name.split(' ');
-
             dispatch(updateUserForm({ field: 'isEdit', value: true }));
             dispatch(updateUserForm({ field: 'first_name', value: firstName }));
             dispatch(updateUserForm({ field: 'last_name', value: lastName }));

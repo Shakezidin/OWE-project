@@ -45,7 +45,10 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setSearch(''); // Reset search when closing dropdown
         setDropDownOptions(options); // Reset dropdown options when closing
@@ -79,28 +82,28 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
     setDropDownOptions(options);
   }, [options]);
 
- 
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Prevent special characters
-  
+
     if (inputValue.length > 50) {
       inputValue = inputValue.slice(0, 50); // Limit input to 50 characters
     }
-  
+
     setSearch(inputValue);
-  
+
     if (inputValue.trim()) {
       setDropDownOptions(
         options
-          .filter((item) => item.value.toLowerCase().includes(inputValue.toLowerCase().trim()))
+          .filter((item) =>
+            item.value.toLowerCase().includes(inputValue.toLowerCase().trim())
+          )
           .slice(0, 50) // Limit search results to 50 items
       );
     } else {
       setDropDownOptions(options.slice(0, 50)); // Show first 50 items if no search
     }
   };
-  
+
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
       if (option === 'All') {
@@ -115,7 +118,10 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
           return updatedOptions.filter((o) => o !== option);
         } else {
           let newSelection = [...updatedOptions, option];
-          if (newSelection.length + 1 === options.length && !newSelection.includes('All')) {
+          if (
+            newSelection.length + 1 === options.length &&
+            !newSelection.includes('All')
+          ) {
             newSelection.push('All');
           }
           return newSelection;
@@ -125,8 +131,14 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
   };
 
   return (
-    <div className={`comm-dropdown-container ${isOpen ? 'active' : ''}`} ref={dropdownRef}>
-      <div className={`comm-dropdown-toggle ${isOpen ? 'active' : ''}`} onClick={toggleDropdown}>
+    <div
+      className={`comm-dropdown-container ${isOpen ? 'active' : ''}`}
+      ref={dropdownRef}
+    >
+      <div
+        className={`comm-dropdown-toggle ${isOpen ? 'active' : ''}`}
+        onClick={toggleDropdown}
+      >
         <span className="comm-toggle-text">
           {selectedOptions.length > 0 ? (
             selectedOptions.includes('All') ? (

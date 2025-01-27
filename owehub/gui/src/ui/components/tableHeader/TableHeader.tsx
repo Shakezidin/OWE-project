@@ -7,7 +7,7 @@ import { RiFilterLine } from 'react-icons/ri';
 import Switch from '../../components/Switch';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { BiArrowBack } from 'react-icons/bi';
-import { LuImport } from "react-icons/lu";
+import { LuImport } from 'react-icons/lu';
 import { MdDownloading } from 'react-icons/md';
 
 interface TableProps {
@@ -37,19 +37,22 @@ const TableHeader = (props: TableProps) => {
     onpressAddNew,
     isAnyRowSelected,
     archiveText,
-    isExportingData
+    isExportingData,
   } = props;
   const { isActive } = useAppSelector((state) => state.filterSlice);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   return (
     <div className="commissionSection">
-      <div className='commission-back'>
-        <BiArrowBack style={{
-          height: '20px',
-          width: '20px',
-        }}
-        className='back-btn' onClick={() => navigate(-1)} />
+      <div className="commission-back">
+        <BiArrowBack
+          style={{
+            height: '20px',
+            width: '20px',
+          }}
+          className="back-btn"
+          onClick={() => navigate(-1)}
+        />
         <h3>{title}</h3>
       </div>
 
@@ -68,8 +71,11 @@ const TableHeader = (props: TableProps) => {
               >
                 View Archive
               </label>
-              <Switch checked={viewArchive} onChange={onPressViewArchive} disabled />
-
+              <Switch
+                checked={viewArchive}
+                onChange={onPressViewArchive}
+                disabled
+              />
             </div>
           </div>
         ) : null}
@@ -98,22 +104,14 @@ const TableHeader = (props: TableProps) => {
           </>
         ) : null}
 
-        {/* <div className="iconsSection2">
-          <button type="button" onClick={onPressImport}>
-            <img src={ICONS.importIcon} alt="" /> Import
-          </button>
-        </div> */}
         <div className="iconsSection2-confex config-export">
           {onpressExport ? (
             <button type="button" onClick={onpressExport}>
-             {isExportingData ? (
-                    <MdDownloading
-                      className="downloading-animation"
-                      size={16}
-                    />
-                  ) : (
-                    <LuImport size={16} />
-                  )}
+              {isExportingData ? (
+                <MdDownloading className="downloading-animation" size={16} />
+              ) : (
+                <LuImport size={16} />
+              )}
               Export
             </button>
           ) : null}
@@ -122,15 +120,11 @@ const TableHeader = (props: TableProps) => {
           <button
             type="button"
             style={{
-              // background: `var(--primary-color)`,
               color: 'white',
               border: '1px solid var(--primary-color)',
               opacity: '0.7',
-              cursor: 'not-allowed'
-
+              cursor: 'not-allowed',
             }}
-          // className="hover-btn"
-          // onClick={onpressAddNew}
           >
             <img
               src={ICONS.AddIcon}
@@ -144,7 +138,6 @@ const TableHeader = (props: TableProps) => {
           {onPressFilter ? (
             <button
               style={{
-                // backgroundColor: 'var(--primary-color)',
                 borderRadius: 8,
               }}
               type="button"
@@ -169,8 +162,6 @@ const TableHeader = (props: TableProps) => {
           ) : null}
         </div>
       </div>
-
-      {/* {open && <CreateDealer handleClose={handleClose} />} */}
     </div>
   );
 };

@@ -35,7 +35,6 @@ import UserIcon from '../lib/UserIcon';
 import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
-import Input from '../../../components/text_input/Input';
 import Swal from 'sweetalert2';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
@@ -143,10 +142,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex = currentPage1 * pageSize1;
   /** render table based on dropdown */
-
   //dealerpagination
   const totalPages1 = Math.ceil(dealerCount! / pageSize1);
-
   const startIndex1 = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex1 = currentPage1 * pageSize1;
 

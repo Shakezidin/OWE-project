@@ -39,21 +39,6 @@ const SchedulerCalendar: React.FC = () => {
 
   return (
     <div className={styles.appointmentSchedulerContainer}>
-      {/* <div className="selectorButtons">
-        <button
-          className={`selectorButton ${isDatePickerOpen ? 'active' : ''}`}
-          onClick={() => setIsDatePickerOpen(true)}
-        >
-          Date
-        </button>
-        <button
-          className={`selectorButton ${!isDatePickerOpen ? 'active' : ''}`}
-          onClick={() => setIsDatePickerOpen(false)}
-        >
-          Time
-        </button>
-      </div> */}
-
       {isDatePickerOpen ? (
         <div className={styles.calendarContainer}>
           <DatePicker
@@ -68,18 +53,12 @@ const SchedulerCalendar: React.FC = () => {
               nextMonthButtonDisabled,
             }) => (
               <div className={styles.custom_header}>
-                {/* <button className='prev-month' onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-                  {"<"}
-                </button> */}
                 <span className={styles.custom_header_text}>
                   {date.toLocaleDateString('en-US', {
                     month: 'long',
                     year: 'numeric',
                   })}
                 </span>
-                {/* <button className='next-month' onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-                  {">"}
-                </button> */}
               </div>
             )}
           />
@@ -108,12 +87,6 @@ const SchedulerCalendar: React.FC = () => {
           .toUpperCase()}
         , {selectedTime}
       </div>
-
-      {/* <div className={styles.sendAppointmentBtn}>
-        <button onClick={() => alert('Appointment Sent')}>
-          SEND APPOINTMENT
-        </button>
-      </div> */}
     </div>
   );
 };

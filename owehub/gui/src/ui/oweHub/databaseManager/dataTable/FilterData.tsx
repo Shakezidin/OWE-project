@@ -1,5 +1,4 @@
 import { IoAddSharp } from 'react-icons/io5';
-// import "../commissionRate/Filter.css";
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { useAppDispatch } from '../../../../redux/hooks';

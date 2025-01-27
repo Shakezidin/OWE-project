@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import '../configure.css';
 import CreateDealer from './CreateDealer';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
-import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
 import { DealerTableData } from '../../../../resources/static_data/configureHeaderData/DealerTableData';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
@@ -18,7 +13,6 @@ import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -28,8 +22,6 @@ import { configPostCaller } from '../../../../infrastructure/web_api/services/ap
 import { checkLastPage } from '../../../../utiles';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
-import { BiArrowBack } from 'react-icons/bi';
-
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -39,41 +31,28 @@ const DealerOverRides: React.FC = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
- 
 
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
   const [data, setData] = useState<any>([]);
-  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [isExportingData, setIsExporting] = useState(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
-  
-
 
   const handleExportOpen = () => {
     exportCsv();
-  }
-  // const getnewformData = async () => {
-  //   const tableData = {
-  //     tableNames: ['sub_dealer', 'dealer', 'states'],
-  //   };
-  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
-  //   setDealer((prev) => ({ ...prev, ...res.data }));
-  // };
+  };
 
-  // useEffect(() => {
-  //   getnewformData();
-  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -91,7 +70,6 @@ const DealerOverRides: React.FC = () => {
     handleOpen();
   };
 
-
   const filter = () => {
     setFilterOpen(true);
   };
@@ -102,14 +80,13 @@ const DealerOverRides: React.FC = () => {
   };
 
   useEffect(() => {
-
     (async () => {
       setLoading(true);
       try {
         const data = await configPostCaller('get_dealeroverride', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         });
 
         if (data.status > 201) {
@@ -117,19 +94,15 @@ const DealerOverRides: React.FC = () => {
           setLoading(false);
           return;
         }
-        setData(data?.data?.DealerOverrideData)
-        setTotalCount(data.dbRecCount)
+        setData(data?.data?.DealerOverrideData);
+        setTotalCount(data.dbRecCount);
         setLoading(false);
-
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-
-  }, [
-    currentPage, viewArchived, filters
-  ]);
+  }, [currentPage, viewArchived, filters]);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
@@ -270,7 +243,7 @@ const DealerOverRides: React.FC = () => {
     // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
-      return str.replace(/<\/?[^>]+(>|$)/g, "");
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
     setIsExporting(true);
     const exportData = await configPostCaller('get_dealeroverride', {
@@ -282,7 +255,6 @@ const DealerOverRides: React.FC = () => {
       return;
     }
 
-
     const headers = [
       'Sub Dealer',
       'Dealer',
@@ -292,15 +264,13 @@ const DealerOverRides: React.FC = () => {
       'End Date',
     ];
 
-
-
     const csvData = exportData?.data?.DealerOverrideData?.map?.((item: any) => [
       item.sub_dealer,
       item.dealer,
       item.pay_rate,
       item.state,
       item.start_date,
-      item.end_date
+      item.end_date,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -316,7 +286,6 @@ const DealerOverRides: React.FC = () => {
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-
   };
   return (
     <div className="comm">
@@ -331,7 +300,7 @@ const DealerOverRides: React.FC = () => {
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           viewArchive={viewArchived}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
@@ -362,7 +331,7 @@ const DealerOverRides: React.FC = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
           <table>
             <thead>
@@ -386,7 +355,6 @@ const DealerOverRides: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-
               </tr>
             </thead>
             <tbody>
@@ -403,17 +371,6 @@ const DealerOverRides: React.FC = () => {
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        {/* <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        /> */}
                         {el.sub_dealer || 'N/A'}
                       </div>
                     </td>
@@ -421,10 +378,11 @@ const DealerOverRides: React.FC = () => {
                     <td>{el.pay_rate || 'N/A'}</td>
                     <td>{el.state?.trim?.() || 'N/A'}</td>
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
-                    <td>{!el.end_date || new Date(el.end_date).getFullYear() === 1 ? 'N/A' : dateFormat(el.end_date)}</td>
-
-
-
+                    <td>
+                      {!el.end_date || new Date(el.end_date).getFullYear() === 1
+                        ? 'N/A'
+                        : dateFormat(el.end_date)}
+                    </td>
                   </tr>
                 ))
               ) : (

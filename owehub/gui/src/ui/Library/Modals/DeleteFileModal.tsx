@@ -11,7 +11,7 @@ const DeleteFileModal: React.FC<propGet> = ({ setIsVisible, onDelete }) => {
   const handleDelete = () => {
     onDelete();
     setIsVisible(false);
-  }; 
+  };
 
   return (
     <div className={classes.transparent_lib}>

@@ -37,6 +37,7 @@ type GetUsersData struct {
 	DealerCode        string               `json:"dealer_code"`
 	DBUsername        string               `json:"db_username"`
 	TablePermission   []GetTablePermission `json:"table_permission"`
+	ManagerRole       string               `json:"manager_role"`
 }
 
 type GetUsersDataList struct {

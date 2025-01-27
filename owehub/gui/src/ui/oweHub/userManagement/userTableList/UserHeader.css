@@ -38,11 +38,6 @@ button.trash-btn {
   border: none !important;
 }
 
-/* .user-dropdown.hover-effect:hover {
-  box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.1);
-  transform: scale(1.06);
-  border-radius: 8px;
-} */
 
 @media screen and (max-width: 767px) {
   .user_user-type {

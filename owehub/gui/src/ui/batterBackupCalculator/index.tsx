@@ -1,17 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.css';
-import dummy from './lib/dummy_img.png';
 import Input from '../components/text_input/Input';
-import jsPDF from 'jspdf';
-import { TbMinus, TbPlus } from 'react-icons/tb';
-import { TfiTrash } from 'react-icons/tfi';
-import { useHref, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { TbPlus } from 'react-icons/tb';
+import { useLocation, useParams } from 'react-router-dom';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Carousel from 'react-multi-carousel';
 import type { ButtonGroupProps } from 'react-multi-carousel';
 import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
-import emailjs from '@emailjs/browser';
 import CategoryPopup from './components/CategoryPopup';
 import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
@@ -521,12 +517,6 @@ OWE Battery Calc
           >
             Reset All
           </button>
-          {/* <button
-            className="calc-btn text-white pointer text-white calc-yellow-btn"
-            onClick={exportPdf}
-          >
-            Export PDF
-          </button> */}
 
           <button
             disabled={isPending}

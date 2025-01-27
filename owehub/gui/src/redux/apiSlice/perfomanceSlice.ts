@@ -6,7 +6,6 @@ export interface IPerfomanceSale {
   sales: number;
   sales_kw: number;
 }
-
 export interface IProjectStatus {
   unqiue_id: any;
   contract_date: string;
@@ -17,13 +16,11 @@ export interface IProjectStatus {
   site_survey_complete_date: string;
   install_ready_date: string;
 }
-
 export interface ICommision {
   SalesPeriod: number;
   cancellation_period: number;
   installation_period: number;
 }
-
 const isSessionTimeout = () => {
   const expirationTime = localStorage.getItem('expirationTime');
   const currentTime = Date.now();
@@ -35,7 +32,6 @@ const isSessionTimeout = () => {
     return false;
   }
 };
-
 export const getPerfomance = createAsyncThunk(
   'get/perfomance',
   async (params: any, { rejectWithValue }) => {
@@ -57,7 +53,6 @@ export const getPerfomance = createAsyncThunk(
     }
   }
 );
-
 export const getPerfomanceStatus = createAsyncThunk(
   'get/perfomancestatus',
   async (
@@ -72,9 +67,7 @@ export const getPerfomanceStatus = createAsyncThunk(
       dealer_names,
       fieldData,
       minValue,
-      maxValue
-
-      
+      maxValue,
     }: {
       page: number;
       perPage: number;
@@ -84,9 +77,9 @@ export const getPerfomanceStatus = createAsyncThunk(
       selected_milestone: string;
       project_status: any;
       dealer_names: string[];
-      fieldData:string[];
-      minValue:number;
-      maxValue:number;
+      fieldData: string[];
+      minValue: number;
+      maxValue: number;
     },
     { rejectWithValue }
   ) => {
@@ -100,21 +93,17 @@ export const getPerfomanceStatus = createAsyncThunk(
         selected_milestone: selected_milestone,
         project_status: project_status,
         dealer_names,
-        fields:fieldData,
- 
-        pending_start_date:minValue,
- 
-        pending_end_date:maxValue,
+        fields: fieldData,
+        pending_start_date: minValue,
+        pending_end_date: maxValue,
       });
 
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-
       const datacount = data.data;
       const list = (data.data.perfomance_response_list ||
         []) as IProjectStatus[];
-
       return { list, count: data.dbRecCount, datacount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -171,7 +160,6 @@ const perfomanceSlice = createSlice({
           toast.error(action.payload as string);
         }
       })
-
       .addCase(getPerfomanceStatus.pending, (state, action) => {
         state.isLoading = true;
       })

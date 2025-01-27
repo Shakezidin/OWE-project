@@ -2,21 +2,16 @@ import React, { useEffect, useRef } from 'react';
 import classes from './styles/leadManagementNew.module.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validateEmail, validateZipCode } from '../../utiles/Validation';
+import { validateEmail } from '../../utiles/Validation';
 import Input from '../components/text_input/Input';
 import PhoneInput from 'react-phone-input-2';
-import axios from 'axios';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 import useAuth from '../../hooks/useAuth';
-import Select, { SingleValue, ActionMeta } from 'react-select';
-import {
-  Autocomplete,
-  useLoadScript,
-} from '@react-google-maps/api';
+import Select from 'react-select';
+import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 import { RiMapPinLine } from 'react-icons/ri';
-import { IoClose } from 'react-icons/io5';
 
 interface SaleData {
   id: number;
@@ -41,7 +36,7 @@ interface LocationInfo {
 }
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 const LeadManagementNew = () => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -53,7 +48,6 @@ const LeadManagementNew = () => {
     sales_rep: '',
     lead_source: '',
   });
-  // console.log(formData, 'form data consoling ');
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -72,7 +66,8 @@ const LeadManagementNew = () => {
       // Only allow letters, spaces, $ and _
       const sanitizedValue = value.replace(/[^A-Za-z\s$_]/g, '');
 
-      if (sanitizedValue === value) { // Only update if no characters were stripped
+      if (sanitizedValue === value) {
+        // Only update if no characters were stripped
         setFormData((prevData) => ({
           ...prevData,
           [name]: value,
@@ -81,7 +76,7 @@ const LeadManagementNew = () => {
         delete err[name];
         setErrors(err);
       }
-    } else if (name === "address") {
+    } else if (name === 'address') {
       const regex = /^[a-zA-Z0-9,\s]*$/;
       const consecutiveSpacesRegex = /\s{2,}/;
 
@@ -90,7 +85,7 @@ const LeadManagementNew = () => {
           ...prevData,
           [name]: value,
         }));
-        errors.address = ""
+        errors.address = '';
       }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
@@ -105,8 +100,6 @@ const LeadManagementNew = () => {
         ...prevData,
         [name]: trimmedValue,
       }));
-
-
     } else if (name === 'lead_source') {
       if (value === '' || allowedPattern.test(value)) {
         setFormData((prevData) => ({
@@ -173,27 +166,19 @@ const LeadManagementNew = () => {
     if (formData.lead_source.trim() === '') {
       errors.lead_source = 'Lead Source is required';
     }
-
-
-
     return errors;
   };
 
-
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-
     const errors = validateForm(formData);
     setErrors(errors);
-
-
-    if (Object.keys(errors).length === 0 && emailError === '' && phoneNumberError === '') {
-
+    if (
+      Object.keys(errors).length === 0 &&
+      emailError === '' &&
+      phoneNumberError === ''
+    ) {
       setLoad(true);
-
-
       try {
         const response = await postCaller(
           'create_leads',
@@ -207,7 +192,7 @@ const LeadManagementNew = () => {
             lead_source: formData.lead_source,
             salerep_id: selectedSale?.id,
             setter_id: selectedSetter?.id,
-            base_url: window.location.origin
+            base_url: window.location.origin,
           },
           true
         );
@@ -224,7 +209,6 @@ const LeadManagementNew = () => {
         console.error('Error submitting form:', error);
       }
     }
-
   };
 
   const resetFormData = () => {
@@ -236,8 +220,6 @@ const LeadManagementNew = () => {
     navigate('/leadmng-dashboard');
   };
 
-
-
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   const [loading, setIsLoading] = useState(false);
@@ -247,9 +229,6 @@ const LeadManagementNew = () => {
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
-
-
-
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
@@ -258,14 +237,14 @@ const LeadManagementNew = () => {
           const response = await postCaller(
             'get_users_under',
             {
-              "roles": ["Sale Representative", "Appointment Setter"]
+              roles: ['Sale Representative', 'Appointment Setter'],
             },
             true
           );
 
           if (response.status === 200) {
-            setSaleData(response.data['Sale Representative'])
-            setSetterData(response.data['Appointment Setter'])
+            setSaleData(response.data['Sale Representative']);
+            setSetterData(response.data['Appointment Setter']);
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -280,8 +259,6 @@ const LeadManagementNew = () => {
     }
   }, [isAuthenticated]);
 
-
-
   const handleSaleChange = (selectedOption: SaleData | null) => {
     setSelectedSale(selectedOption);
     errors.sales_rep = '';
@@ -292,7 +269,7 @@ const LeadManagementNew = () => {
     errors.setter = '';
   };
 
-  console.log(selectedSale, "sdaghfgfhdsa")
+  console.log(selectedSale, 'sdaghfgfhdsa');
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
     libraries: ['places'],
@@ -321,18 +298,13 @@ const LeadManagementNew = () => {
     setSearchValue(selectedAddress);
   };
 
-
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
-    console.log(autocomplete, "")
+    console.log(autocomplete, '');
     autocompleteRef.current = autocomplete;
   };
 
   return (
     <div className={classes.ScrollableDivRemove}>
-      {/* <div className={`${classes.main_head} ${classes.form_header}`}>
-        Create New Lead
-        <img src={ICONS.cross} alt="" onClick={handleBack} />
-      </div> */}
       <div className={`flex justify-between ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
@@ -341,7 +313,6 @@ const LeadManagementNew = () => {
                 Create New Lead
                 <img src={ICONS.cross} alt="" onClick={handleBack} />
               </div>
-              {/* <div className={classes.an_head}>Fill the Form</div> */}
               <div className="scroll-user">
                 <div className={classes.createProfileInputView}>
                   <div className={classes.createProfileTextView}>
@@ -403,17 +374,21 @@ const LeadManagementNew = () => {
                           onChange={(value: any) => {
                             const phoneNumber = value.toString();
                             const numberLength = value.toString();
-                            const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
+                            const numberWithoutCountryCode =
+                              phoneNumber.replace(/^\+?\d{1,3}/, '');
                             if (/^0{8}/.test(numberWithoutCountryCode)) {
-                              setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
-                            }
-                            // if(phoneNumber.charAt(4) && phoneNumber.charAt(1) && phoneNumber.charAt(2) && phoneNumber.charAt(3)){
-                            //   setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
-                            // }
-                            else if (numberLength.length > 0 && numberLength.length < 11) {
-                              setPhoneNumberError("Please enter at least 10 digits.");
+                              setPhoneNumberError(
+                                'Invalid number, number cannot consist of consecutive zeros.'
+                              );
+                            } else if (
+                              numberLength.length > 0 &&
+                              numberLength.length < 11
+                            ) {
+                              setPhoneNumberError(
+                                'Please enter at least 10 digits.'
+                              );
                             } else {
-                              setPhoneNumberError("");
+                              setPhoneNumberError('');
                             }
                             setFormData((prevData) => ({
                               ...prevData,
@@ -462,9 +437,14 @@ const LeadManagementNew = () => {
                     </div>
                     <div className={classes.salrep_input_container}>
                       <div className={classes.srs_new_create}>
-                        <div className={classes.custom_label_newlead}>Address</div>
-                        {isLoaded &&
-                          <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                        <div className={classes.custom_label_newlead}>
+                          Address
+                        </div>
+                        {isLoaded && (
+                          <Autocomplete
+                            onLoad={onLoad}
+                            onPlaceChanged={onPlaceChanged}
+                          >
                             <div className={classes.inputWrap}>
                               <input
                                 type="text"
@@ -488,12 +468,18 @@ const LeadManagementNew = () => {
                                     setSearchValue('');
                                     setFormData((prevFormData) => ({
                                       ...prevFormData,
-                                      address: "",
+                                      address: '',
                                     }));
                                     if (mapRef.current) {
-                                      const bounds = new google.maps.LatLngBounds();
+                                      const bounds =
+                                        new google.maps.LatLngBounds();
                                       locations.forEach((location) => {
-                                        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                                        bounds.extend(
+                                          new google.maps.LatLng(
+                                            location.lat,
+                                            location.lng
+                                          )
+                                        );
                                       });
                                       mapRef.current.fitBounds(bounds);
                                     }
@@ -507,12 +493,14 @@ const LeadManagementNew = () => {
                                     border: 'none',
                                     cursor: 'pointer',
                                   }}
-                                >
-                                </button>
+                                ></button>
                               )}
-                              <RiMapPinLine className={`${classes.inputMap} ${isInputFocused ? classes.focused : ''}`} />
+                              <RiMapPinLine
+                                className={`${classes.inputMap} ${isInputFocused ? classes.focused : ''}`}
+                              />
                             </div>
-                          </Autocomplete>}
+                          </Autocomplete>
+                        )}
                         {errors.address && (
                           <span
                             style={{
@@ -546,17 +534,21 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-
                     </div>
                     <div className={classes.salrep_input_container}>
-                      <div className={classes.srs_new_create} style={{ gap: "6px" }}>
-                        <div className={classes.custom_label_newlead}>Sales Rep</div>
+                      <div
+                        className={classes.srs_new_create}
+                        style={{ gap: '6px' }}
+                      >
+                        <div className={classes.custom_label_newlead}>
+                          Sales Rep
+                        </div>
                         <Select
                           value={selectedSale}
                           onChange={handleSaleChange}
                           getOptionLabel={(option) => option.name}
                           getOptionValue={(option) => option.id.toString()}
-                          placeholder={"Select Sales Rep"}
+                          placeholder={'Select Sales Rep'}
                           options={saleData}
                           styles={{
                             control: (baseStyles, state) => ({
@@ -576,7 +568,6 @@ const LeadManagementNew = () => {
                               boxShadow: 'none',
                               '@media only screen and (max-width: 767px)': {
                                 width: '300px',
-                                // width: 'fit-content',
                               },
                               '&:focus-within': {
                                 borderColor: '#377CF6',
@@ -593,7 +584,7 @@ const LeadManagementNew = () => {
                                 },
                                 '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
-                                }
+                                },
                               },
                               '&:hover': {
                                 borderColor: '#377CF6',
@@ -609,7 +600,7 @@ const LeadManagementNew = () => {
                                 },
                                 '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
-                                }
+                                },
                               },
                             }),
                             placeholder: (baseStyles) => ({
@@ -621,7 +612,9 @@ const LeadManagementNew = () => {
                             }),
                             dropdownIndicator: (baseStyles, state) => ({
                               ...baseStyles,
-                              transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : 'none',
+                              transform: state.selectProps.menuIsOpen
+                                ? 'rotate(180deg)'
+                                : 'none',
                               transition: 'transform 0.3s ease',
                               color: '#3E3E3E',
                               '&:hover': {
@@ -635,9 +628,10 @@ const LeadManagementNew = () => {
                               background: state.isSelected ? '#377CF6' : '#fff',
                               color: baseStyles.color,
                               '&:hover': {
-                                background: state.isSelected ? '#377CF6' : '#DDEBFF',
+                                background: state.isSelected
+                                  ? '#377CF6'
+                                  : '#DDEBFF',
                               },
-
                             }),
                             singleValue: (baseStyles, state) => ({
                               ...baseStyles,
@@ -648,7 +642,6 @@ const LeadManagementNew = () => {
                               width: '300px',
                               marginTop: '3px',
                               border: '1px solid #000000',
-
                             }),
                             menuList: (base) => ({
                               ...base,
@@ -677,14 +670,19 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-                      <div className={classes.srs_new_create} style={{ gap: "6px" }}>
-                        <div className={classes.custom_label_newlead}>Setter</div>
+                      <div
+                        className={classes.srs_new_create}
+                        style={{ gap: '6px' }}
+                      >
+                        <div className={classes.custom_label_newlead}>
+                          Setter
+                        </div>
                         <Select
                           value={selectedSetter}
                           onChange={handleSetterChange}
                           getOptionLabel={(option) => option.name}
                           getOptionValue={(option) => option.id.toString()}
-                          placeholder={"Select Setter"}
+                          placeholder={'Select Setter'}
                           options={setterData}
                           styles={{
                             control: (baseStyles, state) => ({
@@ -704,7 +702,6 @@ const LeadManagementNew = () => {
                               boxShadow: 'none',
                               '@media only screen and (max-width: 767px)': {
                                 width: '300px',
-                                // width: 'fit-content',
                               },
                               '&:focus-within': {
                                 borderColor: '#377CF6',
@@ -721,7 +718,7 @@ const LeadManagementNew = () => {
                                 },
                                 '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
-                                }
+                                },
                               },
                               '&:hover': {
                                 borderColor: '#377CF6',
@@ -737,7 +734,7 @@ const LeadManagementNew = () => {
                                 },
                                 '& [class*="indicatorContainer"]': {
                                   color: '#377CF6',
-                                }
+                                },
                               },
                             }),
                             placeholder: (baseStyles) => ({
@@ -749,7 +746,9 @@ const LeadManagementNew = () => {
                             }),
                             dropdownIndicator: (baseStyles, state) => ({
                               ...baseStyles,
-                              transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : 'none',
+                              transform: state.selectProps.menuIsOpen
+                                ? 'rotate(180deg)'
+                                : 'none',
                               transition: 'transform 0.3s ease',
                               color: '#3E3E3E',
                               '&:hover': {
@@ -763,9 +762,10 @@ const LeadManagementNew = () => {
                               background: state.isSelected ? '#377CF6' : '#fff',
                               color: baseStyles.color,
                               '&:hover': {
-                                background: state.isSelected ? '#377CF6' : '#DDEBFF',
+                                background: state.isSelected
+                                  ? '#377CF6'
+                                  : '#DDEBFF',
                               },
-
                             }),
                             singleValue: (baseStyles, state) => ({
                               ...baseStyles,
@@ -776,7 +776,6 @@ const LeadManagementNew = () => {
                               width: '300px',
                               marginTop: '3px',
                               border: '1px solid #000000',
-
                             }),
                             menuList: (base) => ({
                               ...base,
@@ -820,14 +819,16 @@ const LeadManagementNew = () => {
                           placeholder="Write"
                         ></textarea>
                         <p
-                          className={`character-count ${formData.notes.trim().length >= 300
-                            ? 'exceeded'
-                            : ''
-                            }`}
+                          className={`character-count ${
+                            formData.notes.trim().length >= 300
+                              ? 'exceeded'
+                              : ''
+                          }`}
                         >
                           {formData.notes.trim().length}/300 characters
                         </p>
-                      </div></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
