@@ -1,0 +1,90 @@
+.popUp{
+    max-width: 725px;
+    max-height: 557px;
+    width: 100%;
+    border: 2px solid #fff;
+    border-radius: 28px;
+    background-color: #fafafa;
+    padding: 2rem;
+    overflow-y: scroll;
+    position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  z-index: 4;
+  border: 2px solid #fff;
+  
+}
+.popUp_Header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width:90%;
+}
+.popUp_adderName{
+    width: 40%;
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 21px;
+    color: #565656;
+}
+.popUp_Quantity,.popUp_cost{
+    align-self: flex-start;
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 21px;
+    color: #565656;
+    position: relative;
+}
+.popUp_dummyData{
+    width: 90%;
+    margin-top: 2rem;
+
+}
+.popUp_dummyData_rowDiv{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:1rem 0;
+    
+}
+.popUp_adderData{
+    width: 40%;
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #2A2626;
+}
+.popUp_quantityData{
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #2A2626;
+}
+.popUp_costData{
+    font-family: 'Poppins',sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #2A2626;
+}
+.popUp_cross{
+    position: absolute;
+    background-color: #F3F2F9;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 60px;
+    bottom: -5px;
+    cursor: pointer;
+}

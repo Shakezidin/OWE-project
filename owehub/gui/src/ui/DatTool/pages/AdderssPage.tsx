@@ -4,6 +4,7 @@ import styles from '../styles/AdderssPage.module.css'
 import { FiMinus } from "react-icons/fi";
 import { FiPlus } from "react-icons/fi";
 import { useState } from 'react';
+import AdderssPopUp from '../components/AdderssPopUp';
 
 
 interface Item {
@@ -75,40 +76,119 @@ function AdderssPage() {
       price:"$750",
     },
   ]
+  const rightPartObjElectrical:Item[]=[
+      {
+        text:"Soft Stater",
+        price:"$750",
+      },
+      {
+        text:"Module Adder (per watt)",
+        price:"$250",
+      },
+      {
+        text:"Sense Energy Monitor",
+        price:"$150",
+      },
+      {
+        text:"Enphase IQ8H Microinverters",
+        price:"$750",
+      },
+      {
+        text:"Enphase IQ8A Microinverters",
+        price:"$250",
+      },
+      {
+        text:"Load Controller",
+        price:"$150",
+      },
+      {
+        text:"CTs",
+        price:"$750",
+      },
+      {
+        text:"EV Charger",
+        price:"$250",
+      },
+      {
+        text:"EV Charger outlet",
+        price:"$150",
+      },
+    
+  ]
   const [val,setVal]=useState<{ [key: number]: number }>({});
+  const [price,setPrice]=useState<{ [key: number]: number }>({});
+  const [currentSectionIndex,setCurrentSectionIndex]=useState<number>(0);
 
+  const [openPopUp,setOpenPopUp]=useState<boolean>(false);
   const IncrementHandler = (index: number) => {
     setVal((prevValues) => {
       const newValues = { ...prevValues };
-      // If the key doesn't exist, initialize it with 0
       if (newValues[index] === undefined) {
         newValues[index] = 1;
       }
-      // Increment value if it's less than 10
       if (newValues[index] < 10) {
         newValues[index] += 1;
       }
       return newValues;
     });
+  
+    // Update price for the current selected left bar
+    updatePrice(index);
   };
   
   const DecrementHandler = (index: number) => {
     setVal((prevValues) => {
       const newValues = { ...prevValues };
-      // If the key doesn't exist, initialize it with 0
       if (newValues[index] === undefined) {
         newValues[index] = 1;
       }
-      // Decrement value if it's greater than 1
       if (newValues[index] > 1) {
         newValues[index] -= 1;
       }
       return newValues;
     });
+  
+    // Update price for the current selected left bar
+    updatePrice(index);
   };
   
+  const updatePrice = (index: number) => {
+    setPrice((prevPrice) => {
+      const newPrice = { ...prevPrice };
+  
+      // Get the number of items selected from the right side
+      const value = val[index] || 1;
+  
+      // Get base price of the currently selected left section
+      const basePrice = parseFloat(leftPartObj[currentSectionIndex]?.price.replace('$', ''));
+  
+      // Get additional price from the right side object (based on current selection)
+      let additionalPrice = 0;
+      if (currentSectionIndex === 0) {
+        additionalPrice = parseFloat(rightPartObj[index]?.price.replace('$', ''));
+      } else if (currentSectionIndex === 1) {
+        additionalPrice = parseFloat(rightPartObjElectrical[index]?.price.replace('$', ''));
+      }
+  
+      // Update price only for the currently selected left bar
+      if (value > 1) {
+        newPrice[currentSectionIndex] = basePrice + additionalPrice * (value - 1);
+      } else {
+        newPrice[currentSectionIndex] = basePrice;
+      }
+  
+      return newPrice;
+    });
+  };
+  const handleSectionIndex=(index:number)=>{
+   setCurrentSectionIndex(index)
+  }
+  
   return (
-  <div >
+  <div style={{padding:"0 3.5rem",position:"relative"}}>
+    {
+      openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp}/>
+    }
     {/* TOP PART */}
     <div className={styles.adderssPageTopPart}>
       <div className={styles.adderssPageTopPart_leftText}>
@@ -118,7 +198,7 @@ function AdderssPage() {
 
       <div className={styles.adderssPageTopPart_rightText}>
         <p className={styles.adderssPageTopPart_rightText_amount}>$ 45,783</p>
-        <p className={styles.adderssPageTopPart_rightText_popUpText}>View all adders</p>
+        <p className={styles.adderssPageTopPart_rightText_popUpText} onClick={()=>setOpenPopUp(true)}>View all adders</p>
       </div>
     </div>
 
@@ -131,11 +211,11 @@ function AdderssPage() {
         {
           leftPartObj.map((bar,index)=>{
             return(
-              <div className={styles.adderssPageMainPart_leftBarContainer} key={index}>
-                <p className={styles.adderssPageMainPart_leftBarContainer_heading}>{bar.text}</p>
+              <div className={styles.adderssPageMainPart_leftBarContainer} key={index} style={{backgroundColor:currentSectionIndex===index?"#377CF6":""}} onClick={()=>{handleSectionIndex(index)}}>
+                <p className={styles.adderssPageMainPart_leftBarContainer_heading} style={{color:currentSectionIndex===index?"#FFFFFF":""}}>{bar.text}</p>
                 <div className={styles.adderssPageMainPart_leftBarContainer_right}> 
-                <p className={styles.adderssPageMainPart_leftBarContainer_staticText}>Total cost</p>
-                <p className={styles.adderssPageMainPart_leftBarContainer_price}>{bar.price}</p>
+                <p className={styles.adderssPageMainPart_leftBarContainer_staticText} style={{color:currentSectionIndex===index?"#FFFFFF":""}}>Total cost</p>
+                <p className={styles.adderssPageMainPart_leftBarContainer_price} style={{color:currentSectionIndex===index?"#FFFFFF":""}}>${price[index] ? price[index].toFixed(2) : parseFloat(bar.price.replace('$', '')).toFixed(2)}</p>
                 </div>
               </div>
             )
@@ -143,7 +223,7 @@ function AdderssPage() {
         }
       </div>
       {/* Right PART */}
-      <div className={styles.adderssPageMainPart_Right}>
+      {currentSectionIndex===0?<div className={styles.adderssPageMainPart_Right}>
         {
           rightPartObj.map((obj,index)=>{
             return(
@@ -162,7 +242,28 @@ function AdderssPage() {
             )
           })
         }
-      </div>
+      </div>:
+      <div className={styles.adderssPageMainPart_Right}>
+      {
+        rightPartObjElectrical.map((obj,index)=>{
+          return(
+            <div className={styles.adderssPageMainPart_rightBarContainer} key={index}> 
+            <p className={styles.adderssPageMainPart_rightBarContainer_heading}>{obj.text}</p>
+
+            <div className={styles.adderssPageMainPart_rightContainer}>
+            <div className={styles.adderssPageMainPart_expressionContainer}> 
+            <FiMinus  className={styles.adderssPageMainPart_decrement}  onClick={() => DecrementHandler(index)}/>
+            <p  className={styles.adderssPageMainPart_text}>{val[index] || 1}</p>
+            <FiPlus  className={styles.adderssPageMainPart_increment}  onClick={() => IncrementHandler(index)}/>
+            </div>
+            <p  className={styles.adderssPageMainPart_price}>{obj.price}</p>
+               </div>
+            </div>
+          )
+        })
+      }
+    </div>
+      }
     </div>
   </div>
   )
