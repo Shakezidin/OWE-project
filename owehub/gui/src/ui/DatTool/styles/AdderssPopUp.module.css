@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.72);
   justify-content: center;
   align-items: center;
   z-index: 400;
@@ -13,7 +13,7 @@
 .popUp{
     max-width: 725px;
     /* max-height: 557px; */
-    max-height: 350px;
+    max-height: 400px;
     width: 100%;
     border: 2px solid #fff;
     border-radius: 28px;
@@ -50,7 +50,7 @@
 }
 .popUp_dummyData{
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 1rem;
 
 }
 .popUp_dummyData_rowDiv {
