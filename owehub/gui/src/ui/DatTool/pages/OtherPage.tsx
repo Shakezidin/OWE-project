@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import StringInverterConfig from './StringInverterConfig';
 import ExistingPVSystemInfo from './ExistingPVSystemInfo';
-import '../styles/OtherPage.css';
+import '../styles/OtherPages.css';
 
 interface CardProps {
   title: string;
