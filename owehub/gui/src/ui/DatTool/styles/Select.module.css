@@ -1,0 +1,58 @@
+/* CustomSelect.module.css */
+
+/* Container */
+.container {
+    margin-bottom: 15px;
+  }
+  
+  /* Label */
+  .label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  /* Custom Select styles */
+  .selectControl {
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 50px;
+    padding: 3px 6px;
+    font-size: 14px;
+    min-height: 36px;
+    box-shadow: none;
+    background-color: #f5f5fd;
+  }
+  
+  .selectDropdownIndicator {
+    color: #333;
+  }
+  
+  .selectIndicatorSeparator {
+    display: none;
+  }
+  
+  .selectMenu {
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
+  }
+  
+  .selectOption {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .selectOptionSelected {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .selectSingleValue {
+    color: #333;
+  }
+  
+  .selectPlaceholder {
+    color: #888;
+  }
+  

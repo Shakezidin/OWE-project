@@ -1,0 +1,474 @@
+.genMain {
+  height: calc(100vh - 216px);
+  overflow-y: scroll;
+}
+ 
+.genOneLeft {
+  background: var(--white-color);
+  padding: 1.2rem;
+  border-radius: 26px;
+}
+ 
+.genOneLeft {
+  flex: 1;
+}
+ 
+.gOneHeaderTitleTxt p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--input-border-color);
+}
+ 
+.gOneHeaderTitleTxt p:nth-child(2) {
+  color: #c5c5c5;
+  font-weight: 500;
+  font-size: 14px;
+}
+ 
+.gOneHeaderTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.gOneHeaderTitle svg {
+  color: #434343;
+}
+ 
+.editUser {
+  background-color: #fafaff;
+  border-radius: 50px;
+  height: 2rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+ 
+.editUser:hover {
+  transform: scale(1.05);
+  background-color: #D5E4FF;
+}
+ 
+.gOneHeader {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  gap: 1rem;
+}
+ 
+.gOneHeaderTitleTxt {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+ 
+.genOneRight {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 0.5;
+}
+ 
+.genOneCont {
+  display: flex;
+  margin-right: 1.2rem;
+}
+ 
+.gOneHeaderDesc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+ 
+.gOneHeaderDesc p {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--input-border-color);
+}
+ 
+.gOneLeftInfo {
+  background-color: #fafaff;
+  padding: 1.2rem;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+ 
+.gOneLeftInfoTxt {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gOneLeftInfoTxt p {
+  font-weight: 500;
+  color: var(--input-border-color);
+}
+ 
+.gOneLeftInfoTxt p:nth-child(2) {
+  color: #565656;
+  font-weight: 400;
+}
+ 
+.gOneRightTptxt p {
+  color: #565656;
+  font-size: 12px;
+  font-weight: 400;
+}
+ 
+.gOneRightTopDesc p {
+  color: var(--input-border-color);
+}
+ 
+.gOneRightTopDesc span {
+  height: 1.5rem;
+  width: 1.5rem;
+  background-color: #fafaff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+ 
+.gOneRightTopDesc span:hover {
+  transform: scale(1.05);
+}
+ 
+.gOneRightTopDesc span svg {
+  color: var(--primary-color);
+}
+ 
+.gOneRightTopDesc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.gOneRightTopDesc p {
+  font-weight: 500;
+  margin-right: 2px;
+}
+ 
+.gOneRightTop {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 1.2rem;
+  background-color: var(--white-color);
+  border-radius: 26px;
+  margin-left: 1.2rem;
+}
+ 
+.gOneRightBtm {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  font-size: 12px;
+}
+ 
+.gOneRightTBottomTxt p {
+  color: #565656;
+}
+ 
+.gOneRightTBottomTxt p:nth-child(2) {
+  color: var(--input-border-color);
+  font-weight: 500;
+}
+ 
+.gOneRightBottomTxt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 48%;
+  background: var(--white-color);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  color: #565656;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+ 
+.gOneRightBottomTxt:hover {
+  transform: scale(1.05);
+}
+ 
+.gOneRightBottomTxt span {
+  background: #fafaff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  width: 18px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+ 
+.gOneRightBottomTxt svg {
+  color: var(--primary-color);
+  transform: scale(1.05);
+}
+ 
+.gOneRightBottom {
+  padding: 0 1.2rem;
+}
+ 
+.gOneRightBottomTxtOne {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.gOneRightBottomTxtImg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+ 
+.gOneRightBottomTxtImg img {
+  height: 18px;
+  width: 18px;
+}
+ 
+.genSecCont {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 1.2rem;
+  margin-right: 1.2rem;
+}
+ 
+.genSecLeft {
+  background: var(--white-color);
+  border-radius: 26px;
+  padding: 1.2rem;
+  flex: 0.5;
+}
+ 
+.genSecLeftHdr p {
+  font-weight: 500;
+  color: var(--input-border-color);
+}
+ 
+.genSecLeftHdr p:nth-child(2) {
+  font-weight: 500;
+  font-size: 14px;
+  color: #0493ce;
+}
+ 
+.genSecLeftMain {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 12px;
+  margin-top: 1.2rem;
+}
+ 
+.genSecLeftMain p {
+  color: #565656;
+}
+ 
+.genSecLeftMain p:nth-child(2) {
+  color: var(--input-border-color);
+  font-weight: 500;
+}
+ 
+.genSecRight {
+  background: var(--white-color);
+  border-radius: 26px;
+  padding: 1.2rem;
+  flex: 1;
+}
+ 
+.genSecRightHdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.genSecRightHdr p {
+  font-weight: 500;
+}
+ 
+.verticalBorder {
+  width: 0.5px;
+  height: 100%;
+  border-left: 1px dashed #dadaff;
+}
+ 
+.genSecRightMain {
+  background-color: #f3f3ff;
+  margin-top: 2.5rem;
+  border-radius: 0 0 26px 26px;
+  padding: 1.2rem;
+  display: flex;
+  gap: 4rem;
+  position: relative;
+}
+ 
+.genSecRightMain label {
+  color: #565656;
+  font-size: 12px;
+}
+ 
+.genSecRightMain p:nth-child(2) {
+  color: var(--input-border-color);
+  font-weight: 500;
+}
+ 
+.genSecRightMainLft p {
+  color: #565656;
+  font-size: 12px;
+}
+ 
+.genSecRightMainLft,
+.genSecRightMainRht {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+ 
+.acdc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+ 
+.gOneHeaderBtn,
+.gSecHeaderBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+ 
+.editUserDone {
+  background-color: var(--primary-color);
+  border-radius: 50px;
+  height: 2rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+ 
+.editUserDone:hover {
+  transform: scale(1.05);
+}
+ 
+.inputField {
+  width: 100%;
+  padding: 0.65rem 1.2rem;
+  font-size: 12px;
+  border: 0px;
+  border-radius: 26px;
+  color: var(--input-border-color);
+  background-color: unset;
+  text-align: center;
+  pointer-events: none;
+  outline: none;
+  font-weight: 500;
+}
+ 
+.inputField.editable {
+  pointer-events: auto;
+  background-color: #f5f5fd;
+}
+ 
+.inputFieldDat {
+  width: 100%;
+  padding: 0.5rem 1.2rem;
+  margin-top: 6px;
+  font-size: 12px;
+  border: 0px;
+  border-radius: 26px;
+  color: var(--input-border-color);
+  background-color: unset;
+  font-weight: 500;
+  outline: none;
+}
+ 
+.inputFieldDat.editable {
+  background-color: var(--white-color);
+}
+ 
+/* .inputField:focus, .inputFieldDat:focus{
+  outline: 1px solid var(--primary-color);
+} */
+ 
+.acdcInp {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+ 
+.genSecRightMainTopHeader {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  display: flex;
+  border-left: 1px solid #EFEFFF;
+  border-top: 1px solid #EFEFFF;
+  border-radius: 10px;
+  border-bottom-left-radius: 0;
+}
+ 
+.genSecRightMainTopHeadertxt {
+  border-right: 1px solid #EFEFFF;
+  padding: 6px 24px;
+  font-size: 12px;
+  color: #565656 !important;
+  font-weight: 400 !important;
+  border-radius: 10px 10px 0 0;
+  border-bottom: unset;
+  cursor: pointer;
+}
+ 
+.genSecRightMainTopHeadertxt.active{
+  background-color: #F3F3FF;
+  color: var(--input-border-color) !important;
+  font-weight: 600 !important;
+  border: none;
+}
+
+
+/* Scrollbar  */
+.genMain::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.genMain::-webkit-scrollbar {
+  display: initial;
+}
+
+.genMain::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.genMain::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.genMain::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.genMain::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

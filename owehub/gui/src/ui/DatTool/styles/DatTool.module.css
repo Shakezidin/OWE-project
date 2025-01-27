@@ -1,0 +1,21 @@
+.mainContainer {
+  margin: -19px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.layoutContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  width: 370px;
+  padding: 1.2rem;
+}
+
+.contentContainer {
+  padding: 1.2rem 0.6rem 1.2rem 0;
+  width: 100%;
+}

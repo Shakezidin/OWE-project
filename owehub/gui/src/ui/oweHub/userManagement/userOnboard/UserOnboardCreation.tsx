@@ -94,6 +94,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   /**handle change for report */
   const handleChangeForRegion = async (newValue: any, fieldName: string) => {
     const { value } = newValue;
+    console.log(fieldName, value, "fieldname,value")
     await dispatch(updateUserForm({ field: fieldName, value }));
     if (fieldName !== 'report_to' && fieldName !== 'team_name') {
       onChangeRole('Dealer', value);
