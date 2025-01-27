@@ -1,556 +1,382 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
-import Select from '../components/Select';
-import DisplaySelect from '../components/DisplaySelect';
-
-interface Styles {
-  [key: string]: React.CSSProperties;
-}
-
-const styles: Styles = {
-  cardStyle: {
-    backgroundColor: 'white',
-    borderRadius: '28px',
-    padding: '24px',
-    marginBottom: '20px',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-    width: '100%',
-  },
-  sectionHeaderStyle: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  titleStyle: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#333',
-    margin: 0,
-  },
-  editButtonStyle: {
-    color: '#434343',
-    background: '#FAFAFF',
-    borderRadius: '50%',
-    fontSize: 10,
-    height: 30,
-    width: 30,
-    paddingTop: 5,
-    border: 'none',
-    cursor: 'pointer',
-  },
-  actionButtonsStyle: {
-    display: 'flex',
-    gap: '8px',
-  },
-  saveButtonStyle: {
-    background: '#377CF6',
-    borderRadius: '50%',
-    fontSize: 10,
-    height: 30,
-    width: 30,
-    paddingTop: 5,
-    border: 'none',
-    cursor: 'pointer',
-    color: '#FFF',
-  },
-  cancelButtonStyle: {
-    background: '#FAFAFF',
-    borderRadius: '50%',
-    fontSize: 10,
-    height: 30,
-    width: 30,
-    paddingTop: 5,
-    border: 'none',
-    cursor: 'pointer',
-    color: '#293540',
-  },
-  labelStyle: {
-    marginBottom: '5px',
-    fontSize: '12px',
-    fontWeight: '400',
-    lineHeight: '18px',
-    color: '#565656',
-  },
-  gridStyle: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '20px',
-  },
-  fieldGroupStyle: {
-    // marginBottom: '16px',
-  },
-  valueStyle: {
-    fontSize: '12px',
-    color: '#333',
-    display: 'flex',
-    gap: '50px',
-  },
-  inputStyle: {
-    width: '100%',
-    padding: '4px 8px',
-    fontSize: '12px',
-    border: '0px',
-    borderRadius: '28px',
-    color: '#333',
-    lineHeight: '18px',
-    fontFamily: 'poppins',
-    minHeight: '36px',
-    backgroundColor: '#F5F5FD',
-  },
-  selectStyle: {
-    width: '100%',
-    padding: '4px 8px',
-    fontSize: '12px',
-    border: '0px',
-    borderRadius: '28px',
-    color: '#333',
-    lineHeight: '18px',
-    fontFamily: 'poppins',
-    minHeight: '36px',
-    backgroundColor: '#F5F5FD',
-  },
-};
-
-interface MPPTValue {
-  'S.1': string;
-  'S.2': string;
-}
-
-interface Fields {
-  [key: string]: string | MPPTValue;
-}
-
-interface FieldConfig {
-  type: 'select' | 'input';
-  options?: string[];
-}
+import StringInverterConfig from './StringInverterConfig';
+import ExistingPVSystemInfo from './ExistingPVSystemInfo';
+import '../styles/OtherPage.css';
 
 interface CardProps {
   title: string;
-  fields: Fields;
-  onSave: (fields: Fields) => void;
-  fieldConfigs?: { [key: string]: FieldConfig };
-  customGrid?: (
-    isEditing: boolean,
-    editedFields: Fields,
-    handleFieldChange: (key: string, value: string | MPPTValue) => void,
-    handleEdit: () => void,
-    handleCancel: () => void,
-    handleSave: () => void
-  ) => React.ReactNode;
+  fields: Record<string, string>;
+  onSave: (fields: Record<string, string>) => void;
+  options?: Record<string, string[]>;
 }
 
-const Card: React.FC<CardProps> = ({ title, fields, onSave, fieldConfigs = {}, customGrid }) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [editedFields, setEditedFields] = useState<Fields>(fields);
+const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedFields, setEditedFields] = useState(fields);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    onSave(editedFields);
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
+  useEffect(() => {
     setEditedFields(fields);
-    setIsEditing(false);
-  };
+  }, [fields]);
 
-  const handleFieldChange = (key: string, value: string | MPPTValue) => {
-    setEditedFields((prevFields) => {
-      const prevValue = prevFields[key];
-  
-      // If the new value is an object (MPPTValue), ensure the previous value is also an object before spreading
-      if (typeof value === 'object') {
-        return {
-          ...prevFields,
-          [key]: {
-            ...(typeof prevValue === 'object' ? prevValue : {}), // Ensure prevValue is an object
-            ...value, // Spread the new value
-          },
-        };
-      }
-  
-      // If the new value is a string, directly assign it
-      return {
-        ...prevFields,
-        [key]: value,
-      };
-    });
-  };
-
-  if (customGrid) {
-    return customGrid(isEditing, editedFields, handleFieldChange, handleEdit, handleCancel, handleSave) as JSX.Element;
-  }
-
-  const renderField = (key: string, value: string | MPPTValue) => {
-    const config = fieldConfigs[key] || { type: 'input' };
-
-    if (isEditing) {
-      if (config.type === 'select' && config.options) {
-        const selectOptions = config.options.map((option) => ({
-          value: option,
-          label: option,
-        }));
-
-        return (
-          <Select
-            label={key}
-            options={selectOptions}
-            value={value as string}
-            onChange={(newValue) => handleFieldChange(key, newValue as string)}
-          />
-        );
-      }
-      return (
-        <div>
-          <label style={styles.labelStyle}>{key}</label>
-          <input
-            style={styles.inputStyle}
-            value={value as string}
-            onChange={(e) => handleFieldChange(key, e.target.value)}
-          />
-        </div>
-      );
-    }
-
-    return (
-      <DisplaySelect
-        label={key}
-        value={typeof value === 'object' ? `S.1: ${value['S.1']}, S.2: ${value['S.2']}` : value || '---'}
-      />
-    );
+  const handleFieldChange = (field: string, value: string) => {
+    setEditedFields((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
-    <div style={styles.cardStyle}>
-      <div style={styles.sectionHeaderStyle}>
-        <h2 style={styles.titleStyle}>{title}</h2>
+    <div style={styles.card}>
+      <div style={styles.cardHeader}>
+        <h3 style={styles.title}>{title}</h3>
         {isEditing ? (
-          <div style={styles.actionButtonsStyle}>
-            <button style={styles.cancelButtonStyle} onClick={handleCancel}>
-              <AiOutlineClose size={15} />
-            </button>
-            <button style={styles.saveButtonStyle} onClick={handleSave}>
-              <AiOutlineCheck size={15} />
-            </button>
-          </div>
-        ) : (
-          <button style={styles.editButtonStyle} onClick={handleEdit}>
-            <AiOutlineEdit size={15} />
-          </button>
-        )}
-      </div>
-      <div style={styles.gridStyle}>
-        {Object.entries(fields).map(([key, value]) => (
-          <div key={key} style={styles.fieldGroupStyle}>
-            {renderField(key, value)}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-function OtherPage() {
-  const electricalEquipmentConfig: { [key: string]: FieldConfig } = {
-    'New Or Existing': { type: 'select' as const, options: ['New', 'Existing'] },
-    'Busbar Rating': { type: 'select' as const, options: ['200'] },
-    'Panel Brand': { type: 'select' as const, options: ['Lelon', 'Eaton'] },
-    'Main Breaker Rating': { type: 'select' as const, options: ['200'] },
-  };
-
-  const electricalSystemConfig = {
-    'System Phase': { type: 'select' as const, options: ['---'] },
-    'Service Entrance': { type: 'select' as const, options: ['---'] },
-    'Meter Enclosure Type': { type: 'select' as const, options: ['Meter/Main Combo'] },
-    'System Voltage': { type: 'select' as const, options: ['---'] },
-    'Service Rating': { type: 'select' as const, options: ['---'] },
-  };
-
-  const siteInfoConfig = {
-    'PV Conduit Run': { type: 'select' as const, options: ['Exterior'] },
-    'Number of Stories': { type: 'select' as const, options: ['2'] },
-    'Points of Interconnection': { type: 'select' as const, options: ['2'] },
-    'Drywall Cut Needed': { type: 'select' as const, options: ['Yes', 'No'] },
-    'Trenching Required': { type: 'select' as const, options: ['Yes', 'No'] },
-  };
-
-  const pvInterconnectionConfig = {
-    'Type': { type: 'select' as const, options: ['Lug Connection'] },
-    'Location': { type: 'select' as const, options: ['Meter'] },
-    'Supply/load Side': { type: 'select' as const, options: ['Supply Side'] },
-  };
-
-  const essInterconnectionConfig = {
-    'Backup Type': { type: 'select' as const, options: ['Full Home'] },
-    'Fed By': { type: 'select' as const, options: ['Breaker'] },
-    'Transfer Switch': { type: 'select' as const, options: ['Tesla Backup Gateway 2'] },
-  };
-
-  const [electricalEquipment, setElectricalEquipment] = useState<Fields>({
-    'New Or Existing': 'New',
-    'Busbar Rating': '200',
-    'Available Backfeed': '40',
-    'Panel Brand': 'Lelon',
-    'Main Breaker Rating': '200',
-    'Required Backfeed': '',
-  });
-
-  const [electricalSystem, setElectricalSystem] = useState<Fields>({
-    'System Phase': '',
-    'Service Entrance': '',
-    'Meter Enclosure Type': 'Meter/Main Combo',
-    'System Voltage': '',
-    'Service Rating': '',
-  });
-
-  const [siteInfo, setSiteInfo] = useState<Fields>({
-    'PV Conduit Run': 'Exterior',
-    'Number of Stories': '2',
-    'Points of Interconnection': '2',
-    'Drywall Cut Needed': 'Yes',
-    'Trenching Required': 'Yes',
-  });
-
-  const [roofCoverage, setRoofCoverage] = useState<Fields>({
-    'Total Roof Area': '',
-    'Area of EXIST Modules': '',
-    'Area of New Modules': '',
-    'Coverage Percentage': '50%',
-  });
-
-  const [pvInterconnection, setPvInterconnection] = useState<Fields>({
-    Type: 'Lug Connection',
-    Location: 'Meter',
-    'Supply/load Side': 'Supply Side',
-    'Sub - Location Tap Details': '',
-  });
-
-  const [essInterconnection, setEssInterconnection] = useState<Fields>({
-    'Backup Type': 'Full Home',
-    'Fed By': 'Breaker',
-    'Transfer Switch': 'Tesla Backup Gateway 2',
-  });
-
-  const [stringInverter, setStringInverter] = useState<Fields>({
-    Inverter: 'Tesla Inverter 7.6kW',
-    Max: '',
-    ...Object.fromEntries(
-      [...Array(8)].map((_, i) => [
-        `MPPT${i + 1}`,
-        { 'S.1': '', 'S.2': '' },
-      ])
-    ),
-  });
-
-  const [servicePanelInfo, setServicePanelInfo] = useState<Fields>({
-    'Panel Brand': 'Lelon',
-    'Main Breaker Rating': '200',
-    'Available Backfeed': '40',
-    'Busbar Rating': '200',
-    'Required Backfeed': '',
-  });
-
-  const [measurementConversion, setMeasurementConversion] = useState<Fields>({
-    Length: '',
-    Height: '',
-    Width: '',
-    Other: '',
-  });
-
-  const [existingPvSystem, setExistingPvSystem] = useState<Fields>({
-    'Module Quantity': '40',
-    Wattage: '320 W DC',
-    'Model#': 'Longi LR6-60HPH-32M',
-    'Module Area': '18.04 sqft',
-    'Inverter 1 Quantity': '1',
-    'Inverter 1 Output(A)': '21A AC',
-    'Inverter 1 Model#': 'Solar Edge SE5000H-US',
-    'Inverter 2 Quantity': '1',
-    'Inverter 2 Output(A)': '21A AC',
-    'Inverter 2 Model#': 'Solar Edge SE5000H-US',
-    'Existing Calculated Backfeed(w/o 125%)': '',
-  });
-
-  const renderStringInverterGrid = (
-    isEditing: boolean,
-    editedFields: Fields,
-    handleFieldChange: (key: string, value: string | MPPTValue) => void,
-    handleEdit: () => void,
-    handleCancel: () => void,
-    handleSave: () => void
-  ) => (
-    <div style={styles.cardStyle}>
-      <div style={styles.sectionHeaderStyle}>
-        <h2 style={styles.titleStyle}>String Inverter Configuration</h2>
-        {isEditing ? (
-          <div style={styles.actionButtonsStyle}>
-            <button style={styles.cancelButtonStyle} onClick={handleCancel}>
-              <AiOutlineClose size={15} />
-            </button>
-            <button style={styles.saveButtonStyle} onClick={handleSave}>
-              <AiOutlineCheck size={15} />
-            </button>
-          </div>
-        ) : (
-          <button style={styles.editButtonStyle} onClick={handleEdit}>
-            <AiOutlineEdit size={15} />
-          </button>
-        )}
-      </div>
-      <div style={styles.gridStyle}>
-        <div style={styles.fieldGroupStyle}>
-          <div style={styles.labelStyle}>Inverter</div>
-          {isEditing ? (
-            <select
-              style={styles.selectStyle}
-              value={editedFields['Inverter'] as string}
-              onChange={(e) => handleFieldChange('Inverter', e.target.value)}
+          <div style={styles.actions}>
+            <button
+              style={styles.cancelButton}
+              onClick={() => setIsEditing(false)}
             >
-              <option value="Tesla Inverter 7.6kW">Tesla Inverter 7.6kW</option>
-            </select>
-          ) : (
-            <div style={styles.valueStyle}>{String(editedFields['Inverter'])}</div>
-          )}
-        </div>
-        <div style={styles.fieldGroupStyle}>
-          <div style={styles.labelStyle}>Max</div>
-          {isEditing ? (
-            <input
-              style={styles.inputStyle}
-              value={editedFields['Max'] as string}
-              onChange={(e) => handleFieldChange('Max', e.target.value)}
-            />
-          ) : (
-            <div style={styles.valueStyle}>{String(editedFields['Max']) || '---'}</div>
-          )}
-        </div>
+              <AiOutlineClose />
+            </button>
+            <button
+              style={styles.saveButton}
+              onClick={() => {
+                onSave(editedFields);
+                setIsEditing(false);
+              }}
+            >
+              <AiOutlineCheck />
+            </button>
+          </div>
+        ) : (
+          <button style={styles.editButton} onClick={() => setIsEditing(true)}>
+            <AiOutlineEdit />
+          </button>
+        )}
       </div>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '20px',
-          marginTop: '20px',
-        }}
-      >
-        {[...Array(8)].map((_, i) => (
-          <div key={i} style={styles.fieldGroupStyle}>
-            <div style={styles.labelStyle}>{`MPPT${i + 1}`}</div>
+
+      <div style={styles.grid}>
+        {Object.entries(fields).map(([key, value]) => (
+          <div key={key} style={styles.field}>
+            <label style={styles.label}>{key}</label>
             {isEditing ? (
-              <div style={{ display: 'flex', gap: '10px' }}>
+              options?.[key] ? (
+                <select
+                  className="custom-select"
+                  value={editedFields[key]}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
+                >
+                  {options[key].map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              ) : (
                 <input
-                  style={{ ...styles.inputStyle, flex: 1 }}
-                  value={(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.1']}
-                  onChange={(e) =>
-                    handleFieldChange(`MPPT${i + 1}`, {
-                      ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
-                      'S.1': e.target.value,
-                    })
-                  }
-                  placeholder="S.1"
+                  style={styles.input}
+                  value={editedFields[key]}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
                 />
-                <input
-                  style={{ ...styles.inputStyle, flex: 1 }}
-                  value={(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.2']}
-                  onChange={(e) =>
-                    handleFieldChange(`MPPT${i + 1}`, {
-                      ...(editedFields[`MPPT${i + 1}`] as MPPTValue),
-                      'S.2': e.target.value,
-                    })
-                  }
-                  placeholder="S.2"
-                />
-              </div>
+              )
             ) : (
-              <div style={styles.valueStyle}>
-                <div>S.1 {(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.1'] || '---'}</div>
-                <div>S.2 {(editedFields[`MPPT${i + 1}`] as MPPTValue)['S.2'] || '---'}</div>
-              </div>
+              <div style={styles.value}>{value || '---'}</div>
             )}
           </div>
         ))}
       </div>
     </div>
   );
+};
+
+const OtherInfoPage: React.FC = () => {
+  const [equipment, setEquipment] = useState({
+    'New Or Existing': 'New',
+    'Panel Brand': 'Eaton',
+    'Busbar Rating': '200',
+    'Main Breaker Rating': '200',
+    'Available Backfeed': '40',
+    'Required Backfeed': '---',
+  });
+
+  const [system, setSystem] = useState({
+    'System Phase': '---',
+    'System Voltage': 'Single',
+    'Service Entrance': 'Overhead',
+    'Service Rating': 'Three',
+    'Meter Enclosure Type': 'Meter Combo',
+  });
+
+  const [siteInfo, setSiteInfo] = useState({
+    'PV Conduit Run': 'Exterior',
+    'Drywall Cut Needed': 'Yes',
+    'Number of Stories': '2',
+    'Trenching Required': 'Yes',
+    'Points of Interconnection': '2',
+  });
+
+  const [pvInterconnection, setPvInterconnection] = useState({
+    Type: 'Lug Connection',
+    'Supply/Load Side': 'Supply Side',
+    Location: 'Meter',
+    'Sub - Location Tap Details': '---',
+  });
+
+  const [essInterconnection, setEssInterconnection] = useState({
+    'Backup Type': 'Full Home',
+    'Transfer Switch': 'Tesla Backup Gateway 2',
+    'Fed By': 'Breaker',
+  });
+
+  // Right Column States
+  const [inverterConfigParent, setInverterConfigParent] = useState({
+    Inverter: 'Tesla Inverter 7.5kW',
+    Max: '---',
+  });
+  const [inverterConfig, setInverterConfig] = useState(() => {
+    const config: Record<string, string> = {};
+    Array.from({ length: 8 }, (_, i) => i + 1).forEach((mppt) => {
+      config[`MPPT${mppt} S.1`] = mppt === 1 ? '5.2' : '---';
+      config[`MPPT${mppt} S.2`] = '---';
+    });
+    return config;
+  });
+
+  const [roofCoverage, setRoofCoverage] = useState({
+    'Total Roof Area': '---',
+    'Area of New Modules': '---',
+    'Area of EXST Modules': '---',
+    'Coverage Percentage': '50%',
+  });
+
+  const [measurement, setMeasurement] = useState({
+    Length: '---',
+    Width: '---',
+    Height: '---',
+    Other: '---',
+  });
+
+  const [existingPV, setExistingPV] = useState({
+    'Module Quantity': '40',
+    'Model#': 'LonGi LR5-60HPH-320M',
+    'Wattage': '320 W DC',
+    'Module Area': '18.64 sqft',
+    'Inverter 1 Quantity': '1',
+    'Inverter 1 Model#': 'Solar Edge SE5000H-US',
+    'Inverter 1 Output(A)': '21A AC',
+    'Inverter 2 Quantity': '1',
+    'Inverter 2 Model#': 'Solar Edge SE5000H-US',
+    'Inverter 2 Output(A)': '21A AC',
+    'Backfeed': '1',
+  });
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '1.2rem',
-        height: 'calc(100vh - 216px)',
-        overflowY: 'scroll',
-      }}
-    >
-      <div style={{ flex: 1, maxWidth: '50%' }}>
+    <div style={styles.container}>
+      <div style={styles.column}>
         <Card
           title="Electrical Equipment Info"
-          fields={electricalEquipment}
-          onSave={setElectricalEquipment}
-          fieldConfigs={electricalEquipmentConfig}
+          fields={equipment}
+          onSave={(fields) => setEquipment(fields as typeof equipment)}
+          options={{
+            'New Or Existing': ['New', 'Existing'],
+            'Panel Brand': ['Eaton', 'Other'],
+            'Busbar Rating': ['200', '400'],
+            'Main Breaker Rating': ['200', '400'],
+          }}
         />
+
         <Card
           title="Electrical System Info"
-          fields={electricalSystem}
-          onSave={setElectricalSystem}
-          fieldConfigs={electricalSystemConfig}
+          fields={system}
+          onSave={(fields) => setSystem(fields as typeof system)}
+          options={{
+            'System Phase': ['---', 'Single', 'Three'],
+            'System Voltage': ['---', 'Single', 'Three'],
+            'Service Entrance': ['---', 'Overhead', 'Underground'],
+            'Service Rating': ['---', 'Single', 'Three'],
+            'Meter Enclosure Type': ['Meter Combo'],
+          }}
         />
+
         <Card
           title="Site Info"
           fields={siteInfo}
-          onSave={setSiteInfo}
-          fieldConfigs={siteInfoConfig}
-        />
-        <Card
-          title="Roof Coverage Calculator"
-          fields={roofCoverage}
-          onSave={setRoofCoverage}
+          onSave={(fields) => setSiteInfo(fields as typeof siteInfo)}
+          options={{
+            'PV Conduit Run': ['---', 'Interior', 'Exterior'],
+            'Drywall Cut Needed': ['Yes', 'No'],
+            'Number of Stories': ['---', '1', '2'],
+            'Trenching Required': ['Yes', 'No'],
+            'Points of Interconnection': ['---', '1', '2'],
+          }}
         />
         <Card
           title="PV only Interconnection"
           fields={pvInterconnection}
-          onSave={setPvInterconnection}
-          fieldConfigs={pvInterconnectionConfig}
+          onSave={(fields) =>
+            setPvInterconnection(fields as typeof pvInterconnection)
+          }
         />
+
         <Card
           title="ESS Interconnection"
           fields={essInterconnection}
-          onSave={setEssInterconnection}
-          fieldConfigs={essInterconnectionConfig}
+          onSave={(fields) =>
+            setEssInterconnection(fields as typeof essInterconnection)
+          }
         />
       </div>
 
-      <div style={{ flex: 1, maxWidth: '50%' }}>
-        <Card
-          title="String Inverter Configuration"
-          fields={stringInverter}
-          onSave={setStringInverter}
-          customGrid={renderStringInverterGrid}
+      <div style={styles.column}>
+        <StringInverterConfig
+          parentConfig={inverterConfigParent}
+          config={inverterConfig}
+          onUpdateParent={setInverterConfigParent}
+          onUpdate={setInverterConfig}
         />
+
         <Card
-          title="Service Panel Info"
-          fields={servicePanelInfo}
-          onSave={setServicePanelInfo}
+          title="Roof Coverage Calculator"
+          fields={roofCoverage}
+          onSave={(fields) => setRoofCoverage(fields as typeof roofCoverage)}
         />
+
         <Card
           title="Measurement Conversion"
-          fields={measurementConversion}
-          onSave={setMeasurementConversion}
+          fields={measurement}
+          onSave={(fields) => setMeasurement(fields as typeof measurement)}
         />
-        <Card
-          title="Existing PV System Info"
-          fields={existingPvSystem}
-          onSave={setExistingPvSystem}
-        />
+
+        <ExistingPVSystemInfo fields={existingPV} onSave={setExistingPV} />
       </div>
     </div>
   );
-}
+};
 
-export default OtherPage;
+const styles = {
+  container: {
+    display: 'flex',
+    gap: '20px',
+    // padding: '16px',
+    backgroundColor: '#f5f5f5',
+    height: 'calc(100vh - 216px)',
+    overflowY: 'auto' as const,
+  },
+  column: {
+    flex: 1,
+    maxWidth: '50%',
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: '28px',
+    padding: '20px',
+    marginBottom: '20px',
+    // boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  },
+  cardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px',
+  },
+  title: {
+    fontSize: '16px',
+    fontWeight: '600',
+    margin: 0,
+  },
+  actions: {
+    display: 'flex',
+    gap: '8px',
+  },
+  editButton: {
+    background: '#f0f0f0',
+    border: 'none',
+    borderRadius: '50%',
+    padding: '8px',
+    cursor: 'pointer',
+    height: 30,
+    width: 30,
+  },
+  saveButton: {
+    background: '#377CF6',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50%',
+    padding: '8px',
+    cursor: 'pointer',
+    height: 30,
+    width: 30,
+  },
+  cancelButton: {
+    background: '#f0f0f0',
+    border: 'none',
+    borderRadius: '50%',
+    padding: '8px',
+    cursor: 'pointer',
+    height: 30,
+    width: 30,
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '0 10px',
+  },
+  field: {
+    marginBottom: '12px',
+  },
+  label: {
+    display: 'block',
+    fontSize: '12px',
+    color: '#565656',
+    marginBottom: '4px',
+  },
+  inputDisabled: {
+    background: 'none',
+    border: 'none',
+  },
+  input: {
+    width: '100%',
+    padding: '8px',
+    border: 'none',
+    borderRadius: '24px',
+    fontSize: '12px',
+    background: '#F5F5FD',
+  },
+  stringInput: {
+    width: '70%',
+    padding: '8px',
+    border: 'none',
+    borderRadius: '24px',
+    fontSize: '12px',
+    background: '#F5F5FD',
+  },
+  select: {
+    width: '100%',
+    padding: '8px',
+    border: 'none',
+    borderRadius: '24px',
+    fontSize: '12px',
+    background: '#F5F5FD',
+  },
+  value: {
+    // padding: '5px 0',
+    fontSize: '12px',
+    fontWeight: '550',
+    color: '#333',
+  },
+  mpptGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '10px',
+    maxHeight: '400px',
+    overflowY: 'auto' as const,
+  },
+  mpptField: {
+    marginBottom: '8px',
+  },
+  mpptInputs: {
+    display: 'flex',
+    gap: '15px',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+};
+
+export default OtherInfoPage;
