@@ -6,7 +6,7 @@
 
 .appContainer {
     display: flex;
-    height: 105vh;
+    height: 104vh;
     font-family: Arial, sans-serif;
     gap: 20px;
     overflow-y: scroll;
@@ -65,7 +65,7 @@
   }
   
   .notesPanel {
-    height: 103vh;
+    height: auto;
     flex: 1;
     display: flex; 
     flex-direction: column;
