@@ -48,15 +48,15 @@
     display: flex;
     justify-content: space-between;
     align-items: start;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 1.2rem;
+    margin-top: 1.2rem;
 }
 .adderssPageMainPart_left{
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: start;
-    gap:1rem;
+    gap:0.8rem;
     width: 40%;
 
 }
@@ -69,6 +69,21 @@
     background-color: #FFFFFF;
     border-radius: 18px;
     cursor: pointer;
+    position:relative;
+    transition: all 1.06ms;
+    
+}
+.adderssPageMainPart_leftBarContainer:hover{
+    background-color: #D5E4FF;
+}
+.adderssPageMainPart_leftBarContainer_right{
+    /* position: relative;
+    top:12px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    width: 25%;
 
 }
 .adderssPageMainPart_leftBarContainer_heading{

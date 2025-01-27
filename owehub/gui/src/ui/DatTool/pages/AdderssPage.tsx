@@ -11,7 +11,7 @@ interface Item {
   text: string;
   price: string;
 }
-function AdderssPage() {
+function AdderssPage({setOpenPopUp}:any) {
   const leftPartObj:Item[]=[
     {
       text:"INTERCONNNECTION",
@@ -119,7 +119,7 @@ function AdderssPage() {
   const [price,setPrice]=useState<{ [key: number]: number }>({});
   const [currentSectionIndex,setCurrentSectionIndex]=useState<number>(0);
 
-  const [openPopUp,setOpenPopUp]=useState<boolean>(false);
+  
   const IncrementHandler = (index: number) => {
     setVal((prevValues) => {
       const newValues = { ...prevValues };
@@ -185,10 +185,8 @@ function AdderssPage() {
   }
   
   return (
-  <div style={{padding:"0 3.5rem",position:"relative"}}>
-    {
-      openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp}/>
-    }
+  <div style={{padding:"0 1.2rem",position:"relative",height:"calc(100vh - 216px)",overflowY:"scroll"}}>
+    
     {/* TOP PART */}
     <div className={styles.adderssPageTopPart}>
       <div className={styles.adderssPageTopPart_leftText}>

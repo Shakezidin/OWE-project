@@ -104,8 +104,7 @@ const AdderssPopUp = ({setOpenPopUp}:any) => {
       ];
       
   return (
-    <div style={{width:"100%",backgroundColor: "rgba(0, 0, 0, 0.72"
-    }}>
+    <div className={styles.transparent_model}>
         <div className={styles.popUp}>
             <div className={styles.popUp_Header}>
                 <p className={styles.popUp_adderName}>Adder name</p>
