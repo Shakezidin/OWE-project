@@ -79,7 +79,7 @@
 .popUp_dummyData_rowDiv {
   width: 98%;
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr; /* Example: Two equal columns */
+  grid-template-columns: 3fr 1.6fr 0.68fr; /* Example: Two equal columns */
   justify-content: space-between; /* Space items across the grid */
   align-items: center; /* Center the items vertically within each grid cell */
   padding: 1rem 0; /* Add padding to the top and bottom of the grid */
@@ -110,7 +110,7 @@
   font-size: 12px;
   line-height: 18px;
   color: #2a2626;
-  text-align: center;
+  text-align: start;
 }
 .popUp_cross {
   position: absolute;
