@@ -211,6 +211,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, dbStatus }) 
               ) : null}
             </div>
           }
+          {isStaging === 'staging' && (
           <div className="reset_hover_btn" style={{ cursor: 'pointer' }}>
             <Tooltip
               style={{
@@ -234,6 +235,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, dbStatus }) 
               data-tooltip-id="bulb-up"
             />
           </div>
+  )}
           <div
             className="user-container relative"
             ref={dropdownRef}
