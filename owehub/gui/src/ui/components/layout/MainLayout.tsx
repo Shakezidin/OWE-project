@@ -28,6 +28,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
+  const [dbStatus, setDbStatus]= useState<boolean>(true);
   const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -104,7 +105,8 @@ const MainLayout = () => {
         dispatch(checkDbStatus())
           .then((response: any) => {
             if (response.payload) {
-              console.log(response.payload,"efnkf")
+             
+              setDbStatus(response.payload.is_up)
             } 
           })
           .catch((error: any) => {
@@ -130,6 +132,7 @@ const MainLayout = () => {
         setToggleOpen={setToggleOpen}
         sidebarChange={sidebarChange}
         setSidebarChange={setSidebarChange}
+        dbStatus={dbStatus}
       />
       <div className="side-header">
         <Sidebar

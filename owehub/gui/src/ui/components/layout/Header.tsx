@@ -28,9 +28,10 @@ interface Toggleprops {
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
   sidebarChange: number;
+  dbStatus:boolean;
 }
 
-const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
+const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen,dbStatus }) => {
   const [name, setName] = useState<String>();
   const { authData, clearAuthData } = useAuth();
 
@@ -205,7 +206,37 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               ) : null}
             </div>
           }
+          {dbStatus === true ? (
           <div className="reset_hover_btn" style={{ cursor: 'pointer' }}>
+            <Tooltip
+              style={{
+                zIndex: 103,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+                fontWeight: '400',
+              }}
+              offset={8}
+              id="bulb-up"
+              place="left"
+              content="Db is running"
+              delayShow={200}
+              className="pagination-tooltip"
+            />
+            <img
+              src={BulbUp}
+              alt="Edit User"
+              data-tooltip-id="bulb-up"
+              style={{
+                color:"#377cf6",
+                width: 30,
+                height: 30,
+              }}
+            />
+          </div>
+          ) : (
+            <div className="reset_hover_btn" style={{ cursor: 'pointer' }}>
             <Tooltip
               style={{
                 zIndex: 103,
@@ -232,7 +263,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 height: 28,
               }}
             />
-          </div>
+          </div> 
+          )
+ }
           <div
             className="user-container relative"
             ref={dropdownRef}

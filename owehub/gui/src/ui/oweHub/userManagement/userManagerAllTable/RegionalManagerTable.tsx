@@ -176,6 +176,8 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                     {el.description ? el.description : 'NA'}
                   </td>
                   <td>
+
+                    <div className="action-icon"  style={{gap:4}}>
                     {isEditVisible && (
                   <div
                         className="reset_hover_btn"
@@ -210,7 +212,6 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                       </div>
                     )
    }
-                    <div className="action-icon"  style={{gap:4}}>
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}
