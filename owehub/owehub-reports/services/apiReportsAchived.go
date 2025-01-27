@@ -302,7 +302,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					Achieved:          acheived.MwInstalled,
 					LastMonthAcheived: lastMonthPct.MwInstalled,
 				},
-				"Batteries Ct": {
+				"Batteries Installed": {
 					Target:            target.BatteriesCt,
 					Achieved:          acheived.BatteriesCt,
 					LastMonthAcheived: lastMonthPct.BatteriesCt,
@@ -331,7 +331,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					Achieved:           acheived.MwInstalled,
 					PercentageAchieved: thisMonthPct.MwInstalled,
 				},
-				"Batteries Ct": {
+				"Batteries Installed": {
 					Target:             target.BatteriesCt,
 					Achieved:           acheived.BatteriesCt,
 					PercentageAchieved: thisMonthPct.BatteriesCt,

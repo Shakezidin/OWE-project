@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { UserRoleBasedListModel } from '../../../../core/models/api_models/UserManagementModel';
@@ -26,6 +26,7 @@ interface SalesRepresentativeProps {
 
 const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
   data,
+  onClickEdit,
   onClickDelete,
   selectAllChecked,
   selectedRows,
@@ -79,6 +80,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
   };
   return (
     <>
+      {/* <UserHeaderSection  name="Sales Representative"/> */}
       <div
         className="UserManageTable"
         style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -121,6 +123,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                         checked={selectedRows.has(i)}
                         onChange={() => {
                           // If there's only one row of sortedData and the user clicks its checkbox, select all rows
+
                           toggleRowSelection(
                             i,
                             selectedRows,
@@ -133,7 +136,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.dealer || "N/A"}</td>
+                  {/* <td>{el.role_name}</td> */}
                   <td>{el.designation}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
