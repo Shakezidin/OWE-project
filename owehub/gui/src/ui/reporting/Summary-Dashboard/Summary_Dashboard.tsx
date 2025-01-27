@@ -249,7 +249,7 @@ const Summary_Dashboard = () => {
       value: 'mw_installed',
     },
     {
-      label: 'Batteries Count',
+      label: 'Batteries Installed',
       value: 'batteries_ct',
     },
   ];

@@ -76,6 +76,7 @@ export interface CreateUserModel {
   preferred_name: string;
   dealer_code: string;
   podioChecked: boolean;
+  manager_role:string;
   zip_code: any;
 }
 
@@ -89,12 +90,14 @@ export interface CreateUserParamModel {
   dealer_owner?: string;
   description?: string;
   team_name?: string;
+  manager_role?:string;
   region?: string;
   user_status?: string;
   tables_permissions?: any;
   dealer_logo?: string;
   dealer?: string;
   podio_checked?: boolean;
+ 
   zip_code?: any;
 }
 
