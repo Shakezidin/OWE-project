@@ -121,6 +121,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                         checked={selectedRows.has(i)}
                         onChange={() => {
                           // If there's only one row of data and the user clicks its checkbox, select all rows
+
                           toggleRowSelection(
                             i,
                             selectedRows,
@@ -133,10 +134,8 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.dealer || "N/A"}</td>
-                  <td>{el.reporting_manager}</td>
-                  <td>{el.region}</td>
-                  <td>{el.email_id}</td>
+                  {/* <td>{el.role_name}</td> */}
+                  <td>{el.designation ? el.designation : 'NA'}</td>                  <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
                   <td>{el.region ? el.region : 'NA'}</td>
                   <td>{el.reporting_manager}</td>
