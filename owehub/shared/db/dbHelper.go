@@ -184,7 +184,7 @@ func ReteriveFromDB(dbIdx uint8, query string,
 	log.EnterFn(0, "ReteriveFromDB")
 	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
 
-	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams %+v", query, whereEleList)
+	//log.FuncDebugTrace(0, "ReteriveData Query %v whereParams %+v", query, whereEleList)
 
 	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
@@ -194,7 +194,7 @@ func ReteriveFromDB(dbIdx uint8, query string,
 
 	rows, err := con.CtxH.Query(query, whereEleList...)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v error = %v", query, err)
+		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v whereParams %+v error = %v", query, whereEleList, err)
 		return nil, err
 	}
 
