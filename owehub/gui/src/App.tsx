@@ -67,8 +67,16 @@ import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
+import DatTool from './ui/DatTool/DatTool';
 
 function App() {
+  // Add console log suppression at the start of App component
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+    console.log = () => {};
+    console.error = () => {};
+    console.warn = () => {};
+  }
+
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
     (state: RootState) => state.auth
@@ -250,6 +258,9 @@ function App() {
             path={ROUTES.SUMMARY_DASBOARD}
             element={<Summary_Dashboard />}
           />
+          <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
+          <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
+ 
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>
