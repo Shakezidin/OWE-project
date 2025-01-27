@@ -89,7 +89,7 @@ const NotePage = () => {
               onClick={() => handleCategoryClick(category.name)}
             >
               <div className={styles.categoryName}>{category.name}</div>
-              <div className={`${styles.categoryName1} ${selectedCategory === category.name ? styles.cat1Active : ''
+              <div className={`${styles.categoryName1} ${selectedCategory === category.name ? styles.cat1Active : styles.cat1InActive
                 }`}>
                 {category.description}
               </div>
@@ -103,13 +103,15 @@ const NotePage = () => {
 
         <div className={styles.notesPanel}>
           <div className={styles.notes}>
-            <div className={styles.notes_head}>Notes</div>
+            <div className={styles.notes_head} style={{ position: "sticky", top: "0" }}>Notes</div>
             {notes
               .filter((note) => note.category === selectedCategory)
               .map((note, index) => (
-                <div key={index} className={styles.note}>
-                  {note.text}
-                  <div className={styles.notes_currTime}>{currentTime}</div>
+                <div className={styles.multinotes}>
+                  <div key={index} className={styles.note}>
+                    {note.text}
+                    <div className={styles.notes_currTime}>{currentTime}</div>
+                  </div>
                 </div>
               ))}
           </div>
@@ -119,6 +121,12 @@ const NotePage = () => {
               placeholder="Type to add notes..."
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleAddNote();
+                }
+              }}
             />
             <button className={styles.button} onClick={handleAddNote}>
               <img src={ICONS.Whats_Send} alt="send" />
