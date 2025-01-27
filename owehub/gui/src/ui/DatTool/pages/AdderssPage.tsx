@@ -190,7 +190,7 @@ function AdderssPage({ setOpenPopUp }: any) {
       (acc, priceValue) => acc + priceValue,
       0
     );
-    setTotal(totalPrice);
+    setTotal(parseFloat(totalPrice.toFixed(2)));
   }, [price]);
 
   useEscapeKey(() => setOpenPopUp(false));

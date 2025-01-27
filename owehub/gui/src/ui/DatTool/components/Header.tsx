@@ -7,14 +7,14 @@ interface HeaderProps {
   onMenuSelect: (page: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onMenuSelect }) => {
+const Header = ({ onMenuSelect,setOpenRefresh }:any) => {
   const [activeMenu, setActiveMenu] = useState<string>('General');
 
   const handleMenuClick = (page: string) => {
     setActiveMenu(page);
     onMenuSelect(page);
   };
-
+  
   return (
     <div className={styles.header}>
       <div>
@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuSelect }) => {
       </nav>
 
       <div className={styles.headerLast}>
-        <div className={styles.iconContainer}>
+        <div className={styles.iconContainer} onClick={()=>setOpenRefresh(true)}>
           <MdRefresh size={18} />
         </div>
       </div>
