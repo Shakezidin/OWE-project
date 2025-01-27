@@ -182,6 +182,7 @@ import profileImg from '../../resources/assets/profileDesign.svg';
 import DatCapture from '../../resources/assets/dat_capture.svg';
 import DatAurora from '../../resources/assets/dat_aurora.svg';
 import DatTape from '../../resources/assets/dat_tape.svg';
+import Whats_Send from '../../resources/assets/Whats_Send.svg';
 
 
 
@@ -381,5 +382,6 @@ export const ICONS = {
   profileImg:profileImg,
   DatCapture: DatCapture,
   DatAurora: DatAurora,
-  DatTape: DatTape
+  DatTape: DatTape,
+  Whats_Send:Whats_Send
 };
