@@ -41,6 +41,8 @@ const StructuralPage: React.FC = () => {
   const [structuralInfoStates, setStructuralInfoStates] = useState<string[]>([
     'MP1',
   ]);
+  const [activeStructuralState, setActiveStructuralState] =
+    useState<string>('MP1');
 
   const toggleEditStructuralInfo = (save: boolean = false) => {
     if (save) {
@@ -128,9 +130,9 @@ const StructuralPage: React.FC = () => {
     const newStateNumber = parseInt(lastState.replace('MP', '')) + 1;
     const newState = `MP${newStateNumber}`;
     setStructuralInfoStates([...structuralInfoStates, newState]);
+    setActiveStructuralState(newState);
     setEditStructuralInfo(true);
   };
-
   return (
     <div>
       {viewerImage && (
@@ -160,7 +162,15 @@ const StructuralPage: React.FC = () => {
                 </div>
                 <div className={styles.headingIcon}>
                   {structuralInfoStates.map((state, index) => (
-                    <div key={index} className={styles.wordContainer}>
+                    <div
+                      key={index}
+                      className={` ${
+                        activeStructuralState === state
+                          ? styles.activeState
+                          : styles.wordContainer
+                      }`}
+                      onClick={() => setActiveStructuralState(state)}
+                    >
                       {state}
                     </div>
                   ))}
@@ -170,7 +180,7 @@ const StructuralPage: React.FC = () => {
                         onClick={() => toggleEditStructuralInfo(false)}
                       />
                     ) : (
-                       <IoMdAdd onClick={addNewStructuralState} />
+                      <IoMdAdd onClick={addNewStructuralState} />
                     )}
                   </div>
                   <div

@@ -49,6 +49,7 @@
  
 .editUser:hover {
   transform: scale(1.05);
+  background-color: #D5E4FF;
 }
  
 .gOneHeader {

@@ -71,3 +71,12 @@
   color: #434343;
   transform: scaleX(-1) rotate(-35deg);
 }
+
+.iconContainer{
+  transition: all 0.3s;
+}
+
+.iconContainer:hover{
+  transform: scale(1.05);
+  background-color: #D5E4FF;
+}
