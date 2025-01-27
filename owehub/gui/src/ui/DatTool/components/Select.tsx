@@ -44,12 +44,12 @@ const CustomSelect: React.FC<SelectProps> = ({ label, options, value, onChange }
       borderRadius: '50px',
       padding: '0px 4px',
       fontSize: '12px',
-      fontWeight:'500',
-      lineHeight:'18px',
-      fontFamily:'poppins',
+      fontWeight: '500',
+      lineHeight: '18px',
+      fontFamily: 'Poppins',
       minHeight: '36px',
       boxShadow: 'none',
-      backgroundColor:'#F5F5FD'
+      backgroundColor: '#F5F5FD',
     }),
     dropdownIndicator: (provided: any) => ({
       ...provided,
@@ -59,30 +59,47 @@ const CustomSelect: React.FC<SelectProps> = ({ label, options, value, onChange }
       ...provided,
       display: 'none',
     }),
-    menu: (provided: any) => ({
-      ...provided,
-      borderRadius: '4px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      padding: '5px 0',
-    }),
     option: (provided: any, state: any) => ({
       ...provided,
-      backgroundColor: state.isSelected ? '#4CAF50' : 'transparent',
-      color: state.isSelected ? '#fff' : '#333',
-      padding: '8px 12px',
+      fontSize: '12px',
       cursor: 'pointer',
+      background: state.isSelected ? '#377CF6' : '#fff',
+      color: provided.color,
+      '&:hover': {
+        background: state.isSelected ? '#377CF6' : '#DDEBFF',
+      },
     }),
-    singleValue: (provided: any) => ({
+    singleValue: (provided: any, state: any) => ({
       ...provided,
-      color: '#333',
+      color: '#3E3E3E',
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      width: '100%',
+      marginTop: '3px',
+    //   border: '1px solid #000000',
+    }),
+    menuList: (provided: any) => ({
+      ...provided,
+      '&::-webkit-scrollbar': {
+        scrollbarWidth: 'thin',
+        scrollBehavior: 'smooth',
+        display: 'block',
+        scrollbarColor: 'rgb(173, 173, 173) #fff',
+        width: 8,
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: 'rgb(173, 173, 173)',
+        borderRadius: '30px',
+      },
     }),
     placeholder: (provided: any) => ({
       ...provided,
       color: '#888',
       padding: '0px 4px',
-
     }),
   };
+  
 
   return (
     <div style={containerStyles}>

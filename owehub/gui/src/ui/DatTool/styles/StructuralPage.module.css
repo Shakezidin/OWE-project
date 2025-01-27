@@ -45,7 +45,7 @@
   align-items: center;
   background-color: #377cf6;
   color: white;
-  padding: 2px 4px;
+  padding: 5px;
   border-radius: 50px;
   font-size: 11px;
   font-weight: 500;
@@ -79,7 +79,7 @@
 
 .flexContainer {
   display: flex;
-  gap: 24px;
+  gap: 1.2rem;
   border-radius: 18px;
   height: calc(100vh - 216px);
   overflow: scroll;
@@ -277,8 +277,8 @@
   padding: 1px;
   border-radius: 50px;
   position: relative;
-  left: 57px;
-  top: 10px;
+  left: 30px;
+  top: 15px;
   border: none;
   cursor: pointer;
 }
@@ -288,3 +288,76 @@
   gap: 10px;
   margin-right: 20px;
 }
+
+.imagePreview{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.buttonContainer{
+    display: flex;
+    gap: 5px;
+}
+
+
+.imageView{
+    color: #377cf6;
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.imageViewer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    padding: 12px;
+    margin: 20px auto;
+    width: max-content;
+    border-radius: 28px;
+    background-color: #fff;
+}
+
+.imageViewer img{
+    max-width: 100%;
+    max-height: 100%;
+    /* object-fit: contain; */
+}
+
+.imageViewerButton {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+    padding: 4px;
+    border-radius: 50px;
+    position: absolute;
+    /* right: 25px;
+    bottom: 280px; */
+    border: none;
+    cursor: pointer;
+    right: 30px;
+    top: 35px;
+  }
+
+  .imageViewerContainer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

@@ -4,10 +4,9 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { IoMdAdd, IoMdCheckmark } from 'react-icons/io';
 import Select from '../components/Select';
 import DisplaySelect from '../components/DisplaySelect';
-import { HiMiniXMark } from "react-icons/hi2";
+import { HiMiniXMark } from 'react-icons/hi2';
 import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
-
 
 type Option = {
   value: string | number;
@@ -31,34 +30,73 @@ const StructuralPage: React.FC = () => {
   const [editAttachment, setEditAttachment] = useState(false);
   const [editRacking, setEditRacking] = useState(false);
   const [editRoofStructure, setEditRoofStructure] = useState(false);
-  const [selectedValues, setSelectedValues] = useState<Record<string, string | number>>({});
+  // const [selectedValues, setSelectedValues] = useState<
+  //   Record<string, string | number>
+  // >({});
+  // const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [selectedValues, setSelectedValues] = useState<
+    Record<string, string | number>
+  >({});
+  const [tempSelectedValues, setTempSelectedValues] = useState<
+    Record<string, string | number>
+  >({});
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [viewerImage, setViewerImage] = useState<string | null>(null);
 
-  const toggleEditStructuralInfo = () => setEditStructuralInfo(!editStructuralInfo);
+  const toggleEditStructuralInfo = (save: boolean = false) => {
+    if (save) {
+      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
+    } else {
+      setTempSelectedValues({ ...selectedValues });
+    }
+    setEditStructuralInfo(!editStructuralInfo);
+  };
 
-  const toggleEditAttachment = () => setEditAttachment(!editAttachment);
+  const toggleEditAttachment = (save: boolean = false) => {
+    if (save) {
+      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
+    } else {
+      setTempSelectedValues({ ...selectedValues });
+    }
+    setEditAttachment(!editAttachment);
+  };
+  const toggleEditRacking = (save: boolean = false) => {
+    if (save) {
+      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
+    } else {
+      setTempSelectedValues({ ...selectedValues });
+    }
+    setEditRacking(!editRacking);
+  };
 
-  const toggleEditRacking = () => setEditRacking(!editRacking);
-
-  const toggleEditRoofStructure = () => setEditRoofStructure(!editRoofStructure);
+  const toggleEditRoofStructure = (save: boolean = false) => {
+    if (save) {
+      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
+    } else {
+      setTempSelectedValues({ ...selectedValues });
+    }
+    setEditRoofStructure(!editRoofStructure);
+  };
 
   const handleSelectChange = (key: string, value: string | number) => {
-    setSelectedValues({ ...selectedValues, [key]: value });
+    setTempSelectedValues({ ...tempSelectedValues, [key]: value });
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const newImages = Array.from(files).slice(0, 3 - uploadedImages.length).map(file => ({
-        file,
-        url: URL.createObjectURL(file),
-      }));
-      setUploadedImages(prevImages => [...prevImages, ...newImages]);
+      const newImages = Array.from(files)
+        .slice(0, 3 - uploadedImages.length)
+        .map((file) => ({
+          file,
+          url: URL.createObjectURL(file),
+        }));
+      setUploadedImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
 
   const handleImageRemove = (index: number) => {
-    setUploadedImages(prevImages => {
+    setUploadedImages((prevImages) => {
       const updatedImages = [...prevImages];
       updatedImages.splice(index, 1);
       return updatedImages;
@@ -79,12 +117,30 @@ const StructuralPage: React.FC = () => {
         onChange={(value) => handleSelectChange(key, value)}
       />
     ) : (
-      <DisplaySelect label={label} value={selectedValues[key] || defaultValue} />
+      <DisplaySelect
+        label={label}
+        value={selectedValues[key] || defaultValue}
+      />
     );
   };
 
   return (
-    <div>
+    <div >
+      {viewerImage && (
+        <div 
+        className={styles.imageViewerContainer}
+      >
+          <div className={styles.imageViewer}>
+          <img className={styles.viewerImage} src={viewerImage} alt="Enlarged view" />
+          <button
+            className={styles.imageViewerButton}
+            onClick={() => setViewerImage(null)}
+          >
+            <FaXmark />
+          </button>
+        </div>
+        </div>
+      )}
       <div className={styles.container}>
         <div className={styles.flexContainer}>
           <div className={styles.boxOne}>
@@ -94,13 +150,23 @@ const StructuralPage: React.FC = () => {
                   <p>Structural Info</p>
                 </div>
                 <div className={styles.headingIcon}>
-                  <div className={styles.wordContainer}>MP3</div>
+                  <div className={styles.wordContainer}>MP1</div>
                   <div className={styles.iconContainer}>
-                    {editStructuralInfo ? <HiMiniXMark  onClick={()=>setEditStructuralInfo(!editStructuralInfo)}/> : <IoMdAdd />}
+                    {editStructuralInfo ? (
+                      <HiMiniXMark
+                        onClick={() => toggleEditStructuralInfo(false)}
+                      />
+                    ) : (
+                      <IoMdAdd />
+                    )}
                   </div>
                   <div
                     className={` ${editStructuralInfo ? styles.active : styles.iconContainer}`}
-                    onClick={toggleEditStructuralInfo}
+                    onClick={() =>
+                      editStructuralInfo
+                        ? toggleEditStructuralInfo(true)
+                        : toggleEditStructuralInfo()
+                    }
                     style={{ cursor: 'pointer' }}
                   >
                     {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
@@ -109,7 +175,12 @@ const StructuralPage: React.FC = () => {
               </div>
 
               <div>
-                {renderComponent('structure', 'Structure', 'Select', editStructuralInfo)}
+                {renderComponent(
+                  'structure',
+                  'Structure',
+                  'Select',
+                  editStructuralInfo
+                )}
 
                 <div
                   style={{
@@ -119,22 +190,72 @@ const StructuralPage: React.FC = () => {
                     columnGap: '15px',
                   }}
                 >
-                  {renderComponent('roofType', 'Roof Type', 'Flat', editStructuralInfo)}
-                  {renderComponent('roofMaterial', 'Roof Material', 'Standing Seam Metal', editStructuralInfo)}
-                  {renderComponent('sheathingType', 'Sheating Type', 'OSB', editStructuralInfo)}
-                  {renderComponent('framingType', 'Framing Type', 'Mfg. Truss', editStructuralInfo)}
-                  {renderComponent('framingSize', 'Framing Size', '2x4', editStructuralInfo)}
-                  {renderComponent('framingSpacing', 'Framing Spacing', '12', editStructuralInfo)}
+                  {renderComponent(
+                    'roofType',
+                    'Roof Type',
+                    'Flat',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'roofMaterial',
+                    'Roof Material',
+                    'Standing Seam Metal',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'sheathingType',
+                    'Sheating Type',
+                    'OSB',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'framingType',
+                    'Framing Type',
+                    'Mfg. Truss',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'framingSize',
+                    'Framing Size',
+                    '2x4',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'framingSpacing',
+                    'Framing Spacing',
+                    '12',
+                    editStructuralInfo
+                  )}
                 </div>
               </div>
 
               <div className={styles.pvContainer}>
                 <p className={styles.selectedContent}>PV MOUNTING HARDWARE</p>
                 <div className={styles.hardwareWrapper}>
-                  {renderComponent('attachment', 'Attachment', 'K2 Flex Foot', editStructuralInfo)}
-                  {renderComponent('racking', 'Racking', 'K2 CrossRail', editStructuralInfo)}
-                  {renderComponent('pattern', 'Pattern', 'Staggered', editStructuralInfo)}
-                  {renderComponent('mount', 'Mount', 'Flush', editStructuralInfo)}
+                  {renderComponent(
+                    'attachment',
+                    'Attachment',
+                    'K2 Flex Foot',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'racking',
+                    'Racking',
+                    'K2 CrossRail',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'pattern',
+                    'Pattern',
+                    'Staggered',
+                    editStructuralInfo
+                  )}
+                  {renderComponent(
+                    'mount',
+                    'Mount',
+                    'Flush',
+                    editStructuralInfo
+                  )}
                 </div>
               </div>
               <div
@@ -145,9 +266,24 @@ const StructuralPage: React.FC = () => {
                   gap: '15px',
                 }}
               >
-                {renderComponent('structuralUpgrades', 'Structural Upgrades', 'Blocking', editStructuralInfo)}
-                {renderComponent('reroofRequired', 'Reroof Required', '---', editStructuralInfo)}
-                {renderComponent('gmSupportType', 'Gm Support Type', 'Ground Screws', editStructuralInfo)}
+                {renderComponent(
+                  'structuralUpgrades',
+                  'Structural Upgrades',
+                  'Blocking',
+                  editStructuralInfo
+                )}
+                {renderComponent(
+                  'reroofRequired',
+                  'Reroof Required',
+                  '---',
+                  editStructuralInfo
+                )}
+                {renderComponent(
+                  'gmSupportType',
+                  'Gm Support Type',
+                  'Ground Screws',
+                  editStructuralInfo
+                )}
               </div>
             </div>
             <div className={styles.endContainerWrapper}>
@@ -197,92 +333,217 @@ const StructuralPage: React.FC = () => {
               <div className={styles.attachmentContainer}>
                 <div className={styles.attachmentHeader}>
                   <p>Attachment</p>
-                  <div>
+                  <div className={styles.buttonContainer}>
+                    {editAttachment ? (
+                      <div className={styles.iconContainer}>
+                        <HiMiniXMark
+                          onClick={() => toggleEditAttachment(false)}
+                        />
+                      </div>
+                    ) : null}
                     <div
                       className={` ${editAttachment ? styles.active : styles.iconContainer}`}
-                      onClick={toggleEditAttachment}
+                      onClick={() =>
+                        editAttachment
+                          ? toggleEditAttachment(true)
+                          : toggleEditAttachment()
+                      }
                       style={{ cursor: 'pointer' }}
                     >
-                      {editAttachment ? <IoMdCheckmark /> : <AiOutlineEdit />}
+                      {editAttachment ? (
+                        <IoMdCheckmark
+                          onClick={() => setEditStructuralInfo(!editAttachment)}
+                        />
+                      ) : (
+                        <AiOutlineEdit />
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('attachmentType', 'Type', '--', editAttachment)}
-                    {renderComponent('attachmentPattern', 'Pattern', '---', editAttachment)}
-                    {renderComponent('attachmentQuantity', 'Quantity', '12', editAttachment)}
-                    {renderComponent('attachmentSpacing', 'Spacing', 'Portrait', editAttachment)}
+                    {renderComponent(
+                      'attachmentType',
+                      'Type',
+                      '--',
+                      editAttachment
+                    )}
+                    {renderComponent(
+                      'attachmentPattern',
+                      'Pattern',
+                      '---',
+                      editAttachment
+                    )}
+                    {renderComponent(
+                      'attachmentQuantity',
+                      'Quantity',
+                      '12',
+                      editAttachment
+                    )}
+                    {renderComponent(
+                      'attachmentSpacing',
+                      'Spacing',
+                      'Portrait',
+                      editAttachment
+                    )}
                   </div>
                 </div>
               </div>
               <div className={styles.rackingContainer}>
                 <div className={styles.attachmentHeader}>
                   <p>Racking</p>
-                  <div>
+                  <div className={styles.buttonContainer}>
+                    {editRacking ? (
+                      <div className={styles.iconContainer}>
+                        <HiMiniXMark onClick={() => toggleEditRacking(false)} />
+                      </div>
+                    ) : null}
                     <div
                       className={` ${editRacking ? styles.active : styles.iconContainer}`}
-                      onClick={toggleEditRacking}
+                      onClick={() =>
+                        editRacking
+                          ? toggleEditRacking(true)
+                          : toggleEditRacking()
+                      }
                       style={{ cursor: 'pointer' }}
                     >
-                      {editRacking ? <IoMdCheckmark /> : <AiOutlineEdit />}
+                      {editRacking ? (
+                        <IoMdCheckmark
+                          onClick={() => setEditStructuralInfo(!editRacking)}
+                        />
+                      ) : (
+                        <AiOutlineEdit />
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
                     {renderComponent('rackingType', 'Type', '--', editRacking)}
-                    {renderComponent('rackingMount', 'Mount', 'flush', editRacking)}
+                    {renderComponent(
+                      'rackingMount',
+                      'Mount',
+                      'flush',
+                      editRacking
+                    )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('tiltInfo', 'Tilt Info', 'module', editRacking)}
-                    {renderComponent('maxRailCantilever', 'Max Rail Cantilever', 'Portrait', editRacking)}
+                    {renderComponent(
+                      'tiltInfo',
+                      'Tilt Info',
+                      'module',
+                      editRacking
+                    )}
+                    {renderComponent(
+                      'maxRailCantilever',
+                      'Max Rail Cantilever',
+                      'Portrait',
+                      editRacking
+                    )}
                   </div>
                 </div>
               </div>
               <div className={styles.roofStructure}>
                 <div className={styles.attachmentHeader}>
                   <p>Roof Structure</p>
-                  <div>
+                  <div className={styles.buttonContainer}>
+                    {editRoofStructure ? (
+                      <div className={styles.iconContainer}>
+                        <HiMiniXMark
+                          onClick={() => toggleEditRoofStructure(false)}
+                        />
+                      </div>
+                    ) : null}
                     <div
                       className={` ${editRoofStructure ? styles.active : styles.iconContainer}`}
-                      onClick={toggleEditRoofStructure}
+                      onClick={() =>
+                        editRoofStructure
+                          ? toggleEditRoofStructure(true)
+                          : toggleEditRoofStructure()
+                      }
                       style={{ cursor: 'pointer' }}
                     >
-                      {editRoofStructure ? <IoMdCheckmark /> : <AiOutlineEdit />}
+                      {editRoofStructure ? (
+                        <IoMdCheckmark
+                          onClick={() =>
+                            setEditStructuralInfo(!editRoofStructure)
+                          }
+                        />
+                      ) : (
+                        <AiOutlineEdit />
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('roofFramingType', 'Framing Type', '--', editRoofStructure)}
-                    {renderComponent('roofSize', 'Size', '---', editRoofStructure)}
+                    {renderComponent(
+                      'roofFramingType',
+                      'Framing Type',
+                      '--',
+                      editRoofStructure
+                    )}
+                    {renderComponent(
+                      'roofSize',
+                      'Size',
+                      '---',
+                      editRoofStructure
+                    )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('roofSpacing', 'Spacing', '---', editRoofStructure)}
-                    {renderComponent('roofSheathingType', 'Sheathing type', '--', editRoofStructure)}
+                    {renderComponent(
+                      'roofSpacing',
+                      'Spacing',
+                      '---',
+                      editRoofStructure
+                    )}
+                    {renderComponent(
+                      'roofSheathingType',
+                      'Sheathing type',
+                      '--',
+                      editRoofStructure
+                    )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('roofMaterial', 'Roof Material', '---', editRoofStructure)}
-                    {renderComponent('structuralUpgrades', 'Structural upgrades', '--', editRoofStructure)}
+                    {renderComponent(
+                      'roofMaterial',
+                      'Roof Material',
+                      '---',
+                      editRoofStructure
+                    )}
+                    {renderComponent(
+                      'structuralUpgrades',
+                      'Structural upgrades',
+                      '--',
+                      editRoofStructure
+                    )}
                   </div>
                 </div>
               </div>
               <div className={styles.uploadImage}>
-              <div className={styles.imagePreviewContainer}>
-                {uploadedImages.map((image, index) => (
-                  <div key={index} className={styles.imagePreview}>
-                    <button
-                      className={styles.removeImageButton}
-                      onClick={() => handleImageRemove(index)}
-                    >
-                      <FaXmark />
-                    </button>
-                    <img src={image.url} alt="Uploaded preview" className={styles.previewImage} />
-                    
-                  </div>
-                ))}
-              </div>
+                <div className={styles.imagePreviewContainer}>
+                  {uploadedImages.map((image, index) => (
+                    <div key={index} className={styles.imagePreview}>
+                      <button
+                        className={styles.removeImageButton}
+                        onClick={() => handleImageRemove(index)}
+                      >
+                        <FaXmark />
+                      </button>
+                      <img
+                        src={image.url}
+                        alt="Uploaded preview"
+                        className={styles.previewImage}
+                      />
+                      <p
+                        className={styles.imageView}
+                        onClick={() => setViewerImage(image.url)}
+                      >
+                        View
+                      </p>
+                    </div>
+                  ))}
+                </div>
                 <div>
                   <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
                     <div className={styles.UploadIcon}>
@@ -299,14 +560,16 @@ const StructuralPage: React.FC = () => {
                   />
                 </div>
                 {uploadedImages.length === 0 ? (
-                <div className={styles.UploadIconContent}>
-                  <p className={styles.UploadHeading}>Upload Image</p>
-                  <p className={styles.UploadParagraph}>You can select up to 3 files</p>
-                </div>
-                ) : ""} 
-                
+                  <div className={styles.UploadIconContent}>
+                    <p className={styles.UploadHeading}>Upload Image</p>
+                    <p className={styles.UploadParagraph}>
+                      You can select up to 3 files
+                    </p>
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
-              
             </div>
           </div>
         </div>
