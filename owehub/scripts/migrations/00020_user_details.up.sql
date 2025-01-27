@@ -1,4 +1,8 @@
-CREATE OR REPLACE FUNCTION update_existing_user(
+-- adding a column manager_role for assign manager role
+ALTER TABLE user_details
+ADD COLUMN manager_role TEXT;
+
+CREATE OR REPLACE FUNCTION create_new_user(
     p_name VARCHAR(255),
     p_db_username VARCHAR(255),
     p_mobile_number VARCHAR(20),
@@ -22,8 +26,6 @@ CREATE OR REPLACE FUNCTION update_existing_user(
     p_dealer_logo VARCHAR(255),
     p_add_to_podio BOOLEAN,
     p_tables_permissions jsonb,
-    p_user_code VARCHAR(50),
-    p_created_at TIMESTAMP,
     p_manager_role VARCHAR(255),
     OUT v_user_id INT
 )
@@ -38,7 +40,7 @@ DECLARE
     v_zipcode_id INT;
     v_team_id INT;
     v_max_user_code INT;
-    v_partner_id INT;
+    v_dealer_id VARCHAR(255);
     v_new_user_code VARCHAR(255);
     v_reporting_manager VARCHAR(255);
 BEGIN
@@ -118,18 +120,22 @@ BEGIN
         v_team_id := NULL;
     END IF;
 
-     -- Get the dealer owner's partner_id
+     -- Get the dealer owner's user_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT partner_id INTO v_partner_id
+        SELECT partner_id INTO v_dealer_id
         FROM sales_partner_dbhub_schema
         WHERE sales_partner_name = p_dealer_name;
 
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'Sales Partner with name % not found', p_dealer_name;
+            RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
         END IF;
     ELSE
-        v_partner_id := NULL;
+        v_dealer_id := NULL;
     END IF;
+
+    -- Fetch the maximum user code and increment it
+    SELECT MAX(CAST(SUBSTRING(user_code FROM 4) AS INT)) INTO v_max_user_code FROM user_details;
+    v_new_user_code := 'OWE' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
 
     -- Insert a new user into user_details table
     INSERT INTO user_details (
@@ -154,16 +160,14 @@ BEGIN
         country,
         team_id,
         partner_id,
-	    podio_user,
+	podio_user,
         tables_permissions,
-        updated_at,
-        created_at,
         manager_role
     )
     VALUES (
         p_name,
         p_db_username,
-        p_user_code,
+        v_new_user_code,
         p_mobile_number,
         p_email_id,
         p_password,
@@ -181,11 +185,9 @@ BEGIN
         v_zipcode_id,
         p_country,
         v_team_id,
-        v_partner_id,
-	    p_add_to_podio,
+        v_dealer_id,
+	p_add_to_podio,
         p_tables_permissions,
-        NOW(),
-        p_created_at,
         p_manager_role
     )
     RETURNING user_id INTO v_user_id;

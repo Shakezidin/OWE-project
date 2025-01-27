@@ -29,6 +29,7 @@ type UpdateUserReq struct {
 	TablesPermissions     []TablePermission `json:"tables_permissions"`
 	TeamName              string            `json:"team_name"`
 	RevokeTablePermission []TablePermission `json:"revoke_table_permission"`
+	ManagerRole           string            `json:"manager_role"`
 }
 
 type DeleteUsers struct {
