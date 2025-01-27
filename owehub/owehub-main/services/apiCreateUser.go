@@ -229,7 +229,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.DealerLogo)
 	queryParameters = append(queryParameters, createUserReq.AddToPodio)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
-	queryParameters = append(queryParameters, createUserReq.AssignManagerRole)
+	queryParameters = append(queryParameters, createUserReq.ManagerRole)
 
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)

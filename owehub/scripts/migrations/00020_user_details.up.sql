@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_dealer_logo VARCHAR(255),
     p_add_to_podio BOOLEAN,
     p_tables_permissions jsonb,
-    p_assign_manager_role VARCHAR(255),
+    p_manager_role VARCHAR(255),
     OUT v_user_id INT
 )
 RETURNS INT
@@ -188,7 +188,7 @@ BEGIN
         v_dealer_id,
 	p_add_to_podio,
         p_tables_permissions,
-        p_assign_manager_role
+        p_manager_role
     )
     RETURNING user_id INTO v_user_id;
 

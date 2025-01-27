@@ -317,10 +317,10 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Assign Manager Name
-		assignManagerRole, assignManagerRoleOK := item["manager_role"].(string)
-		if !assignManagerRoleOK || assignManagerRole == "" {
+		ManagerRole, managerRoleOK := item["manager_role"].(string)
+		if !managerRoleOK || ManagerRole == "" {
 			log.FuncErrorTrace(0, "Failed to get manager name for Item: %+v\n", item)
-			assignManagerRole = ""
+			ManagerRole = ""
 		}
 
 		usersData := models.GetUsersData{
@@ -347,7 +347,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			BgColour:          BgColour,
 			DealerCode:        DealerCode,
 			TablePermission:   tablePermissions,
-			AssignManagerRole: assignManagerRole,
+			ManagerRole:       ManagerRole,
 		}
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
 	}
