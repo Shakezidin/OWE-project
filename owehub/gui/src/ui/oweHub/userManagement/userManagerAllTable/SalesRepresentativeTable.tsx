@@ -78,6 +78,11 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
     }
     dispatch(shuffleArray(sortedData));
   };
+  const environment = process.env.REACT_APP_ENV;
+    const isEditVisible =
+    (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
+    environment === 'staging';
+
   return (
     <>
       {/* <UserHeaderSection  name="Sales Representative"/> */}
@@ -171,8 +176,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   </td>
                   <td>
                     <div className="action-icon" style={{gap:4}}>
-                    {(role_name === TYPE_OF_USER.ADMIN ||
-                      role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                    { isEditVisible && (
                       <div
                         className="reset_hover_btn"
                         style={{ cursor: 'pointer' }}

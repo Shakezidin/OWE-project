@@ -15,6 +15,7 @@ import React, {
   import UserBasedInput from './UserBasedInput';
   import SelectOption from '../../../components/selectOption/SelectOption';
   import { CreateUserModel } from '../../../../core/models/api_models/UserManagementModel';
+  import { fetchRegionList } from '../../../../redux/apiActions/auth/createUserSliceActions';
   import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
   import Loading from '../../../components/loader/Loading';
   import { ALL_USER_ROLE_LIST as USERLIST } from '../../../../resources/static_data/Constant';
@@ -123,6 +124,8 @@ import React, {
     /**handle change for report */
     const handleChangeForRegion = async (newValue: any, fieldName: string) => {
       const { value } = newValue;
+
+      console.log(fieldName, value, "fieldname,value")
   
       await dispatch(updateUserForm({ field: fieldName, value }));
   
@@ -176,10 +179,10 @@ import React, {
  
 
     useEffect(() => {
-      if (editData.length > 0) {
+      if (editData?.length > 0) {
         // Extract userData from editData
         const userData = editData[0]; 
-        if (userData?.table_permission.length > 0) {
+        if (userData?.table_permission?.length > 0) {
           setDbAcess(true);
           const permissions: TablePermissions = {};
           const selectedIndices = new Set<number>();
@@ -234,7 +237,7 @@ import React, {
     console.log(selected, "selecteddd")
 
     useEffect(() => {
-      if (editData.length > 0) {
+      if (editData?.length > 0) {
         const userData = editData[0];
         if (userData) {
           const nameParts = userData.name?.trim().split(' ') || [];
@@ -248,12 +251,16 @@ import React, {
           dispatch(updateUserForm({ field: 'role_name', value: userData.role_name || '' }));
           dispatch(updateUserForm({ field: 'dealer', value: userData.dealer || '' }));
           dispatch(updateUserForm({ field: 'description', value: userData.description || '' }));
+          dispatch(updateUserForm({ field: 'assigned_Manager', value: userData.manager_role || '' }));
+          dispatch(fetchRegionList({dealer_name:userData.dealer,role:userData.assigned_Manager}));
+          dispatch(updateUserForm({ field: 'report_to', value: userData.reporting_manager || '' }));
         }
       }
     }, [editData, dispatch]);
     
-      
-      
+    
+   
+    
       console.log(editData, "editData")
    
     /** render ui */
@@ -442,6 +449,8 @@ import React, {
                         handleChangeAssignManager(value, name);
                       }}
                       setLogoUrl={setLogoUrl}
+                      editData={editData}
+                  
                     />
                   </div>
   

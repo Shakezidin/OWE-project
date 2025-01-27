@@ -114,6 +114,11 @@ const UserTable: React.FC<UserTableProps> = ({
 
   console.log(selectedValue, 'ghjsfghsdf');
 
+  const environment = process.env.REACT_APP_ENV;
+  const isEditVisible =
+  (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
+  environment === 'staging';
+
   return (
     <div
       className="UserManageTable"
@@ -215,8 +220,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 </td>
                 <td>
                   <div className="action-icon" style={{ gap: 3 }}>
-                    {(role_name === TYPE_OF_USER.ADMIN ||
-                      role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                   {isEditVisible && (
                       <div
                         className="reset_hover_btn"
                         style={{ cursor: 'pointer' }}
