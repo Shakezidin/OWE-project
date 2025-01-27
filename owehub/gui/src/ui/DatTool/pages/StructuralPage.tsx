@@ -30,10 +30,6 @@ const StructuralPage: React.FC = () => {
   const [editAttachment, setEditAttachment] = useState(false);
   const [editRacking, setEditRacking] = useState(false);
   const [editRoofStructure, setEditRoofStructure] = useState(false);
-  // const [selectedValues, setSelectedValues] = useState<
-  //   Record<string, string | number>
-  // >({});
-  // const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [selectedValues, setSelectedValues] = useState<
     Record<string, string | number>
   >({});
@@ -42,6 +38,9 @@ const StructuralPage: React.FC = () => {
   >({});
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [viewerImage, setViewerImage] = useState<string | null>(null);
+  const [structuralInfoStates, setStructuralInfoStates] = useState<string[]>([
+    'MP1',
+  ]);
 
   const toggleEditStructuralInfo = (save: boolean = false) => {
     if (save) {
@@ -124,21 +123,31 @@ const StructuralPage: React.FC = () => {
     );
   };
 
+  const addNewStructuralState = () => {
+    const lastState = structuralInfoStates[structuralInfoStates.length - 1];
+    const newStateNumber = parseInt(lastState.replace('MP', '')) + 1;
+    const newState = `MP${newStateNumber}`;
+    setStructuralInfoStates([...structuralInfoStates, newState]);
+    setEditStructuralInfo(true);
+  };
+
   return (
-    <div >
+    <div>
       {viewerImage && (
-        <div 
-        className={styles.imageViewerContainer}
-      >
+        <div className={styles.imageViewerContainer}>
           <div className={styles.imageViewer}>
-          <img className={styles.viewerImage} src={viewerImage} alt="Enlarged view" />
-          <button
-            className={styles.imageViewerButton}
-            onClick={() => setViewerImage(null)}
-          >
-            <FaXmark />
-          </button>
-        </div>
+            <img
+              className={styles.viewerImage}
+              src={viewerImage}
+              alt="Enlarged view"
+            />
+            <button
+              className={styles.imageViewerButton}
+              onClick={() => setViewerImage(null)}
+            >
+              <FaXmark />
+            </button>
+          </div>
         </div>
       )}
       <div className={styles.container}>
@@ -150,18 +159,24 @@ const StructuralPage: React.FC = () => {
                   <p>Structural Info</p>
                 </div>
                 <div className={styles.headingIcon}>
-                  <div className={styles.wordContainer}>MP1</div>
+                  {structuralInfoStates.map((state, index) => (
+                    <div key={index} className={styles.wordContainer}>
+                      {state}
+                    </div>
+                  ))}
                   <div className={styles.iconContainer}>
                     {editStructuralInfo ? (
                       <HiMiniXMark
                         onClick={() => toggleEditStructuralInfo(false)}
                       />
                     ) : (
-                      <IoMdAdd />
+                       <IoMdAdd onClick={addNewStructuralState} />
                     )}
                   </div>
                   <div
-                    className={` ${editStructuralInfo ? styles.active : styles.iconContainer}`}
+                    className={` ${
+                      editStructuralInfo ? styles.active : styles.iconContainer
+                    }`}
                     onClick={() =>
                       editStructuralInfo
                         ? toggleEditStructuralInfo(true)
