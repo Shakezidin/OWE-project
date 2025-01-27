@@ -1,3 +1,8 @@
+.genMain{
+  height: calc(100vh - 216px);
+  overflow-y: scroll;
+}
+
 .genOneLeft {
   background: var(--white-color);
   padding: 1.2rem;
@@ -5,7 +10,7 @@
 }
 
 .genOneLeft {
-  width: 70%;
+  flex: 1;
 }
 
 .gOneHeaderTitleTxt p {
@@ -17,7 +22,7 @@
 .gOneHeaderTitleTxt p:nth-child(2) {
   color: #c5c5c5;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 14px;
 }
 
 .gOneHeaderTitle {
@@ -49,7 +54,8 @@
 .gOneHeader {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  height: 100%;
+  justify-content: space-between;
 }
 
 .gOneHeaderTitleTxt {
@@ -67,7 +73,6 @@
 
 .genOneCont {
   display: flex;
-  align-items: center;
   gap: 1.2rem;
 }
 
@@ -78,7 +83,7 @@
 }
 
 .gOneHeaderDesc p {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--input-border-color);
 }
@@ -90,13 +95,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .gOneLeftInfoTxt {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1.2rem;
 }
 
 .gOneLeftInfoTxt p:nth-child(2) {
@@ -105,8 +110,8 @@
 
 .gOneRightTptxt p {
   color: #565656;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .gOneRightTopDesc p {
@@ -139,6 +144,11 @@
   justify-content: space-between;
 }
 
+.gOneRightTopDesc p{
+  font-weight: 500;
+  margin-right: 2px;
+}
+
 .gOneRightTop {
   display: flex;
   flex-direction: column;
@@ -152,7 +162,7 @@
   display: flex;
   align-items: center;
   gap: 3rem;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .gOneRightTBottomTxt p {
@@ -176,7 +186,6 @@
   color: #565656;
   transition: all 0.3s ease;
   cursor: pointer;
-  font-weight: 500;
 }
 
 .gOneRightBottomTxt:hover {
@@ -225,7 +234,6 @@
 }
 
 .genSecLeft {
-  width: 25%;
   background: var(--white-color);
   border-radius: 26px;
   padding: 1.2rem;
@@ -246,7 +254,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 1.2rem;
 }
 
@@ -260,9 +268,8 @@
 }
 
 .genSecRight {
-  width: 75%;
   background: var(--white-color);
   border-radius: 26px;
   padding: 1.2rem;
-  height: 450px;
+  flex: 1;
 }

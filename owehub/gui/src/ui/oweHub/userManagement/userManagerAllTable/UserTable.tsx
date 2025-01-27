@@ -12,8 +12,8 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { Tooltip } from 'react-tooltip';
-import { CiEdit } from "react-icons/ci";
-
+import { CiEdit } from 'react-icons/ci';
+import EditUser from '../../../../resources/assets/edituser.svg';
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
@@ -37,7 +37,7 @@ const UserTable: React.FC<UserTableProps> = ({
   setSelectAllChecked,
   selectedValue,
   handlePasswordReset,
-  handleEdit
+  handleEdit,
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -183,53 +183,56 @@ const UserTable: React.FC<UserTableProps> = ({
                 {/* Manager column */}
                 <td>{el.reporting_manager ? el.reporting_manager : 'NA'}</td>
                 {/* Added Dealer column */}
-                <td 
-                    data-tooltip-id={el.dealer?.length > 15 ? `dealer-${el.dealer}` : undefined}
-                    style={{ position: 'relative' }}
-                  >
-                    {el.dealer?.length > 15 ? `${el.dealer.slice(0, 15)}...` : el.dealer || 'NA'}
-                    {el.dealer?.length > 15 && (
-                      <Tooltip
-                        id={`dealer-${el.dealer}`}
-                        style={{
-                          zIndex: 103,
-                          background: '#000',
-                          color: '#f7f7f7',
-                          fontSize: 12,
-                          paddingBlock: 4,
-                          fontWeight: '400',
-                        }}
-                        offset={0}
-                        place="left"
-                        content={el.dealer}
-                        delayShow={100}
-                      />
-                    )}
-                  </td>
+                <td
+                  data-tooltip-id={
+                    el.dealer?.length > 15 ? `dealer-${el.dealer}` : undefined
+                  }
+                  style={{ position: 'relative' }}
+                >
+                  {el.dealer?.length > 15
+                    ? `${el.dealer.slice(0, 15)}...`
+                    : el.dealer || 'NA'}
+                  {el.dealer?.length > 15 && (
+                    <Tooltip
+                      id={`dealer-${el.dealer}`}
+                      style={{
+                        zIndex: 103,
+                        background: '#000',
+                        color: '#f7f7f7',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: '400',
+                      }}
+                      offset={0}
+                      place="left"
+                      content={el.dealer}
+                      delayShow={100}
+                    />
+                  )}
+                </td>
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}
                 </td>
                 <td>
-                  <div className="action-icon" style={{ gap: 4 }}>
-                  {(role_name === TYPE_OF_USER.ADMIN ||
+                  <div className="action-icon" style={{ gap: 3 }}>
+                    {(role_name === TYPE_OF_USER.ADMIN ||
                       role_name === TYPE_OF_USER.DEALER_OWNER) && (
                       <div
                         className="reset_hover_btn"
                         style={{ cursor: 'pointer' }}
                         onClick={() => {
                           handleEdit(el.email_id);
-                        
                         }}
-
                       >
                         <Tooltip
-                          style={{
+                           style={{
                             zIndex: 103,
                             background: '#f7f7f7',
                             color: '#000',
                             fontSize: 12,
                             paddingBlock: 4,
                             fontWeight: '400',
+                            
                           }}
                           offset={8}
                           id="edit_user"
@@ -238,14 +241,15 @@ const UserTable: React.FC<UserTableProps> = ({
                           delayShow={200}
                           className="pagination-tooltip"
                         />
-                        <CiEdit
-                          color="#667085"
-                          size={24}
-                          
+                        <img
+                          src={EditUser} // Replace with the correct path to the edit icon
+                          alt="Edit User"
                           data-tooltip-id="edit_user"
+                          style={{ color: 'rgb(102, 112, 133)', width: 18, height: 18 }}
                         />
                       </div>
                     )}
+                    
                     <div
                       className=""
                       style={{
@@ -307,7 +311,7 @@ const UserTable: React.FC<UserTableProps> = ({
                         <MdOutlineLockReset
                           color="#667085"
                           size={24}
-                          style={{ paddingLeft: '5px' }}
+                          
                           data-tooltip-id="user_reset"
                         />
                       </div>

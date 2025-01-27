@@ -379,6 +379,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
             handlePasswordReset={handlePasswordReset}
+            handleEdit={handleEdit}
           />
         );
       case TYPE_OF_USER.SALE_MANAGER:
