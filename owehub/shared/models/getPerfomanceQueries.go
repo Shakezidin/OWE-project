@@ -950,6 +950,84 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 	return PipelineDataQuery
 }
 
+func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	PipelineDataQuery := fmt.Sprintf(`
+        SELECT
+            DISTINCT ON (cust.unique_id)
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            install.created_on AS pv_install_created_date,
+			b.battery_installation_date AS battery_scheduled_date,
+			b.completion_date AS battery_complete_date,
+			install.pv_completion_date AS install_completed_date,
+			permit.pv_approved AS permit_approval_date,
+			ic.ic_approved_date AS ic_approval_date
+        FROM
+            customers_customers_schema AS cust
+        LEFT JOIN
+            permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
+        LEFT JOIN
+            ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
+        LEFT JOIN
+            pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
+        LEFT JOIN
+            batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
+        WHERE
+            install.project_status not in
+                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND 
+            install.app_status not in
+                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')     AND
+            %v %v;`, filterUserQuery, searchValue)
+
+	return PipelineDataQuery
+}
+
+func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	PipelineDataQuery := fmt.Sprintf(`
+        SELECT
+            DISTINCT ON (cust.unique_id)
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            fin.created_on AS fin_created_date,
+			fin.pv_fin_date AS fin_pass_date,
+			install.pv_completion_date AS install_completed_date
+        FROM
+            customers_customers_schema AS cust
+		LEFT JOIN
+			fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
+		LEFT JOIN
+			pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
+        WHERE
+	        fin.project_status IN (%v)                                  AND
+            fin.app_status not in ('PV FIN Complete', 'DUPLICATE')      AND
+            %v %v;`, projectStatus, filterUserQuery, searchValue)
+
+	return PipelineDataQuery
+}
+
+func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	PipelineDataQuery := fmt.Sprintf(`
+        SELECT
+            DISTINCT ON (cust.unique_id)
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            pto.submitted AS pto_submitted_date,
+			pto.pto_granted AS pto_granted_new,
+			fin.pv_fin_date AS fin_pass_date,
+			fin.created_on AS fin_created_date
+        FROM
+            customers_customers_schema AS cust
+        LEFT JOIN
+			fin_permits_fin_schema AS fin ON cust.our = fin.customer_unique_id
+		LEFT JOIN
+			pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
+        WHERE
+	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')      AND
+            %v %v;`, filterUserQuery, searchValue)
+
+	return PipelineDataQuery
+}
+
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH queue_customers AS (
