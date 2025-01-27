@@ -24,6 +24,30 @@
   border: 2px solid #fff;
   overflow-y: scroll;
 }
+.popUp::-webkit-scrollbar {
+  width: 7px;
+  height: 10px;
+}
+.popUp::-webkit-scrollbar {
+  display: initial;
+}
+
+.popUp::-webkit-scrollbar-thumb {
+  background-color: #377cf6;
+  border-radius: 28px;
+}
+
+.popUp::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.popUp::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.popUp::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
 .popUp_Header {
   display: flex;
   justify-content: space-between;
