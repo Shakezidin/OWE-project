@@ -1,5 +1,5 @@
-.transparent_model{
-    display: flex;
+.transparent_model {
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
@@ -10,95 +10,94 @@
   align-items: center;
   z-index: 400;
 }
-.popUp{
-    max-width: 725px;
-    /* max-height: 557px; */
-    max-height: 400px;
-    width: 100%;
-    border: 2px solid #fff;
-    border-radius: 28px;
-    background-color: #fafafa;
-    padding: 2rem;
-    overflow-y: scroll;
-    z-index: 4;
-    border: 2px solid #fff;
-    overflow-y: scroll;
-
+.popUp {
+  max-width: 725px;
+  /* max-height: 557px; */
+  max-height: 400px;
+  width: 100%;
+  border: 2px solid #fff;
+  border-radius: 28px;
+  background-color: #fafafa;
+  padding: 2rem;
+  overflow-y: scroll;
+  z-index: 4;
+  border: 2px solid #fff;
+  overflow-y: scroll;
 }
-.popUp_Header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width:90%;
+.popUp_Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
 }
-.popUp_adderName{
-    width: 40%;
-    font-family: 'Poppins',sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 21px;
-    color: #565656;
+.popUp_adderName {
+  width: 40%;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  color: #565656;
 }
-.popUp_Quantity,.popUp_cost{
-    align-self: flex-start;
-    font-family: 'Poppins',sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 21px;
-    color: #565656;
-    position: relative;
+.popUp_Quantity,
+.popUp_cost {
+  align-self: flex-start;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  color: #565656;
+  position: relative;
 }
-.popUp_dummyData{
-    width: 100%;
-    margin-top: 1rem;
-
+.popUp_dummyData {
+  width: 100%;
+  margin-top: 1rem;
 }
 .popUp_dummyData_rowDiv {
-    width: 98%;
-    display: grid;
-    grid-template-columns: 3fr 1fr 1fr; /* Example: Two equal columns */
-    justify-content: space-between; /* Space items across the grid */
-    align-items: center; /* Center the items vertically within each grid cell */
-    padding: 1rem 0; /* Add padding to the top and bottom of the grid */
-  }
-  
-.popUp_adderData{
-    width: 40%;
-    font-family: 'Poppins',sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 18px;
-    color: #2A2626;
+  width: 98%;
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr; /* Example: Two equal columns */
+  justify-content: space-between; /* Space items across the grid */
+  align-items: center; /* Center the items vertically within each grid cell */
+  padding: 1rem 0; /* Add padding to the top and bottom of the grid */
 }
-.popUp_quantityData{
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Poppins',sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 18px;
-    color: #2A2626;
+
+.popUp_adderData {
+  width: 40%;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #2a2626;
 }
-.popUp_costData{
-    font-family: 'Poppins',sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 18px;
-    color: #2A2626;
-    text-align: center;
+.popUp_quantityData {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #2a2626;
 }
-.popUp_cross{
-    position: absolute;
-    background-color: #F3F2F9;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    left: 60px;
-    bottom: -5px;
-    cursor: pointer;
+.popUp_costData {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #2a2626;
+  text-align: center;
+}
+.popUp_cross {
+  position: absolute;
+  background-color: #f3f2f9;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 60px;
+  bottom: -5px;
+  cursor: pointer;
 }
