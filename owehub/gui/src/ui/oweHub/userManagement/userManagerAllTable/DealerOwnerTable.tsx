@@ -83,6 +83,11 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
     dispatch(shuffleArray(sortedData));
   };
 
+   const environment = process.env.REACT_APP_ENV;
+            const isEditVisible =
+            (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
+            environment === 'staging';
+
   return (
     <>
       {/* <UserHeaderSection  name="Dealer Owner"/> */}
@@ -173,6 +178,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                   </td>
                   <td>
                     <div className="action-icon" style={{gap:4}}>
+                      {isEditVisible && (
                     <div
                         className="reset_hover_btn"
                         style={{ cursor: 'pointer' }}
@@ -204,6 +210,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                           style={{ color: 'rgb(102, 112, 133)', width: 18, height: 18 }}
                         />
                       </div>
+                  ) }
                       <div
                         className=""
                         style={{ cursor: 'pointer' }}
