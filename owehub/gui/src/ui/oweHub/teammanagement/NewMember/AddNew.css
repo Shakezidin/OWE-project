@@ -3,7 +3,6 @@
   border-radius: 16px;
   width: 100%;
   max-width: 672px;
-
   overflow: hidden;
 }
 
@@ -163,12 +162,14 @@
   justify-content: center;
   margin-top: 5px;
 }
+
 .tm-select-data p {
   font-size: 18px;
   font-weight: 600;
   line-height: 44px;
   text-align: left;
 }
+
 .tm-selected-option {
   display: flex;
   flex-direction: row;
@@ -182,11 +183,7 @@
   padding-left: 12px;
   padding-right: 12px;
 }
-/* .nt-select-cust {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-} */
+
 .tm-selected-option span {
   font-size: 12px;
   font-weight: 400;
@@ -220,6 +217,7 @@
     position: relative;
     width: 47%;
   }
+
   .new-tm-modal {
     margin: 10px;
     height: 500px;

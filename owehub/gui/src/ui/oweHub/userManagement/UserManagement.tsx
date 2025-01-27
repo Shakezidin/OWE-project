@@ -60,8 +60,6 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
-  const { authData } = useAuth();
-
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
   console.log(selectedOption, 'selectedoption');
@@ -166,8 +164,7 @@ const UserManagement: React.FC = () => {
   /** fetch onboarding users data*/
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchUserOnboarding()); // Using dispatch
-      // await dispatch(createTablePermission());
+      await dispatch(fetchUserOnboarding());
     };
 
     fetchData();
@@ -178,53 +175,6 @@ const UserManagement: React.FC = () => {
       setPage(1);
     }
   }, [selectedOption]);
-
-  /** role based get data */
-
-  // useEffect(() => {
-  //   const data = {
-  //     page_number: page,
-  //     page_size: 25,
-  //     filters: [
-  //       {
-  //         Column: 'role_name',
-  //         Operation: '=',
-  //         Data: selectedOption.value,
-  //       },
-  //       {
-  //         Column: 'name',
-  //         Operation: 'cont',
-  //         Data: searchTerm,
-  //       },
-  //     ],
-  //   };
-
-  //   const dataa = {
-  //     page_number: page,
-  //     page_size: 25,
-  //     filters: [
-  //       {
-  //         Column: 'dealer_name',
-  //         Operation: 'cont',
-  //         Data: searchTerm,
-  //       },
-  //     ],
-  //   };
-  //   const fetchList = async () => {
-  //     await dispatch(fetchUserListBasedOnRole(data));
-  //   };
-
-  //   if (selectedOption.value !== 'Partner') {
-  //     fetchList();
-  //   }
-
-  //   const fetchDealer = async () => {
-  //     await dispatch(fetchDealerList(dataa));
-  //   };
-  //   if (selectedOption.value === 'Partner') {
-  //     fetchDealer();
-  //   }
-  // }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
 
   useEffect(() => {
     const data = {
@@ -562,7 +512,6 @@ const UserManagement: React.FC = () => {
           activeSalesRep={activeSalesRep}
         />
       </div>
-
       <div className="onboardrow">
         <UserManagementTable
           AddBtn={
@@ -630,9 +579,7 @@ const UserManagement: React.FC = () => {
             }
           }}
           onClickEdit={(item: UserRoleBasedListModel) => {
-            // console.log("row data",item)
             const [firstName, lastName] = item.name.split(' ');
-
             dispatch(updateUserForm({ field: 'isEdit', value: true }));
             dispatch(updateUserForm({ field: 'first_name', value: firstName }));
             dispatch(updateUserForm({ field: 'last_name', value: lastName }));

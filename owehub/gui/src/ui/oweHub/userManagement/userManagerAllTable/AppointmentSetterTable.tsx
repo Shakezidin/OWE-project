@@ -26,7 +26,6 @@ interface AppointmentSetterProps {
 const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
   data,
   onClickDelete,
-  onClickEdit,
   selectAllChecked,
   selectedRows,
   setSelectedRows,

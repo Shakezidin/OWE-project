@@ -65,8 +65,6 @@ const data = [
 ];
 
 export default class LineChart extends PureComponent {
-  // static demoUrl = 'https://codesandbox.io/s/simple-bar-chart-tpz8r';
-
   render() {
     return (
       <ResponsiveContainer>
@@ -91,7 +89,6 @@ export default class LineChart extends PureComponent {
             fill="#4498ED"
             activeBar={<Rectangle fill="pink" stroke="blue" />}
           />
-          {/* <Bar dataKey="Pending" fill="#FF583D" activeBar={<Rectangle fill="gold" stroke="purple" />} /> */}
         </BarChart>
       </ResponsiveContainer>
     );

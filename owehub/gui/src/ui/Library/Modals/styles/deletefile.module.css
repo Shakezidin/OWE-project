@@ -6,7 +6,6 @@
   width: 100%;
   margin-inline: 16px;
   padding: 4rem 0 2.5rem 0;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
 }
 
 .transparent_lib {
@@ -99,8 +98,6 @@
   background-color: white !important;
   font-family: 'Poppins';
 }
-/* style={{ color: '#fff', border: 'none' }}
-  onClick={() => setVisibleDiv(2)} */
 
 .other {
   background-color: #377cf6;

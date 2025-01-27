@@ -10,12 +10,12 @@ import { debounce } from '../../utiles/debounce';
 import useEscapeKey from '../../hooks/useEscape';
 import { ICONS } from '../../resources/icons/Icons';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import { MdDownloading, MdHeight } from 'react-icons/md';
+import { MdDownloading } from 'react-icons/md';
 import MicroLoader from '../components/loader/MicroLoader';
 import Pagination from '../components/pagination/Pagination';
 import DataNotFound from '../components/loader/DataNotFound';
-import Select, { SingleValue, ActionMeta } from 'react-select';
-import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
+import  { SingleValue, ActionMeta } from 'react-select';
+import { Tooltip as Tooltip } from 'react-tooltip';
 import LeadTable from './components/LeadDashboardTable/leadTable';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import './styles/mediaQuery.css';
@@ -28,8 +28,20 @@ import CustomSelect from './components/CustomSelect';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import LeadTableFilter from './components/LeadDashboardTable/Dropdowns/LeadTopFilter';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
-import { handleCreateProposal, generateWebProposal, retrieveWebProposal } from './api/auroraApi';
-import { addMinutes, endOfWeek, format, parseISO, startOfMonth, startOfWeek, startOfYear, subDays, } from 'date-fns';
+import {
+  handleCreateProposal,
+  generateWebProposal,
+  retrieveWebProposal,
+} from './api/auroraApi';
+import {
+  endOfWeek,
+  format,
+  parseISO,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subDays,
+} from 'date-fns';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -41,10 +53,18 @@ const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+const startOfThreeMonthsAgo = new Date(
+  today.getFullYear(),
+  today.getMonth() - 2,
+  1
+);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1, });
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1, });
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
+  weekStartsOn: 1,
+});
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
+  weekStartsOn: 1,
+});
 
 const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Week', start: startOfThisWeek, end: today },
@@ -72,14 +92,21 @@ const LeadManagementDashboard = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('New Leads');
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
-  const [isNewButtonActive, setIsNewButtonActive] = useState(false);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / itemsPerPage);
-  const [side, setSide] = useState<"left" | "right">('left');
-  const [selectedRanges, setSelectedRanges] = useState([{ startDate: startOfThisWeek, endDate: today, key: 'selection' },]);
-  const [selectedDates, setSelectedDates] = useState<{ startDate: Date | null; endDate: Date | null; }>({ startDate: startOfThisWeek, endDate: today, });
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(periodFilterOptions.find((option) => option.label === 'This Week') || null);
+  const [side, setSide] = useState<'left' | 'right'>('left');
+  const [selectedRanges, setSelectedRanges] = useState([
+    { startDate: startOfThisWeek, endDate: today, key: 'selection' },
+  ]);
+  const [selectedDates, setSelectedDates] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({ startDate: startOfThisWeek, endDate: today });
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<DateRangeWithLabel | null>(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
 
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
@@ -124,7 +151,7 @@ const LeadManagementDashboard = () => {
   };
   const handleCalenderClose = () => {
     setIsCalendarOpen(false);
-  }
+  };
   useEscapeKey(handleCalenderClose);
 
   const handlePeriodChange = (
@@ -156,10 +183,10 @@ const LeadManagementDashboard = () => {
     navigate('/leadmng-dashboard/leadmgt-addnew');
   };
   const statusMap = {
-    'NEW': 'New Leads',
-    'PROGRESS': 'In Progress',
-    'DECLINED': 'Declined',
-    'ACTION_NEEDED': 'Action Needed',
+    NEW: 'New Leads',
+    PROGRESS: 'In Progress',
+    DECLINED: 'Declined',
+    ACTION_NEEDED: 'Action Needed',
   };
   const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
     setActiveIndex(index);
@@ -168,7 +195,7 @@ const LeadManagementDashboard = () => {
     setCurrentFilter(filter);
     setBackup(filter);
     setPage(1);
-    setSide("left")
+    setSide('left');
     setActiveIndex(
       pieData.findIndex(
         (item) => statusMap[item.name as keyof typeof statusMap] === filter
@@ -183,7 +210,6 @@ const LeadManagementDashboard = () => {
     const generateHandler = generateWebProposal(leadId, dispatch);
     await generateHandler();
   };
-
   const retrieveProposalWrapper = async (leadId: number) => {
     const retrieveHandler = retrieveWebProposal(leadId, dispatch);
     await retrieveHandler();
@@ -219,7 +245,7 @@ const LeadManagementDashboard = () => {
   const [showTooltip, setShowTooltip] = useState(true); // Controls tooltip visibility
   const [backup, setBackup] = useState('New Leads');
   const [lineData, setLineData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
   const [search, setSearch] = useState('');
 
   interface DefaultData {
@@ -248,7 +274,6 @@ const LeadManagementDashboard = () => {
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
-
         try {
           setIsLoading(true);
           const response = await postCaller(
@@ -281,7 +306,6 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-
       fetchData();
     }
   }, [isAuthenticated, selectedDates, refresh]);
@@ -290,7 +314,6 @@ const LeadManagementDashboard = () => {
       const sum = pieData.reduce((acc, item) => acc + item.value, 0);
       setTotalValue(sum);
     };
-
     calculateTotalValue();
   }, [pieData]);
   useEffect(() => {
@@ -302,24 +325,20 @@ const LeadManagementDashboard = () => {
           const defaultDataKey = Object.keys(defaultData).find(
             (key) => key === statusName || defaultData[key].name === statusName
           );
-
           if (defaultDataKey) {
             acc[defaultDataKey] = {
               ...defaultData[defaultDataKey],
               value: item.count,
             };
           }
-
           return acc;
         },
         { ...defaultData }
       );
-
       const mergedData = Object.values(formattedData) as StatusData[];
       setPieData(mergedData);
-
     }
-  }, [statusData1])
+  }, [statusData1]);
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
@@ -350,14 +369,18 @@ const LeadManagementDashboard = () => {
         end_date: selectedDates.endDate
           ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
           : '',
-        "status": statusId,
+        status: statusId,
         is_archived: archive,
-        progress_filter: currentFilter === 'In Progress' ? (selectedValue ? selectedValue : "ALL") : "",
+        progress_filter:
+          currentFilter === 'In Progress'
+            ? selectedValue
+              ? selectedValue
+              : 'ALL'
+            : '',
         search: searchTerm,
         page_size: itemsPerPage,
         page_number: archive ? 1 : page,
       };
-
       dispatch(getLeads(data));
     }
   }, [
@@ -377,7 +400,7 @@ const LeadManagementDashboard = () => {
     if (currentFilter !== 'In Progress') {
       setSelectedValue('ALL');
     }
-  }, [currentFilter])
+  }, [currentFilter]);
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
@@ -425,10 +448,7 @@ const LeadManagementDashboard = () => {
     }
     setArchived(false);
   };
-  const handleNewButtonClick = () => {
-    setCurrentFilter('Projects'); // Example filter name
-    setIsNewButtonActive(true);
-  };
+
   const OpenWindowClick = () => {
     setIsToggledX((prev) => !prev);
   };
@@ -437,7 +457,6 @@ const LeadManagementDashboard = () => {
     setIsExporting(true);
     const headers = [
       'Lead ID',
-      // 'Status ID',
       'First Name',
       'Last Name',
       'Email',
@@ -456,7 +475,7 @@ const LeadManagementDashboard = () => {
       'Proposal Created Date',
       'Sales Rep',
       'Lead Source',
-      'Setter'
+      'Setter',
     ];
 
     let statusId;
@@ -487,19 +506,15 @@ const LeadManagementDashboard = () => {
       end_date: selectedDates.endDate
         ? `${format(selectedDates.endDate, 'dd-MM-yyy')}`
         : '',
-      "status": statusId,
+      status: statusId,
       is_archived: archive,
-      progress_filter: selectedValue ? selectedValue : "ALL",
+      progress_filter: selectedValue ? selectedValue : 'ALL',
       page_size: 0,
       page_number: 0,
     };
 
     try {
-      const response = await postCaller(
-        'get_leads_home_page',
-        data,
-        true
-      );
+      const response = await postCaller('get_leads_home_page', data, true);
 
       if (response.status > 201) {
         toast.error(response.data.message);
@@ -507,30 +522,33 @@ const LeadManagementDashboard = () => {
         return;
       }
 
-
-
       const csvData = response.data?.leads_data?.map?.((item: any) => [
         `OWE${item.leads_id}`,
-        // item.status_id,
         item.first_name,
         item.last_name,
         item.email_id,
         `'${item.phone_number}'`,
         item.street_address,
         item.appointment_status_label,
-        item.appointment_status_date ? `${format(parseISO(item.appointment_status_date), 'dd-MM-yyyy')}` : '',
+        item.appointment_status_date
+          ? `${format(parseISO(item.appointment_status_date), 'dd-MM-yyyy')}`
+          : '',
         item.won_lost_label,
-        item.won_lost_date ? `${format(parseISO(item.won_lost_date), 'dd-MM-yyyy')}` : '',
+        item.won_lost_date
+          ? `${format(parseISO(item.won_lost_date), 'dd-MM-yyyy')}`
+          : '',
         item.finance_company,
         item.finance_type,
         item.qc_audit,
         item.proposal_id,
         item.proposal_status,
         item.proposal_link,
-        item.proposal_updated_at ? `${format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy')}` : '',
+        item.proposal_updated_at
+          ? `${format(parseISO(item.proposal_updated_at), 'dd-MM-yyyy')}`
+          : '',
         item.sales_rep_name,
         item.lead_source,
-        item.setter_name ? item.setter_name : "",
+        item.setter_name ? item.setter_name : '',
       ]);
 
       const csvRows = [headers, ...csvData];
@@ -555,11 +573,14 @@ const LeadManagementDashboard = () => {
     setCurrentFilter(backup);
     setSearchTerm('');
     setSearch('');
-  }
+  };
   const isMobileDevice = () => {
     return (
       typeof window !== 'undefined' &&
-      (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+      (window.innerWidth <= 768 ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        ))
     );
   };
   //*************************************************************************************************//
@@ -567,29 +588,24 @@ const LeadManagementDashboard = () => {
     <div className={styles.dashboard}>
       <div className={styles.chartGrid}>
         <div className={styles.horizontal}>
-
           <div className={styles.FirstColHead}>
             {/* HERE FOR TOGGLE VIEW WHEN HIDE OTHER BOTTONS */}
-
-            {isToggledX && (
-              <div className={styles.customLeftRRR}>
-                Overview
-              </div>
-            )}
+            {isToggledX && <div className={styles.customLeftRRR}>Overview</div>}
             <div className={`${styles.customRight} ${styles.customFont}`}>
               Total leads : {totalValue ? totalValue : '0'}
             </div>
           </div>
           <div className={styles.SecondColHead}>
-            {
-              isToggledX == false && <div className={styles.MobileViewHide}>
+            {isToggledX == false && (
+              <div className={styles.MobileViewHide}>
                 Total leads : {totalValue ? totalValue : '0'}
               </div>
-            }
+            )}
             {/* CARD DESIGNING STRTED */}
             <div>
-              {isToggledX && <div className={styles.customLeftRRR}
-              >Total Won Lost</div>}
+              {isToggledX && (
+                <div className={styles.customLeftRRR}>Total Won Lost</div>
+              )}
             </div>
             <div className={`${styles.customRight} ${styles.customFont}`}>
               <div className={styles.date_calendar}>
@@ -618,56 +634,81 @@ const LeadManagementDashboard = () => {
                 </div>
                 {selectedDates.startDate && selectedDates.endDate && (
                   <div className={styles.hist_date}>
-                    {isToggledX && <span className={styles.date_display}>
-                      {selectedDates.startDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
-                        ' ' +
-                        selectedDates.startDate.toLocaleDateString('en-US', {
-                          month: 'short',
+                    {isToggledX && (
+                      <span className={styles.date_display}>
+                        {selectedDates.startDate.toLocaleDateString('en-US', {
+                          day: 'numeric',
                         }) +
-                        ' ' +
-                        selectedDates.startDate.getFullYear()}
-                      {' - '}
-                      {selectedDates.endDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
-                        ' ' +
-                        selectedDates.endDate.toLocaleDateString('en-US', {
-                          month: 'short',
+                          ' ' +
+                          selectedDates.startDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.startDate.getFullYear()}
+                        {' - '}
+                        {selectedDates.endDate.toLocaleDateString('en-US', {
+                          day: 'numeric',
                         }) +
-                        ' ' +
-                        selectedDates.endDate.getFullYear()}
-                    </span>
-                    }
+                          ' ' +
+                          selectedDates.endDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.endDate.getFullYear()}
+                      </span>
+                    )}
                   </div>
                 )}
-                {isToggledX &&
+                {isToggledX && (
                   <CustomSelect<DateRangeWithLabel>
                     value={selectedPeriod}
-                    onChange={(newValue) => handlePeriodChange(newValue, {} as ActionMeta<DateRangeWithLabel>)}
+                    onChange={(newValue) =>
+                      handlePeriodChange(
+                        newValue,
+                        {} as ActionMeta<DateRangeWithLabel>
+                      )
+                    }
                     options={periodFilterOptions}
                     isVisible={isToggledX}
                     placeholder="Select Period"
                     getOptionLabel={(option) => option.label || ''}
                     getOptionValue={(option) => option.label || ''}
                   />
-                }
-                {isToggledX && <div
-                  ref={toggleRef}
-                  className={styles.calender}
-                  onClick={toggleCalendar}
-                >
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>}
-
-
-                <div onClick={OpenWindowClick} className={styles.ButtonAbovearrov} data-tooltip-id="downip">
-                  {isToggledX ? (
-                    <div className={styles.upKeys_DownKeys} style={{ fontSize: '20px' }}><img className={styles.ArrowD} src={ICONS.DashboardNewIcon} /></div>
-                  ) : (<div className={styles.upKeys_DownKeysX} style={{ fontSize: '20px' }}>
-                    <img className={styles.ArrowDX} src={ICONS.DashboardNewIcon} />
+                )}
+                {isToggledX && (
+                  <div
+                    ref={toggleRef}
+                    className={styles.calender}
+                    onClick={toggleCalendar}
+                  >
+                    <img src={ICONS.includes_icon} alt="" />
                   </div>
+                )}
+                <div
+                  onClick={OpenWindowClick}
+                  className={styles.ButtonAbovearrov}
+                  data-tooltip-id="downip"
+                >
+                  {isToggledX ? (
+                    <div
+                      className={styles.upKeys_DownKeys}
+                      style={{ fontSize: '20px' }}
+                    >
+                      <img
+                        className={styles.ArrowD}
+                        src={ICONS.DashboardNewIcon}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className={styles.upKeys_DownKeysX}
+                      style={{ fontSize: '20px' }}
+                    >
+                      <img
+                        className={styles.ArrowDX}
+                        src={ICONS.DashboardNewIcon}
+                      />
+                    </div>
                   )}
                 </div>
 
@@ -679,35 +720,73 @@ const LeadManagementDashboard = () => {
                     fontSize: 12,
                     paddingBlock: 4,
 
-                    fontWeight: "400"
+                    fontWeight: '400',
                   }}
                   offset={8}
                   delayShow={800}
                   id="downip"
                   place="top"
-                  content={isToggledX ? "Minimize" : "Maximize"}
+                  content={isToggledX ? 'Minimize' : 'Maximize'}
                   className={styles.mobile_tooltip}
                 />
-
               </div>
-
             </div>
           </div>
         </div>
         {/* //HORIZONTAL ENDED */}
-        {isToggledX && <div className={styles.vertical1}>
-          <div className={styles.FirstColHeadMobile}>
-
-            <div className={`${styles.customLeftMobile} ${styles.customFont}`}>
-              Overview
+        {isToggledX && (
+          <div className={styles.vertical1}>
+            <div className={styles.FirstColHeadMobile}>
+              <div
+                className={`${styles.customLeftMobile} ${styles.customFont}`}
+              >
+                Overview
+              </div>
+              <div className={styles.customFont}>
+                Total leads : {totalValue ? totalValue : '0'}
+              </div>
             </div>
-
-            <div className={styles.customFont}>
-              Total leads : {totalValue ? totalValue : '0'}
+            <div style={{ width: '120%' }}>
+              {loading ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <MicroLoader />
+                </div>
+              ) : totalValue > 0 ? (
+                <>
+                  <CustomPieChart
+                    activeIndex={activeIndex}
+                    pieData={pieData}
+                    handlePieClick={handlePieClick}
+                  />
+                  <div className={styles.legend}>
+                    {pieData.map((item) => (
+                      <div key={item.name} className={styles.legendItem}>
+                        <div
+                          className={styles.legendColor}
+                          style={{ backgroundColor: item.color }}
+                        ></div>
+                        <span className={styles.legendText}>
+                          {item.name} LEADS
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <DataNotFound />
+              )}
             </div>
           </div>
-
-          <div style={{ width: "120%" }}>
+        )}
+        {/* VERTICAL 1 ENDED */}
+        {isToggledX && (
+          <div className={styles.vertical2}>
             {loading ? (
               <div
                 style={{
@@ -718,52 +797,15 @@ const LeadManagementDashboard = () => {
               >
                 <MicroLoader />
               </div>
-            ) : totalValue > 0 ? (
+            ) : lineData.length > 0 ? (
               <>
-                <CustomPieChart
-                  activeIndex={activeIndex}
-                  pieData={pieData}
-                  handlePieClick={handlePieClick}
-                />
-                <div className={styles.legend}>
-                  {pieData.map((item) => (
-                    <div key={item.name} className={styles.legendItem}>
-                      <div
-                        className={styles.legendColor}
-                        style={{ backgroundColor: item.color }}
-                      ></div>
-                      <span className={styles.legendText}>{item.name} LEADS</span>
-                    </div>
-                  ))}
-                </div>
+                <CustomLineChart lineData={lineData} />
               </>
             ) : (
               <DataNotFound />
             )}
           </div>
-        </div>}
-        {/* VERTICAL 1 ENDED */}
-        {isToggledX && <div className={styles.vertical2}>
-          {loading ? (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <MicroLoader />
-            </div>
-          ) : lineData.length > 0 ? (
-            <>
-              <CustomLineChart lineData={lineData} />
-            </>
-          ) : (
-            <DataNotFound />
-          )}
-        </div>
-
-        }
+        )}
         {/* HERE NOT ENTER BELOW CODES */}
       </div>
       <div className={styles.card}>
@@ -808,7 +850,9 @@ const LeadManagementDashboard = () => {
                         >
                           {data.value}
                         </p>
-                        <span className={styles.displayStatus}>{displayStatus}</span>
+                        <span className={styles.displayStatus}>
+                          {displayStatus}
+                        </span>
                       </button>
                     );
                   })}
@@ -821,9 +865,7 @@ const LeadManagementDashboard = () => {
                     placeholder="Enter customer name or id"
                     className={styles.searchInput}
                     onChange={(e) => {
-
                       if (e.target.value.length <= 50) {
-
                         e.target.value = e.target.value.replace(
                           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
                           ''
@@ -836,14 +878,11 @@ const LeadManagementDashboard = () => {
                     }}
                   />
                   {searchTerm !== '' && (
-                    <div className={styles.CrossRemoveSearch}
+                    <div
+                      className={styles.CrossRemoveSearch}
                       onClick={handleCrossIcon}
                     >
-                      <img
-                        src={ICONS.crossIconUser}
-                        alt="cross"
-
-                      />
+                      <img src={ICONS.crossIconUser} alt="cross" />
                     </div>
                   )}
                 </div>
@@ -851,11 +890,17 @@ const LeadManagementDashboard = () => {
                 {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
                 <HistoryRedirect />
                 {currentFilter === 'In Progress' && (
-                  <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
-
+                  <LeadTableFilter
+                    selectedValue={selectedValue}
+                    setSelectedValue={setSelectedValue}
+                  />
                 )}
                 <div className={styles.filterCallToAction}>
-                  <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
+                  <div
+                    className={styles.filtericon}
+                    onClick={handleAddLead}
+                    data-tooltip-id="NEW"
+                  >
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
                   <Tooltip
@@ -865,7 +910,7 @@ const LeadManagementDashboard = () => {
                       color: '#000',
                       fontSize: 12,
                       paddingBlock: 4,
-                      fontWeight: "400"
+                      fontWeight: '400',
                     }}
                     offset={8}
                     id="NEW"
@@ -894,7 +939,7 @@ const LeadManagementDashboard = () => {
                       <LuImport size={20} color="white" />
                     )}
                   </div>
-                  {showTooltip &&
+                  {showTooltip && (
                     <Tooltip
                       style={{
                         zIndex: 103,
@@ -902,7 +947,7 @@ const LeadManagementDashboard = () => {
                         color: '#000',
                         fontSize: 12,
                         paddingBlock: 4,
-                        fontWeight: "400"
+                        fontWeight: '400',
                       }}
                       offset={8}
                       delayShow={800}
@@ -911,7 +956,7 @@ const LeadManagementDashboard = () => {
                       content="Export"
                       className={styles.mobile_tooltip}
                     />
-                  }
+                  )}
                 </div>
               </>
             ) : (
@@ -966,23 +1011,35 @@ const LeadManagementDashboard = () => {
                       }}
                     />
                     {searchTerm !== '' && (
-                      <div className={styles.CrossRemoveSearch} onClick={handleCrossIcon} >
+                      <div
+                        className={styles.CrossRemoveSearch}
+                        onClick={handleCrossIcon}
+                      >
                         <img src={ICONS.crossIconUser} alt="cross" />
                       </div>
                     )}
                   </div>
                   <HistoryRedirect />
                   {currentFilter === 'In Progress' && (
-                    <LeadTableFilter selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
+                    <LeadTableFilter
+                      selectedValue={selectedValue}
+                      setSelectedValue={setSelectedValue}
+                    />
                   )}
-
-
-
                   <div className={styles.filterCallToActionMobile}>
-                    <div className={styles.filtericon} onClick={handleAddLead} data-tooltip-id="NEW">
-                      <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                    <div
+                      className={styles.filtericon}
+                      onClick={handleAddLead}
+                      data-tooltip-id="NEW"
+                    >
+                      <img
+                        src={ICONS.AddIconSr}
+                        alt=""
+                        width="80"
+                        height="80"
+                      />
                     </div>
-                    {!isMobileDevice() && !isTablet &&
+                    {!isMobileDevice() && !isTablet && (
                       <Tooltip
                         style={{
                           zIndex: 103,
@@ -990,7 +1047,7 @@ const LeadManagementDashboard = () => {
                           color: '#000',
                           fontSize: 12,
                           paddingBlock: 4,
-                          fontWeight: "400"
+                          fontWeight: '400',
                         }}
                         offset={8}
                         id="NEW"
@@ -999,7 +1056,7 @@ const LeadManagementDashboard = () => {
                         delayShow={800}
                         className={styles.mobile_tooltip}
                       />
-                    }
+                    )}
 
                     <div
                       className={styles.export_btn}
@@ -1021,7 +1078,7 @@ const LeadManagementDashboard = () => {
                         <LuImport size={20} color="white" />
                       )}
                     </div>
-                    {showTooltip &&
+                    {showTooltip && (
                       <Tooltip
                         style={{
                           zIndex: 20,
@@ -1029,7 +1086,7 @@ const LeadManagementDashboard = () => {
                           color: '#000',
                           fontSize: 12,
                           paddingBlock: 4,
-                          fontWeight: "400"
+                          fontWeight: '400',
                         }}
                         offset={8}
                         delayShow={800}
@@ -1038,14 +1095,12 @@ const LeadManagementDashboard = () => {
                         content="Export"
                         className={styles.mobile_tooltip}
                       />
-                    }
+                    )}
                   </div>
                 </>
               ) : (
                 <div className={styles.selectionHeader}>
                   <div className={styles.selectionInfo}>
-
-
                     <span
                       className={styles.closeIcon}
                       onClick={() => setSelectedLeads([])}
@@ -1067,7 +1122,8 @@ const LeadManagementDashboard = () => {
                     {archived ? 'Archiving...' : 'Archive'}
                   </button>
                 </div>
-              )}</div>
+              )}
+            </div>
             <div className={styles.buttonGroupMobile}>
               {pieData.map((data) => {
                 let displayStatus = '';
@@ -1087,7 +1143,6 @@ const LeadManagementDashboard = () => {
                   default:
                     displayStatus = data.name;
                 }
-
                 return (
                   <button
                     key={data.name}
@@ -1105,7 +1160,9 @@ const LeadManagementDashboard = () => {
                     >
                       {data.value}
                     </p>
-                    <span className={styles.displayStatus}>{displayStatus}</span>
+                    <span className={styles.displayStatus}>
+                      {displayStatus}
+                    </span>
                   </button>
                 );
               })}
@@ -1114,7 +1171,6 @@ const LeadManagementDashboard = () => {
         )}
 
         <div className={styles.cardContent}>
-
           <LeadTable
             selectedLeads={selectedLeads}
             setSelectedLeads={setSelectedLeads}
@@ -1132,7 +1188,8 @@ const LeadManagementDashboard = () => {
           {leadsData.length > 0 && !isLoading && (
             <div className="page-heading-container">
               <p className="page-heading">
-                {startIndex} -  {endIndex > totalcount! ? totalcount : endIndex} of {totalcount} item
+                {startIndex} - {endIndex > totalcount! ? totalcount : endIndex}{' '}
+                of {totalcount} item
               </p>
               <div className={styles.PaginationFont}>
                 <Pagination
@@ -1147,7 +1204,6 @@ const LeadManagementDashboard = () => {
                 />
               </div>
             </div>
-
           )}
         </div>
       </div>

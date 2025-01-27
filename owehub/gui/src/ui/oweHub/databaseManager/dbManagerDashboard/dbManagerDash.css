@@ -193,9 +193,7 @@
   border-radius: 8px;
   border: 1px solid #b6b5b5;
   margin-left: 41px;
-  /* Add z-index to ensure the dropdown appears above other elements */
   z-index: 1;
-  /* You can adjust the value as needed */
 }
 
 .dash-select {
@@ -257,7 +255,6 @@
   display: flex;
   justify-content: center;
   margin-top: 1rem;
-  /* Adjust margin-top as needed */
 }
 
 .PieChart-container {
@@ -271,11 +268,8 @@
   width: 100%;
   height: 100%;
   transform-origin: top left;
-  /* Set transform origin to top left corner */
   transform: scale(1);
-  /* Set initial scale */
   transition: transform 0.3s ease;
-  /* Add transition for smooth scaling */
 }
 
 .Payroll-section-up {
@@ -313,7 +307,6 @@
   appearance: none; /* Remove default styles */
   -webkit-appearance: none; /* Remove default styles for Safari */
   -moz-appearance: none; /* Remove default styles for Firefox */
-  /* background-image: url(''); Remove default dropdown arrow */
 }
 
 #dropdown::-ms-expand {

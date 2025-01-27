@@ -35,7 +35,6 @@ export const getLeadById = createAsyncThunk(
   }
 );
 
-
 export const createProposal = createAsyncThunk(
   'proposal/aurora_create_proposal',
   async (params: any, { rejectWithValue }) => {
@@ -46,7 +45,9 @@ export const createProposal = createAsyncThunk(
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to create proposal');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to create proposal'
+      );
     }
   }
 );
@@ -55,13 +56,19 @@ export const getProjectByLeadId = createAsyncThunk(
   'project/aurora_get_project',
   async (leadId: number, { rejectWithValue }) => {
     try {
-      const data = await postCaller('aurora_get_project', { leads_id: leadId }, true);
+      const data = await postCaller(
+        'aurora_get_project',
+        { leads_id: leadId },
+        true
+      );
       if (data.status > 201) {
         return rejectWithValue(data.message || 'Failed to fetch project data');
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to fetch project data');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to fetch project data'
+      );
     }
   }
 );
@@ -76,7 +83,9 @@ export const auroraCreateProject = createAsyncThunk(
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to create project');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to create project'
+      );
     }
   }
 );
@@ -91,7 +100,9 @@ export const auroraCreateDesign = createAsyncThunk(
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to create design');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to create design'
+      );
     }
   }
 );
@@ -106,7 +117,9 @@ export const auroraCreateProposal = createAsyncThunk(
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to create proposal');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to create proposal'
+      );
     }
   }
 );
@@ -115,13 +128,21 @@ export const auroraGenerateWebProposal = createAsyncThunk(
   'proposal/auroraGenerateWebProposal',
   async (params: { leads_id: number }, { rejectWithValue }) => {
     try {
-      const data = await postCaller('aurora_generate_web_proposal',params, true);
+      const data = await postCaller(
+        'aurora_generate_web_proposal',
+        params,
+        true
+      );
       if (data.status > 201) {
-        return rejectWithValue(data.message || 'Failed to Generate Web Proposal');
+        return rejectWithValue(
+          data.message || 'Failed to Generate Web Proposal'
+        );
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to Generate Web Proposal');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to Generate Web Proposal'
+      );
     }
   }
 );
@@ -130,13 +151,19 @@ export const auroraWebProposal = createAsyncThunk(
   'proposal/aurora_retrieve_Web_Proposal',
   async (leadId: number, { rejectWithValue }) => {
     try {
-      const data = await postCaller('aurora_retrieve_Web_Proposal', { leads_id: leadId }, true);
+      const data = await postCaller(
+        'aurora_retrieve_Web_Proposal',
+        { leads_id: leadId },
+        true
+      );
       if (data.status > 201) {
         return rejectWithValue(data.message || 'Failed to fetch Web Proposal');
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to fetch Web Proposal');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to fetch Web Proposal'
+      );
     }
   }
 );
@@ -151,7 +178,9 @@ export const auroraListModules = createAsyncThunk(
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to fetch modules');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to fetch modules'
+      );
     }
   }
 );
@@ -162,20 +191,23 @@ export const getDocuSignUrl = createAsyncThunk(
     try {
       // Assuming postCaller is properly set up to handle full URLs
       const response = await postCaller(`docusign_oauth`, params, true);
-      
+
       // Check for a successful response
       if (response.status > 201) {
-        return rejectWithValue(response.message || 'Failed to retrieve DocuSign URL');
+        return rejectWithValue(
+          response.message || 'Failed to retrieve DocuSign URL'
+        );
       }
-      
+
       // Assuming the URL will be in response.data.url based on your API design
       return response.data; // Return the data directly
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign URL');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to retrieve DocuSign URL'
+      );
     }
   }
 );
-
 
 export const getDocuSignToken = createAsyncThunk(
   'docuSign/get_docuSignToken',
@@ -183,11 +215,15 @@ export const getDocuSignToken = createAsyncThunk(
     try {
       const data = await postCaller('get_docuSignToken', params, true);
       if (data.status > 201) {
-        return rejectWithValue(data.message || 'Failed to retrieve DocuSign token');
+        return rejectWithValue(
+          data.message || 'Failed to retrieve DocuSign token'
+        );
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign token');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to retrieve DocuSign token'
+      );
     }
   }
 );
@@ -198,11 +234,15 @@ export const getDocuSignUserInfo = createAsyncThunk(
     try {
       const data = await postCaller('get_docuSignUserInfo', params, true);
       if (data.status > 201) {
-        return rejectWithValue(data.message || 'Failed to retrieve DocuSign user info');
+        return rejectWithValue(
+          data.message || 'Failed to retrieve DocuSign user info'
+        );
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign user info');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to retrieve DocuSign user info'
+      );
     }
   }
 );
@@ -213,11 +253,15 @@ export const createEnvelope = createAsyncThunk(
     try {
       const data = await postCaller('docusign_create_envelope', params, true);
       if (data.status > 201) {
-        return rejectWithValue(data.message || 'Failed to create DocuSign envelope');
+        return rejectWithValue(
+          data.message || 'Failed to create DocuSign envelope'
+        );
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to create DocuSign envelope');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to create DocuSign envelope'
+      );
     }
   }
 );
@@ -226,28 +270,43 @@ export const createDocuSignRecipientView = createAsyncThunk(
   'docuSign/createRecipientView',
   async (params: any, { rejectWithValue }) => {
     try {
-      const data = await postCaller('docusign_create_recipient_view', params, true);
+      const data = await postCaller(
+        'docusign_create_recipient_view',
+        params,
+        true
+      );
       if (data.status > 201) {
-        return rejectWithValue(data.message || 'Failed to create DocuSign recipient view');
+        return rejectWithValue(
+          data.message || 'Failed to create DocuSign recipient view'
+        );
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to create DocuSign recipient view');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to create DocuSign recipient view'
+      );
     }
   }
 );
 
 export const getDocument = createAsyncThunk(
   'docusign/getDocument',
-  async (params: { leads_id: number; base_url: string }, { rejectWithValue }) => {
+  async (
+    params: { leads_id: number; base_url: string },
+    { rejectWithValue }
+  ) => {
     try {
       const data = await postCaller('docusign_get_document', params, true);
       if (data.status > 201) {
-        return rejectWithValue(data.message || 'Failed to retrieve DocuSign document');
+        return rejectWithValue(
+          data.message || 'Failed to retrieve DocuSign document'
+        );
       }
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message || 'Failed to retrieve DocuSign document');
+      return rejectWithValue(
+        (error as Error).message || 'Failed to retrieve DocuSign document'
+      );
     }
   }
 );

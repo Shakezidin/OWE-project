@@ -1,5 +1,4 @@
 .boxContainer {
-  /* width: 272px; */
   width: 285px;
   height: 200px;
   border-radius: 16px;
@@ -23,7 +22,6 @@
   align-items: center;
   justify-content: center;
   display: flex;
-  /* margin-top: 18px; */
 }
 
 .boxBelowView {

@@ -4,14 +4,10 @@
 }
 
 .newfile_botton {
-  /* width: 74px; */
   height: 36px;
   border-radius: 8px;
-  /* border: 1px solid #AFAFAF; */
-  /* color: #3E3E3E; */
   border: none;
   color: #ffffff;
-  /* background-color: #fff; */
   background-color: #377cf6;
   font-size: 12px;
   font-weight: 500;
@@ -23,8 +19,6 @@
 }
 
 .newfile_botton:hover {
-  /* color: #fff;
-  background-color: #377cf6; */
   background-color: #4062ca;
   transform: scale(1.05);
   border: none;

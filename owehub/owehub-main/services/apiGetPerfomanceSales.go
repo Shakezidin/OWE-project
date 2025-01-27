@@ -19,6 +19,15 @@ import (
 	"net/http"
 )
 
+type ChanResult struct {
+	Data []map[string]interface{}
+	Err  error
+}
+
+const (
+	PipelineQueueCount = 7
+)
+
 /******************************************************************************
 * FUNCTION:		HandleGetPerfomanceTileDataRequest
 * DESCRIPTION:     handler for get PerfomanceSales request
@@ -33,7 +42,6 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		data               []map[string]interface{}
 		userRole           string
 		roleFilter         string
-		pipelineQuery      string
 		RecordCount        int64
 	)
 
@@ -106,11 +114,29 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	projectStatus := joinNames(dataReq.ProjectStatus)
-	pipelineQuery = models.PipelineTileDataAboveQuery(roleFilter, projectStatus)
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+	hasError := false
+
+	resultChan := make(chan ChanResult, PipelineQueueCount)
+	go fetchTileData(models.PipelineSurveyTileData, roleFilter, projectStatus, resultChan)
+	go fetchTileData(models.PipelineCadTileData, roleFilter, projectStatus, resultChan)
+	go fetchTileData(models.PipelinePermitTileData, roleFilter, projectStatus, resultChan)
+	go fetchTileData(models.PipelineRoofingTileData, roleFilter, projectStatus, resultChan)
+	go fetchTileData(models.PipelineInstallTileData, roleFilter, projectStatus, resultChan)
+	go fetchTileData(models.PipelineInspectionTileData, roleFilter, projectStatus, resultChan)
+	go fetchTileData(models.PipelineActivationTileData, roleFilter, projectStatus, resultChan)
+
+	for i := 0; i < PipelineQueueCount; i++ {
+		result := <-resultChan
+		if result.Err != nil {
+			log.FuncErrorTrace(0, "Failed to get pipeline tile data from DB err: %v", result.Err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get pipeline tile data", http.StatusInternalServerError, nil)
+			hasError = true
+			break
+		}
+		data = append(data, result.Data...)
+	}
+
+	if hasError {
 		return
 	}
 
@@ -151,4 +177,10 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	log.FuncInfoTrace(0, "Performance tile data fetched: %+v", performanceResponse)
 	appserver.FormAndSendHttpResp(resp, "performance tile Data", http.StatusOK, performanceResponse, RecordCount)
+}
+
+func fetchTileData(queryFunc func(roleFilter, projectStatus string) string, roleFilter, projectStatus string, resultChan chan<- ChanResult) {
+	query := queryFunc(roleFilter, projectStatus)
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	resultChan <- ChanResult{Data: data, Err: err}
 }

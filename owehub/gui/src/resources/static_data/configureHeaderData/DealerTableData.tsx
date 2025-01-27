@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const DealerTableData: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'sub_dealer',
     displayName: 'Sub Dealer',

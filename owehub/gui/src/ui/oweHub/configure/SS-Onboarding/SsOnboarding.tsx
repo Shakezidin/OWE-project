@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import '../configure.css';
-// import CreateSalesPartner from './createSalesPartner';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
 import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
 import { DealerPaymentsColumn } from '../../../../resources/static_data/configureHeaderData/DealerPaymentsColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
@@ -18,7 +15,6 @@ import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -27,7 +23,7 @@ import { dateFormat } from '../../../../utiles/formatDate';
 import { checkLastPage } from '../../../../utiles';
 import { SsOnboardingColumn } from '../../../../resources/static_data/configureHeaderData/ssOnboardingColumn';
 
-const  SsOnboarding: React.FC = () => {
+const SsOnboarding: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -259,123 +255,117 @@ const  SsOnboarding: React.FC = () => {
           page_number={currentPage}
           page_size={itemsPerPage}
         />
-
-        {/* {open && (
-          <CreateSalesPartner
-            handleClose={handleClose}
-            dealerData={editedDealer}
-            editMode={editMode}
-            page_number={currentPage}
-            dealer={dealer}
-            page_size={itemsPerPage}
-          />
-        )} */}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
-          {
-            !loading && currentPageData?.length === 0 ?
-            <div style={{ height: "100%" }} className="flex items-center justify-center">
+          {!loading && currentPageData?.length === 0 ? (
+            <div
+              style={{ height: '100%' }}
+              className="flex items-center justify-center"
+            >
               <DataNotFound />
             </div>
-            :
-          <table>
-            <thead>
-              <tr>
-                {SsOnboardingColumn.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={dealerList}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
+          ) : (
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan={SsOnboardingColumn.length}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
+                  {SsOnboardingColumn.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={dealerList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
                 </tr>
-              ) : currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, i: any) => (
-                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                        {el.sub_dealer || 'N/A'}
-                      </div>
-                    </td>
-                    <td>{el.dealer || 'N/A'}</td>
-                    <td>{el.pay_rate || 'N/A'}</td>
-                    <td>{el.state?.trim?.() || 'N/A'}</td>
-                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
-                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
-
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() =>
-                            !notAllowed && handleArchiveClick(el.record_id)
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          {/* <span className="tooltiptext">Archive</span> */}
-                        </div>
-                        <div
-                          className="action-archive"
-                          style={{
-                            cursor: notAllowed ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => !notAllowed && handleEditDealer(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                          {/* <span className="tooltiptext">Edit</span> */}
-                        </div>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={SsOnboardingColumn.length}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
+                        <MicroLoader />
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          }
+                ) : currentPageData?.length > 0 ? (
+                  currentPageData?.map((el: any, i: any) => (
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() =>
+                              toggleRowSelection(
+                                i,
+                                selectedRows,
+                                setSelectedRows,
+                                setSelectAllChecked
+                              )
+                            }
+                          />
+                          {el.sub_dealer || 'N/A'}
+                        </div>
+                      </td>
+                      <td>{el.dealer || 'N/A'}</td>
+                      <td>{el.pay_rate || 'N/A'}</td>
+                      <td>{el.state?.trim?.() || 'N/A'}</td>
+                      <td>{dateFormat(el.start_date) || 'N/A'}</td>
+                      <td>{dateFormat(el.end_date) || 'N/A'}</td>
+
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{
+                              cursor: notAllowed ? 'not-allowed' : 'pointer',
+                            }}
+                            onClick={() =>
+                              !notAllowed && handleArchiveClick(el.record_id)
+                            }
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className="action-archive"
+                            style={{
+                              cursor: notAllowed ? 'not-allowed' : 'pointer',
+                            }}
+                            onClick={() => !notAllowed && handleEditDealer(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr style={{ border: 0 }}>
+                    <td colSpan={10}>
+                      <DataNotFound />
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {dealerList?.length > 0 ? (

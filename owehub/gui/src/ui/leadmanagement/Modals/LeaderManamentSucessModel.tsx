@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classes from '../styles/LeadManagementSucess.module.css';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import useAuth from '../../../hooks/useAuth';

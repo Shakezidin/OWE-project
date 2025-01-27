@@ -211,21 +211,13 @@ const SchedulerBar = () => {
                           onClick={() => setActiveDate(item)}
                         >
                           <span style={{ fontSize: 18, fontWeight: 500 }}>
-
-
-                          {/* <span className={sharedStyles.span_day}> */}
-                          {/* <span style={{ fontSize: isMobile ? 11 : 18, fontWeight: 500 }}> */}
-                          
-
                             {' '}
                             {format(item, 'EEEE').slice(0, 3)}{' '}
                           </span>
-                          <span style={{ fontSize: 20, fontWeight: 600 }} className="block text-center" > 
-
-                            
-                          {/* <span className={`${sharedStyles.span_date} block text-center`}> */}
-                             {/* <span style={{ fontSize: isMobile ? 11 : 20, fontWeight: isMobile ? 500 : 600 }} className="block text-center"> */}
-
+                          <span
+                            style={{ fontSize: 20, fontWeight: 600 }}
+                            className="block text-center"
+                          >
                             {' '}
                             {format(item, 'dd')}{' '}
                           </span>
@@ -280,7 +272,6 @@ const SchedulerBar = () => {
                             key={avail.id}
                             style={{
                               gridColumn: `${startPoint + 1}/${endPoint + 1}`,
-                              // gridTemplateColumns: `repeat(${col * 2},1fr)`,
                             }}
                             className={` relative ${sharedStyles.bg_available_slot}`}
                           >

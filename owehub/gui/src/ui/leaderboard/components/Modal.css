@@ -156,23 +156,28 @@
   .leader-modal {
     width: 400px;
   }
-  .leader-buttons button{
+
+  .leader-buttons button {
     width: 100px;
   }
 }
+
 @media screen and (max-width: 440px) {
   .leader-modal {
     width: 370px;
   }
+
   .leader-modal-colorpicker button,
   .file-picker {
     width: 20px;
     height: 20px;
   }
+
   .leader-buttons {
     gap: 1rem;
     margin: 1rem 0 1rem 0;
   }
+
   @media screen and (max-width: 386px) {
     .leader-modal {
       width: 350px;

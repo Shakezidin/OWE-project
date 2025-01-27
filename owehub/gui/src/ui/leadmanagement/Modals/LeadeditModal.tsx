@@ -573,9 +573,6 @@ const LeadeditModal: React.FC<ModalProps> = ({
                                       if (/^0{8}/.test(numberWithoutCountryCode)) {
                                         setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
                                       }
-                                      // if(phoneNumber.charAt(4) && phoneNumber.charAt(1) && phoneNumber.charAt(2) && phoneNumber.charAt(3)){
-                                      //   setPhoneNumberError("Invalid number, number cannot consist of consecutive zeros.");
-                                      // }
                                       else if (numberLength.length > 0 && numberLength.length < 11) {
                                         setPhoneNumberError("Please enter at least 10 digits.");
                                       } else {

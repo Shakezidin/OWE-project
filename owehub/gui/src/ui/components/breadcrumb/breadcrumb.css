@@ -1,6 +1,5 @@
 .breadcrumb-container {
   display: flex;
-  /* align-items: center; */
   flex-direction: column;
 
   padding-bottom: 0.5rem;
@@ -13,9 +12,6 @@
 .bread-link a {
   font-size: 14px;
   font-weight: 500;
-}
-.bread-link span {
-  /* margin-top: .1rem; */
 }
 
 @media screen and (max-width: 767px) {
@@ -31,10 +27,9 @@
 }
 
 @media screen and (max-width: 450px) {
-  .schedule{
+  .schedule {
     margin-left: 16px;
     font-size: 18px;
     font-weight: 600;
   }
 }
-

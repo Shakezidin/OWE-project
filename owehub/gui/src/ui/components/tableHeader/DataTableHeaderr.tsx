@@ -1,8 +1,6 @@
 import { ICONS } from '../../../resources/icons/Icons';
-import { IoAddSharp } from 'react-icons/io5';
 import '../../oweHub/configure/configure.css';
 import React, { SetStateAction, useEffect } from 'react';
-import { BiSearch, BiChevronDown } from 'react-icons/bi';
 import '../tableHeader/dataTableHeader.css';
 import { getDataTableName } from '../../../redux/apiActions/dataTableAction';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';

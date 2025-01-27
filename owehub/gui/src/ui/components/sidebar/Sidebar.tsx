@@ -63,7 +63,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE || 
+            item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.SUMMARY_DASBOARD)
         ) {
@@ -130,7 +130,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               item.path === ROUTES.SALES_REP_SCHEDULER ||
               item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.SUMMARY_DASBOARD)
           ) {
-          } else if(item.path !== ROUTES.REPORTING) {
+          } else if (item.path !== ROUTES.REPORTING) {
             newArr[0].mob.push(item);
           }
         }
@@ -141,7 +141,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.REPORTING
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.REPORTING
         ) {
           if (
             isStaging !== 'staging' &&
@@ -177,7 +178,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD && item.path !== ROUTES.REPORTING
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
+            item.path !== ROUTES.REPORTING
           ) {
             newArr[0].mob.push(item);
           }
@@ -400,7 +402,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                             fontWeight: '500',
                             borderBottom: '1px solid #E8E8E8',
                             fontSize: '13px',
-                            // borderRight: "3px solid #377CF6",
                             cursor: 'default',
                             pointerEvents: 'none',
                           }}

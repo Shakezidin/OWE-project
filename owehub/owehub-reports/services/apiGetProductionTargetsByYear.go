@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 /******************************************************************************
@@ -25,13 +26,14 @@ import (
  ******************************************************************************/
 func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		query        string
-		dataReq      models.ProductionTargetsByYearReq
-		apiResp      []models.ProductionTargetsByYearRespItem
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		targetUserId int64
+		err            error
+		query          string
+		dataReq        models.ProductionTargetsByYearReq
+		apiResp        []models.ProductionTargetsByYearRespItem
+		data           []map[string]interface{}
+		whereEleList   []interface{}
+		targetUserId   int64
+		targetStateCnd string
 	)
 
 	log.EnterFn(0, "HandleGetProductionTargetsByYearRequest")
@@ -68,23 +70,31 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	targetStateCnd = "p.state = $4"
+
+	// if "all" state and "all" AM selected, show sum of all states, i.e. company wide goals
+	if targetUserId == 1 && strings.ToLower(dataReq.AccountManager) == "all" && strings.ToLower(dataReq.State) == "all" {
+		targetStateCnd = "$4 = $4" // TRUE; no need to check state
+	}
+
 	// Query to retrieve production targets
-	query = `
+	query = fmt.Sprintf(`
 		WITH months(n) AS (SELECT generate_series(1, 12))
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
-			COALESCE(p.projects_sold, 0) AS projects_sold,
-			COALESCE(p.mw_sold, 0) AS mw_sold,
-			COALESCE(p.install_ct, 0) AS install_ct,
-			COALESCE(p.mw_installed, 0) AS mw_installed,
-			COALESCE(p.batteries_ct, 0) AS batteries_ct
+			COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
+            COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
+			COALESCE(SUM(p.install_ct), 0) AS install_ct,
+			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
 		FROM months
 		LEFT JOIN production_targets p
-		ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.state = $3 AND p.user_id = $4
+		ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.user_id = $3 AND %s
+		GROUP BY months.n
 		ORDER BY months.n
-	`
+	`, targetStateCnd)
 
-	whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, dataReq.State, targetUserId}
+	whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, targetUserId, dataReq.State}
 
 	// Retrieve production target data
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)

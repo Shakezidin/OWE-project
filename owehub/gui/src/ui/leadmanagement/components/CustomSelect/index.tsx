@@ -22,7 +22,7 @@ const CustomSelect = <T,>({
   isDisabled = false,
   width = '140px',
   getOptionLabel = (option: any) => option.label || option.name || '',
-  getOptionValue = (option: any) => option.id?.toString() || option.value || ''
+  getOptionValue = (option: any) => option.id?.toString() || option.value || '',
 }: CustomSelectProps<T>) => {
   const customStyles = {
     control: (baseStyles: any, state: any) => ({
@@ -61,7 +61,7 @@ const CustomSelect = <T,>({
         },
         '& [class*="indicatorContainer"]': {
           color: '#377CF6',
-        }
+        },
       },
       '&:hover': {
         borderColor: isDisabled ? 'black' : '#377CF6',
@@ -77,7 +77,7 @@ const CustomSelect = <T,>({
         },
         '& [class*="indicatorContainer"]': {
           color: '#377CF6',
-        }
+        },
       },
     }),
     placeholder: (baseStyles: any) => ({
@@ -106,7 +106,7 @@ const CustomSelect = <T,>({
         backgroundColor: '#ddebff',
       },
       cursor: 'pointer',
-      fontWeight: "400",
+      fontWeight: '400',
     }),
     singleValue: (baseStyles: any) => ({
       ...baseStyles,

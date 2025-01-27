@@ -1,5 +1,4 @@
 // api.ts
-
 import axios, { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios';
 import {
   HTTP_METHOD,
@@ -14,7 +13,6 @@ const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
 const REPORT_BASE_URL = `${process.env.REACT_APP_REPORT_URL}`;
 const CONFIG_URL = `https://staging.owe-hub.com/api/owe-calc-service/v1`;
 // authService.ts
-
 export interface LoginResponse {
   email_id: string;
   role_name: string;
@@ -60,7 +58,6 @@ export const postCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
-
   try {
     const response: AxiosResponse = await axios.post(
       `${hasChangedBaseUrl ? LEADS_BASE_URL : BASE_URL}/${endpoint}`,
@@ -92,7 +89,6 @@ export const postCaller = async (
     throw new Error('Failed to fetch data');
   }
 };
-
 export const configPostCaller = async (
   endpoint: string,
   postData: any,
@@ -104,7 +100,6 @@ export const configPostCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
-
   try {
     const response: AxiosResponse = await axios.post(
       `${CONFIG_URL}/${endpoint}`,
@@ -129,11 +124,9 @@ export const configPostCaller = async (
       if (error.message === 'Network Error')
         return new Error('No internet connection');
     }
-
     throw new Error('Failed to fetch data');
   }
 };
-
 export const reportingCaller = async (
   endpoint: string,
   postData: any,
@@ -145,7 +138,6 @@ export const reportingCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
-
   try {
     const response: AxiosResponse = await axios.post(
       `${REPORT_BASE_URL}/${endpoint}`,
@@ -169,7 +161,6 @@ export const reportingCaller = async (
       if (error.message === 'Network Error')
         return new Error('No internet connection');
     }
-
     throw new Error('Failed to fetch data');
   }
 };

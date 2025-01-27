@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import '../configure.css';
 import CreateFinanceSchedule from './createFinanceSchedule';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
-import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
 import { FinanceScheduleColumn } from '../../../../resources/static_data/configureHeaderData/financeScheduleColumn';
@@ -20,7 +15,6 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -43,39 +37,18 @@ const FinanceSchedule: React.FC = () => {
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [isExportingData, setIsExporting] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState<any>([]);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
-  // useEffect(() => {
-  //   const pageNumber = {
-  //     page_number: currentPage,
-  //     page_size: itemsPerPage,
-  //     archived: viewArchived ? true : undefined,
-  //     filters,
-  //   };
-  //   dispatch(fetchDealer(pageNumber));
-  // }, [dispatch, currentPage, viewArchived, filters]);
-
-  // const getnewformData = async () => {
-  //   const tableData = {
-  //     tableNames: ['sub_dealer', 'dealer', 'states'],
-  //   };
-  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
-  //   setDealer((prev) => ({ ...prev, ...res.data }));
-  // };
-
-  // useEffect(() => {
-  //   getnewformData();
-  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -93,8 +66,6 @@ const FinanceSchedule: React.FC = () => {
     handleOpen();
   };
 
-
-
   const filter = () => {
     setFilterOpen(true);
   };
@@ -105,14 +76,13 @@ const FinanceSchedule: React.FC = () => {
   };
 
   useEffect(() => {
-
     (async () => {
       setLoading(true);
       try {
         const data = await configPostCaller('get_finaceschedule', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         });
 
         if (data.status > 201) {
@@ -120,20 +90,15 @@ const FinanceSchedule: React.FC = () => {
           setLoading(false);
           return;
         }
-        setData(data?.data?.FinanceScheduleData)
-        setTotalCount(data?.dbRecCount)
+        setData(data?.data?.FinanceScheduleData);
+        setTotalCount(data?.dbRecCount);
         setLoading(false);
-
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-
-  }, [
-    currentPage, viewArchived, filters
-  ]);
-
+  }, [currentPage, viewArchived, filters]);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const currentPageData = data?.slice();
@@ -150,8 +115,6 @@ const FinanceSchedule: React.FC = () => {
       setSortDirection('asc');
     }
   };
-
-
 
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
@@ -255,7 +218,7 @@ const FinanceSchedule: React.FC = () => {
 
   const handleExportOpen = () => {
     exportCsv();
-  }
+  };
 
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
@@ -276,13 +239,12 @@ const FinanceSchedule: React.FC = () => {
   }
   const notAllowed = selectedRows.size > 1;
 
-
   const exportCsv = async () => {
     // Define the headers for the CSV
     // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
-      return str.replace(/<\/?[^>]+(>|$)/g, "");
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
     setIsExporting(true);
     const exportData = await configPostCaller('get_finaceschedule', {
@@ -294,7 +256,6 @@ const FinanceSchedule: React.FC = () => {
       return;
     }
 
-
     const headers = [
       'Finance Company',
       'Finance Type Ref',
@@ -305,26 +266,23 @@ const FinanceSchedule: React.FC = () => {
       'Finance Type',
       'Finance Type uid',
       'Owe Finance Fee',
-      'Commissions Rate'
+      'Commissions Rate',
     ];
 
-
-
-    const csvData = exportData?.data?.FinanceScheduleData?.map?.((item: any) => [
-      item.finance_company,
-      item.finance_type_ref,
-      item[' state_3'],
-      dateFormat(item.active_date_start),
-      dateFormat(item.active_date_end),
-      item[' finance_fee'],
-      item[' finance_type'],
-      item[' finance_type_uid'],
-      item[' owe_finance_fee'],
-      item.commissions_rate
-
-    ]);
-
-
+    const csvData = exportData?.data?.FinanceScheduleData?.map?.(
+      (item: any) => [
+        item.finance_company,
+        item.finance_type_ref,
+        item[' state_3'],
+        dateFormat(item.active_date_start),
+        dateFormat(item.active_date_end),
+        item[' finance_fee'],
+        item[' finance_type'],
+        item[' finance_type_uid'],
+        item[' owe_finance_fee'],
+        item.commissions_rate,
+      ]
+    );
 
     const csvRows = [headers, ...csvData];
 
@@ -339,7 +297,6 @@ const FinanceSchedule: React.FC = () => {
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-
   };
 
   return (
@@ -355,7 +312,7 @@ const FinanceSchedule: React.FC = () => {
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           checked={isAllRowsSelected}
@@ -386,83 +343,83 @@ const FinanceSchedule: React.FC = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
-          {(!loading && currentPageData?.length === 0) ?
-            <div className='flex items-center justify-center' style={{height:"100%"}}>
+          {!loading && currentPageData?.length === 0 ? (
+            <div
+              className="flex items-center justify-center"
+              style={{ height: '100%' }}
+            >
               <DataNotFound />
             </div>
-          
-          :<table>
-            <thead>
-              <tr>
-                {FinanceScheduleColumn.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={dealerList}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
+          ) : (
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan={FinanceScheduleColumn.length}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
+                  {FinanceScheduleColumn.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={dealerList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
                 </tr>
-              ) :
-                currentPageData?.map((el: any, i: any) => (
-                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">
-                        {/* <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        /> */}
-                        {el.finance_company || 'N/A'}
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={FinanceScheduleColumn.length}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
+                        <MicroLoader />
                       </div>
                     </td>
-                    <td>{el.finance_type_ref || 'N/A'}</td>
-                    <td>{el[" state_3"] || 'N/A'}</td>
-                    <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
-                   
-                    <td>{!el.active_date_end || new Date(el.active_date_end).getFullYear() === 1 ? 'N/A' : dateFormat(el.active_date_end)}</td>
-                    <td>{el[" finance_fee"] || '0'}</td>
-                    <td>{el[" finance_type"] || 'N/A'}</td>
-                    <td>{el[" finance_type_uid"] || 'N/A'}</td>
-                    <td>{el[" owe_finance_fee"] || '0'}</td>
-                    <td>{el.commissions_rate}</td>
-
-
                   </tr>
-                ))
-              }
-            </tbody>
-          </table>}
+                ) : (
+                  currentPageData?.map((el: any, i: any) => (
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        <div className="flex-check">
+                          {el.finance_company || 'N/A'}
+                        </div>
+                      </td>
+                      <td>{el.finance_type_ref || 'N/A'}</td>
+                      <td>{el[' state_3'] || 'N/A'}</td>
+                      <td>{dateFormat(el.active_date_start) || 'N/A'}</td>
+
+                      <td>
+                        {!el.active_date_end ||
+                        new Date(el.active_date_end).getFullYear() === 1
+                          ? 'N/A'
+                          : dateFormat(el.active_date_end)}
+                      </td>
+                      <td>{el[' finance_fee'] || '0'}</td>
+                      <td>{el[' finance_type'] || 'N/A'}</td>
+                      <td>{el[' finance_type_uid'] || 'N/A'}</td>
+                      <td>{el[' owe_finance_fee'] || '0'}</td>
+                      <td>{el.commissions_rate}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {data?.length > 0 ? (

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Input from '../../components/text_input/Input';
-import { ActionButton } from '../../components/button/ActionButton';
 import styles from './styles/addnew.module.css';
 import 'react-phone-input-2/lib/style.css';
-import SelectOption from '../../components/selectOption/SelectOption';
 import CheckboxSlider from './components/Checkbox';
 import { validateEmail } from '../../../utiles/Validation';
 import { ICONS } from '../../../resources/icons/Icons';
@@ -63,21 +61,6 @@ const AddNew = () => {
     { value: 'FLAT TAR & GRAVEL', label: 'FLAT TAR & GRAVEL' },
     { value: 'STANDING SEAM - METAL', label: 'STANDING SEAM - METAL' },
   ];
-
-  // const handleIncrement = () => {
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     stories_in_house: prevData.stories_in_house + 1,
-  //   }));
-  // };
-
-  // const handleDecrement = () => {
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     stories_in_house:
-  //       prevData.stories_in_house > 0 ? prevData.stories_in_house - 1 : 0,
-  //   }));
-  // };
 
   const handleNumericInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow: backspace, delete, tab, escape, enter
@@ -303,13 +286,12 @@ const AddNew = () => {
   return (
     <div className={styles.parent_div}>
       <SalesRepSchedulePage isOpen={filterOpen} handleClose={filterClose} />
-      {/* <div className={styles.an_top}>Add New Project</div> */}
       <div className={` mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
               <div className={styles.an_head}>
-              <div className={styles.an_top}>Add New Project</div>
+                <div className={styles.an_top}>Add New Project</div>
                 <span
                   className={styles.back_button}
                   onClick={handleBack}
@@ -354,7 +336,6 @@ const AddNew = () => {
                           }}
                           name="first_name"
                           maxLength={20}
-                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -395,7 +376,6 @@ const AddNew = () => {
                           }}
                           name="last_name"
                           maxLength={20}
-                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -416,7 +396,6 @@ const AddNew = () => {
                           onChange={handleInputChange}
                           name="email_id"
                           maxLength={50}
-                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -437,7 +416,6 @@ const AddNew = () => {
                           name="mobile_number"
                           maxLength={20}
                           className={styles.custom_Input}
-                          // backgroundColor="#F3F3F3"
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
                         />
@@ -457,7 +435,6 @@ const AddNew = () => {
                           onChange={handleInputChange}
                           name="address"
                           maxLength={250}
-                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
@@ -472,7 +449,6 @@ const AddNew = () => {
                           className={`${styles.custom_label} inputLabel-select selected-fields-onboard`}
                         >
                           Roof Type
-                          {/* {' '} */}
                         </label>
 
                         <Select
@@ -494,7 +470,6 @@ const AddNew = () => {
                               { isFocused, selectProps }
                             ) => ({
                               ...baseStyles,
-                              // backgroundColor: '#F3F3F3',
                               border: `1px solid ${
                                 isFocused || selectProps?.value
                                   ? '#377CF6'
@@ -533,11 +508,19 @@ const AddNew = () => {
                                 color: '#377CF6', // Change placeholder color on hover
                               },
                             }),
-                            dropdownIndicator: (baseStyles, { isFocused, selectProps }) => ({
+                            dropdownIndicator: (
+                              baseStyles,
+                              { isFocused, selectProps }
+                            ) => ({
                               ...baseStyles,
-                              transform: selectProps.menuIsOpen ? 'rotate(180deg)' : 'none', // Rotate indicator when menu is open
+                              transform: selectProps.menuIsOpen
+                                ? 'rotate(180deg)'
+                                : 'none', // Rotate indicator when menu is open
                               transition: 'transform 0.3s ease',
-                              color: isFocused || selectProps.menuIsOpen ? '#377CF6' : '#777777',
+                              color:
+                                isFocused || selectProps.menuIsOpen
+                                  ? '#377CF6'
+                                  : '#777777',
                               '&:hover': {
                                 color: '#377CF6',
                               },
@@ -549,13 +532,7 @@ const AddNew = () => {
                               ...baseStyles,
                               fontSize: '13px',
                               color: state.isSelected ? '#ffffff' : '#000000', // Text color based on selection
-                              // backgroundColor: state.isSelected
-                              //   ? '#377CF6'  
-                              //   : '#ffffff', 
-                              '&:hover': {
-                                // Prevent hover effect on selected items
-                                // backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF', 
-                              },
+                              '&:hover': {},
                               cursor: 'pointer',
                             }),
                             menu: (baseStyles) => ({
@@ -614,12 +591,8 @@ const AddNew = () => {
                                 ? '#377CF6'
                                 : '#292B2E',
                             borderWidth: '1px', // Ensure border is visible
-                          //   color: formData.stories_in_house > 0
-                          // ? ''
-                          // : '#777777',
-                          color:'#292b2e'
+                            color: '#292b2e',
                           }}
-                          
                         />
                         <div className={styles.tentaclesicons}>
                           <img
@@ -661,14 +634,10 @@ const AddNew = () => {
                           onKeyDown={handleNumericInput}
                           name="house"
                           maxLength={7}
-                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
                         />
-                        {/* {errors.house && (
-                          <span className="error">{errors.house}</span>
-                        )} */}
                       </div>
                     </div>
 
@@ -699,14 +668,10 @@ const AddNew = () => {
                           onKeyDown={handleNumericInput}
                           name="size"
                           maxLength={7}
-                          // backgroundColor="#F3F3F3"
                           className={styles.custom_Input}
                           labelClassName={styles.custom_label}
                           innerViewClassName={styles.innerView}
                         />
-                        {/* {errors.house && (
-                          <span className="error">{errors.house}</span>
-                        )} */}
                       </div>
                     </div>
                   </div>

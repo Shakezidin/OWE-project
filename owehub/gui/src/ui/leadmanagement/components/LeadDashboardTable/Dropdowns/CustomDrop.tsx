@@ -1,16 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classes from './index.module.css';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FaAngleRight } from 'react-icons/fa';
 import { FaAngleDown } from 'react-icons/fa6';
 import { usePopper } from 'react-popper';
 import useEscapeKey from '../../../../../hooks/useEscape';
 
-
 interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
-  cb?: () => void
+  cb?: () => void;
   options: { label: string; value: string }[];
 }
 
@@ -18,14 +15,17 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
   selectedType,
   onSelectType,
   cb,
-  options
+  options,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
-  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLUListElement | null>(null);
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLUListElement | null>(
+    null
+  );
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'bottom',
     modifiers: [
@@ -46,14 +46,14 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
 
   const handleClose = () => {
     setIsVisible(false);
-  }
+  };
 
-  useEscapeKey(handleClose)
+  useEscapeKey(handleClose);
 
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
     setIsClicked(!isClicked);
-    cb?.()
+    cb?.();
   };
 
   const handleSelect = (type: string) => {
@@ -89,7 +89,6 @@ const DropDownLeadTable: React.FC<DropDownLibraryProps> = ({
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.DropActionX}
-
       >
         Action <FaAngleDown />
       </div>

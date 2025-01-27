@@ -4,9 +4,7 @@ import styles from './style.module.css';
 import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 const BarChartComp = ({ monthlyStatsData }: any) => {
-  console.log(monthlyStatsData, "gh")
-
-
+ 
   const data = monthlyStatsData.map((item: any) => ({
     name: item.month.slice(0, 3),
     Target: item.target,

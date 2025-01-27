@@ -1,12 +1,5 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
-// Rl            float64 `json:"rl"`
-// 	Draw          float64 `json:"draw"`
-// 	DrawMax       float64 `json:"draw_max"`
-// 	RepDraw       float64 `json:"rep_draw"`
-// 	RepDrawMax    float64 `json:"rep_draw_max"`
 export const PayScheduleColumns: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
-
   { name: 'dealer', displayName: 'Dealer', type: 'string', isCheckbox: true },
   {
     name: 'partner_name',

@@ -4,7 +4,6 @@
 
 .left-0 {
   left: 0;
-  /* transform: translateX(-50%); */
 }
 
 .day_picker table tbody tr:hover {
@@ -55,8 +54,3 @@
   border: none !important;
 }
 
-/* .month_caption{
-  margin-left: 8px;
-  font-size: 14px;
-  font-weight: 600;
-} */

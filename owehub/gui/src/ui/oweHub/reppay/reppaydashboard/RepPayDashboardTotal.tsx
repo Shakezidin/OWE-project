@@ -69,7 +69,6 @@ const RepPayDashboardTotal: React.FC = () => {
                     style={{ marginBottom: '8px' }}
                   >
                     <p>{el.paid}</p>
-                    {/* <h4 style={{ wordBreak: 'break-all' }}>{el.doller}</h4> */}
                     <h4
                       style={{
                         wordBreak:

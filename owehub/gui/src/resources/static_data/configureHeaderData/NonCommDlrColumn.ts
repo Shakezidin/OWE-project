@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const NonCommDlrColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'unique_id',
     displayName: 'Unique ID',
