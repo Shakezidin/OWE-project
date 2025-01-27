@@ -34,9 +34,9 @@ type CreateUserReq struct {
 	DealerLogo        string            `json:"dealer_logo"`
 	TablesPermissions []TablePermission `json:"tables_permissions"`
 	AddToPodio        bool              `json:"podio_checked"`
+	AssignManagerRole string            `json:"assign_manager_role"`
 }
 
 type RecoverPasswordReq struct {
 	UserEmails []string `json:"user_emails"` // List of user emails
 }
-

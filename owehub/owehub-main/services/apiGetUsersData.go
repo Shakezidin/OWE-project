@@ -119,7 +119,8 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 				-- Fields from partner_details
 				pd.partner_code, 
 				pd.partner_logo, 
-				pd.bg_colour AS partner_bg_colour
+				pd.bg_colour AS partner_bg_colour,
+				ud.manager_role
 			FROM 
 				user_details ud
 			LEFT JOIN 
@@ -315,6 +316,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to unmarshall table permission data err: %v", err)
 		}
 
+		// Assign Manager Name
+		assignManagerRole, assignManagerRoleOK := item["manager_role"].(string)
+		if !assignManagerRoleOK || assignManagerRole == "" {
+			log.FuncErrorTrace(0, "Failed to get manager name for Item: %+v\n", item)
+			assignManagerRole = ""
+		}
+
 		usersData := models.GetUsersData{
 			DBUsername:        DBUsername,
 			RecordId:          Record_Id,
@@ -339,6 +347,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			BgColour:          BgColour,
 			DealerCode:        DealerCode,
 			TablePermission:   tablePermissions,
+			AssignManagerRole: assignManagerRole,
 		}
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
 	}

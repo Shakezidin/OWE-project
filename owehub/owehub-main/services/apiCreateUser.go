@@ -229,6 +229,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.DealerLogo)
 	queryParameters = append(queryParameters, createUserReq.AddToPodio)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
+	queryParameters = append(queryParameters, createUserReq.AssignManagerRole)
 
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
@@ -306,5 +307,5 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-appserver.FormAndSendHttpResp(resp,	 "User Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }
