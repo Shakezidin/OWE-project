@@ -495,13 +495,7 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-<<<<<<< HEAD
-  console.log(userRoleBasedList, 'userRoleBasedList');
-  console.log(formData, 'formdata');
-  console.log(updateTablePermission, "updatePermission")
-=======
   
->>>>>>> 233dc06d6dfece15197a714e32fac4e0d6e682fc
   /** render UI */
   return (
     <>

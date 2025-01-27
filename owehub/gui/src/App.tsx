@@ -258,12 +258,9 @@ function App() {
             path={ROUTES.SUMMARY_DASBOARD}
             element={<Summary_Dashboard />}
           />
-<<<<<<< HEAD
           <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
           <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
  
-=======
->>>>>>> 233dc06d6dfece15197a714e32fac4e0d6e682fc
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>
