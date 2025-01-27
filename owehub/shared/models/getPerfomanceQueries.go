@@ -834,6 +834,14 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.sale_date,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
             survey.original_survey_scheduled_date AS site_survey_scheduled_date,
 	        CASE 
 		        WHEN (survey.reschedule_needed_on_date IS NOT NULL 
@@ -859,6 +867,15 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
             cust.customer_name AS home_owner,
 	        cad.record_created_on AS cad_ready,
 	        cad.pv_install_completed_date AS cad_complete_date,
@@ -896,7 +913,15 @@ func PipelinePermitDataBelow(filterUserQuery, projectStatus, queueStatus, search
             DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
-	        cad.pv_install_completed_date AS cad_complete_date,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
+	        cad.plan_set_complete_day AS cad_complete_date,
             permit.pv_submitted AS permit_submitted_date,
             ic.ic_submitted_date,
             permit.pv_approved AS permit_approval_date,
@@ -931,6 +956,14 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
             roofing.record_created_on AS roofing_created_date,
 			roofing.work_completed_date AS roofing_completed_date,
 			roofing.app_status AS roofing_status
@@ -956,6 +989,14 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
             install.created_on AS pv_install_created_date,
 			b.battery_installation_date AS battery_scheduled_date,
 			b.completion_date AS battery_complete_date,
@@ -976,7 +1017,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             install.project_status not in
                 ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND 
             install.app_status not in
-                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')     AND
+                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')      AND
             %v %v;`, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
@@ -988,6 +1029,14 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
             DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
             fin.created_on AS fin_created_date,
 			fin.pv_fin_date AS fin_pass_date,
 			install.pv_completion_date AS install_completed_date
@@ -1011,6 +1060,14 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
             DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
             pto.submitted AS pto_submitted_date,
 			pto.pto_granted AS pto_granted_new,
 			fin.pv_fin_date AS fin_pass_date,
