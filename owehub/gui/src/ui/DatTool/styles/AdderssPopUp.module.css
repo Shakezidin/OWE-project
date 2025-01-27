@@ -57,8 +57,9 @@
   top: 0;
   z-index: 20;
   background-color: #fff;
-  padding: 2rem 2rem 0rem 0rem;
+  padding: 2rem 15px 1rem 0rem;
 }
+
 .popUp_adderName {
   width: 40%;
   font-family: 'Poppins', sans-serif;
