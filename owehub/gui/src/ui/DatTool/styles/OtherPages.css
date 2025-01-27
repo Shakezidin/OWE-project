@@ -108,4 +108,9 @@
     border-color: #377CF6;
     box-shadow: 0 0 0 1px #377CF6;
   }
+
+  .card button:hover{
+    background-color: #d5e4ff;
+    transform: scale(1.05);
+  }
   

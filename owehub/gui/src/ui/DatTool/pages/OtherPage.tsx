@@ -24,12 +24,13 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
   };
 
   return (
-    <div style={styles.card}>
+    <div className='card' style={styles.card}>
       <div style={styles.cardHeader}>
         <h3 style={styles.title}>{title}</h3>
         {isEditing ? (
-          <div style={styles.actions}>
+          <div className='actions' style={styles.actions}>
             <button
+            className='cancelButton'
               style={styles.cancelButton}
               onClick={() => setIsEditing(false)}
             >
@@ -46,7 +47,7 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
             </button>
           </div>
         ) : (
-          <button style={styles.editButton} onClick={() => setIsEditing(true)}>
+          <button className='editButton' style={styles.editButton} onClick={() => setIsEditing(true)}>
             <AiOutlineEdit />
           </button>
         )}
@@ -286,7 +287,7 @@ const styles = {
     gap: '8px',
   },
   editButton: {
-    background: '#f0f0f0',
+    // background: '#f0f0f0',
     border: 'none',
     borderRadius: '50%',
     padding: '8px',
@@ -305,7 +306,7 @@ const styles = {
     width: 30,
   },
   cancelButton: {
-    background: '#f0f0f0',
+    // background: '#f0f0f0',
     border: 'none',
     borderRadius: '50%',
     padding: '8px',

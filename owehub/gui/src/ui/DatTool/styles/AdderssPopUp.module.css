@@ -18,7 +18,7 @@
   border: 2px solid #fff;
   border-radius: 28px;
   background-color: #fafafa;
-  padding: 2rem;
+  padding: 0rem 2rem 2rem 2rem;
   overflow-y: scroll;
   z-index: 4;
   border: 2px solid #fff;
@@ -52,7 +52,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 90%;
+  width: 94%;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #fff;
+  padding: 2rem 2rem 0rem 0rem;
 }
 .popUp_adderName {
   width: 40%;
