@@ -313,7 +313,7 @@ const StructuralPage: React.FC = () => {
             </div>
             <div className={styles.endContainerWrapper}>
               <div className={styles.endContainerOne}>
-                <div style={{ borderRight: '1px solid #ccc' }}>
+                <div style={{ borderRight: '1px dashed #DADAFF' }}>
                   <p className={styles.selectedContent}>Quantity</p>{' '}
                   <p className={styles.selectedLabel}>25</p>
                 </div>
@@ -321,7 +321,7 @@ const StructuralPage: React.FC = () => {
                   <p className={styles.selectedContent}>Azim</p>{' '}
                   <p className={styles.selectedLabel}>345</p>
                 </div>
-                <div style={{ borderRight: '1px solid #ccc' }}>
+                <div style={{ borderRight: '1px dashed #DADAFF' }}>
                   <p className={styles.selectedContent}>pitch</p>{' '}
                   <p className={styles.selectedLabel}>23</p>
                 </div>
@@ -329,7 +329,7 @@ const StructuralPage: React.FC = () => {
                   <p className={styles.selectedContent}>TSRF</p>{' '}
                   <p className={styles.selectedLabel}>124</p>
                 </div>
-                <div style={{ borderRight: '1px solid #ccc' }}>
+                <div style={{ borderRight: '1px dashed #DADAFF' }}>
                   <p className={styles.selectedContent}>Area (sqft)</p>{' '}
                   <p className={styles.selectedLabel}>1500sqft</p>
                 </div>

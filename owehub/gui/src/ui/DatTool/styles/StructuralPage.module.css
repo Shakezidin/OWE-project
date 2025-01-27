@@ -8,6 +8,7 @@
   /* transition: background-color 0.3s ease; */
   transition: all 0.3s ease;
   cursor: pointer;
+  margin-right: 1.2rem;
 
 }
 
@@ -27,6 +28,8 @@
 
 .container {
   width: 100%;
+  height: calc(100vh - 216px);
+  overflow-y: scroll;
 }
 
 .headingContainer {
@@ -107,8 +110,9 @@
   display: flex;
   gap: 1.2rem;
   border-radius: 18px;
-  height: calc(100vh - 216px);
-  overflow: scroll;
+  margin-right: 1.2rem;
+  /* height: calc(100vh - 216px);
+  overflow-y: scroll; */
 }
 
 .boxOne {
@@ -335,6 +339,7 @@
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
+    cursor: pointer;
 }
 
 .imageViewer{
@@ -390,4 +395,35 @@
 
   .UploadIcon:hover{
     transform: scale(1.05);
+    background-color: #d5e4ff;
+
+  }
+
+
+
+  .container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .container::-webkit-scrollbar {
+    display: initial;
+  }
+  
+  .container::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+  
+  .container::-webkit-scrollbar-button {
+    display: initial;
+  }
+  
+  .container::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  
+  .container::-webkit-scrollbar-corner {
+    background-color: transparent;
   }
