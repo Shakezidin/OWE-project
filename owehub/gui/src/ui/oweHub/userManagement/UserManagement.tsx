@@ -60,6 +60,7 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
+  const [isExportingData, setIsExporting] = useState(false);
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
   console.log(selectedOption, 'selectedoption');
@@ -233,6 +234,34 @@ const UserManagement: React.FC = () => {
     activeSalesRep,
   ]);
 
+  useEffect(() => {
+    if(isExportingData){
+      const data = {
+        page_number: page,
+        
+        sales_rep_status: activeSalesRep,
+        filters: [
+          {
+            Column: 'name',
+            Operation: 'cont',
+            Data: searchTerm,
+          },
+        ],
+      };
+      if (selectedOption.value !== '') {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
+      dispatch(fetchUserListBasedOnRole(data));
+      
+
+    }
+
+  },[isExportingData])
+
   /** handle dropdown value */
   const handleSelectChange = useCallback(
     (selectOption: UserDropdownModel) => {
@@ -359,7 +388,20 @@ const UserManagement: React.FC = () => {
   /** API call to update */
   const updateUserRequest = async (tablePermissions: any) => {
     console.log(formData, 'formData');
+    const fetchuserdata = {
+      page_number: page,
+      page_size: 25,
+      sales_rep_status: activeSalesRep,
+      filters: [
+        {
+          Column: 'role_name',
+          Operation: 'cont',
+          Data: formData?.role_name,
+        },
+      ],
+    };
 
+    console.log(formData, 'updateuser data')
     try {
       if (formData.role_name !== 'Partner') {
         const data = createUserObject(formData);
@@ -384,6 +426,8 @@ const UserManagement: React.FC = () => {
 
         toast.success(response.message);
         handleCloseEdit();
+        await dispatch(fetchUserListBasedOnRole(fetchuserdata));
+
       }
     } catch (error) {
       console.error('Error updating user:', error);
@@ -451,9 +495,7 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-  console.log(userRoleBasedList, 'userRoleBasedList');
-  console.log(formData, 'formdata');
-  console.log(updateTablePermission, "updatePermission")
+  
   /** render UI */
   return (
     <>
@@ -546,6 +588,7 @@ const UserManagement: React.FC = () => {
           userDropdownData={ALL_USER_ROLE_LIST}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
+          setIsExporting={setIsExporting}
           onClickDelete={(item: any) => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)

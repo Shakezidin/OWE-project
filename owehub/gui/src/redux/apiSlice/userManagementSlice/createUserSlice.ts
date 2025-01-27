@@ -28,6 +28,7 @@ const initialState: CreateOnboardUserStateModel = {
     dealer_logo: '',
     dealer: '',
     assigned_Manager: '',
+    manager_role:'',
     dealer_code: '',
     preferred_name: '',
     podioChecked: false,

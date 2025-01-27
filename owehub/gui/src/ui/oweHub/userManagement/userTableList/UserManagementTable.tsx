@@ -40,6 +40,10 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
 import useAuth from '../../../../hooks/useAuth';
+import { FaUpload } from 'react-icons/fa';
+import { MdDownloading } from 'react-icons/md';
+import Papa from 'papaparse';
+import { format } from 'date-fns';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -51,6 +55,7 @@ interface UserTableProos {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsExporting:React.Dispatch<React.SetStateAction<boolean>>;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onClickMultiDelete: () => void;
@@ -61,6 +66,7 @@ interface UserTableProos {
   activeSalesRep: string;
   handleCrossClick: () => void;
   handleEdit: (id?: string) => void;
+  isExportingData?:boolean;
   editData?:[];
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
@@ -84,11 +90,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   activeSalesRep,
   handleCrossClick,
   handleEdit,
-  editData
+  editData,
+  setIsExporting,
+  isExportingData
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
+ 
   const { authData, clearAuthData } = useAuth();
 
   const userRole = authData?.role;
@@ -448,7 +457,54 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     }, 800),
     []
   );
+  const handleExportOpen = () => {
+    setIsExporting(true);
+    
+       const removeHtmlTags = (str: any) => {
+         if (!str) return '';
+         return str.replace(/<\/?[^>]+(>|$)/g, '');
+       };
+       
+       const headers = [
+         'Code',
+         'Name',
+         'Role',
+         'Email',
+         'Phone Number',
+         'Manager',
+         'Dealer',
+         'Description',
+          
+       ];
 
+       console.log(userRoleBasedList, "userRoleBasedList");
+       const csvData = userRoleBasedList?.map?.((item: any) => [
+         item.user_code,
+         item.name,
+         item.role_name,
+         item.email_id,
+         item.mobile_number,
+         item.reporting_manager,
+         item.dealer,
+         item.description,
+       ]);
+       const csvRows = [headers, ...csvData];
+       const csvString = Papa.unparse(csvRows);
+       const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+       const url = URL.createObjectURL(blob);
+       const link = document.createElement('a');
+       link.href = url;
+       link.setAttribute('download', 'userdata.csv');
+       document.body.appendChild(link);
+       link.click();
+       document.body.removeChild(link);
+       setIsExporting(false);
+     
+  };
+
+
+ 
+  
   /** render UI */
   return (
     <>
@@ -488,7 +544,30 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
             {!activeSalesRep && <div>{AddBtn}</div>}
             {userRole === TYPE_OF_USER.ADMIN &&  <div>{ImportBtn}</div>}
-
+            {userRole === TYPE_OF_USER.ADMIN &&  
+            <div>
+                  <button
+                                 className={`performance-exportbtn  mt0 `}
+                                 style={{ height: '36px', padding: '8px 12px' }}
+                                 onClick={handleExportOpen}
+                               >
+                                 {isExportingData ? (
+                                   <div className="dealer-export">
+                                     <MdDownloading
+                                       className="downloading-animation dealer-mob-download"
+                                       size={20}
+                                     />
+                                     <span className="dealer-export-mob">Export</span>
+                                   </div>
+                                 ) : (
+                                   <div className="dealer-export">
+                                     <FaUpload size={12} className="dealer-mob-upload" />
+                                     <span className="dealer-export-mob">Export</span>
+                                   </div>
+                                 )}
+                               </button>
+            </div>
+  }
           </div>
 
           <div className="user_user-type">
