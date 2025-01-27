@@ -24,6 +24,7 @@ CREATE OR REPLACE FUNCTION update_existing_user(
     p_tables_permissions jsonb,
     p_user_code VARCHAR(50),
     p_created_at TIMESTAMP,
+    p_manager_role TIMESTAMP,
     OUT v_user_id INT
 )
 RETURNS INT
@@ -169,7 +170,8 @@ BEGIN
 	    podio_user,
         tables_permissions,
         updated_at,
-        created_at
+        created_at,
+        manager_role
     )
     VALUES (
         p_name,
@@ -196,7 +198,8 @@ BEGIN
 	    p_add_to_podio,
         p_tables_permissions,
         NOW(),
-        p_created_at
+        p_created_at,
+        p_manager_role
     )
     RETURNING user_id INTO v_user_id;
 
