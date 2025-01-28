@@ -7,6 +7,7 @@ import DisplaySelect from '../components/DisplaySelect';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
+import CustomInput from '../components/Input';
 
 type Option = {
   value: string | number;
@@ -108,8 +109,24 @@ const StructuralPage: React.FC = () => {
     key: string,
     label: string,
     defaultValue: string,
-    isEditable: boolean
+    isEditable: boolean,
+    type: 'select' | 'input' = 'select'
   ) => {
+    if (type === 'input') {
+      return isEditable ? (
+        <CustomInput
+          label={label}
+          value={String(tempSelectedValues[key] || defaultValue)}
+          onChange={(value) => handleSelectChange(key, value)}
+        />
+      ) : (
+        <DisplaySelect
+          label={label}
+          value={selectedValues[key] || defaultValue}
+        />
+      );
+    }
+    
     return isEditable ? (
       <Select
         label={label}
@@ -387,30 +404,33 @@ const StructuralPage: React.FC = () => {
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent(
-                      'attachmentType',
-                      'Type',
-                      '--',
-                      editAttachment
-                    )}
-                    {renderComponent(
-                      'attachmentPattern',
-                      'Pattern',
-                      '---',
-                      editAttachment
-                    )}
-                    {renderComponent(
-                      'attachmentQuantity',
-                      'Quantity',
-                      '12',
-                      editAttachment
-                    )}
-                    {renderComponent(
-                      'attachmentSpacing',
-                      'Spacing',
-                      'Portrait',
-                      editAttachment
-                    )}
+                  {renderComponent(
+        'attachmentType',
+        'Type',
+        '--',
+        editAttachment,
+        'input'  // Specify input type
+      )}
+      {renderComponent(
+        'attachmentPattern',
+        'Pattern',
+        '---',
+        editAttachment,
+        'input'  // Specify input type
+      )}
+      {renderComponent(
+        'attachmentQuantity',
+        'Quantity',
+        '12',
+        editAttachment,
+        'input'  // Specify input type
+      )}
+      {renderComponent(
+        'attachmentSpacing',
+        'Spacing',
+        'Portrait',
+        editAttachment
+      )}
                   </div>
                 </div>
               </div>
@@ -444,12 +464,12 @@ const StructuralPage: React.FC = () => {
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('rackingType', 'Type', '--', editRacking)}
+                    {renderComponent('rackingType', 'Type', '--', editRacking,'input')}
                     {renderComponent(
                       'rackingMount',
                       'Mount',
                       'flush',
-                      editRacking
+                      editRacking,
                     )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
@@ -457,7 +477,8 @@ const StructuralPage: React.FC = () => {
                       'tiltInfo',
                       'Tilt Info',
                       'module',
-                      editRacking
+                      editRacking,
+                      'input'
                     )}
                     {renderComponent(
                       'maxRailCantilever',
@@ -506,13 +527,15 @@ const StructuralPage: React.FC = () => {
                       'roofFramingType',
                       'Framing Type',
                       '--',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                     {renderComponent(
                       'roofSize',
                       'Size',
                       '---',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
@@ -520,13 +543,15 @@ const StructuralPage: React.FC = () => {
                       'roofSpacing',
                       'Spacing',
                       '---',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                     {renderComponent(
                       'roofSheathingType',
                       'Sheathing type',
                       '--',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
@@ -534,13 +559,15 @@ const StructuralPage: React.FC = () => {
                       'roofMaterial',
                       'Roof Material',
                       '---',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                     {renderComponent(
                       'structuralUpgrades',
                       'Structural upgrades',
                       '--',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                   </div>
                 </div>
