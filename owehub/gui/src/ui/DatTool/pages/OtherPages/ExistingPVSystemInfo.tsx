@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
-import styles from '../styles/ExistingPVSystemInfo.module.css';
+import styles from '../../styles/ExistingPVSystemInfo.module.css';
 
 
 interface ExistingPVSystemInfoProps {

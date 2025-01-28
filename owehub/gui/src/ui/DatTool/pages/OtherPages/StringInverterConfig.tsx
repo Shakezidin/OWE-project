@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
-import Select from '../components/Select';
-import styles from '../styles/StringInverterConfig.module.css';
+import Select from '../../components/Select';
+import styles from '../../styles/StringInverterConfig.module.css';
 
 interface StringInverterProps {
   parentConfig: { Inverter: string; Max: string };
