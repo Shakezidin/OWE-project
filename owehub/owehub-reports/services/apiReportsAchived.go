@@ -209,6 +209,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			AND N.APP_STATUS != 'DUPLICATE'
 			AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
 			AND P.CUSTOMER_UNIQUE_ID != ''
+			AND P.DEALER IN (SELECT DEALER FROM AM)
+		   	AND P.STATE IN (SELECT STATES FROM STATES)
 		GROUP BY month
 	 )
 		SELECT
