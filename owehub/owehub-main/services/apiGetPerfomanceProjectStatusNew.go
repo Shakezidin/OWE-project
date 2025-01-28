@@ -399,17 +399,6 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 	return grey, time.Time{}
 }
 
-func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate time.Time) (string, time.Time, string) {
-
-	if !batteryScheduleDate.IsZero() && batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
-		return blue, pvInstallCompletedDate, "Scheduled"
-	} else if !pvInstallCreateDate.IsZero() {
-		return blue, pvInstallCreateDate, "Scheduled"
-	}
-
-	return grey, time.Time{}, ""
-}
-
 func roofingColor(roofingCreateDate, roofingCompleteDate time.Time) (string, time.Time) {
 
 	if !roofingCompleteDate.IsZero() {
@@ -418,6 +407,37 @@ func roofingColor(roofingCreateDate, roofingCompleteDate time.Time) (string, tim
 		return blue, roofingCreateDate
 	}
 	return "", time.Time{}
+}
+
+func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate time.Time) (string, time.Time, string) {
+	if !batteryScheduleDate.IsZero() && !batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
+			latestDate := pvInstallCompletedDate
+			if batteryScheduleDate.After(latestDate) {
+					latestDate = batteryScheduleDate
+			}
+			if batteryCompleted.After(latestDate) {
+					latestDate = batteryCompleted
+			}
+			return green, latestDate, "Completed"
+	}
+	if batteryScheduleDate.IsZero() && !pvInstallCompletedDate.IsZero() {
+			return green, pvInstallCompletedDate, "Completed"
+	}
+	if !pvInstallCreateDate.IsZero() {
+			return blue, pvInstallCreateDate, "Scheduled"
+	}
+
+	return grey, time.Time{}, ""
+}
+
+func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Time) (string, time.Time) {
+
+	if !finPassDate.IsZero() {
+		return green, finPassDate
+	} else if !finCreatedDate.IsZero() {
+		return blue, finCreatedDate
+	}
+	return grey, time.Time{}
 }
 
 func activationColor(ptoSubmittedDate, ptoDate, finPassDate, finCreatedDate time.Time) (string, time.Time) {
@@ -430,15 +450,6 @@ func activationColor(ptoSubmittedDate, ptoDate, finPassDate, finCreatedDate time
 	return grey, time.Time{}
 }
 
-func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Time) (string, time.Time) {
-
-	if !finPassDate.IsZero() {
-		return green, finPassDate
-	} else if !finCreatedDate.IsZero() {
-		return blue, finCreatedDate
-	}
-	return grey, time.Time{}
-}
 
 /*
 *****************************************************************************
