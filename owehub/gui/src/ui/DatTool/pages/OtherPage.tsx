@@ -3,7 +3,7 @@ import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import StringInverterConfig from './StringInverterConfig';
 import ExistingPVSystemInfo from './ExistingPVSystemInfo';
 import '../styles/OtherPages.css';
-
+import Select from '../components/Select';
 interface CardProps {
   title: string;
   fields: Record<string, string>;
@@ -59,17 +59,11 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
             <label style={styles.label}>{key}</label>
             {isEditing ? (
               options?.[key] ? (
-                <select
-                  className="custom-select"
+                <Select
+                  options={options[key].map((opt) => ({ label: opt, value: opt }))}
                   value={editedFields[key]}
-                  onChange={(e) => handleFieldChange(key, e.target.value)}
-                >
-                  {options[key].map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(selectedValue) => handleFieldChange(key, selectedValue.toString())}
+                />
               ) : (
                 <input
                   style={styles.input}

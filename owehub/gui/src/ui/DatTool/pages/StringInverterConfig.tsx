@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
+import Select from '../components/Select';
 
 interface StringInverterProps {
   parentConfig: {
@@ -11,6 +12,11 @@ interface StringInverterProps {
   onUpdate: (config: Record<string, string>) => void;
 }
 
+const inverterOptions = [
+  { label: 'Tesla Inverter 7.6kW', value: 'Tesla Inverter 7.6kW' },
+  { label: 'Other', value: 'Other' }
+];
+
 const StringInverterConfig: React.FC<StringInverterProps> = ({
   parentConfig,
   config,
@@ -18,7 +24,13 @@ const StringInverterConfig: React.FC<StringInverterProps> = ({
   onUpdate,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedParentConfig, setEditedParentConfig] = useState(parentConfig);
+  const [editedParentConfig, setEditedParentConfig] = useState<{
+    Inverter: string;
+    Max: string;
+  }>({
+    Inverter: parentConfig.Inverter || 'Tesla Inverter 7.6kW', // Default to Tesla Inverter 7.6kW
+    Max: parentConfig.Max || ''
+  });  
   const [editedConfig, setEditedConfig] = useState(config);
 
   const handleParentChange = (field: string, value: string) => {
@@ -62,14 +74,11 @@ const StringInverterConfig: React.FC<StringInverterProps> = ({
         <div>
           <label style={styles.label}>Inverter</label>
           {isEditing ? (
-            <select
-              value={editedParentConfig.Inverter}
-              onChange={(e) => handleParentChange('Inverter', e.target.value)}
-              className="custom-select"
-            >
-              <option value="Tesla Inverter 7.6kW">Tesla Inverter 7.6kW</option>
-              <option value="Other">Other</option>
-            </select>
+           <Select
+           value={editedParentConfig.Inverter} // Ensure it uses the current state value
+           options={inverterOptions}
+           onChange={(selected) => handleParentChange('Inverter', String(selected || ''))}
+         />         
           ) : (
             <div style={styles.value}>{parentConfig.Inverter}</div>
           )}
