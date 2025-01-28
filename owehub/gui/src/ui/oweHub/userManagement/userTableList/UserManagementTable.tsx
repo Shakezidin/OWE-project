@@ -502,7 +502,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
      
   };
 
-
+  const environment = process.env.REACT_APP_ENV;
  
   
   /** render UI */
@@ -543,8 +543,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               }}
             />
             {!activeSalesRep && <div>{AddBtn}</div>}
-            {userRole === TYPE_OF_USER.ADMIN &&  <div>{ImportBtn}</div>}
-            {userRole === TYPE_OF_USER.ADMIN &&  
+            {userRole === TYPE_OF_USER.ADMIN  && environment === 'staging' &&  <div>{ImportBtn}</div>}
+            {userRole === TYPE_OF_USER.ADMIN &&  environment === 'staging' &&
             <div>
                   <button
                                  className={`performance-exportbtn  mt0 `}

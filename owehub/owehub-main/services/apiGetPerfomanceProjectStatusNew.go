@@ -167,6 +167,34 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		return
+	} else if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+		return
+	}
+
+	/*
+		The following does
+		1. It counts the total existing data count for the selected milestone
+		2. Paginates the data according to user request
+		3. Then collects the unqiue id lists and joins
+		4. With this we get the full data for those unique ids after joining
+	*/
+
+	data, err = FilterAgRpData(dataReq, data)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+	}
+	RecordCount = int64(len(data))
+	paginateData := PaginateData(data, dataReq)
+	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
+	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, tileQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	} else if len(data) == 0 {
@@ -178,10 +206,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	for _, item := range data {
 
 		UniqueId, _ := item["customer_unique_id"].(string)
-		/*if !ok || UniqueId == "" {
-			continue
-		}*/
-
 		Customer, _ := item["home_owner"].(string)
 
 		var (
@@ -189,67 +213,97 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate,
 			RoofingCratedDate, RoofinCompleteDate, PVInstallCreatedDate, BatteryScheduleDate,
 			BatteryCompleteDate, PvInstallCompletedDate,
-			FinCreatedDate, FinPassdate, PtoSubmittedDate, PtoDate, ContractDate time.Time
+			FinCreatedDate, FinPassdate, PtoSubmittedDate, PtoDate time.Time
 		)
+
+		perfomanceResponse := models.PerfomanceResponse{
+			UniqueId: UniqueId,
+			Customer: Customer,
+		}
 
 		SiteSurveyScheduleDate, _ = item["site_survey_scheduled_date"].(time.Time)
 		SiteSurverCompleteDate, _ = item["survey_final_completion_date"].(time.Time)
-		CadReady, _ = item["cad_ready"].(time.Time)
-		PlanSetCompleteDate, _ = item["cad_complete_date"].(time.Time)
-		PvSubmittedDate, _ = item["permit_submitted_date"].(time.Time)
-		IcSubmittedDate, _ = item["ic_submitted_date"].(time.Time)
-		PermitApprovedDate, _ = item["permit_approval_date"].(time.Time)
-		IcAPprovedDate, _ = item["ic_approval_date"].(time.Time)
-		RoofingCratedDate, _ = item["roofing_created_date"].(time.Time)
-		RoofinCompleteDate, _ = item["roofing_completed_date"].(time.Time)
-		PVInstallCreatedDate, _ = item["pv_install_created_date"].(time.Time)
-		BatteryScheduleDate, _ = item["battery_scheduled_date"].(time.Time)
-		BatteryCompleteDate, _ = item["battery_complete_date"].(time.Time)
-		PvInstallCompletedDate, _ = item["install_completed_date"].(time.Time)
+		surveyColor, SiteSurevyDate, _ := getSurveyColor(SiteSurveyScheduleDate, SiteSurverCompleteDate)
+		perfomanceResponse.SiteSurevyDate = formatDate(SiteSurevyDate)
+		perfomanceResponse.SiteSurveyColour = surveyColor
 
-		FinCreatedDate, _ = item["fin_created_date"].(time.Time)
-		FinPassdate, _ = item["fin_pass_date"].(time.Time)
-		PtoSubmittedDate, _ = item["pto_submitted_date"].(time.Time)
-		PtoDate, _ = item["pto_granted_new"].(time.Time)
-		ContractDate, _ = item["sale_date"].(time.Time)
+		switch dataReq.SelectedMilestone {
+		/* The below code only calculated the CAD data */
+		case "cad", "permit", "roof", "install", "inspection", "activation":
+			CadReady, _ = item["cad_ready"].(time.Time)
+			PlanSetCompleteDate, _ = item["cad_complete_date"].(time.Time)
+			cadColor, CadDesignDate := getCadColor(CadReady, PlanSetCompleteDate)
+			perfomanceResponse.CadDesignDate = formatDate(CadDesignDate)
+			perfomanceResponse.CADDesignColour = cadColor
 
-		RoofingStatus, _ := item["roofing_status"].(string)
+			if dataReq.SelectedMilestone == "cad" {
+				break
+			}
 
-		surveyColor, SiteSurevyDate, _ := getSurveyColor(SiteSurveyScheduleDate, SiteSurverCompleteDate, ContractDate)
-		cadColor, CadDesignDate := getCadColor(CadReady, PlanSetCompleteDate, SiteSurverCompleteDate)
-		permitColor, PermittingDate := getPermittingColor(PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate, PlanSetCompleteDate)
-		roofingColor, RoofingDate := roofingColor(RoofingCratedDate, RoofinCompleteDate, RoofingStatus)
-		installColor, InstallDate, _ := installColor(PVInstallCreatedDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompletedDate, PermitApprovedDate, IcAPprovedDate)
-		inspectionColor, InspectionDate := InspectionColor(FinCreatedDate, FinPassdate, PvInstallCompletedDate)
-		activationColor, ActivationDate := activationColor(PtoSubmittedDate, PtoDate, FinPassdate, FinCreatedDate)
+			/* The below code only calculated the PERMIT data */
+			PvSubmittedDate, _ = item["permit_submitted_date"].(time.Time)
+			IcSubmittedDate, _ = item["ic_submitted_date"].(time.Time)
+			PermitApprovedDate, _ = item["permit_approval_date"].(time.Time)
+			IcAPprovedDate, _ = item["ic_approval_date"].(time.Time)
+			permitColor, PermittingDate := getPermittingColor(PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate)
+			perfomanceResponse.PermittingDate = formatDate(PermittingDate)
+			perfomanceResponse.PermittingColour = permitColor
 
-		perfomanceResponse := models.PerfomanceResponse{
-			UniqueId:          UniqueId,
-			Customer:          Customer,
-			SiteSurevyDate:    formatDate(SiteSurevyDate),
-			CadDesignDate:     formatDate(CadDesignDate),
-			PermittingDate:    formatDate(PermittingDate),
-			RoofingDate:       formatDate(RoofingDate),
-			InstallDate:       formatDate(InstallDate),
-			InspectionDate:    formatDate(InspectionDate),
-			ActivationDate:    formatDate(ActivationDate),
-			SiteSurveyColour:  surveyColor,
-			CADDesignColour:   cadColor,
-			PermittingColour:  permitColor,
-			RoofingColour:     roofingColor,
-			InstallColour:     installColor,
-			InspectionsColour: inspectionColor,
-			ActivationColour:  activationColor,
+			if dataReq.SelectedMilestone == "permit" {
+				break
+			}
+
+			/* The below code only calculated the ROOFING data */
+			RoofingCratedDate, _ = item["roofing_created_date"].(time.Time)
+			RoofinCompleteDate, _ = item["roofing_completed_date"].(time.Time)
+			roofingColor, RoofingDate := roofingColor(RoofingCratedDate, RoofinCompleteDate)
+			perfomanceResponse.RoofingDate = formatDate(RoofingDate)
+			perfomanceResponse.RoofingColour = roofingColor
+
+			if dataReq.SelectedMilestone == "roof" {
+				break
+			}
+
+			/* The below code only calculated the INSTALL data */
+			PVInstallCreatedDate, _ = item["pv_install_created_date"].(time.Time)
+			BatteryScheduleDate, _ = item["battery_scheduled_date"].(time.Time)
+			BatteryCompleteDate, _ = item["battery_complete_date"].(time.Time)
+			PvInstallCompletedDate, _ = item["install_completed_date"].(time.Time)
+			installColor, InstallDate, _ := installColor(PVInstallCreatedDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompletedDate)
+			perfomanceResponse.InstallDate = formatDate(InstallDate)
+			perfomanceResponse.InstallColour = installColor
+
+			if dataReq.SelectedMilestone == "install" {
+				break
+			}
+
+			/* The below code only calculated the INSPECTION data */
+			FinCreatedDate, _ = item["fin_created_date"].(time.Time)
+			FinPassdate, _ = item["fin_pass_date"].(time.Time)
+			inspectionColor, InspectionDate := InspectionColor(FinCreatedDate, FinPassdate, PvInstallCompletedDate)
+			perfomanceResponse.InspectionDate = formatDate(InspectionDate)
+			perfomanceResponse.InspectionsColour = inspectionColor
+
+			if dataReq.SelectedMilestone == "inspection" {
+				break
+			}
+
+			/* The below code only calculated the ACTIVATION data */
+			PtoSubmittedDate, _ = item["pto_submitted_date"].(time.Time)
+			PtoDate, _ = item["pto_granted_new"].(time.Time)
+			activationColor, ActivationDate := activationColor(PtoSubmittedDate, PtoDate, FinPassdate, FinCreatedDate)
+			perfomanceResponse.ActivationDate = formatDate(ActivationDate)
+			perfomanceResponse.ActivationColour = activationColor
 		}
 
 		forAGRp[UniqueId] = ForAgRp{
-			SurveyClr:     surveyColor,
-			CadClr:        cadColor,
-			PermittingClr: permitColor,
-			RoofingClr:    roofingColor,
-			InstallClr:    installColor,
-			InspectionClr: inspectionColor,
-			ActivationClr: activationColor,
+			SurveyClr:     perfomanceResponse.SiteSurveyColour,
+			CadClr:        perfomanceResponse.CADDesignColour,
+			PermittingClr: perfomanceResponse.PermittingColour,
+			RoofingClr:    perfomanceResponse.RoofingColour,
+			InstallClr:    perfomanceResponse.InstallColour,
+			InspectionClr: perfomanceResponse.InspectionsColour,
+			ActivationClr: perfomanceResponse.ActivationColour,
 		}
 
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
@@ -278,13 +332,29 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
-	RecordCount = int64(len(perfomanceList.PerfomanceList))
-	paginatedData := PaginateData(perfomanceList, dataReq, agngRpForUserId)
+	// RecordCount = int64(len(perfomanceList.PerfomanceList))
+	paginatedData := postCalculation(perfomanceList, dataReq, agngRpForUserId)
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", RecordCount, perfomanceList)
 	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 
+}
+
+/* Function to join the unique id lists */
+func joinUniqueIdsWithDbResponse(data []map[string]interface{}) (joinedNames string) {
+	if len(data) > 0 {
+		escapedNames := make([]string, len(data))
+		for i, item := range data {
+			UniqueId, ok := item["customer_unique_id"].(string)
+			if !ok || len(UniqueId) == 0 {
+				UniqueId = ""
+			}
+			escapedNames[i] = "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
+		}
+		joinedNames = strings.Join(escapedNames, ", ")
+	}
+	return joinedNames
 }
 
 /* Function to set the db milestone */
@@ -328,7 +398,7 @@ func formatDate(t time.Time) string {
 
 *****************************************************************************
 */
-func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contractDate time.Time) (string, time.Time, string) {
+func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate time.Time) (string, time.Time, string) {
 
 	if !siteSurveycompletedDate.IsZero() {
 		return green, siteSurveycompletedDate, "Completed"
@@ -338,7 +408,7 @@ func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contractDa
 	return grey, time.Time{}, ""
 }
 
-func getCadColor(cadCreatedDate, planSetcompletedDate, siteSurveyCompletedDate time.Time) (string, time.Time) {
+func getCadColor(cadCreatedDate, planSetcompletedDate time.Time) (string, time.Time) {
 
 	if !planSetcompletedDate.IsZero() {
 		return green, planSetcompletedDate
@@ -348,48 +418,7 @@ func getCadColor(cadCreatedDate, planSetcompletedDate, siteSurveyCompletedDate t
 	return grey, time.Time{}
 }
 
-func roofingColor(roofingCreateDate, roofingCompleteDate time.Time, roofingStatus string) (string, time.Time) {
-
-	if !roofingCompleteDate.IsZero() {
-		return green, roofingCompleteDate
-	} else if !roofingCreateDate.IsZero() {
-		return blue, roofingCreateDate
-	}
-	return "", time.Time{}
-}
-
-func activationColor(ptoSubmittedDate, ptoDate, finPassDate, finCreatedDate time.Time) (string, time.Time) {
-
-	if !ptoDate.IsZero() {
-		return green, ptoDate
-	} else if !ptoSubmittedDate.IsZero() {
-		return blue, ptoSubmittedDate
-	}
-	return grey, time.Time{}
-}
-
-func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Time) (string, time.Time) {
-
-	if !finPassDate.IsZero() {
-		return green, finPassDate
-	} else if !finCreatedDate.IsZero() {
-		return blue, finCreatedDate
-	}
-	return grey, time.Time{}
-}
-
-func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedCompletedDate, icApprovedDate time.Time) (string, time.Time, string) {
-
-	if !batteryScheduleDate.IsZero() && batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
-		return blue, pvInstallCompletedDate, "Scheduled"
-	} else if !pvInstallCreateDate.IsZero() {
-		return blue, pvInstallCreateDate, "Scheduled"
-	}
-
-	return grey, time.Time{}, ""
-}
-
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, planSetCompleteDate time.Time) (string, time.Time) {
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate time.Time) (string, time.Time) {
 
 	if !permitApprovedDate.IsZero() && !IcApprovedDate.IsZero() {
 		latestApprovedDate := permitApprovedDate
@@ -403,6 +432,57 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 			latestSubmittedDate = IcSubmittedDate
 		}
 		return blue, latestSubmittedDate
+	}
+	return grey, time.Time{}
+}
+
+func roofingColor(roofingCreateDate, roofingCompleteDate time.Time) (string, time.Time) {
+
+	if !roofingCompleteDate.IsZero() {
+		return green, roofingCompleteDate
+	} else if !roofingCreateDate.IsZero() {
+		return blue, roofingCreateDate
+	}
+	return "", time.Time{}
+}
+
+func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate time.Time) (string, time.Time, string) {
+	if !batteryScheduleDate.IsZero() && !batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
+		latestDate := pvInstallCompletedDate
+		if batteryScheduleDate.After(latestDate) {
+			latestDate = batteryScheduleDate
+		}
+		if batteryCompleted.After(latestDate) {
+			latestDate = batteryCompleted
+		}
+		return green, latestDate, "Completed"
+	}
+	if batteryScheduleDate.IsZero() && !pvInstallCompletedDate.IsZero() {
+		return green, pvInstallCompletedDate, "Completed"
+	}
+	if !pvInstallCreateDate.IsZero() {
+		return blue, pvInstallCreateDate, "Scheduled"
+	}
+
+	return grey, time.Time{}, ""
+}
+
+func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Time) (string, time.Time) {
+
+	if !finPassDate.IsZero() {
+		return green, finPassDate
+	} else if !finCreatedDate.IsZero() {
+		return blue, finCreatedDate
+	}
+	return grey, time.Time{}
+}
+
+func activationColor(ptoSubmittedDate, ptoDate, finPassDate, finCreatedDate time.Time) (string, time.Time) {
+
+	if !ptoDate.IsZero() {
+		return green, ptoDate
+	} else if !ptoSubmittedDate.IsZero() {
+		return blue, ptoSubmittedDate
 	}
 	return grey, time.Time{}
 }
@@ -535,7 +615,31 @@ func getFieldText(data map[string]interface{}, field string) string {
 *****************************************************************************
 */
 
-func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
+func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
+	paginatedData := []map[string]interface{}{}
+	startIndex := (req.PageNumber - 1) * req.PageSize
+	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data))))
+
+	if startIndex >= len(data) || startIndex >= endIndex {
+		return make([]map[string]interface{}, 0)
+	}
+
+	paginatedData = append(paginatedData, data[startIndex:endIndex]...)
+	return paginatedData
+}
+
+/*
+*****************************************************************************
+
+	- FUNCTION:		postCalculation
+  - DESCRIPTION:
+    function helps in calculating the ntp/qc data for the unique ids that is
+		displayed in UI at present. See the value next to each unique id in UI
+
+*****************************************************************************
+*/
+
+func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
 
 	var (
 		updated = make(map[string]bool)
@@ -544,16 +648,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 
 	log.EnterFn(0, "PaginateData")
 	defer func() { log.ExitFn(0, "PaginateData", err) }()
-	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
-
-	startIndex := (req.PageNumber - 1) * req.PageSize
-	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data.PerfomanceList))))
-
-	if startIndex >= len(data.PerfomanceList) || startIndex >= endIndex {
-		return make([]models.PerfomanceResponse, 0)
-	}
-
-	paginatedData = append(paginatedData, data.PerfomanceList[startIndex:endIndex]...)
+	paginatedData := data.PerfomanceList
 
 	uniqueIds := make([]string, len(paginatedData))
 	for i, item := range paginatedData {
@@ -659,4 +754,60 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	}
 
 	return paginatedData
+}
+
+func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interface{}) ([]map[string]interface{}, error) {
+
+	var (
+		conditions []string
+		result     []map[string]interface{}
+		uniqueIds  = make(map[string]struct{})
+		err        error
+	)
+
+	log.EnterFn(0, "FilterAgRpData")
+	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
+
+	if req.Fields == nil || len(req.Fields) <= 0 {
+		return alldata, err
+	}
+
+	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
+	for _, value := range req.Fields {
+		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.ProjectPendingStartDate, req.ProjectPendingEndDate))
+	}
+	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
+	query := fmt.Sprintf(baseQuery, conditionsStr)
+
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
+		return alldata, err
+	}
+	// Collect unique IDs into a map for efficient lookup
+	for _, value := range data {
+		if id, ok := value["unique_id"]; ok {
+			if strID, ok := id.(string); ok {
+				uniqueIds[strID] = struct{}{}
+			} else {
+				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
+			}
+		} else {
+			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
+		}
+	}
+
+	// Filter the original data based on the fetched unique IDs
+	for _, item := range alldata {
+		if uniqueId, ok := item["customer_unique_id"].(string); ok {
+			if _, exists := uniqueIds[uniqueId]; exists {
+				result = append(result, item)
+			}
+		} else {
+			log.FuncErrorTrace(0, "[FilterAgRpData] customer_unique_id not found or invalid in alldata")
+		}
+	}
+
+	log.FuncInfoTrace(0, "FilterAgRpData filtered result count: %d", len(result))
+	return result, nil
 }

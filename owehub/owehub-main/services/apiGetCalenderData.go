@@ -155,18 +155,18 @@ FROM
 			// continue
 		}
 
-		ContractDate, _ := item["contract_date"].(time.Time)
+		// ContractDate, _ := item["contract_date"].(time.Time)
 		PvInstallCreateDate, _ := item["pv_install_created_date"].(time.Time)
 		PvInstallCompleteDate, _ := item["pv_install_completed_date"].(time.Time)
 		SiteSurevyDate, _ := item["site_survey_scheduled_date"].(time.Time)
 		siteSurveyCmpletedDate, _ := item["site_survey_completed_date"].(time.Time)
 		BatteryScheduleDate, _ := item["battery_scheduled_date"].(time.Time)
 		BatteryCompleteDate, _ := item["battery_complete_date"].(time.Time)
-		PermitApprovedDate, _ := item["permit_approved_date"].(time.Time)
-		IcAPprovedDate, _ := item["ic_approved_date"].(time.Time)
+		// PermitApprovedDate, _ := item["permit_approved_date"].(time.Time)
+		// IcAPprovedDate, _ := item["ic_approved_date"].(time.Time)
 
-		_, surveyDate, surveryStatus := getSurveyColor(SiteSurevyDate, siteSurveyCmpletedDate, ContractDate)
-		_, installDate, installStatus := installColor(PvInstallCreateDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompleteDate, PermitApprovedDate, IcAPprovedDate)
+		_, surveyDate, surveryStatus := getSurveyColor(SiteSurevyDate, siteSurveyCmpletedDate)
+		_, installDate, installStatus := installColor(PvInstallCreateDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompleteDate)
 
 		if dataReq.StartDate != "" && dataReq.EndDate != "" && (!installDate.IsZero() || !surveyDate.IsZero()) {
 			// Parse StartDate and EndDate
