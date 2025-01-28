@@ -306,7 +306,7 @@ func ProjectMngmntRetrieveQueryFunc() string {
         trenching_service_electrical_schema.work_scheduled_date AS trenching_scheduled, 
         trenching_service_electrical_schema.completion_date AS trenching_completed,
         customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
-        sales_metrics_schema.adders_total,
+        --sales_metrics_schema.adders_total,
         planset_cad_schema.item_created_on AS cad_ready,
         planset_cad_schema.plan_set_complete_day AS cad_complete_date,
         batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
@@ -344,8 +344,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
         --ON planset_cad_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN batteries_service_electrical_schema
         ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN sales_metrics_schema
-            ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
+        --LEFT JOIN sales_metrics_schema
+          --  ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN planset_cad_schema 
            ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         `
@@ -476,7 +476,7 @@ func CsvDownloadRetrieveQueryFunc() string {
         cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-                                LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+                                --LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
 								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
                                 LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id 
         `)

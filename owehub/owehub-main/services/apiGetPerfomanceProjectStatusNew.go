@@ -167,7 +167,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	} else if len(data) == 0 {
 		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
@@ -183,6 +183,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		4. With this we get the full data for those unique ids after joining
 	*/
 
+	data, err = FilterAgRpData(dataReq, data)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+	}
 	RecordCount = int64(len(data))
 	paginateData := PaginateData(data, dataReq)
 	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
@@ -750,4 +754,60 @@ func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceSt
 	}
 
 	return paginatedData
+}
+
+func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interface{}) ([]map[string]interface{}, error) {
+
+	var (
+		conditions []string
+		result     []map[string]interface{}
+		uniqueIds  = make(map[string]struct{})
+		err        error
+	)
+
+	log.EnterFn(0, "FilterAgRpData")
+	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
+
+	if req.Fields == nil || len(req.Fields) <= 0 {
+		return alldata, err
+	}
+
+	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
+	for _, value := range req.Fields {
+		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.ProjectPendingStartDate, req.ProjectPendingEndDate))
+	}
+	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
+	query := fmt.Sprintf(baseQuery, conditionsStr)
+
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
+		return alldata, err
+	}
+	// Collect unique IDs into a map for efficient lookup
+	for _, value := range data {
+		if id, ok := value["unique_id"]; ok {
+			if strID, ok := id.(string); ok {
+				uniqueIds[strID] = struct{}{}
+			} else {
+				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
+			}
+		} else {
+			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
+		}
+	}
+
+	// Filter the original data based on the fetched unique IDs
+	for _, item := range alldata {
+		if uniqueId, ok := item["customer_unique_id"].(string); ok {
+			if _, exists := uniqueIds[uniqueId]; exists {
+				result = append(result, item)
+			}
+		} else {
+			log.FuncErrorTrace(0, "[FilterAgRpData] customer_unique_id not found or invalid in alldata")
+		}
+	}
+
+	log.FuncInfoTrace(0, "FilterAgRpData filtered result count: %d", len(result))
+	return result, nil
 }
