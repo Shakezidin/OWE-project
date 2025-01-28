@@ -59,3 +59,17 @@ export const checkUserExists = createAsyncThunk(
     }
   }
 );
+
+/** Check if user exists */
+export const checkDbStatus = createAsyncThunk(
+  'status/checkdb',
+  async (_, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller(EndPoints.dbStatus, {});
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);

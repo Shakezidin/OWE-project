@@ -770,10 +770,10 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
         WHERE
 	        cust.unique_id != '' 						AND
 	        cust.unique_id IS NOT NULL					AND
-	        cust.project_status IN (%v)                 AND
+	        roofing.project_status IN (%v)                 AND
 	        roofing.record_created_on IS NOT NULL		AND
 	        roofing.roof_work_needed_date IS NOT NULL 	AND
-	        roofing.work_completed_date IS NOT NULL     AND
+	        roofing.work_completed_date IS NULL         AND
             %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
@@ -975,10 +975,10 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
         WHERE
             cust.unique_id != '' 						AND
 	        cust.unique_id IS NOT NULL					AND
-	        cust.project_status IN (%v)                 AND
+	        roofing.project_status IN (%v)                 AND
 	        roofing.record_created_on IS NOT NULL		AND
 	        roofing.roof_work_needed_date IS NOT NULL 	AND
-	        roofing.work_completed_date IS NOT NULL     AND
+	        roofing.work_completed_date IS NULL         AND
             %v %v;`, projectStatus, filterUserQuery, searchValue)
 
 	return PipelineDataQuery

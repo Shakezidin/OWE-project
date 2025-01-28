@@ -1,0 +1,185 @@
+.genMain {
+  
+}
+
+.appContainer {
+  display: flex;
+  font-family: Arial, sans-serif;
+  gap: 20px;
+}
+
+.sidebar {
+  width: 25%;
+  background-color: #f5f5f5;
+  overflow-y: scroll;
+  height: calc(100vh - 216px);
+}
+
+.sidebarItem {
+  padding: 13px;
+  margin-bottom: 18px;
+  cursor: pointer;
+  border-radius: 18px;
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+}
+
+.categoryDescription {
+  font-weight: 500px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #565656;
+}
+
+.categoryName {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+}
+.categoryName1 {
+  font-weight: 500px;
+  font-size: 12px;
+  line-height: 18px;
+  /* color: #565656; */
+}
+.sidebarItem:hover {
+  background-color: #D5E4FF;
+  
+}
+.sidebarItemActive:hover{
+  background-color: #007bff;
+}
+
+.sidebarItemActive {
+  background-color: #007bff;
+  color: white !important;
+}
+
+.sidebarItemActive .sidebarActiveDescription {
+  color: white;
+}
+
+.notesPanel {
+  height: calc(100vh - 216px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px 10px 10px;
+  background-color: #ffffff;
+  border-radius: 28px;
+}
+
+.notes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0px 10px 10px 10px;
+}
+.notes_head {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: 500;
+  font-size: 14px;
+  color: #2a2626;
+  padding-left: 4px;
+  padding-bottom: 8px;
+  background-color: #ffffff;
+  padding: 10px;
+  margin-bottom: 4px;
+}
+
+.note {
+  max-width: 800px;
+  background-color: #fafaff;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #565656;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word; /* Break long words if necessary */
+}
+
+.addNote {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.textarea {
+  flex: 1;
+  padding-top: 19px !important;
+  padding-left: 10px !important;
+  background-color: #fafaff;
+  border: none !important;
+  border-radius: 36px;
+  z-index: 1;
+  position: relative;
+  line-height: normal;
+  resize: none;
+}
+
+.textarea::placeholder {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cfcfcf;
+}
+.textarea:focus {
+  outline: none;
+}
+
+.button {
+  background: none;
+  border: none;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.notes_currTime {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 500;
+  color: #565656;
+}
+
+.addNote {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.textarea {
+  flex: 1;
+  padding-right: 40px; /* Add space for the button */
+}
+
+.button {
+  position: absolute;
+  right: 10px; /* Adjust to fit inside the textarea */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.categoryTime {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 500;
+  padding: 6px;
+}
+
+.sidebarItem .cat1InActive {
+  color: #565656;
+}
+
+.multinotes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: auto;
+  overflow-y: scroll;
+}

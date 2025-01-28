@@ -461,11 +461,14 @@ const ProjectStatus = () => {
     }
   }, [projectOption.length, projectId, dispatch]);
   useEffect(() => {
+    console.log("selectedProject",selectedProject)
     if (selectedProject?.value) {
       dispatch(getProjectDetail(selectedProject?.value));
-    } else if (projectOption.length) {
-      dispatch(getProjectDetail(projectOption[0]?.value));
-    }
+    } 
+    // else if (projectOption.length) {
+    //   debugger;
+    //   dispatch(getProjectDetail(projectOption[0]?.value));
+    // }
   }, [selectedProject?.value]);
   useEffect(() => {
     if (projectId) {

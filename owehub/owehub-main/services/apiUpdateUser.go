@@ -159,6 +159,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		tablesPermissionsJSON,
 		prevUserCode,
 		prevUserCreatedAt,
+		updateUserReq.ManagerRole,
 	)
 
 	deleteQuery := "DELETE FROM user_details WHERE email_id = $1"
