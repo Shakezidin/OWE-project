@@ -80,6 +80,7 @@ const NotePage = () => {
     <div className={styles.genMain}>
       <div className={styles.appContainer}>
         {/* Sidebar */}
+        <div className={styles.sidebarContainer}>
         <div className={styles.sidebar}>
           {categories.map((category) => (
             <div
@@ -99,6 +100,7 @@ const NotePage = () => {
                 {currentTime}</div>
             </div>
           ))}
+        </div>
         </div>
 
         <div className={styles.notesPanel}>
