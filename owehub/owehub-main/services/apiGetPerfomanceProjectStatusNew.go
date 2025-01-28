@@ -175,13 +175,33 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	/*
+		The following does
+		1. It counts the total existing data count for the selected milestone
+		2. Paginates the data according to user request
+		3. Then collects the unqiue id lists and joins
+		4. With this we get the full data for those unique ids after joining
+	*/
+
+	RecordCount = int64(len(data))
+	paginateData := PaginateData(data, dataReq)
+	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
+	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, tileQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+		return
+	} else if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+		return
+	}
+
 	for _, item := range data {
 
 		UniqueId, _ := item["customer_unique_id"].(string)
-		/*if !ok || UniqueId == "" {
-			continue
-		}*/
-
 		Customer, _ := item["home_owner"].(string)
 
 		var (
@@ -189,7 +209,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate,
 			RoofingCratedDate, RoofinCompleteDate, PVInstallCreatedDate, BatteryScheduleDate,
 			BatteryCompleteDate, PvInstallCompletedDate,
-			FinCreatedDate, FinPassdate, PtoSubmittedDate, PtoDate, ContractDate time.Time
+			FinCreatedDate, FinPassdate, PtoSubmittedDate, PtoDate time.Time
 		)
 
 		SiteSurveyScheduleDate, _ = item["site_survey_scheduled_date"].(time.Time)
@@ -211,15 +231,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FinPassdate, _ = item["fin_pass_date"].(time.Time)
 		PtoSubmittedDate, _ = item["pto_submitted_date"].(time.Time)
 		PtoDate, _ = item["pto_granted_new"].(time.Time)
-		ContractDate, _ = item["sale_date"].(time.Time)
 
-		RoofingStatus, _ := item["roofing_status"].(string)
-
-		surveyColor, SiteSurevyDate, _ := getSurveyColor(SiteSurveyScheduleDate, SiteSurverCompleteDate, ContractDate)
-		cadColor, CadDesignDate := getCadColor(CadReady, PlanSetCompleteDate, SiteSurverCompleteDate)
-		permitColor, PermittingDate := getPermittingColor(PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate, PlanSetCompleteDate)
-		roofingColor, RoofingDate := roofingColor(RoofingCratedDate, RoofinCompleteDate, RoofingStatus)
-		installColor, InstallDate, _ := installColor(PVInstallCreatedDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompletedDate, PermitApprovedDate, IcAPprovedDate)
+		surveyColor, SiteSurevyDate, _ := getSurveyColor(SiteSurveyScheduleDate, SiteSurverCompleteDate)
+		cadColor, CadDesignDate := getCadColor(CadReady, PlanSetCompleteDate)
+		permitColor, PermittingDate := getPermittingColor(PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate)
+		roofingColor, RoofingDate := roofingColor(RoofingCratedDate, RoofinCompleteDate)
+		installColor, InstallDate, _ := installColor(PVInstallCreatedDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompletedDate)
 		inspectionColor, InspectionDate := InspectionColor(FinCreatedDate, FinPassdate, PvInstallCompletedDate)
 		activationColor, ActivationDate := activationColor(PtoSubmittedDate, PtoDate, FinPassdate, FinCreatedDate)
 
@@ -278,13 +295,29 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
-	RecordCount = int64(len(perfomanceList.PerfomanceList))
-	paginatedData := PaginateData(perfomanceList, dataReq, agngRpForUserId)
+	// RecordCount = int64(len(perfomanceList.PerfomanceList))
+	paginatedData := postCalculation(perfomanceList, dataReq, agngRpForUserId)
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", RecordCount, perfomanceList)
 	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 
+}
+
+/* Function to join the unique id lists */
+func joinUniqueIdsWithDbResponse(data []map[string]interface{}) (joinedNames string) {
+	if len(data) > 0 {
+		escapedNames := make([]string, len(data))
+		for i, item := range data {
+			UniqueId, ok := item["customer_unique_id"].(string)
+			if !ok || len(UniqueId) == 0 {
+				UniqueId = ""
+			}
+			escapedNames[i] = "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
+		}
+		joinedNames = strings.Join(escapedNames, ", ")
+	}
+	return joinedNames
 }
 
 /* Function to set the db milestone */
@@ -328,7 +361,7 @@ func formatDate(t time.Time) string {
 
 *****************************************************************************
 */
-func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contractDate time.Time) (string, time.Time, string) {
+func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate time.Time) (string, time.Time, string) {
 
 	if !siteSurveycompletedDate.IsZero() {
 		return green, siteSurveycompletedDate, "Completed"
@@ -338,7 +371,7 @@ func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contractDa
 	return grey, time.Time{}, ""
 }
 
-func getCadColor(cadCreatedDate, planSetcompletedDate, siteSurveyCompletedDate time.Time) (string, time.Time) {
+func getCadColor(cadCreatedDate, planSetcompletedDate time.Time) (string, time.Time) {
 
 	if !planSetcompletedDate.IsZero() {
 		return green, planSetcompletedDate
@@ -348,7 +381,36 @@ func getCadColor(cadCreatedDate, planSetcompletedDate, siteSurveyCompletedDate t
 	return grey, time.Time{}
 }
 
-func roofingColor(roofingCreateDate, roofingCompleteDate time.Time, roofingStatus string) (string, time.Time) {
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate time.Time) (string, time.Time) {
+
+	if !permitApprovedDate.IsZero() && !IcApprovedDate.IsZero() {
+		latestApprovedDate := permitApprovedDate
+		if IcApprovedDate.After(permitApprovedDate) {
+			latestApprovedDate = IcApprovedDate
+		}
+		return green, latestApprovedDate
+	} else if !permitSubmittedDate.IsZero() && !IcSubmittedDate.IsZero() {
+		latestSubmittedDate := permitSubmittedDate
+		if IcSubmittedDate.After(permitSubmittedDate) {
+			latestSubmittedDate = IcSubmittedDate
+		}
+		return blue, latestSubmittedDate
+	}
+	return grey, time.Time{}
+}
+
+func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate time.Time) (string, time.Time, string) {
+
+	if !batteryScheduleDate.IsZero() && batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
+		return blue, pvInstallCompletedDate, "Scheduled"
+	} else if !pvInstallCreateDate.IsZero() {
+		return blue, pvInstallCreateDate, "Scheduled"
+	}
+
+	return grey, time.Time{}, ""
+}
+
+func roofingColor(roofingCreateDate, roofingCompleteDate time.Time) (string, time.Time) {
 
 	if !roofingCompleteDate.IsZero() {
 		return green, roofingCompleteDate
@@ -374,35 +436,6 @@ func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Ti
 		return green, finPassDate
 	} else if !finCreatedDate.IsZero() {
 		return blue, finCreatedDate
-	}
-	return grey, time.Time{}
-}
-
-func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedCompletedDate, icApprovedDate time.Time) (string, time.Time, string) {
-
-	if !batteryScheduleDate.IsZero() && batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
-		return blue, pvInstallCompletedDate, "Scheduled"
-	} else if !pvInstallCreateDate.IsZero() {
-		return blue, pvInstallCreateDate, "Scheduled"
-	}
-
-	return grey, time.Time{}, ""
-}
-
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, planSetCompleteDate time.Time) (string, time.Time) {
-
-	if !permitApprovedDate.IsZero() && !IcApprovedDate.IsZero() {
-		latestApprovedDate := permitApprovedDate
-		if IcApprovedDate.After(permitApprovedDate) {
-			latestApprovedDate = IcApprovedDate
-		}
-		return green, latestApprovedDate
-	} else if !permitSubmittedDate.IsZero() && !IcSubmittedDate.IsZero() {
-		latestSubmittedDate := permitSubmittedDate
-		if IcSubmittedDate.After(permitSubmittedDate) {
-			latestSubmittedDate = IcSubmittedDate
-		}
-		return blue, latestSubmittedDate
 	}
 	return grey, time.Time{}
 }
@@ -535,7 +568,31 @@ func getFieldText(data map[string]interface{}, field string) string {
 *****************************************************************************
 */
 
-func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
+func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
+	paginatedData := []map[string]interface{}{}
+	startIndex := (req.PageNumber - 1) * req.PageSize
+	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data))))
+
+	if startIndex >= len(data) || startIndex >= endIndex {
+		return make([]map[string]interface{}, 0)
+	}
+
+	paginatedData = append(paginatedData, data[startIndex:endIndex]...)
+	return paginatedData
+}
+
+/*
+*****************************************************************************
+
+	- FUNCTION:		postCalculation
+  - DESCRIPTION:
+    function helps in calculating the ntp/qc data for the unique ids that is
+		displayed in UI at present. See the value next to each unique id in UI
+
+*****************************************************************************
+*/
+
+func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
 
 	var (
 		updated = make(map[string]bool)
@@ -544,16 +601,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 
 	log.EnterFn(0, "PaginateData")
 	defer func() { log.ExitFn(0, "PaginateData", err) }()
-	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
-
-	startIndex := (req.PageNumber - 1) * req.PageSize
-	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data.PerfomanceList))))
-
-	if startIndex >= len(data.PerfomanceList) || startIndex >= endIndex {
-		return make([]models.PerfomanceResponse, 0)
-	}
-
-	paginatedData = append(paginatedData, data.PerfomanceList[startIndex:endIndex]...)
+	paginatedData := data.PerfomanceList
 
 	uniqueIds := make([]string, len(paginatedData))
 	for i, item := range paginatedData {
