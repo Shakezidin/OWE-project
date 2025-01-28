@@ -1159,7 +1159,7 @@ func GetBasePipelineQuery(uniqueIds string) string {
             fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
         LEFT JOIN
             pto_ic_schema AS pto ON cust.our = pto.customer_unique_id 
-		WHERE cust.unique_id in ('%v')`, uniqueIds)
+		WHERE cust.unique_id in (%v)`, uniqueIds)
 }
 
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
