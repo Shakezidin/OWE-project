@@ -28,7 +28,6 @@ const CreateWebHook: React.FC = () => {
   }, [dispatch]);
   const handleAddDealer = () => {
     setEditMode(false);
-    // setEditDealer(null);
     handleOpen();
   };
   const getColumnNames = () => {
@@ -88,11 +87,6 @@ const CreateWebHook: React.FC = () => {
           showSelectIcon={true}
           showFilterIcon={true}
         />
-        {/* {filterOPen && <FilterDealer handleClose={filterClose}
-          columns={columns}
-          page_number={1}
-          page_size={5} />} */}
-
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -142,15 +136,6 @@ const CreateWebHook: React.FC = () => {
           </table>
         </div>
       </div>
-      {/* {
-        dataDb?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      } */}
     </div>
   );
 };

@@ -416,8 +416,6 @@ export const ARDashboardPage: React.FC = () => {
                       menu: (baseStyles) => ({
                         ...baseStyles,
                         width: '8rem',
-                        // height: 'auto',
-                        // overflowY: 'auto',
                         zIndex: 999,
                         marginLeft: '-32px',
                       }),
@@ -459,7 +457,6 @@ export const ARDashboardPage: React.FC = () => {
                     className={`filter-disable ${
                       active === 1 ? 'rep-active-filter-line' : ''
                     }`}
-                    // onClick={() => setActive(1)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
                     {active === 1 ? (

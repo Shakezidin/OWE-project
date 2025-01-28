@@ -14,7 +14,7 @@ import {
 } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
-import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
+import { checkUserExists, checkDbStatus } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
@@ -28,6 +28,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
+  const [dbStatus, setDbStatus]= useState<boolean>(true);
   const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -37,13 +38,13 @@ const MainLayout = () => {
 
   const getToken = async () => {
     try {
-      const response = await postCaller("get_graph_api_access_token", {});
+      const response = await postCaller('get_graph_api_access_token', {});
       const token = await response.data.access_token;
       const tokenDuration = await response.data.expires_in;
-      const expTime = new Date(Date.now() + 100)
-      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60))
-      Cookies.set('myToken', token, { expires: expTime, path: "/" });
-      dispatch(setToken(token))
+      const expTime = new Date(Date.now() + 100);
+      expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration / 60));
+      Cookies.set('myToken', token, { expires: expTime, path: '/' });
+      dispatch(setToken(token));
     } catch (error) {
       console.error(error);
     }
@@ -52,9 +53,9 @@ const MainLayout = () => {
   useEffect(() => {
     const token = Cookies.get('myToken');
     if (!token) {
-      getToken()
+      getToken();
     }
-  }, [pathname])
+  }, [pathname]);
 
   /** logout  */
   const logoutUser = (message?: string) => {
@@ -99,6 +100,21 @@ const MainLayout = () => {
     }
   }, [dispatch, navigate, authData]);
 
+    /** check whether db down or not */
+    useEffect(() => {
+        dispatch(checkDbStatus())
+          .then((response: any) => {
+            if (response.payload) {
+             
+              setDbStatus(response.payload.is_up)
+            } 
+          })
+          .catch((error: any) => {
+            console.error('Error', error);
+          });
+      
+    }, [dispatch, navigate, authData]);
+
   useEffect(() => {
     if (isTablet) {
       setToggleOpen(true);
@@ -111,14 +127,12 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
-      {/* {isStaging === 'staging' ? (
-        <ChatSupport isAuthenticated={isAuthenticated} />
-      ) : null} */}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
         sidebarChange={sidebarChange}
         setSidebarChange={setSidebarChange}
+        dbStatus={dbStatus}
       />
       <div className="side-header">
         <Sidebar

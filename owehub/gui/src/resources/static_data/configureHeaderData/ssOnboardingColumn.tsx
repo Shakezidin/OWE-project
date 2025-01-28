@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const SsOnboardingColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'ss_onboarding_id',
     displayName: 'Unique id',

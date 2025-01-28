@@ -78,7 +78,6 @@ const MyProfile = () => {
       user_code: userDetail.user_code,
       name: userDetail.name,
       street_address: street,
-      // zipcode: zipCode,
       country: country,
       city: city,
       state: state,
@@ -154,17 +153,6 @@ const MyProfile = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isEditMode) {
-      // const newErrors = {
-      //   city: city ? '' : 'City is required',
-      //   street: street ? '' : 'Street is required',
-      //   country: country ? '' : 'Country is required',
-      //   state: state ? '' : 'State is required',
-      // };
-      // setErrors(newErrors);
-      // @ts-ignore
-      // if (Object.keys(newErrors).every((it) => !newErrors[it])) {
-      //   updateSubmit();
-      // }
       updateSubmit();
     }
   };
@@ -191,10 +179,6 @@ const MyProfile = () => {
               <div className="">
                 <p>Personal Information</p>
               </div>
-              {/* <div className="edit-section">
-                <img src={ICONS.editIcon} alt="" />
-                <p>Edit</p>
-              </div> */}
             </div>
 
             <div

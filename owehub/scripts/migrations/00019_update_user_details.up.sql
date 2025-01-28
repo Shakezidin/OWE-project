@@ -24,6 +24,7 @@ CREATE OR REPLACE FUNCTION update_existing_user(
     p_tables_permissions jsonb,
     p_user_code VARCHAR(50),
     p_created_at TIMESTAMP,
+    p_manager_role VARCHAR(255),
     OUT v_user_id INT
 )
 RETURNS INT
@@ -37,7 +38,7 @@ DECLARE
     v_zipcode_id INT;
     v_team_id INT;
     v_max_user_code INT;
-    v_dealer_id INT;
+    v_partner_id INT;
     v_new_user_code VARCHAR(255);
     v_reporting_manager VARCHAR(255);
 BEGIN
@@ -117,30 +118,17 @@ BEGIN
         v_team_id := NULL;
     END IF;
 
-     -- Get the dealer owner's user_id
-    -- IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-    --     SELECT partner_id INTO v_dealer_id
-    --     FROM sales_partner_dbhub_schema
-    --     WHERE sales_partner_name = p_dealer_name;
-
-    --     IF NOT FOUND THEN
-    --         RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
-    --     END IF;
-    -- ELSE
-    --     v_dealer_id := NULL;
-    -- END IF;
-
-         -- Get the dealer owner's user_id
+     -- Get the dealer owner's partner_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT id INTO v_dealer_id
-        FROM v_dealer
-        WHERE dealer_name = p_dealer_name;
+        SELECT partner_id INTO v_partner_id
+        FROM sales_partner_dbhub_schema
+        WHERE sales_partner_name = p_dealer_name;
 
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
+            RAISE EXCEPTION 'Sales Partner with name % not found', p_dealer_name;
         END IF;
     ELSE
-        v_dealer_id := NULL;
+        v_partner_id := NULL;
     END IF;
 
     -- Insert a new user into user_details table
@@ -165,11 +153,12 @@ BEGIN
         zipcode,
         country,
         team_id,
-        dealer_id,
+        partner_id,
 	    podio_user,
         tables_permissions,
         updated_at,
-        created_at
+        created_at,
+        manager_role
     )
     VALUES (
         p_name,
@@ -192,11 +181,12 @@ BEGIN
         v_zipcode_id,
         p_country,
         v_team_id,
-        v_dealer_id,
+        v_partner_id,
 	    p_add_to_podio,
         p_tables_permissions,
         NOW(),
-        p_created_at
+        p_created_at,
+        p_manager_role
     )
     RETURNING user_id INTO v_user_id;
 

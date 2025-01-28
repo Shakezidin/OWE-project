@@ -64,13 +64,19 @@ import Dashboard from './ui/reporting/Dashboard';
 import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
 import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
-// import SiteFirstCompletion from './ui/reporting/SiteFirstCompletion';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
-
+import DatTool from './ui/DatTool/DatTool';
 
 function App() {
+  // Add console log suppression at the start of App component
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+    console.log = () => {};
+    console.error = () => {};
+    console.warn = () => {};
+  }
+
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
     (state: RootState) => state.auth
@@ -201,21 +207,19 @@ function App() {
 
             {/* TODO: Component need to change, ADDING ROUTES AND DEFAULT components */}
             <Route path={ROUTES.SITE_COMPLETION} element={<Timelines />} />
-            {/* <Route path={ROUTES.SITE_FIRST_COMPLETION} element={<SiteFirstCompletion />} /> */}
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
-            <Route path={ROUTES.FIRST_TIME_COMPLETIONS} element={<CompletedFirstTime />} />
+            <Route
+              path={ROUTES.FIRST_TIME_COMPLETIONS}
+              element={<CompletedFirstTime />}
+            />
             <Route
               path={ROUTES.REPORTING_SPEED_OVERALL}
               element={<OverAll />}
             />
             <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
 
-            <Route
-              path={ROUTES.AHJ}
-              element={<Ahj />}
-            />
-
+            <Route path={ROUTES.AHJ} element={<Ahj />} />
           </Route>
 
           {ManageRoutesWithRole(role_name!)}
@@ -250,7 +254,13 @@ function App() {
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
+          <Route
+            path={ROUTES.SUMMARY_DASBOARD}
+            element={<Summary_Dashboard />}
+          />
           <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
+          <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
+ 
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>

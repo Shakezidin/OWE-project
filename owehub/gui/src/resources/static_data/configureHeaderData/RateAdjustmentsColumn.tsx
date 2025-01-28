@@ -1,26 +1,4 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
-
-// adjustment
-// :
-// "12345"
-// max_rate
-// :
-// 123456
-// min_rate
-// :
-// 12345
-// pay_scale
-// :
-// "1011"
-// position
-// :
-// "qa"
-// record_id
-// :
-// 1
-// unique_id
-// :
-// "PrAN0l"
 export const RateAdjustmentsColumns: Column[] = [
   {
     name: 'pay_scale',

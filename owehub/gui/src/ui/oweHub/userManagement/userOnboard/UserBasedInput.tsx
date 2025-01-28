@@ -20,6 +20,7 @@ interface inputSelectProps {
   handleChangeForDealer?: (value: any, name: string) => void;
   handleChangeAssignManager: (value: any, name: string) => void;
   setLogoUrl: any;
+  editData?:any;
 }
 
 const UserBasedInput: React.FC<inputSelectProps> = ({
@@ -30,6 +31,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   handleChangeForDealer,
   handleChangeAssignManager,
   setLogoUrl,
+  editData
 }) => {
   const [files, setFiles] = useState<FileList | null>(null);
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -55,6 +57,33 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
       setNewFormData((prev: any) => ({ ...prev, ...dealer }));
     }
   }, [dealer]);
+
+  useEffect(() => {
+    if (editData?.length > 0) {
+      // Access the first user data from editData
+      const userData = editData[0];
+  
+      // Find the reporting manager in the regionList
+      const reportingManager = regionList?.find(
+        (option) => option?.label === userData?.reporting_manager
+      );
+
+      console.log(reportingManager, "reportingManager")
+  
+      // If a matching reporting manager is found, update the report_to field
+      if (reportingManager) {
+        handleChangeForRegion(
+          { value: reportingManager.value },
+          'report_to'
+        );
+      }
+    }
+  }, [editData, regionList]);
+  
+
+  console.log(regionList?.find(
+    (option) => option?.value === formData.report_to
+  ), "consolelog")
 
   return (
     <>
@@ -126,20 +155,6 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
             />
             {reportError && <div className="error-message">{reportError}</div>}
           </div>
-          {/* <div className="create-input-field" style={{ marginTop: '4px' }}>
-            <label className="inputLabel-select select-type-label">
-              Team Name
-            </label>
-            <SelectOption
-              options={teamsOption(newFormData)}
-              onChange={(newValue) =>
-                handleChangeForRegion(newValue, 'team_name')
-              }
-              value={teamsOption(newFormData)?.find(
-                (option) => option?.value === formData.team_name
-              )}
-            />
-          </div> */}
         </>
       )}
 

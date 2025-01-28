@@ -148,7 +148,7 @@
   position: relative;
 }
 
-.pendingActionTable{
+.pendingActionTable {
   overflow-x: auto;
   scroll-behavior: smooth;
 }
@@ -175,7 +175,7 @@
 }
 
 .pendingActionTable::-webkit-scrollbar-corner {
-  background-color: transparent; 
+  background-color: transparent;
 }
 
 @media (max-width: 968px) {
@@ -198,7 +198,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .pend-actions-cont{
+  .pend-actions-cont {
     margin-top: 0 !important;
   }
   .pending_card_wrapper {

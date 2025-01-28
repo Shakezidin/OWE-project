@@ -73,10 +73,8 @@ const LibraryModel: React.FC = () => {
   };
 
   // api code start
-
   const uploadFile = async () => {
     if (!file) return;
-
     const accessToken = '';
     const apiUrl = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root:/${file.name}:/content`;
 
@@ -95,7 +93,6 @@ const LibraryModel: React.FC = () => {
   };
 
   // api end
-
   return (
     <>
       {closeWindow && (

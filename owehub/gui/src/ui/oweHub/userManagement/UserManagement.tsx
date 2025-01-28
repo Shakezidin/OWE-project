@@ -37,23 +37,33 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
+import UserUpdate from './userOnboard/UpdateUser';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
+interface UserData {
+  name?: string;
+  email_id?: string;
+  mobile_number?: string;
+  role_name?: string;
+  dealer?: string;
+  description?: string;
+}
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [openn, setOpenn] = useState<boolean>(false)
+  const [openn, setOpenn] = useState<boolean>(false);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState(false);
   const dispatch = useAppDispatch();
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
-  const { authData } = useAuth();
-
+  const [isExportingData, setIsExporting] = useState(false);
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
-  console.log(selectedOption, "selectedoption")
+  console.log(selectedOption, 'selectedoption');
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
@@ -92,23 +102,70 @@ const UserManagement: React.FC = () => {
 
   const [isClicked, setIsClicked] = useState(false);
   const [isClicked1, setIsClicked1] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [editData, setEditData] = useState<any>([]);
+  const [updateTablePermission, setUpdateTablePermission] = useState<any>({})
 
   const handleOpen = () => setOpen(true);
   const handleImport = () => setOpenn(true);
+
+  const handleEdit = async (id?: string) => {
+    setIsEdit(true);
+
+    const requestData = {
+      page_number: 1,
+      page_size: 25,
+      filters: [
+        {
+          Column: 'email_id',
+          Operation: '=',
+          Data: id || null, // Use `id` or a fallback value
+        },
+      ],
+    };
+
+    setLoadingEdit(true);
+
+    try {
+      // API call using postCaller
+      const response = await postCaller('get_users', requestData);
+
+      if (response.status > 201) {
+        toast.error(response.message);
+        setLoadingEdit(false);
+        setEditData([]);
+        return;
+      }
+
+      // Process and store the fetched data
+      setEditData(response.data.users_data_list);
+      setUpdateTablePermission(response.data.users_data_list[0].table_permission)
+      console.log(response.data.users_data_list, 'editData');
+    } catch (error) {
+      console.error('Error', error);
+      toast.error('An error occurred while fetching user data');
+    } finally {
+      setLoadingEdit(false);
+    }
+  };
+
   const handleClose = () => {
     dispatch(userResetForm());
     setOpen(false);
   };
+
+  const handleCloseEdit = () => {
+    dispatch(userResetForm());
+    setIsEdit(false);
+  };
   const handleClosee = () => {
     dispatch(userResetForm());
     setOpenn(false);
-    
   };
   /** fetch onboarding users data*/
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchUserOnboarding()); // Using dispatch
-      // await dispatch(createTablePermission());
+      await dispatch(fetchUserOnboarding());
     };
 
     fetchData();
@@ -120,58 +177,11 @@ const UserManagement: React.FC = () => {
     }
   }, [selectedOption]);
 
-  /** role based get data */
-
-  // useEffect(() => {
-  //   const data = {
-  //     page_number: page,
-  //     page_size: 25,
-  //     filters: [
-  //       {
-  //         Column: 'role_name',
-  //         Operation: '=',
-  //         Data: selectedOption.value,
-  //       },
-  //       {
-  //         Column: 'name',
-  //         Operation: 'cont',
-  //         Data: searchTerm,
-  //       },
-  //     ],
-  //   };
-
-  //   const dataa = {
-  //     page_number: page,
-  //     page_size: 25,
-  //     filters: [
-  //       {
-  //         Column: 'dealer_name',
-  //         Operation: 'cont',
-  //         Data: searchTerm,
-  //       },
-  //     ],
-  //   };
-  //   const fetchList = async () => {
-  //     await dispatch(fetchUserListBasedOnRole(data));
-  //   };
-
-  //   if (selectedOption.value !== 'Partner') {
-  //     fetchList();
-  //   }
-
-  //   const fetchDealer = async () => {
-  //     await dispatch(fetchDealerList(dataa));
-  //   };
-  //   if (selectedOption.value === 'Partner') {
-  //     fetchDealer();
-  //   }
-  // }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
-
   useEffect(() => {
     const data = {
       page_number: page,
       page_size: 25,
-      sales_rep_status:activeSalesRep,
+      sales_rep_status: activeSalesRep,
       filters: [
         {
           Column: 'name',
@@ -215,7 +225,42 @@ const UserManagement: React.FC = () => {
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
-  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm, activeSalesRep]);
+  }, [
+    selectedOption,
+    createUserResult,
+    deleteUserResult,
+    page,
+    searchTerm,
+    activeSalesRep,
+  ]);
+
+  useEffect(() => {
+    if(isExportingData){
+      const data = {
+        page_number: page,
+        
+        sales_rep_status: activeSalesRep,
+        filters: [
+          {
+            Column: 'name',
+            Operation: 'cont',
+            Data: searchTerm,
+          },
+        ],
+      };
+      if (selectedOption.value !== '') {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
+      dispatch(fetchUserListBasedOnRole(data));
+      
+
+    }
+
+  },[isExportingData])
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -259,8 +304,6 @@ const UserManagement: React.FC = () => {
     setActiveSalesRep(value);
   };
 
-
-  
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
     const arrayOfPermissions = Object.entries(tablePermissions).map(
@@ -325,6 +368,73 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  /** Update button */
+  const onSubmitUpdateUser = (tablePermissions: any) => {
+    const arrayOfPermissions = Object.entries(tablePermissions).map(
+      ([tableName, permission]) => ({
+        table_name: tableName,
+        privilege_type: permission,
+      })
+    );
+    const formErrors = validateForm(formData);
+    console.log('formErrors', formErrors);
+    if (Object.keys(formErrors).length === 0) {
+      updateUserRequest(arrayOfPermissions);
+    } else {
+      toast.info(Object.keys(formErrors)[0] + ' is required.');
+    }
+  };
+
+  /** API call to update */
+  const updateUserRequest = async (tablePermissions: any) => {
+    console.log(formData, 'formData');
+    const fetchuserdata = {
+      page_number: page,
+      page_size: 25,
+      sales_rep_status: activeSalesRep,
+      filters: [
+        {
+          Column: 'role_name',
+          Operation: 'cont',
+          Data: formData?.role_name,
+        },
+      ],
+    };
+
+    console.log(formData, 'updateuser data')
+    try {
+      if (formData.role_name !== 'Partner') {
+        const data = createUserObject(formData);
+
+        const response = await postCaller('update_user', {
+          ...data,
+          tables_permissions: tablePermissions,
+          revoke_table_permission: updateTablePermission || null ,
+          description: formData.description.trim(),
+          dealer_logo: logoUrl,
+          podio_checked: null,
+        
+        });
+
+        // Handle response
+        if (response.status > 201) {
+          toast.error(response.message);
+         
+
+          return;
+        }
+
+        toast.success(response.message);
+        handleCloseEdit();
+        await dispatch(fetchUserListBasedOnRole(fetchuserdata));
+
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    }
+  };
+
   /** API call to submit */
   const deleteUserRequest = async (
     deleteRows: string[],
@@ -385,8 +495,7 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-  console.log(userRoleBasedList, 'userRoleBasedList');
-  console.log(formData, "formdata")
+  
   /** render UI */
   return (
     <>
@@ -408,19 +517,31 @@ const UserManagement: React.FC = () => {
           setLogoUrl={setLogoUrl}
         />
       )}
-        {openn && (
+
+      {isEdit && (
+        <UserUpdate
+          handleClose={handleCloseEdit}
+          dealerList={dealerOwenerList}
+          regionList={regionList}
+          editMode={false}
+          selectedOption={selectedOption}
+          tablePermissions={tablePermissions}
+          setTablePermissions={setTablePermissions}
+          userOnboard={null}
+          onSubmitUpdateUser={onSubmitUpdateUser}
+          onChangeRole={(role, value) => {
+            console.log('formData', formData);
+            onChangeRole(role, value);
+          }}
+          setLogoUrl={setLogoUrl}
+          editData={editData}
+        />
+      )}
+      {openn && (
         <ImportUser
           handleClose={handleClosee}
-         
-       
-      
-           
           tablePermissions={tablePermissions}
-         
-         
           onSubmitCreateUser={onSubmitCreateUser}
-          
-         
         />
       )}
       <div className="barchart-section">
@@ -433,7 +554,6 @@ const UserManagement: React.FC = () => {
           activeSalesRep={activeSalesRep}
         />
       </div>
-
       <div className="onboardrow">
         <UserManagementTable
           AddBtn={
@@ -453,6 +573,8 @@ const UserManagement: React.FC = () => {
             />
           }
           activeSalesRep={activeSalesRep}
+          handleEdit={handleEdit}
+          editData={editData}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
@@ -466,6 +588,7 @@ const UserManagement: React.FC = () => {
           userDropdownData={ALL_USER_ROLE_LIST}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
+          setIsExporting={setIsExporting}
           onClickDelete={(item: any) => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)
@@ -499,9 +622,7 @@ const UserManagement: React.FC = () => {
             }
           }}
           onClickEdit={(item: UserRoleBasedListModel) => {
-            // console.log("row data",item)
             const [firstName, lastName] = item.name.split(' ');
-
             dispatch(updateUserForm({ field: 'isEdit', value: true }));
             dispatch(updateUserForm({ field: 'first_name', value: firstName }));
             dispatch(updateUserForm({ field: 'last_name', value: lastName }));

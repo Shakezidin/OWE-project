@@ -1,7 +1,6 @@
 import { Column } from '../../core/models/data_models/FilterSelectModel';
 
 export const UserActivityColumn: Column[] = [
-  // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'user_name',
     displayName: 'User Name',

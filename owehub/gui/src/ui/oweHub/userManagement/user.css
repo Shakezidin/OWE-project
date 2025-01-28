@@ -41,7 +41,6 @@
 .userManagementTable__search input:focus {
   outline: none;
   border-color: #007bff;
-  /* Change the border color to your desired color */
 }
 
 .flex-row-reverse {
@@ -119,17 +118,6 @@
   padding: 0rem 1rem 1rem 1rem;
 }
 
-/* .rate-input-field select {
-  width: Fixed (180px)px;
-height: Fixed (36px)px;
-padding: 6px 16px 6px 6px;
-gap: 46px;
-border-radius: 8px;
-border: 1px 0px 0px 0px;
-opacity: 0px;
-
-} */
-
 .iconsSection-delete {
   align-items: center;
   justify-content: center;
@@ -139,21 +127,12 @@ opacity: 0px;
   border-style: solid;
   border-color: #d0d5dd;
   padding: 2px;
-
-  /* border: "1px solid #d0d5dd"; */
 }
 
 .iconsSection-delete img {
   width: 17px;
   height: 18px;
 }
-
-/* .iconsSection-delete h4 {
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  text-align: left;
-} */
 
 .db-access {
   display: flex;

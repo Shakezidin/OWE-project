@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { Tooltip } from 'react-tooltip';
+import EditUser from '../../../../resources/assets/edituser.svg';
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -23,17 +24,18 @@ interface UserTableProps {
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   selectedValue?: string;
   handlePasswordReset: (id?: string) => void;
+  handleEdit: (id?: string) => void;
 }
 const AccountExecutiveTable: React.FC<UserTableProps> = ({
   data,
   onClickDelete,
-  onClickEdit,
   selectAllChecked,
   selectedRows,
   setSelectedRows,
   setSelectAllChecked,
   selectedValue,
   handlePasswordReset,
+  handleEdit
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -102,6 +104,11 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
     }
   }, [authData]);
 
+   const environment = process.env.REACT_APP_ENV;
+                const isEditVisible =
+                (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
+                environment === 'staging';
+
   return (
     <div
       className="UserManageTable"
@@ -148,7 +155,6 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
                       disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
-
                         toggleRowSelection(
                           i,
                           selectedRows,
@@ -161,8 +167,6 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
-                {/* <td>{el.role_name}</td> */}
-                {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
                   <td>{el.dealer_owner ? el.dealer_owner : 'NA'}</td>
                 )}
@@ -197,6 +201,39 @@ const AccountExecutiveTable: React.FC<UserTableProps> = ({
                 </td>
                 <td>
                   <div className="action-icon" style={{ gap: 4 }}>
+                    {isEditVisible && (
+                  <div
+                        className="reset_hover_btn"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          handleEdit(el.email_id);
+                        }}
+                      >
+                        <Tooltip
+                           style={{
+                            zIndex: 103,
+                            background: '#f7f7f7',
+                            color: '#000',
+                            fontSize: 12,
+                            paddingBlock: 4,
+                            fontWeight: '400',
+                            
+                          }}
+                          offset={8}
+                          id="edit_user"
+                          place="left"
+                          content="Edit"
+                          delayShow={200}
+                          className="pagination-tooltip"
+                        />
+                        <img
+                          src={EditUser} // Replace with the correct path to the edit icon
+                          alt="Edit User"
+                          data-tooltip-id="edit_user"
+                          style={{ color: 'rgb(102, 112, 133)', width: 18, height: 18 }}
+                        />
+                      </div>
+   ) }
                     <div
                       className=""
                       style={{

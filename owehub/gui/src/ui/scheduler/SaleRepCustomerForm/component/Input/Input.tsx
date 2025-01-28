@@ -63,7 +63,7 @@ const Input: React.FC<InputProps> = ({
           {...rest}
           readOnly={showIsEditing ? !isEditing : readOnly}
           className={`${styles.input_field} ${className}`}
-          onFocus={handleFocus}  
+          onFocus={handleFocus}
         />
         {showIsEditing && (
           <span

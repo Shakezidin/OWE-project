@@ -5,7 +5,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
@@ -97,9 +96,6 @@ export default class BarChartComponent extends PureComponent {
                 }}
                 tickLine={false}
               />
-              {/* <Legend
-                wrapperStyle={{ fontSize: "12px", color: "#000000" }} payload={[{ value: 'Total Records', type: 'rect', color: '#FB7955'  }, { value: 'Historical Records', type: 'rect', color: '#007AF5' }]} iconSize={15} 
-              /> */}
               <Bar
                 dataKey="Total_Records"
                 fill="#EE824D"

@@ -3,20 +3,15 @@ import styles from './customer.module.css';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
 import { TbChevronDown } from 'react-icons/tb';
-import { LuClock } from 'react-icons/lu';
 import GoogleMapReact from 'google-map-react';
 import { IoLocationOutline } from 'react-icons/io5';
 import roofIcon from '../../../../resources/assets/roof_top.svg';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { Link } from 'react-router-dom';
-import { ROUTES } from '../../../../routes/routes';
 import { MdLocationOn } from 'react-icons/md';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 const Marker = ({
-  text,
-  lat,
-  lng,
 }: {
   text: string;
   lat: number;
@@ -66,7 +61,12 @@ const Index = ({
             {name.slice(0, 2) || 'N/A'}
           </div>
 
-          <h3 className={`${styles.name_customer}  ml1 ${styles.customer_name}`}> {name || 'N/A'} </h3>
+          <h3
+            className={`${styles.name_customer}  ml1 ${styles.customer_name}`}
+          >
+            {' '}
+            {name || 'N/A'}{' '}
+          </h3>
         </div>
 
         {!isMobile ? (
@@ -98,8 +98,6 @@ const Index = ({
           </div>
         </div>
 
-
-
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className={styles.accordian_btn}
@@ -116,11 +114,14 @@ const Index = ({
       <div className="mt2">
         <div className={styles.other_info_grid}>
           {isMobile ? (
-            <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-          marginBottom: '22px'
-            }}  className={`${styles.mail_mobile}flex items-start`}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginBottom: '22px',
+              }}
+              className={`${styles.mail_mobile}flex items-start`}
+            >
               <div
                 className={` flex items-center justify-center ${styles.bg_green} ${styles.avatar_circle}`}
               >
@@ -144,15 +145,20 @@ const Index = ({
             </div>
             <div style={{ marginLeft: 6 }}>
               <h4
-style={{
-  fontSize: isMobile ? '12px' : '14px',
-  fontWeight: 600,
-  lineHeight: 'normal',
-}}              >
+                style={{
+                  fontSize: isMobile ? '12px' : '14px',
+                  fontWeight: 600,
+                  lineHeight: 'normal',
+                }}
+              >
                 System Size
               </h4>
-              <p className={styles.sm_text} style={{
-  fontSize: isMobile ? '12px' : '14px', }}>
+              <p
+                className={styles.sm_text}
+                style={{
+                  fontSize: isMobile ? '12px' : '14px',
+                }}
+              >
                 {sysSize}
               </p>
             </div>
@@ -166,22 +172,29 @@ style={{
             </div>
             <div className="ml1">
               <h3 className={styles.customer_name}>Roof Type</h3>
-              <p className={styles.sm_text} style={{
-  fontSize: isMobile ? '12px' : '14px' }}> {roofType} </p>
+              <p
+                className={styles.sm_text}
+                style={{
+                  fontSize: isMobile ? '12px' : '14px',
+                }}
+              >
+                {' '}
+                {roofType}{' '}
+              </p>
             </div>
           </div>
         </div>
 
         <div
-  className={`flex justify-between ${withSecondaryBtn ? 'items-end' : 'mt1'}`}
-  style={{
-    display: isMobile ? 'flex' : undefined,
-    flexDirection: isMobile ? 'column-reverse' : undefined,
-    marginTop: isMobile ? '24px' : ''
-  }}
->
+          className={`flex justify-between ${withSecondaryBtn ? 'items-end' : 'mt1'}`}
+          style={{
+            display: isMobile ? 'flex' : undefined,
+            flexDirection: isMobile ? 'column-reverse' : undefined,
+            marginTop: isMobile ? '24px' : '',
+          }}
+        >
           <div
-            style={{ flexBasis: isMobile ? '0px' : '250px', }}
+            style={{ flexBasis: isMobile ? '0px' : '250px' }}
             className=" flex justify-between flex-column"
           >
             {!withSecondaryBtn && (
@@ -224,14 +237,14 @@ style={{
           </div>
 
           <div
-  style={{
-    ...mapStyles, // Spread the existing mapStyles
-    flexBasis: isMobile ? '0px' : '265px', // Conditionally set flex-basis
-  }}
->
+            style={{
+              ...mapStyles, // Spread the existing mapStyles
+              flexBasis: isMobile ? '0px' : '265px', // Conditionally set flex-basis
+            }}
+          >
             <div
               className={styles.map_wrapper}
-              style={{ height: withSecondaryBtn ? 101 : 170, }}
+              style={{ height: withSecondaryBtn ? 101 : 170 }}
             >
               <GoogleMapReact
                 bootstrapURLKeys={{

@@ -32,7 +32,6 @@ const TeamManagement: React.FC = () => {
   const arrowColors = ['#E0728C', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const [refetch, setRefetch] = useState(1);
   const [newFormData, setNewFormData] = useState<any>([]);
-  const [, setSelectedDealer] = useState(null);
   const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = useState<number[]>(
     []
   );
@@ -148,13 +147,7 @@ const TeamManagement: React.FC = () => {
 
   return (
     <>
-      {open2 && (
-        <NewTeam
-          handleClose2={handleClose2}
-          setRefetch={setRefetch}
-          // onSubmitCreateUser={onSubmitCreateTeam}
-        />
-      )}
+      {open2 && <NewTeam handleClose2={handleClose2} setRefetch={setRefetch} />}
 
       <div className="team-container">
         <div className="team-main">
@@ -163,15 +156,13 @@ const TeamManagement: React.FC = () => {
               if (!state) return null;
               const [isOpen, setIsOpen] = state;
               return (
-                <div
-                  key={index}
-                  // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
-                >
+                <div key={index}>
                   <div className="teamdash-header">
-                    <h1 style={{fontSize: "18px"}}>Total Teams: {teams?.length}</h1>
+                    <h1 style={{ fontSize: '18px' }}>
+                      Total Teams: {teams?.length}
+                    </h1>
                     <div className="dash-newteam">
                       <div className="remove-section-oncheck">
-                        {/* <button className='delete' onClick={handleOpen2}>Remove Team</button> */}
                         {!!isAnyCheckboxChecked.length && (
                           <button
                             disabled={isPending}
@@ -323,7 +314,7 @@ const TeamManagement: React.FC = () => {
                     )}
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>

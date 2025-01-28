@@ -140,8 +140,6 @@ const LeradManagementHistory = () => {
     },
   ];
 
-  // const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
-
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(
       periodFilterOptions.find((option) => option.label === 'This Week') || null
@@ -163,7 +161,6 @@ const LeradManagementHistory = () => {
 
   const handleRangeChange = (ranges: any) => {
     setSelectedRanges([ranges.selection]);
-    // setSelectedPeriod(null);
   };
 
   const onReset = () => {
@@ -381,7 +378,6 @@ const LeradManagementHistory = () => {
     setIsExporting(true);
     const headers = [
       'Leads ID',
-      // 'Status ID',
       'First Name',
       'Last Name',
       'Phone Number',
@@ -422,7 +418,6 @@ const LeradManagementHistory = () => {
 
       const csvData = response.data?.leads_history_list?.map?.((item: any) => [
         `OWE${item.leads_id}`,
-        // item.status_id,
         item.first_name,
         item.last_name,
         `'${item.phone_number}'`,
@@ -621,7 +616,6 @@ const LeradManagementHistory = () => {
                           backgroundColor: '#fffff',
                           boxShadow: 'none',
                           '@media only screen and (max-width: 767px)': {
-                            // width: '80px',
                             width: 'fit-content',
                           },
                           '&:focus-within': {
@@ -726,7 +720,6 @@ const LeradManagementHistory = () => {
                           paddingBlock: 4,
                         }}
                         delayShow={600} // Delay in showing the tooltip (in milliseconds)
-                        // delayHide={100}
                         offset={8}
                         id="export"
                         place="bottom"

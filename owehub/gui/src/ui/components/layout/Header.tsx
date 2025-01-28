@@ -18,6 +18,9 @@ import { IoMenu } from 'react-icons/io5';
 import { RxCross2 } from 'react-icons/rx';
 import useAuth from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
+import BulbUp from '../../../resources/assets/BulbUp.svg';
+import BulbDown from '../../../resources/assets/BulbDown.svg';
+import { Tooltip } from 'react-tooltip';
 
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 interface Toggleprops {
@@ -25,9 +28,15 @@ interface Toggleprops {
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
   sidebarChange: number;
+  dbStatus: boolean;
 }
 
-const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
+enum DBMessage {
+  DBUp = 'Database connection established successfully. All services are operational.',
+  DBDown = 'Our website is currently undergoing maintenance. Please check back soon!',
+}
+
+const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, dbStatus }) => {
   const [name, setName] = useState<String>();
   const { authData, clearAuthData } = useAuth();
 
@@ -46,7 +55,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isStaging = process.env.REACT_APP_ENV;
 
   const handleLogout = () => {
-    // clearAuthData();
     dispatch(logout());
     navigate('/login');
   };
@@ -117,13 +125,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               style={{
                 height: toggleOpen ? 30 : 45,
                 paddingLeft: toggleOpen ? 10 : '',
-                // marginInline: toggleOpen ? 'auto' : undefined,
               }}
             />
           )}
-          {/* {toggleOpen || isTablet ? null : (
-            <h3 style={{ color: 'black' }}>OWE HUB</h3>
-          )} */}
 
           {!isTablet && (
             <div
@@ -173,8 +177,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               alignSelf: 'center',
               display: isTablet ? 'flex' : 'none',
               alignItems: 'center',
-              // paddingLeft: toggleOpen ? 10 : '',
-              // marginInline: toggleOpen ? 'auto' : undefined,
             }}
           />
           <></>
@@ -187,9 +189,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             alignSelf: 'center',
             display: isTablet ? 'flex' : 'none',
             alignItems: 'center',
-            paddingLeft: "1rem"
-            // paddingLeft: toggleOpen ? 10 : '',
-            // marginInline: toggleOpen ? 'auto' : undefined,
+            paddingLeft: '1rem',
           }}
         />
       </div>
@@ -198,10 +198,10 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           {
             <div>
               {userRole === TYPE_OF_USER.DEALER_OWNER ||
-              userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
-              userRole === TYPE_OF_USER.SALE_MANAGER ||
-              userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
-              userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
+                userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+                userRole === TYPE_OF_USER.SALE_MANAGER ||
+                userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
+                userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
                 <div className="calendar-logo">
                   <Link to={ROUTES.CALENDAR}>
                     <span></span>
@@ -211,6 +211,31 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               ) : null}
             </div>
           }
+          {isStaging === 'staging' && (
+          <div className="reset_hover_btn" style={{ cursor: 'pointer' }}>
+            <Tooltip
+              style={{
+                zIndex: 103,
+                background: '#f7f7f7',
+                color: '#000',
+                fontSize: 12,
+                paddingBlock: 4,
+                fontWeight: '400',
+              }}
+              offset={8}
+              id="bulb-up"
+              place="left"
+              content={dbStatus ? DBMessage.DBUp : DBMessage.DBDown}
+              delayShow={200}
+              className="pagination-tooltip"
+            />
+            <img
+              src={dbStatus ? BulbUp : BulbDown}
+              alt="Edit User"
+              data-tooltip-id="bulb-up"
+            />
+          </div>
+  )}
           <div
             className="user-container relative"
             ref={dropdownRef}
@@ -231,7 +256,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {openIcon ? (
                       <img src={ICONS.upperIcon} alt="" />
                     ) : (
-                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem', color: "#292B2E" }} />
+                      <MdKeyboardArrowDown
+                        style={{ fontSize: '1.5rem', color: '#292B2E' }}
+                      />
                     )}
                   </div>
                 </div>
@@ -275,10 +302,10 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           {
             <div>
               {userRole === TYPE_OF_USER.DEALER_OWNER ||
-              userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
-              userRole === TYPE_OF_USER.SALE_MANAGER ||
-              userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
-              userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
+                userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+                userRole === TYPE_OF_USER.SALE_MANAGER ||
+                userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
+                userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
                 <div className="calendar-logo">
                   <Link to={ROUTES.CALENDAR}>
                     <span></span>

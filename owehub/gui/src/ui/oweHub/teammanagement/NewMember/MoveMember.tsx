@@ -36,7 +36,6 @@ const MoveMember: React.FC<createUserProps> = ({
   setRefetch,
 }) => {
   const dispatch = useAppDispatch();
-  const [phoneNumberError, setPhoneNumberError] = useState('');
   const { loading, formData } = useAppSelector(
     (state) => state.createOnboardUser
   );
@@ -55,12 +54,6 @@ const MoveMember: React.FC<createUserProps> = ({
   };
 
   useEffect(() => {
-    // const pageNumber = {
-    //   page_number: currentPage,
-    //   page_size: itemsPerPage,
-    //   archived: viewArchived ? true : undefined,
-    //   filters,
-    // };
     dispatch(getTeams());
   }, []);
   const { isMove, isFormSubmitting, teams } = useAppSelector(
@@ -149,44 +142,6 @@ const MoveMember: React.FC<createUserProps> = ({
                     />
                   </div>
                 </div>
-                {/* <div className="create-input-container">
-                  <div className="tm-create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Current Role"
-                      value={formData.email_id}
-                      placeholder={'Sales Rep'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'email_id'}
-                      disabled={formData.isEdit}
-                    />
-                  </div>
-
-                  <div className="tm-create-input-field">
-                    <label
-                      className="inputLabel-select"
-                      style={{ fontWeight: 400 }}
-                    >
-                      New Role
-                    </label>
-                    <SelectOption
-                      options={comissionValueData}
-                      value={comissionValueData.find(
-                        (option) => option.value === selectedOption2
-                      )}
-                      onChange={handleSelectChange2}
-                    />
-                  </div>
-                </div>
-                <div style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                    }}
-                  ></div>
-                </div> */}
               </div>
             </div>
           </div>

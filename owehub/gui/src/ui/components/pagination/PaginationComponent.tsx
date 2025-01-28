@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import './pagination.css';
 import ReactPaginate from 'react-paginate';
@@ -16,8 +16,6 @@ const PaginationComponent: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  itemsPerPage,
-  handleItemsPerPageChange,
 }) => {
   return (
     <div className="pagination-container">

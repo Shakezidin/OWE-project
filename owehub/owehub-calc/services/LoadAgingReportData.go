@@ -103,8 +103,8 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["pto_created_date"] = agngRpData.PTO_Created_Date
 	outData["pto_submitted_date"] = agngRpData.PTO_Submitted_Date
 	outData["pto_date"] = agngRpData.PTO_Date
-	outData["first_time_cad_complete_date"] = agngRpData.First_Time_CAD_Complete_Date
-	outData["most_recent_cad_complete_date"] = agngRpData.Most_Recent_CAD_Complete_Date
+	outData["plan_set_complete_day"] = agngRpData.Plan_Set_Complete_Day
+	outData["most_recent_plan_set_h"] = agngRpData.Most_Recent_Plan_Set_H
 	outData["peee_submitted_date"] = agngRpData.PE_EE_Submitted_Date
 	outData["peee_complete_date"] = agngRpData.PE_EE_Complete_Date
 	outData["fin_scheduled_date"] = agngRpData.FIN_Scheduled_Date
@@ -146,7 +146,7 @@ func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, proje
 	var daysPendingPermit int
 	today := time.Now()
 
-	if permitApprovedDate != "0001-01-01" && NTPDate != "0001-01-01"  { 
+	if permitApprovedDate != "0001-01-01" && NTPDate != "0001-01-01" {
 		daysPendingPermit = int(parseTime(permitApprovedDate).Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days
 	} else if projectStatus == "ACTIVE" && NTPDate != "0001-01-01" {
 		daysPendingPermit = int(today.Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days from today
@@ -192,7 +192,7 @@ func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, proje
 	var daysPendingPto int
 	today := time.Now()
 
-	if ptoDate != "0001-01-01" && pvInstallCompleteDate != "0001-01-01"{
+	if ptoDate != "0001-01-01" && pvInstallCompleteDate != "0001-01-01" {
 		daysPendingPto = int(parseTime(ptoDate).Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days
 	} else if projectStatus == "ACTIVE" && pvInstallCompleteDate != "0001-01-01" {
 		daysPendingPto = int(today.Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days from today
@@ -208,7 +208,7 @@ func calculateProjectAge(uniqueId string, contractDate string) int {
 	var projectAge int
 	today := time.Now()
 
-	if uniqueId != "" && contractDate != "0001-01-01"{
+	if uniqueId != "" && contractDate != "0001-01-01" {
 		projectAge = int(today.Sub(*parseTime(contractDate)).Abs().Hours() / 24) // Calculate days from today
 	} else {
 		projectAge = 0

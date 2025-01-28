@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import botOpen from '../../../resources/assets/botOpen.png';
-import botOpenUp from '../../../resources/assets/botOpenUp.png';
 import send from '../../../resources/assets/send.png';
 import sendActive from '../../../resources/assets/send-active.png';
 import chat_logo from '../../../resources/assets/chat_logo.png';
@@ -156,13 +154,6 @@ const ChatSupport = ({ isAuthenticated }: any) => {
       }
     }
   }, [issueType]);
-  // return (
-  //   <Widget
-  //     handleNewUserMessage={handleNewUserMessage}
-  //     title="OWE HUB"
-  //     subtitle="Chat support"
-  //   />
-  // );
 
   function handleSend() {
     if (!newMessage.trim()) return;
@@ -357,13 +348,6 @@ const ChatSupport = ({ isAuthenticated }: any) => {
                 })}
               </>
             ) : null}
-            {/* <div className="loader">
-            <div className="loader-container">
-              <span className="loader-dots"></span>
-              <span className="loader-dots"></span>
-              <span className="loader-dots"></span>
-            </div>
-          </div> */}
             <div ref={messagesEndRef} />
           </div>
           <div className="rcw-sender">

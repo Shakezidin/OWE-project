@@ -106,7 +106,11 @@ const renderActiveShape = (props: any) => {
         {`${value}`}
       </text>
       <text
-        x={isMobile ? (ex + (cos >= 0 ? 1 : 1.4) * 12) : (ex + (cos >= 0 ? 1 : -1) * 12)}
+        x={
+          isMobile
+            ? ex + (cos >= 0 ? 1 : 1.4) * 12
+            : ex + (cos >= 0 ? 1 : -1) * 12
+        }
         y={ey}
         dy={18}
         textAnchor={textAnchor}

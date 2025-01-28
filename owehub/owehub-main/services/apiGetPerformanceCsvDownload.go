@@ -103,10 +103,10 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	}
 
 	/*
-		These below codes sets the filter
-		1. Project status - [ACTIVE, HOLD, JEOPARDY]
-		2. Queue status - [either of the 7 milestone]
-		3. Search based on unique id / customer name
+	 These below codes sets the filter
+	 1. Project status - [ACTIVE, HOLD, JEOPARDY]
+	 2. Queue status - [either of the 7 milestone]
+	 3. Search based on unique id / customer name
 	*/
 
 	projectStatus := joinNames(dataReq.ProjectStatus)
@@ -116,7 +116,27 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		searchValue = fmt.Sprintf(" AND (home_owner ILIKE '%%%s%%' OR customer_unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
 	}
 
-	pipelineQuery = models.PipelineTileDataBelowQuery(roleFilter, projectStatus, queueStatus, searchValue)
+	switch dataReq.SelectedMilestone {
+	case "survey":
+		pipelineQuery = models.PipelineSurveyDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "cad":
+		pipelineQuery = models.PipelineCadDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "permit":
+		pipelineQuery = models.PipelinePermitDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "roof":
+		pipelineQuery = models.PipelineRoofingDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "install":
+		pipelineQuery = models.PipelineInstallDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "inspection":
+		pipelineQuery = models.PipelineInspectionDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	case "activation":
+		pipelineQuery = models.PipelineActivationDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+	default:
+		log.FuncErrorTrace(0, "Invalid Milestone %v selected", dataReq.SelectedMilestone)
+		appserver.FormAndSendHttpResp(resp, "Please select a valid milestone", http.StatusBadRequest, nil)
+		return
+	}
+
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, pipelineQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
@@ -130,18 +150,18 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	for _, item := range data {
 
-		UniqueId, ok := item["customer_unique_id"].(string)
-		if !ok || UniqueId == "" {
-			continue
-		}
+		UniqueId, _ := item["customer_unique_id"].(string)
+		// if !ok || UniqueId == "" {
+		// 	continue
+		// }
 
 		Customer, _ := item["home_owner"].(string)
 		CustomerEmail, _ := item["customer_email"].(string)
 		CustomerPhoneNumber, _ := item["customer_phone_number"].(string)
 		Address, _ := item["address"].(string)
 		State, _ := item["state"].(string)
-		ContractTotal, ok := item["contract_total"].(float64)
-		SystemSize, ok := item["system_size"].(float64)
+		ContractTotal, _ := item["contract_total"].(float64)
+		SystemSize, _ := item["system_size"].(float64)
 
 		var (
 			SiteSurveyScheduleDate, SiteSurverCompleteDate, CadReady, PlanSetCompleteDate,

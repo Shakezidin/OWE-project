@@ -1,16 +1,13 @@
 import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import { DateRange } from 'react-date-range';
-
 import {
-  endOfMonth,
   subDays,
   startOfMonth,
   startOfWeek,
@@ -97,10 +94,7 @@ export const RankColumn = ({ rank }: { rank: number }) => {
   return <span className="ml1">{rank}</span>;
 };
 
-//
 // PERIOD FILTER
-//
-
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
@@ -112,7 +106,8 @@ function getCurrentDateInUserTimezone() {
   return toZonedTime(now, userTimezone);
 }
 const today = getCurrentDateInUserTimezone();
-const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
+ // assuming week starts on Monday, change to 0 if it starts on Sunday
+const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
@@ -200,9 +195,7 @@ const PeriodFilter = ({
   );
 };
 
-//
 // SELECTABLE FILTER (rank by & group by)
-//
 const SelectableFilter = ({
   label,
   options,
@@ -312,9 +305,7 @@ const SelectableFilter = ({
   );
 };
 
-//
 // DATE FILTER
-//
 const DateFilter = ({
   selected,
   setSelected,
@@ -433,7 +424,6 @@ const DateFilter = ({
           options={periodFilterOptions}
           value={selected}
           isDisabled={disabled}
-          // placeholder={selected?"Custom"}
           isSearchable={false}
           onChange={(value) => value && setSelected(value)}
           styles={{
@@ -471,7 +461,6 @@ const DateFilter = ({
               },
               marginLeft: '-18px',
             }),
-
             option: (baseStyles, state) => ({
               ...baseStyles,
               fontSize: '12px',
@@ -485,7 +474,6 @@ const DateFilter = ({
               background: '#EE824D',
               transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
             }),
-
             singleValue: (baseStyles, state) => ({
               ...baseStyles,
               color: '#EE824D',
@@ -581,11 +569,9 @@ const Table = ({
   selectDealer,
   exportPdf,
   isExporting,
-  count,
   resetDealer,
   isFetched,
   tableData,
-  setIsLoading,
   isLoading,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
@@ -611,16 +597,13 @@ const Table = ({
   isFetched: boolean;
 }) => {
   const [leaderTable, setLeaderTable] = useState<any>([]);
-
   const [totalCount, setTotalCount] = useState(0);
-  // const [isLoading, setIsLoading] = useState(true);
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
   const { authData, saveAuthData } = useAuth();
-
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 25;
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -628,16 +611,12 @@ const Table = ({
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
-
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
-
   console.log(tableData, 'tableData');
 
   useEffect(() => {
     if (tableData) {
-      // setLeaderTable(tableData.data.leader_board_list
-      // );
       setLeaderTable(tableData?.data?.leader_board_list);
       setTotalCount(tableData?.dbRecCount);
       setTotalStats(tableData?.data);
@@ -655,49 +634,6 @@ const Table = ({
     tableData,
   ]);
 
-  // useEffect(() => {
-  //   if (isAuthenticated && isFetched) {
-  //     (async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         const data = await postCaller('get_perfomance_leaderboard', {
-  //           type: activeHead,
-  //           dealer: selectDealer.map((item) => item.value),
-  //           page_size: itemsPerPage,
-  //           page_number: page,
-  //           start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-  //           end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-  //           sort_by: active,
-  //           group_by: groupBy,
-  //         });
-  //         if (data.status > 201) {
-  //           setIsLoading(false);
-  //           toast.error(data.message);
-  //           return;
-  //         }
-  //         if (data.data?.ap_ded_list) {
-  //           setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-  //           setTotalCount(data?.dbRecCount);
-  //           setTotalStats(data.data);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     })();
-  //   }
-  // }, [
-  //   activeHead,
-  //   active,
-  //   selectedRangeDate,
-  //   itemsPerPage,
-  //   page,
-  //   selectDealer,
-  //   groupBy,
-  //   isAuthenticated,
-  //   isFetched,
-  // ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -728,7 +664,8 @@ const Table = ({
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
-    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    // If the number is an integer, return it as a string without .00
+    if (sale % 1 === 0) return sale.toString(); 
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
   const role = authData?.role;
@@ -785,8 +722,6 @@ const Table = ({
   }, [groupBy, role, authData]);
 
   const exportCsv = async () => {
-    // Define the headers for the CSV
-    // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
       return str.replace(/<\/?[^>]+(>|$)/g, '');
@@ -841,9 +776,7 @@ const Table = ({
     ]);
 
     const csvRows = [headers, ...csvData];
-
     const csvString = Papa.unparse(csvRows);
-
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -885,7 +818,6 @@ const Table = ({
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
-      {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       {groupBy === 'dealer' ? null : (
         <div className="relative exportt" ref={wrapperReff}>
           <div className="leaderboard-data__title">
@@ -910,7 +842,6 @@ const Table = ({
               {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
             </span>
           </div>
-
           {exportShow && (
             <div className="export-opt">
               <button
@@ -937,59 +868,6 @@ const Table = ({
           )}
         </div>
       )}
-      {/* <div className="leaderboard-data__export">
-        <Select
-          options={exportOptions}
-          value={exportOption}
-          onChange={(selectedOption) => {
-            setExportOption(selectedOption);
-            // handleExport(selectedOption.value);
-          }}
-          isSearchable={false}
-          placeholder="Export Options"
-          styles={{
-            control: (baseStyles) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              fontWeight: '500',
-              border: 'none',
-              outline: 'none',
-              width: '120px',
-              alignContent: 'center',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              boxShadow: 'none',
-            }),
-            indicatorSeparator: () => ({
-              display: 'none',
-            }),
-            dropdownIndicator: (baseStyles) => ({
-              ...baseStyles,
-              color: '#ee824d',
-            }),
-            option: (baseStyles, state) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              backgroundColor: state.isSelected ? '#ee824d' : '#fff',
-              '&:hover': {
-                backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
-                color: state.isSelected ? '#fff' : '#ee824d',
-              },
-            }),
-            singleValue: (baseStyles) => ({
-              ...baseStyles,
-              fontSize: '12px',
-              color: exportOption ? '#ee824d' : '#222',
-              width: 'fit-content',
-            }),
-            menu: (baseStyles) => ({
-              ...baseStyles,
-              marginTop: '-4px',
-            }),
-          }}
-        />
-      </div> */}
-
       <div>
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
@@ -1162,7 +1040,6 @@ const Table = ({
                     </span>
                     <p className="rank-sm-text">NTP</p>
                   </div>
-
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
@@ -1183,9 +1060,7 @@ const Table = ({
             <thead>
               <tr>
                 <th>Rank</th>
-
                 <th>{getName}</th>
-
                 {showPartner && <th>Partner</th>}
                 <th>
                   Sale
@@ -1268,11 +1143,9 @@ const Table = ({
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
                       {showPartner && <td> {item.dealer} </td>}
-
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
                       <td>{formatSaleValue(item?.install)}</td>
-
                       <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );
@@ -1310,7 +1183,6 @@ const Table = ({
           </table>
         </div>
       </div>
-
       <div className="page-heading-container">
         {leaderTable?.length > 0 && !isLoading ? (
           <>

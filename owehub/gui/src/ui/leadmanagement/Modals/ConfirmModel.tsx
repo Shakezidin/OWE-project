@@ -3,10 +3,8 @@ import classes from '../styles/confirmmodal.module.css';
 import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
 import ThumbsSucess from './Modalimages//Thumbs.svg';
 import SignatureICON from './Modalimages/CorrectSign.png';
-import QuestionMarks from './Modalimages/SignOfIntrogation.png';
 import failledLogo from './Modalimages/FAILLED.png';
 import DoneLogo from './Modalimages/DoneLogo.png';
-import FileAttach from './Modalimages/FileAttach.png';
 import EditModal from './EditModal';
 import { ICONS } from '../../../resources/icons/Icons';
 import AppointmentScheduler from './AppointmentScheduler';
@@ -15,27 +13,16 @@ import Pen from '../Modals/Modalimages/Vector.png';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format, parseISO } from 'date-fns';
-import CreateProposal from './CreateProposal'; // Import the new component
-import axios from 'axios';
-import {
-  getLeadById,
-  getLeads,
-} from '../../../redux/apiActions/leadManagement/LeadManagementAction';
-import { useDispatch } from 'react-redux';
 import useAuth from '../../../hooks/useAuth';
 import MicroLoader from '../../components/loader/MicroLoader';
-import DataNotFound from '../../components/loader/DataNotFound';
-import Input from '../../scheduler/SaleRepCustomerForm/component/Input/Input';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-import { current } from '@reduxjs/toolkit';
-import colorConfig from '../../../config/colorConfig';
 
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
   leadId?: number;
   refresh: number;
-  
+
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
   reschedule?: boolean;
   action?: boolean;
@@ -73,13 +60,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   refresh,
   setReschedule,
   won,
-  setWon,
   finish,
-  setFinish,
   currentFilter,
   qc,
-  setQc,
-  setCurrentFilter
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(-1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,10 +71,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const [selectedTime, setSelectedTime] = useState('');
   const [load, setLoad] = useState(false);
   const [leadData, setLeadData] = useState<LeadData | null>(null);
-
   const [loadingProposal, setLoadingProposal] = useState(false);
-  const [error, setError] = useState('');
-  const [proposalLink, setProposalLink] = useState<string | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null); // State for iframe source
   const isMobile = useMatchMedia('(max-width: 600px)');
 
@@ -131,7 +111,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         {
           leads_id: leadId,
           status_id: 1,
-          "appointment_date_time": formattedDateTime
+          appointment_date_time: formattedDateTime,
         },
         true
       );
@@ -139,11 +119,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
         setReschedule(false);
-        setRefresh((val) => val + 1)
+        setRefresh((val) => val + 1);
         setVisibleDiv(1);
         setSelectedTime('');
         setSelectedDate(null);
-        setSuccess(response.data?.appointment_date_time)
+        setSuccess(response.data?.appointment_date_time);
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -212,15 +192,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
-
-
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     if (name === 'reason') {
-      const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ');
+      const sanitizedValue = value
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, ' ');
       if (sanitizedValue.trim() !== '') {
         setReason(sanitizedValue);
         setReasonError(''); // Clear any previous error message
@@ -253,7 +233,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         toast.success('Status Updated Successfully');
         HandleModal();
         setReason('');
-        setRefresh((val) => val + 1)
+        setRefresh((val) => val + 1);
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -293,7 +273,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-
   const [loadWon, setLoadWon] = useState(false);
   const handleCloseWon = async () => {
     setLoadWon(true);
@@ -329,7 +308,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         {
           leads_id: leadId,
           status_id: 5,
-          is_manual_win: true
+          is_manual_win: true,
         },
         true
       );
@@ -348,7 +327,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-
   const [qcComp, setQcComp] = useState(false);
   const handleQCComplete = async () => {
     setQcComp(true);
@@ -357,7 +335,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
         'update_lead_status',
         {
           leads_id: leadId,
-          qc: true
+          qc: true,
         },
         true
       );
@@ -380,7 +358,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const MarkedConfirm = () => {
     setVisibleDiv(14);
   };
-
 
   useEffect(() => {
     if (reschedule === true) {
@@ -423,12 +400,14 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
-
   return (
     <div>
       {isOpen1 && (
         <div className="transparent-model">
-          <div className={classes.customer_wrapper_list} style={{ backgroundColor: visibleDiv === 5 ? "#EDFFF0" : "#fff" }}>
+          <div
+            className={classes.customer_wrapper_list}
+            style={{ backgroundColor: visibleDiv === 5 ? '#EDFFF0' : '#fff' }}
+          >
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
                 <img
@@ -445,7 +424,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.pers_det_top}>
                   <div className={classes.Column1Details}>
                     <div className={classes.main_name}>
-                      {`${leadData?.first_name} ${leadData?.last_name}`.length > 25
+                      {`${leadData?.first_name} ${leadData?.last_name}`.length >
+                      25
                         ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 25)}...`
                         : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
                       <img
@@ -466,7 +446,13 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                           : leadData.street_address
                         : 'N/A'}
                     </span>
-                    <span className={isMobile ? classes.emailStyleForMObile : classes.emailStyle}>
+                    <span
+                      className={
+                        isMobile
+                          ? classes.emailStyleForMObile
+                          : classes.emailStyle
+                      }
+                    >
                       {isMobile && leadData?.email_id.length > 39
                         ? `${leadData.email_id.slice(0, 27)}...`
                         : leadData.email_id}
@@ -506,9 +492,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
             {visibleDiv === -1 && (
               <>
                 {' '}
-                  <div className={classes.loadModalDefault}>
-                    <MicroLoader />
-                  </div>
+                <div className={classes.loadModalDefault}>
+                  <MicroLoader />
+                </div>
               </>
             )}
 
@@ -567,7 +553,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      // onClick={() => setVisibleDiv(3)}
                       height="111px"
                       width="111px"
                       src={ThumbsSucess}
@@ -579,8 +564,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.ApptSentDate}>
                     {success ? (
                       <>
-                        {format(parseISO(success), 'dd MMM, yyyy')}
-                        {' '}
+                        {format(parseISO(success), 'dd MMM, yyyy')}{' '}
                         {format(parseISO(success), 'hh:mm a')}
                       </>
                     ) : (
@@ -591,7 +575,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                 <div className={classes.survey_button}>
                   {leadData?.appointment_scheduled_date ? (
                     <span className={classes.AppSentDate2}>
-                      Appointment sent on {format(new Date(leadData?.appointment_scheduled_date), 'dd MMM, yyyy')}
+                      Appointment sent on{' '}
+                      {format(
+                        new Date(leadData?.appointment_scheduled_date),
+                        'dd MMM, yyyy'
+                      )}
                     </span>
                   ) : (
                     <span className={classes.AppSentDate2}>
@@ -610,7 +598,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      // onClick={() => setVisibleDiv(4)}
                       height="140px"
                       width="140px"
                       src={SignatureICON}
@@ -627,8 +614,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <span className={classes.remaningDate}>
                     {leadData?.appointment_accepted_date
                       ? calculateRemainingDays(
-                        leadData.appointment_accepted_date
-                      )
+                          leadData.appointment_accepted_date
+                        )
                       : ''}
                   </span>
                 </div>
@@ -665,7 +652,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       Why did customer denied?
                     </span>
                   </div>
-                  {/* className={classes.dropdownContainerModal} */}
                   <div className={classes.dropdownContainerModal}>
                     <input
                       type="text"
@@ -722,7 +708,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     <span className={classes.ctmracquired}>
                       Lead marked as Deal Won!
                     </span>
-                    <span className={classes.ctmracquired} style={{ fontWeight: "500" }}>
+                    <span
+                      className={classes.ctmracquired}
+                      style={{ fontWeight: '500' }}
+                    >
                       {currentDateTime}
                     </span>
                   </div>
@@ -733,29 +722,33 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: `${loadingProposal ? '#FFFFFF' : '#3AC759'}`,
                         color: '#FFFFFF',
                         border: 'none',
-                        pointerEvents: (loadWon || !leadId) ? 'none' : 'auto',
-                        opacity: (loadWon || !leadId) ? 0.6 : 1,
-                        cursor: (loadWon || !leadId) ? 'not-allowed' : 'pointer',
+                        pointerEvents: loadWon || !leadId ? 'none' : 'auto',
+                        opacity: loadWon || !leadId ? 0.6 : 1,
+                        cursor: loadWon || !leadId ? 'not-allowed' : 'pointer',
                       }}
                       onClick={handleCloseWon}
                     >
-                      {loadWon ? "Wait..." : "Confirm"}
+                      {loadWon ? 'Wait...' : 'Confirm'}
                     </button>
 
-                    <span style={{ color: "#393D42" }} className={classes.customTextStyle}>
+                    <span
+                      style={{ color: '#393D42' }}
+                      className={classes.customTextStyle}
+                    >
                       You have 48hrs to complete this lead as Won.
                     </span>
                   </div>
-
                 </div>
                 <span className={classes.ctmracquiredBotton}>
-                  {currentFilter && currentFilter === "In Progress" ? "" : (
+                  {currentFilter && currentFilter === 'In Progress' ? (
+                    ''
+                  ) : (
                     <span className={classes.customTextStyle}>
-                      Moving to In Progress <span className={classes.forwardTick}>&gt;&gt;</span>
+                      Moving to In Progress{' '}
+                      <span className={classes.forwardTick}>&gt;&gt;</span>
                     </span>
                   )}
                 </span>
-
               </>
             )}
             {/* HERE QC AUDIT MODAL STARTED */}
@@ -782,15 +775,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     <span className={classes.ctmracquiredQC}>
                       {format(new Date(), 'dd MMM, yyyy')}
                     </span>
-                    <span className={classes.ctmracquired} style={{
-                      fontWeight: "500",
-                      maxWidth: "42em",
-                      wordBreak: "break-word",
-                      overflowWrap: "break-word",
-                      textAlign: 'center'
-                    }}>
-                      Lead moved to recorded as Deal Won
-                      with a contract date.
+                    <span
+                      className={classes.ctmracquired}
+                      style={{
+                        fontWeight: '500',
+                        maxWidth: '42em',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        textAlign: 'center',
+                      }}
+                    >
+                      Lead moved to recorded as Deal Won with a contract date.
                     </span>
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>
@@ -800,28 +795,25 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: `${loadingProposal ? '#377C49' : '#377CF6'}`,
                         color: 'white',
                         border: 'none',
-                        pointerEvents: (qcComp || !leadId) ? 'none' : 'auto',
-                        opacity: (qcComp || !leadId) ? 0.6 : 1,
-                        cursor: (qcComp || !leadId) ? 'not-allowed' : 'pointer',
+                        pointerEvents: qcComp || !leadId ? 'none' : 'auto',
+                        opacity: qcComp || !leadId ? 0.6 : 1,
+                        cursor: qcComp || !leadId ? 'not-allowed' : 'pointer',
                       }}
                       onClick={handleQCComplete}
                     >
-                      {qcComp ? "Wait..." : "Confirm"}
+                      {qcComp ? 'Wait...' : 'Confirm'}
                     </button>
-
-
                   </div>
-
                 </div>
-
-
               </>
             )}
             {/* HERE QC AUDIT MODAL ENDED */}
 
             {visibleDiv === 14 && (
               <>
-                <div className={classes.customer_wrapper_list_EditedCConfirmation}>
+                <div
+                  className={classes.customer_wrapper_list_EditedCConfirmation}
+                >
                   <div className={classes.success_not_Edited4Model}>
                     <div>
                       <img
@@ -840,11 +832,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <br />
                   <div className={classes.ctmracquiredDivLast}>
                     <span className={classes.ctmracquiredLastModel}>
-
                       <span>This lead will be recorded as Deal Won </span>
-                      <span style={{ color: "#FA2217" }}>without a contract date.</span>
+                      <span style={{ color: '#FA2217' }}>
+                        without a contract date.
+                      </span>
                     </span>
-
                   </div>
                   <div className={classes.suceesButtonAfterProposal}>
                     <button
@@ -853,22 +845,18 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: `${loadingProposal ? '#FFFFFF' : '#377cf6'}`,
                         color: '#FFFFFF',
                         border: 'none',
-                        pointerEvents: (loadCom || !leadId) ? 'none' : 'auto',
-                        opacity: (loadCom || !leadId) ? 0.6 : 1,
-                        cursor: (loadCom || !leadId) ? 'not-allowed' : 'pointer',
+                        pointerEvents: loadCom || !leadId ? 'none' : 'auto',
+                        opacity: loadCom || !leadId ? 0.6 : 1,
+                        cursor: loadCom || !leadId ? 'not-allowed' : 'pointer',
                       }}
-
                       onClick={handleCloseComplete}
-
                     >
-                      {loadCom ? "Wait..." : "Confirm"}
+                      {loadCom ? 'Wait...' : 'Confirm'}
                     </button>
                   </div>
-
                 </div>
-              </>)
-
-            }
+              </>
+            )}
 
             {iframeSrc && (
               <iframe

@@ -5,7 +5,6 @@ import { usePopper } from 'react-popper';
 import useEscapeKey from '../../../../../hooks/useEscape';
 import { Tooltip } from 'react-tooltip';
 
-
 interface DropDownLibraryProps {
   selectedType: string;
   onSelectType: (type: string) => void;
@@ -25,12 +24,15 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
 
   const handleClose = () => {
     setIsVisible(false);
-  }
+  };
 
-  useEscapeKey(handleClose)
+  useEscapeKey(handleClose);
 
-  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLUListElement | null>(null);
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLUListElement | null>(
+    null
+  );
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'bottom',
     modifiers: [
@@ -48,7 +50,6 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
       },
     ],
   });
-
 
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
@@ -112,59 +113,69 @@ const ChangeStatus: React.FC<DropDownLibraryProps> = ({
       />
 
       {isVisible && (
-        <ul ref={setPopperElement}
+        <ul
+          ref={setPopperElement}
           style={{
             ...styles.popper,
             marginRight: '-10px',
             marginTop: '10px',
           }}
-          {...attributes.popper} className={classes.dropdownMenu}>
+          {...attributes.popper}
+          className={classes.dropdownMenu}
+        >
           <li
             onClick={() => handleSelect('Deal Won')}
-            className={`${classes.dropdownItem} ${selectedType === 'Deal Won' ? classes.selected : ''
-              } ${disabledOptions.includes('Deal Won') ? classes.disabled : ''}`}
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Deal Won' ? classes.selected : ''
+            } ${disabledOptions.includes('Deal Won') ? classes.disabled : ''}`}
           >
             Deal Won
           </li>
           <li
             onClick={() => handleSelect('Deal Loss')}
-            className={`${classes.dropdownItem} ${selectedType === 'Deal Loss' ? classes.selected : ''
-              } ${disabledOptions.includes('Deal Loss') ? classes.disabled : ''}`}
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Deal Loss' ? classes.selected : ''
+            } ${disabledOptions.includes('Deal Loss') ? classes.disabled : ''}`}
           >
             Deal Loss
           </li>
           <li
             onClick={() => handleSelect('Appointment Not Required')}
-            className={`${classes.dropdownItem} ${selectedType === 'Appointment Not Required' ? classes.selected : ''
-              } ${disabledOptions.includes('Appointment Not Required')
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Appointment Not Required'
+                ? classes.selected
+                : ''
+            } ${
+              disabledOptions.includes('Appointment Not Required')
                 ? classes.disabled
                 : ''
-              }`}
+            }`}
           >
             Appointment Not Required
           </li>
 
-
-
           <li
             onClick={() => handleSelect('Complete as Won')}
-            className={`${classes.dropdownItem} ${selectedType === 'Complete as Won' ? classes.selected : ''
-              } ${disabledOptions.includes('Complete as Won')
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Complete as Won' ? classes.selected : ''
+            } ${
+              disabledOptions.includes('Complete as Won')
                 ? classes.disabled
                 : ''
-              }`}
+            }`}
           >
             Complete as Won
           </li>
 
-
           <li
             onClick={() => handleSelect('Mark QC Complete')}
-            className={`${classes.dropdownItem} ${selectedType === 'Mark QC Complete' ? classes.selected : ''
-              } ${disabledOptions.includes('Mark QC Complete')
+            className={`${classes.dropdownItem} ${
+              selectedType === 'Mark QC Complete' ? classes.selected : ''
+            } ${
+              disabledOptions.includes('Mark QC Complete')
                 ? classes.disabled
                 : ''
-              }`}
+            }`}
           >
             Mark QC Complete
           </li>

@@ -177,6 +177,13 @@ import ScheduleRepeat from '../../resources/assets/scheduleRepeat.svg';
 import QCAudit from "../assets/QCAudit.png"
 import QcLineLead from '../../resources/assets/QcLineLead.svg';
 import ReportEdit from '../../resources/assets/ReportEdit.svg';
+import logoDesignTool from '../../resources/assets/logoDesignTool.svg';
+import profileImg from '../../resources/assets/profileDesign.svg';
+import DatCapture from '../../resources/assets/dat_capture.svg';
+import DatAurora from '../../resources/assets/dat_aurora.svg';
+import DatTape from '../../resources/assets/dat_tape.svg';
+import Whats_Send from '../../resources/assets/Whats_Send.svg';
+
 
 
 export const ICONS = {
@@ -364,11 +371,17 @@ export const ICONS = {
   viedoplay,
   VersionLogo: VersionLogo,
   LogCalc1: LogCalc1,
-  LogCalc2: LogCalc1,
-  LogCalc3: LogCalc1,
+  LogCalc2: LogCalc2,
+  LogCalc3: LogCalc3,
   MenuDealer: MenuDealer,
   MenuLead: MenuLead,
   ScheduleRepeat: ScheduleRepeat,
   QcLineLead:QcLineLead,
   ReportEdit:ReportEdit,
+  logoDesignTool:logoDesignTool,
+  profileImg:profileImg,
+  DatCapture: DatCapture,
+  DatAurora: DatAurora,
+  DatTape: DatTape,
+  Whats_Send:Whats_Send
 };

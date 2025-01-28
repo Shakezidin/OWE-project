@@ -25,7 +25,7 @@ export const ImportButton = (props: ActionButtonProps) => {
         style={{}}
         onClick={onClick}
       >
-        <FaArrowUp style={{ flexShrink: 0 }} size={12} />
+        <FaArrowUp style={{ flexShrink: 0 }} size={12}  />
         <span className="mobileTitle">{title}</span>
       </button>
     </div>

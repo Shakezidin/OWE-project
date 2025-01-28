@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styles from './styles/customerlist.module.css';
-import SortingDropDown from '../components/SortingDropdown/SortingDropDown';
 import { ICONS } from '../../../resources/icons/Icons';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
@@ -8,7 +7,6 @@ import { TbChevronDown } from 'react-icons/tb';
 import { CSSObjectWithLabel } from 'react-select';
 import { IoLocationOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
@@ -23,33 +21,19 @@ import axios from 'axios';
 import { parseISO } from 'date-fns';
 import ScheduledActivity from '../components/ScheduledActivity/ScheduledActivity';
 import { MdOutlineAdd } from 'react-icons/md';
-import Select from './components/Select';
-import { HiSortDescending } from 'react-icons/hi';
 import Sort from './components/Sort';
 import useEscapeKey from '../../../hooks/useEscape';
 import Pagination from '../../components/pagination/Pagination';
 import { Tooltip } from 'react-tooltip';
-
 
 interface ITimeSlot {
   id: number;
   time: string;
   uniqueId: number;
 }
-const Marker = ({
-  text,
-  lat,
-  lng,
-}: {
-  text: string;
-  lat: number;
-  lng: number;
-}) => <div>{text}</div>;
-
 interface propTypes {
   mapStyles?: CSSObjectWithLabel;
 }
-
 export interface ICustomer {
   roof_type: string;
   home_owner: string;
@@ -58,7 +42,6 @@ export interface ICustomer {
   system_size: string;
   address: string;
 }
-
 interface IApiResponse {
   status: number;
   message: string;
@@ -72,16 +55,6 @@ interface IApiResponse {
     }[];
   };
 }
-
-interface ISalesRepResponse {
-  status: number;
-  message: string;
-  dbRecCount: number;
-  data: {
-    sale_rep_project: ISalesRepProject[];
-  };
-}
-
 interface ISalesRepProject {
   prospect_id: string;
   customer_first_name: string;
@@ -115,57 +88,6 @@ interface DayWithProgress {
   progress: number;
   colorCode: string; // Change from colorcode to colorCode
 }
-
-// const customers = [
-//   {
-//     roof_type: 'XYZ Rooftype',
-//     home_owner: 'Jacob Martin',
-//     customer_email: 'Alexsimon322@gmail.com',
-//     customer_phone_number: '(831) 544-1235',
-//     system_size: '450 KW',
-//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-//   },
-//   {
-//     roof_type: 'XYZ Rooftype',
-//     home_owner: 'Jacob Martin',
-//     customer_email: 'Alexsimon322@gmail.com',
-//     customer_phone_number: '(831) 544-1235',
-//     system_size: '450 KW',
-//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-//   },
-//   {
-//     roof_type: 'XYZ Rooftype',
-//     home_owner: 'Jacob Martin',
-//     customer_email: 'Alexsimon322@gmail.com',
-//     customer_phone_number: '(831) 544-1235',
-//     system_size: '450 KW',
-//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-//   },
-//   {
-//     roof_type: 'XYZ Rooftype',
-//     home_owner: 'Jacob Martin',
-//     customer_email: 'Alexsimon322@gmail.com',
-//     customer_phone_number: '(831) 544-1235',
-//     system_size: '450 KW',
-//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-//   },
-//   {
-//     roof_type: 'XYZ Rooftype',
-//     home_owner: 'Jacob Martin',
-//     customer_email: 'Alexsimon322@gmail.com',
-//     customer_phone_number: '(831) 544-1235',
-//     system_size: '450 KW',
-//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-//   },
-//   {
-//     roof_type: 'XYZ Rooftype',
-//     home_owner: 'Jon Jones',
-//     customer_email: 'Alexsimon322@gmail.com',
-//     customer_phone_number: '(831) 544-1235',
-//     system_size: '450 KW',
-//     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-//   },
-// ];
 const CustomersList = () => {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState<ISalesRepProject[]>([]);
@@ -174,7 +96,7 @@ const CustomersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const PAGE_SIZE = 10; // Fixed page size
-  const startIndex = (currentPage - 1) * PAGE_SIZE + 1;  // Correct start index for pagination.
+  const startIndex = (currentPage - 1) * PAGE_SIZE + 1; // Correct start index for pagination.
   const endIndex = currentPage * PAGE_SIZE; // End index before capping it.
   const [perPage, setPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState<number>(0); // Store total number of records (dbRecCount)
@@ -199,56 +121,9 @@ const CustomersList = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
 
-  // const getCustomers = async () => {
-  //   try {
-  //     setIsPending(true);
-  //     const data = await postCaller('scheduling_home', {
-  //       page_number: page,
-  //       page_size: 10,
-  //       queue: 'priority',
-  //       order: 'asc',
-  //     });
-  //     if (data.status > 201) {
-  //       setIsPending(false);
-  //       toast.error((data as Error).message as string);
-  //       return;
-  //     }
-  //     setCustomers(data?.data?.scheduling_list || customers);
-  //     setIsPending(false);
-  //   } catch (error) {
-  //     setIsPending(false);
-  //     toast.error((error as Error).message as string);
-  //   }
-  // };
-
   const handleAddClick = () => {
     navigate('/add-new-salesrep-schedule');
   };
-
-  const defaultProps = {
-    center: {
-      lat: 10.99835602,
-      lng: 77.01502627,
-    },
-    zoom: 11,
-  };
-  // const timeSlots = [
-  //   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
-  //   { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
-  //   { id: 7, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
-  //   { id: 1, time: '4:30 Pm - 7:30 Pm', uniqueId: 4 },
-  //   { id: 7, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
-  // ];
-
-  // const dayWithProgress = [
-  //   { id: 1, date: new Date(2024, 8, 20), progress: 75 },
-  //   { id: 2, date: new Date(2024, 8, 23), progress: 35 },
-  //   { id: 3, date: new Date(2024, 8, 24), progress: 70 },
-  //   { id: 4, date: new Date(2024, 8, 25), progress: 63 },
-  //   { id: 5, date: new Date(2024, 8, 26), progress: 79 },
-  //   { id: 6, date: new Date(2024, 8, 27), progress: 20 },
-  //   { id: 7, date: new Date(2024, 9, 1), progress: 95 },
-  // ];
   const sortOptions = [
     { label: 'New to Old', value: 'newToOld' },
     { label: 'Old to New', value: 'oldToNew' },
@@ -257,12 +132,15 @@ const CustomersList = () => {
   const getCustomers = async (pageNumber: number = 1) => {
     try {
       setIsPending(true);
-      const response = await axios.post('https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep', {
-        sort_order: selectedSort === 'newToOld' ? 'new_to_old' : 'old_to_new',
-        page_number: pageNumber,
-        page_size: PAGE_SIZE,
-      });
-  
+      const response = await axios.post(
+        'https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep',
+        {
+          sort_order: selectedSort === 'newToOld' ? 'new_to_old' : 'old_to_new',
+          page_number: pageNumber,
+          page_size: PAGE_SIZE,
+        }
+      );
+
       if (response.data.status === 200) {
         setCustomers(response.data.data.sale_rep_project || []); // Default to empty array if null
         const totalRecords = response.data.dbRecCount;
@@ -272,13 +150,14 @@ const CustomersList = () => {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to fetch customers');
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to fetch customers'
+      );
       setCustomers([]); // Ensure customers is always an array, even on error
     } finally {
       setIsPending(false);
     }
   };
-
 
   useEffect(() => {
     getCustomers(currentPage);
@@ -295,18 +174,17 @@ const CustomersList = () => {
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
-
-const handleClose = () => {
+  const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
       setIsDrawerOpen(false);
@@ -324,12 +202,10 @@ const handleClose = () => {
         'https://staging.owe-hub.com/api/owe-schedule-service/v1/get_sales_rep_calendar'
       );
       if (response.data.status === 200) {
-        // toast.success('Calendar data fetched successfully');
         const details = response.data.data.details;
         setCalendarData(details);
 
         if (details.length > 0) {
-          // setSelectedDate(parseISO(details[0].date));
         }
       } else {
         throw new Error(response.data.message);
@@ -366,7 +242,6 @@ const handleClose = () => {
       );
 
       if (selectedDateData) {
-        // setAvailableSlots(timeSlots.filter((slot) => slot.id === 1));
       } else {
         setAvailableSlots([]);
       }
@@ -384,7 +259,6 @@ const handleClose = () => {
     console.log('Selected sort order:', sortOrder);
   };
 
-  // useEscapeKey(() => setIsDrawerOpen(false));
   useEscapeKey(() => setCollapse(-1));
 
   return (
@@ -392,7 +266,7 @@ const handleClose = () => {
       <div
         className={`flex items-center justify-end ${styles.schedule_header} ${isDrawerOpen ? styles.blurred : ''}`}
       >
-     {isSmallScreen && (
+        {isSmallScreen && (
           <div className={styles.filtericon} onClick={toggleCalendar}>
             <CalendarIcon size={19} />
           </div>
@@ -425,44 +299,52 @@ const handleClose = () => {
                 selectedValue={selectedSort}
                 onChange={handleSortChange}
               />
-              
-              <div className={styles.filtericon} onClick={handleScheduleRepeat} data-tooltip-id="Scheduled Activity">
+
+              <div
+                className={styles.filtericon}
+                onClick={handleScheduleRepeat}
+                data-tooltip-id="Scheduled Activity"
+              >
                 <img src={ICONS.ScheduleRepeat} alt="" />
               </div>
               <Tooltip
-        style={{
-          zIndex: 20,
-          background: '#f7f7f7',
-          color: '#000',
-          fontSize: 12,
-          paddingBlock: 4,
-          fontWeight: "400"
-        }}
-        className={styles.tooltip}
-        offset={5}
-        delayShow={300}
-        id="Scheduled Activity"
-        place="bottom"
-        content="Scheduled Activity"
-      />
-              <div data-tooltip-id="Add New" className={styles.filtericon} onClick={handleAddClick} >
+                style={{
+                  zIndex: 20,
+                  background: '#f7f7f7',
+                  color: '#000',
+                  fontSize: 12,
+                  paddingBlock: 4,
+                  fontWeight: '400',
+                }}
+                className={styles.tooltip}
+                offset={5}
+                delayShow={300}
+                id="Scheduled Activity"
+                place="bottom"
+                content="Scheduled Activity"
+              />
+              <div
+                data-tooltip-id="Add New"
+                className={styles.filtericon}
+                onClick={handleAddClick}
+              >
                 <MdOutlineAdd size={23} />
               </div>
               <Tooltip
-        style={{
-          zIndex: 20,
-          background: '#f7f7f7',
-          color: '#000',
-          fontSize: 12,
-          paddingBlock: 4,
-          fontWeight: "400"
-        }}
-        offset={5}
-        delayShow={300}
-        id="Add New"
-        place="bottom"
-        content="Add New"
-      />
+                style={{
+                  zIndex: 20,
+                  background: '#f7f7f7',
+                  color: '#000',
+                  fontSize: 12,
+                  paddingBlock: 4,
+                  fontWeight: '400',
+                }}
+                offset={5}
+                delayShow={300}
+                id="Add New"
+                place="bottom"
+                content="Add New"
+              />
             </div>
           </div>
 
@@ -524,18 +406,11 @@ const handleClose = () => {
                       </button>
                     </div>
                     <div className={styles.parent_icon_and_content}>
-                      {/* icon and content */}
                       <div
                         className={`${styles.cust_name} ${styles.icon_and_content}`}
                       >
                         <div className={styles.head_det}>
-                          <div
-                            // style={{
-                            //   backgroundColor: '#E8FFE7',
-                            //   color: '#8BC48A',
-                            // }}
-                            className={styles.name_icon}
-                          >
+                          <div className={styles.name_icon}>
                             <CiMail size={15} />
                           </div>
                           <span>{customer.email}</span>
@@ -610,22 +485,22 @@ const handleClose = () => {
             )}
           </div>
           {customers && customers.length > 0 && !isPending ? (
-  <div className="page-heading-container">
-    <p className="page-heading">
-      Showing {startIndex} - {Math.min(endIndex, totalRecords)} of {totalRecords} items
-    </p>
-    <Pagination
-      currentPage={currentPage}
-      currentPageData={customers}
-      totalPages={totalPages}
-      paginate={(pageNumber) => setCurrentPage(pageNumber)}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      perPage={PAGE_SIZE}
-    />
-  </div>
-) : null}
-
+            <div className="page-heading-container">
+              <p className="page-heading">
+                Showing {startIndex} - {Math.min(endIndex, totalRecords)} of{' '}
+                {totalRecords} items
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                currentPageData={customers}
+                totalPages={totalPages}
+                paginate={(pageNumber) => setCurrentPage(pageNumber)}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={PAGE_SIZE}
+              />
+            </div>
+          ) : null}
         </div>
 
         <div
@@ -636,108 +511,134 @@ const handleClose = () => {
           } bg-white ${styles.calendar_wrapper}`}
         >
           {!isSurveyScheduled ? (
-  <>
-    <div className="flex items-center justify-between mb3">
-      <h5
-        style={{ color: "#292B2E", fontWeight: 600, fontSize: 16, marginLeft: '20px', paddingTop:'7px', cursor:'default' }}
-        className="ml2"
-      >
-        Select Date & Time
-      </h5>
-
-      <button
-        onClick={() => {
-          setSelectedDate(undefined);
-          setSelectedTime(undefined);
-          setAvailableSlots([]);
-          setSelectedCustomer(-1);
-          setIsCalendarOpen(false);
-          setIsTimeSlotsOpen(false); // Reset time slot visibility
-        }}
-        className={`${styles.calendar_close_btn_mobile} ml2`}
-      >
-        <IoClose size={24} />
-      </button>
-    </div>
-    <div
-      className={`flex items-start ${styles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
-    >
-      <DayPickerCalendar
-        dayCellClassName={styles.day_cell}
-        circleSize={isMobile ? 44 : 50}
-        selectedDate={selectedDate}
-        onClick={(e) => {
-          if (selectedDate && selectedDate.getTime() === e.date.getTime()) {
-            // Toggle the time slot container visibility and reset selected date if closing
-            setIsTimeSlotsOpen(prev => {
-              if (prev) {
-                setSelectedDate(undefined); // Reset selected date
-                return false; // Close the time slots
-              }
-              return true; // Open the time slots if not already open
-            });
-          } else {
-            setSelectedDate(e.date);
-            setIsTimeSlotsOpen(true); // Open time slots on new date
-          }
-        }}
-        dayWithProgress={transformedCalendarData}
-      />
-      {selectedDate && isTimeSlotsOpen && (
-        <div className={`${styles.slotContainer}`} style={{ width: '100%', cursor:'default' }}>
-          <h5 className={`mb2 ${styles.time_slot_label}`}>
-            Select time slot
-          </h5>
-          <div className={styles.time_slot_pill_wrapper}>
-            {availableSlots.length > 0 ? (
-              availableSlots.map((slot) => (
-                <button
-                  onClick={() => setSelectedTime(slot)}
-                  key={slot.uniqueId}
-                  className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot}`}
+            <>
+              <div className="flex items-center justify-between mb3">
+                <h5
+                  style={{
+                    color: '#292B2E',
+                    fontWeight: 600,
+                    fontSize: 16,
+                    marginLeft: '20px',
+                    paddingTop: '7px',
+                    cursor: 'default',
+                  }}
+                  className="ml2"
                 >
-                  {slot.time}
-                </button>
-              ))
-            ) : (
-              <h5 style={{display:'flex', alignItems:'center', justifyContent:'center', fontWeight: 600, color: "#292B2E"}}>No Slot Available</h5>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-    {selectedTime && selectedDate && (
-      <div className={styles.schedule_confirmation_wrapper}>
-        <div className="flex mb2 items-center justify-center">
-          <h5 className={styles.selected_time}>
-            {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
-          </h5>
-          <IoIosInformationCircle className="ml1" color="#1F2937" size={17} />
-        </div>
-        <button
-          onClick={() => setIsSurveyScheduled(true)}
-          className={`mx-auto ${styles.calendar_schedule_btn}`}
-        >
-          Submit
-        </button>
-      </div>
-    )}
-  </>
-) : (
-  <div
-    className="flex items-center flex-column justify-center"
-    style={{ height: 'calc(100vh - 200px)' }}
-  >
-    <h3 className={styles.survey_success_message}>
-      Site survey scheduled 👍
-    </h3>
-    <h5 className={styles.selected_time}>
-      {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
-      {selectedTime?.time}{' '}
-    </h5>
-  </div>
-)}
+                  Select Date & Time
+                </h5>
 
+                <button
+                  onClick={() => {
+                    setSelectedDate(undefined);
+                    setSelectedTime(undefined);
+                    setAvailableSlots([]);
+                    setSelectedCustomer(-1);
+                    setIsCalendarOpen(false);
+                    setIsTimeSlotsOpen(false); // Reset time slot visibility
+                  }}
+                  className={`${styles.calendar_close_btn_mobile} ml2`}
+                >
+                  <IoClose size={24} />
+                </button>
+              </div>
+              <div
+                className={`flex items-start ${styles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
+              >
+                <DayPickerCalendar
+                  dayCellClassName={styles.day_cell}
+                  circleSize={isMobile ? 44 : 50}
+                  selectedDate={selectedDate}
+                  onClick={(e) => {
+                    if (
+                      selectedDate &&
+                      selectedDate.getTime() === e.date.getTime()
+                    ) {
+                      // Toggle the time slot container visibility and reset selected date if closing
+                      setIsTimeSlotsOpen((prev) => {
+                        if (prev) {
+                          setSelectedDate(undefined); // Reset selected date
+                          return false; // Close the time slots
+                        }
+                        return true; // Open the time slots if not already open
+                      });
+                    } else {
+                      setSelectedDate(e.date);
+                      setIsTimeSlotsOpen(true); // Open time slots on new date
+                    }
+                  }}
+                  dayWithProgress={transformedCalendarData}
+                />
+                {selectedDate && isTimeSlotsOpen && (
+                  <div
+                    className={`${styles.slotContainer}`}
+                    style={{ width: '100%', cursor: 'default' }}
+                  >
+                    <h5 className={`mb2 ${styles.time_slot_label}`}>
+                      Select time slot
+                    </h5>
+                    <div className={styles.time_slot_pill_wrapper}>
+                      {availableSlots.length > 0 ? (
+                        availableSlots.map((slot) => (
+                          <button
+                            onClick={() => setSelectedTime(slot)}
+                            key={slot.uniqueId}
+                            className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot}`}
+                          >
+                            {slot.time}
+                          </button>
+                        ))
+                      ) : (
+                        <h5
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 600,
+                            color: '#292B2E',
+                          }}
+                        >
+                          No Slot Available
+                        </h5>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              {selectedTime && selectedDate && (
+                <div className={styles.schedule_confirmation_wrapper}>
+                  <div className="flex mb2 items-center justify-center">
+                    <h5 className={styles.selected_time}>
+                      {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
+                    </h5>
+                    <IoIosInformationCircle
+                      className="ml1"
+                      color="#1F2937"
+                      size={17}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setIsSurveyScheduled(true)}
+                    className={`mx-auto ${styles.calendar_schedule_btn}`}
+                  >
+                    Submit
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div
+              className="flex items-center flex-column justify-center"
+              style={{ height: 'calc(100vh - 200px)' }}
+            >
+              <h3 className={styles.survey_success_message}>
+                Site survey scheduled 👍
+              </h3>
+              <h5 className={styles.selected_time}>
+                {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
+                {selectedTime?.time}{' '}
+              </h5>
+            </div>
+          )}
         </div>
       </div>
       {isDrawerOpen && (
@@ -751,14 +652,10 @@ const handleClose = () => {
             }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <ScheduledActivity 
-              onClose={handleClose} 
-              isOpen={isDrawerOpen} 
-            />
+            <ScheduledActivity onClose={handleClose} isOpen={isDrawerOpen} />
           </div>
         </div>
       )}
-
     </div>
   );
 };

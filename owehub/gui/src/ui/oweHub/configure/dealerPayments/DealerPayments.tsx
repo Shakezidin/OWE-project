@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import '../configure.css';
 import CreateDealerPayments from './CreateDealerPayments';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
-import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
 import { DealerPaymentsColumn } from '../../../../resources/static_data/configureHeaderData/DealerPaymentsColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
@@ -20,7 +15,6 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { configPostCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -42,11 +36,11 @@ const DealerPayments: React.FC = () => {
   const error = useAppSelector((state) => state.dealer.error);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [isExportingData, setIsExporting] = useState(false);
-  const [totalCount, setTotalCount] = useState<number>(0)
+  const [totalCount, setTotalCount] = useState<number>(0);
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -65,19 +59,6 @@ const DealerPayments: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
-  // const getnewformData = async () => {
-  //   const tableData = {
-  //     tableNames: ['sub_dealer', 'dealer', 'states'],
-  //   };
-  //   const res = await postCaller(EndPoints.get_newFormData, tableData);
-  //   setDealer((prev) => ({ ...prev, ...res.data }));
-  // };
-
-
-
-  // useEffect(() => {
-  //   getnewformData();
-  // }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -96,14 +77,13 @@ const DealerPayments: React.FC = () => {
   };
 
   useEffect(() => {
-
     (async () => {
       setLoading(true);
       try {
         const data = await configPostCaller('get_dealerpayment', {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         });
 
         if (data.status > 201) {
@@ -111,19 +91,15 @@ const DealerPayments: React.FC = () => {
           setLoading(false);
           return;
         }
-        setData(data?.data?.DealerPaymentsData)
-        setTotalCount(data.dbRecCount)
+        setData(data?.data?.DealerPaymentsData);
+        setTotalCount(data.dbRecCount);
         setLoading(false);
-
       } catch (error) {
         console.error(error);
       } finally {
       }
     })();
-
-  }, [
-    currentPage, viewArchived, filters
-  ]);
+  }, [currentPage, viewArchived, filters]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -144,7 +120,7 @@ const DealerPayments: React.FC = () => {
 
   const handleExportOpen = () => {
     exportCsv();
-  }
+  };
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -154,9 +130,6 @@ const DealerPayments: React.FC = () => {
       setSortDirection('asc');
     }
   };
-
-
-
 
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
@@ -282,7 +255,7 @@ const DealerPayments: React.FC = () => {
     // Function to remove HTML tags from strings
     const removeHtmlTags = (str: any) => {
       if (!str) return '';
-      return str.replace(/<\/?[^>]+(>|$)/g, "");
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
     setIsExporting(true);
     const exportData = await configPostCaller('get_dealerpayment', {
@@ -293,7 +266,6 @@ const DealerPayments: React.FC = () => {
       toast.error(exportData.message);
       return;
     }
-
 
     const headers = [
       'Unique Id',
@@ -307,8 +279,6 @@ const DealerPayments: React.FC = () => {
       'Notes',
     ];
 
-
-
     const csvData = exportData?.data?.DealerPaymentsData?.map?.((item: any) => [
       item.unique_id,
       item.customer,
@@ -318,7 +288,7 @@ const DealerPayments: React.FC = () => {
       item.payment_amount,
       item.payment_method,
       removeHtmlTags(item.transaction),
-      item.notes
+      item.notes,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -334,7 +304,6 @@ const DealerPayments: React.FC = () => {
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
-
   };
 
   return (
@@ -350,7 +319,7 @@ const DealerPayments: React.FC = () => {
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           viewArchive={viewArchived}
           checked={isAllRowsSelected}
           onpressExport={() => handleExportOpen()}
@@ -381,88 +350,80 @@ const DealerPayments: React.FC = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: "65vh" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '65vh' }}
         >
-          {
-            !loading && currentPageData?.length === 0 ?
-              <div style={{height:"100%"}} className="flex items-center justify-center">
-                <DataNotFound />
-              </div>
-              :
-              <table>
-                <thead>
+          {!loading && currentPageData?.length === 0 ? (
+            <div
+              style={{ height: '100%' }}
+              className="flex items-center justify-center"
+            >
+              <DataNotFound />
+            </div>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  {DealerPaymentsColumn.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={dealerList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
                   <tr>
-                    {DealerPaymentsColumn.map((item, key) => (
-                      <SortableHeader
-                        key={key}
-                        isCheckbox={item.isCheckbox}
-                        titleName={item.displayName}
-                        data={dealerList}
-                        isAllRowsSelected={isAllRowsSelected}
-                        isAnyRowSelected={isAnyRowSelected}
-                        selectAllChecked={selectAllChecked}
-                        setSelectAllChecked={setSelectAllChecked}
-                        selectedRows={selectedRows}
-                        setSelectedRows={setSelectedRows}
-                        sortKey={item.name}
-                        sortDirection={
-                          sortKey === item.name ? sortDirection : undefined
-                        }
-                        onClick={() => handleSort(item.name)}
-                      />
-                    ))}
-
+                    <td colSpan={DealerPaymentsColumn.length}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
+                        <MicroLoader />
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan={DealerPaymentsColumn.length}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                          <MicroLoader />
+                ) : (
+                  currentPageData?.map((el: any, i: any) => (
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        <div className="flex-check">
+                          {el.unique_id || 'N/A'}
                         </div>
                       </td>
+                      <td>{el.customer || 'N/A'}</td>
+                      <td>{el.sales_partner || 'N/A'}</td>
+                      <td>{el.type_of_payment || 'N/A'}</td>
+                      <td>{dateFormat(el.payment_date) || 'N/A'}</td>
+                      <td>{el.payment_amount || 'N/A'}</td>
+                      <td>{el.payment_method || 'N/A'}</td>
+                      <td>
+                        {el.transaction
+                          ? el.transaction.replace(/<\/?[^>]+(>|$)/g, '')
+                          : 'N/A'}
+                      </td>
+                      <td>{el.notes || 'N/A'}</td>
                     </tr>
-                  ) : (
-                    currentPageData?.map((el: any, i: any) => (
-                      <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                        <td style={{ fontWeight: '500', color: 'black' }}>
-                          <div className="flex-check">
-                            {/* <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        /> */}
-                            {el.unique_id || 'N/A'}
-                          </div>
-                        </td>
-                        <td>{el.customer || 'N/A'}</td>
-                        <td>{el.sales_partner || 'N/A'}</td>
-                        <td>{el.type_of_payment || 'N/A'}</td>
-                        <td>{dateFormat(el.payment_date) || 'N/A'}</td>
-                        <td>{el.payment_amount || 'N/A'}</td>
-                        <td>{el.payment_method || 'N/A'}</td>
-                        <td>
-                          {el.transaction
-                            ? el.transaction.replace(/<\/?[^>]+(>|$)/g, '')
-                            : 'N/A'}
-                        </td>
-                        <td>{el.notes || 'N/A'}</td>
-
-
-
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-          }
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {data?.length > 0 ? (

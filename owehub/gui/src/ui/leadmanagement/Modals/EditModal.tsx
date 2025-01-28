@@ -2,15 +2,12 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import classes from '../styles/confirmmodal.module.css';
 import Input from '../../components/text_input/Input';
 import { validateEmail } from '../../../utiles/Validation';
-import { ICONS } from '../../../resources/icons/Icons';
 import { RiArrowDropDownLine } from 'react-icons/ri';
-import useAuth from '../../../hooks/useAuth';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import MicroLoader from '../../components/loader/MicroLoader';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
 interface EditModalProps {
   isOpen: boolean;
@@ -20,13 +17,16 @@ interface EditModalProps {
   setRefresh: (value: number | ((prevValue: number) => number)) => void;
 }
 
-const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onClose, leadData }) => {
+const EditModal: React.FC<EditModalProps> = ({
+  setRefresh,
+  isOpen,
+  onClose,
+  leadData,
+}) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [emailError, setEmailError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [load, setLoad] = useState(false);
-  const [phoneNumberError, setPhoneNumberError] = useState('');
-
 
   useEffect(() => {
     if (isOpen) {
@@ -50,10 +50,10 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         address: leadData.street_address || '',
       });
     }
-    errors.email_id = '',
-      errors.mobile_number = '',
+    (errors.email_id = ''),
+      (errors.mobile_number = ''),
       setEmailError(''),
-      errors.address = ''
+      (errors.address = '');
   }, [leadData, onClose, isOpen]);
 
   const handleInputChange = (e: FormInput) => {
@@ -67,15 +67,13 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
           ...prevErrors,
           email_id: 'Email cannot consist of only numbers.',
         }));
-      }
-      else if (!isValidEmail) {
+      } else if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
         setErrors((prevErrors) => ({
           ...prevErrors,
           email_id: 'Please enter a valid email address.',
         }));
-      }
-      else {
+      } else {
         setEmailError('');
         setErrors((prevErrors) => {
           const newErrors = { ...prevErrors };
@@ -121,8 +119,6 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     };
   }, [isOpen, onClose]);
 
-
-
   const validateForm = (formData: any) => {
     const errors: { [key: string]: string } = {};
     if (formData.email_id.trim() === '') {
@@ -146,7 +142,9 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
     setErrors(errors);
 
     const isEmailValid = validateEmail(formData.email_id);
-    const mobileNumberError = formData.mobile_number.trim() === '' || formData.mobile_number.length < 10;
+    const mobileNumberError =
+      formData.mobile_number.trim() === '' ||
+      formData.mobile_number.length < 10;
     const emailError = formData.email_id.trim() === '' || !isEmailValid;
     const addressError = formData.address.trim() === ''; // Address is only checked for being empty
 
@@ -160,14 +158,13 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         const newErrors = { ...prevErrors };
 
         if (mobileNumberError) {
-          newErrors.mobile_number = 'Please enter a valid number, at least 10 digits.';
-         
+          newErrors.mobile_number =
+            'Please enter a valid number, at least 10 digits.';
         } else {
           delete newErrors.mobile_number;
         }
         if (formData.email_id.trim() === '') {
           newErrors.email_id = 'Email cannot be empty';
-        
         } else if (!isEmailValid) {
           newErrors.email_id = 'Please enter a valid email address.';
         } else {
@@ -175,7 +172,6 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
         }
         if (formData.address.trim() === '') {
           newErrors.address = 'Address cannot be empty';
-       
         } else {
           delete newErrors.address;
         }
@@ -228,15 +224,13 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
- 
-  return (
 
+  return (
     <>
       {(isOpen || isVisible) && (
         <div
           className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}
         >
-
           <div className={classes.customer_wrapper_list_edit}>
             <div className={classes.Edit_DetailsMcontainer}>
               <div className={classes.edit_closeicon} onClick={onClose}>
@@ -245,11 +239,11 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                 />
               </div>
 
-
               <div className={classes.notEditable}>
                 <div className={classes.Column1DetailsEdited_Mode}>
                   <span className={classes.main_name}>
-                    {`${leadData?.first_name} ${leadData?.last_name}`.length > 15
+                    {`${leadData?.first_name} ${leadData?.last_name}`.length >
+                    15
                       ? `${`${leadData?.first_name} ${leadData?.last_name}`.slice(0, 15)}...`
                       : `${leadData?.first_name} ${leadData?.last_name}`}{' '}
                   </span>
@@ -274,8 +268,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
 
               <div className={classes.inputFields}>
                 <div>
-
-{/* NUMBER VALIDATION ADDED */}
+                  {/* NUMBER VALIDATION ADDED */}
                   <Input
                     type="number"
                     value={formData.mobile_number}
@@ -283,17 +276,22 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                     onChange={(e) => {
                       const { value } = e.target;
                       const phoneNumber = value.toString();
-                      const numberWithoutCountryCode = phoneNumber.replace(/^\+?\d{1,3}/, "");
+                      const numberWithoutCountryCode = phoneNumber.replace(
+                        /^\+?\d{1,3}/,
+                        ''
+                      );
 
                       if (phoneNumber.length > 15) {
                         return;
                       }
 
-                      const leadingZeros = numberWithoutCountryCode.match(/^0+/);
+                      const leadingZeros =
+                        numberWithoutCountryCode.match(/^0+/);
                       if (leadingZeros && leadingZeros[0].length > 6) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
-                          mobile_number: 'Invalid number, number cannot consist of consecutive zeros.',
+                          mobile_number:
+                            'Invalid number, number cannot consist of consecutive zeros.',
                         }));
                       } else if (value.length > 0 && value.length < 10) {
                         setErrors((prevErrors) => ({
@@ -349,14 +347,16 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                     </div>
                   )}
                 </div>
-                <div> <Input
-                  type="text"
-                  value={formData.address}
-                  placeholder="Address"
-                  onChange={handleInputChange}
-                  name="address"
-                  maxLength={80}
-                />
+                <div>
+                  {' '}
+                  <Input
+                    type="text"
+                    value={formData.address}
+                    placeholder="Address"
+                    onChange={handleInputChange}
+                    name="address"
+                    maxLength={80}
+                  />
                   {errors.address && (
                     <span
                       style={{
@@ -366,7 +366,8 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                     >
                       {errors.address}
                     </span>
-                  )}</div>
+                  )}
+                </div>
               </div>
 
               <div
@@ -374,7 +375,7 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
                 style={{ paddingBottom: '18px' }}
               >
                 <button
-                  id='EnterKeys'
+                  id="EnterKeys"
                   className={classes.self}
                   style={{
                     color: '#fff',
@@ -394,7 +395,6 @@ const EditModal: React.FC<EditModalProps> = ({ refresh, setRefresh, isOpen, onCl
             </div>
           </div>
         </div>
-
       )}
     </>
   );

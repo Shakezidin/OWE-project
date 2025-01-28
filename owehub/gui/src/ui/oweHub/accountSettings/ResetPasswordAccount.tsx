@@ -164,9 +164,6 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     }}
                     placeholder="Enter"
                     isTypePassword={true}
-                    // onClickEyeIcon={() => {
-                    //   setShowCurrentPassword(!showCurrentPassword);
-                    // }}
                     onMouseDown={() => {
                       setShowCurrentPassword(true);
                     }}
@@ -202,9 +199,6 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     }}
                     placeholder="Enter"
                     isTypePassword={true}
-                    // onClickEyeIcon={() => {
-                    //   setShowNewPassword(!showNewPassword);
-                    // }}
                     onMouseDown={() => {
                       setShowNewPassword(true);
                     }}

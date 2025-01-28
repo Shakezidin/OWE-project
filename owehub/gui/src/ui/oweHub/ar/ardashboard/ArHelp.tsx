@@ -175,7 +175,6 @@ const ArHelp: React.FC<ButtonProps> = ({ data, handleClose }) => {
                         className="custom-button"
                         onClick={handleButtonClick}
                       >
-                        {/* <img src={ICONS.browserIcon} alt="" /> */}
                         Browse
                       </button>
                     </div>

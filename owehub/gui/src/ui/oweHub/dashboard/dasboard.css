@@ -1,6 +1,5 @@
 .Dashboard-section-container {
   width: 100%;
-  /* height: 87vh; */
 }
 
 .DashboardPage-container {
@@ -40,15 +39,16 @@
   user-select: none;
 }
 
-.dealer-pay-search::placeholder{
+.dealer-pay-search::placeholder {
   color: var(--input-border-color);
 }
 
-.date-button:hover{
+.date-button:hover {
   border-color: var(--primary-color) !important;
 }
 
-.date-button:hover .dealer-date-text, .date-button:hover .dealer-date-svg{
+.date-button:hover .dealer-date-text,
+.date-button:hover .dealer-date-svg {
   color: var(--primary-color);
 }
 
@@ -60,7 +60,6 @@
 .date-button.active .dealer-date-svg {
   color: var(--primary-color);
 }
-
 
 .calender-container {
   position: absolute;
@@ -155,7 +154,7 @@
 }
 
 .total-section-desc {
-  background-color: #F7F8F8;
+  background-color: #f7f8f8;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
@@ -247,12 +246,12 @@
 }
 
 .dealer-pay-search:focus {
-  border-color: var(--primary-color); 
-  outline: none; 
+  border-color: var(--primary-color);
+  outline: none;
 }
 
 .dealer-pay-search:focus::placeholder {
-  color: var(--primary-color); 
+  color: var(--primary-color);
 }
 
 .payroll-date {
@@ -280,7 +279,6 @@
   height: 47px;
   background-color: #ffffff;
   padding: 0 3px 0 3px;
-  /*here change for reduce left space ***************/
   gap: 0px;
   align-items: center;
   border-radius: 8px;
@@ -312,10 +310,7 @@
 .line-graph {
   display: flex;
   align-items: center;
-  /* margin-top: 0.4rem; */
   gap: 0.5rem;
-  /* align-content: center;
-  justify-content: center; */
 }
 
 .payroll-label {
@@ -341,7 +336,7 @@
 .filter-line:hover {
   transform: scale(1.05);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  background-color: #4062CA !important;
+  background-color: #4062ca !important;
 }
 
 .filter-disable {
@@ -360,7 +355,7 @@
   background-color: #377cf6;
 }
 .active-filter-line:hover {
-  background-color: #4062CA;
+  background-color: #4062ca;
 }
 
 .active-filter-line img {
@@ -382,7 +377,6 @@
   position: absolute;
   width: 75%;
   height: 55vh;
-  /* top: -100px; */
   bottom: 280px;
   left: 150px;
   opacity: 0px;
@@ -391,8 +385,6 @@
 .section-help {
   position: fixed;
   border-radius: 24px;
-  /* width: 60%; */
-  /* height: 98vh; */
   background-color: white;
   border: 1px solid var(--border-color);
 }
@@ -415,21 +407,17 @@
 .help-section {
   display: flex;
   justify-content: space-between;
-  /* padding: 1rem; */
   padding: 0 1rem 1rem 1rem;
-  /* margin-left: 1rem; */
 }
 
 .help-section h3 {
   font-size: 20px;
   font-weight: 600;
-  /* line-height: 44px; */
   text-align: left;
   color: white;
 }
 
 .create-input-container {
-  /* text-align: left; */
   width: 100%;
 }
 
@@ -458,10 +446,7 @@
 }
 
 .create-input-field-help {
-  /* width: 280px; */
-  /* margin-left: 2rem; */
   flex: 1;
-  /* margin-top: 0.5rem; */
 }
 
 .bi-support-icon {
@@ -574,11 +559,13 @@
   height: 40px;
   text-transform: capitalize;
   width: 150px;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .help-submit:hover {
-  background-color: #4062CA !important;
+  background-color: #4062ca !important;
   transform: scale(1.05);
 }
 
@@ -635,7 +622,6 @@
   padding: 0.5rem;
   font-size: 13px !important;
   border-radius: 0.5rem;
-  /* background-color: var(--input-border-color); */
   width: 100%;
   margin-top: 0.5rem;
   background-color: white;
@@ -644,7 +630,6 @@
 .inputLabeldash p {
   font-size: 13px;
   font-weight: 500;
-  /* line-height: 18px; */
   text-align: left;
 }
 
@@ -658,10 +643,8 @@
 .file-input-container-help {
   position: relative;
   border: 1px solid #ced4da;
-  /* Show border */
   border-radius: 8px;
   padding: 4px;
-  /* width: 290px; */
   margin-top: 0.1rem;
   height: 38px;
   border-style: dashed;
@@ -674,12 +657,9 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 20px;
-  /* text-align: left; */
-  /* width: 45px; */
 }
 
 .custom-button-dash {
-  /* Define your button styles */
   background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
   color: #000000;
   padding: 5px 5px;
@@ -690,11 +670,9 @@
   font-weight: 500;
   line-height: 18px;
   margin-right: 10px;
-  /* text-align: left; */
 }
 
 .custom-button-dash {
-  /* Define your button styles */
   background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
   color: #000000;
   padding: 5px 5px;
@@ -705,7 +683,6 @@
   font-weight: 500;
   line-height: 18px;
   margin-right: 10px;
-  /* text-align: left; */
 }
 
 .createUserActionButtonDash {
@@ -722,7 +699,6 @@
 }
 
 .create-input-field-help {
-  /* width: 290px; */
   width: 50%;
   display: flex;
   display: block;
@@ -730,7 +706,6 @@
 }
 
 .create-input-field-help {
-  /* width: 290px; */
   width: 50%;
   display: flex;
   display: block;
@@ -743,7 +718,6 @@
   line-height: 18px;
   text-align: left;
   margin-bottom: -5px;
-  /* background-color: #0493CE; */
 }
 
 .help-modal {
@@ -759,7 +733,7 @@
   stroke-width: 20;
   font-size: 16px;
   vertical-align: middle;
-    margin-left: 3px;
+  margin-left: 3px;
 }
 
 .add-arrow-icon.up {
@@ -878,7 +852,6 @@
     font-size: 14px;
   }
 }
-
 /*Responsive*/
 
 @media screen and (max-width: 768px) {
@@ -886,27 +859,27 @@
     padding: unset;
   }
 
-  .attach-help-mob{
+  .attach-help-mob {
     flex-basis: auto;
   }
 
-  .help-projId{
+  .help-projId {
     width: 100% !important;
   }
 
-  .modal-down-break{
+  .modal-down-break {
     margin: 10px;
   }
 
-  .date-button{
+  .date-button {
     gap: 1.5rem !important;
   }
 
-  .help-proj-input{
+  .help-proj-input {
     width: 100% !important;
   }
 
-  .help-submit{
+  .help-submit {
     width: 100px;
   }
 

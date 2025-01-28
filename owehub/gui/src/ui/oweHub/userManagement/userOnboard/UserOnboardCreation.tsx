@@ -44,7 +44,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   handleClose,
   onSubmitCreateUser,
   onChangeRole,
-  dealerList,
   regionList,
   selectedOption,
   tablePermissions,
@@ -53,7 +52,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { authData } = useAuth();
-
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [dbAccess, setDbAcess] = useState(false);
   const { loading, formData } = useAppSelector(
@@ -96,9 +94,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   /**handle change for report */
   const handleChangeForRegion = async (newValue: any, fieldName: string) => {
     const { value } = newValue;
-
+    console.log(fieldName, value, "fieldname,value")
     await dispatch(updateUserForm({ field: fieldName, value }));
-
     if (fieldName !== 'report_to' && fieldName !== 'team_name') {
       onChangeRole('Dealer', value);
     }
@@ -125,10 +122,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
     if (name === 'first_name' || name === 'last_name') {
       const sanitizedValue = value.replace(/[^a-zA-Z\s'-]/g, '');
-
       dispatch(updateUserForm({ field: name, value: sanitizedValue }));
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
@@ -170,7 +165,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   }, []);
 
   /** render ui */
-
   return (
     <div className="transparent-model">
       {loading && (
@@ -235,7 +229,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       />
                     </div>
                   ) : null}
-
                   {formData.role_name !== TYPE_OF_USER.PARTNER ? (
                     <div className="create-input-field">
                       <Input
@@ -249,7 +242,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       />
                     </div>
                   ) : null}
-
                   <div
                     className="create-input-field relative"
                     style={{ zIndex: 10 }}

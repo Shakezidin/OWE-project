@@ -9,12 +9,10 @@ import Select, {
 } from 'react-select';
 import { FixedSizeList as List } from 'react-window';
 import './drop.css';
-
 interface Option {
   value: string;
   label: string;
 }
-
 interface Props {
   options: Option[];
   value: Option | undefined;
@@ -93,14 +91,20 @@ const SelectOption: React.FC<Props> = ({
   return (
     <div
       className="select-container"
-      onMouseEnter={() => { setIsHovered(true)}}
-      onMouseLeave={() => { setIsHovered(false)}}
+      onMouseEnter={() => {
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+      }}
     >
       <Select
         options={options}
         isSearchable
         menuPosition={menuPosition}
-        filterOption={lazyRender ? createFilter({ ignoreAccents: false }) : undefined}
+        filterOption={
+          lazyRender ? createFilter({ ignoreAccents: false }) : undefined
+        }
         onChange={onChange}
         components={lazyRender ? { MenuList } : undefined}
         placeholder={placeholder || 'Select'}
@@ -110,9 +114,9 @@ const SelectOption: React.FC<Props> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onMenuOpen={() => setIsOpen(true)}
-        onMenuClose={() => { 
-          setIsOpen(false);     
-          setIsFocused(false); 
+        onMenuClose={() => {
+          setIsOpen(false);
+          setIsFocused(false);
         }}
         styles={{
           control: (baseStyles, state) => ({
@@ -126,11 +130,14 @@ const SelectOption: React.FC<Props> = ({
             boxShadow: 'none',
             width: width || baseStyles.width,
             ...controlStyles,
-            border: (isHovered || state.isFocused) ? '1px solid #377CF6' : '1px solid #292B2E',
+            border:
+              isHovered || state.isFocused
+                ? '1px solid #377CF6'
+                : '1px solid #292B2E',
             '&:hover': enableHoverEffect
               ? {
-                border: '1px solid #377CF6',
-              }
+                  border: '1px solid #377CF6',
+                }
               : {},
           }),
           indicatorSeparator: () => ({
@@ -152,10 +159,10 @@ const SelectOption: React.FC<Props> = ({
             zIndex: 99,
             ...menuStyles,
             width: menuWidth || base.width,
-            border: "1px solid #292B2E",
-            boxShadow: "0px 4px 10px rgba(43, 42, 42, 0.3)",
-            borderRadius: "8px",
-            padding: "4px"
+            border: '1px solid #292B2E',
+            boxShadow: '0px 4px 10px rgba(43, 42, 42, 0.3)',
+            borderRadius: '8px',
+            padding: '4px',
           }),
           menuList: (base) => ({
             ...base,
@@ -172,23 +179,38 @@ const SelectOption: React.FC<Props> = ({
             },
             ...menuListStyles,
           }),
-          singleValue: (base: any, { data }: SingleValueProps<Option, false, GroupBase<Option>>) => ({
+          singleValue: (
+            base: any,
+            { data }: SingleValueProps<Option, false, GroupBase<Option>>
+          ) => ({
             ...base,
-            color: isFocused || isHovered ? '#377CF6' : (value ? undefined : '#292B2E'),
+            color:
+              isFocused || isHovered
+                ? '#377CF6'
+                : value
+                  ? undefined
+                  : '#292B2E',
             ...singleValueStyles,
           }),
           valueContainer: (base) => ({
             ...base,
             ...valueContainerStyles,
           }),
-          dropdownIndicator: (base: CSSObjectWithLabel, { isFocused }: DropdownIndicatorProps<Option, false>) => ({
+          dropdownIndicator: (
+            base: CSSObjectWithLabel,
+            { isFocused }: DropdownIndicatorProps<Option, false>
+          ) => ({
             ...base,
-            color: (isHovered || isFocused) ? '#377CF6' : "#292B2E",
+            color: isHovered || isFocused ? '#377CF6' : '#292B2E',
             ...dropdownIndicatorStyles,
             '& svg': {
-              fill: (isHovered || isFocused) ? '#377CF6' : "#292B2E",
-              transform: isOpen ? (isFocused ? 'rotate(180deg)' : 'rotate(0deg)') : 'rotate(0deg)',
-              transition: "transform 550ms ease"
+              fill: isHovered || isFocused ? '#377CF6' : '#292B2E',
+              transform: isOpen
+                ? isFocused
+                  ? 'rotate(180deg)'
+                  : 'rotate(0deg)'
+                : 'rotate(0deg)',
+              transition: 'transform 550ms ease',
             },
           }),
           placeholder: (base) => ({

@@ -3,9 +3,7 @@ import '../../leaderboard/components/Banner.css';
 import '../text_input/Input.css';
 import './styles/index.css';
 import { BiChevronDown } from 'react-icons/bi';
-import SelectOption from '../selectOption/SelectOption';
 import '../../oweHub/reppay/reppaydashboard/DropdownWithCheckboxes.css';
-
 interface Option {
   label: string;
   value: string;
@@ -40,7 +38,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   }, [options]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent|TouchEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
@@ -55,7 +53,8 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('touchstart', handleClickOutside);
 
-    return () => {document.removeEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     };
   }, [options]);
@@ -116,7 +115,6 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     } else {
       document.removeEventListener('keydown', handleKeyDown);
     }
-
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
@@ -200,7 +198,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
                   onChange={() => !disabled && handleOptionChange(option)}
                 />
                 <span className={disabled ? 'disbaled-label' : ''}>
-                  {option.label || "N/A"} 
+                  {option.label || 'N/A'}
                 </span>
               </div>
             ))

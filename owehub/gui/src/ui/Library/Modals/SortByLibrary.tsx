@@ -3,11 +3,14 @@ import classes from './styles/sortby.module.css';
 import { FaChevronDown } from 'react-icons/fa6';
 
 interface SortByLibraryProps {
-  onSort: (option:'name' | 'date' | 'size') => void;
+  onSort: (option: 'name' | 'date' | 'size') => void;
   isPalceholder?: boolean;
 }
 
-const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort,isPalceholder=true }) => {
+const SortByLibrary: React.FC<SortByLibraryProps> = ({
+  onSort,
+  isPalceholder = true,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<
     'name' | 'date' | 'size'
@@ -18,7 +21,7 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort,isPalceholder=true
     setIsVisible((prev) => !prev);
   };
 
-  const handleSortChange = (option:'name' | 'date' | 'size') => {
+  const handleSortChange = (option: 'name' | 'date' | 'size') => {
     setSelectedOption(option);
     onSort(option);
     setIsVisible(false);
@@ -46,7 +49,11 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort,isPalceholder=true
         onClick={handleClick}
         className={`${classes.logo_sortby_botton} ${isVisible ? classes.active : ''}`}
       >
-        {isPalceholder?"Sort by":""} {selectedOption.replace(selectedOption[0], selectedOption[0].toUpperCase())}
+        {isPalceholder ? 'Sort by' : ''}{' '}
+        {selectedOption.replace(
+          selectedOption[0],
+          selectedOption[0].toUpperCase()
+        )}
         <FaChevronDown
           className={`${classes.icon} ${isVisible ? classes.icon_active : ''}`}
         />

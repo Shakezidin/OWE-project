@@ -19,7 +19,7 @@
 }
 
 .loginButton:hover {
-  background-color: #4062CA !important;
+  background-color: #4062ca !important;
   transform: scale(1.05);
 }
 
@@ -75,9 +75,14 @@
     border-color 0.3s ease;
 }
 
+.iconsSection2 button svg {
+  width: 14px;
+  height: 12px !important;
+}
+
 .iconsSection2 button:hover {
   transform: scale(1.05);
-  background-color: #4062CA;
+  background-color: #4062ca;
   border-color: rgb(255, 255, 255);
 }
 
@@ -92,10 +97,11 @@
   .iconSection2-mobile .mobileTitle {
     display: none;
   }
-  .loginButton, .cancel{
+  .loginButton,
+  .cancel {
     width: 100px;
   }
-  .fildelb-btn{
+  .fildelb-btn {
     width: 100%;
     text-align: center;
     margin-top: 0;

@@ -6,15 +6,10 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getPerfomanceStatus } from '../../../redux/apiSlice/perfomanceSlice';
-import { Calendar } from './ICONS';
-import Select from 'react-select';
-import { getProjects } from '../../../redux/apiSlice/projectManagement';
-import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
 import { MdDownloading } from 'react-icons/md';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
-  format,
   subDays,
   startOfMonth,
   startOfWeek,
@@ -22,20 +17,15 @@ import {
   startOfYear,
   subMonths,
 } from 'date-fns';
-import { DateRange } from 'react-date-range';
 import Pagination from '../../components/pagination/Pagination';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import useMatchMedia from '../../../hooks/useMatchMedia';
 import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
-import { IoClose } from 'react-icons/io5';
 import { ICONS } from '../../../resources/icons/Icons';
 import { MdDone } from 'react-icons/md';
 import useAuth from '../../../hooks/useAuth';
@@ -65,21 +55,18 @@ const ProjectPerformence = () => {
   const datePickerRef = useRef<HTMLDivElement>(null);
   const refBtn = useRef<null | HTMLDivElement>(null);
   const [activePopups, setActivePopups] = useState<boolean>(false);
-  const { projects } = useAppSelector((state) => state.projectManagement);
-  const [selectedMilestone, setSelectedMilestone] = useState('');
+  const [selectedMilestone, setSelectedMilestone] = useState('survey');
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [activeTab, setActiveTab] = useState('Active Queue');
   const [loading, setLoading] = useState(true);
   const [titleData, setTileData] = useState<any>('');
-  const [activeCardId, setActiveCardId] = useState(null);
-  const [activeCardTitle, setActiveCardTitle] = useState<string>('');
-
-  const [mapHovered, setMapHovered] = useState(false);
+  const [activeCardId, setActiveCardId] = useState('1');
+  const [activeCardTitle, setActiveCardTitle] = useState<string>('Site Survey');
 
   //Ajay chaudhary code starts from here
 
-  const [filterAplied,setFilterAplied]=useState<boolean>(false);
+  const [filterAplied, setFilterAplied] = useState<boolean>(false);
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -128,9 +115,6 @@ const ProjectPerformence = () => {
     }
   };
 
-
-  //Ajay Chaudhary
-
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [minValue, set_minValue] = useState(25);
   const [maxValue, set_maxValue] = useState(75);
@@ -155,8 +139,7 @@ const ProjectPerformence = () => {
     }
 
     const newMinValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
-    if(newMinValue>180)
-    {
+    if (newMinValue > 180) {
       set_minValue(180);
 
       return;
@@ -168,23 +151,22 @@ const ProjectPerformence = () => {
     const value = e.target.value;
 
 
-    if (value.length > 3 || value>180) {
+    if (value.length > 3 || value > 180) {
       return;
     }
     const newMaxValue = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
     set_maxValue(newMaxValue);
   };
 
-useEffect(()=>{
-  const maxi=maxValue;
-  if(minValue===180)
-  {
-    set_maxValue(360)
-  }
-  else{
-    set_maxValue(maxi);
-  }
-},[minValue])
+  useEffect(() => {
+    const maxi = maxValue;
+    if (minValue === 180) {
+      set_maxValue(360)
+    }
+    else {
+      set_maxValue(maxi);
+    }
+  }, [minValue])
   const HandleFilterClick = () => {
     setOpenFilter(prev => !prev);
   }
@@ -247,16 +229,6 @@ useEffect(()=>{
     Array(5).fill(false) // Initialize an array of 5 false values
   );
 
-
-  const handleCheckboxChange = (index: number) => {
-    setCheckedStates((prevState) => {
-      const updatedStates = [...prevState]; // Create a copy of the array
-      updatedStates[index] = !updatedStates[index]; // Toggle the state at the given index
-      return updatedStates;
-    });
-  };
-
-
   const [selectionRange, setSelectionRange] = useState({
     startDate: subMonths(new Date(), 3),
     endDate: subDays(new Date(), 1),
@@ -267,9 +239,6 @@ useEffect(()=>{
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
-  const toggleExportShow = () => {
-    setExportShow((prev) => !prev);
-  };
 
   const [selectedRangeDate, setSelectedRangeDate] = useState<any>({
     label: 'Three Months',
@@ -277,9 +246,6 @@ useEffect(()=>{
     end: role == TYPE_OF_USER.ADMIN ? subMonths(new Date(), 1) : '',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const handleSelect = (ranges: any) => {
-    setSelectionRange(ranges.selection);
-  };
 
   const perPage = 10;
   const getColorStyle = (color: any | null) => {
@@ -298,21 +264,9 @@ useEffect(()=>{
     };
   };
 
-  const projectOption: Option[] = projects?.map?.(
-    (item: (typeof projects)[0]) => ({
-      label: `${item.unqiue_id}-${item.customer}`,
-      value: item.unqiue_id,
-    })
-  );
-
-  const { projectStatus, projectsCount, datacount, isLoading } = useAppSelector(
+  const { projectStatus, projectsCount, isLoading } = useAppSelector(
     (state) => state.perfomanceSlice
   );
-  const { sessionTimeout } = useAppSelector((state) => state.auth);
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
-
   const ExportCsv = async () => {
     setIsExporting(true);
     const headers = [
@@ -413,16 +367,12 @@ useEffect(()=>{
   };
 
 
-  useEscapeKey(()=>setOpenFilter(false));
-
+  useEscapeKey(() => setOpenFilter(false));
   const location = useLocation();
-
   useEffect(() => {
-    
-      window.scrollTo({top:10,behavior:'smooth'});
-        
+    window.scrollTo({ top: 10, behavior: 'smooth' });
   }, [location.pathname]);
-  
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -532,8 +482,6 @@ useEffect(()=>{
     if (isFetched) {
       dispatch(
         getPerfomanceStatus({
-
-
           page,
           perPage,
           startDate: '',
@@ -547,7 +495,6 @@ useEffect(()=>{
           minValue,
           maxValue
         })
-
       );
     }
   }, [
@@ -561,7 +508,8 @@ useEffect(()=>{
     selectedDealer,
     isFetched,
     activeCardId,
-    filtered
+    filtered,
+    activeCardTitle
   ]);
 
   useEffect(() => {
@@ -572,71 +520,48 @@ useEffect(()=>{
     }
   }, [showDropdown]);
 
-  const calculateCompletionPercentage = (
-    project: (typeof projectStatus)[0]
-  ) => {
-    const totalSteps = Object.keys(project).length;
-    const completedSteps = Object.values(project).filter(
-      (date) => !!date
-    ).length;
-    const completionPercentage = (completedSteps / totalSteps) * 100;
-    return completionPercentage.toFixed(2);
-  };
-
-  const formatFloat = (number: number | undefined) => {
-    if (
-      typeof number === 'number' &&
-      !isNaN(number) &&
-      Number.isFinite(number) &&
-      Number.isInteger(number) === false
-    ) {
-      return number.toFixed(2);
-    } else {
-      return number;
-    }
-  };
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
 
   const topCardsData = [
     {
-      id: 1,
+      id: '1',
       title: 'Site Survey',
       value: titleData.site_survey_count,
       pending: 'survey',
     },
     {
-      id: 2,
+      id: '2',
       title: 'CAD Design',
       value: titleData.cad_design_count,
       pending: 'cad',
     },
     {
-      id: 3,
+      id: '3',
       title: 'Permitting',
       value: titleData.permitting_count,
       pending: 'permit',
     },
     {
-      id: 4,
+      id: '4',
       title: 'Roofing',
       value: titleData.roofing_count,
       pending: 'roof',
     },
     {
-      id: 5,
+      id: '5',
       title: 'Install',
       value: titleData.isntall_count,
       pending: 'install',
     },
     {
-      id: 6,
+      id: '6',
       title: 'MPU/FIN',
       value: titleData.inspection_count,
       pending: 'inspection',
     },
     {
-      id: 7,
+      id: '7',
       title: 'Activation',
       value: titleData.activation_count,
       pending: 'activation',
@@ -671,12 +596,6 @@ useEffect(()=>{
     '#EE6363',
   ];
 
-  const resetPage = () => {
-    setPage(1);
-  };
-
-  const isMobile = useMatchMedia('(max-width: 767px)');
-
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
     setPage(1);
@@ -704,15 +623,7 @@ useEffect(()=>{
     setActiveTab(tab);
   };
 
-  const isStaging = process.env.REACT_APP_ENV;
-
-  // console.log(projectStatus, datacount, 'projectStatus');
-  // console.log(selectedRangeDate, 'select');
-  console.log(projectStatus, "This is project status");
-  console.log(projectsCount, " This is projectsCount")
-
   const [isHovered, setIsHovered] = useState(-1);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -763,25 +674,25 @@ useEffect(()=>{
   }, []);
 
   return (
-     
+
     <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
           <div className="pipeline-header-btns">
             {showDropdown && (
-             <DropdownCheckbox
-             label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
-             placeholder="Search partners"
-             selectedOptions={selectedDealer}
-             options={dealerOption}
-             onChange={(val) => {
-               setSelectedDealer(val);
-               setPage(1);
-             }}
-             disabled={loading || isLoading}
-           />
-           
+              <DropdownCheckbox
+                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
+                placeholder="Search partners"
+                selectedOptions={selectedDealer}
+                options={dealerOption}
+                onChange={(val) => {
+                  setSelectedDealer(val);
+                  setPage(1);
+                }}
+                disabled={loading || isLoading}
+              />
+
             )}
             <button
               disabled={loading || isLoading}
@@ -849,8 +760,8 @@ useEffect(()=>{
                   const isActive = activeCardId === card.id;
 
                   const handleCardClick = (cardId: any, title: string) => {
-                    setActiveCardId(activeCardId === cardId ? null : cardId);
-                    setActiveCardTitle(activeCardId === cardId ? '' : title);
+                    setActiveCardId(cardId);
+                    setActiveCardTitle(title);
                   };
 
                   return (
@@ -944,19 +855,6 @@ useEffect(()=>{
         <div className="performance-table-heading" style={{ marginTop: "1.2rem" }}>
           <div className="proper-top pipeline-agingReport-filter">
             <div className="performance-project">
-              {activeCardId !== null && (
-                <div className="active-queue">
-                  <IoClose
-                    size={20}
-                    onClick={() => {
-                      setActiveCardId(null),
-                        setSelectedMilestone(''),
-                        setPage(1);
-                    }}
-                  />
-                  <h2>{activeCardTitle || 'N/A'}</h2>
-                </div>
-              )}
               <div className="proper-select">
                 {/* <IoIosSearch className="search-icon" /> */}
                 <Input
@@ -1017,12 +915,12 @@ useEffect(()=>{
                     <img
                       src={ICONS.fil_white}
                       alt=""
-                      style={{ height: '15px', width: '15px',position:filterAplied?'relative':'static', left:filterAplied? '5px' : '0px' }}
+                      style={{ height: '15px', width: '15px', position: filterAplied ? 'relative' : 'static', left: filterAplied ? '5px' : '0px' }}
                       className='filterImg'
 
-                   
+
                     />
-                    { filterAplied &&
+                    {filterAplied &&
                       <div className='pipeLine-filter-ActiveSign'></div>
                     }
 
@@ -1101,7 +999,7 @@ useEffect(()=>{
                         />
                         <label
                           className="options"
-                          style={{ color: checkedStates[index] ? '#377CF6' : '#292b2e' , cursor:'pointer'}}
+                          style={{ color: checkedStates[index] ? '#377CF6' : '#292b2e', cursor: 'pointer' }}
                           htmlFor={`pipeline-filter-options-${index}`}
                         >
                           {option}
@@ -1128,45 +1026,49 @@ useEffect(()=>{
                         <p className='moreThen'>More than</p>
                       </div>
                       <label className='pipeline-inputBox-div'>
-                      <input
-                        className='dayBox'
-                        value={minValue === 0 ? '' : minValue}
-                        type="text"
-                        onChange={handleMinChange}
-                        onBlur={() => {
-                          set_minValue(minValue <= 0 ? 1 : minValue);
-                        }}
-                        style={{outline:'none', width: minValue.toString().length === 1 ? '15px' :
-                          minValue.toString().length === 2 ? '24px' : '30px'}}
-                        min={1}
-                        max={180}
-                      />
-                     {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue===1?'day':'days'}</p>}
-                        </label>
+                        <input
+                          className='dayBox'
+                          value={minValue === 0 ? '' : minValue}
+                          type="text"
+                          onChange={handleMinChange}
+                          onBlur={() => {
+                            set_minValue(minValue <= 0 ? 1 : minValue);
+                          }}
+                          style={{
+                            outline: 'none', width: minValue.toString().length === 1 ? '15px' :
+                              minValue.toString().length === 2 ? '24px' : '30px'
+                          }}
+                          min={1}
+                          max={180}
+                        />
+                        {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue === 1 ? 'day' : 'days'}</p>}
+                      </label>
                     </div>
                     <div className='endDay'>
                       <div className='lThen'>
                         <p className='lessThen'>Less than</p>
                       </div>
                       <label className='pipeline-inputBox-div'>
-                      <input
-                        className='dayBox'
-                        value={maxValue === 0 ? '' : maxValue}
-                        type="text"
-                        onChange={handleMaxChange}
-                        disabled={minValue === 180}
-                        
-                        onBlur={() => {
-                          set_maxValue(maxValue <= 0 ? 180 : maxValue);
-                          
-                        }}
-                        style={{outline:'none',width: maxValue.toString().length === 1 ? '15px' :
-                          maxValue.toString().length === 2 ? '24px' : '30px'}}
-                        min={1}
-                        max={360}
-                      />
-                       {maxValue !==0 && <p className='pipeline-inputBox-div-para'>{maxValue===1?'day':'days'}</p>}
-</label>
+                        <input
+                          className='dayBox'
+                          value={maxValue === 0 ? '' : maxValue}
+                          type="text"
+                          onChange={handleMaxChange}
+                          disabled={minValue === 180}
+
+                          onBlur={() => {
+                            set_maxValue(maxValue <= 0 ? 180 : maxValue);
+
+                          }}
+                          style={{
+                            outline: 'none', width: maxValue.toString().length === 1 ? '15px' :
+                              maxValue.toString().length === 2 ? '24px' : '30px'
+                          }}
+                          min={1}
+                          max={360}
+                        />
+                        {maxValue !== 0 && <p className='pipeline-inputBox-div-para'>{maxValue === 1 ? 'day' : 'days'}</p>}
+                      </label>
                     </div>
                   </div>
 
@@ -1220,7 +1122,7 @@ useEffect(()=>{
                   />
 
 
-                 
+
 
 
                   <div className='filterButtons'>
@@ -1232,36 +1134,35 @@ useEffect(()=>{
                       set_minValue(25);
                       setPage(1);
                       // Also clear the checkedOptions array
-                      setCheckedOptions([]); setOpenFilter(false); 
+                      setCheckedOptions([]); setOpenFilter(false);
                       setFilterAplied(false);
-                      setFiltered(prev=>!prev);
-                      
+                      setFiltered(prev => !prev);
+
                     }} style={{ cursor: "pointer" }}> Cancel </div>
 
 
-                    <div className='applyButton' 
-                    style={{cursor:'pointer'}}
-                    onClick={() => {
-                    if (minValue > maxValue) {
-                    toast.error("In Range Min value can not be more than Max value");
-                    set_minValue(25);
-                    set_maxValue(70);
-                    setFilterAplied(false);
-                    }
-                    else if(fieldData.length===0)
-                    {
-                      toast.error("Please Select atleast one Option!");
-                    }
-                    else {
-                    setFiltered(prev => !prev);
-                    setOpenFilter(false);
-                    setFilterAplied(true);
-                    setPage(1);
-                    }
-      
-      
-                    }}
-                   > Apply </div>
+                    <div className='applyButton'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        if (minValue > maxValue) {
+                          toast.error("In Range Min value can not be more than Max value");
+                          set_minValue(25);
+                          set_maxValue(70);
+                          setFilterAplied(false);
+                        }
+                        else if (fieldData.length === 0) {
+                          toast.error("Please Select atleast one Option!");
+                        }
+                        else {
+                          setFiltered(prev => !prev);
+                          setOpenFilter(false);
+                          setFilterAplied(true);
+                          setPage(1);
+                        }
+
+
+                      }}
+                    > Apply </div>
                   </div>
                 </div>
 
@@ -1324,7 +1225,7 @@ useEffect(()=>{
 
                                 <Link
                                   to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
-                                  
+
                                 >
                                   <div className="deco-text">
                                     <h3>{project.customer}</h3>
@@ -1749,5 +1650,5 @@ useEffect(()=>{
     </div>
   );
 };
-  
+
 export default ProjectPerformence;

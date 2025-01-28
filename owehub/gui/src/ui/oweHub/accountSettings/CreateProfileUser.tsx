@@ -10,11 +10,7 @@ interface ButtonProps {
   handleClose: () => void;
   commission: CommissionModel | null;
 }
-const CreateProfileUser: React.FC<ButtonProps> = ({
-  editMode,
-  handleClose,
-  commission,
-}) => {
+const CreateProfileUser: React.FC<ButtonProps> = ({ handleClose }) => {
   return (
     <div className="user-profile-container">
       <div className="user-profile-cross" onClick={handleClose}>
@@ -119,9 +115,6 @@ const CreateProfileUser: React.FC<ButtonProps> = ({
             </div>
           </div>
         </div>
-        {/* <div className="reset-Update-support">
-            <ActionButton title={"Submit"} type="submit" onClick={() => {}} />
-          </div> */}
       </div>
     </div>
   );
