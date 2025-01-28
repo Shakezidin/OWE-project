@@ -209,7 +209,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate,
 			RoofingCratedDate, RoofinCompleteDate, PVInstallCreatedDate, BatteryScheduleDate,
 			BatteryCompleteDate, PvInstallCompletedDate,
-			FinCreatedDate, FinPassdate, PtoSubmittedDate, PtoDate, ContractDate time.Time
+			FinCreatedDate, FinPassdate, PtoSubmittedDate, PtoDate time.Time
 		)
 
 		SiteSurveyScheduleDate, _ = item["site_survey_scheduled_date"].(time.Time)
@@ -231,15 +231,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FinPassdate, _ = item["fin_pass_date"].(time.Time)
 		PtoSubmittedDate, _ = item["pto_submitted_date"].(time.Time)
 		PtoDate, _ = item["pto_granted_new"].(time.Time)
-		ContractDate, _ = item["sale_date"].(time.Time)
 
-		RoofingStatus, _ := item["roofing_status"].(string)
-
-		surveyColor, SiteSurevyDate, _ := getSurveyColor(SiteSurveyScheduleDate, SiteSurverCompleteDate, ContractDate)
-		cadColor, CadDesignDate := getCadColor(CadReady, PlanSetCompleteDate, SiteSurverCompleteDate)
-		permitColor, PermittingDate := getPermittingColor(PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate, PlanSetCompleteDate)
-		roofingColor, RoofingDate := roofingColor(RoofingCratedDate, RoofinCompleteDate, RoofingStatus)
-		installColor, InstallDate, _ := installColor(PVInstallCreatedDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompletedDate, PermitApprovedDate, IcAPprovedDate)
+		surveyColor, SiteSurevyDate, _ := getSurveyColor(SiteSurveyScheduleDate, SiteSurverCompleteDate)
+		cadColor, CadDesignDate := getCadColor(CadReady, PlanSetCompleteDate)
+		permitColor, PermittingDate := getPermittingColor(PvSubmittedDate, IcSubmittedDate, PermitApprovedDate, IcAPprovedDate)
+		roofingColor, RoofingDate := roofingColor(RoofingCratedDate, RoofinCompleteDate)
+		installColor, InstallDate, _ := installColor(PVInstallCreatedDate, BatteryScheduleDate, BatteryCompleteDate, PvInstallCompletedDate)
 		inspectionColor, InspectionDate := InspectionColor(FinCreatedDate, FinPassdate, PvInstallCompletedDate)
 		activationColor, ActivationDate := activationColor(PtoSubmittedDate, PtoDate, FinPassdate, FinCreatedDate)
 
@@ -364,7 +361,7 @@ func formatDate(t time.Time) string {
 
 *****************************************************************************
 */
-func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contractDate time.Time) (string, time.Time, string) {
+func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate time.Time) (string, time.Time, string) {
 
 	if !siteSurveycompletedDate.IsZero() {
 		return green, siteSurveycompletedDate, "Completed"
@@ -374,7 +371,7 @@ func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contractDa
 	return grey, time.Time{}, ""
 }
 
-func getCadColor(cadCreatedDate, planSetcompletedDate, siteSurveyCompletedDate time.Time) (string, time.Time) {
+func getCadColor(cadCreatedDate, planSetcompletedDate time.Time) (string, time.Time) {
 
 	if !planSetcompletedDate.IsZero() {
 		return green, planSetcompletedDate
@@ -384,7 +381,36 @@ func getCadColor(cadCreatedDate, planSetcompletedDate, siteSurveyCompletedDate t
 	return grey, time.Time{}
 }
 
-func roofingColor(roofingCreateDate, roofingCompleteDate time.Time, roofingStatus string) (string, time.Time) {
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate time.Time) (string, time.Time) {
+
+	if !permitApprovedDate.IsZero() && !IcApprovedDate.IsZero() {
+		latestApprovedDate := permitApprovedDate
+		if IcApprovedDate.After(permitApprovedDate) {
+			latestApprovedDate = IcApprovedDate
+		}
+		return green, latestApprovedDate
+	} else if !permitSubmittedDate.IsZero() && !IcSubmittedDate.IsZero() {
+		latestSubmittedDate := permitSubmittedDate
+		if IcSubmittedDate.After(permitSubmittedDate) {
+			latestSubmittedDate = IcSubmittedDate
+		}
+		return blue, latestSubmittedDate
+	}
+	return grey, time.Time{}
+}
+
+func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate time.Time) (string, time.Time, string) {
+
+	if !batteryScheduleDate.IsZero() && batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
+		return blue, pvInstallCompletedDate, "Scheduled"
+	} else if !pvInstallCreateDate.IsZero() {
+		return blue, pvInstallCreateDate, "Scheduled"
+	}
+
+	return grey, time.Time{}, ""
+}
+
+func roofingColor(roofingCreateDate, roofingCompleteDate time.Time) (string, time.Time) {
 
 	if !roofingCompleteDate.IsZero() {
 		return green, roofingCompleteDate
@@ -410,35 +436,6 @@ func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Ti
 		return green, finPassDate
 	} else if !finCreatedDate.IsZero() {
 		return blue, finCreatedDate
-	}
-	return grey, time.Time{}
-}
-
-func installColor(pvInstallCreateDate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedCompletedDate, icApprovedDate time.Time) (string, time.Time, string) {
-
-	if !batteryScheduleDate.IsZero() && batteryCompleted.IsZero() && !pvInstallCompletedDate.IsZero() {
-		return blue, pvInstallCompletedDate, "Scheduled"
-	} else if !pvInstallCreateDate.IsZero() {
-		return blue, pvInstallCreateDate, "Scheduled"
-	}
-
-	return grey, time.Time{}, ""
-}
-
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, planSetCompleteDate time.Time) (string, time.Time) {
-
-	if !permitApprovedDate.IsZero() && !IcApprovedDate.IsZero() {
-		latestApprovedDate := permitApprovedDate
-		if IcApprovedDate.After(permitApprovedDate) {
-			latestApprovedDate = IcApprovedDate
-		}
-		return green, latestApprovedDate
-	} else if !permitSubmittedDate.IsZero() && !IcSubmittedDate.IsZero() {
-		latestSubmittedDate := permitSubmittedDate
-		if IcSubmittedDate.After(permitSubmittedDate) {
-			latestSubmittedDate = IcSubmittedDate
-		}
-		return blue, latestSubmittedDate
 	}
 	return grey, time.Time{}
 }
