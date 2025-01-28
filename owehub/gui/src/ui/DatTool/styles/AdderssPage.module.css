@@ -1,4 +1,4 @@
-/* TOP PART */
+
 
 .adderssPageTopPart {
   display: flex;
@@ -42,7 +42,7 @@
   cursor: pointer;
 }
 
-/* MAIN CONTENT */
+
 .adderssPageMainPart {
   width: 100%;
   display: flex;
@@ -103,9 +103,12 @@
   font-size: 16px;
   line-height: 24px;
   color: #2a2626;
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
 }
 
-/* RIGHT PART */
+
 
 .adderssPageMainPart_Right {
   width: 60%;
