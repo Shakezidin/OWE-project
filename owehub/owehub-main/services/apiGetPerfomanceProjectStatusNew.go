@@ -768,7 +768,7 @@ func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interfa
 	log.EnterFn(0, "FilterAgRpData")
 	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
 
-	if req.Fields == nil {
+	if req.Fields == nil || len(req.Fields) <= 0 {
 		return alldata, err
 	}
 
@@ -782,7 +782,7 @@ func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interfa
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
-		return nil, err
+		return alldata, err
 	}
 	// Collect unique IDs into a map for efficient lookup
 	for _, value := range data {
