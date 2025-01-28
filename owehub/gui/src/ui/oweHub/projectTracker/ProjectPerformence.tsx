@@ -252,17 +252,24 @@ const ProjectPerformence = () => {
     let backgroundColor;
     let textColor;
     let boxShadowColor;
-
-    backgroundColor = color;
-    textColor = 'white';
+  
+    if (color) {
+      backgroundColor = color;
+      textColor = 'white';
+    } else {
+      backgroundColor = 'rgb(233, 233, 233)';
+      textColor = 'text-dark';
+    }
+  
     boxShadowColor = 'rgba(0, 141, 218, 0.2)';
-
+  
     return {
       backgroundColor,
       color: textColor,
       boxShadow: `0px 4px 12px ${boxShadowColor}`,
     };
   };
+  
 
   const { projectStatus, projectsCount, isLoading } = useAppSelector(
     (state) => state.perfomanceSlice
