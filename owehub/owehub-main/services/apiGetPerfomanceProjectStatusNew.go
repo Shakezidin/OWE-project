@@ -175,13 +175,33 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	/*
+		The following does
+		1. It counts the total existing data count for the selected milestone
+		2. Paginates the data according to user request
+		3. Then collects the unqiue id lists and joins
+		4. With this we get the full data for those unique ids after joining
+	*/
+
+	RecordCount = int64(len(data))
+	paginateData := PaginateData(data, dataReq)
+	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
+	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, tileQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+		return
+	} else if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+		return
+	}
+
 	for _, item := range data {
 
 		UniqueId, _ := item["customer_unique_id"].(string)
-		/*if !ok || UniqueId == "" {
-			continue
-		}*/
-
 		Customer, _ := item["home_owner"].(string)
 
 		var (
@@ -278,13 +298,29 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
-	RecordCount = int64(len(perfomanceList.PerfomanceList))
-	paginatedData := PaginateData(perfomanceList, dataReq, agngRpForUserId)
+	// RecordCount = int64(len(perfomanceList.PerfomanceList))
+	paginatedData := postCalculation(perfomanceList, dataReq, agngRpForUserId)
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", RecordCount, perfomanceList)
 	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 
+}
+
+/* Function to join the unique id lists */
+func joinUniqueIdsWithDbResponse(data []map[string]interface{}) (joinedNames string) {
+	if len(data) > 0 {
+		escapedNames := make([]string, len(data))
+		for i, item := range data {
+			UniqueId, ok := item["customer_unique_id"].(string)
+			if !ok || len(UniqueId) == 0 {
+				UniqueId = ""
+			}
+			escapedNames[i] = "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
+		}
+		joinedNames = strings.Join(escapedNames, ", ")
+	}
+	return joinedNames
 }
 
 /* Function to set the db milestone */
@@ -535,7 +571,31 @@ func getFieldText(data map[string]interface{}, field string) string {
 *****************************************************************************
 */
 
-func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
+func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
+	paginatedData := []map[string]interface{}{}
+	startIndex := (req.PageNumber - 1) * req.PageSize
+	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data))))
+
+	if startIndex >= len(data) || startIndex >= endIndex {
+		return make([]map[string]interface{}, 0)
+	}
+
+	paginatedData = append(paginatedData, data[startIndex:endIndex]...)
+	return paginatedData
+}
+
+/*
+*****************************************************************************
+
+	- FUNCTION:		postCalculation
+  - DESCRIPTION:
+    function helps in calculating the ntp/qc data for the unique ids that is
+		displayed in UI at present. See the value next to each unique id in UI
+
+*****************************************************************************
+*/
+
+func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
 
 	var (
 		updated = make(map[string]bool)
@@ -544,16 +604,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 
 	log.EnterFn(0, "PaginateData")
 	defer func() { log.ExitFn(0, "PaginateData", err) }()
-	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
-
-	startIndex := (req.PageNumber - 1) * req.PageSize
-	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data.PerfomanceList))))
-
-	if startIndex >= len(data.PerfomanceList) || startIndex >= endIndex {
-		return make([]models.PerfomanceResponse, 0)
-	}
-
-	paginatedData = append(paginatedData, data.PerfomanceList[startIndex:endIndex]...)
+	paginatedData := data.PerfomanceList
 
 	uniqueIds := make([]string, len(paginatedData))
 	for i, item := range paginatedData {

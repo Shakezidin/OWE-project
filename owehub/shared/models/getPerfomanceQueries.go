@@ -1086,6 +1086,82 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
 	return PipelineDataQuery
 }
 
+func GetBasePipelineQuery(uniqueIds string) string {
+	return fmt.Sprintf(`
+        SELECT
+            DISTINCT ON (cust.unique_id)
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
+			cust.sale_date,
+            
+			install.created_on AS pv_install_created_date,
+            install.pv_completion_date AS install_completed_date,
+            
+			b.battery_installation_date AS battery_scheduled_date,
+            b.completion_date AS battery_complete_date,
+            
+			ic.ic_approved_date AS ic_approval_date,
+            ic.ic_submitted_date,
+            
+			pto.submitted AS pto_submitted_date,
+            pto.pto_granted AS pto_granted_new,
+            
+			fin.pv_fin_date AS fin_pass_date,
+            fin.created_on AS fin_created_date,
+            
+            roofing.work_completed_date AS roofing_completed_date,
+            roofing.app_status AS roofing_status,
+            roofing.record_created_on AS roofing_created_date,
+            
+			permit.pv_approved AS permit_approval_date,
+            permit.pv_submitted AS permit_submitted_date,
+            
+			cad.record_created_on AS cad_ready,
+            cad.plan_set_complete_day AS cad_complete_date,
+
+            pto.submitted AS pto_submitted_date,
+			pto.pto_granted AS pto_granted_new,
+            
+			survey.original_survey_scheduled_date AS site_survey_scheduled_date,
+            CASE 
+                WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                    AND survey.twond_visit_date IS NULL)
+                    THEN NULL
+                WHEN survey.twond_visit_date IS NOT NULL
+                    THEN survey.twond_completion_date
+                ELSE survey.survey_completion_date
+            END AS survey_final_completion_date
+        FROM
+            customers_customers_schema AS cust
+        LEFT JOIN
+            permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
+        LEFT JOIN
+            ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
+        LEFT JOIN
+            survey_survey_schema AS survey ON cust.our = survey.customer_unique_id
+        LEFT JOIN
+            pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
+        LEFT JOIN
+            roofing_request_install_subcontracting_schema AS roofing ON cust.our = roofing.customer_unique_id
+        LEFT JOIN
+            planset_cad_schema AS cad ON cust.unique_id = cad.our_number
+        LEFT JOIN
+            batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
+        LEFT JOIN
+            fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
+        LEFT JOIN
+            pto_ic_schema AS pto ON cust.our = pto.customer_unique_id 
+		WHERE cust.unique_id in ('%v')`, uniqueIds)
+}
+
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH queue_customers AS (
