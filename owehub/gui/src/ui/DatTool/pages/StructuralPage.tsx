@@ -8,6 +8,7 @@ import { HiMiniXMark } from 'react-icons/hi2';
 import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import CustomInput from '../components/Input';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 type Option = {
   value: string | number;
@@ -112,17 +113,24 @@ const StructuralPage: React.FC = () => {
     isEditable: boolean,
     type: 'select' | 'input' = 'select'
   ) => {
+    // Get the current value from either temp (when editing) or selected values
+    const currentValue = isEditable 
+      ? tempSelectedValues[key] !== undefined 
+        ? tempSelectedValues[key] 
+        : (selectedValues[key] || defaultValue)
+      : (selectedValues[key] || defaultValue);
+
     if (type === 'input') {
       return isEditable ? (
         <CustomInput
           label={label}
-          value={String(tempSelectedValues[key] || defaultValue)}
+          value={String(currentValue)}
           onChange={(value) => handleSelectChange(key, value)}
         />
       ) : (
         <DisplaySelect
           label={label}
-          value={selectedValues[key] || defaultValue}
+          value={currentValue}
         />
       );
     }
@@ -131,13 +139,13 @@ const StructuralPage: React.FC = () => {
       <Select
         label={label}
         options={options}
-        value={selectedValues[key] || defaultValue}
+        value={currentValue}
         onChange={(value) => handleSelectChange(key, value)}
       />
     ) : (
       <DisplaySelect
         label={label}
-        value={selectedValues[key] || defaultValue}
+        value={currentValue}
       />
     );
   };
@@ -149,6 +157,28 @@ const StructuralPage: React.FC = () => {
     setStructuralInfoStates([...structuralInfoStates, newState]);
     setActiveStructuralState(newState);
     setEditStructuralInfo(true);
+  };
+
+
+  const handleDeleteState = (stateToDelete: string) => {
+    // Don't allow deletion if it's the only state
+    if (structuralInfoStates.length <= 1) return;
+    
+    // Filter out the state to delete
+    const updatedStates = structuralInfoStates.filter(state => state !== stateToDelete);
+    
+    // Update states array
+    setStructuralInfoStates(updatedStates);
+    
+    // If the active state was deleted, set the active state to the last state in the array
+    if (activeStructuralState === stateToDelete) {
+      setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+    }
+    
+    // Reset edit mode if it was active
+    if (editStructuralInfo) {
+      toggleEditStructuralInfo(false);
+    }
   };
   return (
     <div>
@@ -178,42 +208,52 @@ const StructuralPage: React.FC = () => {
                   <p>Structural Info</p>
                 </div>
                 <div className={styles.headingIcon}>
-                  {structuralInfoStates.map((state, index) => (
-                    <div
-                      key={index}
-                      className={` ${
-                        activeStructuralState === state
-                          ? styles.activeState
-                          : styles.wordContainer
-                      }`}
-                      onClick={() => setActiveStructuralState(state)}
-                    >
-                      {state}
-                    </div>
-                  ))}
-                  <div className={styles.iconContainer}>
-                    {editStructuralInfo ? (
-                      <HiMiniXMark
-                        onClick={() => toggleEditStructuralInfo(false)}
-                      />
-                    ) : (
-                      <IoMdAdd onClick={addNewStructuralState} />
-                    )}
-                  </div>
+                {structuralInfoStates.map((state, index) => (
                   <div
-                    className={` ${
-                      editStructuralInfo ? styles.active : styles.iconContainer
+                    key={index}
+                    className={`${
+                      activeStructuralState === state
+                        ? styles.activeState
+                        : styles.wordContainer
                     }`}
-                    onClick={() =>
-                      editStructuralInfo
-                        ? toggleEditStructuralInfo(true)
-                        : toggleEditStructuralInfo()
-                    }
-                    style={{ cursor: 'pointer' }}
+                    onClick={() => setActiveStructuralState(state)}
                   >
-                    {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
+                    {state}
                   </div>
+                ))}
+                <div className={styles.iconContainer}>
+                  {editStructuralInfo ? (
+                    <HiMiniXMark
+                      onClick={() => toggleEditStructuralInfo(false)}
+                    />
+                  ) : (
+                    <IoMdAdd onClick={addNewStructuralState} />
+                  )}
                 </div>
+                
+                <div
+                  className={`${
+                    editStructuralInfo ? styles.active : styles.iconContainer
+                  }`}
+                  onClick={() =>
+                    editStructuralInfo
+                      ? toggleEditStructuralInfo(true)
+                      : toggleEditStructuralInfo()
+                  }
+                  style={{ cursor: 'pointer' }}
+                >
+                  {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
+                </div>
+                {activeStructuralState !== structuralInfoStates[structuralInfoStates.length - 1] && (
+                  <div 
+                    className={styles.iconContainer}
+                    onClick={() => handleDeleteState(activeStructuralState)}
+                  >
+                    <RiDeleteBin6Line />
+                  </div>
+                )}
+              </div>
+
               </div>
 
               <div>
