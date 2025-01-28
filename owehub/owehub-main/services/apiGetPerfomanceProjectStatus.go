@@ -566,10 +566,10 @@ package services
 // 	if err != nil {
 // 		log.FuncErrorTrace(0, "Failed to get agngRpForUserId for Unique ID: %v err: %v", uniqueIds, err)
 // 	}
-// 	// FilteredIds, err := FilterAgRpData(dataReq)
-// 	// if err != nil {
-// 	// 	log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
-// 	// }
+// 	FilteredIds, err := FilterAgRpData(dataReq)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+// 	}
 
 // 	updated := make(map[string]bool)
 // 	for i := range perfomanceList.PerfomanceList {
@@ -596,17 +596,17 @@ package services
 
 // 		}
 // 	}
-// 	// var filteredData []models.PerfomanceResponse
+// 	var filteredData []models.PerfomanceResponse
 
-// 	// if len(FilteredIds) != 0 {
+// 	if len(FilteredIds) != 0 {
 
-// 	// 	for i := range perfomanceList.PerfomanceList {
-// 	// 		if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
-// 	// 			filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
-// 	// 		}
-// 	// 	}
-// 	// 	log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
-// 	// }
+// 		for i := range perfomanceList.PerfomanceList {
+// 			if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
+// 				filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
+// 			}
+// 		}
+// 		log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
+// 	}
 
 // 	switch dataReq.SelectedMilestone {
 // 	case "survey":
@@ -831,20 +831,20 @@ package services
 // 	return paginatedData
 // }
 
-// func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error) {
+// func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interface{}) ([]map[string]interface{}, error) {
 
 // 	var (
 // 		conditions []string
+// 		result     []map[string]interface{}
 // 		uniqueIds  = make(map[string]struct{})
 // 		err        error
 // 	)
 
 // 	log.EnterFn(0, "FilterAgRpData")
-
 // 	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
 
 // 	if req.Fields == nil {
-// 		return uniqueIds, err
+// 		return alldata, err
 // 	}
 
 // 	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
@@ -857,27 +857,36 @@ package services
 // 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
 // 	if err != nil {
 // 		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
-// 		return uniqueIds, err
+// 		return nil, err
 // 	}
+// 	// Collect unique IDs into a map for efficient lookup
 // 	for _, value := range data {
-
 // 		if id, ok := value["unique_id"]; ok {
-
 // 			if strID, ok := id.(string); ok {
 // 				uniqueIds[strID] = struct{}{}
 // 			} else {
 // 				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
 // 			}
-
 // 		} else {
 // 			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
 // 		}
 // 	}
 
-// 	log.FuncInfoTrace(0, "FilterAgRpData fetched:  %v and count is : %d", uniqueIds, len(uniqueIds))
-// 	return uniqueIds, err
+// 	// Filter the original data based on the fetched unique IDs
+// 	for _, item := range alldata {
+// 		if uniqueId, ok := item["customer_unique_id"].(string); ok {
+// 			if _, exists := uniqueIds[uniqueId]; exists {
+// 				result = append(result, item)
+// 			}
+// 		} else {
+// 			log.FuncErrorTrace(0, "[FilterAgRpData] customer_unique_id not found or invalid in alldata")
+// 		}
+// 	}
 
+// 	log.FuncInfoTrace(0, "FilterAgRpData filtered result count: %d", len(result))
+// 	return result, nil
 // }
+
 // /******************************************************************************
 // * FUNCTION:		PrepareAdminDlrFilters
 // * DESCRIPTION:     handler for prepare filter
