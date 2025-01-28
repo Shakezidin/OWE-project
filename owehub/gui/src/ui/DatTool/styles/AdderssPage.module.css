@@ -168,3 +168,42 @@
   line-height: 18px;
   color: #2a2626;
 }
+
+.container{
+      height: calc(100vh - 216px);
+    overflow-y: scroll;
+}
+
+.wrapper{
+  margin-right: 1.2rem;
+}
+
+
+/* code for Scroll bar */
+
+.container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.container::-webkit-scrollbar {
+  display: initial;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.container::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.container::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.container::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

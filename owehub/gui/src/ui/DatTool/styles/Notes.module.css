@@ -9,6 +9,10 @@
 }
 
 .sidebar {
+  margin-right: 10px;
+
+}
+.sidebarContainer{
   width: 25%;
   background-color: #f5f5f5;
   overflow-y: scroll;
@@ -182,4 +186,39 @@
   gap: 10px;
   height: auto;
   overflow-y: scroll;
+}
+
+
+
+
+.wrapper{
+margin-right: 1.2rem;
+}
+
+
+/* code for Scroll bar */
+
+.sidebarContainer::-webkit-scrollbar {
+  width: 7px;
+  height: 10px;
+}
+.sidebarContainer::-webkit-scrollbar {
+  display: initial;
+}
+
+.sidebarContainer::-webkit-scrollbar-thumb {
+  background-color: #377cf6;
+  border-radius: 28px;
+}
+
+.sidebarContainer::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.sidebarContainer::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.sidebarContainer::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
