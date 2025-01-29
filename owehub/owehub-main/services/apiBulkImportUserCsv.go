@@ -110,13 +110,10 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       PartnerId:         getValue(headers, record, "partner_id"),
     }
 
-    // fetching the reporting_manager user_code using email that we will get from .CSV file
+
     reportingManagerEmail := getValue(headers, record, "reporting_manager")
 
-
     // handing hierarchy conditions
-
-    ///reporting manger field can be empty for ,  admin, do , fa , am
     if CreateBulkUserReq.RoleName == "Admin" ||
        CreateBulkUserReq.RoleName == "Finance Admin" ||
        CreateBulkUserReq.RoleName == "DB User" ||
@@ -130,21 +127,19 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
         result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
         continue
       }
-    } else {
-      if reportingManagerEmail != "" {
-          reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-          if err != nil {
-              log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-              result.Failed++
-              result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-              continue
-          }
-          CreateBulkUserReq.ReportingManager = reportingManagerCode
-      }
+    }else{
+    reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
+    if err != nil {
+      log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+      result.Failed++
+      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+      continue
+    }
+    CreateBulkUserReq.ReportingManager = reportingManagerCode
   }
 
 
-
+  // handling partner_id conditions , these roles cant have partner_id
   partnerId := getValue(headers, record, "partner_id")
   if CreateBulkUserReq.RoleName == "Admin" ||
      CreateBulkUserReq.RoleName == "Finance Admin" ||
@@ -169,6 +164,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
     CreateBulkUserReq.PartnerId = partnerId
     CreateBulkUserReq.SalesPartnerName = salesPartnerName
   }
+
 
 
     if !isValidUser(CreateBulkUserReq) {
@@ -225,6 +221,10 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
   appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)
 }
 
+
+
+
+
 /*************************************helper functions *************************************/
 
 func getValue(headers []string, record []string, key string) string {
@@ -236,6 +236,7 @@ func getValue(headers []string, record []string, key string) string {
   }
   return ""
 }
+
 
 func isValidUser(user CreateBulkUserReq) bool {
   valid := len(user.Name) > 0 &&
