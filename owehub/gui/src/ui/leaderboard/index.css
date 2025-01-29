@@ -636,13 +636,13 @@
 
   .rank-card-stats {
     margin-top: 13px;
-    gap: 36px;
+    gap: 20px;
     overflow-x: scroll;
   }
 
   .rank-card-statss {
     margin-top: 13px;
-    gap: 36px;
+    gap: 20px;
     margin-right: 10px;
     overflow-x: scroll;
   }

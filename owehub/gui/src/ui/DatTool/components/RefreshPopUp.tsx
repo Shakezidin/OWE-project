@@ -8,7 +8,7 @@ const RefreshPopUp = ({setOpenRefresh}:any) => {
         <div className={style.openRefresh}>
             <div  className={style.openRefresh_page}>
                 <div className={style.openRefresh_page_icon}>
-                <TbRefresh color=' #377CF6' size={30}/>
+                <TbRefresh color=' #377CF6' size={40}/>
                 </div>
                 <p className={style.openRefresh_page_text}>Do you really want to Refresh the Entire page?</p>
                 <div  className={style.openRefresh_page_btns}>

@@ -59,6 +59,7 @@ type GetPerformerProfileData struct {
 	TotalSales     int64  `json:"total_sales"`
 	Total_NTP      int64  `json:"total_ntp"`
 	Total_Installs int64  `json:"total_installs"`
+	Total_Battery  int64  `json:"total_battery"`
 	WeeklySale     int64  `json:"weekly_sale"`
 	User_code      string `json:"user_code"`
 	Rank           int64  `json:"rank"`

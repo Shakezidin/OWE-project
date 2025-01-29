@@ -21,13 +21,12 @@ import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { RootState } from '../../../redux/store';
 import Loading from '../../components/loader/Loading';
-import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { FormEvent } from '../../../core/models/data_models/typesModel';
-// import Lottie from 'lottie-react';
-// import PowerAnimation from '../../../resources/assets/power_anime.json';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
 import { encryptData, decryptData } from '../../../utiles/Encryption';
+import { checkDBStatus } from '../../../redux/apiActions/auth/authActions';
+
 
 export const LoginPage = () => {
   const { authData, saveAuthData } = useAuth();
@@ -46,7 +45,7 @@ export const LoginPage = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const [dbStatus, setDbStatus] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state: RootState) => state.auth);
 
@@ -57,28 +56,39 @@ export const LoginPage = () => {
     }));
   };
 
- /** handle local storage */
-useEffect(() => {
-  if (authData?.isRememberMe === 'true') {
-    const savedAuthData = localStorage.getItem('authData');
-    if (savedAuthData) {
-      try {
-        const parsedAuthData = JSON.parse(savedAuthData);
-        const decryptedPassword = decryptData(parsedAuthData.password);
+  /** check DB is down or not */
+  useEffect(() => {
+    const fetchDBStatus = async () => {
+      const status = await checkDBStatus();
+      setDbStatus(status);
+    };
 
-        handleInputChange('email_id', parsedAuthData.email || ''); // Fallback to empty string
-        handleInputChange('password', decryptedPassword || ''); // Fallback to empty string
-        handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
-      } catch (error) {
-        console.error('Error parsing or decrypting auth data:', error);
+    fetchDBStatus();
+  }, []);
+
+
+  /** handle local storage */
+  useEffect(() => {
+    if (authData?.isRememberMe === 'true') {
+      const savedAuthData = localStorage.getItem('authData');
+      if (savedAuthData) {
+        try {
+          const parsedAuthData = JSON.parse(savedAuthData);
+          const decryptedPassword = decryptData(parsedAuthData.password);
+
+          handleInputChange('email_id', parsedAuthData.email || ''); // Fallback to empty string
+          handleInputChange('password', decryptedPassword || ''); // Fallback to empty string
+          handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
+        } catch (error) {
+          console.error('Error parsing or decrypting auth data:', error);
+        }
       }
     }
-  }
-}, [authData]);
+  }, [authData]);
 
 
-  
-  
+
+
   /** email validation */
   const isValidEmail = (email: string) => {
     // Regular expression pattern for validating email addresses
@@ -111,7 +121,7 @@ useEffect(() => {
             time_to_expire_minutes,
             is_password_change_required,
           } = result.data;
-        const encryptedPassword = encryptData(credentials.password)
+          const encryptedPassword = encryptData(credentials.password)
 
           const loginResponse: AuthData = {
             role: role_name,
@@ -152,6 +162,11 @@ useEffect(() => {
 
   return (
     <div className="mainContainer">
+      {!dbStatus && (
+        <div className="dbDownLabel">
+          <span className="dbDownLabelText"> ⚠️ Our website is under maintenance. Some features may not be available. ⚠️</span>
+        </div>
+      )}
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>
