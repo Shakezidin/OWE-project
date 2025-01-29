@@ -101,6 +101,8 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		performerProfileData.TotalSales, _ = data[0]["total_sales"].(int64)
 		performerProfileData.Total_NTP, _ = data[0]["total_ntp"].(int64)
 		performerProfileData.Total_Installs, _ = data[0]["total_installs"].(int64)
+		performerProfileData.Total_Battery, _ = data[0]["total_battery"].(int64)
+
 	}
 	whereEleList = nil
 
@@ -164,14 +166,18 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 
 	var filtersBuilder strings.Builder
 
-	if dataReq.CountKwSelection {
-		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size END) AS total_sales,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN ns.ntp_complete_date IS NOT NULL THEN cs.contracted_system_size END) AS total_ntp,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size END) AS total_installs")
+	if !dataReq.CountKwSelection {
+		filtersBuilder.WriteString("SELECT COUNT(DISTINCT CASE WHEN cs.sale_date IS NOT NULL THEN cs.unique_id ELSE NULL END) AS total_sales,")
+		filtersBuilder.WriteString(" COUNT(DISTINCT CASE WHEN ns.ntp_complete_date IS NOT NULL THEN ns.unique_id ELSE NULL END) AS total_ntp,")
+		filtersBuilder.WriteString(" COUNT(DISTINCT CASE WHEN pis.pv_completion_date IS NOT NULL THEN pis.customer_unique_id ELSE NULL END) AS total_installs,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN ns.ntp_complete_date IS NOT NULL THEN ns.battery_count ELSE 0 END) AS total_battery")
+
 	} else {
 		filtersBuilder.WriteString("SELECT SUM(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_sales,")
-		filtersBuilder.WriteString(" SUM(CASE WHEN cs.contracted_system_size IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_ntp,")
-		filtersBuilder.WriteString(" SUM(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_installs")
+		filtersBuilder.WriteString(" SUM(CASE WHEN ns.ntp_complete_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_ntp,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_installs,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN ns.ntp_complete_date IS NOT NULL THEN ns.battery_count ELSE 0 END) AS total_battery")
+
 	}
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
