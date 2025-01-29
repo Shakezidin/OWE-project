@@ -223,15 +223,14 @@ const StructuralPage: React.FC = () => {
         </div>
       ) : null
     ))}
-    <div className={styles.iconContainer}>
-      {editStructuralInfo ? (
-        <HiMiniXMark
-          onClick={() => toggleEditStructuralInfo(false)}
-        />
-      ) : (
-        <IoMdAdd onClick={addNewStructuralState} />
-      )}
-    </div>
+    <div className={styles.iconContainer} onClick={editStructuralInfo ? () => toggleEditStructuralInfo(false) : addNewStructuralState}>
+  {editStructuralInfo ? (
+    <HiMiniXMark />
+  ) : (
+    <IoMdAdd />
+  )}
+</div>
+
     
     <div
       className={`${
@@ -419,9 +418,9 @@ const StructuralPage: React.FC = () => {
                   <p>Attachment</p>
                   <div className={styles.buttonContainer}>
                     {editAttachment ? (
-                      <div className={styles.iconContainer}>
+                      <div onClick={() => toggleEditAttachment(false)} className={styles.iconContainer}>
                         <HiMiniXMark
-                          onClick={() => toggleEditAttachment(false)}
+                          
                         />
                       </div>
                     ) : null}

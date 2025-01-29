@@ -53,6 +53,7 @@ const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
       lineHeight:'21px',
       fontFamily: 'Poppins',
       minHeight: '36px',
+      minWidth: '100px',
       boxShadow: 'none',
       backgroundColor: state.selectProps.menuIsOpen ? '#2A2626' : 'transparent',
       cursor: 'pointer',
@@ -100,7 +101,8 @@ const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
       transition: 'color 0.2s ease',
       fontWeight:"500",
       fontSize:"14px",
-      lineHeight:'21px'
+      lineHeight:'21px',
+      marginLeft:'5px',
     }),
   
     menu: (provided: any) => ({
@@ -139,9 +141,11 @@ const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
 
   // Options for react-select dropdown
   const options = [
-    { value: 'option1', label: 'Option 1' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' },
+    { value: '7090', label: '7090' },
+    { value: '7190', label: '7190' },
+    { value: '7290', label: '7290' },
+    { value: '7390', label: '7390' },
+    { value: '7490', label: '7490' },
   ];
 
   return (

@@ -77,9 +77,9 @@ const CustomSelect: React.FC<SelectProps> = ({ label, options, value, onChange }
     menu: (provided: any) => ({
       ...provided,
       width: '100%',
-      marginTop: '3px',
-      // border: '1px solid #000000',
+      // marginTop: '3px',
     BorderRadius:'7px',
+    padding:'0px',
 
     }),
     menuList: (provided: any) => ({

@@ -3,11 +3,21 @@ import styles from '../styles/Notes.module.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { format } from 'date-fns';
 
+interface Category {
+  name: string;
+  description: string;
+}
+
+interface Note {
+  category: string;
+  text: string;
+  timestamp?: string;
+}
 
 const NotePage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Structural');
-  const [currentTime, setCurrentTime] = useState('');
-  const [notes, setNotes] = useState([
+  const [selectedCategory, setSelectedCategory] = useState<string>('Structural');
+  const [currentTime, setCurrentTime] = useState<string>('');
+  const [notes, setNotes] = useState<Note[]>([
     {
       category: 'Structural',
       text: 'Selecting a PV trench requires determining trench length and adding concrete for paved areas.',
@@ -16,8 +26,24 @@ const NotePage = () => {
       category: 'Electrical',
       text: 'Electrical configurations are linked to site-specific needs such as load side.',
     },
+    {
+      category: 'MPU',
+      text: 'Current meter panel needs to be upgraded to support 200A service.',
+    },
+    {
+      category: 'Adder Explanation',
+      text: 'Additional charges include trenching costs and structural reinforcement requirements.',
+    },
+    {
+      category: 'REASON FOR PRODUCTION/LAYOUT CHANGE',
+      text: 'Layout adjusted to accommodate shading from nearby trees and optimize production.',
+    },
+    {
+      category: 'NOTES FOR INSTALLER',
+      text: 'Ensure proper conduit routing through attic space. Verify roof attachment points.',
+    },
   ]);
-  const [newNote, setNewNote] = useState('');
+  const [newNote, setNewNote] = useState<string>('');
 
   useEffect(() => {
     const updateTime = () => {
@@ -34,7 +60,7 @@ const NotePage = () => {
     };
   }, [notes]);
 
-  const categories = [
+  const categories: Category[] = [
     {
       name: 'Structural',
       description:
@@ -65,13 +91,22 @@ const NotePage = () => {
     },
   ];
 
-  const handleCategoryClick = (category: any) => {
+  const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
   };
 
   const handleAddNote = () => {
     if (newNote.trim()) {
-      setNotes([...notes, { category: selectedCategory, text: newNote }]);
+      const now = new Date();
+      const formattedTime = format(now, 'dd MMM yyyy hh:mm a');
+      setNotes([
+        ...notes,
+        { 
+          category: selectedCategory, 
+          text: newNote,
+          timestamp: formattedTime
+        }
+      ]);
       setNewNote('');
     }
   };
@@ -81,38 +116,51 @@ const NotePage = () => {
       <div className={styles.appContainer}>
         {/* Sidebar */}
         <div className={styles.sidebarContainer}>
-        <div className={styles.sidebar}>
-          {categories.map((category) => (
-            <div
-              key={category.name}
-              className={`${styles.sidebarItem} ${selectedCategory === category.name ? styles.sidebarItemActive : ''
+          <div className={styles.sidebar}>
+            {categories.map((category) => (
+              <div
+                key={category.name}
+                className={`${styles.sidebarItem} ${
+                  selectedCategory === category.name ? styles.sidebarItemActive : ''
                 }`}
-              onClick={() => handleCategoryClick(category.name)}
-            >
-              <div className={styles.categoryName}>{category.name}</div>
-              <div className={`${styles.categoryName1} ${selectedCategory === category.name ? styles.cat1Active : styles.cat1InActive
-                }`}>
-                {category.description}
+                onClick={() => handleCategoryClick(category.name)}
+              >
+                <div className={styles.categoryName}>{category.name}</div>
+                <div
+                  className={`${styles.categoryName1} ${
+                    selectedCategory === category.name
+                      ? styles.cat1Active
+                      : styles.cat1InActive
+                  }`}
+                >
+                  {category.description}
+                </div>
+                <div
+                  className={`${styles.categoryTime} ${
+                    selectedCategory === category.name ? styles.cat1Active : ''
+                  }`}
+                >
+                  {currentTime}
+                </div>
               </div>
-              {/* <div className={styles.categoryTime}> */}
-              <div className={`${styles.categoryTime} ${selectedCategory === category.name ? styles.cat1Active : ''
-                }`}>
-                {currentTime}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         </div>
 
         <div className={styles.notesPanel}>
           <div className={styles.notes}>
-            <div className={styles.notes_head} style={{ position: "sticky", top: "0" }}>Notes</div>
+            <div className={styles.notes_head} style={{ position: "sticky", top: "0" }}>
+              Notes
+            </div>
             {notes
               .filter((note) => note.category === selectedCategory)
               .map((note, index) => (
-                <div className={styles.multinotes}>
-                  <div key={index} className={styles.note}>
+                <div key={index} className={styles.multinotes}>
+                  <div className={styles.note}>
                     {note.text}
-                    <div className={styles.notes_currTime}>{currentTime}</div>
+                    <div className={styles.notes_currTime}>
+                      {note.timestamp || currentTime}
+                    </div>
                   </div>
                 </div>
               ))}
