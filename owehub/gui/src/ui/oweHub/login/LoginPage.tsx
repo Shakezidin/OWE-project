@@ -60,7 +60,7 @@ export const LoginPage = () => {
   useEffect(() => {
     const fetchDBStatus = async () => {
       const status = await checkDBStatus();
-      setDbStatus(false);
+      setDbStatus(status);
     };
 
     fetchDBStatus();
@@ -164,7 +164,7 @@ export const LoginPage = () => {
     <div className="mainContainer">
       {!dbStatus && (
         <div className="dbDownLabel">
-          <span className="dbDownLabelText">⚠️ Our website is under maintenance. Some features may not be available.</span>
+          <span className="dbDownLabelText"> ⚠️ Our website is under maintenance. Some features may not be available. ⚠️</span>
         </div>
       )}
       <div className={'overlay'} />
