@@ -21,7 +21,7 @@
     
 }
 .openRefresh_page{
-    width: 25%;
+    width: 20%;
     background-color: #FFFFFF;
     padding: 3rem 2rem;
     border-radius: 12px;
@@ -47,7 +47,7 @@
     gap: 1rem;
 }
 .openRefresh_page_btn_yes,.openRefresh_page_btn_No{
-    padding: 0.3rem 2rem;
+    padding: 0.4rem 2rem;
     background-color: #F5F5FD;
     border: 1px solid #F5F5FD;
     display: flex;

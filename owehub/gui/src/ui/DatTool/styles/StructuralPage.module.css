@@ -28,7 +28,7 @@
 
 .container {
   width: 100%;
-  height: calc(100vh - 216px);
+  height: calc(100vh - 195px);
   overflow-y: scroll;
 }
 

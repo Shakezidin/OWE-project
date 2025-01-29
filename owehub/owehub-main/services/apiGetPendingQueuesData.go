@@ -30,18 +30,13 @@ import (
 
 func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		dataReq          models.PendingQueueReq
-		data             []map[string]interface{}
-		whereEleList     []interface{}
-		queryWithFiler   string
-		filter           string
-		rgnSalesMgrCheck bool
-		RecordCount      int64
-		SaleRepList      []interface{}
-		ntpD             string
-		CoStatus         string
-		prospectId       string
+		err         error
+		dataReq     models.PendingQueueReq
+		data        []map[string]interface{}
+		RecordCount int64
+		ntpD        string
+		CoStatus    string
+		prospectId  string
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesDataRequest")
@@ -68,106 +63,108 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
-	qcNTPQuery := models.QcNtpRetrieveQueryFunc()
-	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
-
-	// change table name here
-	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
 		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-
-	whereEleList = append(whereEleList, dataReq.Email)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
-
-	// This checks if the user is admin, sale rep or dealer
-	if len(data) > 0 {
-		role := data[0]["role_name"]
-		name := data[0]["name"]
-		dealerName, ok := data[0]["dealer_name"].(string)
-		if !ok {
-			dealerName = ""
-		}
-		rgnSalesMgrCheck = false
-		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
-
-		switch role {
-		case string(types.RoleAdmin), string(types.RoleFinAdmin):
-			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, true, false, false)
-		case string(types.RoleDealerOwner):
-			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
-		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
-			dealerNames, err := FetchPendingQueueProjectDealerForAmAe(dataReq, role)
-			if err != nil {
-				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
-				return
-			}
-
-			if len(dealerNames) == 0 {
-				perfomanceList := models.PerfomanceListResponse{}
-				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
-				return
-			}
-			dataReq.DealerNames = dealerNames
-			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
-		case string(types.RoleSalesRep):
-			SaleRepList = append(SaleRepList, name)
-			filter, whereEleList = PrepareSaleRepPendingQueueFilters(tableName, dataReq, SaleRepList)
-		// this is for the roles regional manager and sales manager
-		default:
-			SaleRepList = append(SaleRepList, name)
-			rgnSalesMgrCheck = true
-		}
-	} else {
-		log.FuncErrorTrace(0, "Failed to get pending queue data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+	userRole := req.Context().Value("rolename").(string)
+	if len(userRole) == 0 {
+		appserver.FormAndSendHttpResp(resp, "Unauthorized Role", http.StatusBadRequest, nil)
 		return
 	}
 
-	if rgnSalesMgrCheck {
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
-
-		// This is thrown if no sale rep are available and for other user roles
-		if len(SaleRepList) == 0 {
-			emptyPerfomanceList := models.GetPendingQueueList{
-				PendingQueueList: []models.GetPendingQueue{},
-			}
-			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+	if userRole == string(types.RoleAccountManager) || userRole == string(types.RoleAccountExecutive) {
+		accountName, err := fetchAmAeName(dataReq.Email)
+		if err != nil {
+			appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+			return
+		}
+		var roleBase string
+		if userRole == "Account Manager" {
+			roleBase = "account_manager"
+		} else {
+			roleBase = "account_executive"
+		}
+		query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+			return
+		} else if len(data) == 0 {
+			tileData := models.GetPendingQueueTileResp{}
+			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
 
-		// this loops through sales rep under regional or sales manager
-		for _, item := range data {
-			SaleRepName, Ok := item["name"]
-			if !Ok || SaleRepName == "" {
-				log.FuncErrorTrace(0, "Failed to get name. Item: %+v\n", item)
-				continue
-			}
-			SaleRepList = append(SaleRepList, SaleRepName)
+		for _, val := range data {
+			dataReq.DealerNames = append(dataReq.DealerNames, val["data"].(string))
+		}
+	} else if userRole == string(types.RoleAdmin) || userRole == string(types.RoleFinAdmin) {
+		query := "SELECT sales_partner_name as data FROM sales_partner_dbhub_schema"
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+			return
+		} else if len(data) == 0 {
+			tileData := models.GetPendingQueueTileResp{}
+			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
+			return
 		}
 
-		filter, whereEleList = PrepareSaleRepPendingQueueFilters(tableName, dataReq, SaleRepList)
+		for _, val := range data {
+			dataReq.DealerNames = append(dataReq.DealerNames, val["data"].(string))
+		}
 	}
 
-	if filter != "" {
-		queryWithFiler = qcNTPQuery + filter
-	} else {
-		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
-		return
-	}
-
-	// retrieving value from owe_db from here
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
+	roleFilter, err := HandleDataFilterOnUserRoles(dataReq.Email, userRole, "customers_customers_schema", dataReq.DealerNames)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get pending queue data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
-		return
+		if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
+			log.FuncErrorTrace(0, "error creating user role query %v", err)
+			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
+			return
+		} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
+			tileData := models.GetPendingQueueTileResp{}
+			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, tileData, RecordCount)
+			return
+		}
+	}
+
+	searchValue := ""
+	if len(dataReq.UniqueIds) > 0 {
+		searchValue = fmt.Sprintf(" AND (customers_customers_schema.customer_name ILIKE '%%%s%%' OR customers_customers_schema.unique_id ILIKE '%%%s%%') ", dataReq.UniqueIds[0], dataReq.UniqueIds[0])
+	}
+
+	if dataReq.SelectedPendingStage == "co" {
+		query := models.PendingActionPageCoQuery(roleFilter, searchValue)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+			return
+		} else if len(data) == 0 {
+			tileData := models.GetPendingQueueTileResp{}
+			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
+			return
+		}
+	} else {
+		query := models.PendingActionPageNtpQuery(roleFilter, searchValue)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+			return
+		} else if len(data) == 0 {
+			tileData := models.GetPendingQueueTileResp{}
+			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
+			return
+		}
 	}
 
 	pendingqueueList := models.GetPendingQueueList{}
@@ -208,17 +205,17 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			prospectId = "" // or a default value
 		}
 
-		ProductionDiscrepancy, ntpProductionDiscripencyCount := getPendingQueueStringValue(item, "production_discrepancy", ntpD, prospectId)
-		FinanceNTPOfProject, ntpFinanceNtpOfProjectCount := getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD, prospectId)
-		UtilityBillUploaded, ntputilityBillUploadedCount := getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD, prospectId)
-		PowerClerkSignaturesComplete, ntpPowerClerkSignatutreCount := getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD, prospectId)
-		PowerClerk, QcPowerclerkSentAz := getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD, prospectId)
-		ACHWaiveSendandSignedCashOnly, QcAchWaiverSendAndSignedCount := getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD, prospectId)
-		GreenAreaNMOnly, QcGreenAreaNmOnlyCount := getPendingQueueStringValue(item, "green_area_nm_only", ntpD, prospectId)
-		FinanceCreditApprovalLoanorLease, QcFinanceCreditAPprovedCount := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
-		FinanceAgreementCompletedLoanorLease, QcFinanceAggrementCount := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
-		OWEDocumentsCompleted, qcOweDocumentCount := getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
-		_, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
+		ProductionDiscrepancy, _ := getPendingQueueStringValue(item, "production_discrepancy", ntpD, prospectId)
+		FinanceNTPOfProject, _ := getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD, prospectId)
+		UtilityBillUploaded, _ := getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD, prospectId)
+		PowerClerkSignaturesComplete, _ := getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD, prospectId)
+		PowerClerk, _ := getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD, prospectId)
+		ACHWaiveSendandSignedCashOnly, _ := getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD, prospectId)
+		GreenAreaNMOnly, _ := getPendingQueueStringValue(item, "green_area_nm_only", ntpD, prospectId)
+		FinanceCreditApprovalLoanorLease, _ := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
+		FinanceAgreementCompletedLoanorLease, _ := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
+		OWEDocumentsCompleted, _ := getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
+		// CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
@@ -238,24 +235,25 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 				OWEDocumentsCompleted:                OWEDocumentsCompleted,
 			},
 		}
-		switch dataReq.SelectedPendingStage {
-		case "ntp":
-			if ntpProductionDiscripencyCount == 1 || ntpFinanceNtpOfProjectCount == 1 ||
-				ntputilityBillUploadedCount == 1 || ntpPowerClerkSignatutreCount == 1 {
-				pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
-			}
-		case "qc":
-			if QcFinanceAggrementCount == 1 || QcPowerclerkSentAz == 1 || QcAchWaiverSendAndSignedCount == 1 ||
-				QcGreenAreaNmOnlyCount == 1 || QcFinanceCreditAPprovedCount == 1 || qcOweDocumentCount == 1 {
-				pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
-			}
-		case "co":
-			if coStatusCount == 1 {
-				pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
-			}
-		default:
-			pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
-		}
+		// switch dataReq.SelectedPendingStage {
+		// case "ntp":
+		// 	if ntpProductionDiscripencyCount == 1 || ntpFinanceNtpOfProjectCount == 1 ||
+		// 		ntputilityBillUploadedCount == 1 || ntpPowerClerkSignatutreCount == 1 {
+		pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
+		// 		}
+		// 	case "qc":
+		// 		if QcFinanceAggrementCount == 1 || QcPowerclerkSentAz == 1 || QcAchWaiverSendAndSignedCount == 1 ||
+		// 			QcGreenAreaNmOnlyCount == 1 || QcFinanceCreditAPprovedCount == 1 || qcOweDocumentCount == 1 {
+		// 			pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
+		// 		}
+		// 	case "co":
+		// 		if coStatusCount == 1 {
+		// 			pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
+		// 		}
+		// 	default:
+		// 		pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
+		// 	}
+		// }
 	}
 
 	RecordCount = int64(len(pendingqueueList.PendingQueueList))
