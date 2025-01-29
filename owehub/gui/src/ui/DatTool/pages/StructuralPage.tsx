@@ -203,58 +203,60 @@ const StructuralPage: React.FC = () => {
         <div className={styles.flexContainer}>
           <div className={styles.boxOne}>
             <div className={styles.leftWrapper}>
-              <div className={styles.headingContainer}>
-                <div>
-                  <p>Structural Info</p>
-                </div>
-                <div className={styles.headingIcon}>
-                {structuralInfoStates.map((state, index) => (
-                  <div
-                    key={index}
-                    className={`${
-                      activeStructuralState === state
-                        ? styles.activeState
-                        : styles.wordContainer
-                    }`}
-                    onClick={() => setActiveStructuralState(state)}
-                  >
-                    {state}
-                  </div>
-                ))}
-                <div className={styles.iconContainer}>
-                  {editStructuralInfo ? (
-                    <HiMiniXMark
-                      onClick={() => toggleEditStructuralInfo(false)}
-                    />
-                  ) : (
-                    <IoMdAdd onClick={addNewStructuralState} />
-                  )}
-                </div>
-                
-                <div
-                  className={`${
-                    editStructuralInfo ? styles.active : styles.iconContainer
-                  }`}
-                  onClick={() =>
-                    editStructuralInfo
-                      ? toggleEditStructuralInfo(true)
-                      : toggleEditStructuralInfo()
-                  }
-                  style={{ cursor: 'pointer' }}
-                >
-                  {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
-                </div>
-                {activeStructuralState !== structuralInfoStates[structuralInfoStates.length - 1] && (
-                  <div 
-                    className={styles.iconContainer}
-                    onClick={() => handleDeleteState(activeStructuralState)}
-                  >
-                    <RiDeleteBin6Line />
-                  </div>
-                )}
-              </div>
+            <div className={styles.headingContainer}>
+  <div>
+    <p>Structural Info</p>
+  </div>
+  <div className={styles.headingIcon}>
+    {structuralInfoStates.map((state, index) => (
+      (editStructuralInfo && activeStructuralState === state) || !editStructuralInfo ? (
+        <div
+          key={index}
+          className={`${
+            activeStructuralState === state
+              ? styles.activeState
+              : styles.wordContainer
+          }`}
+          onClick={() => setActiveStructuralState(state)}
+        >
+          {state}
+        </div>
+      ) : null
+    ))}
+    <div className={styles.iconContainer}>
+      {editStructuralInfo ? (
+        <HiMiniXMark
+          onClick={() => toggleEditStructuralInfo(false)}
+        />
+      ) : (
+        <IoMdAdd onClick={addNewStructuralState} />
+      )}
+    </div>
+    
+    <div
+      className={`${
+        editStructuralInfo ? styles.active : styles.iconContainer
+      }`}
+      onClick={() =>
+        editStructuralInfo
+          ? toggleEditStructuralInfo(true)
+          : toggleEditStructuralInfo()
+      }
+      style={{ cursor: 'pointer' }}
+    >
+      {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
+    </div>
+    {activeStructuralState !== structuralInfoStates[structuralInfoStates.length - 1] && (
+      <div 
+        className={styles.iconContainer}
+        onClick={() => handleDeleteState(activeStructuralState)}
+      >
+        <RiDeleteBin6Line />
+      </div>
+    )}
+  </div>
+</div>
 
-              </div>
 
               <div>
                 {renderComponent(

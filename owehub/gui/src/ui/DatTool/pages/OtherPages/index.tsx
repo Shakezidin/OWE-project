@@ -164,7 +164,8 @@ const OtherInfoPage: React.FC = () => {
   });
 
   return (
-    <div className={styles.container}>
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
       <div className={styles.column}>
         <Card
           title="Electrical Equipment Info"
@@ -239,6 +240,7 @@ const OtherInfoPage: React.FC = () => {
 
         <ExistingPVSystemInfo fields={existingPV} onSave={setExistingPV} />
       </div>
+    </div>
     </div>
   );
 };
