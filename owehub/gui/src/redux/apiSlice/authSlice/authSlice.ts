@@ -71,8 +71,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.sessionTimeout = false;
-        console.log(' action.payload........', action.payload);
-
+        
         const { status, data } = action.payload;
         if (status === HTTP_STATUS.OK) {
           // on succesfull login dismiss previous toasters
