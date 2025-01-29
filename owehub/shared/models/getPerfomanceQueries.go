@@ -452,14 +452,91 @@ func QcNtpRetrieveQueryFunc() string {
         FROM customers_customers_schema
         LEFT JOIN ntp_ntp_schema 
             ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+            AND ntp_ntp_schema.app_status NOT ILIKE '%DUPLICATE%'
         LEFT JOIN system_customers_schema  
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
+            AND system_customers_schema.project_status NOT ILIKE '%DUPLICATE%'
         LEFT JOIN prospects_customers_schema 
         ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid IS NOT NULL
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid <> ''
         AND TRIM(ntp_ntp_schema.prospectid_dealerid_salesrepid) <> ','
     `)
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT 
+            customers_customers_schema.unique_id,
+            ntp_ntp_schema.change_order_status
+     FROM ntp_ntp_schema 
+     LEFT JOIN customers_customers_schema 
+         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status NOT IN (
+         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED', 
+         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
+     ) 
+     AND ntp_ntp_schema.app_status IN (
+         'Pending NTP Review', 'Pending QC', 'Pending NTP', 
+         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+     ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
+     AND %v %v  
+    `, filterUserQuery, searchValue))
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT 
+            customers_customers_schema.unique_id,
+            ntp_ntp_schema.production_discrepancy, 
+            ntp_ntp_schema.finance_ntp_of_project, 
+            ntp_ntp_schema.utility_bill_uploaded, 
+            ntp_ntp_schema.powerclerk_signatures_complete
+        FROM ntp_ntp_schema 
+	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status = 'ACTIVE' 
+     AND ntp_ntp_schema.app_status NOT IN ('Pending NTP Review','Pending QC','Pending NTP - Legal',
+		'Pending NTP - Change Order','NTP - Pending PPD (Sunnova) ','NTP - Pending CAD (Enfin Lease)','✔ NTP','HOLD','CANCEL','Under Review','Canceled Project',
+		'Saved by Retention : Pending Action','DUPLICATE','Pending NTP - Refi ')
+     AND %v %v   
+    `, filterUserQuery, searchValue))
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT 
+    (SELECT COUNT(*) 
+     FROM ntp_ntp_schema 
+	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status = 'ACTIVE' 
+     AND ntp_ntp_schema.app_status NOT IN ('Pending NTP Review','Pending QC','Pending NTP - Legal',
+		'Pending NTP - Change Order','NTP - Pending PPD (Sunnova) ','NTP - Pending CAD (Enfin Lease)','✔ NTP','HOLD','CANCEL','Under Review','Canceled Project',
+		'Saved by Retention : Pending Action','DUPLICATE','Pending NTP - Refi ')
+     AND %v %v) AS ntp_count,
+
+    (SELECT COUNT(*) 
+     FROM ntp_ntp_schema 
+     LEFT JOIN customers_customers_schema 
+         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status NOT IN (
+         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED', 
+         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
+     ) 
+     AND ntp_ntp_schema.app_status IN (
+         'Pending NTP Review', 'Pending QC', 'Pending NTP', 
+         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+     ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
+     AND %v %v) AS co_count;
+    `, filterUserQuery, searchValue, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
 }
