@@ -6,7 +6,7 @@ import GeneralPage from './pages/GeneralPage';
 import StructuralPage from './pages/StructuralPage';
 import AddressPage from './pages/AdderssPage';
 import NotesPage from './pages/NotesPage';
-import OtherPage from './pages/OtherPage';
+import OtherPage from './pages/OtherPages';
 import SideContainer from './components/SideContainer';
 import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';

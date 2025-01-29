@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BiBorderRadius } from 'react-icons/bi';
 import Select from 'react-select';
 
 interface SelectOption {
@@ -7,7 +8,7 @@ interface SelectOption {
 }
 
 interface SelectProps {
-  label: string;
+  label?: string;
   options: SelectOption[];
   value: string | number;
   onChange: (value: string | number) => void;
@@ -77,7 +78,9 @@ const CustomSelect: React.FC<SelectProps> = ({ label, options, value, onChange }
       ...provided,
       width: '100%',
       marginTop: '3px',
-    //   border: '1px solid #000000',
+      // border: '1px solid #000000',
+    BorderRadius:'7px',
+
     }),
     menuList: (provided: any) => ({
       ...provided,

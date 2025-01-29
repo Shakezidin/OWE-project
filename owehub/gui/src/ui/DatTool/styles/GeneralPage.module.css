@@ -258,6 +258,7 @@
 .genSecLeftHdr p {
   font-weight: 500;
   color: var(--input-border-color);
+  
 }
  
 .genSecLeftHdr p:nth-child(2) {
@@ -298,6 +299,7 @@
  
 .genSecRightHdr p {
   font-weight: 500;
+  padding-left: 0.7rem;
 }
  
 .verticalBorder {
@@ -307,10 +309,10 @@
 }
  
 .genSecRightMain {
-  background-color: #f3f3ff;
-  margin-top: 2.5rem;
+  background-color: #ffffff;
+  margin-top: 0.5rem;
   border-radius: 0 0 26px 26px;
-  padding: 1.2rem;
+  padding: 0.8rem;
   display: flex;
   gap: 4rem;
   position: relative;
@@ -371,7 +373,7 @@
  
 .inputField {
   width: 100%;
-  padding: 0.65rem 1.2rem;
+  padding: 0.45rem 0.1rem;
   font-size: 12px;
   border: 0px;
   border-radius: 26px;
@@ -390,7 +392,7 @@
  
 .inputFieldDat {
   width: 100%;
-  padding: 0.5rem 1.2rem;
+  padding: 0.3rem 1.2rem 0.5rem 0rem;
   margin-top: 6px;
   font-size: 12px;
   border: 0px;

@@ -14,6 +14,7 @@ import { FaCalculator } from 'react-icons/fa';
 import { ICONS } from '../resources/icons/Icons';
 import { TbReportSearch } from "react-icons/tb";
 import { GoGoal } from 'react-icons/go';
+import { LuPencilRuler } from 'react-icons/lu';
 const mob = {
   mob: [
     {
@@ -126,6 +127,15 @@ const mob = {
         displayText: 'OWE Goals',
         icon: (
           <GoGoal size={18} style={{ flexShrink: '0' }}/>
+        ),
+      },
+    },
+    {
+      path: ROUTES.DAT_TOOL,
+      sidebarProps: {
+        displayText: 'DAT Tool',
+        icon: (
+          <LuPencilRuler size={18} style={{ flexShrink: '0' }}/>
         ),
       },
     },

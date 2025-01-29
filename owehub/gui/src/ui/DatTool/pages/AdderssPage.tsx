@@ -196,14 +196,8 @@ function AdderssPage({ setOpenPopUp }: any) {
   useEscapeKey(() => setOpenPopUp(false));
 
   return (
-    <div
-      style={{
-        padding: '0 1.2rem',
-        position: 'relative',
-        height: 'calc(100vh - 216px)',
-        overflowY: 'scroll',
-      }}
-    >
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
       {}
       <div className={styles.adderssPageTopPart}>
         <div className={styles.adderssPageTopPart_leftText}>
@@ -306,6 +300,8 @@ function AdderssPage({ setOpenPopUp }: any) {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 }
 
