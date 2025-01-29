@@ -1,0 +1,124 @@
+.card {
+    background-color: white;
+    border-radius: 28px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .editButton,
+  .saveButton,
+  .cancelButton {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .cancelButton,
+  .editButton {
+    background-color: #f3f4f6;
+  }
+  
+  .saveButton {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .cancelButton:hover,
+  .editButton:hover {
+    background-color: #d5e4ff;
+    transform: scale(1.05);
+  }
+  .saveButton:hover {
+    transform: scale(1.05);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 10px;
+  }
+  
+  .field {
+    margin-bottom: 12px;
+  }
+  
+  .label {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 24px;
+    font-size: 12px;
+    background-color: #f5f5fd;
+    color: #1f2937;
+  }
+  
+  .value {
+    font-size: 12px;
+    font-weight: 550;
+    color: #1f2937;
+  }
+  
+  .inverterSection {
+    margin-top: 4px;
+  }
+  
+  .inverterGroup {
+    margin-bottom: 5px;
+  }
+  
+  .subheading {
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 5px;
+  }
+  
+  .inverterGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px 10px;
+    margin-bottom: 5px;
+  }
+  
+  .backfeedGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .labelContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  

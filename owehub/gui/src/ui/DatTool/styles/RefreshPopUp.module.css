@@ -10,6 +10,15 @@
   align-items: center;
   z-index: 400;
 }
+.openRefresh_page_icon{
+    padding:1rem;
+    border: 1px solid #377CF6;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
 .openRefresh_page{
     max-width: 296px;
     width: 100%;

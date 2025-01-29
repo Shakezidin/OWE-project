@@ -295,7 +295,8 @@ const GeneralPage: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className={styles.editUser} onClick={handleDatEdit}>
+                
+                <div className={`${styles.editUser} ${isDatEditing ? styles.active : ''}`} onClick={handleDatEdit}>
                   <AiOutlineEdit />
                 </div>
               )}
@@ -304,16 +305,7 @@ const GeneralPage: React.FC = () => {
  
           {/* Render DAT Tabs, Fields, and Changes */}
           <div className={styles.genSecRightMain}>
-            <div className={styles.genSecRightMainTopHeader}>
-              {datTabs.map((tab, index) => (
-                <DatTab
-                  key={tab}
-                  id={tab}
-                  isActive={activeIndex === index}
-                  onClick={() => handleClick(index)}
-                />
-              ))}
-            </div>
+            
             <div className={styles.genSecRightMainLft}>
               {/* Render DAT fields for left section */}
               {datFields.map((field, index) => (
