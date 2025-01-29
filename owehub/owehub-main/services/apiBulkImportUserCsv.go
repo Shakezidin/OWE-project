@@ -115,6 +115,8 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
 
     // handing hierarchy conditions
+
+    ///reporting manger field can be empty for ,  admin, do , fa , am
     if CreateBulkUserReq.RoleName == "Admin" || CreateBulkUserReq.RoleName == "Finance Admin" ||
        CreateBulkUserReq.RoleName == "Dealer Owner" || CreateBulkUserReq.RoleName == "Account Manager" {
 
