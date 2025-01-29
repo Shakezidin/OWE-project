@@ -130,18 +130,18 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
         result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
         continue
       }
-    }else{
-    reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-    if err != nil {
-      log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-      continue
-    }
-    CreateBulkUserReq.ReportingManager = reportingManagerCode
+    } else {
+      if reportingManagerEmail != "" {
+          reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
+          if err != nil {
+              log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+              result.Failed++
+              result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+              continue
+          }
+          CreateBulkUserReq.ReportingManager = reportingManagerCode
+      }
   }
-
-
 
 
 
