@@ -119,6 +119,9 @@ const UserTable: React.FC<UserTableProps> = ({
   (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
   environment === 'staging';
 
+  console.log( environment === 'staging', "isEditVisible")
+
+
   return (
     <div
       className="UserManageTable"

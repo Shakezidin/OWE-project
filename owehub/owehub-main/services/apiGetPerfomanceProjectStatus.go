@@ -29,9 +29,6 @@ package services
 // * RETURNS:    		void
 // ******************************************************************************/
 
-
-
-
 // func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 // 	var (
 // 		singleData         map[string]bool
@@ -239,8 +236,6 @@ package services
 // 			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
 // 			continue
 // 		}
-
-		
 
 // 		Customer, ok := item["home_owner"].(string)
 // 		if !ok || UniqueId == "" {
@@ -518,7 +513,7 @@ package services
 // 			ActivationColour:  activationColor,
 // 			NTPdate:           ntpDate,
 // 		}
-		
+
 // 		forAGRp[UniqueId] = ForAgRp{
 // 			SurveyClr:     surveyColor,
 // 			CadClr:        cadColor,
@@ -566,15 +561,15 @@ package services
 // 			perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 // 		}
 // 	}
-	
+
 // 	agngRpForUserId, err := agngRpData(forAGRp, dataReq)
 // 	if err != nil {
 // 		log.FuncErrorTrace(0, "Failed to get agngRpForUserId for Unique ID: %v err: %v", uniqueIds, err)
 // 	}
-// 	// FilteredIds, err := FilterAgRpData(dataReq)
-// 	// if err != nil {
-// 	// 	log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
-// 	// }
+// 	FilteredIds, err := FilterAgRpData(dataReq)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+// 	}
 
 // 	updated := make(map[string]bool)
 // 	for i := range perfomanceList.PerfomanceList {
@@ -601,17 +596,17 @@ package services
 
 // 		}
 // 	}
-// 	// var filteredData []models.PerfomanceResponse
+// 	var filteredData []models.PerfomanceResponse
 
-// 	// if len(FilteredIds) != 0 {
+// 	if len(FilteredIds) != 0 {
 
-// 	// 	for i := range perfomanceList.PerfomanceList {
-// 	// 		if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
-// 	// 			filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
-// 	// 		}
-// 	// 	}
-// 	// 	log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
-// 	// }
+// 		for i := range perfomanceList.PerfomanceList {
+// 			if _, ok := FilteredIds[perfomanceList.PerfomanceList[i].UniqueId]; ok {
+// 				filteredData = append(filteredData, perfomanceList.PerfomanceList[i])
+// 			}
+// 		}
+// 		log.FuncErrorTrace(0, "filteredData testin: %v", filteredData)
+// 	}
 
 // 	switch dataReq.SelectedMilestone {
 // 	case "survey":
@@ -635,7 +630,7 @@ package services
 // 	// 	perfomanceList.PerfomanceList = filteredData
 // 	// 	RecordCount = int64(len(perfomanceList.PerfomanceList))
 // 	// }
-	
+
 // 	paginatedData := PaginateData(perfomanceList, dataReq, agngRpForUserId)
 // 	perfomanceList.PerfomanceList = paginatedData
 
@@ -643,847 +638,838 @@ package services
 // 	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 // }
 
-// // /*
-// // *****************************************************************************
-// //   - FUNCTION:		PrepareAdminDlrFilters
-// //   - DESCRIPTION:
-// //     PaginateData function paginates data directly from the returned data itself
-// //     without setting any offset value. For large data sizes, using an offset
-// //     was creating performance issues. This approach manages to keep the response
-// //     time under 2 seconds.
-
-// // *****************************************************************************
-// // */
-
-// // func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
-// // 	updated := make(map[string]bool)
-// // 	log.EnterFn(0, "PaginateData")
-// // 	defer func() { log.ExitFn(0, "PaginateData", nil) }()
-// // 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
-
-// // 	startIndex := (req.PageNumber - 1) * req.PageSize
-// // 	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data.PerfomanceList))))
-
-// // 	if startIndex >= len(data.PerfomanceList) || startIndex >= endIndex {
-// // 		return make([]models.PerfomanceResponse, 0)
-// // 	}
-
-// // 	paginatedData = append(paginatedData, data.PerfomanceList[startIndex:endIndex]...)
-
-// // 	// Extract Unique IDs from Paginated Data
-// // 	uniqueIds := make([]string, len(paginatedData))
-// // 	for i, item := range paginatedData {
-// // 		uniqueIds[i] = item.UniqueId // Assuming 'UniqueId' is the field name
-// // 	}
-
-// // 	// Build the SQL Query
-// // 	var filtersBuilder strings.Builder
-// // 	filtersBuilder.WriteString(
-// // 		`WITH base_query AS (
-// //     SELECT 
-// //         customers_customers_schema.unique_id, 
-// //         customers_customers_schema.current_live_cad, 
-// //         customers_customers_schema.system_sold_er, 
-// //         customers_customers_schema.podio_link,
-// //         ntp_ntp_schema.production_discrepancy, 
-// //         ntp_ntp_schema.finance_ntp_of_project, 
-// //         ntp_ntp_schema.utility_bill_uploaded, 
-// //         ntp_ntp_schema.powerclerk_signatures_complete, 
-// //         ntp_ntp_schema.change_order_status,
-// //         customers_customers_schema.utility_company,
-// //         customers_customers_schema.state,
-// //         split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
-// //     FROM 
-// //         customers_customers_schema
-// //     LEFT JOIN ntp_ntp_schema 
-// //         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
-// //     WHERE 
-// //         customers_customers_schema.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
-// // )
-// // SELECT 
-// //     b.*, 
-// //     CASE 
-// //         WHEN b.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
-// //         ELSE 'Not Needed' 
-// //     END AS powerclerk_sent_az,
-// //     CASE 
-// //         WHEN prospects_customers_schema.payment_method = 'Cash' THEN prospects_customers_schema.ach_waiver_sent_and_signed_cash_only
-// //         ELSE 'Not Needed'
-// //     END AS ach_waiver_sent_and_signed_cash_only,
-// //     CASE 
-// //         WHEN b.state = 'NM :: New Mexico' THEN prospects_customers_schema.green_area_nm_only
-// //         ELSE 'Not Needed'
-// //     END AS green_area_nm_only,
-// //     CASE 
-// //         WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_credit_approved_loan_or_lease
-// //         ELSE 'Not Needed'
-// //     END AS finance_credit_approved_loan_or_lease,
-// //     CASE 
-// //         WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_agreement_completed_loan_or_lease
-// //         ELSE 'Not Needed'
-// //     END AS finance_agreement_completed_loan_or_lease,
-// //     CASE 
-// //         WHEN prospects_customers_schema.payment_method IN ('Cash', 'Loan') THEN prospects_customers_schema.owe_documents_completed
-// //         ELSE 'Not Needed'
-// //     END AS owe_documents_completed
-// // FROM 
-// //     base_query b
-// // LEFT JOIN 
-// //     prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
-// // `)
-
-// // 	linkQuery := filtersBuilder.String()
-
-// // 	// Execute the Query
-// // 	result, err := db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
-// // 	if err != nil {
-// // 		log.FuncErrorTrace(0, "Failed to get qc and ntp data from DB err: %v", err)
-// // 		return paginatedData
-// // 	}
-
-// // 	// Step 3: Map Result to `PerfomanceResponse` structs
-// // 	resultMap := make(map[string]map[string]interface{})
-// // 	for _, row := range result {
-// // 		uniqueId := row["unique_id"].(string)
-// // 		resultMap[uniqueId] = row
-// // 	}
-
-// // 	// actionRequiredCount = 0
-
-// // 	// Step 3: Map Result to `PerfomanceResponse` structs
-// // 	for i, datas := range paginatedData {
-// // 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
-// // 			var prospectId string
-// // 			if val, ok := row["current_live_cad"].(string); ok {
-// // 				paginatedData[i].CADLink = val
-// // 			} else {
-// // 				paginatedData[i].CADLink = "" // or a default value
-// // 			}
-
-// // 			if val, ok := row["system_sold_er"].(string); ok {
-// // 				paginatedData[i].DATLink = val
-// // 			} else {
-// // 				paginatedData[i].DATLink = "" // or a default value
-// // 			}
-
-// // 			if val, ok := row["podio_link"].(string); ok {
-// // 				paginatedData[i].PodioLink = val
-// // 			} else {
-// // 				paginatedData[i].PodioLink = "" // or a default value
-// // 			}
-
-// // 			if val, ok := row["change_order_status"].(string); ok {
-// // 				paginatedData[i].CoStatus = val
-// // 			} else {
-// // 				paginatedData[i].CoStatus = "" // or a default value
-// // 			}
-
-// // 			if val, ok := row["first_value"].(string); ok {
-// // 				prospectId = val
-// // 			} else {
-// // 				prospectId = "" // or a default value
-// // 			}
-
-// // 			var actionRequiredCount int64
-
-// // 			// Assign values from the data map to the struct fields
-// // 			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			paginatedData[i].Ntp = models.NTP{
-// // 				ProductionDiscrepancy:        ProductionDiscrepancy,
-// // 				FinanceNTPOfProject:          FinanceNTPOfProject,
-// // 				UtilityBillUploaded:          UtilityBillUploaded,
-// // 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
-// // 				ActionRequiredCount:          actionRequiredCount,
-// // 			}
-// // 			if actionRequiredCount >= 1 {
-// // 				if _, alrdyupdatd := updated[paginatedData[i].UniqueId]; !alrdyupdatd {
-// // 					if exists, ok := agngRpForUserId[paginatedData[i].UniqueId]; ok {
-// // 						paginatedData[i].Days_Pending_NTP = exists.Days_Pending_NTP
-// // 						updated[paginatedData[i].UniqueId] = true
-// // 					}
-// // 				}
-// // 			}
-// // 			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate, prospectId)
-// // 			actionRequiredCount += count
-// // 			paginatedData[i].Qc = models.QC{
-// // 				PowerClerk:                           PowerClerk,
-// // 				ACHWaiveSendandSignedCashOnly:        ACHWaiveSendandSignedCashOnly,
-// // 				GreenAreaNMOnly:                      GreenAreaNMOnly,
-// // 				FinanceCreditApprovalLoanorLease:     FinanceCreditApprovalLoanorLease,
-// // 				FinanceAgreementCompletedLoanorLease: FinanceAgreementCompletedLoanorLease,
-// // 				OWEDocumentsCompleted:                OWEDocumentsCompleted,
-// // 			}
-// // 		}
-// // 	}
-
-// // 	return paginatedData
-// // }
-
-
-// // func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error) {
-
-// // 	var (
-// // 		conditions []string
-// // 		uniqueIds  = make(map[string]struct{})
-// // 		err        error
-// // 	)
-
-// // 	log.EnterFn(0, "FilterAgRpData")
-
-// // 	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
-
-// // 	if req.Fields == nil {
-// // 		return uniqueIds, err
-// // 	}
-
-// // 	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
-// // 	for _, value := range req.Fields {
-// // 		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.ProjectPendingStartDate, req.ProjectPendingEndDate))
-// // 	}
-// // 	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
-// // 	query := fmt.Sprintf(baseQuery, conditionsStr)
-
-// // 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
-// // 	if err != nil {
-// // 		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
-// // 		return uniqueIds, err
-// // 	}
-// // 	for _, value := range data {
-
-// // 		if id, ok := value["unique_id"]; ok {
-
-// // 			if strID, ok := id.(string); ok {
-// // 				uniqueIds[strID] = struct{}{}
-// // 			} else {
-// // 				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
-// // 			}
-
-// // 		} else {
-// // 			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
-// // 		}
-// // 	}
-
-// // 	log.FuncInfoTrace(0, "FilterAgRpData fetched:  %v and count is : %d", uniqueIds, len(uniqueIds))
-// // 	return uniqueIds, err
-
-// // }
-// // /******************************************************************************
-// // * FUNCTION:		PrepareAdminDlrFilters
-// // * DESCRIPTION:     handler for prepare filter
-// // * INPUT:			resp, req
-// // * RETURNS:    		void
-// // ******************************************************************************/
-
-// // func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
-// // 	log.EnterFn(0, "PrepareAdminDlrFilters")
-// // 	defer func() { log.ExitFn(0, "PrepareAdminDlrFilters", nil) }()
-
-// // 	var filtersBuilder strings.Builder
-// // 	whereAdded := false
-
-// // 	// Check if StartDate and EndDate are provided
-// // 	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
-// // 		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
-// // 		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
-
-// // 		endDate = endDate.Add(24*time.Hour - time.Second)
-
-// // 		whereEleList = append(whereEleList,
-// // 			startDate.Format("02-01-2006 00:00:00"),
-// // 			endDate.Format("02-01-2006 15:04:05"),
-// // 		)
-
-// // 		filtersBuilder.WriteString(" WHERE")
-// // 		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
-// // 		whereAdded = true
-// // 	}
-
-// // 	// Check if there are filters
-// // 	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
-// // 		// Start with WHERE if none has been added
-// // 		if whereAdded {
-// // 			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
-// // 		} else {
-// // 			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
-// // 			whereAdded = true
-// // 		}
-
-// // 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-// // 		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
-// // 		for i, filter := range dataFilter.UniqueIds {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, filter)
-
-// // 			if i < len(dataFilter.UniqueIds)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString(") ")
-
-// // 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-// // 		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
-// // 		for i, filter := range dataFilter.UniqueIds {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-// // 			if i < len(dataFilter.UniqueIds)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString("])")
-
-// // 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-// // 		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
-// // 		for i, filter := range dataFilter.UniqueIds {
-// // 			// Wrap the filter in wildcards for pattern matching
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-// // 			if i < len(dataFilter.UniqueIds)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString("]) ")
-
-// // 		// Close the OR group
-// // 		filtersBuilder.WriteString(")")
-// // 	}
-
-// // 	if len(dataFilter.DealerNames) > 0 {
-// // 		if whereAdded {
-// // 			filtersBuilder.WriteString(" AND ")
-// // 		} else {
-// // 			filtersBuilder.WriteString(" WHERE ")
-// // 			whereAdded = true
-// // 		}
-
-// // 		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
-// // 		for i, dealer := range dataFilter.DealerNames {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, dealer)
-
-// // 			if i < len(dataFilter.DealerNames)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString(")")
-// // 	}
-
-// // 	// Always add the following filters
-// // 	if whereAdded {
-// // 		filtersBuilder.WriteString(" AND")
-// // 	} else {
-// // 		filtersBuilder.WriteString(" WHERE")
-// // 	}
-// // 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
-// // 			AND customers_customers_schema.unique_id <> ''
-// // 			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-// // 			AND system_customers_schema.contracted_system_size_parent > 0`)
-
-// // 	if len(dataFilter.ProjectStatus) > 0 {
-// // 		// Prepare the values for the IN clause
-// // 		var statusValues []string
-// // 		for _, val := range dataFilter.ProjectStatus {
-// // 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-// // 		}
-// // 		// Join the values with commas
-// // 		statusList := strings.Join(statusValues, ", ")
-
-// // 		// Append the IN clause to the filters
-// // 		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
-// // 	} else {
-// // 		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
-
-// // 	}
-
-// // 	filters = filtersBuilder.String()
-
-// // 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-// // 	return filters, whereEleList
-// // }
-
-// // /******************************************************************************
-// // * FUNCTION:		PrepareSaleRepFilters
-// // * DESCRIPTION:     handler for prepare filter
-// // * INPUT:			resp, req
-// // * RETURNS:    		void
-// // ******************************************************************************/
-// // func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-// // 	log.EnterFn(0, "PrepareSaleRepFilters")
-// // 	defer func() { log.ExitFn(0, "PrepareSaleRepFilters", nil) }()
-
-// // 	var filtersBuilder strings.Builder
-// // 	whereAdded := false
-
-// // 	// Start constructing the WHERE clause if the date range is provided
-// // 	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
-// // 		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
-// // 		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
-
-// // 		endDate = endDate.Add(24*time.Hour - time.Second)
-
-// // 		whereEleList = append(whereEleList,
-// // 			startDate.Format("02-01-2006 00:00:00"),
-// // 			endDate.Format("02-01-2006 15:04:05"),
-// // 		)
-
-// // 		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
-// // 		whereAdded = true
-// // 	}
-
-// // 	// Check if there are filters
-// // 	if len(dataFilter.UniqueIds) > 0 {
-// // 		// Start with WHERE if none has been added
-// // 		if whereAdded {
-// // 			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
-// // 		} else {
-// // 			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
-// // 			whereAdded = true
-// // 		}
-
-// // 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-// // 		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
-// // 		for i, filter := range dataFilter.UniqueIds {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, filter)
-
-// // 			if i < len(dataFilter.UniqueIds)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString(") ")
-
-// // 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-// // 		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
-// // 		for i, filter := range dataFilter.UniqueIds {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-// // 			if i < len(dataFilter.UniqueIds)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString("])")
-
-// // 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-// // 		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
-// // 		for i, filter := range dataFilter.UniqueIds {
-// // 			// Wrap the filter in wildcards for pattern matching
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-// // 			if i < len(dataFilter.UniqueIds)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString("]) ")
-
-// // 		// Close the OR group
-// // 		filtersBuilder.WriteString(")")
-// // 	}
-
-// // 	// Add sales representative filter
-// // 	if len(saleRepList) > 0 {
-// // 		if whereAdded {
-// // 			filtersBuilder.WriteString(" AND ")
-// // 		} else {
-// // 			filtersBuilder.WriteString(" WHERE ")
-// // 			whereAdded = true
-// // 		}
-
-// // 		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
-// // 		for i, sale := range saleRepList {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, sale)
-
-// // 			if i < len(saleRepList)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString(")")
-// // 	}
-
-// // 	if len(dataFilter.DealerNames) > 0 {
-// // 		if whereAdded {
-// // 			filtersBuilder.WriteString(" AND ")
-// // 		} else {
-// // 			filtersBuilder.WriteString(" WHERE ")
-// // 			whereAdded = true
-// // 		}
-
-// // 		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
-// // 		for i, dealer := range dataFilter.DealerNames {
-// // 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-// // 			whereEleList = append(whereEleList, dealer)
-
-// // 			if i < len(dataFilter.DealerNames)-1 {
-// // 				filtersBuilder.WriteString(", ")
-// // 			}
-// // 		}
-// // 		filtersBuilder.WriteString(")")
-// // 	}
-
-// // 	// Add the always-included filters
-// // 	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
-// // 			AND customers_customers_schema.unique_id <> ''
-// // 			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-// // 			AND system_customers_schema.contracted_system_size_parent > 0`)
-
-// // 	if len(dataFilter.ProjectStatus) > 0 {
-// // 		// Prepare the values for the IN clause
-// // 		var statusValues []string
-// // 		for _, val := range dataFilter.ProjectStatus {
-// // 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-// // 		}
-// // 		// Join the values with commas
-// // 		statusList := strings.Join(statusValues, ", ")
-
-// // 		// Append the IN clause to the filters
-// // 		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
-// // 	} else {
-// // 		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
-// // 	}
-
-// // 	filters = filtersBuilder.String()
-
-// // 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-// // 	return filters, whereEleList
-// // }
-
-
-
-
-
-
-
-
-
-
-
-// // func parseDate(dateStr string) time.Time {
-// // 	layout := "2006-01-02" // Adjust layout as needed, e.g., "2006-01-02 15:04:05" for full datetime
-// // 	t, err := time.Parse(layout, dateStr)
-// // 	if err != nil {
-// // 		// log.FuncErrorTrace(0, "Error parsing date:", err)
-// // 		return time.Time{}
-// // 	}
-// // 	return t
-// // }
-
-// // func parseDateTime(dateStr string) time.Time {
-// // 	layout := "2006-01-02 15:04:05"
-// // 	t, err := time.Parse(layout, dateStr)
-// // 	if err != nil {
-// // 		// log.FuncErrorTrace(0, "Error parsing date:", err)
-// // 		return time.Time{}
-// // 	}
-// // 	return t
-// // }
-
-
-
-
-
-// // func CalenderInstallStatus(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
-// // 	var count int64
-// // 	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
-// // 		count = 1
-// // 	}
-
-// // 	// Parse the dates
-// // 	pvInstallCreatedateParsed := parseDateTime(pvInstallCreatedate)
-// // 	batteryScheduleDateParsed := parseDateTime(batteryScheduleDate)
-// // 	batteryCompletedParsed := parseDateTime(batteryCompleted)
-// // 	pvInstallCompletedDateParsed := parseDateTime(pvInstallCompletedDate)
-// // 	// Green conditions
-// // 	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
-// // 		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
-// // 		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
-
-// // 		// Determine the latest date for green
-// // 		latestCompletedDate := pvInstallCompletedDate
-// // 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
-// // 			latestCompletedDate = batteryCompleted
-// // 		}
-// // 		return green, count, latestCompletedDate, "Completed"
-// // 	}
-
-// // 	// Blue conditions
-// // 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
-// // 		return blue, count, pvInstallCompletedDate, "Scheduled"
-// // 	} else if !pvInstallCreatedateParsed.IsZero() {
-// // 		return blue, count, pvInstallCreatedate, "Scheduled"
-// // 	}
-
-// // 	// Default grey condition
-// // 	return grey, count, "", ""
-// // }
-
-
-
-// // func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) (map[string]models.PerfomanceResponse, error) {
-// // 	var (
-// // 		err     error
-// // 		resp    = make(map[string]models.PerfomanceResponse)
-// // 		filters []string
-// // 	)
-// // 	log.EnterFn(0, "HandleGetAgingReport")
-// // 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
-
-// // 	log.FuncErrorTrace(0, "map first: %#v", AgRp)
-
-// // 	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
-
-// // 	// Filter by uniqueId
-// // 	if len(AgRp) > 0 {
-// // 		uniqueIdValues := make([]string, 0, len(AgRp))
-// // 		for uid := range AgRp {
-// // 			uniqueIdValues = append(uniqueIdValues, fmt.Sprintf("'%s'", strings.ReplaceAll(uid, "'", "''")))
-// // 		}
-// // 		filters = append(filters, fmt.Sprintf("unique_id IN (%s)", strings.Join(uniqueIdValues, ", ")))
-// // 	}
-
-// // 	// Filter by ProjectStatus
-// // 	if len(dataFilter.ProjectStatus) > 0 {
-// // 		statusValues := make([]string, 0, len(dataFilter.ProjectStatus))
-// // 		for _, status := range dataFilter.ProjectStatus {
-// // 			statusValues = append(statusValues, fmt.Sprintf("'%s'", strings.ReplaceAll(status, "'", "''")))
-// // 		}
-// // 		filters = append(filters, fmt.Sprintf("project_status IN (%s)", strings.Join(statusValues, ", ")))
-// // 	} else {
-// // 		filters = append(filters, "project_status IN ('ACTIVE')")
-// // 	}
-
-// // 	// Append filters to query
-// // 	if len(filters) > 0 {
-// // 		query += " WHERE " + strings.Join(filters, " AND ")
-// // 	}
-
-// // 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-// // 	if err != nil {
-// // 		log.FuncErrorTrace(0, "Failed to get AgingReport data from db err: %v", err)
-// // 		return resp, err
-// // 	}
-
-// // 	for _, agRp := range data {
-// // 		uniqueId, ok := agRp["unique_id"].(string)
-// // 		if !ok {
-// // 			log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
-// // 			continue
-// // 		}
-
-// // 		exists, existsOk := AgRp[uniqueId]
-// // 		if !existsOk {
-// // 			continue
-// // 		}
-
-// // 		resp1 := models.PerfomanceResponse{
-// // 			UniqueId: uniqueId,
-// // 		}
-
-// // 		if exists.SurveyClr == blue {
-// // 			resp1.Days_Pending_Survey = TextAccToInput("0")
-// // 		}
-// // 		if exists.CadClr == blue {
-// // 			resp1.Days_Pending_Cad_Design = TextAccToInput("0")
-// // 		}
-// // 		if exists.PermittingClr == blue {
-// // 			resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
-// // 		}
-// // 		if exists.RoofingClr == blue {
-// // 			resp1.Days_Pending_Roofing = TextAccToInput("0")
-// // 		}
-// // 		if exists.InstallClr == blue {
-// // 			resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
-// // 		}
-// // 		if exists.InspectionClr == blue {
-// // 			resp1.Days_Pending_Inspection = TextAccToInput("0")
-// // 		}
-// // 		if exists.ActivationClr == blue {
-// // 			resp1.Days_Pending_Activation = TextAccToInput("0")
-// // 		}
-// // 		if exists.NTPClr == "" {
-// // 			resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
-// // 		}
-
-// // 		resp1.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
-
-// // 		resp1.Days_Pending_PTO = TextAccToInput(getFieldText(agRp, "days_pending_pto"))
-
-// // 		resp[uniqueId] = resp1
-// // 	}
-
-// // 	log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
-// // 	return resp, nil
-// // }
-
-// // func getFieldText(data map[string]interface{}, field string) string {
-// // 	if value, ok := data[field]; ok {
-// // 		return value.(string)
-// // 	}
-// // 	log.FuncErrorTrace(0, "[agngRpData] error while fetching data for %s", field)
-// // 	return ""
-// // }
-
-// // func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error) {
-
-// // 	var (
-// // 		conditions []string
-// // 		uniqueIds  = make(map[string]struct{})
-// // 		err        error
-// // 	)
-
-// // 	log.EnterFn(0, "FilterAgRpData")
-
-// // 	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
-
-// // 	if req.Fields == nil {
-// // 		return uniqueIds, err
-// // 	}
-
-// // 	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
-// // 	for _, value := range req.Fields {
-// // 		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.Project_Pending_StartDate, req.Project_Pending_EndDate))
-// // 	}
-// // 	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
-// // 	query := fmt.Sprintf(baseQuery, conditionsStr)
-
-// // 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
-// // 	if err != nil {
-// // 		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
-// // 		return uniqueIds, err
-// // 	}
-// // 	for _, value := range data {
-
-// // 		if id, ok := value["unique_id"]; ok {
-
-// // 			if strID, ok := id.(string); ok {
-// // 				uniqueIds[strID] = struct{}{}
-// // 			} else {
-// // 				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
-// // 			}
-
-// // 		} else {
-// // 			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
-// // 		}
-// // 	}
-
-// // 	log.FuncInfoTrace(0, "FilterAgRpData fetched:  %v and count is : %d", uniqueIds, len(uniqueIds))
-// // 	return uniqueIds, err
-
-// // }
-
-// // func TextAccToInput(s string) string {
-// // 	if s == "0" || s == "1" {
-// // 		return fmt.Sprintf("%s day pending", s)
-// // 	}
-// // 	return fmt.Sprintf("%s days pending", s)
-// // }
-
-
-// // // func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contract_date string) (string, int64, string, string) {
-// // // 	var count int64
-// // // 	if siteSurveycompletedDate != "" {
-// // // 		return green, count, siteSurveycompletedDate, "Completed"
-// // // 	} else if siteSurveyscheduledDate != "" {
-// // // 		return blue, count, siteSurveyscheduledDate, "Scheduled"
-// // // 	}
-// // // 	return grey, count, "", ""
-// // // }
-
-// // // func getCadColor(cadCreatedDate, planSetcompletedDate, site_survey_completed_date string) (string, int64, string) {
-// // // 	var count int64
-// // // 	if planSetcompletedDate != "" {
-// // // 		return green, count, planSetcompletedDate
-// // // 	} else if cadCreatedDate != "" {
-// // // 		return blue, count, cadCreatedDate
-// // // 	}
-// // // 	return grey, count, ""
-// // // }
-
-// // // func roofingColor(roofingCreateDate, roofingCompleteDate, roofingStatus string) (string, int64, string) {
-// // // 	var count int64
-// // // 	if roofingCompleteDate != "" {
-// // // 		return green, count, roofingCompleteDate
-// // // 	} else if roofingCreateDate != "" {
-// // // 		return blue, count, roofingCreateDate
-// // // 	}
-// // // 	return "", count, ""
-// // // }
-
-// // // func activationColor(ptoSubmittedDate, ptodate, finPassDate, finCreatedDate string) (string, int64, string) {
-// // // 	var count int64
-// // // 	if ptodate != "" {
-// // // 		return green, count, ptodate
-// // // 	} else if ptoSubmittedDate != "" {
-// // // 		return blue, count, ptoSubmittedDate
-// // // 	}
-// // // 	return grey, count, ""
-// // // }
-
-// // // func InspectionColor(finCreatedDate, finPassDate, pv_install_completed_date string) (string, int64, string) {
-// // // 	var count int64
-// // // 	if finPassDate != "" {
-// // // 		return green, count, finPassDate
-// // // 	} else if finCreatedDate != "" {
-// // // 		return blue, count, finCreatedDate
-// // // 	}
-// // // 	return grey, count, ""
-// // // }
-
-// // // func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, icAprroveddDate string) (string, int64, string, string) {
-// // // 	var count int64
-// // // 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
-// // // 	batteryCompletedParsed := parseDate(batteryCompleted)
-// // // 	pvInstallCompletedDateParsed := parseDate(pvInstallCompletedDate)
-// // // 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
-
-// // // 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
-// // // 		return blue, count, pvInstallCompletedDate, "Scheduled"
-// // // 	} else if !pvInstallCreatedateParsed.IsZero() {
-// // // 		return blue, count, pvInstallCreatedate, "Scheduled"
-// // // 	}
-
-// // // 	return grey, count, "", ""
-// // // }
-
-// // // func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, planSetCompleteDate string) (string, int64, string) {
-// // // 	var count int64
-
-// // // 	permitApprovedDateParsed := parseDate(permitApprovedDate)
-// // // 	IcApprovedDateParsed := parseDate(IcApprovedDate)
-// // // 	permitSubmittedDateParsed := parseDate(permitSubmittedDate)
-// // // 	IcSubmittedDateParsed := parseDate(IcSubmittedDate)
-
-// // // 	if !permitApprovedDateParsed.IsZero() && !IcApprovedDateParsed.IsZero() {
-// // // 		latestApprovedDate := permitApprovedDate
-// // // 		if IcApprovedDateParsed.After(permitApprovedDateParsed) {
-// // // 			latestApprovedDate = IcApprovedDate
-// // // 		}
-// // // 		return green, count, latestApprovedDate
-// // // 	} else if !permitSubmittedDateParsed.IsZero() && !IcSubmittedDateParsed.IsZero() {
-// // // 		latestSubmittedDate := permitSubmittedDate
-// // // 		if IcSubmittedDateParsed.After(permitSubmittedDateParsed) {
-// // // 			latestSubmittedDate = IcSubmittedDate
-// // // 		}
-// // // 		return blue, count, latestSubmittedDate
-// // // 	}
-// // // 	return grey, count, ""
-// // // }
+// /*
+// *****************************************************************************
+//   - FUNCTION:		PrepareAdminDlrFilters
+//   - DESCRIPTION:
+//     PaginateData function paginates data directly from the returned data itself
+//     without setting any offset value. For large data sizes, using an offset
+//     was creating performance issues. This approach manages to keep the response
+//     time under 2 seconds.
+
+// *****************************************************************************
+// */
+
+// func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
+// 	updated := make(map[string]bool)
+// 	log.EnterFn(0, "PaginateData")
+// 	defer func() { log.ExitFn(0, "PaginateData", nil) }()
+// 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
+
+// 	startIndex := (req.PageNumber - 1) * req.PageSize
+// 	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data.PerfomanceList))))
+
+// 	if startIndex >= len(data.PerfomanceList) || startIndex >= endIndex {
+// 		return make([]models.PerfomanceResponse, 0)
+// 	}
+
+// 	paginatedData = append(paginatedData, data.PerfomanceList[startIndex:endIndex]...)
+
+// 	// Extract Unique IDs from Paginated Data
+// 	uniqueIds := make([]string, len(paginatedData))
+// 	for i, item := range paginatedData {
+// 		uniqueIds[i] = item.UniqueId // Assuming 'UniqueId' is the field name
+// 	}
+
+// 	// Build the SQL Query
+// 	var filtersBuilder strings.Builder
+// 	filtersBuilder.WriteString(
+// 		`WITH base_query AS (
+//     SELECT
+//         customers_customers_schema.unique_id,
+//         customers_customers_schema.current_live_cad,
+//         customers_customers_schema.system_sold_er,
+//         customers_customers_schema.podio_link,
+//         ntp_ntp_schema.production_discrepancy,
+//         ntp_ntp_schema.finance_ntp_of_project,
+//         ntp_ntp_schema.utility_bill_uploaded,
+//         ntp_ntp_schema.powerclerk_signatures_complete,
+//         ntp_ntp_schema.change_order_status,
+//         customers_customers_schema.utility_company,
+//         customers_customers_schema.state,
+//         split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
+//     FROM
+//         customers_customers_schema
+//     LEFT JOIN ntp_ntp_schema
+//         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+//     WHERE
+//         customers_customers_schema.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+// )
+// SELECT
+//     b.*,
+//     CASE
+//         WHEN b.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
+//         ELSE 'Not Needed'
+//     END AS powerclerk_sent_az,
+//     CASE
+//         WHEN prospects_customers_schema.payment_method = 'Cash' THEN prospects_customers_schema.ach_waiver_sent_and_signed_cash_only
+//         ELSE 'Not Needed'
+//     END AS ach_waiver_sent_and_signed_cash_only,
+//     CASE
+//         WHEN b.state = 'NM :: New Mexico' THEN prospects_customers_schema.green_area_nm_only
+//         ELSE 'Not Needed'
+//     END AS green_area_nm_only,
+//     CASE
+//         WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_credit_approved_loan_or_lease
+//         ELSE 'Not Needed'
+//     END AS finance_credit_approved_loan_or_lease,
+//     CASE
+//         WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_agreement_completed_loan_or_lease
+//         ELSE 'Not Needed'
+//     END AS finance_agreement_completed_loan_or_lease,
+//     CASE
+//         WHEN prospects_customers_schema.payment_method IN ('Cash', 'Loan') THEN prospects_customers_schema.owe_documents_completed
+//         ELSE 'Not Needed'
+//     END AS owe_documents_completed
+// FROM
+//     base_query b
+// LEFT JOIN
+//     prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
+// `)
+
+// 	linkQuery := filtersBuilder.String()
+
+// 	// Execute the Query
+// 	result, err := db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "Failed to get qc and ntp data from DB err: %v", err)
+// 		return paginatedData
+// 	}
+
+// 	// Step 3: Map Result to `PerfomanceResponse` structs
+// 	resultMap := make(map[string]map[string]interface{})
+// 	for _, row := range result {
+// 		uniqueId := row["unique_id"].(string)
+// 		resultMap[uniqueId] = row
+// 	}
+
+// 	// actionRequiredCount = 0
+
+// 	// Step 3: Map Result to `PerfomanceResponse` structs
+// 	for i, datas := range paginatedData {
+// 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
+// 			var prospectId string
+// 			if val, ok := row["current_live_cad"].(string); ok {
+// 				paginatedData[i].CADLink = val
+// 			} else {
+// 				paginatedData[i].CADLink = "" // or a default value
+// 			}
+
+// 			if val, ok := row["system_sold_er"].(string); ok {
+// 				paginatedData[i].DATLink = val
+// 			} else {
+// 				paginatedData[i].DATLink = "" // or a default value
+// 			}
+
+// 			if val, ok := row["podio_link"].(string); ok {
+// 				paginatedData[i].PodioLink = val
+// 			} else {
+// 				paginatedData[i].PodioLink = "" // or a default value
+// 			}
+
+// 			if val, ok := row["change_order_status"].(string); ok {
+// 				paginatedData[i].CoStatus = val
+// 			} else {
+// 				paginatedData[i].CoStatus = "" // or a default value
+// 			}
+
+// 			if val, ok := row["first_value"].(string); ok {
+// 				prospectId = val
+// 			} else {
+// 				prospectId = "" // or a default value
+// 			}
+
+// 			var actionRequiredCount int64
+
+// 			// Assign values from the data map to the struct fields
+// 			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			paginatedData[i].Ntp = models.NTP{
+// 				ProductionDiscrepancy:        ProductionDiscrepancy,
+// 				FinanceNTPOfProject:          FinanceNTPOfProject,
+// 				UtilityBillUploaded:          UtilityBillUploaded,
+// 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
+// 				ActionRequiredCount:          actionRequiredCount,
+// 			}
+// 			if actionRequiredCount >= 1 {
+// 				if _, alrdyupdatd := updated[paginatedData[i].UniqueId]; !alrdyupdatd {
+// 					if exists, ok := agngRpForUserId[paginatedData[i].UniqueId]; ok {
+// 						paginatedData[i].Days_Pending_NTP = exists.Days_Pending_NTP
+// 						updated[paginatedData[i].UniqueId] = true
+// 					}
+// 				}
+// 			}
+// 			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate, prospectId)
+// 			actionRequiredCount += count
+// 			paginatedData[i].Qc = models.QC{
+// 				PowerClerk:                           PowerClerk,
+// 				ACHWaiveSendandSignedCashOnly:        ACHWaiveSendandSignedCashOnly,
+// 				GreenAreaNMOnly:                      GreenAreaNMOnly,
+// 				FinanceCreditApprovalLoanorLease:     FinanceCreditApprovalLoanorLease,
+// 				FinanceAgreementCompletedLoanorLease: FinanceAgreementCompletedLoanorLease,
+// 				OWEDocumentsCompleted:                OWEDocumentsCompleted,
+// 			}
+// 		}
+// 	}
+
+// 	return paginatedData
+// }
+
+// func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interface{}) ([]map[string]interface{}, error) {
+
+// 	var (
+// 		conditions []string
+// 		result     []map[string]interface{}
+// 		uniqueIds  = make(map[string]struct{})
+// 		err        error
+// 	)
+
+// 	log.EnterFn(0, "FilterAgRpData")
+// 	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
+
+// 	if req.Fields == nil {
+// 		return alldata, err
+// 	}
+
+// 	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
+// 	for _, value := range req.Fields {
+// 		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.ProjectPendingStartDate, req.ProjectPendingEndDate))
+// 	}
+// 	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
+// 	query := fmt.Sprintf(baseQuery, conditionsStr)
+
+// 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
+// 		return nil, err
+// 	}
+// 	// Collect unique IDs into a map for efficient lookup
+// 	for _, value := range data {
+// 		if id, ok := value["unique_id"]; ok {
+// 			if strID, ok := id.(string); ok {
+// 				uniqueIds[strID] = struct{}{}
+// 			} else {
+// 				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
+// 			}
+// 		} else {
+// 			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
+// 		}
+// 	}
+
+// 	// Filter the original data based on the fetched unique IDs
+// 	for _, item := range alldata {
+// 		if uniqueId, ok := item["customer_unique_id"].(string); ok {
+// 			if _, exists := uniqueIds[uniqueId]; exists {
+// 				result = append(result, item)
+// 			}
+// 		} else {
+// 			log.FuncErrorTrace(0, "[FilterAgRpData] customer_unique_id not found or invalid in alldata")
+// 		}
+// 	}
+
+// 	log.FuncInfoTrace(0, "FilterAgRpData filtered result count: %d", len(result))
+// 	return result, nil
+// }
+
+// /******************************************************************************
+// * FUNCTION:		PrepareAdminDlrFilters
+// * DESCRIPTION:     handler for prepare filter
+// * INPUT:			resp, req
+// * RETURNS:    		void
+// ******************************************************************************/
+
+// func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
+// 	log.EnterFn(0, "PrepareAdminDlrFilters")
+// 	defer func() { log.ExitFn(0, "PrepareAdminDlrFilters", nil) }()
+
+// 	var filtersBuilder strings.Builder
+// 	whereAdded := false
+
+// 	// Check if StartDate and EndDate are provided
+// 	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+// 		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+// 		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+
+// 		endDate = endDate.Add(24*time.Hour - time.Second)
+
+// 		whereEleList = append(whereEleList,
+// 			startDate.Format("02-01-2006 00:00:00"),
+// 			endDate.Format("02-01-2006 15:04:05"),
+// 		)
+
+// 		filtersBuilder.WriteString(" WHERE")
+// 		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+// 		whereAdded = true
+// 	}
+
+// 	// Check if there are filters
+// 	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
+// 		// Start with WHERE if none has been added
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
+// 			whereAdded = true
+// 		}
+
+// 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+// 		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
+// 		for i, filter := range dataFilter.UniqueIds {
+// 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, filter)
+
+// 			if i < len(dataFilter.UniqueIds)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString(") ")
+
+// 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+// 		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
+// 		for i, filter := range dataFilter.UniqueIds {
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+// 			if i < len(dataFilter.UniqueIds)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString("])")
+
+// 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+// 		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
+// 		for i, filter := range dataFilter.UniqueIds {
+// 			// Wrap the filter in wildcards for pattern matching
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+// 			if i < len(dataFilter.UniqueIds)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString("]) ")
+
+// 		// Close the OR group
+// 		filtersBuilder.WriteString(")")
+// 	}
+
+// 	if len(dataFilter.DealerNames) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
+
+// 		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
+// 		for i, dealer := range dataFilter.DealerNames {
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, dealer)
+
+// 			if i < len(dataFilter.DealerNames)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString(")")
+// 	}
+
+// 	// Always add the following filters
+// 	if whereAdded {
+// 		filtersBuilder.WriteString(" AND")
+// 	} else {
+// 		filtersBuilder.WriteString(" WHERE")
+// 	}
+// 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+// 			AND customers_customers_schema.unique_id <> ''
+// 			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+// 			AND system_customers_schema.contracted_system_size_parent > 0`)
+
+// 	if len(dataFilter.ProjectStatus) > 0 {
+// 		// Prepare the values for the IN clause
+// 		var statusValues []string
+// 		for _, val := range dataFilter.ProjectStatus {
+// 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+// 		}
+// 		// Join the values with commas
+// 		statusList := strings.Join(statusValues, ", ")
+
+// 		// Append the IN clause to the filters
+// 		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
+// 	} else {
+// 		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
+
+// 	}
+
+// 	filters = filtersBuilder.String()
+
+// 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+// 	return filters, whereEleList
+// }
+
+// /******************************************************************************
+// * FUNCTION:		PrepareSaleRepFilters
+// * DESCRIPTION:     handler for prepare filter
+// * INPUT:			resp, req
+// * RETURNS:    		void
+// ******************************************************************************/
+// func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
+// 	log.EnterFn(0, "PrepareSaleRepFilters")
+// 	defer func() { log.ExitFn(0, "PrepareSaleRepFilters", nil) }()
+
+// 	var filtersBuilder strings.Builder
+// 	whereAdded := false
+
+// 	// Start constructing the WHERE clause if the date range is provided
+// 	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+// 		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+// 		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+
+// 		endDate = endDate.Add(24*time.Hour - time.Second)
+
+// 		whereEleList = append(whereEleList,
+// 			startDate.Format("02-01-2006 00:00:00"),
+// 			endDate.Format("02-01-2006 15:04:05"),
+// 		)
+
+// 		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+// 		whereAdded = true
+// 	}
+
+// 	// Check if there are filters
+// 	if len(dataFilter.UniqueIds) > 0 {
+// 		// Start with WHERE if none has been added
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
+// 			whereAdded = true
+// 		}
+
+// 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+// 		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
+// 		for i, filter := range dataFilter.UniqueIds {
+// 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, filter)
+
+// 			if i < len(dataFilter.UniqueIds)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString(") ")
+
+// 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+// 		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
+// 		for i, filter := range dataFilter.UniqueIds {
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+// 			if i < len(dataFilter.UniqueIds)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString("])")
+
+// 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+// 		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
+// 		for i, filter := range dataFilter.UniqueIds {
+// 			// Wrap the filter in wildcards for pattern matching
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+// 			if i < len(dataFilter.UniqueIds)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString("]) ")
+
+// 		// Close the OR group
+// 		filtersBuilder.WriteString(")")
+// 	}
+
+// 	// Add sales representative filter
+// 	if len(saleRepList) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
+
+// 		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
+// 		for i, sale := range saleRepList {
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, sale)
+
+// 			if i < len(saleRepList)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString(")")
+// 	}
+
+// 	if len(dataFilter.DealerNames) > 0 {
+// 		if whereAdded {
+// 			filtersBuilder.WriteString(" AND ")
+// 		} else {
+// 			filtersBuilder.WriteString(" WHERE ")
+// 			whereAdded = true
+// 		}
+
+// 		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
+// 		for i, dealer := range dataFilter.DealerNames {
+// 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+// 			whereEleList = append(whereEleList, dealer)
+
+// 			if i < len(dataFilter.DealerNames)-1 {
+// 				filtersBuilder.WriteString(", ")
+// 			}
+// 		}
+// 		filtersBuilder.WriteString(")")
+// 	}
+
+// 	// Add the always-included filters
+// 	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
+// 			AND customers_customers_schema.unique_id <> ''
+// 			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+// 			AND system_customers_schema.contracted_system_size_parent > 0`)
+
+// 	if len(dataFilter.ProjectStatus) > 0 {
+// 		// Prepare the values for the IN clause
+// 		var statusValues []string
+// 		for _, val := range dataFilter.ProjectStatus {
+// 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+// 		}
+// 		// Join the values with commas
+// 		statusList := strings.Join(statusValues, ", ")
+
+// 		// Append the IN clause to the filters
+// 		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
+// 	} else {
+// 		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
+// 	}
+
+// 	filters = filtersBuilder.String()
+
+// 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+// 	return filters, whereEleList
+// }
+
+// func parseDate(dateStr string) time.Time {
+// 	layout := "2006-01-02" // Adjust layout as needed, e.g., "2006-01-02 15:04:05" for full datetime
+// 	t, err := time.Parse(layout, dateStr)
+// 	if err != nil {
+// 		// log.FuncErrorTrace(0, "Error parsing date:", err)
+// 		return time.Time{}
+// 	}
+// 	return t
+// }
+
+// func parseDateTime(dateStr string) time.Time {
+// 	layout := "2006-01-02 15:04:05"
+// 	t, err := time.Parse(layout, dateStr)
+// 	if err != nil {
+// 		// log.FuncErrorTrace(0, "Error parsing date:", err)
+// 		return time.Time{}
+// 	}
+// 	return t
+// }
+
+// func CalenderInstallStatus(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
+// 	var count int64
+// 	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
+// 		count = 1
+// 	}
+
+// 	// Parse the dates
+// 	pvInstallCreatedateParsed := parseDateTime(pvInstallCreatedate)
+// 	batteryScheduleDateParsed := parseDateTime(batteryScheduleDate)
+// 	batteryCompletedParsed := parseDateTime(batteryCompleted)
+// 	pvInstallCompletedDateParsed := parseDateTime(pvInstallCompletedDate)
+// 	// Green conditions
+// 	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+// 		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+// 		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+
+// 		// Determine the latest date for green
+// 		latestCompletedDate := pvInstallCompletedDate
+// 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
+// 			latestCompletedDate = batteryCompleted
+// 		}
+// 		return green, count, latestCompletedDate, "Completed"
+// 	}
+
+// 	// Blue conditions
+// 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+// 		return blue, count, pvInstallCompletedDate, "Scheduled"
+// 	} else if !pvInstallCreatedateParsed.IsZero() {
+// 		return blue, count, pvInstallCreatedate, "Scheduled"
+// 	}
+
+// 	// Default grey condition
+// 	return grey, count, "", ""
+// }
+
+// func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) (map[string]models.PerfomanceResponse, error) {
+// 	var (
+// 		err     error
+// 		resp    = make(map[string]models.PerfomanceResponse)
+// 		filters []string
+// 	)
+// 	log.EnterFn(0, "HandleGetAgingReport")
+// 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
+
+// 	log.FuncErrorTrace(0, "map first: %#v", AgRp)
+
+// 	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
+
+// 	// Filter by uniqueId
+// 	if len(AgRp) > 0 {
+// 		uniqueIdValues := make([]string, 0, len(AgRp))
+// 		for uid := range AgRp {
+// 			uniqueIdValues = append(uniqueIdValues, fmt.Sprintf("'%s'", strings.ReplaceAll(uid, "'", "''")))
+// 		}
+// 		filters = append(filters, fmt.Sprintf("unique_id IN (%s)", strings.Join(uniqueIdValues, ", ")))
+// 	}
+
+// 	// Filter by ProjectStatus
+// 	if len(dataFilter.ProjectStatus) > 0 {
+// 		statusValues := make([]string, 0, len(dataFilter.ProjectStatus))
+// 		for _, status := range dataFilter.ProjectStatus {
+// 			statusValues = append(statusValues, fmt.Sprintf("'%s'", strings.ReplaceAll(status, "'", "''")))
+// 		}
+// 		filters = append(filters, fmt.Sprintf("project_status IN (%s)", strings.Join(statusValues, ", ")))
+// 	} else {
+// 		filters = append(filters, "project_status IN ('ACTIVE')")
+// 	}
+
+// 	// Append filters to query
+// 	if len(filters) > 0 {
+// 		query += " WHERE " + strings.Join(filters, " AND ")
+// 	}
+
+// 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "Failed to get AgingReport data from db err: %v", err)
+// 		return resp, err
+// 	}
+
+// 	for _, agRp := range data {
+// 		uniqueId, ok := agRp["unique_id"].(string)
+// 		if !ok {
+// 			log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
+// 			continue
+// 		}
+
+// 		exists, existsOk := AgRp[uniqueId]
+// 		if !existsOk {
+// 			continue
+// 		}
+
+// 		resp1 := models.PerfomanceResponse{
+// 			UniqueId: uniqueId,
+// 		}
+
+// 		if exists.SurveyClr == blue {
+// 			resp1.Days_Pending_Survey = TextAccToInput("0")
+// 		}
+// 		if exists.CadClr == blue {
+// 			resp1.Days_Pending_Cad_Design = TextAccToInput("0")
+// 		}
+// 		if exists.PermittingClr == blue {
+// 			resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
+// 		}
+// 		if exists.RoofingClr == blue {
+// 			resp1.Days_Pending_Roofing = TextAccToInput("0")
+// 		}
+// 		if exists.InstallClr == blue {
+// 			resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
+// 		}
+// 		if exists.InspectionClr == blue {
+// 			resp1.Days_Pending_Inspection = TextAccToInput("0")
+// 		}
+// 		if exists.ActivationClr == blue {
+// 			resp1.Days_Pending_Activation = TextAccToInput("0")
+// 		}
+// 		if exists.NTPClr == "" {
+// 			resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
+// 		}
+
+// 		resp1.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
+
+// 		resp1.Days_Pending_PTO = TextAccToInput(getFieldText(agRp, "days_pending_pto"))
+
+// 		resp[uniqueId] = resp1
+// 	}
+
+// 	log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
+// 	return resp, nil
+// }
+
+// func getFieldText(data map[string]interface{}, field string) string {
+// 	if value, ok := data[field]; ok {
+// 		return value.(string)
+// 	}
+// 	log.FuncErrorTrace(0, "[agngRpData] error while fetching data for %s", field)
+// 	return ""
+// }
+
+// func FilterAgRpData(req models.PerfomanceStatusReq) (map[string]struct{}, error) {
+
+// 	var (
+// 		conditions []string
+// 		uniqueIds  = make(map[string]struct{})
+// 		err        error
+// 	)
+
+// 	log.EnterFn(0, "FilterAgRpData")
+
+// 	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
+
+// 	if req.Fields == nil {
+// 		return uniqueIds, err
+// 	}
+
+// 	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
+// 	for _, value := range req.Fields {
+// 		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.Project_Pending_StartDate, req.Project_Pending_EndDate))
+// 	}
+// 	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
+// 	query := fmt.Sprintf(baseQuery, conditionsStr)
+
+// 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
+// 		return uniqueIds, err
+// 	}
+// 	for _, value := range data {
+
+// 		if id, ok := value["unique_id"]; ok {
+
+// 			if strID, ok := id.(string); ok {
+// 				uniqueIds[strID] = struct{}{}
+// 			} else {
+// 				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
+// 			}
+
+// 		} else {
+// 			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
+// 		}
+// 	}
+
+// 	log.FuncInfoTrace(0, "FilterAgRpData fetched:  %v and count is : %d", uniqueIds, len(uniqueIds))
+// 	return uniqueIds, err
+
+// }
+
+// func TextAccToInput(s string) string {
+// 	if s == "0" || s == "1" {
+// 		return fmt.Sprintf("%s day pending", s)
+// 	}
+// 	return fmt.Sprintf("%s days pending", s)
+// }
+
+// func getSurveyColor(siteSurveyscheduledDate, siteSurveycompletedDate, contract_date string) (string, int64, string, string) {
+// 	var count int64
+// 	if siteSurveycompletedDate != "" {
+// 		return green, count, siteSurveycompletedDate, "Completed"
+// 	} else if siteSurveyscheduledDate != "" {
+// 		return blue, count, siteSurveyscheduledDate, "Scheduled"
+// 	}
+// 	return grey, count, "", ""
+// }
+
+// func getCadColor(cadCreatedDate, planSetcompletedDate, site_survey_completed_date string) (string, int64, string) {
+// 	var count int64
+// 	if planSetcompletedDate != "" {
+// 		return green, count, planSetcompletedDate
+// 	} else if cadCreatedDate != "" {
+// 		return blue, count, cadCreatedDate
+// 	}
+// 	return grey, count, ""
+// }
+
+// func roofingColor(roofingCreateDate, roofingCompleteDate, roofingStatus string) (string, int64, string) {
+// 	var count int64
+// 	if roofingCompleteDate != "" {
+// 		return green, count, roofingCompleteDate
+// 	} else if roofingCreateDate != "" {
+// 		return blue, count, roofingCreateDate
+// 	}
+// 	return "", count, ""
+// }
+
+// func activationColor(ptoSubmittedDate, ptodate, finPassDate, finCreatedDate string) (string, int64, string) {
+// 	var count int64
+// 	if ptodate != "" {
+// 		return green, count, ptodate
+// 	} else if ptoSubmittedDate != "" {
+// 		return blue, count, ptoSubmittedDate
+// 	}
+// 	return grey, count, ""
+// }
+
+// func InspectionColor(finCreatedDate, finPassDate, pv_install_completed_date string) (string, int64, string) {
+// 	var count int64
+// 	if finPassDate != "" {
+// 		return green, count, finPassDate
+// 	} else if finCreatedDate != "" {
+// 		return blue, count, finCreatedDate
+// 	}
+// 	return grey, count, ""
+// }
+
+// func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, icAprroveddDate string) (string, int64, string, string) {
+// 	var count int64
+// 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
+// 	batteryCompletedParsed := parseDate(batteryCompleted)
+// 	pvInstallCompletedDateParsed := parseDate(pvInstallCompletedDate)
+// 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
+
+// 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+// 		return blue, count, pvInstallCompletedDate, "Scheduled"
+// 	} else if !pvInstallCreatedateParsed.IsZero() {
+// 		return blue, count, pvInstallCreatedate, "Scheduled"
+// 	}
+
+// 	return grey, count, "", ""
+// }
+
+// func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, planSetCompleteDate string) (string, int64, string) {
+// 	var count int64
+
+// 	permitApprovedDateParsed := parseDate(permitApprovedDate)
+// 	IcApprovedDateParsed := parseDate(IcApprovedDate)
+// 	permitSubmittedDateParsed := parseDate(permitSubmittedDate)
+// 	IcSubmittedDateParsed := parseDate(IcSubmittedDate)
+
+// 	if !permitApprovedDateParsed.IsZero() && !IcApprovedDateParsed.IsZero() {
+// 		latestApprovedDate := permitApprovedDate
+// 		if IcApprovedDateParsed.After(permitApprovedDateParsed) {
+// 			latestApprovedDate = IcApprovedDate
+// 		}
+// 		return green, count, latestApprovedDate
+// 	} else if !permitSubmittedDateParsed.IsZero() && !IcSubmittedDateParsed.IsZero() {
+// 		latestSubmittedDate := permitSubmittedDate
+// 		if IcSubmittedDateParsed.After(permitSubmittedDateParsed) {
+// 			latestSubmittedDate = IcSubmittedDate
+// 		}
+// 		return blue, count, latestSubmittedDate
+// 	}
+// 	return grey, count, ""
+// }

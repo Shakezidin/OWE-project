@@ -103,6 +103,13 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, dbStatus }) 
 
   return (
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
+      {/* {!dbStatus && (
+        <div className="dbDownLabel">
+          <span className="dbDownLabelText">
+            ⚠️ Our website is under maintenance. Some features may not be available. ⚠️
+          </span>
+        </div>
+      )} */}
       <div className="header-icon">
         <div
           className={`side-bar-logo ${toggleOpen ? 'side-bar-logo-active' : ''}`}
@@ -211,29 +218,32 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, dbStatus }) 
               ) : null}
             </div>
           }
-          <div className="reset_hover_btn" style={{ cursor: 'pointer' }}>
-            <Tooltip
-              style={{
-                zIndex: 103,
-                background: '#f7f7f7',
-                color: '#000',
-                fontSize: 12,
-                paddingBlock: 4,
-                fontWeight: '400',
-              }}
-              offset={8}
-              id="bulb-up"
-              place="left"
-              content={dbStatus ? DBMessage.DBUp : DBMessage.DBDown}
-              delayShow={200}
-              className="pagination-tooltip"
-            />
-            <img
-              src={dbStatus ? BulbUp : BulbDown}
-              alt="Edit User"
-              data-tooltip-id="bulb-up"
-            />
-          </div>
+
+          {/* {isStaging === 'staging' && (
+            <div className="reset_hover_btn" style={{ cursor: 'pointer' }}>
+              <Tooltip
+                style={{
+                  zIndex: 103,
+                  background: '#f7f7f7',
+                  color: '#000',
+                  fontSize: 12,
+                  paddingBlock: 4,
+                  fontWeight: '400',
+                }}
+                offset={8}
+                id="bulb-up"
+                place="left"
+                content={dbStatus ? DBMessage.DBUp : DBMessage.DBDown}
+                delayShow={200}
+                className="pagination-tooltip"
+              />
+              <img
+                src={dbStatus ? BulbUp : BulbDown}
+                alt="Edit User"
+                data-tooltip-id="bulb-up"
+              />
+            </div>
+          )} */}
           <div
             className="user-container relative"
             ref={dropdownRef}
