@@ -223,15 +223,32 @@ const StructuralPage: React.FC = () => {
         </div>
       ) : null
     ))}
-    <div className={styles.iconContainer} onClick={editStructuralInfo ? () => toggleEditStructuralInfo(false) : addNewStructuralState}>
-  {editStructuralInfo ? (
-    <HiMiniXMark />
-  ) : (
-    <IoMdAdd />
-  )}
-</div>
-
     
+    <div 
+      className={styles.iconContainer} 
+      onClick={() => {
+        if (editStructuralInfo) {
+          // When clicking HiMiniXMark, remove the last state if it was just added
+          if (activeStructuralState === structuralInfoStates[structuralInfoStates.length - 1]) {
+            // Remove the last state
+            const newStates = structuralInfoStates.slice(0, -1);
+            setStructuralInfoStates(newStates);
+            // Set active state to the previous state
+            setActiveStructuralState(newStates[newStates.length - 1]);
+          }
+          toggleEditStructuralInfo(false);
+        } else {
+          addNewStructuralState();
+        }
+      }}
+    >
+      {editStructuralInfo ? (
+        <HiMiniXMark />
+      ) : (
+        <IoMdAdd />
+      )}
+    </div>
+
     <div
       className={`${
         editStructuralInfo ? styles.active : styles.iconContainer
@@ -245,6 +262,7 @@ const StructuralPage: React.FC = () => {
     >
       {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
     </div>
+    
     {activeStructuralState !== structuralInfoStates[structuralInfoStates.length - 1] && (
       <div 
         className={styles.iconContainer}
@@ -253,7 +271,7 @@ const StructuralPage: React.FC = () => {
         <RiDeleteBin6Line />
       </div>
     )}
-  </div>
+</div>
 </div>
 
 

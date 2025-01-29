@@ -32,7 +32,7 @@ const CustomInput: React.FC<InputProps> = ({ label, value, onChange }) => {
     alignItems: 'center',
     border: 'none',
     borderRadius: '50px',
-    padding: '0px 10px',
+    padding: '0px 10px 0px 18px',
     fontSize: '12px',
     fontWeight: '500',
     lineHeight: '18px',
@@ -45,7 +45,7 @@ const CustomInput: React.FC<InputProps> = ({ label, value, onChange }) => {
 
   const focusedInputStyles = {
     ...inputStyles,
-    border: '1px solid #377CF6', // Highlight border on focus
+    border: '1px solid #377CF6', 
   };
 
   return (
@@ -57,9 +57,9 @@ const CustomInput: React.FC<InputProps> = ({ label, value, onChange }) => {
         id={label}
         value={value}
         onChange={handleChange}
-        onFocus={() => setIsFocused(true)} // Apply focus styles when input is focused
-        onBlur={() => setIsFocused(false)} // Remove focus styles when input is blurred
-        style={isFocused ? focusedInputStyles : inputStyles} // Apply focused styles conditionally
+        onFocus={() => setIsFocused(true)} 
+        onBlur={() => setIsFocused(false)}
+        style={isFocused ? focusedInputStyles : inputStyles} 
       />
     </div>
   );
