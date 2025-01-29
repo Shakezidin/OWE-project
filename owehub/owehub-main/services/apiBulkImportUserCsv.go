@@ -117,8 +117,12 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
     // handing hierarchy conditions
 
     ///reporting manger field can be empty for ,  admin, do , fa , am
-    if CreateBulkUserReq.RoleName == "Admin" || CreateBulkUserReq.RoleName == "Finance Admin" ||
-       CreateBulkUserReq.RoleName == "Dealer Owner" || CreateBulkUserReq.RoleName == "Account Manager" {
+    if CreateBulkUserReq.RoleName == "Admin" ||
+       CreateBulkUserReq.RoleName == "Finance Admin" ||
+       CreateBulkUserReq.RoleName == "DB User" ||
+       CreateBulkUserReq.RoleName == "Dealer Owner" ||
+       CreateBulkUserReq.RoleName == "Account Manager" ||
+       CreateBulkUserReq.RoleName == "Account Executive"   {
 
       if reportingManagerEmail != "" {
         log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
@@ -137,7 +141,24 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
     CreateBulkUserReq.ReportingManager = reportingManagerCode
   }
 
-    partnerId := getValue(headers, record, "partner_id")
+
+
+
+
+  partnerId := getValue(headers, record, "partner_id")
+  if CreateBulkUserReq.RoleName == "Admin" ||
+     CreateBulkUserReq.RoleName == "Finance Admin" ||
+     CreateBulkUserReq.RoleName == "DB User" ||
+     CreateBulkUserReq.RoleName == "Account Manager" ||
+     CreateBulkUserReq.RoleName == "Account Executive" {
+
+    if CreateBulkUserReq.PartnerId != "" {
+    log.FuncErrorTrace(0, "Role %s should not have a partner_id: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerId)
+    result.Failed++
+    result.Errors = append(result.Errors, fmt.Sprintf("Role %s should not have a partner_id", CreateBulkUserReq.RoleName))
+    continue
+    }
+  }else {
     salesPartnerName, err := fetchSalesPartnerNameById(partnerId)
     if err != nil {
       log.FuncErrorTrace(0, "Error fetching sales partner name for partner_id: %s, error: %v", partnerId, err)
@@ -147,6 +168,8 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
     }
     CreateBulkUserReq.PartnerId = partnerId
     CreateBulkUserReq.SalesPartnerName = salesPartnerName
+  }
+
 
     if !isValidUser(CreateBulkUserReq) {
       result.Failed++
