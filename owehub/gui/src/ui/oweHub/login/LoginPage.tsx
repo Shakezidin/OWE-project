@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import './LoginPage.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { Link, useNavigate } from 'react-router-dom';
+import axios, { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios';
 import { ReactComponent as LOGO_SMALL } from '../../../resources/assets/commisson_small_logo.svg';
 import Input from '../../components/text_input/Input';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
@@ -28,6 +29,8 @@ import { FormEvent } from '../../../core/models/data_models/typesModel';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
 import { encryptData, decryptData } from '../../../utiles/Encryption';
+import { checkDBStatus } from '../../../redux/apiActions/auth/authActions';
+ 
 
 export const LoginPage = () => {
   const { authData, saveAuthData } = useAuth();
@@ -37,6 +40,8 @@ export const LoginPage = () => {
     password: '',
     isRememberMe: false,
   });
+  const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
+  const [isDbDown, setIsDbDown] = useState(true); // Set true for the DB down label
   const width = useWindowWidth();
   const isMobile = width < 768;
   const isStaging = process.env.REACT_APP_ENV;
@@ -46,7 +51,7 @@ export const LoginPage = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const [dbStatus, setDbStatus]= useState<boolean>(true);
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state: RootState) => state.auth);
 
@@ -57,6 +62,16 @@ export const LoginPage = () => {
     }));
   };
 
+  useEffect(() => {
+    const fetchDBStatus = async () => {
+      const status = await checkDBStatus();
+      setDbStatus(status);
+    };
+
+    fetchDBStatus();
+  }, []);
+
+  
  /** handle local storage */
 useEffect(() => {
   if (authData?.isRememberMe === 'true') {
@@ -152,6 +167,11 @@ useEffect(() => {
 
   return (
     <div className="mainContainer">
+         {!dbStatus && (
+        <div className="dbDownLabel">
+            <span className="dbDownLabelText">⚠️ Our website is under maintenance. Some features may not be available. ⚠️</span>
+        </div>
+      )}
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>

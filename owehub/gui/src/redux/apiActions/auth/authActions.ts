@@ -2,6 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
+import axios from 'axios';
+const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 
 /** Create user */
 export const loginAction = createAsyncThunk(
@@ -60,16 +62,15 @@ export const checkUserExists = createAsyncThunk(
   }
 );
 
-/** Check if user exists */
-export const checkDbStatus = createAsyncThunk(
-  'status/checkdb',
-  async (_, { rejectWithValue }): Promise<any> => {
-    try {
-      const response = await postCaller(EndPoints.dbStatus, {});
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue((error as Error).message);
-    }
+
+
+export const checkDBStatus = async () => {
+  try {
+    const response = await axios.post(`${BASE_URL}/is_owedb_ready`, {});
+    console.log(response.data, "DB Status Response");
+    return response.data.data.is_up; // Return the response to be used elsewhere
+  } catch (error) {
+    console.error("Error in checking DB status:", error);
+    return false; // Return false if an error occurs
   }
-);
+};
