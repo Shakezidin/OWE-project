@@ -110,50 +110,60 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       PartnerId:         getValue(headers, record, "partner_id"),
     }
 
+    if !isValidUser(CreateBulkUserReq) {
+      result.Failed++
+      result.Errors = append(result.Errors, fmt.Sprintf("Invalid data for user: %s", CreateBulkUserReq.EmailId))
+      continue
+    }
 
     reportingManagerEmail := getValue(headers, record, "reporting_manager")
 
-    // handing hierarchy conditions
-    if CreateBulkUserReq.RoleName == "Admin" ||
-       CreateBulkUserReq.RoleName == "Finance Admin" ||
-       CreateBulkUserReq.RoleName == "DB User" ||
-       CreateBulkUserReq.RoleName == "Dealer Owner" ||
-       CreateBulkUserReq.RoleName == "Account Manager" ||
-       CreateBulkUserReq.RoleName == "Account Executive"   {
+    var reportingManagerRequired bool = !( CreateBulkUserReq.RoleName == "Admin" ||
+    CreateBulkUserReq.RoleName == "Finance Admin" ||
+    CreateBulkUserReq.RoleName == "DB User" ||
+    CreateBulkUserReq.RoleName == "Dealer Owner" ||
+    CreateBulkUserReq.RoleName == "Account Manager" ||
+    CreateBulkUserReq.RoleName == "Account Executive" )
 
-      if reportingManagerEmail != "" {
+
+    if !reportingManagerRequired &&  reportingManagerEmail != ""{
         log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
         result.Failed++
         result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
         continue
       }
-    }else{
-    reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-    if err != nil {
-      log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-      continue
+
+    if reportingManagerRequired &&  reportingManagerEmail != ""{
+      reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
+      if err != nil {
+        log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+        result.Failed++
+        result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+        continue
+      }
+      CreateBulkUserReq.ReportingManager = reportingManagerCode
     }
-    CreateBulkUserReq.ReportingManager = reportingManagerCode
-  }
 
 
-  // handling partner_id conditions , these roles cant have partner_id
+  // handling partner_id conditions , these roles cant have partner_id ....
   partnerId := getValue(headers, record, "partner_id")
-  if CreateBulkUserReq.RoleName == "Admin" ||
-     CreateBulkUserReq.RoleName == "Finance Admin" ||
-     CreateBulkUserReq.RoleName == "DB User" ||
-     CreateBulkUserReq.RoleName == "Account Manager" ||
-     CreateBulkUserReq.RoleName == "Account Executive" {
 
-    if CreateBulkUserReq.PartnerId != "" {
+  var partnerIdRequired bool = !(CreateBulkUserReq.RoleName == "Admin" ||
+  CreateBulkUserReq.RoleName == "Finance Admin" ||
+  CreateBulkUserReq.RoleName == "DB User" ||
+  CreateBulkUserReq.RoleName == "Account Manager" ||
+  CreateBulkUserReq.RoleName == "Account Executive")
+
+
+  if !partnerIdRequired &&  partnerId != ""{
     log.FuncErrorTrace(0, "Role %s should not have a partner_id: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerId)
     result.Failed++
     result.Errors = append(result.Errors, fmt.Sprintf("Role %s should not have a partner_id", CreateBulkUserReq.RoleName))
     continue
-    }
-  }else {
+  }
+
+
+  if partnerIdRequired {
     salesPartnerName, err := fetchSalesPartnerNameById(partnerId)
     if err != nil {
       log.FuncErrorTrace(0, "Error fetching sales partner name for partner_id: %s, error: %v", partnerId, err)
@@ -166,12 +176,6 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
   }
 
 
-
-    if !isValidUser(CreateBulkUserReq) {
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Invalid data for user: %s", CreateBulkUserReq.EmailId))
-      continue
-    }
 
     hashedPassBytes, err := GenerateHashPassword(CreateBulkUserReq.Password)
     if err != nil {
@@ -280,7 +284,6 @@ func fetchUserCodeByEmail(email string) (string, error) {
   if !ok {
     return "", fmt.Errorf("user_code is not of type string")
   }
-
   return userCode, nil
 }
 
