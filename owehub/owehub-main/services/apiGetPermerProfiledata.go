@@ -166,7 +166,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 
 	var filtersBuilder strings.Builder
 
-	if !dataReq.CountKwSelection {
+	if dataReq.CountKwSelection {
 		filtersBuilder.WriteString("SELECT COUNT(DISTINCT CASE WHEN cs.sale_date IS NOT NULL THEN cs.unique_id ELSE NULL END) AS total_sales,")
 		filtersBuilder.WriteString(" COUNT(DISTINCT CASE WHEN ns.ntp_complete_date IS NOT NULL THEN ns.unique_id ELSE NULL END) AS total_ntp,")
 		filtersBuilder.WriteString(" COUNT(DISTINCT CASE WHEN pis.pv_completion_date IS NOT NULL THEN pis.customer_unique_id ELSE NULL END) AS total_installs,")
