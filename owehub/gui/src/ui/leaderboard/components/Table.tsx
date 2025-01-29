@@ -46,6 +46,7 @@ interface ILeaderBordUser {
   sale: number;
   install: number;
   ntp: number;
+  battery:number;
   cancel: number;
   hightlight: boolean;
 }
@@ -60,6 +61,7 @@ interface IDealer {
   rank: number;
   sale: number;
   ntp: number;
+  battery:number;
   install: number;
 }
 
@@ -67,6 +69,7 @@ const rankByOptions = [
   { label: 'Sale', value: 'sale' },
   { label: 'NTP', value: 'ntp' },
   { label: 'Install', value: 'install' },
+  { label: 'Battery', value: 'battery' },
   { label: 'Cancel', value: 'cancel' },
 ];
 
@@ -106,7 +109,7 @@ function getCurrentDateInUserTimezone() {
   return toZonedTime(now, userTimezone);
 }
 const today = getCurrentDateInUserTimezone();
- // assuming week starts on Monday, change to 0 if it starts on Sunday
+// assuming week starts on Monday, change to 0 if it starts on Sunday
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
@@ -219,6 +222,7 @@ const SelectableFilter = ({
         <label>{label}</label>
         <ul className="leaderboard-data__btn-group">
           {options.map((item) => (
+
             <li key={item.label}>
               <button
                 onClick={() => {
@@ -321,12 +325,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -665,7 +669,7 @@ const Table = ({
     const sale = parseFloat(value);
     if (sale === 0) return '0';
     // If the number is an integer, return it as a string without .00
-    if (sale % 1 === 0) return sale.toString(); 
+    if (sale % 1 === 0) return sale.toString();
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
   const role = authData?.role;
@@ -906,10 +910,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN ||
-              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-              role === TYPE_OF_USER.ACCOUNT_MANAGER
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -984,6 +988,7 @@ const Table = ({
                       <p className="rank-sm-text"> {item.dealer} </p>
                     )}
                     <div className="flex items-center rank-card-stats">
+
                       <div>
                         <span className="rank-stats-num">
                           {formatSaleValue(item?.sale)}
@@ -1002,6 +1007,12 @@ const Table = ({
                           {formatSaleValue(item?.ntp)}{' '}
                         </span>
                         <p className="rank-sm-text">NTP</p>
+                      </div>
+                      <div>
+                        <span className="rank-stats-num">
+                          {formatSaleValue(item?.battery)}
+                        </span>
+                        <p className="rank-sm-text">Battery</p>
                       </div>
                       <div>
                         <span className="rank-stats-num">
@@ -1042,6 +1053,12 @@ const Table = ({
                   </div>
                   <div>
                     <span className="rank-stats-num">
+                      {formatSaleValue(totalStats?.total_battery || 0)}
+                    </span>
+                    <p className="rank-sm-text">Battery</p>
+                  </div>
+                  <div>
+                    <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
                     </span>
                     <p className="rank-sm-text">Cancel</p>
@@ -1062,6 +1079,7 @@ const Table = ({
                 <th>Rank</th>
                 <th>{getName}</th>
                 {showPartner && <th>Partner</th>}
+
                 <th>
                   Sale
                   <span className="block" style={{ fontSize: 12 }}>
@@ -1081,6 +1099,12 @@ const Table = ({
                   </span>
                 </th>
                 <th>
+                  Battery
+                  <span className="block" style={{ fontSize: 12 }}>
+                    ({formatSaleValue(totalStats?.total_battery || 0)})
+                  </span>
+                </th>
+                <th>
                   Cancel
                   <span className="block" style={{ fontSize: 12 }}>
                     ({formatSaleValue(totalStats?.total_cancel || 0)})
@@ -1091,7 +1115,7 @@ const Table = ({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={7}>
+                  <td colSpan={8}>
                     <div
                       style={{
                         display: 'flex',
@@ -1122,8 +1146,8 @@ const Table = ({
                               : groupBy,
                           dealer:
                             groupBy === 'primary_sales_rep' ||
-                            groupBy === 'team' ||
-                            groupBy === 'setter'
+                              groupBy === 'team' ||
+                              groupBy === 'setter'
                               ? item.dealer
                               : '',
                           name: item.rep_name,
@@ -1131,6 +1155,7 @@ const Table = ({
                           sale: item.sale,
                           ntp: item.ntp,
                           install: item.install,
+                          battery: item.battery,
                         }));
                       }}
                     >
@@ -1143,9 +1168,11 @@ const Table = ({
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
                       {showPartner && <td> {item.dealer} </td>}
+
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
                       <td>{formatSaleValue(item?.install)}</td>
+                      <td>{formatSaleValue(item?.battery)}</td>
                       <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );
@@ -1164,6 +1191,7 @@ const Table = ({
                   <td></td>
                   {showPartner && <td></td>}
                   <td className="bold-text">Total </td>
+
                   <td className="bold-text">
                     {formatSaleValue(getTotal('sale'))}
                   </td>
@@ -1173,6 +1201,9 @@ const Table = ({
                   </td>
                   <td className="bold-text">
                     {formatSaleValue(getTotal('install'))}
+                  </td>
+                  <td className="bold-text">
+                  {formatSaleValue(getTotal('battery'))}
                   </td>
                   <td className="bold-text">
                     {formatSaleValue(getTotal('cancel'))}

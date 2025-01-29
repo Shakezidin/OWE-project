@@ -112,6 +112,21 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
     // fetching the reporting_manager user_code using email that we will get from .CSV file
     reportingManagerEmail := getValue(headers, record, "reporting_manager")
+
+
+    // handing hierarchy conditions
+
+    ///reporting manger field can be empty for ,  admin, do , fa , am
+    if CreateBulkUserReq.RoleName == "Admin" || CreateBulkUserReq.RoleName == "Finance Admin" ||
+       CreateBulkUserReq.RoleName == "Dealer Owner" || CreateBulkUserReq.RoleName == "Account Manager" {
+
+      if reportingManagerEmail != "" {
+        log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
+        result.Failed++
+        result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
+        continue
+      }
+    }else{
     reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
     if err != nil {
       log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
@@ -120,6 +135,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       continue
     }
     CreateBulkUserReq.ReportingManager = reportingManagerCode
+  }
 
     partnerId := getValue(headers, record, "partner_id")
     salesPartnerName, err := fetchSalesPartnerNameById(partnerId)

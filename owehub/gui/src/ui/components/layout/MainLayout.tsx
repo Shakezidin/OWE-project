@@ -14,7 +14,7 @@ import {
 } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
-import { checkUserExists, checkDbStatus } from '../../../redux/apiActions/auth/authActions';
+import { checkUserExists, checkDBStatus } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
@@ -101,19 +101,14 @@ const MainLayout = () => {
   }, [dispatch, navigate, authData]);
 
     /** check whether db down or not */
-    useEffect(() => {
-        dispatch(checkDbStatus())
-          .then((response: any) => {
-            if (response.payload) {
-             
-              setDbStatus(response.payload.is_up)
-            } 
-          })
-          .catch((error: any) => {
-            console.error('Error', error);
-          });
-      
-    }, [dispatch, navigate, authData]);
+   useEffect(() => {
+     const fetchDBStatus = async () => {
+       const status = await checkDBStatus();
+       setDbStatus(status);
+     };
+ 
+     fetchDBStatus();
+   }, []);
 
   useEffect(() => {
     if (isTablet) {
@@ -127,6 +122,13 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
+      {!dbStatus && (
+        <div className="laydbDownLabel">
+          <span className="dbDownLabelText">
+            ⚠️ Our website is under maintenance. Some features may not be available. ⚠️
+          </span>
+        </div>
+      )}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
