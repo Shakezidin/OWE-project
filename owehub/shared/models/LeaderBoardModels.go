@@ -28,6 +28,7 @@ type GetLeaderBoard struct {
 	Ntp       float64 `json:"ntp"`
 	Cancel    float64 `json:"cancel"`
 	Install   float64 `json:"install"`
+	Battery   float64 `json:"battery"`
 	HighLight bool    `json:"hightlight"`
 }
 
@@ -38,4 +39,5 @@ type GetLeaderBoardList struct {
 	TotalNtp           float64          `json:"total_ntp"`
 	TotalInstall       float64          `json:"total_install"`
 	TotalCancel        float64          `json:"total_cancel"`
+	TotalBattery       float64          `json:"total_battery"`
 }
