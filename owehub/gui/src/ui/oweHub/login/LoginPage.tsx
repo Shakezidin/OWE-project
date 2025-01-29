@@ -30,7 +30,7 @@ import useAuth, { AuthData } from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
 import { encryptData, decryptData } from '../../../utiles/Encryption';
 import { checkDBStatus } from '../../../redux/apiActions/auth/authActions';
- 
+
 
 export const LoginPage = () => {
   const { authData, saveAuthData } = useAuth();
@@ -51,7 +51,7 @@ export const LoginPage = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-  const [dbStatus, setDbStatus]= useState<boolean>(true);
+  const [dbStatus, setDbStatus] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state: RootState) => state.auth);
 
@@ -71,29 +71,29 @@ export const LoginPage = () => {
     fetchDBStatus();
   }, []);
 
-  
- /** handle local storage */
-useEffect(() => {
-  if (authData?.isRememberMe === 'true') {
-    const savedAuthData = localStorage.getItem('authData');
-    if (savedAuthData) {
-      try {
-        const parsedAuthData = JSON.parse(savedAuthData);
-        const decryptedPassword = decryptData(parsedAuthData.password);
 
-        handleInputChange('email_id', parsedAuthData.email || ''); // Fallback to empty string
-        handleInputChange('password', decryptedPassword || ''); // Fallback to empty string
-        handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
-      } catch (error) {
-        console.error('Error parsing or decrypting auth data:', error);
+  /** handle local storage */
+  useEffect(() => {
+    if (authData?.isRememberMe === 'true') {
+      const savedAuthData = localStorage.getItem('authData');
+      if (savedAuthData) {
+        try {
+          const parsedAuthData = JSON.parse(savedAuthData);
+          const decryptedPassword = decryptData(parsedAuthData.password);
+
+          handleInputChange('email_id', parsedAuthData.email || ''); // Fallback to empty string
+          handleInputChange('password', decryptedPassword || ''); // Fallback to empty string
+          handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
+        } catch (error) {
+          console.error('Error parsing or decrypting auth data:', error);
+        }
       }
     }
-  }
-}, [authData]);
+  }, [authData]);
 
 
-  
-  
+
+
   /** email validation */
   const isValidEmail = (email: string) => {
     // Regular expression pattern for validating email addresses
@@ -126,7 +126,7 @@ useEffect(() => {
             time_to_expire_minutes,
             is_password_change_required,
           } = result.data;
-        const encryptedPassword = encryptData(credentials.password)
+          const encryptedPassword = encryptData(credentials.password)
 
           const loginResponse: AuthData = {
             role: role_name,
@@ -167,9 +167,11 @@ useEffect(() => {
 
   return (
     <div className="mainContainer">
-         {!dbStatus && (
+      {!dbStatus && (
         <div className="dbDownLabel">
-            <span className="dbDownLabelText">⚠️ Our website is under maintenance. Some features may not be available. ⚠️</span>
+          <span className="dbDownLabelText">
+            ⚠️ Our website is under maintenance. Some features may not be available. ⚠️
+          </span>
         </div>
       )}
       <div className={'overlay'} />

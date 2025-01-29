@@ -122,6 +122,13 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
+      {!dbStatus && (
+        <div className="laydbDownLabel">
+          <span className="dbDownLabelText">
+            ⚠️ Our website is under maintenance. Some features may not be available. ⚠️
+          </span>
+        </div>
+      )}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
