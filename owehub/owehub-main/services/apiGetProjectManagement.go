@@ -540,6 +540,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string, pr
 				return "Completed", 0
 			}
 		case "powerclerk_signatures_complete":
+			fmt.Println(0, "=======================================================================")
+			fmt.Println(0, "=====================														 ======================")
+			fmt.Println(0, "=======================================================================")
 			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else if (v == "❌  Pending" || v == "❌  Pending Sending PC" || v == "❌ Pending Sending PC") && ntp_date == "" {
