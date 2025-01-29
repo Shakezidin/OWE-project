@@ -232,7 +232,8 @@ export const DashboardPage: React.FC = () => {
       'Balance',
       'Help',
     ];
-    const csvData = exportData?.data.DealerPayComm?.map?.((item: any) => [
+    const csvData = Array.isArray(exportData?.data?.DealerPayComm) 
+  ? exportData.data.DealerPayComm.map((item: any) => [
       item.unique_id,
       item.home_owner,
       item.current_status,
@@ -258,7 +259,11 @@ export const DashboardPage: React.FC = () => {
       item.epc,
       item.amt_paid,
       item.balance,
-    ]);
+    ])
+    : [];
+      
+   
+    
     const csvRows = [headers, ...csvData];
     const csvString = Papa.unparse(csvRows);
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -363,7 +368,7 @@ export const DashboardPage: React.FC = () => {
                     }
                   }}
                 />
-                <div
+                {/* <div
                   className={`filter-line ${
                     active === 0 ? 'active-filter-line' : ''
                   }`}
@@ -374,8 +379,8 @@ export const DashboardPage: React.FC = () => {
                   ) : (
                     <img src={ICONS.dashActive} alt="" />
                   )}
-                </div>
-                <div
+                </div> */}
+                {/* <div
                   className={`filter-disable ${
                     active === 1 ? 'active-filter-line' : ''
                   }`}
@@ -386,7 +391,7 @@ export const DashboardPage: React.FC = () => {
                   ) : (
                     <img src={ICONS.viewActive} alt="" />
                   )}
-                </div>
+                </div> */}
                 <div
                   className="filter-line relative"
                   onClick={() => setFilterModal(true)}
@@ -429,26 +434,26 @@ export const DashboardPage: React.FC = () => {
                     style={{ height: '15px', width: '15px' }}
                   />
                 </div>
-                <button
-                  className={`performance-exportbtn  mt0 `}
-                  style={{ height: '36px', padding: '8px 12px' }}
-                  onClick={handleExportOpen}
-                >
-                  {isExportingData ? (
-                    <div className="dealer-export">
-                      <MdDownloading
-                        className="downloading-animation dealer-mob-download"
-                        size={20}
-                      />
-                      <span className="dealer-export-mob">Export</span>
-                    </div>
-                  ) : (
-                    <div className="dealer-export">
-                      <FaUpload size={12} className="dealer-mob-upload" />
-                      <span className="dealer-export-mob">Export</span>
-                    </div>
-                  )}
-                </button>
+              <button
+                className={`performance-exportbtn  mt0 `}
+                style={{ height: '36px', padding: '8px 12px' }}
+                onClick={handleExportOpen}
+              >
+                {isExportingData ? (
+                  <div className="dealer-export">
+                    <MdDownloading
+                      className="downloading-animation dealer-mob-download"
+                      size={20}
+                    />
+                    <span className="dealer-export-mob">Export</span>
+                  </div>
+                ) : (
+                  <div className="dealer-export">
+                    <FaUpload size={12} className="dealer-mob-upload" />
+                    <span className="dealer-export-mob">Export</span>
+                  </div>
+                )}
+              </button>
               </div>
             </div>
           </div>
