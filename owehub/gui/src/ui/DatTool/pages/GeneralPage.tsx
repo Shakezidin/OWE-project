@@ -27,6 +27,7 @@ interface InputFieldProps {
   value: string;
   type?: string;
   isEditing: boolean;
+  className?: string;
 }
  
 const InputField: React.FC<InputFieldProps> = ({
@@ -34,6 +35,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   type = 'text',
   isEditing,
+  className,
 }) => (
   <div>
     <label>{label}</label>
@@ -127,6 +129,7 @@ const GeneralPage: React.FC = () => {
     { label: 'Site Capture URL', value: '---', type: 'url' },
     { label: 'Change Order Required', value: '--' },
   ];
+  console.log(isDatEditing,"fffff");
  
   return (
     <div className={styles.genMain}>
@@ -314,6 +317,7 @@ const GeneralPage: React.FC = () => {
                   label={field.label}
                   value={field.value}
                   type={field.type}
+                  className={`${styles.inputField} ${isDatEditing ? styles.editable : ''}`}
                   isEditing={isDatEditing}
                 />
               ))}
