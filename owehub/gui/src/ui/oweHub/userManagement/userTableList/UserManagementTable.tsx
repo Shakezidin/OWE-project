@@ -55,7 +55,6 @@ interface UserTableProos {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsExporting:React.Dispatch<React.SetStateAction<boolean>>;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onClickMultiDelete: () => void;
@@ -68,6 +67,7 @@ interface UserTableProos {
   handleEdit: (id?: string) => void;
   isExportingData?:boolean;
   editData?:[];
+  totalCount?:number;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -91,13 +91,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   handleCrossClick,
   handleEdit,
   editData,
-  setIsExporting,
-  isExportingData
+ 
+  totalCount
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
- 
+   const [isExportingData, setIsExporting] = useState(false);
   const { authData, clearAuthData } = useAuth();
 
   const userRole = authData?.role;
@@ -457,13 +457,22 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     }, 800),
     []
   );
-  const handleExportOpen = () => {
+  const handleExportOpen = async () => {
     setIsExporting(true);
     
        const removeHtmlTags = (str: any) => {
          if (!str) return '';
          return str.replace(/<\/?[^>]+(>|$)/g, '');
        };
+
+           const exportData = await postCaller('get_users', {
+             page_number: 1,
+             page_size:totalCount,
+           });
+           if (exportData.status > 201) {
+             toast.error(exportData.message);
+             return;
+           }
        
        const headers = [
          'Code',
@@ -478,7 +487,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
        ];
 
        console.log(userRoleBasedList, "userRoleBasedList");
-       const csvData = userRoleBasedList?.map?.((item: any) => [
+       const csvData = exportData?.data?.
+       users_data_list
+       ?.map?.((item: any) => [
          item.user_code,
          item.name,
          item.role_name,
@@ -503,7 +514,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   };
 
   const environment = process.env.REACT_APP_ENV;
- 
+ console.log(userRoleBasedList, "userRoleBasedList")
   
   /** render UI */
   return (
