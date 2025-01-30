@@ -104,8 +104,7 @@ const AccountManagerTable: React.FC<UserTableProps> = ({
 
    const environment = process.env.REACT_APP_ENV;
                 const isEditVisible =
-                (role_name === TYPE_OF_USER.ADMIN ) &&
-                environment === 'staging';
+                (role_name === TYPE_OF_USER.ADMIN ) 
 
   return (
     <div
