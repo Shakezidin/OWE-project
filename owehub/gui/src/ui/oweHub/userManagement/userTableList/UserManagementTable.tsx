@@ -464,21 +464,32 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
 
-    const exportData = await postCaller('get_users', {
-      page_number: 1,
-   
-      filters: [
-        {
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        },
-      ],
-    });
-    if (exportData.status > 201) {
-      toast.error(exportData.message);
-      return;
-    }
+    
+
+    try {
+      const requestData: any = {
+        page_number: 1,
+        filters:[{Column:"name",Operation:"cont",Data:""}] 
+
+      };
+  
+      if (selectedOption.value !== '') {
+        requestData.filters = [
+          {
+            Column: 'role_name',
+            Operation: '=',
+            Data: selectedOption.value,
+          },
+        ];
+      }
+  
+      const exportData = await postCaller('get_users', requestData);
+  
+      if (!exportData || exportData.status > 201) {
+        toast.error(exportData?.message || 'Error fetching data');
+        setIsExporting(false);
+        return;
+      }
 
     const headers = [
       'Code',
@@ -513,6 +524,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
+  } catch (error) {
+    console.error('Error exporting data:', error);
+    toast.error('An unexpected error occurred while exporting data');
+  } finally {
+    setIsExporting(false);
+  }
   };
 
   const environment = process.env.REACT_APP_ENV;
