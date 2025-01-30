@@ -39,13 +39,13 @@ const DatTool: React.FC = () => {
     }
       <Header onMenuSelect={setSelectedPage} setOpenRefresh={setOpenRefresh} />
       <div className={styles.layoutContainer}>
-        <div className={styles.sidebar}>
-          <SideContainer />
-        </div>
-        <div className={styles.contentContainer}>
-          {renderPage()}
-        </div>
-      </div>
+  <div className={styles.contentContainer}>
+    {renderPage()}
+  </div>
+  <div className={styles.sidebar}>
+    <SideContainer />
+  </div>
+</div>
     </div>
   );
 };
