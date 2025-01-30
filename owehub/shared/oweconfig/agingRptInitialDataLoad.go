@@ -9,48 +9,48 @@ import (
 )
 
 type InitialAgngRpStruct struct {
-	Unique_ID                     string
-	Project_Status                string
-	Customer                      string
-	System_Size                   float64
-	Contract_Date                 time.Time
-	Site_Survey_Scheduled_Date    time.Time
-	Site_Survey_Completed_Date    time.Time
-	NTP_Working_Date              time.Time
-	NTP_Date                      time.Time
-	Permit_Created                time.Time
-	Permit_Submitted_Date         time.Time
-	Permit_Approved_Date          time.Time
-	IC_Created_Date               time.Time
-	IC_Submitted_Date             time.Time
-	IC_Approved_Date              time.Time
-	Dealer_For_Plecto             string
-	Permit_Expected_Approval_Date time.Time
-	IC_Expected_Approval_Date     time.Time
-	PV_Install_Created_Date       time.Time
-	PV_Install_Completed_Date     time.Time
-	PTO_Created_Date              time.Time
-	PTO_Submitted_Date            time.Time
-	PTO_Date                      time.Time
-	Plan_Set_Complete_Day         time.Time
-	Most_Recent_Plan_Set_H        time.Time
-	PE_EE_Submitted_Date          time.Time
-	PE_EE_Complete_Date           time.Time
-	FIN_Scheduled_Date            time.Time
-	FIN_Rescheduled_Date          time.Time
-	FIN_Fail_Date                 time.Time
-	FIN_Pass_Date                 time.Time
-	Install_Scheduled             time.Time
-	Install_ETA                   time.Time
-	Install_Complete              time.Time
-	Primary_Sales_Rep             string
-	Pre_Post_Install              string
-	Tier_One_Status               string
-	What_Tier_One                 string
-	When_Tier_One                 string
-	How_Tier_One                  string
-	Project_Age_Days              string
-	Solar_Journey                 string
+	Unique_ID                 string
+	Project_Status            string
+	Customer                  string
+	Contract_Date             time.Time
+	NTP_Date                  time.Time
+	Permit_Approved_Date      time.Time
+	PV_Install_Completed_Date time.Time
+	PTO_Date                  time.Time
+	Install_Complete          time.Time
+	Primary_Sales_Rep         string
+	Project_Age_Days          string
+	// System_Size                   float64
+	// Site_Survey_Scheduled_Date    time.Time
+	// Site_Survey_Completed_Date    time.Time
+	// NTP_Working_Date              time.Time
+	// Permit_Created                time.Time
+	// Permit_Submitted_Date         time.Time
+	// IC_Created_Date               time.Time
+	// IC_Submitted_Date             time.Time
+	// IC_Approved_Date              time.Time
+	// Dealer_For_Plecto             string
+	// Permit_Expected_Approval_Date time.Time
+	// IC_Expected_Approval_Date     time.Time
+	// PV_Install_Created_Date       time.Time
+	// PTO_Created_Date              time.Time
+	// PTO_Submitted_Date            time.Time
+	// Plan_Set_Complete_Day         time.Time
+	//Most_Recent_Plan_Set_H        time.Time
+	// PE_EE_Submitted_Date          time.Time
+	// PE_EE_Complete_Date           time.Time
+	// FIN_Scheduled_Date            time.Time
+	// FIN_Rescheduled_Date          time.Time
+	// FIN_Fail_Date                 time.Time
+	// FIN_Pass_Date                 time.Time
+	// Install_Scheduled             time.Time
+	// Install_ETA                   time.Time
+	// Pre_Post_Install              string
+	// Tier_One_Status               string
+	// What_Tier_One                 string
+	// When_Tier_One                 string
+	// How_Tier_One                  string
+	// Solar_Journey                 string
 }
 
 type InitialAgngRPDataLists struct {
@@ -90,8 +90,6 @@ SELECT
     pto_ic_schema.pto_created_on AS pto_created_date,
     pto_ic_schema.submitted AS pto_submitted_date,
     pto_ic_schema.pto_granted AS pto_date,
-    --planset_cad_schema.plan_set_complete_day,
-    --planset_cad_schema.most_recent_plan_set_h,
     pe_ee_stamps_cad_schema.submitted_date AS peee_submitted_date,
     pe_ee_stamps_cad_schema.completion_date AS peee_complete_date,
     fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date,
@@ -109,30 +107,38 @@ SELECT
     customers_customers_schema.how_tier_one,
     customers_customers_schema.project_age_days,
     customers_customers_schema.solar_journey
-FROM
+SELECT COUNT(*) FROM
     customers_customers_schema
 LEFT JOIN
     system_customers_schema ON customers_customers_schema.unique_id = system_customers_schema.customer_id
+	AND system_customers_schema.project_status NOT ILIKE '%DUPLICATE%' 
 LEFT JOIN
     survey_survey_schema ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
+	AND survey_survey_schema.project_status NOT ILIKE '%DUPLICATE%' AND survey_survey_schema.app_status NOT ILIKE '%DUPLICATE%'
 LEFT JOIN
     ntp_ntp_schema ON ntp_ntp_schema.unique_id = customers_customers_schema.unique_id
+	AND ntp_ntp_schema.project_status NOT ILIKE '%DUPLICATE%' AND ntp_ntp_schema.app_status NOT ILIKE '%DUPLICATE%'
 LEFT JOIN
     permit_fin_pv_permits_schema ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
+	AND permit_fin_pv_permits_schema.project_status NOT ILIKE '%DUPLICATE%' AND permit_fin_pv_permits_schema.app_status NOT ILIKE '%DUPLICATE%'
 LEFT JOIN
     ic_ic_pto_schema ON ic_ic_pto_schema.customer_unique_id = customers_customers_schema.unique_id
+	AND ic_ic_pto_schema.project_status NOT ILIKE '%DUPLICATE%' AND ic_ic_pto_schema.app_status NOT ILIKE '%DUPLICATE%'
 LEFT JOIN
     pv_install_install_subcontracting_schema ON pv_install_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
+	AND pv_install_install_subcontracting_schema.project_status NOT ILIKE '%DUPLICATE%' AND pv_install_install_subcontracting_schema.app_status NOT ILIKE '%DUPLICATE%'
 LEFT JOIN
     pto_ic_schema ON pto_ic_schema.customer_unique_id = customers_customers_schema.unique_id
+	AND pto_ic_schema.project_status NOT ILIKE '%DUPLICATE%' 
 LEFT JOIN
     pe_ee_stamps_cad_schema ON pe_ee_stamps_cad_schema.customer_unique_id = customers_customers_schema.unique_id
+	AND pe_ee_stamps_cad_schema.project_status NOT ILIKE '%DUPLICATE%' 
 LEFT JOIN
     fin_permits_fin_schema ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
---LEFT JOIN 
-	--planset_cad_schema ON planset_cad_schema.our_number = customers_customers_schema.unique_id
+	AND fin_permits_fin_schema.project_status NOT ILIKE '%DUPLICATE%' AND fin_permits_fin_schema.app_status NOT ILIKE '%DUPLICATE%'
 WHERE
- customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
+ customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != '' 
+ AND customers_customers_schema.project_status NOT ILIKE '%DUPLICATE%'
 `
 
 	if len(uniqueIds) > 0 {

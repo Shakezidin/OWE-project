@@ -141,62 +141,72 @@ func calculateDaysPendingNTP() int {
 	return 0
 }
 
-func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
-
-	var daysPendingPermit int
+func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) *int {
 	today := time.Now()
+	// Parse dates
+	permitDate := parseTime(permitApprovedDate)
+	ntpDate := parseTime(NTPDate)
 
-	if permitApprovedDate != "0001-01-01" && NTPDate != "0001-01-01" {
-		daysPendingPermit = int(parseTime(permitApprovedDate).Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days
-	} else if projectStatus == "ACTIVE" && NTPDate != "0001-01-01" {
-		daysPendingPermit = int(today.Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days from today
+	// Calculate days
+	var daysPendingPermit *int
+	if permitDate != nil && ntpDate != nil {
+		days := int(permitDate.Sub(*ntpDate).Abs().Hours() / 24)
+		daysPendingPermit = &days
+	} else if projectStatus == "ACTIVE" && ntpDate != nil {
+		days := int(today.Sub(*ntpDate).Abs().Hours() / 24)
+		daysPendingPermit = &days
 	} else {
-		daysPendingPermit = 0
+		daysPendingPermit = nil // Represents an empty result
 	}
 
 	return daysPendingPermit
 }
 
 func calculateDaysPendingInstall(installComplete string, permitApprovedDate string, projectStatus string) int {
-
-	var daysPendingInstall int
-	today := time.Now()
-
-	permitDate := parseTime(permitApprovedDate)
-	if permitDate == nil {
+	// Parse the permit approved date
+	permitDate, err := time.Parse("2006-01-02", permitApprovedDate)
+	if err != nil {
 		fmt.Println("Error: Unable to parse permit approved date.")
 		return 0
 	}
 
-	if installComplete != "0001-01-01" && permitApprovedDate != "0001-01-01" {
-
-		installDate := parseTime(installComplete)
-		if installDate == nil {
+	// If installComplete is not empty, calculate the difference between installComplete and permitApprovedDate
+	if installComplete != "" && installComplete != "0001-01-01" {
+		installDate, err := time.Parse("2006-01-02", installComplete)
+		if err != nil {
 			fmt.Println("Error: Unable to parse install complete date.")
 			return 0
 		}
-
-		daysPendingInstall = int(absDuration(installDate.Sub(*permitDate).Hours()) / 24)
-
-	} else if projectStatus == "ACTIVE" && permitApprovedDate != "0001-01-01" {
-		// Calculate the days difference from today if installComplete is empty
-		daysPendingInstall = int(absDuration(today.Sub(*permitDate).Hours()) / 24)
-	} else {
-		daysPendingInstall = 0
+		// Pass the Duration directly to absDuration
+		return int(absDuration(installDate.Sub(permitDate)) / time.Hour / 24)
 	}
-	return daysPendingInstall
+
+	// If projectStatus is "ACTIVE", calculate the difference between today and permitApprovedDate
+	if projectStatus == "ACTIVE" {
+		today := time.Now()
+		// Pass the Duration directly to absDuration
+		return int(absDuration(today.Sub(permitDate)) / time.Hour / 24)
+	}
+
+	// If neither condition is met, return 0
+	return 0
 }
 
 func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, projectStatus string) int {
-
 	var daysPendingPto int
 	today := time.Now()
 
-	if ptoDate != "0001-01-01" && pvInstallCompleteDate != "0001-01-01" {
-		daysPendingPto = int(parseTime(ptoDate).Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days
-	} else if projectStatus == "ACTIVE" && pvInstallCompleteDate != "0001-01-01" {
-		daysPendingPto = int(today.Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days from today
+	// Parse the ptoDate and pvInstallCompleteDate
+	ptoDateParsed := parseTime(ptoDate)
+	pvInstallCompleteDateParsed := parseTime(pvInstallCompleteDate)
+
+	// Check if both ptoDate and pvInstallCompleteDate are not empty
+	if ptoDate != "0001-01-01" && pvInstallCompleteDate != "0001-01-01" && ptoDateParsed != nil && pvInstallCompleteDateParsed != nil {
+		daysPendingPto = int(absDuration(ptoDateParsed.Sub(*pvInstallCompleteDateParsed)) / time.Hour / 24) // Calculate days between ptoDate and pvInstallCompleteDate
+	} else if projectStatus == "ACTIVE" && pvInstallCompleteDate != "0001-01-01" && pvInstallCompleteDateParsed != nil {
+		daysPendingPto = int(absDuration(today.Sub(*pvInstallCompleteDateParsed)) / time.Hour / 24) // Calculate days from today to pvInstallCompleteDate
 	} else {
+		// If neither condition is met, return 0
 		daysPendingPto = 0
 	}
 
@@ -218,13 +228,22 @@ func calculateProjectAge(uniqueId string, contractDate string) int {
 }
 
 func parseTime(dateStr string) *time.Time {
-	const layout = "2006-01-02"
-	t, err := time.Parse(layout, dateStr)
+	if dateStr == "" || dateStr == "0001-01-01" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
-		log.FuncErrorTrace(0, "Error parsing date: %v", err)
 		return nil
 	}
 	return &t
+}
+
+// Helper function to get the absolute value of a duration
+func absDuration(d time.Duration) time.Duration {
+	if d < 0 {
+		return -d
+	}
+	return d
 }
 
 func ClearAgingRp() error {
@@ -239,15 +258,9 @@ func ClearAgingRp() error {
 	}
 	return nil
 }
+
 func formatDate(t time.Time) string {
 	return t.Format("2006-01-02")
-}
-
-func absDuration(hours float64) float64 {
-	if hours < 0 {
-		return -hours
-	}
-	return hours
 }
 
 func DeleteFromAgRp(uniqueIDs []string) error {
