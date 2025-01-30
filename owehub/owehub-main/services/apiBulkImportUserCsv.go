@@ -156,7 +156,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
 
   if !partnerIdRequired &&  partnerId != ""{
-    log.FuncErrorTrace(0, "Role %s should not have a partner_id: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerId)
+    log.FuncErrorTrace(0, "Role %s should not have a partner name: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerId)
     result.Failed++
     result.Errors = append(result.Errors, fmt.Sprintf("Role %s should not have a partner_id", CreateBulkUserReq.RoleName))
     continue
@@ -166,9 +166,9 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
   if partnerIdRequired {
     salesPartnerName, err := fetchSalesPartnerNameById(partnerId)
     if err != nil {
-      log.FuncErrorTrace(0, "Error fetching sales partner name for partner_id: %s, error: %v", partnerId, err)
+      log.FuncErrorTrace(0, "Error fetching sales partner name for : %s, error: %v", partnerId, err)
       result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching sales partner name for partner_id: %s", partnerId))
+      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching sales partner name for : %s", partnerId))
       continue
     }
     CreateBulkUserReq.PartnerId = partnerId
@@ -290,10 +290,10 @@ func fetchUserCodeByEmail(email string) (string, error) {
 // fetching sales_partner_name by using partner_id
 func fetchSalesPartnerNameById(partnerId string) (string, error) {
   var salesPartnerName string
-  query := "SELECT sales_partner_name FROM sales_partner_dbhub_schema WHERE partner_id = $1"
+  query := "SELECT sales_partner_name FROM sales_partner_dbhub_schema WHERE sales_partner_name = $1"
   data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{partnerId})
   if err != nil {
-    return "", fmt.Errorf("sales partner with id %s not found", partnerId)
+    return "", fmt.Errorf("sales partner with name %s not found", partnerId)
   }
   if len(data) == 0 {
     return "", fmt.Errorf("no user found for email %s", partnerId)
