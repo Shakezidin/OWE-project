@@ -60,7 +60,7 @@ const ImportUser: React.FC<createUserProps> = ({
         'designation',
         'role_name',
         'reporting_manager',
-        'partner_id',
+        'partner_name',
         'description',
       ],
       [
@@ -70,7 +70,7 @@ const ImportUser: React.FC<createUserProps> = ({
         'Sales Manager',
         'Sales Manager',
         'raman@example.com',
-        '32822',
+        'Partner Name',
         'sample description',
       ],
     ];
@@ -188,6 +188,8 @@ const ImportUser: React.FC<createUserProps> = ({
                 listStyleType: 'disc',
                 paddingLeft: '40px',
                 color: '#555',
+                maxHeight: "200px", // Limit height for scrolling
+                overflowY: "auto", // Scroll if too many errors
               }}>
                 {report.errors.map((error: string, index: number) => (
                   <li key={index} style={{ marginBottom: '8px' }}>
