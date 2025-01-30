@@ -175,7 +175,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		if !ok || UniqueId == "" {
 			UniqueId = ""
 			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		if val, ok := item["change_order_status"].(string); ok {
