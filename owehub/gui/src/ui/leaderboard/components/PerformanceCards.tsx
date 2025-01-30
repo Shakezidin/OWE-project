@@ -142,7 +142,8 @@ const PerformanceCards: React.FC<performance> = ({
                     <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div
-                    className="below-des"
+                    className="below-des mx-auto"
+                    style={{ gridColumn: activeHead === 'kw' ? '1/3' : '' }}
                   >
                     <p className="text-center">
                       {' '}
@@ -150,16 +151,18 @@ const PerformanceCards: React.FC<performance> = ({
                     </p>
                     <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
-                  <div
-                    className="below-des"
-                  // style={{ gridColumn: '1/3' }}
-                  >
-                    <p className="text-center">
-                      {' '}
-                      {formatSaleValue(rank2?.battery)}
-                    </p>
-                    <p>Battery ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                  </div>
+                  {activeHead !== 'kw' &&
+                    <div
+                      className="below-des"
+                    // style={{ gridColumn: '1/3' }}
+                    >
+                      <p className="text-center">
+                        {' '}
+                        {formatSaleValue(rank2?.battery)}
+                      </p>
+                      <p>Battery ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                    </div>
+                  }
 
                 </div>
               </div>
@@ -191,18 +194,21 @@ const PerformanceCards: React.FC<performance> = ({
                   </div>
                   <div
                     className="below-des mx-auto"
+                    style={{ gridColumn: activeHead === 'kw' ? '1/3' : '' }}
                   >
                     <p className="text-center">
                       {formatSaleValue(rank1?.install)}
                     </p>
                     <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
-                  <div className="below-des">
-                    <p style={{ textAlign: 'center' }}>
-                      {formatSaleValue(rank1?.battery) ?? 0}{' '}
-                    </p>
-                    <p>Battery ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                  </div>
+                  {activeHead !== 'kw' &&
+                    <div className="below-des">
+                      <p style={{ textAlign: 'center' }}>
+                        {formatSaleValue(rank1?.battery) ?? 0}{' '}
+                      </p>
+                      <p>Battery ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                    </div>
+                  }
                 </div>
               </div>
             ) : null}
@@ -233,6 +239,7 @@ const PerformanceCards: React.FC<performance> = ({
                   </div>
                   <div
                     className="below-des mx-auto"
+                    style={{ gridColumn: activeHead === 'kw' ? '1/3' : '' }}
                   >
                     <p className="text-center">
                       {formatSaleValue(rank3?.install)}
@@ -240,12 +247,14 @@ const PerformanceCards: React.FC<performance> = ({
 
                     <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
-                  <div className="below-des">
-                    <p style={{ textAlign: 'center' }}>
-                      {formatSaleValue(rank3?.battery) ?? 0}{' '}
-                    </p>
-                    <p>Battery ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                  </div>
+                  {activeHead !== 'kw' &&
+                    <div className="below-des">
+                      <p style={{ textAlign: 'center' }}>
+                        {formatSaleValue(rank3?.battery) ?? 0}{' '}
+                      </p>
+                      <p>Battery ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                    </div>
+                  }
                 </div>
               </div>
             ) : null}
