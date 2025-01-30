@@ -68,6 +68,7 @@ interface UserTableProos {
   isExportingData?: boolean;
   editData?: [];
   totalCount?: number;
+  
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -465,7 +466,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
     const exportData = await postCaller('get_users', {
       page_number: 1,
-      page_size: totalCount,
+   
+      filters: [
+        {
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        },
+      ],
     });
     if (exportData.status > 201) {
       toast.error(exportData.message);
