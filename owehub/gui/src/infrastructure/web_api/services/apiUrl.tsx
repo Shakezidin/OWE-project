@@ -70,7 +70,7 @@ export const postCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        if (error.response.status === 401 || error.response.status === 502) {
+        if (error.response.status === 401 ) {
           setTimeout(() => {
             logoutUser();
           }, 2000);
@@ -112,7 +112,7 @@ export const configPostCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        if (error.response.status === 401 || error.response.status === 502) {
+        if (error.response.status === 401 ) {
           setTimeout(() => {
             logoutUser();
           }, 2000);
@@ -150,7 +150,7 @@ export const reportingCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        if (error.response.status === 401 || error.response.status === 502) {
+        if (error.response.status === 401 ) {
           setTimeout(() => {
             logoutUser();
           }, 2000);
