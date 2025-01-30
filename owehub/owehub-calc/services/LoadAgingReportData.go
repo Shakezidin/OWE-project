@@ -83,55 +83,56 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	outData["unique_id"] = agngRpData.Unique_ID
 	outData["project_status"] = agngRpData.Project_Status
 	outData["customer_name"] = agngRpData.Customer
-	outData["System_Size"] = agngRpData.System_Size
 	outData["contract_date"] = agngRpData.Contract_Date
-	outData["site_survey_scheduled_date"] = agngRpData.Site_Survey_Scheduled_Date
-	outData["site_survey_completed_date"] = agngRpData.Site_Survey_Completed_Date
-	outData["ntp_working_date"] = agngRpData.NTP_Working_Date
 	outData["ntp_date"] = agngRpData.NTP_Date
-	outData["permit_created"] = agngRpData.Permit_Created
-	outData["permit_submitted_date"] = agngRpData.Permit_Submitted_Date
 	outData["permit_approved_date"] = agngRpData.Permit_Approved_Date
-	outData["ic_created_date"] = agngRpData.IC_Created_Date
-	outData["ic_submitted_date"] = agngRpData.IC_Submitted_Date
-	outData["ic_approved_date"] = agngRpData.IC_Approved_Date
-	outData["dealer_for_plecto"] = agngRpData.Dealer_For_Plecto
-	outData["permit_expected_approval_date"] = agngRpData.Permit_Expected_Approval_Date
-	outData["ic_expected_approval_date"] = agngRpData.IC_Expected_Approval_Date
-	outData["pv_install_created_date"] = agngRpData.PV_Install_Created_Date
 	outData["pv_install_completed_date"] = agngRpData.PV_Install_Completed_Date
-	outData["pto_created_date"] = agngRpData.PTO_Created_Date
-	outData["pto_submitted_date"] = agngRpData.PTO_Submitted_Date
 	outData["pto_date"] = agngRpData.PTO_Date
-	outData["plan_set_complete_day"] = agngRpData.Plan_Set_Complete_Day
-	outData["most_recent_plan_set_h"] = agngRpData.Most_Recent_Plan_Set_H
-	outData["peee_submitted_date"] = agngRpData.PE_EE_Submitted_Date
-	outData["peee_complete_date"] = agngRpData.PE_EE_Complete_Date
-	outData["fin_scheduled_date"] = agngRpData.FIN_Scheduled_Date
-	outData["fin_rescheduled_date"] = agngRpData.FIN_Rescheduled_Date
-	outData["fin_fail_date"] = agngRpData.FIN_Fail_Date
-	outData["fin_pass_date"] = agngRpData.FIN_Pass_Date
-	outData["install_scheduled_date"] = agngRpData.Install_Scheduled
-	outData["install_eta_date"] = agngRpData.Install_ETA
 	outData["install_complete"] = agngRpData.Install_Complete
 	outData["primary_sales_rep"] = agngRpData.Primary_Sales_Rep
-	outData["pre_post_install"] = agngRpData.Pre_Post_Install
-	outData["tier_one_status"] = agngRpData.Tier_One_Status
-	outData["what_tier_one"] = agngRpData.What_Tier_One
-	outData["when_tier_one"] = agngRpData.When_Tier_One
-	outData["how_tier_one"] = agngRpData.How_Tier_One
 	outData["project_age_days"] = agngRpData.Project_Age_Days
-	outData["solar_journey"] = agngRpData.Solar_Journey
+
+	// outData["System_Size"] = agngRpData.System_Size
+	// outData["site_survey_scheduled_date"] = agngRpData.Site_Survey_Scheduled_Date
+	// outData["site_survey_completed_date"] = agngRpData.Site_Survey_Completed_Date
+	// outData["ntp_working_date"] = agngRpData.NTP_Working_Date
+	// outData["permit_created"] = agngRpData.Permit_Created
+	// outData["permit_submitted_date"] = agngRpData.Permit_Submitted_Date
+	// outData["ic_created_date"] = agngRpData.IC_Created_Date
+	// outData["ic_submitted_date"] = agngRpData.IC_Submitted_Date
+	// outData["ic_approved_date"] = agngRpData.IC_Approved_Date
+	// outData["dealer_for_plecto"] = agngRpData.Dealer_For_Plecto
+	// outData["permit_expected_approval_date"] = agngRpData.Permit_Expected_Approval_Date
+	// outData["ic_expected_approval_date"] = agngRpData.IC_Expected_Approval_Date
+	// outData["pv_install_created_date"] = agngRpData.PV_Install_Created_Date
+	// outData["pto_created_date"] = agngRpData.PTO_Created_Date
+	// outData["pto_submitted_date"] = agngRpData.PTO_Submitted_Date
+	// outData["plan_set_complete_day"] = agngRpData.Plan_Set_Complete_Day
+	// outData["most_recent_plan_set_h"] = agngRpData.Most_Recent_Plan_Set_H
+	// outData["peee_submitted_date"] = agngRpData.PE_EE_Submitted_Date
+	// outData["peee_complete_date"] = agngRpData.PE_EE_Complete_Date
+	// outData["fin_scheduled_date"] = agngRpData.FIN_Scheduled_Date
+	// outData["fin_rescheduled_date"] = agngRpData.FIN_Rescheduled_Date
+	// outData["fin_fail_date"] = agngRpData.FIN_Fail_Date
+	// outData["fin_pass_date"] = agngRpData.FIN_Pass_Date
+	// outData["install_scheduled_date"] = agngRpData.Install_Scheduled
+	// outData["install_eta_date"] = agngRpData.Install_ETA
+	// outData["pre_post_install"] = agngRpData.Pre_Post_Install
+	// outData["tier_one_status"] = agngRpData.Tier_One_Status
+	// outData["what_tier_one"] = agngRpData.What_Tier_One
+	// outData["when_tier_one"] = agngRpData.When_Tier_One
+	// outData["how_tier_one"] = agngRpData.How_Tier_One
+	// outData["solar_journey"] = agngRpData.Solar_Journey
 
 	outData["days_pending_ntp"] = calculateDaysPendingNTP()
 
-	outData["days_pending_permits"] = calculateDaysPendingPermit(formatDate(agngRpData.Permit_Approved_Date), formatDate(agngRpData.NTP_Date), agngRpData.Project_Status)
+	outData["days_pending_permits"] = calculateDaysPendingPermit(agngRpData.Permit_Approved_Date, agngRpData.NTP_Date, agngRpData.Project_Status)
 
-	outData["days_pending_install"] = calculateDaysPendingInstall(formatDate(agngRpData.Install_Complete), formatDate(agngRpData.Permit_Approved_Date), agngRpData.Project_Status)
+	outData["days_pending_install"] = calculateDaysPendingInstall(agngRpData.Install_Complete, agngRpData.Permit_Approved_Date, agngRpData.Project_Status)
 
-	outData["days_pending_pto"] = calculateDaysPendingPTO(formatDate(agngRpData.PTO_Date), formatDate(agngRpData.PV_Install_Completed_Date), agngRpData.Project_Status)
+	outData["days_pending_pto"] = calculateDaysPendingPTO(agngRpData.PTO_Date, agngRpData.PV_Install_Completed_Date, agngRpData.Project_Status)
 
-	outData["project_age"] = calculateProjectAge(agngRpData.Unique_ID, formatDate(agngRpData.Contract_Date))
+	outData["project_age"] = calculateProjectAge(agngRpData.Unique_ID, agngRpData.Contract_Date)
 
 	return outData, err
 }
@@ -141,75 +142,67 @@ func calculateDaysPendingNTP() int {
 	return 0
 }
 
-func calculateDaysPendingPermit(permitApprovedDate string, NTPDate string, projectStatus string) int {
-
-	var daysPendingPermit int
+func calculateDaysPendingPermit(permitDate time.Time, ntpDate time.Time, projectStatus string) int {
 	today := time.Now()
 
-	if permitApprovedDate != "0001-01-01" && NTPDate != "0001-01-01" {
-		daysPendingPermit = int(parseTime(permitApprovedDate).Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days
-	} else if projectStatus == "ACTIVE" && NTPDate != "0001-01-01" {
-		daysPendingPermit = int(today.Sub(*parseTime(NTPDate)).Abs().Hours() / 24) // Calculate days from today
+	// Calculate days
+	var daysPendingPermit int
+	if !permitDate.IsZero() && !ntpDate.IsZero() {
+		days := int(permitDate.Sub(ntpDate).Abs().Hours() / 24)
+		daysPendingPermit = days
+	} else if projectStatus == "ACTIVE" && !ntpDate.IsZero() {
+		days := int(today.Sub(ntpDate).Abs().Hours() / 24)
+		daysPendingPermit = days
 	} else {
-		daysPendingPermit = 0
+		daysPendingPermit = 0 // Represents an empty result
 	}
 
 	return daysPendingPermit
 }
 
-func calculateDaysPendingInstall(installComplete string, permitApprovedDate string, projectStatus string) int {
+func calculateDaysPendingInstall(installDate time.Time, permitDate time.Time, projectStatus string) int {
 
-	var daysPendingInstall int
-	today := time.Now()
-
-	permitDate := parseTime(permitApprovedDate)
-	if permitDate == nil {
-		fmt.Println("Error: Unable to parse permit approved date.")
-		return 0
+	// If installComplete is not empty, calculate the difference between installComplete and permitApprovedDate
+	if !installDate.IsZero() && !permitDate.IsZero() {
+		// Pass the Duration directly to absDuration
+		return int(installDate.Sub(permitDate).Abs().Hours() / 24)
 	}
 
-	if installComplete != "0001-01-01" && permitApprovedDate != "0001-01-01" {
-
-		installDate := parseTime(installComplete)
-		if installDate == nil {
-			fmt.Println("Error: Unable to parse install complete date.")
-			return 0
-		}
-
-		daysPendingInstall = int(absDuration(installDate.Sub(*permitDate).Hours()) / 24)
-
-	} else if projectStatus == "ACTIVE" && permitApprovedDate != "0001-01-01" {
-		// Calculate the days difference from today if installComplete is empty
-		daysPendingInstall = int(absDuration(today.Sub(*permitDate).Hours()) / 24)
-	} else {
-		daysPendingInstall = 0
+	// If projectStatus is "ACTIVE", calculate the difference between today and permitApprovedDate
+	if projectStatus == "ACTIVE" && !permitDate.IsZero() {
+		today := time.Now()
+		// Pass the Duration directly to absDuration
+		return int(today.Sub(permitDate).Abs().Hours() / 24)
 	}
-	return daysPendingInstall
+
+	// If neither condition is met, return 0
+	return 0
 }
 
-func calculateDaysPendingPTO(ptoDate string, pvInstallCompleteDate string, projectStatus string) int {
-
+func calculateDaysPendingPTO(ptoDate time.Time, pvInstallCompleteDate time.Time, projectStatus string) int {
 	var daysPendingPto int
 	today := time.Now()
 
-	if ptoDate != "0001-01-01" && pvInstallCompleteDate != "0001-01-01" {
-		daysPendingPto = int(parseTime(ptoDate).Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days
-	} else if projectStatus == "ACTIVE" && pvInstallCompleteDate != "0001-01-01" {
-		daysPendingPto = int(today.Sub(*parseTime(pvInstallCompleteDate)).Abs().Hours() / 24) // Calculate days from today
+	// Check if both ptoDate and pvInstallCompleteDate are not empty
+	if !ptoDate.IsZero() && !pvInstallCompleteDate.IsZero() {
+		daysPendingPto = int(ptoDate.Sub(pvInstallCompleteDate).Abs().Hours() / 24) // Calculate days between ptoDate and pvInstallCompleteDate
+	} else if projectStatus == "ACTIVE" && !pvInstallCompleteDate.IsZero() {
+		daysPendingPto = int(today.Sub(pvInstallCompleteDate).Abs().Hours() / 24) // Calculate days from today to pvInstallCompleteDate
 	} else {
+		// If neither condition is met, return 0
 		daysPendingPto = 0
 	}
 
 	return daysPendingPto
 }
 
-func calculateProjectAge(uniqueId string, contractDate string) int {
+func calculateProjectAge(uniqueId string, contractDate time.Time) int {
 
 	var projectAge int
 	today := time.Now()
 
-	if uniqueId != "" && contractDate != "0001-01-01" {
-		projectAge = int(today.Sub(*parseTime(contractDate)).Abs().Hours() / 24) // Calculate days from today
+	if uniqueId != "" && contractDate.IsZero() {
+		projectAge = int(today.Sub(contractDate).Abs().Hours() / 24) // Calculate days from today
 	} else {
 		projectAge = 0
 	}
@@ -217,14 +210,12 @@ func calculateProjectAge(uniqueId string, contractDate string) int {
 	return projectAge
 }
 
-func parseTime(dateStr string) *time.Time {
-	const layout = "2006-01-02"
-	t, err := time.Parse(layout, dateStr)
-	if err != nil {
-		log.FuncErrorTrace(0, "Error parsing date: %v", err)
-		return nil
+// Helper function to get the absolute value of a duration
+func absDuration(d time.Duration) time.Duration {
+	if d < 0 {
+		return -d
 	}
-	return &t
+	return d
 }
 
 func ClearAgingRp() error {
@@ -239,15 +230,9 @@ func ClearAgingRp() error {
 	}
 	return nil
 }
+
 func formatDate(t time.Time) string {
 	return t.Format("2006-01-02")
-}
-
-func absDuration(hours float64) float64 {
-	if hours < 0 {
-		return -hours
-	}
-	return hours
 }
 
 func DeleteFromAgRp(uniqueIDs []string) error {

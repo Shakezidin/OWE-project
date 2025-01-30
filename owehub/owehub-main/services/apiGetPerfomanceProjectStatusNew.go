@@ -188,6 +188,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
 	}
 	RecordCount = int64(len(data))
+	if len(data) <= 0 {
+		appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
+		return
+	}
 	paginateData := PaginateData(data, dataReq)
 	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
 	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
