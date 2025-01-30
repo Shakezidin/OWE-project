@@ -93,7 +93,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, false)
-		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive) , string(types.RoleProjectManager):
 			dealerNames, err := FetchDealerForAmAeProjectList(dataReq, role)
 			if err != nil {
 				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -382,10 +382,10 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 
 /******************************************************************************
 * FUNCTION:		FetchDealerForAmAe
-* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE) or Project Manager (PM)
 *               based on the email provided in the request.
 * INPUT:		dataReq - contains the request details including email.
-*               role    - role of the user (Account Manager or Account Executive).
+*               role    - role of the user (Account Manager or Account Executive or Project Manager).
 * RETURNS:		[]string - list of sales partner names.
 *               error   - if any error occurs during the process.
 ******************************************************************************/
@@ -397,16 +397,20 @@ func FetchDealerForAmAeProjectList(dataReq models.ProjectStatusReq, userRole int
 
 	accountName, err := fetchAmAeName(dataReq.Email)
 	if err != nil {
-		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
-		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive/Project Manager; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive /project manager; err: %v", err)
 	}
 
 	var roleBase string
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
 		roleBase = "account_manager"
-	} else {
+	}
+	if role == "Account Executive" {
 		roleBase = "account_executive"
+	}
+	if role == "Project Manager" {
+		roleBase = "project_manager"
 	}
 
 	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)

@@ -100,7 +100,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       Name:              getValue(headers, record, "name"),
       EmailId:           getValue(headers, record, "email_id"),
       MobileNumber:      getValue(headers, record, "mobile_number"),
-      Designation:       getValue(headers, record, "designation"),
+      Designation:       "",
       Description:       getValue(headers, record, "description"),
       RoleName:          getValue(headers, record, "role_name"),
       Password:          "Welcome@123",
@@ -246,15 +246,13 @@ func isValidUser(user CreateBulkUserReq) bool {
   valid := len(user.Name) > 0 &&
     len(user.EmailId) > 0 &&
     len(user.MobileNumber) > 0 &&
-    len(user.Designation) > 0 &&
     len(user.RoleName) > 0
 
   if !valid {
-    log.FuncErrorTrace(0, "invalid user data: Name=%s, Email=%s, Mobile=%s, Designation=%s, Role=%s",
+    log.FuncErrorTrace(0, "invalid user data: Name=%s, Email=%s, Mobile=%s, Role=%s",
       user.Name,
       user.EmailId,
       user.MobileNumber,
-      user.Designation,
       user.RoleName)
   }
 

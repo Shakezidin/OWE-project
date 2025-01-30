@@ -92,6 +92,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
 		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
+		dataReq.Role == string(types.RoleProjectManager) ||
 		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		if len(dataReq.DealerName) == 0 {
 			LeaderBoardList.TopLeaderBoardList = []models.GetLeaderBoard{}
@@ -105,6 +106,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) &&
 		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
+		dataReq.Role != string(types.RoleProjectManager) &&
 		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
