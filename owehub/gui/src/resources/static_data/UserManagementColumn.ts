@@ -195,18 +195,13 @@ export const UserRegionalTableColumn: Column[] = [
 export const UserSaleMangerTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  {
-    name: 'dealer_owner',
-    displayName: 'Dealer',
-    type: 'string',
-    isCheckbox: false,
-  },
-  {
-    name: 'reporting_manager',
-    displayName: 'Repoting To',
-    type: 'string',
-    isCheckbox: false,
-  },
+  // {
+  //   name: 'dealer_owner',
+  //   displayName: 'Dealer',
+  //   type: 'string',
+  //   isCheckbox: false,
+  // },
+  
   {
     name: 'email_id',
     displayName: 'Email ID',

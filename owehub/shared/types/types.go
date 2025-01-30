@@ -69,15 +69,18 @@ var (
 			RoleDbUser,
 			RoleAccountExecutive,
 			RoleAccountManager,
+			RoleProjectManager,
 		}, GroupAdminAccounts: {
 			RoleAdmin,
 			RoleAccountManager,
 			RoleAccountExecutive,
+			RoleProjectManager,
 		}, GroupAdminDealerAccounts: {
 			RoleAdmin,
 			RoleDealerOwner,
 			RoleAccountManager,
 			RoleAccountExecutive,
+			RoleProjectManager,
 		},
 	}
 )
@@ -95,6 +98,7 @@ const (
 	RoleDbUser           UserRoles = "DB User"
 	RoleAccountManager   UserRoles = "Account Manager"
 	RoleAccountExecutive UserRoles = "Account Executive"
+	RoleProjectManager   UserRoles = "Project Manager"
 )
 
 var (

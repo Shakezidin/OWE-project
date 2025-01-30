@@ -68,6 +68,7 @@ const SideContainer: React.FC = () => {
         />
       </div>
       </div>
+      <div className={styles.wrapperBox}>
       <div className={styles.dataBoxWrapper}>
       {sortedData.map((data, index) => (
         <div key={index} className={styles.dataBox}>
@@ -76,6 +77,7 @@ const SideContainer: React.FC = () => {
           <p className={styles.content_three}>{data.address}</p>
         </div>
       ))}
+      </div>
       </div>
     </div>
   );

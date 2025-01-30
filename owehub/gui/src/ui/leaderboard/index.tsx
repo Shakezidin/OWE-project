@@ -268,11 +268,14 @@ const Index = () => {
       { header: 'Sale', dataKey: 'sale' },
       { header: 'NTP', dataKey: 'ntp' },
       { header: 'Install', dataKey: 'install' },
-      { header: 'Battery', dataKey: 'battery' },
+      
       { header: 'Cancel', dataKey: 'cancel' },
     ];
     if (showPartner) {
       columns.splice(2, 0, { header: 'Partner', dataKey: 'dealer' });
+    }
+    if (activeHead !== 'kw') {
+      columns.splice(5, 0, { header: 'Battery', dataKey: 'battery' });
     }
     // @ts-ignore
     doc.autoTable({

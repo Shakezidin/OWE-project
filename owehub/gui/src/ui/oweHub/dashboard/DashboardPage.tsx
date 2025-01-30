@@ -197,10 +197,12 @@ export const DashboardPage: React.FC = () => {
       if (!str) return '';
       return str.replace(/<\/?[^>]+(>|$)/g, '');
     };
+    const partnerNames = selectedDealer.map((dealer) => dealer.value); 
     setIsExporting(true);
     const exportData = await configPostCaller('get_dealerpaycommissions', {
       page_number: 1,
       paginate: false,
+      partner_name: partnerNames
     });
     if (exportData.status > 201) {
       toast.error(exportData.message);

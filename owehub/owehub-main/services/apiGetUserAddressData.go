@@ -94,7 +94,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			filter, whereEleList = PrepareAdminDlrAddressFilters(tableName, dataReq, false, false)
 		case string(types.RoleDealerOwner):
 			filter, whereEleList = PrepareAdminDlrAddressFilters(tableName, dataReq, false, false)
-		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive) , string(types.RoleProjectManager) :
 			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
 			if err != nil {
 				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -152,7 +152,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 
 	query = `SELECT cs.unique_id, cs.address, cs.customer_name as home_owner, cs.project_status, cs.address_lat, cs.address_lng, cs.state
 			FROM  customers_customers_schema cs
-			LEFT JOIN ntp_ntp_schema ns ON cs.unique_id = ns.unique_id 
+			LEFT JOIN ntp_ntp_schema ns ON cs.unique_id = ns.unique_id
 			LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id`
 
 	if filter != "" {
@@ -614,15 +614,15 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 	return filters, whereEleList
 }
 
-/******************************************************************************
+/*************************************************************************************************
 * FUNCTION:		FetchProjectStatusDealerForAmAe
-* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE) or Project Manager (PM)
 *               based on the email provided in the request.
 * INPUT:		dataReq - contains the request details including email.
-*               role    - role of the user (Account Manager or Account Executive).
+*               role    - role of the user (Account Manager or Account Executive or Project Manager).
 * RETURNS:		[]string - list of sales partner names.
 *               error   - if any error occurs during the process.
-******************************************************************************/
+*************************************************************************************************/
 func FetchProjectDealerForAmAndAe(Email string, userRole interface{}) ([]string, error) {
 	log.EnterFn(0, "FetchProjectDealerAddressForAmAe")
 	defer func() { log.ExitFn(0, "FetchProjectDealerAddressForAmAe", nil) }()
@@ -631,16 +631,21 @@ func FetchProjectDealerForAmAndAe(Email string, userRole interface{}) ([]string,
 
 	accountName, err := fetchAmAeName(Email)
 	if err != nil {
-		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
-		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive/Project Manager; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive / project manager; err: %v", err)
 	}
 
 	var roleBase string
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
 		roleBase = "account_manager"
-	} else {
+	}
+	if role == "Account Executive" {
 		roleBase = "account_executive"
+	}
+
+	if role == "Project Manager" {
+		roleBase = "project_manager"
 	}
 
 	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)

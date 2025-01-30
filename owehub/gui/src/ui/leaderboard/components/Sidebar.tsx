@@ -131,7 +131,7 @@ const Sidebar = ({
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
-     // If the number is an integer, return it as a string without .00
+    // If the number is an integer, return it as a string without .00
     if (sale % 1 === 0) return sale.toString();
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
@@ -258,24 +258,25 @@ const Sidebar = ({
                     </span>
                   </div>
                 </div>
-
-                <div>
-                  <div className="icon">
-                    <BatteryIcon />
-                  </div>
+                {unit !== 'kw' &&
                   <div>
-                    <span className="stats-labels">Total Batteries</span>
-                    <span
-                      style={{ fontSize: 21, fontWeight: 700 }}
-                      className="block"
-                    >
-                      {formatSaleValue(dealer.battery)}
-                      <span className="unit">
-                        ({unit === 'kw' ? 'kW' : 'count'})
+                    <div className="icon">
+                      <BatteryIcon />
+                    </div>
+                    <div>
+                      <span className="stats-labels">Total Batteries</span>
+                      <span
+                        style={{ fontSize: 21, fontWeight: 700 }}
+                        className="block"
+                      >
+                        {formatSaleValue(dealer.battery)}
+                        <span className="unit">
+                          ({unit === 'kw' ? 'kW' : 'count'})
+                        </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
+                }
               </div>
               <div className="px2">
                 <div className="grey-weekly-stats justify-center flex items-center">

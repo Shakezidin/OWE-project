@@ -31,28 +31,28 @@ DECLARE
     v_user_id INT;
 BEGIN
 
-    
+
     SELECT user_id INTO v_user_id
     FROM user_details
     WHERE email_id = p_authenticated_email_id;
 
-    
+
     IF NOT FOUND THEN
         RAISE EXCEPTION 'User with email_id % not found', p_authenticated_email_id;
     END IF;
 
-    
+
     UPDATE leads_info
     SET
         aurora_proposal_link = p_aurora_proposal_link,
         aurora_proposal_id = p_aurora_proposal_id,
-        aurora_proposal_status = 'Created',  
+        aurora_proposal_status = 'Created',
         last_updated_by = v_user_id,
         updated_at = CURRENT_TIMESTAMP,
         proposal_created_date = CURRENT_TIMESTAMP,
         aurora_proposal_updated_at = CURRENT_TIMESTAMP
     WHERE leads_id = p_leads_id;
-    
+
     RETURN 0;
 
 END;
@@ -83,13 +83,13 @@ DECLARE
     v_dealer_id VARCHAR;
     v_user_role VARCHAR;
 BEGIN
-    SELECT 
-        user_details.user_id, user_details.name, user_details.partner_id, user_roles.role_name 
+    SELECT
+        user_details.user_id, user_details.name, user_details.partner_id, user_roles.role_name
         INTO v_user_id, v_user_name, v_dealer_id, v_user_role
     FROM user_details
     INNER JOIN user_roles ON user_details.role_id = user_roles.role_id
     WHERE user_details.email_id = p_email_id;
-    
+
     IF NOT FOUND THEN
         RAISE EXCEPTION 'User with email_id % not found', p_email_id;
     END IF;
@@ -97,31 +97,32 @@ BEGIN
     -- Admin role check
     IF v_user_role = 'Admin' THEN
         RETURN QUERY
-            SELECT user_details.user_id, user_details.name, user_roles.role_name 
+            SELECT user_details.user_id, user_details.name, user_roles.role_name
             FROM user_details
-            INNER JOIN user_roles 
+            INNER JOIN user_roles
                 ON user_details.role_id = user_roles.role_id
                 AND user_roles.role_name = ANY (p_roles);
 
-    -- Account Executive or Account Manager check
-    ELSIF v_user_role IN ('Account Executive', 'Account Manager') THEN
+    -- Account Executive or Account Manager or Project Manager check
+    ELSIF v_user_role IN ('Account Executive', 'Account Manager' , 'Project Manager') THEN
         RETURN QUERY
-            SELECT user_details.user_id, user_details.name, user_roles.role_name 
+            SELECT user_details.user_id, user_details.name, user_roles.role_name
             FROM user_details
-            INNER JOIN sales_partner_dbhub_schema 
+            INNER JOIN sales_partner_dbhub_schema
                 ON user_details.partner_id = sales_partner_dbhub_schema.partner_id
-            INNER JOIN user_roles 
+            INNER JOIN user_roles
                 ON user_details.role_id = user_roles.role_id
                 AND user_roles.role_name = ANY (p_roles)
             WHERE (v_user_role = 'Account Executive' AND sales_partner_dbhub_schema.account_executive = v_user_name)
-               OR (v_user_role = 'Account Manager' AND sales_partner_dbhub_schema.account_manager = v_user_name);
+               OR (v_user_role = 'Account Manager' AND sales_partner_dbhub_schema.account_manager = v_user_name)
+               OR (v_user_role = 'Project Manager' AND sales_partner_dbhub_schema.project_manager = v_user_name);
 
     -- Dealer Owner and Sub Dealer Owner check
     ELSIF v_user_role IN ('Dealer Owner', 'SubDealer Owner') THEN
         RETURN QUERY
-            SELECT user_details.user_id, user_details.name, user_roles.role_name 
+            SELECT user_details.user_id, user_details.name, user_roles.role_name
             FROM user_details
-            INNER JOIN user_roles 
+            INNER JOIN user_roles
                 ON user_details.role_id = user_roles.role_id
                 AND user_roles.role_name = ANY (p_roles)
             WHERE user_details.partner_id = v_dealer_id;
@@ -135,26 +136,25 @@ BEGIN
                 WHERE user_details.user_id = v_user_id
                 UNION
                 SELECT user_details.user_id
-                FROM user_details  
-                INNER JOIN hierarchy ON hierarchy.user_id = user_details.reporting_manager 
+                FROM user_details
+                INNER JOIN hierarchy ON hierarchy.user_id = user_details.reporting_manager
             )
-            SELECT user_details.user_id, user_details.name, user_roles.role_name 
+            SELECT user_details.user_id, user_details.name, user_roles.role_name
             FROM user_details
             INNER JOIN hierarchy ON hierarchy.user_id = user_details.user_id
-            INNER JOIN user_roles 
+            INNER JOIN user_roles
                 ON user_details.role_id = user_roles.role_id
                 AND user_roles.role_name = ANY (p_roles);
 
     -- Sales Rep, Finance Admin, and Appointment Setter check
     ELSIF v_user_role IN ('Sale Representative', 'Finance Admin', 'Appointment Setter') THEN
         RETURN QUERY
-            SELECT user_details.user_id, user_details.name, user_roles.role_name 
+            SELECT user_details.user_id, user_details.name, user_roles.role_name
             FROM user_details
-            INNER JOIN user_roles 
+            INNER JOIN user_roles
                 ON user_details.role_id = user_roles.role_id
                 AND user_roles.role_name = ANY (p_roles)
             WHERE user_details.user_id = v_user_id;
     END IF;
 END;
 $$ LANGUAGE plpgsql;
-
