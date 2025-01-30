@@ -71,7 +71,7 @@ import DatTool from './ui/DatTool/DatTool';
 
 function App() {
   // Add console log suppression at the start of App component
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production') {
     console.log = () => {};
     console.error = () => {};
     console.warn = () => {};

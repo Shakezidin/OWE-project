@@ -305,3 +305,10 @@
   width: 100%;
   z-index: 1001;
 }
+
+
+@media screen and (max-width: 767px) {
+  .add-delete-report .iconSection2-mobile button {
+    position: unset;
+  }
+}
