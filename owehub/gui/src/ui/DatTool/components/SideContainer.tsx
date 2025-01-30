@@ -12,7 +12,7 @@ const SideContainer: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
 
-  // Sample data - you can replace it with your actual data source
+  // Sample data
   const dataList: Data[] = [
     { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
     { name: 'GreenTech Innovations', projectID: 'OUR 13669', address: '23 Green Valley, Nashville, TN 37080, United States' },
@@ -26,7 +26,6 @@ const SideContainer: React.FC = () => {
     { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
     { name: 'GreenTech Innovations', projectID: 'OUR 13669', address: '23 Green Valley, Nashville, TN 37080, United States' },
     { name: 'Bright Future Academy', projectID: 'OUR 13670', address: '45 Future Blvd, Hermitage, TN 37076, United States' },
-    // Add more data here
   ];
 
   // Handle search by projectID
@@ -53,6 +52,7 @@ const SideContainer: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.headerWrapper}>
       <div className={styles.heading}>
         <div className={styles.headingName}>Project List</div>
         <div onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
@@ -67,6 +67,8 @@ const SideContainer: React.FC = () => {
           onChange={handleSearchChange}
         />
       </div>
+      </div>
+      <div className={styles.dataBoxWrapper}>
       {sortedData.map((data, index) => (
         <div key={index} className={styles.dataBox}>
           <p className={styles.content_one}>{data.name}</p>
@@ -74,6 +76,7 @@ const SideContainer: React.FC = () => {
           <p className={styles.content_three}>{data.address}</p>
         </div>
       ))}
+      </div>
     </div>
   );
 };

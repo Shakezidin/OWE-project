@@ -1,0 +1,114 @@
+.card {
+  background-color: white;
+  border-radius: 28px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.editButton,
+.saveButton,
+.cancelButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.editButton {
+  background-color: #f3f4f6;
+}
+
+.saveButton {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 10px;
+  margin-bottom: 5px;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.subLabel {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.input {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 24px;
+  font-size: 12px;
+  background-color: #f5f5fd;
+  color: #1f2937;
+}
+
+.disabledInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  background-color: transparent;
+  color: #1f2937;
+}
+
+.value {
+  font-size: 12px;
+  font-weight: 550;
+  color: #1f2937;
+}
+
+.mpptGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 15px;
+}
+
+.mpptField {
+  margin-bottom: 10px;
+}
+
+.mpptInputs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}

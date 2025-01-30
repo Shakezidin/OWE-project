@@ -7,6 +7,8 @@ import DisplaySelect from '../components/DisplaySelect';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
+import CustomInput from '../components/Input';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 type Option = {
   value: string | number;
@@ -108,20 +110,37 @@ const StructuralPage: React.FC = () => {
     key: string,
     label: string,
     defaultValue: string,
-    isEditable: boolean
+    isEditable: boolean,
+    type: 'select' | 'input' = 'select'
   ) => {
+    // Get the current value from either temp (when editing) or selected values
+    const currentValue = isEditable
+      ? tempSelectedValues[key] !== undefined
+        ? tempSelectedValues[key]
+        : selectedValues[key] || defaultValue
+      : selectedValues[key] || defaultValue;
+
+    if (type === 'input') {
+      return isEditable ? (
+        <CustomInput
+          label={label}
+          value={String(currentValue)}
+          onChange={(value) => handleSelectChange(key, value)}
+        />
+      ) : (
+        <DisplaySelect label={label} value={currentValue} />
+      );
+    }
+
     return isEditable ? (
       <Select
         label={label}
         options={options}
-        value={selectedValues[key] || defaultValue}
+        value={currentValue}
         onChange={(value) => handleSelectChange(key, value)}
       />
     ) : (
-      <DisplaySelect
-        label={label}
-        value={selectedValues[key] || defaultValue}
-      />
+      <DisplaySelect label={label} value={currentValue} />
     );
   };
 
@@ -132,6 +151,29 @@ const StructuralPage: React.FC = () => {
     setStructuralInfoStates([...structuralInfoStates, newState]);
     setActiveStructuralState(newState);
     setEditStructuralInfo(true);
+  };
+
+  const handleDeleteState = (stateToDelete: string) => {
+    // Don't allow deletion if it's the only state
+    if (structuralInfoStates.length <= 1) return;
+
+    // Filter out the state to delete
+    const updatedStates = structuralInfoStates.filter(
+      (state) => state !== stateToDelete
+    );
+
+    // Update states array
+    setStructuralInfoStates(updatedStates);
+
+    // If the active state was deleted, set the active state to the last state in the array
+    if (activeStructuralState === stateToDelete) {
+      setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+    }
+
+    // Reset edit mode if it was active
+    if (editStructuralInfo) {
+      toggleEditStructuralInfo(false);
+    }
   };
   return (
     <div>
@@ -161,30 +203,51 @@ const StructuralPage: React.FC = () => {
                   <p>Structural Info</p>
                 </div>
                 <div className={styles.headingIcon}>
-                  {structuralInfoStates.map((state, index) => (
-                    <div
-                      key={index}
-                      className={` ${
-                        activeStructuralState === state
-                          ? styles.activeState
-                          : styles.wordContainer
-                      }`}
-                      onClick={() => setActiveStructuralState(state)}
-                    >
-                      {state}
-                    </div>
-                  ))}
-                  <div className={styles.iconContainer}>
-                    {editStructuralInfo ? (
-                      <HiMiniXMark
-                        onClick={() => toggleEditStructuralInfo(false)}
-                      />
-                    ) : (
-                      <IoMdAdd onClick={addNewStructuralState} />
-                    )}
-                  </div>
+                  {structuralInfoStates.map((state, index) =>
+                    (editStructuralInfo && activeStructuralState === state) ||
+                    !editStructuralInfo ? (
+                      <div
+                        key={index}
+                        className={`${
+                          activeStructuralState === state
+                            ? styles.activeState
+                            : styles.wordContainer
+                        }`}
+                        onClick={() => setActiveStructuralState(state)}
+                      >
+                        {state}
+                      </div>
+                    ) : null
+                  )}
+
                   <div
-                    className={` ${
+                    className={styles.iconContainer}
+                    onClick={() => {
+                      if (editStructuralInfo) {
+                        // When clicking HiMiniXMark, remove the last state if it was just added
+                        if (
+                          activeStructuralState ===
+                          structuralInfoStates[structuralInfoStates.length - 1]
+                        ) {
+                          // Remove the last state
+                          const newStates = structuralInfoStates.slice(0, -1);
+                          setStructuralInfoStates(newStates);
+                          // Set active state to the previous state
+                          setActiveStructuralState(
+                            newStates[newStates.length - 1]
+                          );
+                        }
+                        toggleEditStructuralInfo(false);
+                      } else {
+                        addNewStructuralState();
+                      }
+                    }}
+                  >
+                    {editStructuralInfo ? <HiMiniXMark /> : <IoMdAdd />}
+                  </div>
+
+                  <div
+                    className={`${
                       editStructuralInfo ? styles.active : styles.iconContainer
                     }`}
                     onClick={() =>
@@ -196,6 +259,16 @@ const StructuralPage: React.FC = () => {
                   >
                     {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
                   </div>
+
+                  {activeStructuralState !==
+                    structuralInfoStates[structuralInfoStates.length - 1] && (
+                    <div
+                      className={styles.iconContainer}
+                      onClick={() => handleDeleteState(activeStructuralState)}
+                    >
+                      <RiDeleteBin6Line />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -360,10 +433,11 @@ const StructuralPage: React.FC = () => {
                   <p>Attachment</p>
                   <div className={styles.buttonContainer}>
                     {editAttachment ? (
-                      <div className={styles.iconContainer}>
-                        <HiMiniXMark
-                          onClick={() => toggleEditAttachment(false)}
-                        />
+                      <div
+                        onClick={() => toggleEditAttachment(false)}
+                        className={styles.iconContainer}
+                      >
+                        <HiMiniXMark />
                       </div>
                     ) : null}
                     <div
@@ -391,19 +465,22 @@ const StructuralPage: React.FC = () => {
                       'attachmentType',
                       'Type',
                       '--',
-                      editAttachment
+                      editAttachment,
+                      'input' // Specify input type
                     )}
                     {renderComponent(
                       'attachmentPattern',
                       'Pattern',
                       '---',
-                      editAttachment
+                      editAttachment,
+                      'input' // Specify input type
                     )}
                     {renderComponent(
                       'attachmentQuantity',
                       'Quantity',
                       '12',
-                      editAttachment
+                      editAttachment,
+                      'input' // Specify input type
                     )}
                     {renderComponent(
                       'attachmentSpacing',
@@ -444,7 +521,13 @@ const StructuralPage: React.FC = () => {
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('rackingType', 'Type', '--', editRacking)}
+                    {renderComponent(
+                      'rackingType',
+                      'Type',
+                      '--',
+                      editRacking,
+                      'input'
+                    )}
                     {renderComponent(
                       'rackingMount',
                       'Mount',
@@ -457,7 +540,8 @@ const StructuralPage: React.FC = () => {
                       'tiltInfo',
                       'Tilt Info',
                       'module',
-                      editRacking
+                      editRacking,
+                      'input'
                     )}
                     {renderComponent(
                       'maxRailCantilever',
@@ -506,13 +590,15 @@ const StructuralPage: React.FC = () => {
                       'roofFramingType',
                       'Framing Type',
                       '--',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                     {renderComponent(
                       'roofSize',
                       'Size',
                       '---',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
@@ -520,13 +606,15 @@ const StructuralPage: React.FC = () => {
                       'roofSpacing',
                       'Spacing',
                       '---',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                     {renderComponent(
                       'roofSheathingType',
                       'Sheathing type',
                       '--',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
@@ -534,13 +622,15 @@ const StructuralPage: React.FC = () => {
                       'roofMaterial',
                       'Roof Material',
                       '---',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                     {renderComponent(
                       'structuralUpgrades',
                       'Structural upgrades',
                       '--',
-                      editRoofStructure
+                      editRoofStructure,
+                      'input'
                     )}
                   </div>
                 </div>

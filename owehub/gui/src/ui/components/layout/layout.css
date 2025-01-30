@@ -1176,3 +1176,18 @@
   color: #377cf6;
   transform: scale(1.2);
 }
+
+
+.laydbDownLabel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* background-color: rgba(0, 0, 0, 0.7); */
+  color: black;
+  text-align: center;
+  font-size:small;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  overflow: hidden;
+}

@@ -9,6 +9,38 @@
   display: flex;
   justify-content: center;
 }
+ 
+
+.dbDownLabel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  font-size:small;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dbDownLabelText {
+  display: inline-block;
+  animation: moveText 20s linear infinite;
+  white-space: nowrap;
+  padding-left: 100%;
+}
+
+@keyframes moveText {
+  100% {
+    transform: translateX(0);
+  }
+  0% {
+    transform: translateX(-100%);
+  }
+}
+
 
 .container {
   width: 100%;

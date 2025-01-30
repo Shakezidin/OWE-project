@@ -27,6 +27,7 @@ interface InputFieldProps {
   value: string;
   type?: string;
   isEditing: boolean;
+  className?: string;
 }
  
 const InputField: React.FC<InputFieldProps> = ({
@@ -34,6 +35,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   type = 'text',
   isEditing,
+  className,
 }) => (
   <div>
     <label>{label}</label>
@@ -127,6 +129,7 @@ const GeneralPage: React.FC = () => {
     { label: 'Site Capture URL', value: '---', type: 'url' },
     { label: 'Change Order Required', value: '--' },
   ];
+  console.log(isDatEditing,"fffff");
  
   return (
     <div className={styles.genMain}>
@@ -295,7 +298,8 @@ const GeneralPage: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className={styles.editUser} onClick={handleDatEdit}>
+                
+                <div className={`${styles.editUser} ${isDatEditing ? styles.active : ''}`} onClick={handleDatEdit}>
                   <AiOutlineEdit />
                 </div>
               )}
@@ -304,16 +308,7 @@ const GeneralPage: React.FC = () => {
  
           {/* Render DAT Tabs, Fields, and Changes */}
           <div className={styles.genSecRightMain}>
-            <div className={styles.genSecRightMainTopHeader}>
-              {datTabs.map((tab, index) => (
-                <DatTab
-                  key={tab}
-                  id={tab}
-                  isActive={activeIndex === index}
-                  onClick={() => handleClick(index)}
-                />
-              ))}
-            </div>
+            
             <div className={styles.genSecRightMainLft}>
               {/* Render DAT fields for left section */}
               {datFields.map((field, index) => (
@@ -322,6 +317,7 @@ const GeneralPage: React.FC = () => {
                   label={field.label}
                   value={field.value}
                   type={field.type}
+                  className={`${styles.inputField} ${isDatEditing ? styles.editable : ''}`}
                   isEditing={isDatEditing}
                 />
               ))}

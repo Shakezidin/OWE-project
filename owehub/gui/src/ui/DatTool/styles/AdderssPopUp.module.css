@@ -13,7 +13,7 @@
 .popUp {
   max-width: 725px;
   /* max-height: 557px; */
-  max-height: 400px;
+  max-height: 500px;
   width: 100%;
   border: 2px solid #fff;
   border-radius: 28px;
@@ -52,11 +52,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 94%;
+  width: 92.5%;
   position: sticky;
   top: 0;
   z-index: 20;
-  background-color: #fff;
+  background-color: #fafafa;
   padding: 2rem 15px 1rem 0rem;
 }
 
@@ -80,7 +80,6 @@
 }
 .popUp_dummyData {
   width: 100%;
-  margin-top: 1rem;
 }
 .popUp_dummyData_rowDiv {
   width: 98%;
@@ -92,7 +91,7 @@
 }
 
 .popUp_adderData {
-  width: 40%;
+  width:100%;
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 12px;

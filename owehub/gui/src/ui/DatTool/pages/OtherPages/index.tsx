@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import StringInverterConfig from './StringInverterConfig';
 import ExistingPVSystemInfo from './ExistingPVSystemInfo';
-import '../styles/OtherPages.css';
+import Select from '../../components/Select';
+import styles from '../../styles/OtherPage.module.css';
 
 interface CardProps {
   title: string;
@@ -24,20 +25,19 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
   };
 
   return (
-    <div className='card' style={styles.card}>
-      <div style={styles.cardHeader}>
-        <h3 style={styles.title}>{title}</h3>
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <h3 className={styles.title}>{title}</h3>
         {isEditing ? (
-          <div className='actions' style={styles.actions}>
+          <div className={styles.actions}>
             <button
-            className='cancelButton'
-              style={styles.cancelButton}
+              className={`${styles.cancelButton}`}
               onClick={() => setIsEditing(false)}
             >
               <AiOutlineClose />
             </button>
             <button
-              style={styles.saveButton}
+              className={styles.saveButton}
               onClick={() => {
                 onSave(editedFields);
                 setIsEditing(false);
@@ -47,38 +47,32 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
             </button>
           </div>
         ) : (
-          <button className='editButton' style={styles.editButton} onClick={() => setIsEditing(true)}>
+          <button className={`editButton ${styles.editButton}`} onClick={() => setIsEditing(true)}>
             <AiOutlineEdit />
           </button>
         )}
       </div>
 
-      <div style={styles.grid}>
+      <div className={styles.grid}>
         {Object.entries(fields).map(([key, value]) => (
-          <div key={key} style={styles.field}>
-            <label style={styles.label}>{key}</label>
+          <div key={key} className={!isEditing ? styles.field : undefined}>
+            <label className={styles.label}>{key}</label>
             {isEditing ? (
               options?.[key] ? (
-                <select
-                  className="custom-select"
+                <Select
+                  options={options[key].map((opt) => ({ label: opt, value: opt }))}
                   value={editedFields[key]}
-                  onChange={(e) => handleFieldChange(key, e.target.value)}
-                >
-                  {options[key].map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(selectedValue) => handleFieldChange(key, selectedValue.toString())}
+                />
               ) : (
                 <input
-                  style={styles.input}
+                  className={styles.input}
                   value={editedFields[key]}
                   onChange={(e) => handleFieldChange(key, e.target.value)}
                 />
               )
             ) : (
-              <div style={styles.value}>{value || '---'}</div>
+              <div className={styles.value}>{value || '---'}</div>
             )}
           </div>
         ))}
@@ -131,6 +125,7 @@ const OtherInfoPage: React.FC = () => {
     Inverter: 'Tesla Inverter 7.5kW',
     Max: '---',
   });
+
   const [inverterConfig, setInverterConfig] = useState(() => {
     const config: Record<string, string> = {};
     Array.from({ length: 8 }, (_, i) => i + 1).forEach((mppt) => {
@@ -169,8 +164,9 @@ const OtherInfoPage: React.FC = () => {
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.column}>
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+      <div className={styles.column}>
         <Card
           title="Electrical Equipment Info"
           fields={equipment}
@@ -208,24 +204,21 @@ const OtherInfoPage: React.FC = () => {
             'Points of Interconnection': ['---', '1', '2'],
           }}
         />
+
         <Card
           title="PV only Interconnection"
           fields={pvInterconnection}
-          onSave={(fields) =>
-            setPvInterconnection(fields as typeof pvInterconnection)
-          }
+          onSave={(fields) => setPvInterconnection(fields as typeof pvInterconnection)}
         />
 
         <Card
           title="ESS Interconnection"
           fields={essInterconnection}
-          onSave={(fields) =>
-            setEssInterconnection(fields as typeof essInterconnection)
-          }
+          onSave={(fields) => setEssInterconnection(fields as typeof essInterconnection)}
         />
       </div>
 
-      <div style={styles.column}>
+      <div className={styles.column}>
         <StringInverterConfig
           parentConfig={inverterConfigParent}
           config={inverterConfig}
@@ -248,136 +241,8 @@ const OtherInfoPage: React.FC = () => {
         <ExistingPVSystemInfo fields={existingPV} onSave={setExistingPV} />
       </div>
     </div>
+    </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    gap: '20px',
-    // padding: '16px',
-    backgroundColor: '#f5f5f5',
-    height: 'calc(100vh - 216px)',
-    overflowY: 'auto' as const,
-  },
-  column: {
-    flex: 1,
-    maxWidth: '50%',
-  },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: '28px',
-    padding: '20px',
-    marginBottom: '20px',
-    // boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  },
-  cardHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  title: {
-    fontSize: '16px',
-    fontWeight: '600',
-    margin: 0,
-  },
-  actions: {
-    display: 'flex',
-    gap: '8px',
-  },
-  editButton: {
-    // background: '#f0f0f0',
-    border: 'none',
-    borderRadius: '50%',
-    padding: '8px',
-    cursor: 'pointer',
-    height: 30,
-    width: 30,
-  },
-  saveButton: {
-    background: '#377CF6',
-    color: 'white',
-    border: 'none',
-    borderRadius: '50%',
-    padding: '8px',
-    cursor: 'pointer',
-    height: 30,
-    width: 30,
-  },
-  cancelButton: {
-    // background: '#f0f0f0',
-    border: 'none',
-    borderRadius: '50%',
-    padding: '8px',
-    cursor: 'pointer',
-    height: 30,
-    width: 30,
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '0 10px',
-  },
-  field: {
-    marginBottom: '12px',
-  },
-  label: {
-    display: 'block',
-    fontSize: '12px',
-    color: '#565656',
-    marginBottom: '4px',
-  },
-  inputDisabled: {
-    background: 'none',
-    border: 'none',
-  },
-  input: {
-    width: '100%',
-    padding: '8px',
-    border: 'none',
-    borderRadius: '24px',
-    fontSize: '12px',
-    background: '#F5F5FD',
-  },
-  stringInput: {
-    width: '70%',
-    padding: '8px',
-    border: 'none',
-    borderRadius: '24px',
-    fontSize: '12px',
-    background: '#F5F5FD',
-  },
-  select: {
-    width: '100%',
-    padding: '8px',
-    border: 'none',
-    borderRadius: '24px',
-    fontSize: '12px',
-    background: '#F5F5FD',
-  },
-  value: {
-    // padding: '5px 0',
-    fontSize: '12px',
-    fontWeight: '550',
-    color: '#333',
-  },
-  mpptGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '10px',
-    maxHeight: '400px',
-    overflowY: 'auto' as const,
-  },
-  mpptField: {
-    marginBottom: '8px',
-  },
-  mpptInputs: {
-    display: 'flex',
-    gap: '15px',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
 };
 
 export default OtherInfoPage;
