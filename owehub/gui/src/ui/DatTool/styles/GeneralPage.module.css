@@ -1,6 +1,6 @@
 .genMain {
-  height: calc(100vh - 206px);
-  overflow-y: scroll;
+  /* height: calc(100vh - 206px);
+  overflow-y: scroll; */
 }
  
 .genOneLeft {

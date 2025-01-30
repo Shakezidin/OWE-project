@@ -169,10 +169,10 @@
   color: #2a2626;
 }
 
-.container{
+/* .container{
   height: calc(100vh - 218px);
     overflow-y: scroll;
-}
+} */
 
 .wrapper{
   margin-right: 1.2rem;

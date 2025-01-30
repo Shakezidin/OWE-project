@@ -27,8 +27,8 @@
 
 .container {
   width: 100%;
-  height: calc(100vh - 218px);
-  overflow-y: scroll;
+  /* height: calc(100vh - 218px);
+  overflow-y: scroll; */
 }
 
 .headingContainer {
