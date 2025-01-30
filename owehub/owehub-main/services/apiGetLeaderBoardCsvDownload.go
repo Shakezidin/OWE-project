@@ -301,7 +301,7 @@ SELECT DISTINCT cs.unique_id, cs.customer_name AS home_owner, cs.email_address,
 FROM customers_customers_schema cs 
 LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+--LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
 LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
 LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id
 WHERE cs.unique_id IN (`

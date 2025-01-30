@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { ArrowForward, Growth, ServiceIcon, SuccessIcon } from './Icons';
+import { ArrowForward, BatteryIcon, Growth, ServiceIcon, SuccessIcon } from './Icons';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
@@ -24,6 +24,7 @@ interface IDealer {
   rank: number;
   sale: number;
   ntp: number;
+  battery: number;
   install: number;
 }
 const today = new Date();
@@ -251,6 +252,24 @@ const Sidebar = ({
                       className="block"
                     >
                       {formatSaleValue(dealer.install)}
+                      <span className="unit">
+                        ({unit === 'kw' ? 'kW' : 'count'})
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="icon">
+                    <BatteryIcon />
+                  </div>
+                  <div>
+                    <span className="stats-labels">Total Batteries</span>
+                    <span
+                      style={{ fontSize: 21, fontWeight: 700 }}
+                      className="block"
+                    >
+                      {formatSaleValue(dealer.battery)}
                       <span className="unit">
                         ({unit === 'kw' ? 'kW' : 'count'})
                       </span>

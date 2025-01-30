@@ -32,8 +32,8 @@ type InitialAgngRpStruct struct {
 	PTO_Created_Date              time.Time
 	PTO_Submitted_Date            time.Time
 	PTO_Date                      time.Time
-	First_Time_CAD_Complete_Date  time.Time
-	Most_Recent_CAD_Complete_Date time.Time
+	Plan_Set_Complete_Day         time.Time
+	Most_Recent_Plan_Set_H        time.Time
 	PE_EE_Submitted_Date          time.Time
 	PE_EE_Complete_Date           time.Time
 	FIN_Scheduled_Date            time.Time
@@ -90,8 +90,8 @@ SELECT
     pto_ic_schema.pto_created_on AS pto_created_date,
     pto_ic_schema.submitted AS pto_submitted_date,
     pto_ic_schema.pto_granted AS pto_date,
-    cad_cad_schema.first_time_cad_complete_date,
-    cad_cad_schema.most_recent_cad_complete_date,
+    --planset_cad_schema.plan_set_complete_day,
+    --planset_cad_schema.most_recent_plan_set_h,
     pe_ee_stamps_cad_schema.submitted_date AS peee_submitted_date,
     pe_ee_stamps_cad_schema.completion_date AS peee_complete_date,
     fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date,
@@ -126,11 +126,11 @@ LEFT JOIN
 LEFT JOIN
     pto_ic_schema ON pto_ic_schema.customer_unique_id = customers_customers_schema.unique_id
 LEFT JOIN
-    cad_cad_schema ON cad_cad_schema.customer_unique_id = customers_customers_schema.unique_id
-LEFT JOIN
     pe_ee_stamps_cad_schema ON pe_ee_stamps_cad_schema.customer_unique_id = customers_customers_schema.unique_id
 LEFT JOIN
     fin_permits_fin_schema ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
+--LEFT JOIN 
+	--planset_cad_schema ON planset_cad_schema.our_number = customers_customers_schema.unique_id
 WHERE
  customers_customers_schema.unique_id IS NOT NULL AND customers_customers_schema.unique_id != ''
 `
@@ -293,16 +293,16 @@ WHERE
 			InitialData.PTO_Date = time.Time{}
 		}
 
-		if val, ok := checkField(data["first_time_cad_complete_date"], "first_time_cad_complete_date", "time.Time"); ok {
-			InitialData.First_Time_CAD_Complete_Date = val.(time.Time)
+		if val, ok := checkField(data["plan_set_complete_day"], "plan_set_complete_day", "time.Time"); ok {
+			InitialData.Plan_Set_Complete_Day = val.(time.Time)
 		} else {
-			InitialData.First_Time_CAD_Complete_Date = time.Time{}
+			InitialData.Plan_Set_Complete_Day = time.Time{}
 		}
 
-		if val, ok := checkField(data["most_recent_cad_complete_date"], "most_recent_cad_complete_date", "time.Time"); ok {
-			InitialData.Most_Recent_CAD_Complete_Date = val.(time.Time)
+		if val, ok := checkField(data["most_recent_plan_set_h"], "most_recent_plan_set_h", "time.Time"); ok {
+			InitialData.Most_Recent_Plan_Set_H = val.(time.Time)
 		} else {
-			InitialData.Most_Recent_CAD_Complete_Date = time.Time{}
+			InitialData.Most_Recent_Plan_Set_H = time.Time{}
 		}
 
 		if val, ok := checkField(data["peee_submitted_date"], "peee_submitted_date", "time.Time"); ok {

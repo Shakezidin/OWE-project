@@ -306,7 +306,7 @@ func ProjectMngmntRetrieveQueryFunc() string {
         trenching_service_electrical_schema.work_scheduled_date AS trenching_scheduled, 
         trenching_service_electrical_schema.completion_date AS trenching_completed,
         customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
-        sales_metrics_schema.adders_total,
+        --sales_metrics_schema.adders_total,
         planset_cad_schema.item_created_on AS cad_ready,
         planset_cad_schema.plan_set_complete_day AS cad_complete_date,
         batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
@@ -344,8 +344,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
         --ON planset_cad_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN batteries_service_electrical_schema
         ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN sales_metrics_schema
-            ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
+        --LEFT JOIN sales_metrics_schema
+          --  ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN planset_cad_schema 
            ON planset_cad_schema.our_number = customers_customers_schema.unique_id
         `
@@ -452,14 +452,95 @@ func QcNtpRetrieveQueryFunc() string {
         FROM customers_customers_schema
         LEFT JOIN ntp_ntp_schema 
             ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+            AND ntp_ntp_schema.app_status NOT ILIKE '%DUPLICATE%'
         LEFT JOIN system_customers_schema  
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
+            AND system_customers_schema.project_status NOT ILIKE '%DUPLICATE%'
         LEFT JOIN prospects_customers_schema 
         ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid IS NOT NULL
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid <> ''
         AND TRIM(ntp_ntp_schema.prospectid_dealerid_salesrepid) <> ','
     `)
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT 
+            customers_customers_schema.unique_id,
+            ntp_ntp_schema.change_order_status,
+            customers_customers_schema.customer_name AS home_owner,
+            ntp_ntp_schema.ntp_complete_date AS ntp_date
+     FROM ntp_ntp_schema 
+     LEFT JOIN customers_customers_schema 
+         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status NOT IN (
+         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED', 
+         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
+     ) 
+     AND ntp_ntp_schema.app_status IN (
+         'Pending NTP Review', 'Pending QC', 'Pending NTP', 
+         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+     ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
+     AND %v %v  
+    `, filterUserQuery, searchValue))
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT 
+            customers_customers_schema.unique_id,
+            ntp_ntp_schema.production_discrepancy, 
+            ntp_ntp_schema.finance_ntp_of_project, 
+            ntp_ntp_schema.utility_bill_uploaded, 
+            ntp_ntp_schema.powerclerk_signatures_complete,
+            customers_customers_schema.customer_name AS home_owner,
+            ntp_ntp_schema.ntp_complete_date AS ntp_date
+        FROM ntp_ntp_schema 
+	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status = 'ACTIVE' 
+     AND ntp_ntp_schema.app_status NOT IN ('Pending NTP Review','Pending QC','Pending NTP - Legal',
+		'Pending NTP - Change Order','NTP - Pending PPD (Sunnova) ','NTP - Pending CAD (Enfin Lease)','✔ NTP','HOLD','CANCEL','Under Review','Canceled Project',
+		'Saved by Retention : Pending Action','DUPLICATE','Pending NTP - Refi ')
+     AND %v %v   
+    `, filterUserQuery, searchValue))
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT 
+    (SELECT COUNT(*) 
+     FROM ntp_ntp_schema 
+	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status = 'ACTIVE' 
+     AND ntp_ntp_schema.app_status NOT IN ('Pending NTP Review','Pending QC','Pending NTP - Legal',
+		'Pending NTP - Change Order','NTP - Pending PPD (Sunnova) ','NTP - Pending CAD (Enfin Lease)','✔ NTP','HOLD','CANCEL','Under Review','Canceled Project',
+		'Saved by Retention : Pending Action','DUPLICATE','Pending NTP - Refi ')
+     AND %v %v) AS ntp_count,
+
+    (SELECT COUNT(*) 
+     FROM ntp_ntp_schema 
+     LEFT JOIN customers_customers_schema 
+         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     WHERE ntp_ntp_schema.project_status NOT IN (
+         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED', 
+         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
+     ) 
+     AND ntp_ntp_schema.app_status IN (
+         'Pending NTP Review', 'Pending QC', 'Pending NTP', 
+         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+     ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
+     AND %v %v) AS co_count;
+    `, filterUserQuery, searchValue, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
 }
@@ -476,7 +557,7 @@ func CsvDownloadRetrieveQueryFunc() string {
         cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
 								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-                                LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+                                --LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
 								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
                                 LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id 
         `)
@@ -1084,6 +1165,86 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
             %v %v;`, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
+}
+
+func GetBasePipelineQuery(uniqueIds string) string {
+	return fmt.Sprintf(`
+        SELECT
+            DISTINCT ON (cust.unique_id)
+            cust.unique_id AS customer_unique_id,
+            cust.customer_name AS home_owner,
+            cust.dealer,
+            cust.primary_sales_rep,
+            cust.email_address AS customer_email,
+            cust.phone_number AS customer_phone_number,
+            cust.address,
+            cust.state,
+            cust.total_system_cost AS contract_total,
+            cust.contracted_system_size AS system_size,
+			cust.sale_date,
+            
+			install.created_on AS pv_install_created_date,
+            install.pv_completion_date AS install_completed_date,
+            
+			b.battery_installation_date AS battery_scheduled_date,
+            b.completion_date AS battery_complete_date,
+            
+			ic.ic_approved_date AS ic_approval_date,
+            ic.ic_submitted_date,
+            
+			pto.submitted AS pto_submitted_date,
+            pto.pto_granted AS pto_granted_new,
+            
+			fin.pv_fin_date AS fin_pass_date,
+            fin.created_on AS fin_created_date,
+            
+            roofing.work_completed_date AS roofing_completed_date,
+            roofing.app_status AS roofing_status,
+            roofing.record_created_on AS roofing_created_date,
+            
+			permit.pv_approved AS permit_approval_date,
+            permit.pv_submitted AS permit_submitted_date,
+            
+			cad.record_created_on AS cad_ready,
+            cad.plan_set_complete_day AS cad_complete_date,
+
+            pto.submitted AS pto_submitted_date,
+			pto.pto_granted AS pto_granted_new,
+
+            ntp.ntp_complete_date AS ntp_complete_date,
+            
+			survey.original_survey_scheduled_date AS site_survey_scheduled_date,
+            CASE 
+                WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                    AND survey.twond_visit_date IS NULL)
+                    THEN NULL
+                WHEN survey.twond_visit_date IS NOT NULL
+                    THEN survey.twond_completion_date
+                ELSE survey.survey_completion_date
+            END AS survey_final_completion_date
+        FROM
+            customers_customers_schema AS cust
+        LEFT JOIN 
+			ntp_ntp_schema AS ntp ON cust.unique_id = ntp.unique_id
+        LEFT JOIN
+            permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
+        LEFT JOIN
+            ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
+        LEFT JOIN
+            survey_survey_schema AS survey ON cust.our = survey.customer_unique_id
+        LEFT JOIN
+            pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
+        LEFT JOIN
+            roofing_request_install_subcontracting_schema AS roofing ON cust.our = roofing.customer_unique_id
+        LEFT JOIN
+            planset_cad_schema AS cad ON cust.unique_id = cad.our_number
+        LEFT JOIN
+            batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
+        LEFT JOIN
+            fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
+        LEFT JOIN
+            pto_ic_schema AS pto ON cust.our = pto.customer_unique_id 
+		WHERE cust.unique_id in (%v)`, uniqueIds)
 }
 
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {

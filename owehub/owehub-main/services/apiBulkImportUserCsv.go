@@ -110,18 +110,60 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       PartnerId:         getValue(headers, record, "partner_id"),
     }
 
-    // fetching the reporting_manager user_code using email that we will get from .CSV file
-    reportingManagerEmail := getValue(headers, record, "reporting_manager")
-    reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-    if err != nil {
-      log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+    if !isValidUser(CreateBulkUserReq) {
       result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+      result.Errors = append(result.Errors, fmt.Sprintf("Invalid data for user: %s", CreateBulkUserReq.EmailId))
       continue
     }
-    CreateBulkUserReq.ReportingManager = reportingManagerCode
 
-    partnerId := getValue(headers, record, "partner_id")
+    reportingManagerEmail := getValue(headers, record, "reporting_manager")
+
+    var reportingManagerRequired bool = !( CreateBulkUserReq.RoleName == "Admin" ||
+    CreateBulkUserReq.RoleName == "Finance Admin" ||
+    CreateBulkUserReq.RoleName == "DB User" ||
+    CreateBulkUserReq.RoleName == "Dealer Owner" ||
+    CreateBulkUserReq.RoleName == "Account Manager" ||
+    CreateBulkUserReq.RoleName == "Account Executive" )
+
+
+    if !reportingManagerRequired &&  reportingManagerEmail != ""{
+        log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
+        result.Failed++
+        result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
+        continue
+      }
+
+    if reportingManagerRequired &&  reportingManagerEmail != ""{
+      reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
+      if err != nil {
+        log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+        result.Failed++
+        result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+        continue
+      }
+      CreateBulkUserReq.ReportingManager = reportingManagerCode
+    }
+
+
+  // handling partner_id conditions , these roles cant have partner_id ....
+  partnerId := getValue(headers, record, "partner_id")
+
+  var partnerIdRequired bool = !(CreateBulkUserReq.RoleName == "Admin" ||
+  CreateBulkUserReq.RoleName == "Finance Admin" ||
+  CreateBulkUserReq.RoleName == "DB User" ||
+  CreateBulkUserReq.RoleName == "Account Manager" ||
+  CreateBulkUserReq.RoleName == "Account Executive")
+
+
+  if !partnerIdRequired &&  partnerId != ""{
+    log.FuncErrorTrace(0, "Role %s should not have a partner_id: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerId)
+    result.Failed++
+    result.Errors = append(result.Errors, fmt.Sprintf("Role %s should not have a partner_id", CreateBulkUserReq.RoleName))
+    continue
+  }
+
+
+  if partnerIdRequired {
     salesPartnerName, err := fetchSalesPartnerNameById(partnerId)
     if err != nil {
       log.FuncErrorTrace(0, "Error fetching sales partner name for partner_id: %s, error: %v", partnerId, err)
@@ -131,12 +173,9 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
     }
     CreateBulkUserReq.PartnerId = partnerId
     CreateBulkUserReq.SalesPartnerName = salesPartnerName
+  }
 
-    if !isValidUser(CreateBulkUserReq) {
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Invalid data for user: %s", CreateBulkUserReq.EmailId))
-      continue
-    }
+
 
     hashedPassBytes, err := GenerateHashPassword(CreateBulkUserReq.Password)
     if err != nil {
@@ -186,6 +225,10 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
   appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)
 }
 
+
+
+
+
 /*************************************helper functions *************************************/
 
 func getValue(headers []string, record []string, key string) string {
@@ -197,6 +240,7 @@ func getValue(headers []string, record []string, key string) string {
   }
   return ""
 }
+
 
 func isValidUser(user CreateBulkUserReq) bool {
   valid := len(user.Name) > 0 &&
@@ -240,7 +284,6 @@ func fetchUserCodeByEmail(email string) (string, error) {
   if !ok {
     return "", fmt.Errorf("user_code is not of type string")
   }
-
   return userCode, nil
 }
 
