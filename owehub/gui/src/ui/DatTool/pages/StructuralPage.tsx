@@ -9,6 +9,7 @@ import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import CustomInput from '../components/Input';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import CommonComponent from './CommonComponent';
 
 type Option = {
   value: string | number;
@@ -177,8 +178,10 @@ const StructuralPage: React.FC = () => {
   };
   return (
     <div>
+      
       {viewerImage && (
         <div className={styles.imageViewerContainer}>
+          
           <div className={styles.imageViewer}>
             <img
               className={styles.viewerImage}
@@ -224,15 +227,12 @@ const StructuralPage: React.FC = () => {
                     className={styles.iconContainer}
                     onClick={() => {
                       if (editStructuralInfo) {
-                        // When clicking HiMiniXMark, remove the last state if it was just added
                         if (
                           activeStructuralState ===
                           structuralInfoStates[structuralInfoStates.length - 1]
                         ) {
-                          // Remove the last state
                           const newStates = structuralInfoStates.slice(0, -1);
                           setStructuralInfoStates(newStates);
-                          // Set active state to the previous state
                           setActiveStructuralState(
                             newStates[newStates.length - 1]
                           );
@@ -466,21 +466,21 @@ const StructuralPage: React.FC = () => {
                       'Type',
                       '--',
                       editAttachment,
-                      'input' // Specify input type
+                      'input'
                     )}
                     {renderComponent(
                       'attachmentPattern',
                       'Pattern',
                       '---',
                       editAttachment,
-                      'input' // Specify input type
+                      'input'
                     )}
                     {renderComponent(
                       'attachmentQuantity',
                       'Quantity',
                       '12',
                       editAttachment,
-                      'input' // Specify input type
+                      'input'
                     )}
                     {renderComponent(
                       'attachmentSpacing',
@@ -635,56 +635,61 @@ const StructuralPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className={styles.uploadImage}>
-                <div className={styles.imagePreviewContainer}>
-                  {uploadedImages.map((image, index) => (
-                    <div key={index} className={styles.imagePreview}>
-                      <button
-                        className={styles.removeImageButton}
-                        onClick={() => handleImageRemove(index)}
-                      >
-                        <FaXmark />
-                      </button>
-                      <img
-                        src={image.url}
-                        alt="Uploaded preview"
-                        className={styles.previewImage}
-                      />
-                      <p
-                        className={styles.imageView}
-                        onClick={() => setViewerImage(image.url)}
-                      >
-                        View
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
-                    <div className={styles.UploadIcon}>
-                      <IoMdAdd />
-                    </div>
-                  </label>
-                  <input
-                    id="imageUpload"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handleImageUpload}
-                  />
-                </div>
-                {uploadedImages.length === 0 ? (
-                  <div className={styles.UploadIconContent}>
-                    <p className={styles.UploadHeading}>Upload Image</p>
-                    <p className={styles.UploadParagraph}>
-                      You can select up to 3 files
-                    </p>
-                  </div>
-                ) : (
-                  ''
-                )}
-              </div>
+              <div className={uploadedImages.length < 3 ? styles.uploadImage : styles.uploadImageThree}>
+  <div className={styles.imagePreviewContainer}>
+    {uploadedImages.map((image, index) => (
+      <div key={index} className={styles.imagePreview}>
+        <button
+          className={styles.removeImageButton}
+          onClick={() => handleImageRemove(index)}
+        >
+          <FaXmark />
+        </button>
+        <img
+          src={image.url}
+          alt="Uploaded preview"
+          className={styles.previewImage}
+        />
+        <p
+          className={styles.imageView}
+          onClick={() => setViewerImage(image.url)}
+        >
+          View
+        </p>
+      </div>
+    ))}
+  </div>
+
+  {uploadedImages.length < 3 && (  // Only show upload button if less than 3 images
+    <div>
+      <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
+        <div className={styles.UploadIcon}>
+          <IoMdAdd />
+        </div>
+      </label>
+      <input
+        id="imageUpload"
+        type="file"
+        multiple
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleImageUpload}
+      />
+    </div>
+  )}
+
+  {uploadedImages.length === 0 ? (
+    <div className={styles.UploadIconContent}>
+      <p className={styles.UploadHeading}>Upload Image</p>
+      <p className={styles.UploadParagraph}>
+        You can select up to 3 files
+      </p>
+    </div>
+  ) : (
+    ''
+  )}
+</div>
+
             </div>
           </div>
         </div>

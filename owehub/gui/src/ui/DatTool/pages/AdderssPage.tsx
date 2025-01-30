@@ -4,6 +4,7 @@ import { FiMinus, FiPlus } from 'react-icons/fi';
 import AdderssPopUp from '../components/AdderssPopUp';
 import useEscapeKey from '../../../hooks/useEscape';
 import { useEffect } from 'react';
+import CommonComponent from './CommonComponent';
 interface Item {
   text: string;
   price: number;
@@ -198,7 +199,7 @@ function AdderssPage({ setOpenPopUp }: any) {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-      {}
+      
       <div className={styles.adderssPageTopPart}>
         <div className={styles.adderssPageTopPart_leftText}>
           <p className={styles.adderssPageTopPart_leftText_Adders}>Adders</p>
