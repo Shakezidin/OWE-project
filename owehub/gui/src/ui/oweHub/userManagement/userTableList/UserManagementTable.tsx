@@ -551,7 +551,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             {userRole === TYPE_OF_USER.ADMIN && environment === 'staging' && (
               <div>{ImportBtn}</div>
             )}
-            {userRole === TYPE_OF_USER.ADMIN && environment === 'staging' && (
+            {userRole === TYPE_OF_USER.ADMIN  && (
               <div>
                 <button
                   className={`performance-exportbtn  mt0 `}
