@@ -67,7 +67,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
-		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
+		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleProjectManager) ||
 		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		if len(dataReq.DealerNames) == 0 {
 
@@ -78,7 +78,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	}
 
 	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) &&
-		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
+		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) && dataReq.Role != string(types.RoleProjectManager) &&
 		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT sp.sales_partner_name AS dealer_name, name FROM user_details ud
@@ -108,7 +108,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 	}
 
-	if dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleAccountExecutive) {
+	if dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleProjectManager) {
 		dealerNames, err := FetchLeaderBoardDealerForAmAe(dataReq, dataReq.Role)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -155,7 +155,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	// Prepare the final query string with the dynamically constructed dealer list
 	query = `
-	SELECT 
+	SELECT
     unique_id AS cancel_unique_id,
     cancel_date,
 	NULL::text AS customers_unique_id,
@@ -164,69 +164,69 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
     NULL::text AS ntp_unique_id,
     NULL::timestamp AS pv_completion_date,  -- Cast to text
     NULL::text AS pv_unique_id
-FROM 
+FROM
     customers_customers_schema
-WHERE 
+WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
     AND project_status != 'DUPLICATE'
-    AND cancel_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+    AND cancel_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                         AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
 
 UNION ALL
 
-SELECT 
+SELECT
 	NULL::text AS cancel_unique_id,
 	NULL::timestamp AS cancel_date,
     unique_id AS customers_unique_id,
     sale_date,
-    NULL::timestamp AS ntp_complete_date,  
+    NULL::timestamp AS ntp_complete_date,
     NULL::text AS ntp_unique_id,
-    NULL::timestamp AS pv_completion_date,  
+    NULL::timestamp AS pv_completion_date,
     NULL::text AS pv_unique_id
-FROM 
+FROM
     customers_customers_schema
-WHERE 
+WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
     AND project_status != 'DUPLICATE'
-    AND sale_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+    AND sale_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                         AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
 
 UNION ALL
 
-SELECT 
+SELECT
 	NULL::text AS cancel_unique_id,
 	NULL::timestamp AS cancel_date,
     NULL::text AS customers_unique_id,
     NULL::timestamp AS sale_date,
-    ntp_complete_date AS ntp_complete_date,  
-    unique_id::text AS ntp_unique_id, 
+    ntp_complete_date AS ntp_complete_date,
+    unique_id::text AS ntp_unique_id,
     NULL::timestamp AS pv_completion_date,
     NULL::text AS pv_unique_id
-FROM 
+FROM
     ntp_ntp_schema
-WHERE 
+WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
     AND project_status != 'DUPLICATE'
-    AND ntp_complete_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+    AND ntp_complete_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                                AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
 
 UNION ALL
 
-SELECT 
+SELECT
 	NULL::text AS cancel_unique_id,
 	NULL::timestamp AS cancel_date,
     NULL::text AS customers_unique_id,
     NULL::timestamp AS sale_date,
     NULL::timestamp AS ntp_complete_date,
     NULL::text AS ntp_unique_id,
-    pv_completion_date AS pv_completion_date,  
-    customer_unique_id::text AS pv_unique_id  
-FROM 
+    pv_completion_date AS pv_completion_date,
+    customer_unique_id::text AS pv_unique_id
+FROM
     pv_install_install_subcontracting_schema
-WHERE 
+WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
     AND project_status != 'DUPLICATE'
-    AND pv_completion_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS') 
+    AND pv_completion_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                                AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS');
 `
 
@@ -295,13 +295,13 @@ WHERE
 	queryWithUniqueIDs := `
 SELECT DISTINCT cs.unique_id, cs.customer_name AS home_owner, cs.email_address,
        cs.phone_number, cs.address, cs.state,
-       scs.contracted_system_size_parent, 
-       ps.pto_granted AS pto_date, cs.primary_sales_rep, 
+       scs.contracted_system_size_parent,
+       ps.pto_granted AS pto_date, cs.primary_sales_rep,
        cs.secondary_sales_rep, cs.total_system_cost AS contract_total
-FROM customers_customers_schema cs 
-LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
---LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+FROM customers_customers_schema cs
+LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+--LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id
 LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
 LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id
 WHERE cs.unique_id IN (`
@@ -381,8 +381,15 @@ func FetchLeaderBoardDealerForAmAe(dataReq models.GetCsvDownload, userRole inter
 	role, _ := userRole.(string)
 	if role == "Account Manager" {
 		roleBase = "account_manager"
-	} else {
+	}
+
+	if role == "Account Executive" {
 		roleBase = "account_executive"
+	}
+
+	//Project Manager
+	if role == "Project Manager" {
+		roleBase = "project_manager"
 	}
 
 	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)

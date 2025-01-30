@@ -47,7 +47,8 @@ func HandleDataFilterOnUserRoles(email, userRole, customerTableAlias string, Dea
 		of dealer names for which data has to be present.
 		For other roles we get the dealer name from DB
 	*/
-	if userRole == string(types.RoleAdmin) || userRole == string(types.RoleFinAdmin) || userRole == string(types.RoleAccountExecutive) || userRole == string(types.RoleAccountManager) {
+	if userRole == string(types.RoleAdmin) || userRole == string(types.RoleFinAdmin) || userRole == string(types.RoleAccountExecutive) || userRole == string(types.RoleAccountManager) ||
+	userRole == string(types.RoleProjectManager) {
 		if len(DealerNames) <= 0 {
 			return "", fmt.Errorf("<not an error> empty dealer names in req present, user: %v", email)
 		}
@@ -76,7 +77,7 @@ func createFilterForRoles(email, userRole, userName, customerTableAlias string, 
 	joinedDealerNames := joinNames(dealerNames)
 	switch userRole {
 	/* Group 1: Roles with access to all dealer names */
-	case "Admin", "Finance Admin", "Account Executive", "Account Manager":
+	case "Admin", "Finance Admin", "Account Executive", "Account Manager", "Project Manager":
 		filtersBuilder.WriteString(fmt.Sprintf(" %s.dealer IN (", customerTableAlias))
 		filtersBuilder.WriteString(joinedDealerNames)
 		filtersBuilder.WriteString(") ")

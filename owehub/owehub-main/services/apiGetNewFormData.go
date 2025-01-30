@@ -79,17 +79,31 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		switch tableName {
 		case "account_manager":
 			query = `
-				SELECT 
+				SELECT
 					U.name AS data
-				FROM 
+				FROM
 					user_roles AS R
-				INNER JOIN 
+				INNER JOIN
 					user_details AS U
-				ON 
+				ON
 					R.role_id = U.role_id
-				WHERE 
+				WHERE
 					R.role_name = 'Account Manager'
 			`
+		case "project_manager":
+			query = `
+				SELECT
+					U.name AS data
+				FROM
+					user_roles AS R
+				INNER JOIN
+					user_details AS U
+				ON
+					R.role_id = U.role_id
+				WHERE
+					R.role_name = 'Project Manager'
+			`
+
 		case "partners":
 			query = "SELECT partner_name as data FROM " + db.TableName_partners
 		case "installers":
@@ -104,18 +118,25 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "users":
 			query = "SELECT name as data FROM " + db.TableName_users_details
 		case "dealer_name":
-			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive) {
+			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive)  || role == string(types.RoleProjectManager){
 				accountName, err := fetchAmAeName(email)
 				if err != nil {
 					appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 					return
 				}
 				var roleBase string
+
 				if role == "Account Manager" {
 					roleBase = "account_manager"
-				} else {
+				}
+				if role == "Account Executive" {
 					roleBase = "account_executive"
 				}
+				//Project Manager
+				if role == "Project Manager" {
+					roleBase = "project_manager"
+				}
+
 				log.FuncInfoTrace(0, "logged user %v is %v", accountName, roleBase)
 				query = fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
 				dbIndex = db.RowDataDBIndex
@@ -123,7 +144,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				query = "SELECT sales_partner_name as data FROM sales_partner_dbhub_schema"
 			}
 		case "available_states":
-			query = `select DISTINCT(CASE 
+			query = `select DISTINCT(CASE
 							WHEN LENGTH(cs.state) > 6 THEN SUBSTRING(cs.state FROM 7)
 							ELSE cs.state
 						END
@@ -152,7 +173,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 			items = append(items, name)
 		}
-		if tableName == "dealer_name" && (role != string(types.RoleAccountManager) && role != string(types.RoleAccountExecutive)) {
+		if tableName == "dealer_name" && (role != string(types.RoleAccountManager) && role != string(types.RoleAccountExecutive) && role != string(types.RoleProjectManager)) {
 			items = append(items, "")
 		}
 		responseData[tableName] = items
