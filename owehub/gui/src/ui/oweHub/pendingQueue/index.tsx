@@ -85,6 +85,7 @@ const PendingQueue = () => {
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
 
+  
   return (
     <>
       <div
@@ -315,15 +316,22 @@ const PendingQueue = () => {
                           className="flex flex-auto items-center"
                         >
                           {active === 'co' ? (
-                            item.co_status ? (
+                            item.co.co_status ? (
                               <div
-                                className={`items-center ${styles.warning_card} ${styles.outline_card_wrapper}`}
+                                className={`items-center  ${getStatusColor(item.co.co_status)} ${styles.outline_card_wrapper}`}
                               >
                                 <AiFillMinusCircle
                                   size={24}
                                   className="mr1"
                                   style={{ flexShrink: 0 }}
-                                  color={'#EBA900'}
+                                  color={
+                                    item.co.co_status ===
+                                    'Pending (Action Required)'
+                                      ? '#E14514'
+                                      : item.co.co_status === 'Pending'
+                                        ? '#EBA900'
+                                        : '#2EAF71'
+                                  }
                                 />
                                 <span
                                   style={{
@@ -331,7 +339,7 @@ const PendingQueue = () => {
                                     fontSize: 14,
                                   }}
                                 >
-                                  {item.co_status
+                                  {item.co.co
                                     .replace(/_/g, ' ')
                                     .replace(/\b\w/g, (char: any) =>
                                       char.toUpperCase()

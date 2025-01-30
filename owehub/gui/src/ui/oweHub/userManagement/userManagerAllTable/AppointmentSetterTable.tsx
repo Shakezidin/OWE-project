@@ -82,7 +82,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
 
    const environment = process.env.REACT_APP_ENV;
                 const isEditVisible =
-                (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
+                (role_name === TYPE_OF_USER.ADMIN ) &&
                 environment === 'staging';
   return (
     <>
