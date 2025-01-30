@@ -178,6 +178,9 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	// 	return
 	// }
 	if err != nil {
+		log.FuncErrorTrace(0, "error %v", err.Error())
+		log.FuncErrorTrace(0, "mobile number data type: %T, value: %v", updateUserReq.MobileNumber, updateUserReq.MobileNumber)
+
 		if strings.Contains(err.Error(), "PHONE_NO_ALREADY_EXISTS") {
 			appserver.FormAndSendHttpResp(resp, "Phone number already exists", http.StatusBadRequest, nil)
 			return

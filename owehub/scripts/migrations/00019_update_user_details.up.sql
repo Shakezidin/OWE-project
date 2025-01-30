@@ -65,13 +65,12 @@ BEGIN
             RAISE EXCEPTION 'User with email % already exists', p_email_id;
         END IF;
     END IF;
- //////////////////////////////////////////
     -- Check if the user with the same mobile number already exists
     IF p_mobile_number IS NOT NULL THEN
     -- Check if mobile_number already exists in the database
     SELECT mobile_number
     FROM user_details
-    WHERE mobile_number = p_mobile_number
+    WHERE mobile_number = p_mobile_number;
 
     IF FOUND THEN
             RAISE EXCEPTION 'PHONE_NO_ALREADY_EXISTS';
