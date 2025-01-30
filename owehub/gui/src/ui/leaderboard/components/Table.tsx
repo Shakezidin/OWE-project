@@ -1030,12 +1030,14 @@ const Table = ({
                         </span>
                         <p className="rank-sm-text">NTP</p>
                       </div>
-                      <div>
-                        <span className="rank-stats-num">
-                          {formatSaleValue(item?.battery)}
-                        </span>
-                        <p className="rank-sm-text">Battery</p>
-                      </div>
+                      {activeHead !== 'kw' &&
+                        <div>
+                          <span className="rank-stats-num">
+                            {formatSaleValue(item?.battery)}
+                          </span>
+                          <p className="rank-sm-text">Battery</p>
+                        </div>
+                      }
                       <div>
                         <span className="rank-stats-num">
                           {formatSaleValue(item.cancel)}{' '}
@@ -1073,12 +1075,14 @@ const Table = ({
                     </span>
                     <p className="rank-sm-text">NTP</p>
                   </div>
-                  <div>
-                    <span className="rank-stats-num">
-                      {formatSaleValue(totalStats?.total_battery || 0)}
-                    </span>
-                    <p className="rank-sm-text">Battery</p>
-                  </div>
+                  {activeHead !== 'kw' &&
+                    <div>
+                      <span className="rank-stats-num">
+                        {formatSaleValue(totalStats?.total_battery || 0)}
+                      </span>
+                      <p className="rank-sm-text">Battery</p>
+                    </div>
+                  }
                   <div>
                     <span className="rank-stats-num">
                       {formatSaleValue(totalStats?.total_cancel || 0)}
@@ -1120,12 +1124,14 @@ const Table = ({
                     ({formatSaleValue(totalStats?.total_install || 0)})
                   </span>
                 </th>
-                <th>
-                  Battery
-                  <span className="block" style={{ fontSize: 12 }}>
-                    ({formatSaleValue(totalStats?.total_battery || 0)})
-                  </span>
-                </th>
+                {activeHead !== 'kw' &&
+                  <th>
+                    Battery
+                    <span className="block" style={{ fontSize: 12 }}>
+                      ({formatSaleValue(totalStats?.total_battery || 0)})
+                    </span>
+                  </th>
+                }
                 <th>
                   Cancel
                   <span className="block" style={{ fontSize: 12 }}>
@@ -1194,7 +1200,9 @@ const Table = ({
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
                       <td>{formatSaleValue(item?.install)}</td>
-                      <td>{formatSaleValue(item?.battery)}</td>
+                      {activeHead !== 'kw' &&
+                        <td>{formatSaleValue(item?.battery)}</td>
+                      }
                       <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );
@@ -1224,9 +1232,11 @@ const Table = ({
                   <td className="bold-text">
                     {formatSaleValue(getTotal('install'))}
                   </td>
-                  <td className="bold-text">
-                    {formatSaleValue(getTotal('battery'))}
-                  </td>
+                  {activeHead !== 'kw' &&
+                    <td className="bold-text">
+                      {formatSaleValue(getTotal('battery'))}
+                    </td>
+                  }
                   <td className="bold-text">
                     {formatSaleValue(getTotal('cancel'))}
                   </td>
