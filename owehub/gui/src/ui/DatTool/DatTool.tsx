@@ -10,6 +10,7 @@ import OtherPage from './pages/OtherPages';
 import SideContainer from './components/SideContainer';
 import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
+import CommonComponent from './pages/CommonComponent';
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
   const [openPopUp,setOpenPopUp]=useState<boolean>(false);
@@ -31,6 +32,7 @@ const DatTool: React.FC = () => {
 
   return (
     <div className={styles.mainContainer}>
+      
       {
       openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp}/>
     }
@@ -38,13 +40,18 @@ const DatTool: React.FC = () => {
       openRefresh && <RefreshPopUp setOpenRefresh={setOpenRefresh}/>
     }
       <Header onMenuSelect={setSelectedPage} setOpenRefresh={setOpenRefresh} />
+      
       <div className={styles.layoutContainer}>
   <div className={styles.contentContainer}>
+  <CommonComponent/>
     {renderPage()}
   </div>
+  
   <div className={styles.sidebar}>
+    
     <SideContainer />
   </div>
+  
 </div>
     </div>
   );

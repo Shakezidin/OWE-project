@@ -9,6 +9,7 @@ import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import CustomInput from '../components/Input';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import CommonComponent from './CommonComponent';
 
 type Option = {
   value: string | number;
@@ -177,8 +178,10 @@ const StructuralPage: React.FC = () => {
   };
   return (
     <div>
+      
       {viewerImage && (
         <div className={styles.imageViewerContainer}>
+          
           <div className={styles.imageViewer}>
             <img
               className={styles.viewerImage}

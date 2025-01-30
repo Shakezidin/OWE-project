@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/Notes.module.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { format } from 'date-fns';
+import CommonComponent from './CommonComponent';
 
 interface Category {
   name: string;

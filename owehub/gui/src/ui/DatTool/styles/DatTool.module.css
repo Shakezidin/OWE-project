@@ -19,5 +19,6 @@
   padding: 1.2rem 0.6rem 1.2rem 0;
   width: 100%;
   margin-left: 1.2rem;
-
+  height: calc(100vh - 218px);
+  overflow-y: scroll;
 }
