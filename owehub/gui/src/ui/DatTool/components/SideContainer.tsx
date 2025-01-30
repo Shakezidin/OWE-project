@@ -52,6 +52,7 @@ const SideContainer: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.headerWrapper}>
       <div className={styles.heading}>
         <div className={styles.headingName}>Project List</div>
         <div onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
@@ -66,6 +67,8 @@ const SideContainer: React.FC = () => {
           onChange={handleSearchChange}
         />
       </div>
+      </div>
+      <div className={styles.dataBoxWrapper}>
       {sortedData.map((data, index) => (
         <div key={index} className={styles.dataBox}>
           <p className={styles.content_one}>{data.name}</p>
@@ -73,6 +76,7 @@ const SideContainer: React.FC = () => {
           <p className={styles.content_three}>{data.address}</p>
         </div>
       ))}
+      </div>
     </div>
   );
 };

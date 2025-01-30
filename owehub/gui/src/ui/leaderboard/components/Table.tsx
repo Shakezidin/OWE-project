@@ -968,6 +968,7 @@ const Table = ({
                       sale: item.sale,
                       ntp: item.ntp,
                       install: item.install,
+                      battery: item.battery,
                     }));
                   }}
                   className="mobile-rank-card"
