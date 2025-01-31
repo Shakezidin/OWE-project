@@ -74,8 +74,8 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	if userRole == string(types.RoleAccountManager) || userRole == string(types.RoleAccountExecutive) || 
-	userRole == string(types.RoleProjectManager) {
+	if userRole == string(types.RoleAccountManager) || userRole == string(types.RoleAccountExecutive) ||
+		userRole == string(types.RoleProjectManager) {
 		accountName, err := fetchAmAeName(dataReq.Email)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -181,13 +181,18 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		if !ok || UniqueId == "" {
 			UniqueId = ""
 			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		if val, ok := item["change_order_status"].(string); ok {
 			Co = val
 		} else {
 			Co = "" // or a default value
+		}
+
+		if Co == "" {
+			Co = "CO Requested - Working"
+			item["change_order_status"] = "CO Requested - Working"
 		}
 
 		// Fetch and validate HomeOwner

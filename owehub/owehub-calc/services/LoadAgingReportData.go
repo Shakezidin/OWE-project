@@ -201,21 +201,13 @@ func calculateProjectAge(uniqueId string, contractDate time.Time) int {
 	var projectAge int
 	today := time.Now()
 
-	if uniqueId != "" && contractDate.IsZero() {
+	if uniqueId != "" && !contractDate.IsZero() {
 		projectAge = int(today.Sub(contractDate).Abs().Hours() / 24) // Calculate days from today
 	} else {
 		projectAge = 0
 	}
 
 	return projectAge
-}
-
-// Helper function to get the absolute value of a duration
-func absDuration(d time.Duration) time.Duration {
-	if d < 0 {
-		return -d
-	}
-	return d
 }
 
 func ClearAgingRp() error {
@@ -229,10 +221,6 @@ func ClearAgingRp() error {
 		return fmt.Errorf("error while truncating aging_report db: %v", err)
 	}
 	return nil
-}
-
-func formatDate(t time.Time) string {
-	return t.Format("2006-01-02")
 }
 
 func DeleteFromAgRp(uniqueIDs []string) error {

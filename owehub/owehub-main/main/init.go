@@ -525,6 +525,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/getGetUserRoles",
+		apiHandler.HandleGetUserRoles,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************
