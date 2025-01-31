@@ -225,6 +225,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
     return (
         <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
 
+
             <div className="header-icon">
                 <div
                     className={`side-bar-logo ${toggleOpen ? 'side-bar-logo-active' : ''}`}
@@ -317,45 +318,53 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
             </div>
 
 
+            <div className={styles.midElements}>
+                <nav className={styles.menuContainer}>
+                    <ul className={styles.menuItems}>
+                        <li
+                            className={activeMenu === 'General' ? styles.active : ''}
+                            onClick={() => handleMenuClick('General')}
+                        >
+                            General
+                        </li>
+                        <li
+                            className={activeMenu === 'Structural' ? styles.active : ''}
+                            onClick={() => handleMenuClick('Structural')}
+                        >
+                            Structural
+                        </li>
+                        <li
+                            className={activeMenu === 'Adders' ? styles.active : ''}
+                            onClick={() => handleMenuClick('Adders')}
+                        >
+                            Adders
+                        </li>
+                        <li
+                            className={activeMenu === 'Other' ? styles.active : ''}
+                            onClick={() => handleMenuClick('Other')}
+                        >
+                            Other
+                        </li>
+                        <li
+                            className={activeMenu === 'Notes' ? styles.active : ''}
+                            onClick={() => handleMenuClick('Notes')}
+                        >
+                            Notes
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+
+
+
+
 
 
             {!isMobile && (
                 <div className="search-container">
+
                     <div className={styles.midElements}>
-                        <nav className={styles.menuContainer}>
-                            <ul className={styles.menuItems}>
-                                <li
-                                    className={activeMenu === 'General' ? styles.active : ''}
-                                    onClick={() => handleMenuClick('General')}
-                                >
-                                    General
-                                </li>
-                                <li
-                                    className={activeMenu === 'Structural' ? styles.active : ''}
-                                    onClick={() => handleMenuClick('Structural')}
-                                >
-                                    Structural
-                                </li>
-                                <li
-                                    className={activeMenu === 'Adders' ? styles.active : ''}
-                                    onClick={() => handleMenuClick('Adders')}
-                                >
-                                    Adders
-                                </li>
-                                <li
-                                    className={activeMenu === 'Other' ? styles.active : ''}
-                                    onClick={() => handleMenuClick('Other')}
-                                >
-                                    Other
-                                </li>
-                                <li
-                                    className={activeMenu === 'Notes' ? styles.active : ''}
-                                    onClick={() => handleMenuClick('Notes')}
-                                >
-                                    Notes
-                                </li>
-                            </ul>
-                        </nav>
                         <div className={styles.headerLast}>
 
                             <div>
@@ -380,6 +389,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                             </div>
                         </div>
                     </div>
+
                     <div
                         className="user-container relative"
                         ref={dropdownRef}

@@ -326,7 +326,7 @@ const PendingQueue = () => {
                                 <Tooltip
                                   style={{
                                     zIndex: 999,
-                                    background: "#111",
+                                    background: "#555",
                                     color: '#f7f7f7',
                                     fontSize: 12,
                                     paddingBlock: 4,
