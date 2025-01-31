@@ -22,7 +22,7 @@
   
   .menuItems {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     gap: 6px;
     align-items: center;
     list-style-type: none; 
