@@ -28,64 +28,6 @@ func SalesRepRetrieveQueryFunc() string {
 	return salerRepRetrieveQuery
 }
 
-// func SalesMetricsRetrieveQueryFunc() string {
-// 	SalesMetricsRetrieveQuery := `
-//         SELECT sm.home_owner, sm.unique_id, sm.contract_date, sm.permit_approved_date,
-//             sm.pv_install_completed_date, sm.pto_date, fs.site_survey_completed_date,
-//             fs.install_ready_date, sm.dealer, sm.primary_sales_rep
-//         FROM sales_metrics_schema sm
-//         JOIN field_ops_metrics_schema fs ON sm.unique_id = fs.unique_id
-//     `
-// 	return SalesMetricsRetrieveQuery
-// }
-
-// func SalesMetricsRetrieveQueryFunc() string {
-// 	SalesMetricsRetrieveQuery := `
-//         SELECT
-//             intOpsMetSchema.home_owner,
-//             intOpsMetSchema.unique_id,
-//             intOpsMetSchema.site_survey_scheduled_date,
-//             intOpsMetSchema.site_survey_completed_date,
-//             intOpsMetSchema.cad_ready,
-//             intOpsMetSchema.cad_complete_date,
-//             intOpsMetSchema.permit_submitted_date,
-//             intOpsMetSchema.ic_submitted_date,
-//             intOpsMetSchema.permit_approved_date,
-//             intOpsMetSchema.ic_approved_date,
-//             fieldOpsSchema.roofing_created_date,
-//             fieldOpsSchema.roofing_completed_date,
-//             intOpsMetSchema.pv_install_created_date,
-//             fieldOpsSchema.battery_scheduled_date,
-//             fieldOpsSchema.battery_complete_date,
-//             intOpsMetSchema.pv_install_completed_date,
-//             fieldOpsSchema.mpu_created_date,
-//             fieldOpsSchema.derate_created_date,
-//             secondFieldOpsSchema.trenching_ws_open,
-//             fieldOpsSchema.derate_completed_date,
-//             fieldOpsSchema.mpu_complete_date,
-//             secondFieldOpsSchema.trenching_completed,
-//             fieldOpsSchema.fin_created_date,
-//             fieldOpsSchema.fin_pass_date,
-//             intOpsMetSchema.pto_submitted_date,
-//             intOpsMetSchema.pto_date,
-//             salMetSchema.contract_date,
-//             salMetSchema.dealer,
-//             salMetSchema.primary_sales_rep,
-//             salMetSchema.ntp_date,
-//             secondFieldOpsSchema.roofing_status
-
-//         FROM
-//             internal_ops_metrics_schema AS intOpsMetSchema
-//         LEFT JOIN sales_metrics_schema AS salMetSchema
-//             ON intOpsMetSchema.unique_id = salMetSchema.unique_id
-//         LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema
-//             ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id
-//         LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema
-//             ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id
-//     `
-// 	return SalesMetricsRetrieveQuery
-// }
-
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT
@@ -252,9 +194,9 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 	return AdminDlrSaleRepRetrieveQuery
 }
 
-func ProjectMngmntRetrieveQueryFunc() string {
+func ProjectMngmntRetrieveQueryFunc(filterUserQuery, searchValue string) string {
 
-	ProjectMngmntRetrieveQuery := `
+	ProjectMngmntRetrieveQuery := fmt.Sprintf(`
         SELECT 
         customers_customers_schema.unique_id, 
         customers_customers_schema.sale_date AS contract_date,
@@ -340,72 +282,13 @@ func ProjectMngmntRetrieveQueryFunc() string {
         ON derates_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN trenching_service_electrical_schema
         ON trenching_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        --LEFT JOIN planset_cad_schema
-        --ON planset_cad_schema.customer_unique_id = customers_customers_schema.unique_id
         LEFT JOIN batteries_service_electrical_schema
         ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        --LEFT JOIN sales_metrics_schema
-          --  ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
         LEFT JOIN planset_cad_schema 
            ON planset_cad_schema.our_number = customers_customers_schema.unique_id
-        `
+        %s %s `, filterUserQuery, searchValue)
 	return ProjectMngmntRetrieveQuery
 }
-
-// pv_install_created_date AS pv_install_created_date_2,
-// electrical_submitted_date,active_date,        prospect, removed from prjectmnmnt query
-//         electrical_approved_date,
-
-// func QcNtpRetrieveQueryFunc() string {
-// 	var filtersBuilder strings.Builder
-// 	filtersBuilder.WriteString(`
-//         SELECT
-//             ips.unique_id,
-//             n.production_discrepancy,
-//             n.finance_ntp_of_project,
-//             n.utility_bill_uploaded,
-//             n.powerclerk_signatures_complete,
-//             n.change_order_status,
-//             split_part(ss.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
-//             ips.utility_company,
-//             ss.state,
-//             ips.home_owner,
-//             ss.ntp_date,
-//             CASE
-//                 WHEN ips.utility_company = 'APS' THEN p.powerclerk_sent_az
-//                 ELSE 'Not Needed'
-//             END AS powerclerk_sent_az,
-//             CASE
-//                 WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
-//                 ELSE 'Not Needed'
-//             END AS ach_waiver_sent_and_signed_cash_only,
-//             CASE
-//                 WHEN ss.state = 'NM :: New Mexico' THEN p.green_area_nm_only
-//                 ELSE 'Not Needed'
-//             END AS green_area_nm_only,
-//             CASE
-//                 WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
-//                 ELSE 'Not Needed'
-//             END AS finance_credit_approved_loan_or_lease,
-//             CASE
-//                 WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
-//                 ELSE 'Not Needed'
-//             END AS finance_agreement_completed_loan_or_lease,
-//             CASE
-//                 WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
-//                 ELSE 'Not Needed'
-//             END AS owe_documents_completed
-//         FROM internal_ops_metrics_schema ips
-//         LEFT JOIN sales_metrics_schema ss
-//             ON ips.unique_id = ss.unique_id
-//         LEFT JOIN ntp_ntp_schema n
-//             ON ips.unique_id = n.unique_id
-//         LEFT JOIN prospects_customers_schema p
-//             ON split_part(ss.prospectid_dealerid_salesrepid, ',', 1) = p.item_id::text
-//     `)
-
-// 	return filtersBuilder.String()
-// }
 
 func QcNtpRetrieveQueryFunc() string {
 	var filtersBuilder strings.Builder

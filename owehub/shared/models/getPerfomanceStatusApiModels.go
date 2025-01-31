@@ -105,7 +105,7 @@ type ProjectStatusReq struct {
 	UniqueIds     []string
 	ProjectLimit  int
 	ProjectStatus []string `json:"project_status"`
-	DealerName    interface{}
+	DealerNames   []string
 }
 
 // project management list
