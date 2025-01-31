@@ -91,7 +91,6 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 			
 				
 			FROM customers_customers_schema as c
-			%s
 			LEFT JOIN ntp_ntp_schema AS ntp ON c.record_id = ntp.record_id
 			LEFT JOIN planset_cad_schema AS p ON c.record_id = p.record_id
 			LEFT JOIN fire_permits_permit_fin_schema AS fire ON c.record_id = fire.record_id
@@ -100,6 +99,7 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 			LEFT JOIN utility_db_database_hub_schema AS utility ON c.record_id = utility.record_id
 			LEFT JOIN sales_metrics_schema AS sales ON c.record_id = sales.record_id
 			LEFT JOIN prospects_customers_schema AS prospect ON c.record_id = prospect.record_id
+			%s
 			ORDER BY c.unique_id;
 		`, whereClause)
 
