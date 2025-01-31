@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './styles/DatTool.module.css';
 
 import Header from './components/Header';
@@ -11,16 +11,24 @@ import SideContainer from './components/SideContainer';
 import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
 import CommonComponent from './pages/CommonComponent';
+import { useOutletContext } from 'react-router-dom';
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
-  const [openPopUp,setOpenPopUp]=useState<boolean>(false);
-  const [openRefresh,setOpenRefresh]=useState(false);
+  const [openPopUp, setOpenPopUp] = useState<boolean>(false);
+  const [openRefresh, setOpenRefresh] = useState(false);
+  const { activeMenu } = useOutletContext<{ activeMenu: string }>();
+  const { refreshDat } = useOutletContext<{ refreshDat: boolean }>();
+  const { setRefreshDat } = useOutletContext<{ setRefreshDat: React.Dispatch<React.SetStateAction<boolean>> }>();
+  useEffect(() => {
+    setSelectedPage(activeMenu);
+  }, [activeMenu])
+
   const renderPage = () => {
     switch (selectedPage) {
       case 'Structural':
         return <StructuralPage />;
       case 'Adders':
-        return <AddressPage setOpenPopUp={setOpenPopUp}/>;
+        return <AddressPage setOpenPopUp={setOpenPopUp} />;
       case 'Notes':
         return <NotesPage />;
       case 'Other':
@@ -32,27 +40,26 @@ const DatTool: React.FC = () => {
 
   return (
     <div className={styles.mainContainer}>
-      
+
       {
-      openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp}/>
-    }
-    {
-      openRefresh && <RefreshPopUp setOpenRefresh={setOpenRefresh}/>
-    }
-      <Header onMenuSelect={setSelectedPage} setOpenRefresh={setOpenRefresh} />
+        openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp} />
+      }
+      {
+        refreshDat && <RefreshPopUp setOpenRefresh={setRefreshDat} />
+      }
       
       <div className={styles.layoutContainer}>
-  <div className={styles.contentContainer}>
-  <CommonComponent/>
-    {renderPage()}
-  </div>
-  
-  <div className={styles.sidebar}>
-    
-    <SideContainer />
-  </div>
-  
-</div>
+        <div className={styles.contentContainer}>
+          <CommonComponent />
+          {renderPage()}
+        </div>
+
+        <div className={styles.sidebar}>
+
+          <SideContainer />
+        </div>
+
+      </div>
     </div>
   );
 };
