@@ -286,7 +286,8 @@ const StructuralPage: React.FC = () => {
                     gridTemplateColumns: 'repeat(2, 1fr)',
                     gridTemplateRows: 'repeat(3, auto)',
                     columnGap: '15px',
-                    rowGap:'15px'
+                    rowGap:'15px',
+                    marginTop:'15px',
                   }}
                 >
                   {renderComponent(
@@ -636,7 +637,13 @@ const StructuralPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className={uploadedImages.length < 3 ? styles.uploadImage : styles.uploadImageThree}>
+              <div className={
+  uploadedImages.length === 3
+    ? styles.uploadImageThree
+    : uploadedImages.length === 2 || uploadedImages.length === 1
+    ? styles.uploadImageTwo
+    : styles.uploadImage
+}>
   <div className={styles.imagePreviewContainer}>
     {uploadedImages.map((image, index) => (
       <div key={index} className={styles.imagePreview}>
