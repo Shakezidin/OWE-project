@@ -251,7 +251,7 @@
   align-items: center;
   gap: 50px;
   gap: 18px;
-  padding: 40px 20px;
+  padding: 48px 20px;
   border-radius: 18px;
   background-color: #ffffff;
   width: 100%;
@@ -315,7 +315,7 @@
 
 .imagePreviewContainer {
   display: flex;
-  gap: 10px;
+  gap: 18px;
   margin-right: 20px;
 }
 
@@ -431,10 +431,21 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 18px;
-  padding: 40px 20px;
+  gap: 24px;
+  padding: 6px 20px 20px 20px;
   border-radius: 18px;
   background-color: #ffffff;
-  justify-content: center;
+  width: 100%;
+}
+
+
+.uploadImageTwo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  padding: 6px 20px 20px 20px;
+  border-radius: 18px;
+  background-color: #ffffff;
   width: 100%;
 }
