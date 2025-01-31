@@ -18,6 +18,7 @@ func ExecAgingReportInitialCalculation(uniqueIds string, hookType string) error 
 	log.EnterFn(0, "ExecAgingReportInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecAgingReportInitialCalculation", err) }()
 
+	uniqueIds = "OUR13998"
 	var idList []string
 	if uniqueIds != "" {
 		idList = []string{uniqueIds}
@@ -160,22 +161,53 @@ func calculateDaysPendingPermit(permitDate time.Time, ntpDate time.Time, project
 	return daysPendingPermit
 }
 
-func calculateDaysPendingInstall(installDate time.Time, permitDate time.Time, projectStatus string) int {
+// func calculateDaysPendingInstall(installDate time.Time, permitDate time.Time, projectStatus string) int {
 
-	// If installComplete is not empty, calculate the difference between installComplete and permitApprovedDate
+// 	// If installComplete is not empty, calculate the difference between installComplete and permitApprovedDate
+// 	if !installDate.IsZero() && !permitDate.IsZero() {
+// 		// Pass the Duration directly to absDuration
+// 		return int(installDate.Sub(permitDate).Abs().Hours() / 24)
+// 	}
+
+// 	// If projectStatus is "ACTIVE", calculate the difference between today and permitApprovedDate
+// 	if projectStatus == "ACTIVE" && !permitDate.IsZero() {
+// 		today := time.Now()
+// 		// Pass the Duration directly to absDuration
+// 		return int(today.Sub(permitDate).Abs().Hours() / 24)
+// 	}
+
+// 	// If neither condition is met, return 0
+// 	return 0
+// }
+
+func calculateDaysPendingInstall(installDate time.Time, permitDate time.Time, projectStatus string) int {
+	// Log input values
+	log.FuncErrorTrace(0, "installDate: %v, permitDate: %v, projectStatus: %s\n", installDate, permitDate, projectStatus)
+
+	// Ensure dates are truncated to remove time component
+	installDate = installDate.Truncate(24 * time.Hour)
+	permitDate = permitDate.Truncate(24 * time.Hour)
+	today := time.Now().Truncate(24 * time.Hour)
+
+	// Log truncated dates
+	log.FuncErrorTrace(0, "Truncated installDate: %v, Truncated permitDate: %v, Today: %v\n", installDate, permitDate, today)
+
+	// If installDate is not empty, calculate difference between installDate and permitDate
 	if !installDate.IsZero() && !permitDate.IsZero() {
-		// Pass the Duration directly to absDuration
-		return int(installDate.Sub(permitDate).Abs().Hours() / 24)
+		days := int(installDate.Sub(permitDate).Hours() / 24)
+		log.FuncErrorTrace(0, "Case 1: installDate - permitDate = %d days\n", days)
+		return days
 	}
 
-	// If projectStatus is "ACTIVE", calculate the difference between today and permitApprovedDate
+	// If projectStatus is "ACTIVE", calculate the difference between today and permitDate
 	if projectStatus == "ACTIVE" && !permitDate.IsZero() {
-		today := time.Now()
-		// Pass the Duration directly to absDuration
-		return int(today.Sub(permitDate).Abs().Hours() / 24)
+		days := int(today.Sub(permitDate).Hours() / 24)
+		log.FuncErrorTrace(0, "Case 2: today - permitDate = %d days\n", days)
+		return days
 	}
 
 	// If neither condition is met, return 0
+	log.FuncErrorTrace(0, "Case 3: No valid condition met, returning 0")
 	return 0
 }
 
@@ -201,21 +233,13 @@ func calculateProjectAge(uniqueId string, contractDate time.Time) int {
 	var projectAge int
 	today := time.Now()
 
-	if uniqueId != "" && contractDate.IsZero() {
+	if uniqueId != "" && !contractDate.IsZero() {
 		projectAge = int(today.Sub(contractDate).Abs().Hours() / 24) // Calculate days from today
 	} else {
 		projectAge = 0
 	}
 
 	return projectAge
-}
-
-// Helper function to get the absolute value of a duration
-func absDuration(d time.Duration) time.Duration {
-	if d < 0 {
-		return -d
-	}
-	return d
 }
 
 func ClearAgingRp() error {
