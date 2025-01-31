@@ -82,8 +82,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
 
    const environment = process.env.REACT_APP_ENV;
       const isEditVisible =
-      (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
-      environment === 'staging';
+      (role_name === TYPE_OF_USER.ADMIN ) 
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}
@@ -141,8 +140,8 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.dealer || 'N/A'}</td>
-                  <td>{el.reporting_manager}</td>
+                  {/* <td>{el.dealer || 'N/A'}</td> */}
+                  {/* <td>{el.reporting_manager}</td> */}
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
                   <td>{el.reporting_manager}</td>

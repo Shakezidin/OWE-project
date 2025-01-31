@@ -21,6 +21,7 @@ import useAuth from '../../../hooks/useAuth';
 import useIdleTimer from '../../../hooks/useIdleTimer';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import Cookies from 'js-cookie';
+import DatHeader from './DatHeader';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -28,7 +29,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
-  const [dbStatus, setDbStatus]= useState<boolean>(true);
+  const [dbStatus, setDbStatus] = useState<boolean>(true);
   const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -100,15 +101,15 @@ const MainLayout = () => {
     }
   }, [dispatch, navigate, authData]);
 
-    /** check whether db down or not */
-   useEffect(() => {
-     const fetchDBStatus = async () => {
-       const status = await checkDBStatus();
-       setDbStatus(status);
-     };
- 
-     fetchDBStatus();
-   }, []);
+  /** check whether db down or not */
+  useEffect(() => {
+    const fetchDBStatus = async () => {
+      const status = await checkDBStatus();
+      setDbStatus(status);
+    };
+
+    fetchDBStatus();
+  }, []);
 
   useEffect(() => {
     if (isTablet) {
@@ -120,6 +121,9 @@ const MainLayout = () => {
     }
   }, [isTablet]);
 
+  const [activeMenu, setActiveMenu] = useState<string>('General');
+  const [refreshDat, setRefreshDat] = useState<boolean>(false);
+
   return isAuthenticated ? (
     <div className="main-container">
       {!dbStatus && (
@@ -129,13 +133,28 @@ const MainLayout = () => {
           </span>
         </div>
       )}
-      <Header
-        toggleOpen={toggleOpen}
-        setToggleOpen={setToggleOpen}
-        sidebarChange={sidebarChange}
-        setSidebarChange={setSidebarChange}
-        dbStatus={dbStatus}
-      />
+      {window.location.pathname !== '/dat_tool' &&
+        <Header
+          toggleOpen={toggleOpen}
+          setToggleOpen={setToggleOpen}
+          sidebarChange={sidebarChange}
+          setSidebarChange={setSidebarChange}
+          dbStatus={dbStatus}
+        />
+      }
+      {window.location.pathname === '/dat_tool' &&
+        <DatHeader
+          setRefreshDat={setRefreshDat}
+          toggleOpen={toggleOpen}
+          setToggleOpen={setToggleOpen}
+          sidebarChange={sidebarChange}
+          setSidebarChange={setSidebarChange}
+          dbStatus={dbStatus}
+          activeMenu={activeMenu}
+          setActiveMenu={setActiveMenu}
+        />
+      }
+
       <div className="side-header">
         <Sidebar
           toggleOpen={toggleOpen}
@@ -151,7 +170,7 @@ const MainLayout = () => {
           }}
         >
           <div className="children-container">
-            <Outlet />
+            <Outlet context={{refreshDat,setRefreshDat, activeMenu }} />
           </div>
         </div>
         {isOpenChangePassword && (

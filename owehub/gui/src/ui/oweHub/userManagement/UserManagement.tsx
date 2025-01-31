@@ -60,7 +60,7 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
-  const [isExportingData, setIsExporting] = useState(false);
+
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
   console.log(selectedOption, 'selectedoption');
@@ -85,6 +85,7 @@ const UserManagement: React.FC = () => {
     userOnboardingList,
     userRoleBasedList,
     userPerformanceList,
+    totalCount
   } = useAppSelector((state) => state.userManagement);
   const {
     formData,
@@ -234,34 +235,7 @@ const UserManagement: React.FC = () => {
     activeSalesRep,
   ]);
 
-  useEffect(() => {
-    if(isExportingData){
-      const data = {
-        page_number: page,
-        
-        sales_rep_status: activeSalesRep,
-        filters: [
-          {
-            Column: 'name',
-            Operation: 'cont',
-            Data: searchTerm,
-          },
-        ],
-      };
-      if (selectedOption.value !== '') {
-        data.filters.push({
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        });
-      }
-      dispatch(fetchUserListBasedOnRole(data));
-      
-
-    }
-
-  },[isExportingData])
-
+  
   /** handle dropdown value */
   const handleSelectChange = useCallback(
     (selectOption: UserDropdownModel) => {
@@ -585,10 +559,10 @@ const UserManagement: React.FC = () => {
           searchTerm={searchTerm}
           setSelectAllChecked={setSelectAllChecked}
           userRoleBasedList={userRoleBasedList}
+          totalCount={totalCount}
           userDropdownData={ALL_USER_ROLE_LIST}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
-          setIsExporting={setIsExporting}
           onClickDelete={(item: any) => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)

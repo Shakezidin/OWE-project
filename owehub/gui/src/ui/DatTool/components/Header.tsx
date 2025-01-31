@@ -2,17 +2,29 @@ import React, { useState } from 'react';
 import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/Header.module.css';
 import { MdRefresh } from 'react-icons/md';
-import Select from 'react-select';
-import { ValueContainer } from 'react-select/dist/declarations/src/components/containers';
+import Select, { SingleValue } from 'react-select';
 
 interface HeaderProps {
   onMenuSelect: (page: string) => void;
   setOpenRefresh: (open: boolean) => void;
 }
 
-const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
+interface OptionType {
+  value: string;
+  label: string;
+}
+
+const options: OptionType[] = [
+  { value: '7090', label: '7090' },
+  { value: '7190', label: '7190' },
+  { value: '7290', label: '7290' },
+  { value: '7390', label: '7390' },
+  { value: '7490', label: '7490' },
+];
+
+const Header: React.FC<HeaderProps> = ({ onMenuSelect, setOpenRefresh }) => {
   const [activeMenu, setActiveMenu] = useState<string>('General');
-  const [selectedOption, setSelectedOption] = useState<any>(null);
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(options[0]);
   const [isOpen, setIsOpen] = useState(false);
 
   // Menu click handler
@@ -22,22 +34,9 @@ const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
   };
 
   // Handle option change for react-select
-  const handleChange = (selectedOption: any) => {
-    setSelectedOption(selectedOption); 
+  const handleChange = (selectedOption: SingleValue<OptionType>) => {
+    setSelectedOption(selectedOption);
     setIsOpen(false);
-  };
-
-  // Inline styles
-  const containerStyles = {
-    marginBottom: '15px',
-  };
-
-  const labelStyles = {
-    marginBottom: '5px',
-    fontSize: '12px',
-    fontWeight: '400',
-    lineHeight: '18px',
-    color: '#565656',
   };
 
   const customStyles = {
@@ -135,18 +134,7 @@ const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
       padding:'0px 3px',
     }),
   };
-  
-  
-  
 
-  // Options for react-select dropdown
-  const options = [
-    { value: '7090', label: '7090' },
-    { value: '7190', label: '7190' },
-    { value: '7290', label: '7290' },
-    { value: '7390', label: '7390' },
-    { value: '7490', label: '7490' },
-  ];
 
   return (
     <div className={styles.header}>
@@ -156,53 +144,35 @@ const Header = ({ onMenuSelect, setOpenRefresh }: HeaderProps) => {
 
       <nav className={styles.menuContainer}>
         <ul className={styles.menuItems}>
-          <li
-            className={activeMenu === 'General' ? styles.active : ''}
-            onClick={() => handleMenuClick('General')}
-          >
-            General
-          </li>
-          <li
-            className={activeMenu === 'Structural' ? styles.active : ''}
-            onClick={() => handleMenuClick('Structural')}
-          >
-            Structural
-          </li>
-          <li
-            className={activeMenu === 'Adders' ? styles.active : ''}
-            onClick={() => handleMenuClick('Adders')}
-          >
-            Adders
-          </li>
-          <li
-            className={activeMenu === 'Other' ? styles.active : ''}
-            onClick={() => handleMenuClick('Other')}
-          >
-            Other
-          </li>
-          <li
-            className={activeMenu === 'Notes' ? styles.active : ''}
-            onClick={() => handleMenuClick('Notes')}
-          >
-            Notes
-          </li>
+          {['General', 'Structural', 'Adders', 'Other', 'Notes'].map((menu) => (
+            <li
+              key={menu}
+              className={activeMenu === menu ? styles.active : ''}
+              onClick={() => handleMenuClick(menu)}
+            >
+              {menu}
+            </li>
+          ))}
         </ul>
       </nav>
 
       <div className={styles.headerLast}>
-        
         <div>
-        <Select
-  value={selectedOption}
-  onChange={handleChange}
-  options={options}
-  styles={customStyles}
-  onFocus={() => setIsOpen(true)}
-  onBlur={() => setIsOpen(false)}
-  placeholder="Revision number"
-  classNamePrefix="select"
-  isSearchable={false}
-/>
+          <Select
+            value={selectedOption}
+            onChange={handleChange}
+            options={options}
+            styles={customStyles}
+            onFocus={() => setIsOpen(true)}
+            onBlur={() => setIsOpen(false)}
+            placeholder="Rev.No:"
+            classNamePrefix="select"
+            isSearchable={false}
+            getOptionLabel={(option) => option.label}
+            formatOptionLabel={(option, { context }) =>
+              context === 'value' ? `Rev.No: ${option.label}` : option.label
+            }
+          />
         </div>
         <div className={styles.iconContainer} onClick={() => setOpenRefresh(true)}>
           <MdRefresh size={18} />

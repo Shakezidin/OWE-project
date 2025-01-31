@@ -262,6 +262,7 @@ import React, {
    
     
       console.log(editData, "editData")
+      console.log(formData, "kfklf")
    
     /** render ui */
   
@@ -401,29 +402,20 @@ import React, {
                       </div>
                     ) : null}
                     {formData.role_name !== TYPE_OF_USER.PARTNER ? (
-                      <div
-                        className="create-input-field"
-                        style={{ marginTop: -3 }}
-                      >
-                        <label className="inputLabel">Phone Number</label>
-                        <PhoneInput
-                          countryCodeEditable={false}
-                          country={'us'}
-                          disableCountryGuess={true}
-                          enableSearch
-                          value={formData.mobile_number}
-                          onChange={(value: any) => {
-                            console.log('date', value);
-                            dispatch(
-                              updateUserForm({ field: 'mobile_number', value })
-                            );
-                          }}
-                          placeholder="Enter phone number"
-                        />
-                        {phoneNumberError && (
-                          <p className="error-message">{phoneNumberError}</p>
-                        )}
-                      </div>
+                          <div className="create-input-field">
+                          <Input
+                            type={'text'}
+                            label="Mobile"
+                            value={formData.mobile_number}
+                            placeholder={'91123456789'}
+                            onChange={(e) => handleInputChange(e)}
+                            name={'mobile_number'}
+                            
+                          />
+                          {phoneNumberError && (
+                            <div className="error-message">{phoneNumberError}</div>
+                          )}
+                        </div>
                     ) : null}
                     {formData.role_name === TYPE_OF_USER.PARTNER ? (
                       <div className="create-input-field">

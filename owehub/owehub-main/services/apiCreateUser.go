@@ -117,6 +117,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if createUserReq.RoleName != string(types.RoleAccountExecutive) &&
 		createUserReq.RoleName != string(types.RoleAccountManager) &&
+		createUserReq.RoleName != string(types.RoleProjectManager) &&
 		createUserReq.RoleName != string(types.RoleAdmin) &&
 		createUserReq.RoleName != string(types.RoleFinAdmin) &&
 		createUserReq.RoleName != string(types.RoleDbUser) &&

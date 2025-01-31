@@ -203,6 +203,27 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdminAccounts},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_project_list",
+		apiHandler.HandleGetProjectListRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_tab_general_info",
+		apiHandler.HandleGetTabGeneralInfoRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-reports-service/v1/get_tab_structural_info",
+	// 	apiHandler.HandleGetTabStructuralInfoRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
 }
 
 /******************************************************************************

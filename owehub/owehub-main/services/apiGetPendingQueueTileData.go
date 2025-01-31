@@ -73,7 +73,8 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		return
 	}
 
-	if userRole == string(types.RoleAccountManager) || userRole == string(types.RoleAccountExecutive) {
+	if userRole == string(types.RoleAccountManager) || userRole == string(types.RoleProjectManager) ||
+		userRole == string(types.RoleAccountExecutive) {
 		accountName, err := fetchAmAeName(dataReq.Email)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -82,11 +83,16 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		var roleBase string
 		if userRole == "Account Manager" {
 			roleBase = "account_manager"
-		} else {
+		}
+		if userRole == "Account Executive" {
 			roleBase = "account_executive"
 		}
+		if userRole == "Project Manager" {
+			roleBase = "project_manager"
+		}
+
 		query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
@@ -103,7 +109,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		}
 	} else if userRole == string(types.RoleAdmin) || userRole == string(types.RoleFinAdmin) {
 		query := "SELECT sales_partner_name as data FROM sales_partner_dbhub_schema"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)

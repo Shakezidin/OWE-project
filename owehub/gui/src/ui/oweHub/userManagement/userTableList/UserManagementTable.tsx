@@ -55,7 +55,6 @@ interface UserTableProos {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsExporting:React.Dispatch<React.SetStateAction<boolean>>;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onClickMultiDelete: () => void;
@@ -66,8 +65,10 @@ interface UserTableProos {
   activeSalesRep: string;
   handleCrossClick: () => void;
   handleEdit: (id?: string) => void;
-  isExportingData?:boolean;
-  editData?:[];
+  isExportingData?: boolean;
+  editData?: [];
+  totalCount?: number;
+  
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -91,17 +92,16 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   handleCrossClick,
   handleEdit,
   editData,
-  setIsExporting,
-  isExportingData
+
+  totalCount,
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
- 
+  const [isExportingData, setIsExporting] = useState(false);
   const { authData, clearAuthData } = useAuth();
 
   const userRole = authData?.role;
- 
 
   const count = useAppSelector((state) => state.userManagement.totalCount);
   const { loading, dealerList, dealerCount } = useAppSelector(
@@ -244,7 +244,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
             handlePasswordReset={handlePasswordReset}
             handleEdit={handleEdit}
-            
           />
         );
       case TYPE_OF_USER.FINANCE_ADMIN:
@@ -457,54 +456,85 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     }, 800),
     []
   );
-  const handleExportOpen = () => {
+  const handleExportOpen = async () => {
     setIsExporting(true);
-    
-       const removeHtmlTags = (str: any) => {
-         if (!str) return '';
-         return str.replace(/<\/?[^>]+(>|$)/g, '');
-       };
-       
-       const headers = [
-         'Code',
-         'Name',
-         'Role',
-         'Email',
-         'Phone Number',
-         'Manager',
-         'Dealer',
-         'Description',
-          
-       ];
 
-       console.log(userRoleBasedList, "userRoleBasedList");
-       const csvData = userRoleBasedList?.map?.((item: any) => [
-         item.user_code,
-         item.name,
-         item.role_name,
-         item.email_id,
-         item.mobile_number,
-         item.reporting_manager,
-         item.dealer,
-         item.description,
-       ]);
-       const csvRows = [headers, ...csvData];
-       const csvString = Papa.unparse(csvRows);
-       const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-       const url = URL.createObjectURL(blob);
-       const link = document.createElement('a');
-       link.href = url;
-       link.setAttribute('download', 'userdata.csv');
-       document.body.appendChild(link);
-       link.click();
-       document.body.removeChild(link);
-       setIsExporting(false);
-     
+    const removeHtmlTags = (str: any) => {
+      if (!str) return '';
+      return str.replace(/<\/?[^>]+(>|$)/g, '');
+    };
+
+    
+
+    try {
+      const requestData: any = {
+        page_number: 1,
+        filters:[{Column:"name",Operation:"cont",Data:""}] 
+
+      };
+  
+      if (selectedOption.value !== '') {
+        requestData.filters = [
+          {
+            Column: 'role_name',
+            Operation: '=',
+            Data: selectedOption.value,
+          },
+        ];
+      }
+  
+      const exportData = await postCaller('get_users', requestData);
+  
+      if (!exportData || exportData.status > 201) {
+        toast.error(exportData?.message || 'Error fetching data');
+        setIsExporting(false);
+        return;
+      }
+
+    const headers = [
+      'Code',
+      'Name',
+      'Role',
+      'Email',
+      'Phone Number',
+      'Manager',
+      'Dealer',
+      'Description',
+    ];
+
+    console.log(userRoleBasedList, 'userRoleBasedList');
+    const csvData = exportData?.data?.users_data_list?.map?.((item: any) => [
+      item.user_code,
+      item.name,
+      item.role_name,
+      item.email_id,
+      item.mobile_number,
+      item.reporting_manager,
+      item.dealer,
+      item.description,
+    ]);
+    const csvRows = [headers, ...csvData];
+    const csvString = Papa.unparse(csvRows);
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'userdata.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+  } catch (error) {
+    console.error('Error exporting data:', error);
+    toast.error('An unexpected error occurred while exporting data');
+  } finally {
+    setIsExporting(false);
+  }
   };
 
   const environment = process.env.REACT_APP_ENV;
- 
-  
+  console.log(userRoleBasedList, 'userRoleBasedList');
+
   /** render UI */
   return (
     <>
@@ -543,31 +573,33 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               }}
             />
             {!activeSalesRep && <div>{AddBtn}</div>}
-            {userRole === TYPE_OF_USER.ADMIN  && environment === 'staging' &&  <div>{ImportBtn}</div>}
-            {userRole === TYPE_OF_USER.ADMIN &&  environment === 'staging' &&
-            <div>
-                  <button
-                                 className={`performance-exportbtn  mt0 `}
-                                 style={{ height: '36px', padding: '8px 12px' }}
-                                 onClick={handleExportOpen}
-                               >
-                                 {isExportingData ? (
-                                   <div className="dealer-export">
-                                     <MdDownloading
-                                       className="downloading-animation dealer-mob-download"
-                                       size={20}
-                                     />
-                                     <span className="dealer-export-mob">Export</span>
-                                   </div>
-                                 ) : (
-                                   <div className="dealer-export">
-                                     <FaUpload size={12} className="dealer-mob-upload" />
-                                     <span className="dealer-export-mob">Export</span>
-                                   </div>
-                                 )}
-                               </button>
-            </div>
-  }
+            {userRole === TYPE_OF_USER.ADMIN && environment === 'staging' && (
+              <div>{ImportBtn}</div>
+            )}
+            {userRole === TYPE_OF_USER.ADMIN  && (
+              <div>
+                <button
+                  className={`performance-exportbtn  mt0 `}
+                  style={{ height: '36px', padding: '8px 12px' }}
+                  onClick={handleExportOpen}
+                >
+                  {isExportingData ? (
+                    <div className="dealer-export">
+                      <MdDownloading
+                        className="downloading-animation dealer-mob-download"
+                        size={20}
+                      />
+                      <span className="dealer-export-mob">Export</span>
+                    </div>
+                  ) : (
+                    <div className="dealer-export">
+                      <FaUpload size={12} className="dealer-mob-upload" />
+                      <span className="dealer-export-mob">Export</span>
+                    </div>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="user_user-type">
@@ -630,7 +662,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 </div>
               </div>
             )}
-            
+
             <Tooltip
               style={{
                 zIndex: 103,
@@ -677,7 +709,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 />
               </svg>
             </button>
-           
           </div>
         </div>
       </div>

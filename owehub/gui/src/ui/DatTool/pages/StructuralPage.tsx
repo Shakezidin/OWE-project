@@ -9,6 +9,7 @@ import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import CustomInput from '../components/Input';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import CommonComponent from './CommonComponent';
 
 type Option = {
   value: string | number;
@@ -114,11 +115,11 @@ const StructuralPage: React.FC = () => {
     type: 'select' | 'input' = 'select'
   ) => {
     // Get the current value from either temp (when editing) or selected values
-    const currentValue = isEditable 
-      ? tempSelectedValues[key] !== undefined 
-        ? tempSelectedValues[key] 
-        : (selectedValues[key] || defaultValue)
-      : (selectedValues[key] || defaultValue);
+    const currentValue = isEditable
+      ? tempSelectedValues[key] !== undefined
+        ? tempSelectedValues[key]
+        : selectedValues[key] || defaultValue
+      : selectedValues[key] || defaultValue;
 
     if (type === 'input') {
       return isEditable ? (
@@ -128,13 +129,10 @@ const StructuralPage: React.FC = () => {
           onChange={(value) => handleSelectChange(key, value)}
         />
       ) : (
-        <DisplaySelect
-          label={label}
-          value={currentValue}
-        />
+        <DisplaySelect label={label} value={currentValue} />
       );
     }
-    
+
     return isEditable ? (
       <Select
         label={label}
@@ -143,10 +141,7 @@ const StructuralPage: React.FC = () => {
         onChange={(value) => handleSelectChange(key, value)}
       />
     ) : (
-      <DisplaySelect
-        label={label}
-        value={currentValue}
-      />
+      <DisplaySelect label={label} value={currentValue} />
     );
   };
 
@@ -159,22 +154,23 @@ const StructuralPage: React.FC = () => {
     setEditStructuralInfo(true);
   };
 
-
   const handleDeleteState = (stateToDelete: string) => {
     // Don't allow deletion if it's the only state
     if (structuralInfoStates.length <= 1) return;
-    
+
     // Filter out the state to delete
-    const updatedStates = structuralInfoStates.filter(state => state !== stateToDelete);
-    
+    const updatedStates = structuralInfoStates.filter(
+      (state) => state !== stateToDelete
+    );
+
     // Update states array
     setStructuralInfoStates(updatedStates);
-    
+
     // If the active state was deleted, set the active state to the last state in the array
     if (activeStructuralState === stateToDelete) {
       setActiveStructuralState(updatedStates[updatedStates.length - 1]);
     }
-    
+
     // Reset edit mode if it was active
     if (editStructuralInfo) {
       toggleEditStructuralInfo(false);
@@ -182,8 +178,10 @@ const StructuralPage: React.FC = () => {
   };
   return (
     <div>
+      
       {viewerImage && (
         <div className={styles.imageViewerContainer}>
+          
           <div className={styles.imageViewer}>
             <img
               className={styles.viewerImage}
@@ -203,77 +201,76 @@ const StructuralPage: React.FC = () => {
         <div className={styles.flexContainer}>
           <div className={styles.boxOne}>
             <div className={styles.leftWrapper}>
-            <div className={styles.headingContainer}>
-  <div>
-    <p>Structural Info</p>
-  </div>
-  <div className={styles.headingIcon}>
-    {structuralInfoStates.map((state, index) => (
-      (editStructuralInfo && activeStructuralState === state) || !editStructuralInfo ? (
-        <div
-          key={index}
-          className={`${
-            activeStructuralState === state
-              ? styles.activeState
-              : styles.wordContainer
-          }`}
-          onClick={() => setActiveStructuralState(state)}
-        >
-          {state}
-        </div>
-      ) : null
-    ))}
-    
-    <div 
-      className={styles.iconContainer} 
-      onClick={() => {
-        if (editStructuralInfo) {
-          // When clicking HiMiniXMark, remove the last state if it was just added
-          if (activeStructuralState === structuralInfoStates[structuralInfoStates.length - 1]) {
-            // Remove the last state
-            const newStates = structuralInfoStates.slice(0, -1);
-            setStructuralInfoStates(newStates);
-            // Set active state to the previous state
-            setActiveStructuralState(newStates[newStates.length - 1]);
-          }
-          toggleEditStructuralInfo(false);
-        } else {
-          addNewStructuralState();
-        }
-      }}
-    >
-      {editStructuralInfo ? (
-        <HiMiniXMark />
-      ) : (
-        <IoMdAdd />
-      )}
-    </div>
+              <div className={styles.headingContainer}>
+                <div>
+                  <p>Structural Info</p>
+                </div>
+                <div className={styles.headingIcon}>
+                  {structuralInfoStates.map((state, index) =>
+                    (editStructuralInfo && activeStructuralState === state) ||
+                    !editStructuralInfo ? (
+                      <div
+                        key={index}
+                        className={`${
+                          activeStructuralState === state
+                            ? styles.activeState
+                            : styles.wordContainer
+                        }`}
+                        onClick={() => setActiveStructuralState(state)}
+                      >
+                        {state}
+                      </div>
+                    ) : null
+                  )}
 
-    <div
-      className={`${
-        editStructuralInfo ? styles.active : styles.iconContainer
-      }`}
-      onClick={() =>
-        editStructuralInfo
-          ? toggleEditStructuralInfo(true)
-          : toggleEditStructuralInfo()
-      }
-      style={{ cursor: 'pointer' }}
-    >
-      {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
-    </div>
-    
-    {activeStructuralState !== structuralInfoStates[structuralInfoStates.length - 1] && (
-      <div 
-        className={styles.iconContainer}
-        onClick={() => handleDeleteState(activeStructuralState)}
-      >
-        <RiDeleteBin6Line />
-      </div>
-    )}
-</div>
-</div>
+                  <div
+                    className={styles.iconContainer}
+                    onClick={() => {
+                      if (editStructuralInfo) {
+                        if (
+                          activeStructuralState ===
+                          structuralInfoStates[structuralInfoStates.length - 1]
+                        ) {
+                          const newStates = structuralInfoStates.slice(0, -1);
+                          setStructuralInfoStates(newStates);
+                          setActiveStructuralState(
+                            newStates[newStates.length - 1]
+                          );
+                        }
+                        toggleEditStructuralInfo(false);
+                      } else {
+                        addNewStructuralState();
+                      }
+                    }}
+                  >
+                    {editStructuralInfo ? <HiMiniXMark /> : <IoMdAdd />}
+                  </div>
 
+                  <div
+                    className={`${
+                      editStructuralInfo ? styles.active : styles.iconContainer
+                    }`}
+                    onClick={() =>
+                      editStructuralInfo
+                        ? toggleEditStructuralInfo(true)
+                        : toggleEditStructuralInfo()
+                    }
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {editStructuralInfo ? <IoMdCheckmark /> : <AiOutlineEdit />}
+                  </div>
+
+                  {activeStructuralState !==
+                    structuralInfoStates[structuralInfoStates.length - 1] && (
+                    <div
+                      className={styles.iconContainer}
+                      onClick={() => handleDeleteState(activeStructuralState)}
+                    >
+                      <RiDeleteBin6Line />
+                    </div>
+                  )}
+                </div>
+              </div>
 
               <div>
                 {renderComponent(
@@ -289,6 +286,7 @@ const StructuralPage: React.FC = () => {
                     gridTemplateColumns: 'repeat(2, 1fr)',
                     gridTemplateRows: 'repeat(3, auto)',
                     columnGap: '15px',
+                    rowGap:'15px'
                   }}
                 >
                   {renderComponent(
@@ -436,10 +434,11 @@ const StructuralPage: React.FC = () => {
                   <p>Attachment</p>
                   <div className={styles.buttonContainer}>
                     {editAttachment ? (
-                      <div onClick={() => toggleEditAttachment(false)} className={styles.iconContainer}>
-                        <HiMiniXMark
-                          
-                        />
+                      <div
+                        onClick={() => toggleEditAttachment(false)}
+                        className={styles.iconContainer}
+                      >
+                        <HiMiniXMark />
                       </div>
                     ) : null}
                     <div
@@ -463,33 +462,33 @@ const StructuralPage: React.FC = () => {
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                  {renderComponent(
-        'attachmentType',
-        'Type',
-        '--',
-        editAttachment,
-        'input'  // Specify input type
-      )}
-      {renderComponent(
-        'attachmentPattern',
-        'Pattern',
-        '---',
-        editAttachment,
-        'input'  // Specify input type
-      )}
-      {renderComponent(
-        'attachmentQuantity',
-        'Quantity',
-        '12',
-        editAttachment,
-        'input'  // Specify input type
-      )}
-      {renderComponent(
-        'attachmentSpacing',
-        'Spacing',
-        'Portrait',
-        editAttachment
-      )}
+                    {renderComponent(
+                      'attachmentType',
+                      'Type',
+                      '--',
+                      editAttachment,
+                      'input'
+                    )}
+                    {renderComponent(
+                      'attachmentPattern',
+                      'Pattern',
+                      '---',
+                      editAttachment,
+                      'input'
+                    )}
+                    {renderComponent(
+                      'attachmentQuantity',
+                      'Quantity',
+                      '12',
+                      editAttachment,
+                      'input'
+                    )}
+                    {renderComponent(
+                      'attachmentSpacing',
+                      'Spacing',
+                      'Portrait',
+                      editAttachment
+                    )}
                   </div>
                 </div>
               </div>
@@ -523,12 +522,18 @@ const StructuralPage: React.FC = () => {
                 </div>
                 <div className={styles.attachmentSelect}>
                   <div className={styles.attachmentSelectDIv}>
-                    {renderComponent('rackingType', 'Type', '--', editRacking,'input')}
+                    {renderComponent(
+                      'rackingType',
+                      'Type',
+                      '--',
+                      editRacking,
+                      'input'
+                    )}
                     {renderComponent(
                       'rackingMount',
                       'Mount',
                       'flush',
-                      editRacking,
+                      editRacking
                     )}
                   </div>
                   <div className={styles.attachmentSelectDIv}>
@@ -631,56 +636,61 @@ const StructuralPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className={styles.uploadImage}>
-                <div className={styles.imagePreviewContainer}>
-                  {uploadedImages.map((image, index) => (
-                    <div key={index} className={styles.imagePreview}>
-                      <button
-                        className={styles.removeImageButton}
-                        onClick={() => handleImageRemove(index)}
-                      >
-                        <FaXmark />
-                      </button>
-                      <img
-                        src={image.url}
-                        alt="Uploaded preview"
-                        className={styles.previewImage}
-                      />
-                      <p
-                        className={styles.imageView}
-                        onClick={() => setViewerImage(image.url)}
-                      >
-                        View
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
-                    <div className={styles.UploadIcon}>
-                      <IoMdAdd />
-                    </div>
-                  </label>
-                  <input
-                    id="imageUpload"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handleImageUpload}
-                  />
-                </div>
-                {uploadedImages.length === 0 ? (
-                  <div className={styles.UploadIconContent}>
-                    <p className={styles.UploadHeading}>Upload Image</p>
-                    <p className={styles.UploadParagraph}>
-                      You can select up to 3 files
-                    </p>
-                  </div>
-                ) : (
-                  ''
-                )}
-              </div>
+              <div className={uploadedImages.length < 3 ? styles.uploadImage : styles.uploadImageThree}>
+  <div className={styles.imagePreviewContainer}>
+    {uploadedImages.map((image, index) => (
+      <div key={index} className={styles.imagePreview}>
+        <button
+          className={styles.removeImageButton}
+          onClick={() => handleImageRemove(index)}
+        >
+          <FaXmark />
+        </button>
+        <img
+          src={image.url}
+          alt="Uploaded preview"
+          className={styles.previewImage}
+        />
+        <p
+          className={styles.imageView}
+          onClick={() => setViewerImage(image.url)}
+        >
+          View
+        </p>
+      </div>
+    ))}
+  </div>
+
+  {uploadedImages.length < 3 && (  // Only show upload button if less than 3 images
+    <div>
+      <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
+        <div className={styles.UploadIcon}>
+          <IoMdAdd />
+        </div>
+      </label>
+      <input
+        id="imageUpload"
+        type="file"
+        multiple
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleImageUpload}
+      />
+    </div>
+  )}
+
+  {uploadedImages.length === 0 ? (
+    <div className={styles.UploadIconContent}>
+      <p className={styles.UploadHeading}>Upload Image</p>
+      <p className={styles.UploadParagraph}>
+        You can select up to 3 files
+      </p>
+    </div>
+  ) : (
+    ''
+  )}
+</div>
+
             </div>
           </div>
         </div>

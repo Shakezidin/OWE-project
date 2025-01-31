@@ -99,6 +99,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 		"DB User":           true,
 		"Account Manager":   true,
 		"Account Executive": true,
+		"Project Manager":   true,
 	}
 
 	if !nonDealerRoles[roleName] {

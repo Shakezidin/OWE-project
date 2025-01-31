@@ -85,8 +85,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
 
    const environment = process.env.REACT_APP_ENV;
             const isEditVisible =
-            (role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER) &&
-            environment === 'staging';
+            (role_name === TYPE_OF_USER.ADMIN ) 
 
   return (
     <>

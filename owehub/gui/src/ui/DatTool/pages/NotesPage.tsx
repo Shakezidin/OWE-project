@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/Notes.module.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { format } from 'date-fns';
+import CommonComponent from './CommonComponent';
 
 interface Category {
   name: string;
@@ -20,27 +21,27 @@ const NotePage = () => {
   const [notes, setNotes] = useState<Note[]>([
     {
       category: 'Structural',
-      text: 'Selecting a PV trench requires determining trench length and adding concrete for paved areas.',
+      text: 'Flat Roof (per watt): Additional cost for structural reinforcements required...',
     },
     {
       category: 'Electrical',
-      text: 'Electrical configurations are linked to site-specific needs such as load side.',
+      text: 'Electrical configurations are linked to site-specific needs such as load side...',
     },
     {
       category: 'MPU',
-      text: 'Current meter panel needs to be upgraded to support 200A service.',
+      text: 'Meter panel upgrades are often needed for larger systems...',
     },
     {
       category: 'Adder Explanation',
-      text: 'Additional charges include trenching costs and structural reinforcement requirements.',
+      text: 'Detailed explanation for additional charges based on site specifics...',
     },
     {
       category: 'REASON FOR PRODUCTION/LAYOUT CHANGE',
-      text: 'Layout adjusted to accommodate shading from nearby trees and optimize production.',
+      text: 'Adjustments made to ensure efficient layout and production compliance...',
     },
     {
       category: 'NOTES FOR INSTALLER',
-      text: 'Ensure proper conduit routing through attic space. Verify roof attachment points.',
+      text: 'Important details and guidelines for installers to follow...',
     },
   ]);
   const [newNote, setNewNote] = useState<string>('');

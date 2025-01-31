@@ -16,6 +16,38 @@
 }
 
 .contentContainer {
-  padding: 1.2rem 0.6rem 1.2rem 0;
+  padding-top: 1.2rem;
   width: 100%;
+  margin-left: 1.2rem;
+  height: calc(100vh - 94px);
+  overflow-y: scroll;
+}
+
+
+/* Scrollbar  */
+.contentContainer::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.contentContainer::-webkit-scrollbar {
+  display: initial;
+}
+
+.contentContainer::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.contentContainer::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.contentContainer::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.contentContainer::-webkit-scrollbar-corner {
+  background-color: transparent;
 }

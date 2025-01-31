@@ -33,10 +33,15 @@ type PendingQueueNTP struct {
 	PowerClerkSignaturesComplete string `json:"powerclerk"`
 }
 
+type PendingQueueCo struct {
+	CO       string `json:"co"`
+	CoStatus string `json:"co_status"`
+}
+
 type GetPendingQueue struct {
 	UniqueId  string          `json:"uninque_id"`
 	HomeOwner string          `json:"home_owner"`
-	COStatus  string          `json:"co_status"`
+	Co        PendingQueueCo  `json:"co"`
 	Ntp       PendingQueueNTP `json:"ntp"`
 	Qc        PendingQueueQC  `json:"qc"`
 }
