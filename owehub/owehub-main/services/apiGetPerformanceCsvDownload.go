@@ -13,6 +13,7 @@ import (
 	models "OWEApp/shared/models"
 	"encoding/json"
 	"io/ioutil"
+	"regexp"
 	"strings"
 	"time"
 
@@ -195,7 +196,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			PhoneNumber:             CustomerPhoneNumber,
 			Address:                 Address,
 			State:                   State,
-			ContractAmount:          ContractTotal,
+			ContractAmount:          cleanAmount(ContractTotal),
 			SystemSize:              SystemSize,
 			ContractDate:            formatDate(ContractDate),
 			SiteSurevyScheduleDate:  formatDate(SiteSurveyScheduleDate),
@@ -223,4 +224,14 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
 	appserver.FormAndSendHttpResp(resp, "Perfomance Csv Data", http.StatusOK, perfomanceList, RecordCount)
+}
+
+/* contract amount has some spcl char in it, will clean this */
+func cleanAmount(input string) string {
+	input = strings.ReplaceAll(input, " ", "")
+
+	reg := regexp.MustCompile("[^a-zA-Z0-9$.,]")
+	cleaned := reg.ReplaceAllString(input, "")
+
+	return cleaned
 }
