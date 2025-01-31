@@ -520,16 +520,6 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 		filters = append(filters, fmt.Sprintf("unique_id IN (%s)", strings.Join(uniqueIdValues, ", ")))
 	}
 
-	if len(dataFilter.ProjectStatus) > 0 {
-		statusValues := make([]string, 0, len(dataFilter.ProjectStatus))
-		for _, status := range dataFilter.ProjectStatus {
-			statusValues = append(statusValues, fmt.Sprintf("'%s'", strings.ReplaceAll(status, "'", "''")))
-		}
-		filters = append(filters, fmt.Sprintf("project_status IN (%s)", strings.Join(statusValues, ", ")))
-	} else {
-		filters = append(filters, "project_status IN ('ACTIVE')")
-	}
-
 	if len(filters) > 0 {
 		query += " WHERE " + strings.Join(filters, " AND ")
 	}
@@ -556,28 +546,28 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 			UniqueId: uniqueId,
 		}
 
-		if exists.SurveyClr == blue || exists.SurveyClr == grey{
+		if exists.SurveyClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Survey = TextAccToInput("0")
 		}
-		if exists.CadClr == blue || exists.SurveyClr == grey{
+		if exists.CadClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Cad_Design = TextAccToInput("0")
 		}
-		if exists.PermittingClr == blue || exists.SurveyClr == grey{
+		if exists.PermittingClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
 		}
-		if exists.RoofingClr == blue || exists.SurveyClr == grey{
+		if exists.RoofingClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Roofing = TextAccToInput("0")
 		}
-		if exists.InstallClr == blue || exists.SurveyClr == grey{
+		if exists.InstallClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
 		}
-		if exists.InspectionClr == blue || exists.SurveyClr == grey{
+		if exists.InspectionClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Inspection = TextAccToInput("0")
 		}
-		if exists.ActivationClr == blue || exists.SurveyClr == grey{
+		if exists.ActivationClr == blue || exists.SurveyClr == grey {
 			resp1.Days_Pending_Activation = TextAccToInput("0")
 		}
-		if exists.NTPClr == "" || exists.SurveyClr == grey{
+		if exists.NTPClr == "" || exists.SurveyClr == grey {
 			resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
 		}
 
