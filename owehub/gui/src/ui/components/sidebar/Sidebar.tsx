@@ -70,7 +70,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         ) {
         } else if (
           item.path !== ROUTES.CONFIG_PAGE &&
-          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL
         ) {
           newArr[0].mob.push(item);
         }
@@ -90,7 +90,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD &&
-          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL
         ) {
           newArr[0].mob.push(item);
         }
@@ -114,7 +114,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD &&
-          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.SUMMARY_DASBOARD
+          item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL
         ) {
           newArr[0].mob.push(item);
         }
@@ -123,7 +123,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.SUMMARY_DASBOARD) {
+        if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
@@ -156,7 +156,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.COMMISSION_DASHBOARD &&
-            item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
+            item.path !== ROUTES.CALCULATOR && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL
           ) {
             newArr[0].mob.push(item);
           }
@@ -180,7 +180,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-            item.path !== ROUTES.REPORTING
+            item.path !== ROUTES.REPORTING && item.path !== ROUTES.DAT_TOOL
           ) {
             newArr[0].mob.push(item);
           }
@@ -203,7 +203,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
-            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL
           ) {
             newArr[0].mob.push(item);
           }
@@ -218,7 +218,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS &&
-          item.path !== ROUTES.LEAD_MANAGEMENT && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD
+          item.path !== ROUTES.LEAD_MANAGEMENT && item.path !== ROUTES.REPORTING && item.path !== ROUTES.SUMMARY_DASBOARD && item.path !== ROUTES.DAT_TOOL
         ) {
           if (
             isStaging !== 'staging' &&

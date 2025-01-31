@@ -22,6 +22,7 @@ const categories = [
   { name: 'Sale', key: 'sale' },
   { name: 'NTP', key: 'ntp' },
   { name: 'Install', key: 'install' },
+  { name: 'Battery', key: 'battery' },
   { name: 'Cancel', key: 'cancel' },
 ];
 const groupby = [{ label: 'Sale Rep', value: 'primary_sales_rep' }];
@@ -267,10 +268,14 @@ const Index = () => {
       { header: 'Sale', dataKey: 'sale' },
       { header: 'NTP', dataKey: 'ntp' },
       { header: 'Install', dataKey: 'install' },
+      
       { header: 'Cancel', dataKey: 'cancel' },
     ];
     if (showPartner) {
       columns.splice(2, 0, { header: 'Partner', dataKey: 'dealer' });
+    }
+    if (activeHead !== 'kw') {
+      columns.splice(5, 0, { header: 'Battery', dataKey: 'battery' });
     }
     // @ts-ignore
     doc.autoTable({
@@ -282,6 +287,7 @@ const Index = () => {
         sale: item.sale,
         ntp: item.ntp,
         install: item.install,
+        battery: (item.battery) ? item.battery : 0,
         cancel: item.cancel,
       })),
       margin: { top: 20 },

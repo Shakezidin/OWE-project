@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { ArrowForward, Growth, ServiceIcon, SuccessIcon } from './Icons';
+import { ArrowForward, BatteryIcon, Growth, ServiceIcon, SuccessIcon } from './Icons';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
@@ -24,6 +24,7 @@ interface IDealer {
   rank: number;
   sale: number;
   ntp: number;
+  battery: number;
   install: number;
 }
 const today = new Date();
@@ -130,7 +131,7 @@ const Sidebar = ({
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
-     // If the number is an integer, return it as a string without .00
+    // If the number is an integer, return it as a string without .00
     if (sale % 1 === 0) return sale.toString();
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
@@ -257,6 +258,25 @@ const Sidebar = ({
                     </span>
                   </div>
                 </div>
+                {unit !== 'kw' &&
+                  <div>
+                    <div className="icon">
+                      <BatteryIcon />
+                    </div>
+                    <div>
+                      <span className="stats-labels">Total Batteries</span>
+                      <span
+                        style={{ fontSize: 21, fontWeight: 700 }}
+                        className="block"
+                      >
+                        {formatSaleValue(dealer.battery)}
+                        <span className="unit">
+                          ({unit === 'kw' ? 'kW' : 'count'})
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                }
               </div>
               <div className="px2">
                 <div className="grey-weekly-stats justify-center flex items-center">

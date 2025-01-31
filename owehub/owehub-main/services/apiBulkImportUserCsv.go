@@ -110,49 +110,72 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       PartnerId:         getValue(headers, record, "partner_id"),
     }
 
-    // fetching the reporting_manager user_code using email that we will get from .CSV file
-    reportingManagerEmail := getValue(headers, record, "reporting_manager")
-
-
-    // handing hierarchy conditions
-
-    ///reporting manger field can be empty for ,  admin, do , fa , am
-    if CreateBulkUserReq.RoleName == "Admin" || CreateBulkUserReq.RoleName == "Finance Admin" ||
-       CreateBulkUserReq.RoleName == "Dealer Owner" || CreateBulkUserReq.RoleName == "Account Manager" {
-
-      if reportingManagerEmail != "" {
-        log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
-        result.Failed++
-        result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
-        continue
-      }
-    }else{
-    reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-    if err != nil {
-      log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-      continue
-    }
-    CreateBulkUserReq.ReportingManager = reportingManagerCode
-  }
-
-    partnerId := getValue(headers, record, "partner_id")
-    salesPartnerName, err := fetchSalesPartnerNameById(partnerId)
-    if err != nil {
-      log.FuncErrorTrace(0, "Error fetching sales partner name for partner_id: %s, error: %v", partnerId, err)
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching sales partner name for partner_id: %s", partnerId))
-      continue
-    }
-    CreateBulkUserReq.PartnerId = partnerId
-    CreateBulkUserReq.SalesPartnerName = salesPartnerName
-
     if !isValidUser(CreateBulkUserReq) {
       result.Failed++
       result.Errors = append(result.Errors, fmt.Sprintf("Invalid data for user: %s", CreateBulkUserReq.EmailId))
       continue
     }
+
+    reportingManagerEmail := getValue(headers, record, "reporting_manager")
+
+    var reportingManagerRequired bool = !( CreateBulkUserReq.RoleName == "Admin" ||
+    CreateBulkUserReq.RoleName == "Finance Admin" ||
+    CreateBulkUserReq.RoleName == "DB User" ||
+    CreateBulkUserReq.RoleName == "Dealer Owner" ||
+    CreateBulkUserReq.RoleName == "Account Manager" ||
+    CreateBulkUserReq.RoleName == "Account Executive" )
+
+
+    if !reportingManagerRequired &&  reportingManagerEmail != ""{
+        log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
+        result.Failed++
+        result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
+        continue
+      }
+
+    if reportingManagerRequired &&  reportingManagerEmail != ""{
+      reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
+      if err != nil {
+        log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+        result.Failed++
+        result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+        continue
+      }
+      CreateBulkUserReq.ReportingManager = reportingManagerCode
+    }
+
+
+  // handling partner_id conditions , these roles cant have partner_id ....
+  partnerId := getValue(headers, record, "partner_id")
+
+  var partnerIdRequired bool = !(CreateBulkUserReq.RoleName == "Admin" ||
+  CreateBulkUserReq.RoleName == "Finance Admin" ||
+  CreateBulkUserReq.RoleName == "DB User" ||
+  CreateBulkUserReq.RoleName == "Account Manager" ||
+  CreateBulkUserReq.RoleName == "Account Executive")
+
+
+  if !partnerIdRequired &&  partnerId != ""{
+    log.FuncErrorTrace(0, "Role %s should not have a partner name: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerId)
+    result.Failed++
+    result.Errors = append(result.Errors, fmt.Sprintf("Role %s should not have a partner_id", CreateBulkUserReq.RoleName))
+    continue
+  }
+
+
+  if partnerIdRequired {
+    salesPartnerName, err := fetchSalesPartnerNameById(partnerId)
+    if err != nil {
+      log.FuncErrorTrace(0, "Error fetching sales partner name for : %s, error: %v", partnerId, err)
+      result.Failed++
+      result.Errors = append(result.Errors, fmt.Sprintf("Error fetching sales partner name for : %s", partnerId))
+      continue
+    }
+    CreateBulkUserReq.PartnerId = partnerId
+    CreateBulkUserReq.SalesPartnerName = salesPartnerName
+  }
+
+
 
     hashedPassBytes, err := GenerateHashPassword(CreateBulkUserReq.Password)
     if err != nil {
@@ -202,6 +225,10 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
   appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)
 }
 
+
+
+
+
 /*************************************helper functions *************************************/
 
 func getValue(headers []string, record []string, key string) string {
@@ -213,6 +240,7 @@ func getValue(headers []string, record []string, key string) string {
   }
   return ""
 }
+
 
 func isValidUser(user CreateBulkUserReq) bool {
   valid := len(user.Name) > 0 &&
@@ -256,17 +284,16 @@ func fetchUserCodeByEmail(email string) (string, error) {
   if !ok {
     return "", fmt.Errorf("user_code is not of type string")
   }
-
   return userCode, nil
 }
 
 // fetching sales_partner_name by using partner_id
 func fetchSalesPartnerNameById(partnerId string) (string, error) {
   var salesPartnerName string
-  query := "SELECT sales_partner_name FROM sales_partner_dbhub_schema WHERE partner_id = $1"
+  query := "SELECT sales_partner_name FROM sales_partner_dbhub_schema WHERE sales_partner_name = $1"
   data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{partnerId})
   if err != nil {
-    return "", fmt.Errorf("sales partner with id %s not found", partnerId)
+    return "", fmt.Errorf("sales partner with name %s not found", partnerId)
   }
   if len(data) == 0 {
     return "", fmt.Errorf("no user found for email %s", partnerId)

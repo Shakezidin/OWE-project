@@ -188,6 +188,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
 	}
 	RecordCount = int64(len(data))
+	if len(data) <= 0 {
+		appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
+		return
+	}
 	paginateData := PaginateData(data, dataReq)
 	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
 	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
@@ -207,6 +211,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		UniqueId, _ := item["customer_unique_id"].(string)
 		Customer, _ := item["home_owner"].(string)
+		ntpDate, _ := item["ntp_complete_date"].(time.Time)
 
 		var (
 			SiteSurveyScheduleDate, SiteSurverCompleteDate, CadReady, PlanSetCompleteDate,
@@ -219,6 +224,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceResponse := models.PerfomanceResponse{
 			UniqueId: UniqueId,
 			Customer: Customer,
+			NTPdate:  formatDate(ntpDate),
 		}
 
 		SiteSurveyScheduleDate, _ = item["site_survey_scheduled_date"].(time.Time)
@@ -291,7 +297,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			/* The below code only calculated the ACTIVATION data */
 			PtoSubmittedDate, _ = item["pto_submitted_date"].(time.Time)
 			PtoDate, _ = item["pto_granted_new"].(time.Time)
-			activationColor, ActivationDate := activationColor(PtoSubmittedDate, PtoDate, FinPassdate, FinCreatedDate)
+			activationColor, ActivationDate := activationColor(PtoSubmittedDate, PtoDate)
 			perfomanceResponse.ActivationDate = formatDate(ActivationDate)
 			perfomanceResponse.ActivationColour = activationColor
 		}
@@ -332,7 +338,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 
-	// RecordCount = int64(len(perfomanceList.PerfomanceList))
 	paginatedData := postCalculation(perfomanceList, dataReq, agngRpForUserId)
 	perfomanceList.PerfomanceList = paginatedData
 
@@ -477,7 +482,7 @@ func InspectionColor(finCreatedDate, finPassDate, pvInstallCompletedDate time.Ti
 	return grey, time.Time{}
 }
 
-func activationColor(ptoSubmittedDate, ptoDate, finPassDate, finCreatedDate time.Time) (string, time.Time) {
+func activationColor(ptoSubmittedDate, ptoDate time.Time) (string, time.Time) {
 
 	if !ptoDate.IsZero() {
 		return green, ptoDate
@@ -730,6 +735,7 @@ func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceSt
 					}
 				}
 			}
+
 			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)

@@ -181,7 +181,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		if val, ok := item["change_order_status"].(string); ok {
 			Co = val
 		} else {
-			Co = "" // or a default value
+			Co = "CO Requested - Working" // or a default value
 		}
 
 		// Fetch and validate HomeOwner

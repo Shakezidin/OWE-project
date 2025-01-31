@@ -23,27 +23,23 @@
   padding: 0.5rem 0;
   z-index: 1000;
   overflow: hidden;
- 
 }
 
 .dbDownLabelText {
   display: inline-block;
-  animation: moveText 8s linear infinite;
-  white-space: nowrap; /* Prevents text wrapping */
+  animation: moveText 20s linear infinite;
+  white-space: nowrap;
+  padding-left: 100%;
 }
 
 @keyframes moveText {
-  0% {
-    transform: translateX(-100%); /* Start outside on the left */
-  }
-  50% {
-    transform: translateX(0); /* Fully visible in the center */
-  }
   100% {
-    transform: translateX(100%); /* Move completely out to the right */
+    transform: translateX(0);
+  }
+  0% {
+    transform: translateX(-100%);
   }
 }
-
 
 
 .container {

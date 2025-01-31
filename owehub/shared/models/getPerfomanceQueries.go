@@ -1210,6 +1210,8 @@ func GetBasePipelineQuery(uniqueIds string) string {
 
             pto.submitted AS pto_submitted_date,
 			pto.pto_granted AS pto_granted_new,
+
+            ntp.ntp_complete_date AS ntp_complete_date,
             
 			survey.original_survey_scheduled_date AS site_survey_scheduled_date,
             CASE 
@@ -1222,6 +1224,8 @@ func GetBasePipelineQuery(uniqueIds string) string {
             END AS survey_final_completion_date
         FROM
             customers_customers_schema AS cust
+        LEFT JOIN 
+			ntp_ntp_schema AS ntp ON cust.unique_id = ntp.unique_id
         LEFT JOIN
             permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
         LEFT JOIN

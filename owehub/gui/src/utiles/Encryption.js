@@ -23,6 +23,7 @@ const generateEncryptionKey = (length = 16) => {
           dataString.charCodeAt(i) ^ key.charCodeAt(i % key.length)
         );
       }
+      localStorage.setItem('ENCRYPT', ENCRYPTION_KEY);
       return btoa(unescape(encodeURIComponent(encrypted))); // Encode in Base64 for safe storage
     } catch (error) {
       console.error('Error during encryption:', error.message);
@@ -31,29 +32,23 @@ const generateEncryptionKey = (length = 16) => {
   };
   
   // Custom decryption function with error handling for unencrypted data
-export const decryptData = (encryptedData) => {
-  try {
-    const key = ENCRYPTION_KEY.split('').reverse().join(''); // Transform key
-    const decodedData = decodeURIComponent(escape(atob(encryptedData))); // Decode from Base64
-    let decrypted = '';
-    for (let i = 0; i < decodedData.length; i++) {
-      decrypted += String.fromCharCode(
-        decodedData.charCodeAt(i) ^ key.charCodeAt(i % key.length)
-      );
+  export const decryptData = (encryptedData) => {
+    let ENCRYPT = localStorage.getItem('ENCRYPT');
+    try {
+      const key = ENCRYPT.split('').reverse().join(''); // Transform key
+      const decrypted = decodeURIComponent(escape(atob(encryptedData))); // Decode from Base64
+      let originalData = '';
+      for (let i = 0; i < decrypted.length; i++) {
+        originalData += String.fromCharCode(
+          decrypted.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+        );
+      }
+      return JSON.parse(originalData); // Parse the decrypted JSON string back to the original data
+    } catch (error) {
+      console.error('Error during decryption:', error.message);
+      console.log('Decryption failed');
+      return null; // Return null if decryption fails
     }
-    const parsedData = JSON.parse(decrypted); // Parse decrypted JSON string back to an object
-
-    // Validate the parsed data (add custom validation logic if needed)
-    if (parsedData && typeof parsedData === 'object') {
-      return parsedData;
-    } else {
-       
-      return null; // Return a fallback value or null
-    }
-  } catch (error) {
-    console.log('Decryption failed or data was not encrypted:', error.message);
-    return null; // Return a fallback value or null
-  }
-};
+  };
 
   
