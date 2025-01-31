@@ -155,7 +155,6 @@ type NTP struct {
 type ProjectResponse struct {
 	UniqueId                     string            `json:"unqiue_id"`
 	SalesCompleted               string            `json:"sales_completed"`
-	NtpPending                   string            `json:"ntp_pending"`
 	NtpCompleted                 string            `json:"ntp_completed"`
 	SiteSurveyScheduled          string            `json:"site_survey_scheduled"`
 	SiteSurevyRescheduled        string            `json:"site_survey_rescheduled"`
@@ -163,22 +162,12 @@ type ProjectResponse struct {
 	RoofingPending               string            `json:"roofing_pending"`
 	RoofingScheduled             string            `json:"roofing_scheduled"`
 	RoofingCompleted             string            `json:"roofing_completed"`
-	MpuPending                   string            `json:"mpu_pending"`
-	MpuScheduled                 string            `json:"mpu_scheduled"`
-	MpuCompleted                 string            `json:"mpu_completed"`
-	DeratePending                string            `json:"derate_pending"`
-	DerateScheduled              string            `json:"derate_scheduled"`
-	DerateCompleted              string            `json:"derate_completed"`
-	TrenchingPending             string            `json:"trenching_pending"`
-	TrenchingScheduled           string            `json:"tenching_scheduled"`
-	TrenchingCompleted           string            `json:"trenching_completed"`
 	PvPermitPending              string            `json:"pv_permit_pending"`
 	PvPermitScheduled            string            `json:"pv_permit_scehduled"`
 	PvPermitCompleted            string            `json:"pv_permit_completed"`
 	IcPermitPending              string            `json:"ic_permit_pending"`
 	IcPermitScheduled            string            `json:"ic_permit_scheduled"`
 	IcPermitCompleted            string            `json:"ic_permit_completed"`
-	InstallPending               string            `json:"install_pending"`
 	InstallReady                 string            `json:"install_ready"`
 	InstallScheduled             string            `json:"install_scheduled"`
 	InstallCompleted             string            `json:"install_completed"`
@@ -187,10 +176,6 @@ type ProjectResponse struct {
 	PtoInProcess                 string            `json:"pto_in_process"`
 	PtoSubmitted                 string            `json:"pto_submitted"`
 	PtoCompleted                 string            `json:"pto_completed"`
-	CadReady                     string            `json:"cad_ready"`
-	BatteryScheduleDate          string            `json:"battery_scheduled_date"`
-	BatteryCompleteDate          string            `json:"battery_complete_date"`
-	FinCreatedDate               string            `json:"fin_created_date"`
 	SystemSize                   float64           `json:"system_size"`
 	AddersTotal                  string            `json:"adders_total"`
 	AdderBreakDownAndTotalString string            `json:"adder_breakdown_and_total_string"`
@@ -213,25 +198,12 @@ var ColumnToField = map[string]string{
 	"site_survey_scheduled_date":   "SiteSurveyScheduled",
 	"site_survey_rescheduled_date": "SiteSurevyRescheduled",
 	"site_survey_completed_date":   "SiteSurveyCompleted",
-	"roofing_created_date":         "RoofingPending",
-	"roofing_scheduled_date":       "RoofingScheduled",
-	"roofing_completed_date":       "RoofingCompleted",
-	"mpu_created_date":             "MpuPending",
-	"mpu_scheduled_date":           "MpuScheduled",
-	"mpu_complete_date":            "MpuCompleted",
-	"derate_created_date":          "DeratePending",
-	"derate_scheduled_date":        "DerateScheduled",
-	"derate_completed_date":        "DerateCompleted",
-	"trenching_ws_open":            "TrenchingPending",
-	"trenching_scheduled":          "TrenchingScheduled",
-	"trenching_completed":          "TrenchingCompleted",
 	"permit_created":               "PvPermitPending",
 	"permit_submitted_date":        "PvPermitScheduled",
 	"permit_approved_date":         "PvPermitCompleted",
 	"ic_created_date":              "IcPermitPending",
 	"ic_submitted_date":            "IcPermitScheduled",
 	"ic_approved_date":             "IcPermitCompleted",
-	"pv_install_created_date_2":    "InstallPending", // check
 	"pv_install_created_date":      "InstallReady",
 	"pv_install_scheduled_date":    "InstallScheduled",
 	"pv_install_completed_date":    "InstallCompleted",
@@ -240,18 +212,14 @@ var ColumnToField = map[string]string{
 	"pto_created_date":             "PtoInProcess",
 	"pto_submitted_date":           "PtoSubmitted",
 	"pto_date":                     "PtoCompleted",
-	"cad_ready":                    "CadReady",
-	"battery_scheduled_date":       "BatteryScheduleDate",
-	"battery_complete_date":        "BatteryCompleteDate",
-	"fin_created_date":             "FinCreatedDate",
+	"home_owner":                   "HomeOwner",
 	"system_size":                  "SystemSize",
+	"state":                        "State",
+	"epc":                          "Epc", //check
+	"ahj":                          "AHJ",
 	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",
-	"ahj":                          "AHJ",
-	"epc":                          "Epc", //check
-	"state":                        "State",
 	"contract_total":               "ContractAmount",
 	"finance_company":              "FinancePartner",
 	"net_epc":                      "NetEPC",
-	"home_owner":                   "HomeOwner",
 }
