@@ -34,6 +34,7 @@ type PerfomanceStatusReq struct {
 	Fields                  []string `json:"fields,omitempty"`
 	ProjectPendingStartDate int64    `json:"pending_start_date,omitempty"`
 	ProjectPendingEndDate   int64    `json:"pending_end_date,omitempty"`
+	Filters                 []Filter `json:"filters"`
 }
 
 type PerfomanceTileDataReq struct {

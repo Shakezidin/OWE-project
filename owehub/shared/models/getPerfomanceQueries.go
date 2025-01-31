@@ -1112,6 +1112,82 @@ func GetBasePipelineQuery(uniqueIds string) string {
 		WHERE cust.unique_id in (%v)`, uniqueIds)
 }
 
+func PipelineDealerDataQuery() string {
+	PipelineDealerQuery := `
+    SELECT
+    -- Customer Basic Information
+    cust.name AS customer_name,
+    cust.partner_dealer AS partner_dealer,
+    cust.finance_company AS finance_company,
+    cust.source_type AS source_type,
+    cust.loan_type AS loan_type,
+    cust.unique_id AS unique_id,
+    cust.home_owner AS home_owner,
+    cust.address AS street_address,
+    cust.city AS city,
+    cust.state AS state,
+    cust.zip AS zip_code,
+    cust.email_address AS email,
+    cust.phone_number AS phone_number,
+    cust.primary_sales_rep AS rep_1,
+    cust.secondary_sales_rep AS rep_2,
+    cust.contracted_system_size AS system_size,
+    cust.total_system_cost AS contract_amount,
+    cust.sale_date AS created_date,
+    cust.sale_date AS contract_date,
+
+    -- Survey Dates
+    CASE 
+        WHEN (survey.reschedule_needed_on_date IS NOT NULL AND survey.twond_visit_date IS NULL) THEN NULL 
+        WHEN survey.twond_visit_date IS NOT NULL THEN survey.twond_completion_date 
+        ELSE survey.survey_completion_date 
+    END AS survey_final_completion_date,
+
+    -- NTP Dates
+    ntp.ntp_complete_date AS ntp_complete_date,
+
+    -- Permit Dates
+    permit.pv_submitted AS permit_submit_date,
+    permit.pv_approved AS permit_approval_date,
+
+    -- Interconnection Dates
+    ic.ic_submitted_date AS ic_submit_date,
+    ic.ic_approved_date AS ic_approval_date,
+
+    -- Additional Milestone Dates
+    cust.jeopardy_date AS jeopardy_date,
+    cust.cancel_date AS cancel_date,
+
+    -- Installation and Final Dates
+    install.pv_completion_date AS pv_install_date,
+    fin.pv_fin_date AS fin_complete_date,
+    pto.pto_granted AS pto_date
+
+FROM 
+    customers_customers_schema AS cust
+LEFT JOIN 
+    ntp_ntp_schema AS ntp ON cust.unique_id = ntp.unique_id
+LEFT JOIN 
+    permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
+LEFT JOIN 
+    ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
+LEFT JOIN 
+    survey_survey_schema AS survey ON cust.our = survey.customer_unique_id
+LEFT JOIN 
+    pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
+LEFT JOIN 
+    roofing_request_install_subcontracting_schema AS roofing ON cust.our = roofing.customer_unique_id
+LEFT JOIN 
+    planset_cad_schema AS cad ON cust.unique_id = cad.our_number
+LEFT JOIN 
+    batteries_service_electrical_schema AS b ON cust.unique_id = b.customer_unique_id
+LEFT JOIN 
+    fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
+LEFT JOIN 
+    pto_ic_schema AS pto ON cust.our = pto.customer_unique_id`
+	return PipelineDealerQuery
+}
+
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH queue_customers AS (

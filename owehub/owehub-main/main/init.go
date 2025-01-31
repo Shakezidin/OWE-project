@@ -532,6 +532,13 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/getPipelineDealerData",
+		apiHandler.HandleGetPipelineDealerData,
+		false,
+		[]types.UserGroup{types.UserGroup(types.RoleRegionalManager), types.UserGroup(types.RoleDealerOwner),},
+	},
 }
 
 /******************************************************************************
