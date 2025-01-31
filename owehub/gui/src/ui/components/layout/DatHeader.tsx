@@ -22,19 +22,22 @@ import useWindowWidth from '../../../hooks/useWindowWidth';
 import styles from './datheader.module.css';
 import Select from 'react-select';
 
-
+interface OptionType {
+    value: string;
+    label: string;
+}
 interface Toggleprops {
     toggleOpen: boolean;
     setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
     sidebarChange: number;
     dbStatus: boolean;
-    activeMenu:string;
-    setActiveMenu:React.Dispatch<React.SetStateAction<string>>;
-    setRefreshDat:React.Dispatch<React.SetStateAction<boolean>>;
+    activeMenu: string;
+    setActiveMenu: React.Dispatch<React.SetStateAction<string>>;
+    setRefreshDat: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DatHeader: React.FC<Toggleprops> = ({setRefreshDat,activeMenu,setActiveMenu, toggleOpen, setToggleOpen, dbStatus }) => {
+const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActiveMenu, toggleOpen, setToggleOpen, dbStatus }) => {
     const [name, setName] = useState<String>();
     const { authData, clearAuthData } = useAuth();
 
@@ -99,16 +102,16 @@ const DatHeader: React.FC<Toggleprops> = ({setRefreshDat,activeMenu,setActiveMen
         };
     }, []);
 
-    
-    const [selectedOption, setSelectedOption] = useState<any>('7090');
+
+    const [selectedOption, setSelectedOption] = useState<any>({ value: '7090', label: '7090' });
     const [isOpen, setIsOpen] = useState(false);
 
-  
+
     const handleMenuClick = (page: string) => {
         setActiveMenu(page);
     };
 
-   
+
     const handleChange = (selectedOption: any) => {
         setSelectedOption(selectedOption);
         setIsOpen(false);
@@ -208,14 +211,15 @@ const DatHeader: React.FC<Toggleprops> = ({setRefreshDat,activeMenu,setActiveMen
             padding: '0px 3px',
         }),
     };
-    
-    const options = [
-        { value: '7090', label: 'Rev. No: 7090' },
-        { value: '7190', label: 'Rev. No: 7190' },
-        { value: '7290', label: 'Rev. No: 7290' },
-        { value: '7390', label: 'Rev. No: 7390' },
-        { value: '7490', label: 'Rev. No: 7490' },
+
+    const options: OptionType[] = [
+        { value: '7090', label: '7090' },
+        { value: '7190', label: '7190' },
+        { value: '7290', label: '7290' },
+        { value: '7390', label: '7390' },
+        { value: '7490', label: '7490' },
     ];
+    console.log(selectedOption, "7090")
 
 
     return (
@@ -313,11 +317,11 @@ const DatHeader: React.FC<Toggleprops> = ({setRefreshDat,activeMenu,setActiveMen
             </div>
 
 
+
+
             {!isMobile && (
                 <div className="search-container">
-
                     <div className={styles.midElements}>
-
                         <nav className={styles.menuContainer}>
                             <ul className={styles.menuItems}>
                                 <li
@@ -352,7 +356,6 @@ const DatHeader: React.FC<Toggleprops> = ({setRefreshDat,activeMenu,setActiveMen
                                 </li>
                             </ul>
                         </nav>
-
                         <div className={styles.headerLast}>
 
                             <div>
@@ -363,18 +366,20 @@ const DatHeader: React.FC<Toggleprops> = ({setRefreshDat,activeMenu,setActiveMen
                                     styles={customStyles}
                                     onFocus={() => setIsOpen(true)}
                                     onBlur={() => setIsOpen(false)}
-                                    placeholder="Revision number"
+                                    placeholder="Rev.No:"
                                     classNamePrefix="select"
                                     isSearchable={false}
+                                    getOptionLabel={(option) => option.label}
+                                    formatOptionLabel={(option, { context }) =>
+                                        context === 'value' ? `Rev.No: ${option.label}` : option.label
+                                    }
                                 />
                             </div>
-                            <div className={styles.iconContainer} onClick={() => {setRefreshDat(true)}}>
+                            <div className={styles.iconContainer} onClick={() => { setRefreshDat(true) }}>
                                 <MdRefresh size={18} />
                             </div>
                         </div>
                     </div>
-
-
                     <div
                         className="user-container relative"
                         ref={dropdownRef}
