@@ -286,6 +286,7 @@ const StructuralPage: React.FC = () => {
                     gridTemplateColumns: 'repeat(2, 1fr)',
                     gridTemplateRows: 'repeat(3, auto)',
                     columnGap: '15px',
+                    rowGap:'15px'
                   }}
                 >
                   {renderComponent(
