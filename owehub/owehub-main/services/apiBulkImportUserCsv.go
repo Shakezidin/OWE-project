@@ -130,7 +130,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
     if len(CreateBulkUserReq.EmailId) == 0 || len(CreateBulkUserReq.EmailId) > 50 {
       result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Invalid email length for user: %s", CreateBulkUserReq.EmailId))
+      result.Errors = append(result.Errors, fmt.Sprintf("Invalid email length for user: %s", CreateBulkUserReq.Name))
       continue
     }
 
