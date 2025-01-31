@@ -1,3 +1,12 @@
+/*****************************************************************************
+* File                  : apiBulkImportUserCsv.go
+* DESCRIPTION           : This file contains a function to read data from a CSV file
+*                         and store the parsed data into a database.
+*
+* DATE                  : 30-Jan-2024
+*****************************************************************************/
+
+
 package services
 
 import (
@@ -7,7 +16,6 @@ import (
 	"net/http"
 )
 
-// UserRole represents the structure of user roles retrieved from the database
 type UserRole struct {
 	RoleID   int64  `json:"role_id"`
 	RoleName string `json:"role_name"`
@@ -44,8 +52,6 @@ func HandleGetUserRoles(resp http.ResponseWriter, req *http.Request) {
 		http.Error(resp, "No user roles found", http.StatusNotFound)
 		return
 	}
-
-	// Convert data to UserRole slice
 	for _, row := range data {
 		role := UserRole{}
 		if roleID, ok := row["role_id"].(int64); ok {
@@ -56,15 +62,12 @@ func HandleGetUserRoles(resp http.ResponseWriter, req *http.Request) {
 		}
 		roles = append(roles, role)
 	}
-
-	// Convert roles to JSON and send response
 	respData, err := json.Marshal(roles)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to marshal user roles: %v", err)
 		http.Error(resp, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-
 	resp.Header().Set("Content-Type", "application/json")
 	resp.WriteHeader(http.StatusOK)
 	resp.Write(respData)
