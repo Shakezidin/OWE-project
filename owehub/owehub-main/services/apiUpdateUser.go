@@ -172,11 +172,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	_, err = db.CallDBFunctionWithTx(tx, db.UpdateExistingUser, queryParameters)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to create updated user: %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Failed to update user", http.StatusInternalServerError, nil)
-	// 	return
-	// }
+
 	if err != nil {
 		log.FuncErrorTrace(0, "error %v", err.Error())
 		log.FuncErrorTrace(0, "mobile number data type: %T, value: %v", updateUserReq.MobileNumber, updateUserReq.MobileNumber)
