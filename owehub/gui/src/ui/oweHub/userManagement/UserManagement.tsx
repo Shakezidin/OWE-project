@@ -24,6 +24,7 @@ import {
   deleteUserDealer,
 } from '../../../redux/apiActions/auth/createUserSliceActions';
 import { createUserObject, validateForm } from '../../../utiles/Validation';
+import {updatevalidateForm} from '../../../utiles/updateValidation';
 import {
   updateUserForm,
   userResetForm,
@@ -39,6 +40,7 @@ import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
 import UserUpdate from './userOnboard/UpdateUser';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+
 
 interface UserData {
   name?: string;
@@ -350,7 +352,7 @@ const UserManagement: React.FC = () => {
         privilege_type: permission,
       })
     );
-    const formErrors = validateForm(formData);
+    const formErrors = updatevalidateForm(formData);
     console.log('formErrors', formErrors);
     if (Object.keys(formErrors).length === 0) {
       updateUserRequest(arrayOfPermissions);

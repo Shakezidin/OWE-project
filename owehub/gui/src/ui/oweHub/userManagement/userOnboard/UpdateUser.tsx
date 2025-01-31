@@ -134,6 +134,7 @@ import React, {
       }
       if (fieldName === 'dealer') {
         await dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
+        await dispatch(updateUserForm({ field: 'report_to', value: '' }));
       }
     };
   
@@ -402,20 +403,22 @@ import React, {
                       </div>
                     ) : null}
                     {formData.role_name !== TYPE_OF_USER.PARTNER ? (
-                          <div className="create-input-field">
-                          <Input
-                            type={'text'}
-                            label="Mobile"
-                            value={formData.mobile_number}
-                            placeholder={'91123456789'}
-                            onChange={(e) => handleInputChange(e)}
-                            name={'mobile_number'}
-                            
-                          />
-                          {phoneNumberError && (
-                            <div className="error-message">{phoneNumberError}</div>
-                          )}
-                        </div>
+                         <div className="create-input-field">
+                         <Input
+                           type="text"
+                           label="Mobile"
+                           value={formData.mobile_number}
+                           placeholder="Enter your Mobile No"
+                           onChange={(e) => {
+                             if (e.target.value.length <= 15) {
+                               handleInputChange(e);
+                             }
+                           }}
+                           name="mobile_number"
+                         />
+                         {phoneNumberError && <div className="error-message">{phoneNumberError}</div>}
+                       </div>
+                       
                     ) : null}
                     {formData.role_name === TYPE_OF_USER.PARTNER ? (
                       <div className="create-input-field">
