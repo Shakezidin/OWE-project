@@ -31,17 +31,12 @@ import (
  ******************************************************************************/
 func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		dataReq          models.ProjectStatusReq
-		data             []map[string]interface{}
-		whereEleList     []interface{}
-		queryWithFiler   string
-		filter           string
-		rgnSalesMgrCheck bool
-		SaleRepList      []interface{}
-		role             string
-		uniqueId         string
-		ntpDate          string
+		err         error
+		dataReq     models.ProjectStatusReq
+		data        []map[string]interface{}
+		ntpDate     string
+		RecordCount int64
+		roleFilter  string
 	)
 
 	log.EnterFn(0, "HandleGetProjectMngmntRequest")
@@ -68,83 +63,42 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
-	saleMetricsQuery := models.ProjectMngmntRetrieveQueryFunc()
-	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
-
-	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
-	// this error throws only if no email if received from context
 	if dataReq.Email == "" {
 		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-	dataReq.ProjectLimit = 100
-
-	// Check whether the user is Admin, Dealer, Sales Rep
-	whereEleList = append(whereEleList, dataReq.Email)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
-
-	// This checks if the user is admin, sale rep or dealer
-	if len(data) > 0 {
-		role = data[0]["role_name"].(string)
-		name := data[0]["name"]
-		dealerName := data[0]["dealer_name"]
-		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
-
-		switch role {
-		case "Admin", "Finance Admin":
-			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, true)
-		case "Dealer Owner":
-			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, false)
-		case "Sale Representative":
-			SaleRepList = append(SaleRepList, name)
-			filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
-		// default handles Regional Manager & Sales Manager and is entryway to below if
-		default:
-			SaleRepList = append(SaleRepList, name)
-			rgnSalesMgrCheck = true
-		}
-	}
-
-	if rgnSalesMgrCheck {
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
-
-		// This is thrown if no sale rep are available and also for remaining roles
-		if len(SaleRepList) == 0 {
-			emptyPerfomanceList := models.ProjectListResponse{
-				ProjectList: []models.ProjectResponse{},
-			}
-			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(0))
-			return
-		}
-
-		// this loops through sales rep under regional or sales manager
-		for _, item := range data {
-			SaleRepName, Ok := item["name"]
-			if !Ok || SaleRepName == "" {
-				log.FuncErrorTrace(0, "Failed to get name. Item: %+v\n", item)
-				continue
-			}
-			SaleRepList = append(SaleRepList, SaleRepName)
-		}
-
-		// dealerName := data[0]["dealer_name"]
-		// dataReq.DealerName = dealerName
-		filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
-	}
-
-	if filter != "" || role == string(types.RoleAdmin) {
-		queryWithFiler = saleMetricsQuery + filter
-	} else {
-		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+	userRole := req.Context().Value("rolename").(string)
+	if len(userRole) == 0 {
+		appserver.FormAndSendHttpResp(resp, "Unauthorized Role", http.StatusBadRequest, nil)
 		return
 	}
 
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
+	if userRole != string(types.RoleAccountManager) && userRole != string(types.RoleAccountExecutive) &&
+		userRole != string(types.RoleAdmin) && userRole != string(types.RoleFinAdmin) &&
+		userRole != string(types.RoleProjectManager) {
+		roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "customers_customers_schema", dataReq.DealerNames)
+		if err != nil {
+			if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
+				log.FuncErrorTrace(0, "error creating user role query %v", err)
+				appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
+				return
+			} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
+				tileData := models.GetPendingQueueTileResp{}
+				appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, tileData, RecordCount)
+				return
+			}
+		}
+	}
+
+	searchValue := ""
+	if len(dataReq.UniqueId) > 0 {
+		searchValue = fmt.Sprintf(" AND (customers_customers_schema.customer_name ILIKE '%%%s%%' OR customers_customers_schema.unique_id ILIKE '%%%s%%') ", dataReq.UniqueId, dataReq.UniqueId)
+	}
+
+	saleMetricsQuery := models.ProjectMngmntRetrieveQueryFunc(roleFilter, searchValue)
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, saleMetricsQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
@@ -159,9 +113,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectData.Epc = math.Round(projectData.Epc*100) / 100
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
-		uniqueId = projectData.UniqueId
-		ntpDate = projectData.NtpCompleted
-
 	}
 
 	if len(data) <= 0 {
@@ -177,7 +128,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	var qc models.QC
 	var actionRequiredCount, count int64
 
-	linkQuery := models.QcNtpRetrieveQueryFunc() + fmt.Sprintf("WHERE customers_customers_schema.unique_id = '%s'", uniqueId)
+	linkQuery := models.QcNtpRetrieveQueryFunc() + fmt.Sprintf("WHERE customers_customers_schema.unique_id = '%s'", dataReq.UniqueId)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
@@ -338,182 +289,6 @@ func cleanAdderBreakDownAndTotal(data string) map[string]string {
 	return result
 }
 
-/******************************************************************************
- * FUNCTION:		PrepareProjectAdminDlrFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
-func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectStatusReq, adminCheck bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareProjectAdminDlrFilters")
-	defer func() { log.ExitFn(0, "PrepareProjectAdminDlrFilters", nil) }()
-
-	var filtersBuilder strings.Builder
-	whereAdded := true
-
-	filtersBuilder.WriteString(" WHERE")
-
-	filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.unique_id = $%d", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR customers_customers_schema.customer_name ILIKE $%d", len(whereEleList)+2))
-
-	// Append parameters to whereEleList
-	whereEleList = append(whereEleList, dataFilter.UniqueId)
-	whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", dataFilter.UniqueId))
-
-	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 {
-
-		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" customers_customers_schema.unique_id IN (")
-
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-	}
-
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" OR ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(" customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.UniqueIds {
-			// Wrap the filter in wildcards for pattern matching
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString("]) ")
-	}
-
-	if !adminCheck {
-		if !whereAdded {
-			filtersBuilder.WriteString(" WHERE ")
-		} else {
-			filtersBuilder.WriteString(" AND ")
-		}
-		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
-	}
-
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
-	}
-	filtersBuilder.WriteString(" customers_customers_schema.unique_id <> ''")
-	filters = filtersBuilder.String()
-
-	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-	return filters, whereEleList
-}
-
-/******************************************************************************
- * FUNCTION:		PrepareProjectSaleRepFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
-func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareProjectSaleRepFilters")
-	defer func() { log.ExitFn(0, "PrepareProjectSaleRepFilters", nil) }()
-
-	var filtersBuilder strings.Builder
-	whereAdded := true
-	filtersBuilder.WriteString(" WHERE")
-
-	filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.unique_id = $%d", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR customers_customers_schema.customer_name ILIKE $%d", len(whereEleList)+2))
-
-	// Append parameters to whereEleList
-	whereEleList = append(whereEleList, dataFilter.UniqueId)
-	whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", dataFilter.UniqueId))
-
-	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 {
-		// whereAdded = true
-		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" customers_customers_schema.unique_id IN (")
-
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-	}
-
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" OR ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(" customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.UniqueIds {
-			// Wrap the filter in wildcards for pattern matching
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString("]) ")
-	}
-
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
-	}
-
-	filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
-	for i, sale := range saleRepList {
-		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, sale)
-
-		if i < len(saleRepList)-1 {
-			filtersBuilder.WriteString(", ")
-		}
-	}
-
-	filtersBuilder.WriteString(fmt.Sprintf(") AND customers_customers_schema.dealer = $%d ", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
-
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
-	}
-	filtersBuilder.WriteString(" customers_customers_schema.unique_id <> ''")
-
-	filters = filtersBuilder.String()
-
-	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-	return filters, whereEleList
-}
-
 func getStringValue(data map[string]interface{}, key string, ntp_date string, prospectId string) (string, int64) {
 	if v, exists := data[key]; exists {
 		switch key {
@@ -540,9 +315,6 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string, pr
 				return "Completed", 0
 			}
 		case "powerclerk_signatures_complete":
-			fmt.Println(0, "=======================================================================")
-			fmt.Println(0, "=====================														 ======================")
-			fmt.Println(0, "=======================================================================")
 			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else if (v == "❌  Pending" || v == "❌  Pending Sending PC" || v == "❌ Pending Sending PC") && ntp_date == "" {

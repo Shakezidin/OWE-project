@@ -84,8 +84,8 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 	if len(data) > 0 {
 		role = data[0]["role_name"].(string)
 		name := data[0]["name"]
-		dealerName := data[0]["dealer_name"]
-		dataReq.DealerName = dealerName
+		DealerNames, _ := data[0]["dealer_name"].(string)
+		dataReq.DealerNames = append(dataReq.DealerNames, DealerNames)
 		rgnSalesMgrCheck = false
 
 		switch role {
@@ -93,18 +93,18 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, false)
-		case string(types.RoleAccountManager), string(types.RoleAccountExecutive) , string(types.RoleProjectManager):
-			dealerNames, err := FetchDealerForAmAeProjectList(dataReq, role)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive), string(types.RoleProjectManager):
+			DealerNamess, err := FetchDealerForAmAeProjectList(dataReq, role)
 			if err != nil {
 				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
-			if len(dealerNames) == 0 {
+			if len(DealerNamess) == 0 {
 				log.FuncInfoTrace(0, "No dealer list found")
 				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, 0)
 				return
 			}
-			filter, whereEleList = PrepareAeAmProjectFilters(dealerNames, dataReq, false)
+			filter, whereEleList = PrepareAeAmProjectFilters(DealerNamess, dataReq, false)
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PreparePrjtSaleRepFilters(tableName, dataReq, SaleRepList)
@@ -194,7 +194,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 			filtersBuilder.WriteString(" AND ")
 		}
 		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+		whereEleList = append(whereEleList, dataFilter.DealerNames)
 		whereAdded = true
 	}
 
@@ -270,7 +270,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 	}
 
 	// Handle the dealer filter
-	if dataFilter.DealerName != "" {
+	if len(dataFilter.DealerNames) != 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
@@ -279,7 +279,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		}
 
 		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+		whereEleList = append(whereEleList, dataFilter.DealerNames)
 	}
 
 	// Add additional conditions that don't depend on external inputs

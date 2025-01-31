@@ -362,7 +362,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
 
 
             {!isMobile && (
-                <div className="search-container">
+                <div className="dat-search-container">
 
                     <div className={styles.midElements}>
                         <div className={styles.headerLast}>
@@ -391,15 +391,15 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                     </div>
 
                     <div
-                        className="user-container relative"
+                        className="dat-user-container relative"
                         ref={dropdownRef}
                         onClick={() => setOPenIcon(!openIcon)}
                     >
-                        <div className="user-img-container ">
+                        <div className="dat-user-img-container ">
                             <div className="user-img">
                                 <span>{name}</span>
                             </div>
-                            <div className="user-name">
+                            <div className="dat-user-name">
                                 <div className="down-arrow">
                                     <h4>Hello,&nbsp;{userName}</h4>
                                     <p className="admin-p">{userRole}</p>
@@ -419,7 +419,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                             </div>
                         </div>
                         {openIcon && (
-                            <div className="header-modal-1">
+                            <div className="header-modal-1" style={{ width: '225px' }}>
                                 <div
                                     className="image-box-container"
                                     onClick={() => navigate(ROUTES.ACCOUNT_SETTING)}

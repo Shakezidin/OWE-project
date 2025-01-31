@@ -79,24 +79,49 @@ type GetTabGeneralInfoResponse struct {
 }
 
 // Structural tab structs
+type GetTabStructuralInfoResponse struct {
+	Structure      string `json:"structure"`
+	RoofType       string `json:"roof_type"`
+	SheathingType  string `json:"sheathing_type"`
+	FramingSize    string `json:"framing_size"`
+	FramingType1   string `json:"framing_type_1"`
+	FramingType2   string `json:"framing_type_2"`
+	FramingSpacing int64  `json:"framing_spacing"`
+	////////////////////////////////////
+	Attachment string `json:"attachment"`
+	Racking    string `json:"racking"`
+	Pattern    string `json:"pattern"`
+	Mount      string `json:"mount"`
+	/////////////////////////////
+	StructuralUpgrades string `json:"structural_upgrades"`
+	GmSupportType      string `json:"gm_support_type"`
+	ReroofRequired     string `json:"reroof_required"`
+	Quantity           int64  `json:"quantity"`
+	Pitch              int64  `json:"pitch"`
+	AreaSqft           string `json:"area_sqft"`
+	Azim               int64  `json:"azimuth"`
+	TSRF               int64  `json:"tsrf"`
+	KWDC               int64  `json:"kw_dc"`
+	SpacingP           int64  `json:"spacing_p"`
+	SpacingL           int64  `json:"spacing_l"`
 
-// type StructuralInfo struct {
-// 	Structure       string `json:"structure"`
-// 	RoofType        string `json:"roof_type"`
-// 	SheathingType   string `json:"sheathing_type"`
-// 	FramingSize     string `json:"framing_size"`
-// 	FramingType1    string `json:"framing_type_1"`
-// 	FramingType2    string `json:"framing_type_2"`
-// 	FramingSpacing  string `json:"framing_spacing"`
-// 	////////////////////////////////////
-// 	Attachment       string `json:"attachment"`
-// 	Racking         string `json:"racking"`
-// 	Pattern         string `json:"pattern"`
-// 	Mount           string `json:"mount"`
-// 	/////////////////////////////
-// 	StructuralInfo      StructuralInfo     `json:"structural_info"`
-// 	PVMountingHardware  PVmountingHardware `json:"pv_mounting_hardware"`
-// 	StructuralUpgrades  string             `json:"structural_upgrades"`
-// 	ReroofRequired      string             `json:"reroof_required"`
-// 	GmSupportType       string             `json:"gm_support_type"`
-// }
+	// Attachment Information
+	AttachmentType    string `json:"attachment_type"`
+	AttachmentPattern string `json:"attachment_pattern"`
+	AttachmentQty     int64  `json:"attachment_quantity"`
+	AttachmentSpacing string `json:"attachment_spacing"`
+
+	// Racking Information
+	RackingType              string `json:"racking_type"`
+	RackingMountType         string `json:"racking_mount_type"`
+	RackingTiltInfo          string `json:"racking_title_info"`
+	RackingMaxRailCantilever string `json:"racking_max_rail_cantilever"`
+
+	// Roof Structure
+	RoofFramingType       string `json:"roof_framing_type"`
+	RoofSize              string `json:"roof_size"`
+	RoofSpacing           string `json:"roof_spacing"`
+	RoofSheathingType     string `json:"roof_sheathing_type"`
+	RoofMaterial          string `json:"roof_material"`
+	RoofStructuralUpgrade string `json:"roof_structural_upgrade"`
+}

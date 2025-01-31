@@ -1184,10 +1184,66 @@
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  color: black;
+  color: var(--white-color);
   text-align: center;
   font-size:small;
   padding: 0.5rem 0;
   z-index: 1000;
   overflow: hidden;
+}
+
+
+
+
+.dat-user-name {
+  flex-direction: 'row';
+  display: flex;
+  gap: 2px;
+}
+
+.dat-user-name h4 {
+  font-size: 12px;
+  font-weight: 500;
+  width: 150px;
+  text-wrap: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  color: var(--input-border-color);
+}
+
+.dat-user-name p {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.dat-user-img-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #cccccc;
+  border-radius: 25px;
+  padding: 5px 7px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.dat-user-img-container:hover {
+  background-color: #ddebff;
+  transform: scale(1.02);
+}
+
+.dat-search-container .dat-user-img-container:hover {
+  transform: scale(1.02);
+}
+.dat-search-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+.dat-search-container {
+  gap: 5px;
 }
