@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
+import { Tooltip } from 'react-tooltip';
 
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
@@ -85,7 +86,8 @@ const PendingQueue = () => {
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
 
-  
+  console.log(dataPending, 'dataPending');
+
   return (
     <>
       <div
@@ -161,10 +163,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                          setActive('qc');
-                          setPage(1);
-                          setSearch('');
-                        }
+                        setActive('qc');
+                        setPage(1);
+                        setSearch('');
+                      }
                       : undefined
                   }
                 >
@@ -299,16 +301,44 @@ const PendingQueue = () => {
                         <Link
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
-                          <div
-                            className="project-info-details deco-text"
-                            style={{ flexShrink: 0 }}
-                          >
-                            <h3 className={`customer-name`}>
-                              {item.home_owner}
-                            </h3>
-                            <p className={`install-update`}>
-                              {item.uninque_id}
-                            </p>
+                          <div >
+
+                            <div
+                              className="project-info-details deco-text"
+                              style={{ flexShrink: 0 }}
+                            >
+                              <h3 className={`customer-name`}>
+                                {item.home_owner}
+                              </h3>
+                              <p className={`install-update`}>
+                                {item.uninque_id}
+                              </p>
+                            </div>
+                            {((item.ntp.finance_NTP === "Completed") && (item.ntp.powerclerk === "Completed") && (item.ntp.production === "Completed") && (item.ntp.utility_bill === "Completed")) &&
+                              <>
+                                <AiFillMinusCircle
+                                  size={18}
+                                  className="mr1"
+                                  style={{ flexShrink: 0, marginTop: '0.5rem' }}
+                                  color={'#EBA900'}
+                                  data-tooltip-id={item.uninque_id}
+                                />
+                                <Tooltip
+                                  style={{
+                                    zIndex: 999,
+                                    background: "#111",
+                                    color: '#f7f7f7',
+                                    fontSize: 12,
+                                    paddingBlock: 4,
+                                  }}
+                                  offset={8}
+                                  id={item.uninque_id}
+                                  place="bottom"
+                                  content="Pending"
+                                />
+                              </>
+                            }
+
                           </div>
                         </Link>
                         <div
@@ -326,7 +356,7 @@ const PendingQueue = () => {
                                   style={{ flexShrink: 0 }}
                                   color={
                                     item.co.co_status ===
-                                    'Pending (Action Required)'
+                                      'Pending (Action Required)'
                                       ? '#E14514'
                                       : item.co.co_status === 'Pending'
                                         ? '#EBA900'
@@ -371,7 +401,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                      'Pending (Action Required)'
+                                        'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'
