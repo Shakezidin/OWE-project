@@ -23,7 +23,7 @@
   .menuItems {
     display: flex;
     /* justify-content: space-around; */
-    gap: 10px;
+    gap: 6px;
     align-items: center;
     list-style-type: none; 
     margin: 0;
@@ -31,7 +31,7 @@
   }
   
   .menuItems li {
-    padding: 7px 15px;
+    padding: 7px 13px;
     font-size: 14px;
     font-weight: 500;
     color: #2A2626;
@@ -56,7 +56,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 6px;
   }
   
   .iconContainer{
