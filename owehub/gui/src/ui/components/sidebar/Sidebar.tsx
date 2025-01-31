@@ -5,6 +5,7 @@ import { createSideMenuList } from '../../../routes/SideMenuOption';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
+import { checkDBStatus } from '../../../redux/apiActions/auth/authActions';
 
 interface Child {
   path: string;
@@ -34,6 +35,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isTablet = useMatchMedia('(max-width: 1024px)');
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
+  const [dbStatus, setDbStatus] = useState<boolean>(true);
+  
 
 
   const role = localStorage.getItem('role');
@@ -291,10 +294,20 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // TODO showing required routes for now
   // const isMobile = width < 768;
   const isMobile = true;
+
+    /** check whether db down or not */
+    useEffect(() => {
+      const fetchDBStatus = async () => {
+        const status = await checkDBStatus();
+        setDbStatus(status);
+      };
+  
+      fetchDBStatus();
+    }, []);
   return (
     <div
       style={{ zIndex: '200' }}
-      className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
+      className={`${!dbStatus ? "side-bar-container-label" : "side-bar-container" } ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
         className={`side-bar-content ${
