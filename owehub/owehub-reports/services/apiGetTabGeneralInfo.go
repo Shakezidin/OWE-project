@@ -60,6 +60,8 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	whereClause = fmt.Sprintf("WHERE (c.unique_id = '%s')", dataReq.ProjectId)
+
 	// query to fetch data
 	query = fmt.Sprintf(`
 			SELECT
