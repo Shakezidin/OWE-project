@@ -28,8 +28,8 @@ type GetCsvPerformance struct {
 	PhoneNumber             string
 	Address                 string
 	State                   string
-	ContractAmount          float64
-	SystemSize              float64
+	ContractAmount          string
+	SystemSize              string
 	ContractDate            string
 	SiteSurevyScheduleDate  string
 	SiteSurveyCompletedDate string

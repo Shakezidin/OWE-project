@@ -151,17 +151,13 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	for _, item := range data {
 
 		UniqueId, _ := item["customer_unique_id"].(string)
-		// if !ok || UniqueId == "" {
-		// 	continue
-		// }
-
 		Customer, _ := item["home_owner"].(string)
 		CustomerEmail, _ := item["customer_email"].(string)
 		CustomerPhoneNumber, _ := item["customer_phone_number"].(string)
 		Address, _ := item["address"].(string)
 		State, _ := item["state"].(string)
-		ContractTotal, _ := item["contract_total"].(float64)
-		SystemSize, _ := item["system_size"].(float64)
+		ContractTotal, _ := item["contract_total"].(string)
+		SystemSize, _ := item["system_size"].(string)
 
 		var (
 			SiteSurveyScheduleDate, SiteSurverCompleteDate, CadReady, PlanSetCompleteDate,
