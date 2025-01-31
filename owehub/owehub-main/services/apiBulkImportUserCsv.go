@@ -19,6 +19,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 /******************************************************************************
@@ -47,7 +48,7 @@ type CreateBulkUserReq struct {
 	Description       string `json:"description"`
 	RoleName          string `json:"role_name"`
 	Password          string `json:"password"`
-	PartnerName         string `json:"partner_name"`
+	PartnerName       string `json:"partner_name"`
 	SalesPartnerName  string `json:"sales_partner_name"`
 }
 
@@ -139,6 +140,12 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
       continue
     }
 
+		if !isAlphaWithSpace(CreateBulkUserReq.Name) {
+			result.Failed++
+			result.Errors = append(result.Errors, fmt.Sprintf("Name must contain only alphabetic characters and single spaces between words for user: %s", CreateBulkUserReq.EmailId))
+			continue
+		}
+
 		if len(CreateBulkUserReq.MobileNumber) < 10 || len(CreateBulkUserReq.MobileNumber) > 15 {
 			result.Failed++
 			result.Errors = append(result.Errors, fmt.Sprintf("Invalid mobile number length for user: %s", CreateBulkUserReq.EmailId))
@@ -201,6 +208,14 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			}
 			CreateBulkUserReq.ReportingManager = reportingManagerCode
 		}
+
+
+
+
+
+
+
+
 
 		// handling partner_name conditions , these roles cant have partner_name ....
 		partnerName := getValue(headers, record, "partner_name")
@@ -319,8 +334,8 @@ func isEmptyRow(record []string) bool {
 
 func fetchUserCodeByEmail(email string) (string, error) {
 	var userCode string
-	query := fmt.Sprintf("SELECT user_code FROM user_details WHERE email_id = '%s'", email)
-	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	query := "SELECT user_code FROM user_details WHERE LOWER(email_id) = LOWER($1)"
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{email})
 	if err != nil {
 		return "", fmt.Errorf("error fetching user_code for email %s: %v", email, err)
 	}
@@ -356,4 +371,14 @@ func isValidEmail(email string) bool {
 	// validationnn
 	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return emailRegex.MatchString(email)
+}
+
+
+func isAlphaWithSpace(s string) bool {
+	for i, r := range s {
+		if !unicode.IsLetter(r) && !(r == ' ' && i > 0 && s[i-1] != ' ') {
+			return false
+		}
+	}
+	return true
 }
