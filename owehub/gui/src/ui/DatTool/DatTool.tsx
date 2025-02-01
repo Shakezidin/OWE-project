@@ -47,6 +47,9 @@ const DatTool: React.FC = () => {
     dispatch(getDatProjectList({ search: '' }));
   }, []);
 
+  const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
+
+
  
 
 
@@ -61,7 +64,7 @@ const DatTool: React.FC = () => {
       }
       
       <div className={styles.layoutContainer}>
-        <div className={styles.contentContainer}>
+        <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
           <CommonComponent />
           {renderPage()}
         </div>
