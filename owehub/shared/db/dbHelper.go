@@ -197,10 +197,11 @@ func ReteriveFromDB(dbIdx uint8, query string,
 		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v whereParams %+v error = %v", query, whereEleList, err)
 		return nil, err
 	}
+	defer rows.Close() //Important: Prevent connection leak!
 
 	cols, cErr := rows.Columns()
 	if cErr != nil {
-		log.FuncErrorTrace(0, "Failed to get column data error = %v", err)
+		log.FuncErrorTrace(0, "Failed to get column data error = %v", cErr)
 		return nil, cErr
 	}
 
@@ -219,7 +220,11 @@ func ReteriveFromDB(dbIdx uint8, query string,
 		for i, colName := range cols {
 
 			val := cRef[i].(*interface{})
-			m[colName] = *val
+			if colms[i] == nil {
+				m[colName] = nil
+			} else {
+				m[colName] = *val
+			}
 		}
 
 		outData = append(outData, m)
@@ -236,10 +241,10 @@ func ReteriveFromDB(dbIdx uint8, query string,
  ******************************************************************************/
 func ExecQueryDB(dbIdx uint8, query string) (err error) {
 
-	log.EnterFn(0, "ReteriveFromDB")
-	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
+	log.EnterFn(0, "ExecQueryDB")
+	defer func() { log.ExitFn(0, "ExecQueryDB", err) }()
 
-	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams", query)
+	//log.FuncDebugTrace(0, "ExecQueryDB Query %v", query)
 
 	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
@@ -280,14 +285,14 @@ func UpdateDataInDB(dbIdx uint8, query string, whereEleList []interface{}) (err 
 		return err, rows
 	}
 
+	if stmtIns != nil {
+		defer stmtIns.Close()
+	}
+
 	res, err := stmtIns.Exec(whereEleList...)
 	if err != nil {
 		log.FuncErrorTrace(0, "UpdateDataInDB Exec Failed with error = %v", err)
 		return err, rows
-	}
-
-	if stmtIns != nil {
-		defer stmtIns.Close()
 	}
 
 	rows, err = res.RowsAffected()
