@@ -292,7 +292,7 @@
 .install-update {
   font-size: 12px;
   font-weight: 500;
-  width: 150px;
+  /* width: 150px; */
   cursor: pointer;
   color: var(--input-border-color);
 }

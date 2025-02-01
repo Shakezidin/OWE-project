@@ -12,6 +12,9 @@ import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
 import CommonComponent from './pages/CommonComponent';
 import { useOutletContext } from 'react-router-dom';
+import { getDatProjectList } from '../../redux/apiActions/DatToolAction/datToolAction';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
   const [openPopUp, setOpenPopUp] = useState<boolean>(false);
@@ -38,6 +41,15 @@ const DatTool: React.FC = () => {
     }
   };
 
+  const dispatch = useAppDispatch();
+  const { data } = useAppSelector((state) => state.datSlice);
+  useEffect(() => {
+    dispatch(getDatProjectList({ search: '' }));
+  }, []);
+
+ 
+
+
   return (
     <div className={styles.mainContainer}>
 
@@ -56,7 +68,7 @@ const DatTool: React.FC = () => {
 
         <div className={styles.sidebar}>
 
-          <SideContainer />
+          <SideContainer data={data}/>
         </div>
 
       </div>
