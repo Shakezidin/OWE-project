@@ -577,7 +577,7 @@ const UserManagement: React.FC = () => {
           handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
-          roleOption={roleOption}
+           
           selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}
