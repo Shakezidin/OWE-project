@@ -296,6 +296,11 @@ func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) 
 	// 	log.FuncErrorTrace(0, "Failed to get roof structural upgrade from db : %+v\n", data)
 	// }
 
+	// roofStructuralUpgrade, ok := data[0]["roof_structural_upgrade"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get roof structural upgrade from db : %+v\n", data)
+	// }
+
 	adders := "123 Solar St, CA"
 	interconnection_cost := 12769.8
 	electrical_cost := 7350.9
