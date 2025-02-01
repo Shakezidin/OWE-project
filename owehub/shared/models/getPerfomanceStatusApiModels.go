@@ -168,7 +168,7 @@ type ProjectResponse struct {
 	IcPermitPending              string            `json:"ic_permit_pending"`
 	IcPermitScheduled            string            `json:"ic_permit_scheduled"`
 	IcPermitCompleted            string            `json:"ic_permit_completed"`
-	InstallReady                 string            `json:"install_ready"`
+	InstallPendinig              string            `json:"install_pending"`
 	PvInstallReadyDate           string            `json:"pv_install_ready_date"`
 	InstallScheduled             string            `json:"install_scheduled"`
 	InstallCompleted             string            `json:"install_completed"`
@@ -205,7 +205,7 @@ var ColumnToField = map[string]string{
 	"ic_created_date":              "IcPermitPending",
 	"ic_submitted_date":            "IcPermitScheduled",
 	"ic_approved_date":             "IcPermitCompleted",
-	"pv_install_created_date":      "InstallReady",
+	"pv_install_created_date":      "InstallPendinig",
 	"pv_install_ready_date":        "PvInstallReadyDate",
 	"pv_install_scheduled_date":    "InstallScheduled",
 	"pv_install_completed_date":    "InstallCompleted",
