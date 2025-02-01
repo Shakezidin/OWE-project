@@ -55,7 +55,9 @@ const UserManagement: React.FC = () => {
   const [openn, setOpenn] = useState<boolean>(false);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+
   const [searchTerm, setSearchTerm] = useState('');
+  const [roleOption, setRoleOption] = useState<any>([])
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useAppDispatch();
@@ -472,6 +474,25 @@ const UserManagement: React.FC = () => {
     }
   };
   
+  /** Fetch user roles */
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const data = await postCaller("getGetUserRoles", {});
+        if (data.status > 201) {
+          toast.error(data.message);
+          return;
+        }
+        setRoleOption(data);
+       
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+        toast.error("Failed to fetch roles");
+      }
+    };
+
+    fetchRoles();
+  }, []);
   /** render UI */
   return (
     <>
@@ -486,6 +507,7 @@ const UserManagement: React.FC = () => {
           setTablePermissions={setTablePermissions}
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
+          roleOption={roleOption}
           onChangeRole={(role, value) => {
             console.log('formData', formData);
             onChangeRole(role, value);
@@ -504,6 +526,7 @@ const UserManagement: React.FC = () => {
           tablePermissions={tablePermissions}
           setTablePermissions={setTablePermissions}
           userOnboard={null}
+          roleOption={roleOption}
           onSubmitUpdateUser={onSubmitUpdateUser}
           onChangeRole={(role, value) => {
             console.log('formData', formData);
@@ -554,6 +577,7 @@ const UserManagement: React.FC = () => {
           handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
+          roleOption={roleOption}
           selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}

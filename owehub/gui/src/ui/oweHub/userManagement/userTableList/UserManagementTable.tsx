@@ -67,6 +67,7 @@ interface UserTableProos {
   handleEdit: (id?: string) => void;
   isExportingData?: boolean;
   editData?: [];
+  roleOption?: any;
   totalCount?: number;
   
 }
@@ -92,6 +93,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   handleCrossClick,
   handleEdit,
   editData,
+  roleOption,
 
   totalCount,
 }) => {
