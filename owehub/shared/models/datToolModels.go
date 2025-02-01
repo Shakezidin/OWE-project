@@ -125,3 +125,23 @@ type GetTabStructuralInfoResponse struct {
 	RoofMaterial          string `json:"roof_material"`
 	RoofStructuralUpgrade string `json:"roof_structural_upgrade"`
 }
+
+// Adders tab structs
+type GetTabAddersInfoResponse struct {
+	Adders              string      `json:"adders"`
+	InterconnectionCost float64     `json:"interconnection_cost"`
+	ElectricalCost      float64     `json:"electrical_cost"`
+	SiteAddersCost      float64     `json:"site_adders_cost"`
+	StructuralCost      float64     `json:"structural_cost"`
+	UpgradesCost        float64     `json:"upgrades_cost"`
+	TrenchingCost       float64     `json:"trenching_cost"`
+	BatteryCost         float64     `json:"battery_cost"`
+	OtherCost           float64     `json:"other_cost"`
+	TotalCost           float64     `json:"total_cost"`
+	Components          []Component `json:"components"`
+}
+type Component struct {
+	Name     string  `json:"name"`
+	Quantity int     `json:"quantity"`
+	Cost     float64 `json:"cost"`
+}
