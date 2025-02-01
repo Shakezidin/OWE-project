@@ -31,12 +31,12 @@ import (
  ******************************************************************************/
 func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		dataReq          models.ProjectStatusReq
-		data             []map[string]interface{}
-		uniqueId         string
-		ntpDate          string
-		RecordCount      int64
+		err         error
+		dataReq     models.ProjectStatusReq
+		data        []map[string]interface{}
+		ntpDate     string
+		RecordCount int64
+		roleFilter  string
 	)
 
 	log.EnterFn(0, "HandleGetProjectMngmntRequest")
@@ -74,78 +74,29 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if userRole == string(types.RoleAccountManager) || userRole == string(types.RoleAccountExecutive) ||
-		userRole == string(types.RoleProjectManager) {
-		accountName, err := fetchAmAeName(dataReq.Email)
+	if userRole != string(types.RoleAccountManager) && userRole != string(types.RoleAccountExecutive) &&
+		userRole != string(types.RoleAdmin) && userRole != string(types.RoleFinAdmin) &&
+		userRole != string(types.RoleProjectManager) {
+		roleFilter, err = HandleDataFilterOnUserRoles(dataReq.Email, userRole, "customers_customers_schema", dataReq.DealerNames)
 		if err != nil {
-			appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
-			return
-		}
-		var roleBase string
-		if userRole == "Account Manager" {
-			roleBase = "account_manager"
-		}
-		if userRole == "Account Executive" {
-			roleBase = "account_executive"
-		}
-		if userRole == "Project Manager" {
-			roleBase = "project_manager"
-		}
-
-		query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
-			return
-		} else if len(data) == 0 {
-			tileData := models.GetPendingQueueTileResp{}
-			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
-			return
-		}
-
-		for _, val := range data {
-			dataReq.DealerNames = append(dataReq.DealerNames, val["data"].(string))
-		}
-	} else if userRole == string(types.RoleAdmin) || userRole == string(types.RoleFinAdmin) {
-		query := "SELECT sales_partner_name as data FROM sales_partner_dbhub_schema"
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
-			return
-		} else if len(data) == 0 {
-			tileData := models.GetPendingQueueTileResp{}
-			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
-			return
-		}
-
-		for _, val := range data {
-			dataReq.DealerNames = append(dataReq.DealerNames, val["data"].(string))
-		}
-	}
-
-	roleFilter, err := HandleDataFilterOnUserRoles(dataReq.Email, userRole, "customers_customers_schema", dataReq.DealerNames)
-	if err != nil {
-		if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
-			log.FuncErrorTrace(0, "error creating user role query %v", err)
-			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
-			return
-		} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
-			tileData := models.GetPendingQueueTileResp{}
-			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, tileData, RecordCount)
-			return
+			if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
+				log.FuncErrorTrace(0, "error creating user role query %v", err)
+				appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
+				return
+			} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
+				tileData := models.GetPendingQueueTileResp{}
+				appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, tileData, RecordCount)
+				return
+			}
 		}
 	}
 
 	searchValue := ""
-	if len(dataReq.UniqueIds) > 0 {
+	if len(dataReq.UniqueId) > 0 {
 		searchValue = fmt.Sprintf(" AND (customers_customers_schema.customer_name ILIKE '%%%s%%' OR customers_customers_schema.unique_id ILIKE '%%%s%%') ", dataReq.UniqueId, dataReq.UniqueId)
 	}
 
-	saleMetricsQuery := models.ProjectMngmntRetrieveQueryFunc(roleFilter,searchValue)
+	saleMetricsQuery := models.ProjectMngmntRetrieveQueryFunc(roleFilter, searchValue)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, saleMetricsQuery, nil)
 	if err != nil {
@@ -162,9 +113,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectData.Epc = math.Round(projectData.Epc*100) / 100
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
-		uniqueId = projectData.UniqueId
-		ntpDate = projectData.NtpCompleted
-
 	}
 
 	if len(data) <= 0 {
@@ -180,7 +128,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	var qc models.QC
 	var actionRequiredCount, count int64
 
-	linkQuery := models.QcNtpRetrieveQueryFunc() + fmt.Sprintf("WHERE customers_customers_schema.unique_id = '%s'", uniqueId)
+	linkQuery := models.QcNtpRetrieveQueryFunc() + fmt.Sprintf("WHERE customers_customers_schema.unique_id = '%s'", dataReq.UniqueId)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
@@ -367,9 +315,6 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string, pr
 				return "Completed", 0
 			}
 		case "powerclerk_signatures_complete":
-			fmt.Println(0, "=======================================================================")
-			fmt.Println(0, "=====================														 ======================")
-			fmt.Println(0, "=======================================================================")
 			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else if (v == "❌  Pending" || v == "❌  Pending Sending PC" || v == "❌ Pending Sending PC") && ntp_date == "" {
