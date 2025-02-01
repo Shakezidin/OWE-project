@@ -13,6 +13,7 @@ import (
 	models "OWEApp/shared/models"
 	"OWEApp/shared/types"
 	"math"
+	"regexp"
 	"strings"
 	"time"
 
@@ -112,6 +113,11 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		mapRowToStruct(item, &projectData)
 		projectData.Epc = math.Round(projectData.Epc*100) / 100
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
+		projectData.AddersTotal = projectData.AdderBreakDownAndTotal["Total"]
+		if projectData.AddersTotal == "" {
+			adderBreakDown := cleanAdderBreakDownAndTotalTwo(projectData.AdderBreakDownAndTotalString)
+			projectData.AddersTotal = getString(adderBreakDown, "Total")
+		}
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 
@@ -423,4 +429,49 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string, pr
 		}
 	}
 	return "", 0
+}
+
+func cleanAdderBreakDownAndTotalTwo(data string) map[string]string {
+	result := make(map[string]string)
+	if len(data) == 0 {
+		return result
+	}
+
+	// Remove '**' and clean the string
+	data = strings.ReplaceAll(data, "**", "")
+
+	// Regular expression to match key-value pairs like "key: value"
+	re := regexp.MustCompile(`([A-Za-z0-9\s\-\(\)]+):\s*([0-9]+)`)
+
+	// Find all matches of key-value pairs
+	matches := re.FindAllStringSubmatch(data, -1)
+
+	// Iterate over all matches and populate the result map
+	for _, match := range matches {
+		if len(match) == 3 {
+			key := strings.TrimSpace(match[1])
+			value := strings.TrimSpace(match[2])
+
+			// If the key is 'Total', we capture the value for 'Total'
+			if key == "Total" {
+				result[key] = value
+				break // Stop further processing once 'Total' is found
+			}
+
+			// Otherwise, just add the key-value pair to the map
+			result[key] = value
+		}
+	}
+
+	// Log the result for debugging
+	// log.FuncErrorTrace(0, "data = %v ", result)
+
+	return result
+}
+
+func getString(item map[string]string, key string) string {
+	if value, ok := item[key]; ok {
+		return value
+	}
+	return ""
 }

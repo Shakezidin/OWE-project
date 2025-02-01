@@ -1,13 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {getDatProjectList} from '../../apiActions/DatToolAction/datToolAction'
+import {getDatGeneralInfo, getDatProjectList} from '../../apiActions/DatToolAction/datToolAction'
 import { toast } from 'react-toastify';
 
-interface listData {
-    project_name: string;
-    project_id: string;
-    project_address: string;
-}
+
 
 // Define the interface for the initial state
 interface DatToolState {
@@ -15,7 +11,44 @@ interface DatToolState {
   data: any[]; // Adjust 'any' if you have more specific data structure
   count: number;
   error: string;
-  tileData: any;
+  generalData:GeneralData | null
+}
+
+interface GeneralData {
+  project_name: string;
+  project_id: string;
+  project_address: string;
+  phone_number: string;
+  email_id: string;
+  pv_module: string;
+  inverters: string;
+  battery: string;
+  dc_system_size: number;
+  ac_system_size: number;
+  battery_capacity: number;
+  ahj: string;
+  utility: string;
+  branch: string;
+  lender: string;
+  aurora_link: string;
+  tape_link: string;
+  site_capture_url: string;
+  contract_date: string;
+  module_qty: number;
+  module_type: number;
+  inverter_type: string;
+  battery_type: string;
+  ac_dc_system_size: string;
+  total_production: number;
+  dat_module_qty: number;
+  dat_module_type: string;
+  dat_design_version: number;
+  dat_designer_name: string;
+  dat_aurora_id: string;
+  dat_system_size_ac: string;
+  dat_system_size_dc: string;
+  dat_changes: string;
+  dat_change_order: string;
 }
 
 // Initialize the state with type safety
@@ -24,7 +57,7 @@ const initialState: DatToolState = {
   data: [],
   count: 0,
   error: '',
-  tileData:{}
+  generalData:null
 };
 
 
@@ -42,6 +75,21 @@ const datSlice = createSlice({
       state.data = action.payload?.data.project_data;
     });
     builder.addCase(getDatProjectList.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+      toast.error(action.payload as string);
+    });
+ 
+
+
+    builder.addCase(getDatGeneralInfo.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getDatGeneralInfo.fulfilled, (state, action) => {
+      state.loading = false;
+      state.generalData = action.payload?.data;
+    });
+    builder.addCase(getDatGeneralInfo.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);

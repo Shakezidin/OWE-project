@@ -224,6 +224,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_tab_adders_info",
+		apiHandler.HandleGetTabAddersInfoRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

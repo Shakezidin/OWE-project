@@ -6,6 +6,47 @@ import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
 import CommonComponent from './CommonComponent';
  
+
+
+interface GeneralData {
+  project_name: string;
+  project_id: string;
+  project_address: string;
+  phone_number: string;
+  email_id: string;
+  pv_module: string;
+  inverters: string;
+  battery: string;
+  dc_system_size: number;
+  ac_system_size: number;
+  battery_capacity: number;
+  ahj: string;
+  utility: string;
+  branch: string;
+  lender: string;
+  aurora_link: string;
+  tape_link: string;
+  site_capture_url: string;
+  contract_date: string;
+  module_qty: number;
+  module_type: number;
+  inverter_type: string;
+  battery_type: string;
+  ac_dc_system_size: string;
+  total_production: number;
+  dat_module_qty: number;
+  dat_module_type: string;
+  dat_design_version: number;
+  dat_designer_name: string;
+  dat_aurora_id: string;
+  dat_system_size_ac: string;
+  dat_system_size_dc: string;
+  dat_changes: string;
+  dat_change_order: string;
+}
+interface generalProps {
+  generalData:GeneralData| null
+}
 // Data Tab Component (for tabs on the right Bottom section)
 interface DatTabProps {
   id: string;
@@ -25,7 +66,7 @@ const DatTab: React.FC<DatTabProps> = ({ id, isActive, onClick }) => (
 // InputField Component (for each editable input field with label)
 interface InputFieldProps {
   label: string;
-  value: string;
+  value: string | number | undefined;
   type?: string;
   isEditing: boolean;
   className?: string;
@@ -49,7 +90,7 @@ const InputField: React.FC<InputFieldProps> = ({
   </div>
 );
  
-const GeneralPage: React.FC = () => {
+const GeneralPage: React.FC <generalProps>= ({generalData}) => {
   // State variables for controlling editing and active tabs
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
@@ -66,31 +107,31 @@ const GeneralPage: React.FC = () => {
  
   
   const contractInfo = [
-    { label: 'Module QTY', value: '35' },
+    { label: 'Module QTY', value: generalData?.module_qty.toString() },
     {
       label: 'Module Type',
-      value: 'Qcells Q.PEAK DUO BLK ML-G10+/ t 400W (Bifacial)',
+      value: generalData?.module_type.toString(),
     },
-    { label: 'Inverter Type', value: 'Enphase IQ8M Microinverters' },
-    { label: 'Battery Type', value: 'Enphase IQ8M Microinverters' },
-    { label: 'AC/DC System Size', value: '12.98 AC 827.65 DC' },
-    { label: 'Total Production', value: 'Enphase IQ8M Microinverters' },
+    { label: 'Inverter Type', value: generalData?.inverter_type },
+    { label: 'Battery Type', value: generalData?.battery_type },
+    { label: 'AC/DC System Size', value: generalData?.ac_dc_system_size },
+    { label: 'Total Production', value: generalData?.total_production.toString() },
   ];
   const datFields = [
-    { label: 'Module QTY', value: '35', type: 'number' },
+    { label: 'Module QTY', value: generalData?.module_qty, type: 'number' },
     {
       label: 'Module Type',
-      value: 'Qcells Q.PEAK DUO BLK ML-G10+/t 400W (Bifacial)',
+      value: generalData?.module_type.toString(),
     },
-    { label: 'Inverter Type', value: '---' },
-    { label: 'Battery Type', value: '---' },
+    { label: 'Inverter Type', value: generalData?.inverter_type },
+    { label: 'Battery Type', value: generalData?.battery_type },
   ];
   const datRightFields = [
-    { label: 'Design Version', value: '2', type: 'number' },
-    { label: 'Designer Name', value: 'Vansh Seedwan' },
-    { label: 'Aurora ID.', value: '---' },
-    { label: 'Site Capture URL', value: '---', type: 'url' },
-    { label: 'Change Order Required', value: '--' },
+    { label: 'Design Version', value: generalData?.dat_design_version, type: 'number' },
+    { label: 'Designer Name', value: generalData?.dat_designer_name },
+    { label: 'Aurora ID.', value: generalData?.dat_aurora_id },
+    { label: 'Site Capture URL', value: generalData?.site_capture_url, type: 'url' },
+    { label: 'Change Order Required', value: generalData?.dat_change_order },
   ];
   console.log(isDatEditing,"fffff");
  
