@@ -12,7 +12,7 @@ import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
 import CommonComponent from './pages/CommonComponent';
 import { useOutletContext } from 'react-router-dom';
-import { getDatGeneralInfo, getDatProjectList } from '../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList } from '../../redux/apiActions/DatToolAction/datToolAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 const DatTool: React.FC = () => {
@@ -25,21 +25,6 @@ const DatTool: React.FC = () => {
   useEffect(() => {
     setSelectedPage(activeMenu);
   }, [activeMenu])
-
-  const renderPage = () => {
-    switch (selectedPage) {
-      case 'Structural':
-        return <StructuralPage />;
-      case 'Adders':
-        return <AddressPage setOpenPopUp={setOpenPopUp} />;
-      case 'Notes':
-        return <NotesPage />;
-      case 'Other':
-        return <OtherPage />;
-      default:
-        return <GeneralPage  generalData={generalData}/>;
-    }
-  };
   const [searchPara,setSearchPara]=useState<string>('');  
   
 
@@ -48,12 +33,30 @@ const DatTool: React.FC = () => {
   const [currentGeneralId, setCurrentGeneralId] = useState<string>(data[0]?.project_id || 'OUR01037');
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara }));
+  }, [searchPara]);
+  useEffect(() => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
-  }, [searchPara,currentGeneralId]);
+  }, [currentGeneralId]);
+
+
+  const renderPage = () => {
+    switch (selectedPage) {
+      case 'Structural':
+        return <StructuralPage />;
+      case 'Adders':
+        return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId}/>;
+      case 'Notes':
+        return <NotesPage />;
+      case 'Other':
+        return <OtherPage />;
+      default:
+        return <GeneralPage  generalData={generalData}/>;
+    }
+  };
 
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
 
-
+  
   return (
     <div className={styles.mainContainer}>
 
