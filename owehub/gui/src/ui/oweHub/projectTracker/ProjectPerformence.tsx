@@ -239,6 +239,7 @@ const ProjectPerformence = () => {
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
+  const [pipelineData, setPipelineData] = useState<any>([]);
 
   const [selectedRangeDate, setSelectedRangeDate] = useState<any>({
     label: 'Three Months',
@@ -270,10 +271,11 @@ const ProjectPerformence = () => {
     };
   };
   
-
-  const { projectStatus, projectsCount, isLoading } = useAppSelector(
-    (state) => state.perfomanceSlice
-  );
+  const { projectStatus, projectsCount, isLoading } = useAppSelector((state) => ({
+    projectStatus: JSON.parse(JSON.stringify(state.perfomanceSlice.projectStatus)),
+    projectsCount: state.perfomanceSlice.projectsCount,
+    isLoading: state.perfomanceSlice.isLoading,
+  }));
   const ExportCsv = async () => {
     setIsExporting(true);
     const headers = [
@@ -679,6 +681,15 @@ const ProjectPerformence = () => {
       container.removeEventListener('mousemove', mouseMoveHandler);
     };
   }, []);
+
+  useEffect(() => {
+    if (projectStatus && JSON.stringify(projectStatus) !== JSON.stringify(pipelineData)) {
+      setPipelineData(projectStatus);
+    }
+  }, [projectStatus, pipelineData]);
+  
+
+  console.log(projectStatus, 'projectStatus')
 
   return (
 
@@ -1219,8 +1230,8 @@ const ProjectPerformence = () => {
                     </td>
                   </tr>
                 ) : (
-                  projectStatus.map(
-                    (project: (typeof projectStatus)[0], index: number) => {
+                  pipelineData.map(
+                    (project: (typeof pipelineData)[0], index: number) => {
                       const newObj: any = { ...project };
                       delete newObj?.['unqiue_id'];
                       return (

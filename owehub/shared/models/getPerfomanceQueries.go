@@ -200,12 +200,19 @@ func ProjectMngmntRetrieveQueryFunc(filterUserQuery, searchValue string) string 
 	}
 
 	ProjectMngmntRetrieveQuery := fmt.Sprintf(`
-        SELECT 
-        customers_customers_schema.unique_id, 
+        SELECT customers_customers_schema.unique_id, 
         customers_customers_schema.sale_date AS contract_date,
 		ntp_ntp_schema.ntp_complete_date AS ntp_date, 
         survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
-        survey_survey_schema.survey_completion_date AS site_survey_completed_date, 
+        survey_survey_schema.reschedule_needed_on_date AS site_survey_rescheduled_date,
+        CASE 
+            WHEN (survey_survey_schema.reschedule_needed_on_date IS NOT NULL 
+            AND survey_survey_schema.twond_visit_date IS NULL)
+            THEN NULL
+            WHEN survey_survey_schema.twond_visit_date IS NOT NULL
+            THEN survey_survey_schema.twond_completion_date
+            ELSE survey_survey_schema.survey_completion_date
+        END AS site_survey_completed_date, 
 		permit_fin_pv_permits_schema.created_on AS permit_created,
         permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date, 
         permit_fin_pv_permits_schema.pv_approved AS permit_approved_date, 
@@ -213,7 +220,8 @@ func ProjectMngmntRetrieveQueryFunc(filterUserQuery, searchValue string) string 
         ic_ic_pto_schema.ic_submitted_date, 
         ic_ic_pto_schema.ic_approved_date, 
 		pv_install_install_subcontracting_schema.created_on AS pv_install_created_date, 
-        pv_install_install_subcontracting_schema.time_stamp_scheduled AS pv_install_scheduled_date,
+        pv_install_install_subcontracting_schema.pv_scheduling_ready_date AS pv_install_ready_date,
+        pv_install_install_subcontracting_schema.install_fix_scheduled_date AS pv_install_scheduled_date,
         pv_install_install_subcontracting_schema.pv_completion_date AS pv_install_completed_date, 
 		fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date, 
         fin_permits_fin_schema.approved_date AS fin_pass_date, 
@@ -232,9 +240,8 @@ func ProjectMngmntRetrieveQueryFunc(filterUserQuery, searchValue string) string 
         ELSE 0
         END AS epc,
 		ntp_ntp_schema.ahj, 
-		-- have dounbt on adder AS adders_total,
 		customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
-		--customers_customers_schema.total_system_cost AS contract_total, 
+		customers_customers_schema.total_system_cost AS contract_total, 
 		ntp_ntp_schema.finance AS finance_company, 
 		ntp_ntp_schema.net_epc
 FROM customers_customers_schema
@@ -267,7 +274,7 @@ LEFT JOIN pto_ic_schema
     AND LOWER(pto_ic_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
 LEFT JOIN system_customers_schema
     ON system_customers_schema.customer_id = customers_customers_schema.unique_id
-    AND LOWER(system_customers_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(system_customers_schema.project_status) NOT ILIKE '%%DUPLICATE%%'  
     WHERE %s %s `, filterUserQuery, searchValue)
 	return ProjectMngmntRetrieveQuery
 }

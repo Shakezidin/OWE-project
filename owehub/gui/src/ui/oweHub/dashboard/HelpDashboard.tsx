@@ -5,6 +5,7 @@ import Input from '../../components/text_input/Input';
 import { ActionButton } from '../../components/button/ActionButton';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import MicroLoader from '../../components/loader/MicroLoader';
 
 interface ButtonProps {
   handleClose: () => void;
@@ -169,166 +170,185 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
           </div>
           <div className="modal-body">
             <div className="help-input-container">
-              <div
-                className="create-input-container help-projId"
-                style={{ width: '1740px' }}
-              >
-                <div className="create-input-field help-proj-input" style={{}}>
-                  <Input
-                    type={'text'}
-                    label="Project ID"
-                    value={state.project_id}
-                    name="project_id"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
+              {isSubmitting ? (
+                <div style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 9999
+                }}>
+                  <MicroLoader />
                 </div>
-              </div>
-
-              <div className="create-input-container">
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Dealer Name"
-                    value={state.dealer_name}
-                    name="dealer_name"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                  {errors?.dealer_name && (
-                    <span className="error">{errors.dealer_name}</span>
-                  )}
-                </div>
-
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Sale Rep."
-                    value={state.sale_rep}
-                    name="sale_rep"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                  {errors?.sale_rep && (
-                    <span className="error">{errors.sale_rep}</span>
-                  )}
-                </div>
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Customer Name"
-                    value={state.customer_name}
-                    name="customer_name"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                  {errors?.customer_name && (
-                    <span className="error">{errors.customer_name}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="create-input-container">
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Amount Prepaid"
-                    value={state.amount_prepaid}
-                    name="amount_prepaid"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Pipeline Remaining"
-                    value={state.pipeline_remaining}
-                    name="pipeline_remaining"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Current Date"
-                    value={state.current_date}
-                    name="current_date"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="create-input-container">
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="Project Status"
-                    value={state.project_status}
-                    name="project_status"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="create-input-field-help">
-                  <Input
-                    type={'text'}
-                    label="State"
-                    value={state.state}
-                    name="state"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="create-input-field-help attach-help-mob">
-                  <label className="inputLabel">
-                    <p>Attach File</p>
-                  </label>
-                  <div className="file-input-container">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="file-input"
-                      onChange={handleFileInputChange}
-                    />
-                    <div className="custom-button-container">
-                      <span className="file-input-placeholder">
-                        {selectedFileName || '.jpg .jpeg .pdf .doc .pdf .xls'}
-                      </span>
-                      <button
-                        className="custom-button"
-                        onClick={handleButtonClick}
-                      >
-                        Browse
-                      </button>
+              ) : (
+                <>
+                  <div
+                    className="create-input-container help-projId"
+                    style={{ width: '1740px' }}
+                  >
+                    <div className="create-input-field help-proj-input" style={{}}>
+                      <Input
+                        type={'text'}
+                        label="Project ID"
+                        value={state.project_id}
+                        name="project_id"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
                     </div>
                   </div>
-                  {fileSizeError && (
-                    <span className="error">{fileSizeError}</span>
-                  )}
-                </div>
-              </div>
 
-              <div className="create-input-field-note" style={{}}>
-                <label htmlFor="" className="inputLabel">
-                  Message
-                </label>
-                <br />
-                <textarea
-                  name="message"
-                  rows={4}
-                  onChange={handleChange}
-                  value={state.message}
-                  placeholder="Type here..."
-                ></textarea>
-                {errors?.message && (
-                  <span className="error">{errors.message}</span>
-                )}
-              </div>
+                  <div className="create-input-container">
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Dealer Name"
+                        value={state.dealer_name}
+                        name="dealer_name"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                      {errors?.dealer_name && (
+                        <span className="error">{errors.dealer_name}</span>
+                      )}
+                    </div>
+
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Sale Rep."
+                        value={state.sale_rep}
+                        name="sale_rep"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                      {errors?.sale_rep && (
+                        <span className="error">{errors.sale_rep}</span>
+                      )}
+                    </div>
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Customer Name"
+                        value={state.customer_name}
+                        name="customer_name"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                      {errors?.customer_name && (
+                        <span className="error">{errors.customer_name}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="create-input-container">
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Amount Prepaid"
+                        value={state.amount_prepaid}
+                        name="amount_prepaid"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                    </div>
+
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Pipeline Remaining"
+                        value={state.pipeline_remaining}
+                        name="pipeline_remaining"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Current Date"
+                        value={state.current_date}
+                        name="current_date"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="create-input-container">
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="Project Status"
+                        value={state.project_status}
+                        name="project_status"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                    </div>
+
+                    <div className="create-input-field-help">
+                      <Input
+                        type={'text'}
+                        label="State"
+                        value={state.state}
+                        name="state"
+                        placeholder={'Enter'}
+                        onChange={handleChange}
+                      />
+                    </div>
+
+                    <div className="create-input-field-help attach-help-mob">
+                      <label className="inputLabel">
+                        <p>Attach File</p>
+                      </label>
+                      <div className="file-input-container">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="file-input"
+                          onChange={handleFileInputChange}
+                        />
+                        <div className="custom-button-container">
+                          <span className="file-input-placeholder">
+                            {selectedFileName || '.jpg .jpeg .pdf .doc .pdf .xls'}
+                          </span>
+                          <button
+                            className="custom-button"
+                            onClick={handleButtonClick}
+                          >
+                            Browse
+                          </button>
+                        </div>
+                      </div>
+                      {fileSizeError && (
+                        <span className="error">{fileSizeError}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="create-input-field-note" style={{}}>
+                    <label htmlFor="" className="inputLabel">
+                      Message
+                    </label>
+                    <br />
+                    {errors?.message && (
+                      <span className="error">{errors.message}</span>
+                    )}
+                    <textarea
+                      name="message"
+                      rows={4}
+                      onChange={handleChange}
+                      value={state.message}
+                      placeholder="Type here..."
+                    ></textarea>
+                    
+                  </div>
+                </>
+              )}
             </div>
           </div>
           <div
@@ -336,7 +356,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
             style={{ marginTop: '1rem', paddingTop: '1rem' }}
           >
             <ActionButton title={'Cancel'} type="reset" onClick={handleClose} />
-            <button className="help-submit" onClick={handleSubmit}>
+            <button className="help-submit" onClick={handleSubmit} disabled={isSubmitting}>
               Submit
             </button>
           </div>
