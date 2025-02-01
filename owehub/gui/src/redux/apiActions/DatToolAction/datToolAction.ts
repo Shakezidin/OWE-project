@@ -32,4 +32,18 @@ export const getDatGeneralInfo = createAsyncThunk(
     }
   }
 );
+export const getDatAddersInfo = createAsyncThunk(
+  'dataTool/getDatAddersInfo',
+  async (payload: { project_id: string; }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('get_tab_adders_info', {
+        project_id: payload.project_id
+      });
+      
+      return response;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch Adders Info');
+    }
+  }
+);
 
