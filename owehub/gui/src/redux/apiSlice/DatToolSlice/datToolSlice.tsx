@@ -94,7 +94,7 @@ const datSlice = createSlice({
     });
     builder.addCase(getDatProjectList.fulfilled, (state, action) => {
       state.loading = false;
-      state.data = action.payload?.data.project_data;
+      state.data = action.payload?.data?.project_data;
     });
     builder.addCase(getDatProjectList.rejected, (state, action) => {
       state.loading = false;

@@ -42,9 +42,10 @@ interface GeneralData {
   dat_change_order: string;
 }
 interface commonComponentProps {
-  generalData:GeneralData| null
+  generalData:GeneralData| null;
+  loading:boolean;
 }
-const CommonComponent: React.FC<commonComponentProps> = ({generalData}) => {
+const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) => {
       // Handler for setting active tab
   const handleClick = (index: number): void => setActiveIndex(index);
   // State variables for controlling editing and active tabs
@@ -86,7 +87,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData}) => {
     { icon: ICONS.DatCapture, name: 'Site Capture' },
   ];
   return (
-    <div> <div className={styles.genOneCont}>
+    <div> {loading ? <div> </div> :<div className={styles.genOneCont}>
     <div className={styles.genOneLeft}>
       <div className={styles.gOneHeader}>
         {/* Header displaying*/}
@@ -212,7 +213,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData}) => {
         </div>
       </div>
     </div>
-  </div></div>
+  </div>}</div>
   )
 }
 
