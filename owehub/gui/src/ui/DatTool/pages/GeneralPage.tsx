@@ -5,6 +5,7 @@ import { MdClose, MdDone } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
 import CommonComponent from './CommonComponent';
+import MicroLoader from '../../components/loader/MicroLoader';
  
 
 
@@ -45,7 +46,8 @@ interface GeneralData {
   dat_change_order: string;
 }
 interface generalProps {
-  generalData:GeneralData| null
+  generalData:GeneralData| null;
+  loading:boolean;
 }
 // Data Tab Component (for tabs on the right Bottom section)
 interface DatTabProps {
@@ -90,7 +92,7 @@ const InputField: React.FC<InputFieldProps> = ({
   </div>
 );
  
-const GeneralPage: React.FC <generalProps>= ({generalData}) => {
+const GeneralPage: React.FC <generalProps>= ({generalData,loading}) => {
   // State variables for controlling editing and active tabs
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
@@ -141,7 +143,7 @@ const GeneralPage: React.FC <generalProps>= ({generalData}) => {
       
  
       {/* Section displaying contract and DAT information */}
-      <div className={styles.genSecCont}>
+      {loading? <div className={styles.loaderContainer}> <MicroLoader/> </div>:<div className={styles.genSecCont}>
         {/* Contract Information Left Section */}
         <div className={styles.genSecLeft}>
           <div className={styles.genSecLeftHdr}>
@@ -251,7 +253,7 @@ const GeneralPage: React.FC <generalProps>= ({generalData}) => {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

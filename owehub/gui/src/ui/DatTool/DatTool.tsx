@@ -30,12 +30,14 @@ const DatTool: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const { data,loading,generalData } = useAppSelector((state) => state.datSlice);
-  const [currentGeneralId, setCurrentGeneralId] = useState<string>(data[0]?.project_id || 'OUR01037');
+  const [currentGeneralId, setCurrentGeneralId] = useState<string>(data?.[0]?.project_id||'OUR01037');
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara }));
+    
   }, [searchPara]);
   useEffect(() => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
+    console.log(currentGeneralId,"currentGeneralId");
   }, [currentGeneralId]);
 
 
@@ -50,7 +52,7 @@ const DatTool: React.FC = () => {
       case 'Other':
         return <OtherPage />;
       default:
-        return <GeneralPage  generalData={generalData}/>;
+        return <GeneralPage  generalData={generalData} loading={loading}/>;
     }
   };
   
@@ -66,7 +68,7 @@ const DatTool: React.FC = () => {
       
       <div className={styles.layoutContainer}>
         <div className={styles.contentContainer}>
-          <CommonComponent generalData={generalData}/>
+          <CommonComponent generalData={generalData} loading={loading}/>
           {renderPage()}
         </div>
 
