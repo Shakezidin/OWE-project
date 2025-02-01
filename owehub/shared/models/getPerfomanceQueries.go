@@ -231,14 +231,6 @@ func ProjectMngmntRetrieveQueryFunc(filterUserQuery, searchValue string) string 
 		customers_customers_schema.customer_name AS home_owner,
 		system_customers_schema.contracted_system_size_parent AS system_size, 
 		customers_customers_schema.state, 
-		CASE
-        WHEN ((system_customers_schema.contracted_system_size_parent IS NULL) 
-            OR (system_customers_schema.contracted_system_size_parent <= (0)::double precision)) THEN (0)::double precision
-        WHEN customers_customers_schema.total_system_cost_calc_h ~ '^[0-9]+(\.[0-9]+)?$' THEN 
-            (customers_customers_schema.total_system_cost_calc_h::double precision / 
-            (system_customers_schema.contracted_system_size_parent * (1000)::double precision))
-        ELSE 0
-        END AS epc,
 		ntp_ntp_schema.ahj, 
 		customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
 		customers_customers_schema.total_system_cost AS contract_total, 
