@@ -181,7 +181,7 @@ type ProjectResponse struct {
 	AHJ                          string            `json:"ajh"`
 	Epc                          float64           `json:"epc"`
 	State                        string            `json:"state"`
-	ContractAmount               float64           `json:"contract_amount"`
+	ContractAmount               string            `json:"contract_amount"`
 	FinancePartner               string            `json:"finance_partner"`
 	NetEPC                       float64           `json:"net_epc"`
 	HomeOwner                    string            `json:"home_owner"`
