@@ -159,9 +159,6 @@ type ProjectResponse struct {
 	SiteSurveyScheduled          string            `json:"site_survey_scheduled"`
 	SiteSurevyRescheduled        string            `json:"site_survey_rescheduled"`
 	SiteSurveyCompleted          string            `json:"site_survey_completed"`
-	RoofingPending               string            `json:"roofing_pending"`
-	RoofingScheduled             string            `json:"roofing_scheduled"`
-	RoofingCompleted             string            `json:"roofing_completed"`
 	PvPermitPending              string            `json:"pv_permit_pending"`
 	PvPermitScheduled            string            `json:"pv_permit_scehduled"`
 	PvPermitCompleted            string            `json:"pv_permit_completed"`
