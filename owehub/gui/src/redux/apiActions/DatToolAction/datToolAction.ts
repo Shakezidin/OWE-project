@@ -14,7 +14,21 @@ export const getDatProjectList = createAsyncThunk(
       
       return response;
     } catch (error) {
-      return rejectWithValue('Failed to fetch summary data');
+      return rejectWithValue('Failed to fetch Project List');
+    }
+  }
+);
+export const getDatGeneralInfo = createAsyncThunk(
+  'dataTool/getDatGeneralInfo',
+  async (payload: { project_id: string; }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('get_tab_general_info', {
+        project_id: payload.project_id
+      });
+      
+      return response;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch General Info');
     }
   }
 );

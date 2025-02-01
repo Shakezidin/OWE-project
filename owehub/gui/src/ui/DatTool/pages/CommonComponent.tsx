@@ -5,7 +5,46 @@ import { FiArrowRight } from 'react-icons/fi';
 import { MdClose, MdDone } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
-const CommonComponent = () => {
+interface GeneralData {
+  project_name: string;
+  project_id: string;
+  project_address: string;
+  phone_number: string;
+  email_id: string;
+  pv_module: string;
+  inverters: string;
+  battery: string;
+  dc_system_size: number;
+  ac_system_size: number;
+  battery_capacity: number;
+  ahj: string;
+  utility: string;
+  branch: string;
+  lender: string;
+  aurora_link: string;
+  tape_link: string;
+  site_capture_url: string;
+  contract_date: string;
+  module_qty: number;
+  module_type: number;
+  inverter_type: string;
+  battery_type: string;
+  ac_dc_system_size: string;
+  total_production: number;
+  dat_module_qty: number;
+  dat_module_type: string;
+  dat_design_version: number;
+  dat_designer_name: string;
+  dat_aurora_id: string;
+  dat_system_size_ac: string;
+  dat_system_size_dc: string;
+  dat_changes: string;
+  dat_change_order: string;
+}
+interface commonComponentProps {
+  generalData:GeneralData| null
+}
+const CommonComponent: React.FC<commonComponentProps> = ({generalData}) => {
       // Handler for setting active tab
   const handleClick = (index: number): void => setActiveIndex(index);
   // State variables for controlling editing and active tabs
@@ -19,33 +58,27 @@ const CommonComponent = () => {
 
   // Mock data arrays
   const datTabs: string[] = ['7562', '7001', '7002', '7003'];
-  const companyInfo = {
-    name: 'Kinderland Learning Academy',
-    id: 'OUR 13668',
-    address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States',
-    phone: '+01 27852348',
-    email: 'kinderland123@gmail.com',
-  };
+  
   const systemSpecs = [
     {
-      title: 'Qcells Q.PEAK DUO BLK ML-G10+/t 400W (Bifacial)',
+      title: generalData?.pv_module,
       subtitle: 'PV Modules',
     },
-    { title: 'Enphase IQ8M Microinverters', subtitle: 'Inverters' },
-    { title: 'Enphase IQ5P', subtitle: 'Battery' },
+    { title: generalData?.inverters, subtitle: 'Inverters' },
+    { title: generalData?.battery, subtitle: 'Battery' },
   ];
   const systemMetrics = [
-    { value: '123.4 wt', label: 'DC System Size' },
-    { value: '87 wt', label: 'AC System Size' },
-    { value: '87.34 wt', label: 'Battery Capacity' },
+    { value: generalData?.dc_system_size, label: 'DC System Size' },
+    { value: generalData?.ac_system_size, label: 'AC System Size' },
+    { value: generalData?.battery_capacity, label: 'Battery Capacity' },
   ];
   const rightSideInfo = [
-    { label: 'AHJ', value: 'Greater Salt Lake Municipal Services District' },
-    { label: 'Utility', value: 'French Broad Electric Membership Corporation' },
+    { label: 'AHJ', value: generalData?.ahj },
+    { label: 'Utility', value: generalData?.utility },  
   ];
   const bottomInfo = [
-    { label: 'Branch', value: 'AZPEO01' },
-    { label: 'Lender', value: 'Goodleap' },
+    { label: 'Branch', value: generalData?.branch },
+    { label: 'Lender', value: generalData?.lender },
   ];
   const integrations = [
     { icon: ICONS.DatAurora, name: 'Aurora' },
@@ -59,8 +92,8 @@ const CommonComponent = () => {
         {/* Header displaying*/}
         <div className={styles.gOneHeaderTitle}>
           <div className={styles.gOneHeaderTitleTxt}>
-            <p>{companyInfo.name}</p>
-            <p>{companyInfo.id}</p>
+            <p>{generalData?.project_name}</p>
+            <p>{generalData?.project_id}</p>
           </div>
           {/* Edit buttons: Cancel and Save */}
           <div>
@@ -85,9 +118,9 @@ const CommonComponent = () => {
         </div>
         <div className={styles.gOneHeaderDesc}>
           {[
-            { type: 'text', value: companyInfo.address },
-            { type: 'tel', value: companyInfo.phone },
-            { type: 'email', value: companyInfo.email },
+            { type: 'text', value: generalData?.project_address },
+            { type: 'tel', value: generalData?.phone_number },
+            { type: 'email', value: generalData?.email_id },
           ].map((input, index) => (
             <input
               key={index}

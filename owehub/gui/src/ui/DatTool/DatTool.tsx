@@ -12,7 +12,7 @@ import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
 import CommonComponent from './pages/CommonComponent';
 import { useOutletContext } from 'react-router-dom';
-import { getDatProjectList } from '../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatGeneralInfo, getDatProjectList } from '../../redux/apiActions/DatToolAction/datToolAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 const DatTool: React.FC = () => {
@@ -37,20 +37,21 @@ const DatTool: React.FC = () => {
       case 'Other':
         return <OtherPage />;
       default:
-        return <GeneralPage />;
+        return <GeneralPage  generalData={generalData}/>;
     }
   };
+  const [searchPara,setSearchPara]=useState<string>('');  
+  
 
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.datSlice);
+  const { data,loading,generalData } = useAppSelector((state) => state.datSlice);
+  const [currentGeneralId, setCurrentGeneralId] = useState<string>(data[0]?.project_id || 'OUR01037');
   useEffect(() => {
-    dispatch(getDatProjectList({ search: '' }));
-  }, []);
+    dispatch(getDatProjectList({ search: searchPara }));
+    dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
+  }, [searchPara,currentGeneralId]);
 
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
-
-
- 
 
 
   return (
@@ -65,13 +66,13 @@ const DatTool: React.FC = () => {
       
       <div className={styles.layoutContainer}>
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
-          <CommonComponent />
+          <CommonComponent generalData={generalData}/>
           {renderPage()}
         </div>
 
         <div className={styles.sidebar}>
 
-          <SideContainer data={data}/>
+          <SideContainer data={data} setSearchPara={setSearchPara} loading={loading} setCurrentGeneralId={setCurrentGeneralId}/>
         </div>
 
       </div>
