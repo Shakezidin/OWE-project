@@ -32,6 +32,7 @@ interface createUserProps {
   userOnboard: CreateUserModel | null;
   onSubmitCreateUser: (e: any) => void;
   onChangeRole: (role: string, value: string) => void;
+  roleOption: any[];
   dealerList: any[];
   regionList: any[];
   selectedOption: { label?: string; value?: string };
@@ -49,6 +50,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   tablePermissions,
   setTablePermissions,
   setLogoUrl,
+  roleOption
 }) => {
   const dispatch = useAppDispatch();
   const { authData } = useAuth();
@@ -250,7 +252,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       Role
                     </label>
                     <SelectOption
-                      options={ALL_USER_ROLE_LIST}
+                       options={(Array.isArray(roleOption) ? roleOption : []).map((role) => ({
+                        value: role.role_name,
+                        label: role.role_name,
+                      }))} // Convert roleOption to the correct format
                       menuPosition="fixed"
                       onChange={(newValue) => {
                         handleChange(newValue, 'role_name');

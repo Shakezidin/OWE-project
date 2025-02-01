@@ -46,6 +46,7 @@ import React, {
     setTablePermissions: Dispatch<SetStateAction<{}>>;
     setLogoUrl: any;
     editData?:any
+    roleOption?: any[];
   }
   
   interface UserData {
@@ -55,6 +56,7 @@ import React, {
     role_name?: string;
     dealer?: string;
     description?: string;
+   
   }
 
   const  UserUpdate: React.FC<createUserProps> = ({
@@ -67,7 +69,8 @@ import React, {
     tablePermissions,
     setTablePermissions,
     setLogoUrl,
-    editData
+    editData,
+    roleOption,
   }) => {
     const dispatch = useAppDispatch();
     const { authData } = useAuth();
@@ -354,7 +357,10 @@ import React, {
                         Role
                       </label>
                       <SelectOption
-                        options={ALL_USER_ROLE_LIST}
+                            options={(Array.isArray(roleOption) ? roleOption : []).map((role) => ({
+                              value: role.role_name,
+                              label: role.role_name,
+                            }))} // Convert roleOption to the correct format
                         menuPosition="fixed"
                         onChange={(newValue) => {
                           handleChange(newValue, 'role_name');
