@@ -5,31 +5,61 @@ import AdderssPopUp from '../components/AdderssPopUp';
 import useEscapeKey from '../../../hooks/useEscape';
 import { useEffect } from 'react';
 import CommonComponent from './CommonComponent';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { getDatAddersInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import { add } from 'date-fns';
 interface Item {
   text: string;
   price: number;
 }
 
-function AdderssPage({ setOpenPopUp }: any) {
+interface Component {
+  name: string;
+  quantity: number;
+  cost: number;
+}
+
+interface AddersData {
+  adders: string;
+  interconnection_cost: number;
+  electrical_cost: number;
+  site_adders_cost: number;
+  structural_cost: number;
+  upgrades_cost: number;
+  trenching_cost: number;
+  battery_cost: number;
+  other_cost: number;
+  total_cost: number;
+  components: Component[];
+}
+
+
+function AdderssPage({ setOpenPopUp,currentGeneralId }: any) {
+  const dispatch = useAppDispatch();
+   const { addersData } = useAppSelector((state) => state.datSlice);
+  useEffect(()=>{
+    dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
+    console.log('API Response:', addersData);
+  },[currentGeneralId]);
   const leftPartObj: Item[] = [
-    { text: 'INTERCONNNECTION', price: 12769 },
-    { text: 'ELECTRICAL', price: 7350 },
-    { text: 'SITE ADDERS', price: 4356 },
-    { text: 'STRUCTURAL', price: 123.54 },
-    { text: 'UPGRADES', price: 2253.23 },
-    { text: 'Trenching (per foot)', price: 1234.3 },
-    { text: 'BATTERY', price: 123 },
-    { text: 'OTHER', price: 12.54 },
+    { text: 'INTERCONNNECTION', price: addersData?.interconnection_cost ?? 0},
+    { text: 'ELECTRICAL', price: addersData?.electrical_cost ?? 0},
+    { text: 'SITE ADDERS', price: addersData?.site_adders_cost ?? 0},
+    { text: 'STRUCTURAL', price:  addersData?.structural_cost ?? 0},
+    { text: 'UPGRADES', price: addersData?.upgrades_cost ?? 0 },
+    { text: 'Trenching (per foot)', price: addersData?.trenching_cost ?? 0 },
+    { text: 'BATTERY', price: addersData?.battery_cost ?? 0 },
+    { text: 'OTHER', price: addersData?.other_cost ?? 0 },
   ];
 
   const rightPartObj: Item[] = [
-    { text: 'Supply/Line Side Tap', price: 750 },
-    { text: 'Load Side Tap', price: 250 },
-    { text: 'ConnectDER', price: 150 },
-    { text: 'Subpanel Add-in', price: 750 },
-    { text: 'Derate', price: 250 },
-    { text: 'H-Frame (PV)', price: 150 },
-    { text: 'Extra Main Breaker', price: 750 },
+    { text: 'Supply/Line Side Tap', price: addersData?.components[0].cost ?? 0 },
+    { text: 'Load Side Tap', price: addersData?.components[1].cost ?? 0 },
+    { text: 'ConnectDER', price: addersData?.components[2].cost ?? 0 },
+    { text: 'Subpanel Add-in', price: addersData?.components[3].cost ?? 0 },
+    { text: 'Derate', price: addersData?.components[4].cost ?? 0 },
+    { text: 'H-Frame (PV)', price: addersData?.components[5].cost ?? 0 },
+    { text: 'Extra Main Breaker', price: addersData?.components[6].cost ?? 0 },
   ];
 
   const rightPartObjElectrical: Item[] = [
@@ -137,8 +167,11 @@ function AdderssPage({ setOpenPopUp }: any) {
     7: Array(rightPartObjOther.length).fill(0),
   });
 
+
+
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
   const currentItems = sectionData[currentSectionIndex];
+  
 
   const handleIncrement = (index: number) => {
     setValues((prevValues) => {
@@ -184,6 +217,7 @@ function AdderssPage({ setOpenPopUp }: any) {
     setCurrentSectionIndex(index);
   };
   const [total, setTotal] = useState<number>(0);
+
 
   useEffect(() => {
     // Calculate the sum of all prices

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {getDatGeneralInfo, getDatProjectList} from '../../apiActions/DatToolAction/datToolAction'
+import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList} from '../../apiActions/DatToolAction/datToolAction'
 import { toast } from 'react-toastify';
 
 
@@ -11,7 +11,8 @@ interface DatToolState {
   data: any[]; // Adjust 'any' if you have more specific data structure
   count: number;
   error: string;
-  generalData:GeneralData | null
+  generalData:GeneralData | null;
+  addersData:AddersData | null;
 }
 
 interface GeneralData {
@@ -51,13 +52,34 @@ interface GeneralData {
   dat_change_order: string;
 }
 
+interface Component {
+  name: string;
+  quantity: number;
+  cost: number;
+}
+
+interface AddersData {
+  adders: string;
+  interconnection_cost: number;
+  electrical_cost: number;
+  site_adders_cost: number;
+  structural_cost: number;
+  upgrades_cost: number;
+  trenching_cost: number;
+  battery_cost: number;
+  other_cost: number;
+  total_cost: number;
+  components: Component[];
+}
+
 // Initialize the state with type safety
 const initialState: DatToolState = {
   loading: false,
   data: [],
   count: 0,
   error: '',
-  generalData:null
+  generalData:null,
+  addersData:null,
 };
 
 
@@ -90,6 +112,21 @@ const datSlice = createSlice({
       state.generalData = action.payload?.data;
     });
     builder.addCase(getDatGeneralInfo.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+      toast.error(action.payload as string);
+    });
+
+
+
+    builder.addCase(getDatAddersInfo.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getDatAddersInfo.fulfilled, (state, action) => {
+      state.loading = false;
+      state.addersData = action.payload?.data;
+    });
+    builder.addCase(getDatAddersInfo.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);
