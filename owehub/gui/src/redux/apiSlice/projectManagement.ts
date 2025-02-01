@@ -64,6 +64,7 @@ interface IProject {
   pv_permit_scehduled: string;
   pv_permit_completed: string;
   ic_permit_pending: string;
+  pv_install_ready_date: string;
   ic_permit_scheduled: string;
   ic_permit_completed: string;
   install_pending: string;
