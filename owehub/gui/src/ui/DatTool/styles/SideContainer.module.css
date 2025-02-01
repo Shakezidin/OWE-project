@@ -125,3 +125,11 @@
   overflow: hidden;
   overflow-y: scroll;
 }
+
+.microLoaderContainer{
+  height:80%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
