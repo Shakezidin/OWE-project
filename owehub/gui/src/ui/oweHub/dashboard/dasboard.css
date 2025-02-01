@@ -983,3 +983,9 @@
     transform: scale(1.2);
   }
 }
+
+.help-submit:disabled {
+  background-color: #a8d4f7;  /* light blue color */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
