@@ -354,6 +354,7 @@ func joinUniqueIdsWithDbResponse(data []map[string]interface{}) (joinedNames str
 			UniqueId, ok := item["customer_unique_id"].(string)
 			if !ok || len(UniqueId) == 0 {
 				UniqueId = ""
+				continue
 			}
 			escapedNames[i] = "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
 		}
