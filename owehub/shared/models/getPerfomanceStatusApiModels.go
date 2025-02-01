@@ -169,6 +169,7 @@ type ProjectResponse struct {
 	IcPermitScheduled            string            `json:"ic_permit_scheduled"`
 	IcPermitCompleted            string            `json:"ic_permit_completed"`
 	InstallReady                 string            `json:"install_ready"`
+	PvInstallReadyDate           string            `json:"pv_install_ready_date"`
 	InstallScheduled             string            `json:"install_scheduled"`
 	InstallCompleted             string            `json:"install_completed"`
 	FinalInspectionSubmitted     string            `json:"final_inspection_submitted"`
@@ -205,6 +206,7 @@ var ColumnToField = map[string]string{
 	"ic_submitted_date":            "IcPermitScheduled",
 	"ic_approved_date":             "IcPermitCompleted",
 	"pv_install_created_date":      "InstallReady",
+	"pv_install_ready_date":        "PvInstallReadyDate",
 	"pv_install_scheduled_date":    "InstallScheduled",
 	"pv_install_completed_date":    "InstallCompleted",
 	"fin_scheduled_date":           "FinalInspectionSubmitted",
@@ -215,9 +217,8 @@ var ColumnToField = map[string]string{
 	"home_owner":                   "HomeOwner",
 	"system_size":                  "SystemSize",
 	"state":                        "State",
-	"epc":                          "Epc", //check
+	"epc":                          "Epc",
 	"ahj":                          "AHJ",
-	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",
 	"contract_total":               "ContractAmount",
 	"finance_company":              "FinancePartner",
