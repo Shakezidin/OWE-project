@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList} from '../../apiActions/DatToolAction/datToolAction'
+import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralInfo} from '../../apiActions/DatToolAction/datToolAction'
 import { toast } from 'react-toastify';
 
 
@@ -13,6 +13,7 @@ interface DatToolState {
   error: string;
   generalData:GeneralData | null;
   addersData:AddersData | null;
+  structuralData: StructuralData | null;
 }
 
 interface GeneralData {
@@ -72,6 +73,45 @@ interface AddersData {
   components: Component[];
 }
 
+interface StructuralData {
+  structure: string;
+  roof_type: string;
+  sheathing_type: string;
+  framing_size: string;
+  framing_type_1: string;
+  framing_type_2: string;
+  framing_spacing: number;
+  attachment: string;
+  racking: string;
+  pattern: string;
+  mount: string;
+  structural_upgrades: string;
+  gm_support_type: string;
+  reroof_required: string;
+  quantity: number;
+  pitch: number;
+  area_sqft: string;
+  azimuth: number;
+  tsrf: number;
+  kw_dc: number;
+  spacing_p: number;
+  spacing_l: number;
+  attachment_type: string;
+  attachment_pattern: string;
+  attachment_quantity: number;
+  attachment_spacing: string;
+  racking_type: string;
+  racking_mount_type: string;
+  racking_title_info: string;
+  racking_max_rail_cantilever: string;
+  roof_framing_type: string;
+  roof_size: string;
+  roof_spacing: number;
+  roof_sheathing_type: string;
+  roof_material: string;
+  roof_structural_upgrade: string;
+}
+
 // Initialize the state with type safety
 const initialState: DatToolState = {
   loading: false,
@@ -80,6 +120,7 @@ const initialState: DatToolState = {
   error: '',
   generalData:null,
   addersData:null,
+  structuralData: null,
 };
 
 
@@ -127,6 +168,20 @@ const datSlice = createSlice({
       state.addersData = action.payload?.data;
     });
     builder.addCase(getDatAddersInfo.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+      toast.error(action.payload as string);
+    });
+
+
+    builder.addCase(getStructuralInfo.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getStructuralInfo.fulfilled, (state, action) => {
+      state.loading = false;
+      state.structuralData = action.payload?.data;
+    });
+    builder.addCase(getStructuralInfo.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);

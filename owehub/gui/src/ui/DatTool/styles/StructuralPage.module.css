@@ -223,7 +223,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 9px;
 }
 
 .attachmentHeader {
@@ -242,7 +242,9 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  column-gap: 20px;
+  row-gap: 12px;
+  /* row-gap: 10px; */
 }
 
 .uploadImage {
@@ -448,4 +450,8 @@
   border-radius: 18px;
   background-color: #ffffff;
   width: 100%;
+}
+
+.attachmentSelect{
+
 }

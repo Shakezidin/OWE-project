@@ -47,3 +47,18 @@ export const getDatAddersInfo = createAsyncThunk(
   }
 );
 
+export const getStructuralInfo = createAsyncThunk(
+  'dataTool/getStructuralInfo',
+  async (payload: { project_id: string; }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('get_tab_structural_info', {
+        project_id: payload.project_id
+      });
+      console.log('API Response:', response);
+      return response;
+    } catch (error) {
+      console.error('API Error:', error);
+      return rejectWithValue('Failed to fetch structural information');
+    }
+  }
+);
