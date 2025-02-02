@@ -349,14 +349,15 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 /* Function to join the unique id lists */
 func joinUniqueIdsWithDbResponse(data []map[string]interface{}) (joinedNames string) {
 	if len(data) > 0 {
-		escapedNames := make([]string, len(data))
-		for i, item := range data {
+		var escapedNames []string
+		for _, item := range data {
 			UniqueId, ok := item["customer_unique_id"].(string)
 			if !ok || len(UniqueId) == 0 {
 				UniqueId = ""
-				continue
+			} else {
+				escapedName := "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
+				escapedNames = append(escapedNames, escapedName)
 			}
-			escapedNames[i] = "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
 		}
 		joinedNames = strings.Join(escapedNames, ", ")
 	}
