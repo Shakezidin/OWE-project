@@ -48,7 +48,7 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
     setSortAscending(!sortAscending);
   };
 
-  const mappedDataList = data?.map((apiItem: any) => ({
+  const mappedDataList =data.length ===0? []: data?.map((apiItem: any) => ({
     name: apiItem.project_name.trim() || 'Unnamed Project',
     projectID: apiItem.project_id.trim() || 'No ID Provided',
     address: apiItem.project_address.trim() || 'No Address Provided',
@@ -56,6 +56,7 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
 
   // Display a message if data is empty
   const isDataEmpty = data?.length === 0;
+  console.log(data,"my data .......................");
 
   return (
     <div className={styles.container} style={{height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
