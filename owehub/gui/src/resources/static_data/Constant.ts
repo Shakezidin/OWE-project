@@ -23,6 +23,7 @@ export const ALL_USER_ROLE_LIST = [
   { value: 'SubDealer Owner', label: 'SubDealer Owner' },
   { value: 'Appointment Setter', label: 'Appointment Setter' },
   { value: 'Dealer Owner', label: 'Dealer Owner' },
+  { value: 'Partner', label: 'Partner' },
   { value: 'Regional Manager', label: 'Regional Manager' },
   { value: 'Sales Manager', label: 'Sales Manager' },
   { value: 'Sale Representative', label: 'Sale Representative' },
