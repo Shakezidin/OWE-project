@@ -11,6 +11,7 @@ const debounce = (func: Function, delay: number) => {
     timer = setTimeout(() => func(...args), delay);
   };
 };
+import { useOutletContext } from 'react-router-dom';
 
 interface Data {
   name: string;
@@ -28,6 +29,7 @@ interface SideContainerProps {
 const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loading,setCurrentGeneralId }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
+  const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
 
   const debouncedSetSearchPara = useCallback(
     debounce((search: string) => {
@@ -57,7 +59,7 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
   console.log(data,"my data .......................");
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>
           <div className={styles.headingName}>Project List</div>

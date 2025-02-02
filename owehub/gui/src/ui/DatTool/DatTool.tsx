@@ -12,7 +12,7 @@ import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
 import CommonComponent from './pages/CommonComponent';
 import { useOutletContext } from 'react-router-dom';
-import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList } from '../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralInfo } from '../../redux/apiActions/DatToolAction/datToolAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 const DatTool: React.FC = () => {
@@ -29,7 +29,7 @@ const DatTool: React.FC = () => {
   
 
   const dispatch = useAppDispatch();
-  const { data,loading,generalData } = useAppSelector((state) => state.datSlice);
+  const { data,loading,generalData, structuralData } = useAppSelector((state) => state.datSlice);
   const [currentGeneralId, setCurrentGeneralId] = useState<string>(data?.[0]?.project_id||'OUR01037');
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara }));
@@ -39,12 +39,15 @@ const DatTool: React.FC = () => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
     console.log(currentGeneralId,"currentGeneralId");
   }, [currentGeneralId]);
+  useEffect(() => {
+    dispatch(getStructuralInfo({ project_id: currentGeneralId }));
+  }, [currentGeneralId]);
 
 
   const renderPage = () => {
     switch (selectedPage) {
       case 'Structural':
-        return <StructuralPage />;
+        return <StructuralPage structuralData={structuralData} />;
       case 'Adders':
         return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId}/>;
       case 'Notes':
@@ -54,7 +57,11 @@ const DatTool: React.FC = () => {
       default:
         return <GeneralPage  generalData={generalData} loading={loading}/>;
     }
+
   };
+
+  const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
+
   
   return (
     <div className={styles.mainContainer}>
@@ -67,7 +74,7 @@ const DatTool: React.FC = () => {
       }
       
       <div className={styles.layoutContainer}>
-        <div className={styles.contentContainer}>
+        <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
           <CommonComponent generalData={generalData} loading={loading}/>
           {renderPage()}
         </div>

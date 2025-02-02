@@ -280,11 +280,11 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Ready',
-          data: projectDetail.install_ready ? '' : 'Data not available',
-          borderColor: projectDetail.install_ready ? 'white' : '#A5AAB2',
-          key: 'install_ready',
-          bgColor: projectDetail.install_ready ? '#63ACA3' : '#EBEBEB',
-          color: projectDetail.install_ready ? 'white' : '#858585',
+          data: projectDetail.pv_install_ready_date ? '' : 'Data not available',
+          borderColor: projectDetail.pv_install_ready_date ? 'white' : '#A5AAB2',
+          key: 'pv_install_ready_date',
+          bgColor: projectDetail.pv_install_ready_date ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pv_install_ready_date ? 'white' : '#858585',
         },
         {
           name: '10 Apr',

@@ -125,6 +125,7 @@ const MainLayout = () => {
   const [refreshDat, setRefreshDat] = useState<boolean>(false);
 
   return isAuthenticated ? (
+    
     <div className="main-container">
       {!dbStatus && (
         <div className="laydbDownLabel">
@@ -169,8 +170,8 @@ const MainLayout = () => {
               !toggleOpen && !isTablet ? '240px' : isTablet ? 0 : '50px',
           }}
         >
-          <div className="children-container">
-            <Outlet context={{refreshDat,setRefreshDat, activeMenu }} />
+          <div className={`${!dbStatus ? 'dbdown-children-container' : ''} children-container`}>
+            <Outlet context={{dbStatus,refreshDat,setRefreshDat, activeMenu }} />
           </div>
         </div>
         {isOpenChangePassword && (

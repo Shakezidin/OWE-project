@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/StructuralPage.module.css';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { IoMdAdd, IoMdCheckmark } from 'react-icons/io';
 import Select from '../components/Select';
 import DisplaySelect from '../components/DisplaySelect';
 import { HiMiniXMark } from 'react-icons/hi2';
-import { FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import CustomInput from '../components/Input';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import CommonComponent from './CommonComponent';
-
 type Option = {
   value: string | number;
   label: string;
@@ -21,6 +18,49 @@ type UploadedImage = {
   url: string;
 };
 
+interface StructuralData {
+  structure: string;
+  roof_type: string;
+  sheathing_type: string;
+  framing_size: string;
+  framing_type_1: string;
+  framing_type_2: string;
+  framing_spacing: number;
+  attachment: string;
+  racking: string;
+  pattern: string;
+  mount: string;
+  structural_upgrades: string;
+  gm_support_type: string;
+  reroof_required: string;
+  quantity: number;
+  pitch: number;
+  area_sqft: string;
+  azimuth: number;
+  tsrf: number;
+  kw_dc: number;
+  spacing_p: number;
+  spacing_l: number;
+  attachment_type: string;
+  attachment_pattern: string;
+  attachment_quantity: number;
+  attachment_spacing: string;
+  racking_type: string;
+  racking_mount_type: string;
+  racking_title_info: string;
+  racking_max_rail_cantilever: string;
+  roof_framing_type: string;
+  roof_size: string;
+  roof_spacing: number;
+  roof_sheathing_type: string;
+  roof_material: string;
+  roof_structural_upgrade: string;
+}
+
+interface StructuralPageProps {
+  structuralData: StructuralData | null;
+}
+
 const options: Option[] = [
   { value: 0, label: 'Select' },
   { value: 1, label: 'Option 1' },
@@ -28,7 +68,7 @@ const options: Option[] = [
   { value: 3, label: 'Option 3' },
 ];
 
-const StructuralPage: React.FC = () => {
+const StructuralPage: React.FC<StructuralPageProps> = ({ structuralData }) => {
   const [editStructuralInfo, setEditStructuralInfo] = useState(false);
   const [editAttachment, setEditAttachment] = useState(false);
   const [editRacking, setEditRacking] = useState(false);
@@ -46,6 +86,10 @@ const StructuralPage: React.FC = () => {
   ]);
   const [activeStructuralState, setActiveStructuralState] =
     useState<string>('MP1');
+
+  useEffect(() => {
+    console.log('Structural:', structuralData);
+  }, [structuralData]);
 
   const toggleEditStructuralInfo = (save: boolean = false) => {
     if (save) {
@@ -108,13 +152,12 @@ const StructuralPage: React.FC = () => {
   };
 
   const renderComponent = (
-    key: string,
-    label: string,
-    defaultValue: string,
+    key: any,
+    label: any,
+    defaultValue: any,
     isEditable: boolean,
     type: 'select' | 'input' = 'select'
   ) => {
-    // Get the current value from either temp (when editing) or selected values
     const currentValue = isEditable
       ? tempSelectedValues[key] !== undefined
         ? tempSelectedValues[key]
@@ -155,33 +198,26 @@ const StructuralPage: React.FC = () => {
   };
 
   const handleDeleteState = (stateToDelete: string) => {
-    // Don't allow deletion if it's the only state
     if (structuralInfoStates.length <= 1) return;
 
-    // Filter out the state to delete
     const updatedStates = structuralInfoStates.filter(
       (state) => state !== stateToDelete
     );
 
-    // Update states array
     setStructuralInfoStates(updatedStates);
 
-    // If the active state was deleted, set the active state to the last state in the array
     if (activeStructuralState === stateToDelete) {
       setActiveStructuralState(updatedStates[updatedStates.length - 1]);
     }
 
-    // Reset edit mode if it was active
     if (editStructuralInfo) {
       toggleEditStructuralInfo(false);
     }
   };
   return (
     <div>
-      
       {viewerImage && (
         <div className={styles.imageViewerContainer}>
-          
           <div className={styles.imageViewer}>
             <img
               className={styles.viewerImage}
@@ -276,7 +312,7 @@ const StructuralPage: React.FC = () => {
                 {renderComponent(
                   'structure',
                   'Structure',
-                  'Select',
+                  structuralData?.structure,
                   editStructuralInfo
                 )}
 
@@ -286,44 +322,44 @@ const StructuralPage: React.FC = () => {
                     gridTemplateColumns: 'repeat(2, 1fr)',
                     gridTemplateRows: 'repeat(3, auto)',
                     columnGap: '15px',
-                    rowGap:'15px',
-                    marginTop:'15px',
+                    rowGap: '15px',
+                    marginTop: '15px',
                   }}
                 >
                   {renderComponent(
                     'roofType',
                     'Roof Type',
-                    'Flat',
+                    structuralData?.roof_type,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'roofMaterial',
                     'Roof Material',
-                    'Standing Seam Metal',
+                    structuralData?.roof_material,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'sheathingType',
                     'Sheating Type',
-                    'OSB',
+                    structuralData?.sheathing_type,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'framingType',
                     'Framing Type',
-                    'Mfg. Truss',
+                    structuralData?.framing_type_2,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'framingSize',
                     'Framing Size',
-                    '2x4',
+                    structuralData?.framing_size,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'framingSpacing',
                     'Framing Spacing',
-                    '12',
+                    structuralData?.framing_spacing,
                     editStructuralInfo
                   )}
                 </div>
@@ -335,25 +371,25 @@ const StructuralPage: React.FC = () => {
                   {renderComponent(
                     'attachment',
                     'Attachment',
-                    'K2 Flex Foot',
+                    structuralData?.attachment,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'racking',
                     'Racking',
-                    'K2 CrossRail',
+                    structuralData?.racking,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'pattern',
                     'Pattern',
-                    'Staggered',
+                    structuralData?.pattern,
                     editStructuralInfo
                   )}
                   {renderComponent(
                     'mount',
                     'Mount',
-                    'Flush',
+                    structuralData?.mount,
                     editStructuralInfo
                   )}
                 </div>
@@ -369,19 +405,19 @@ const StructuralPage: React.FC = () => {
                 {renderComponent(
                   'structuralUpgrades',
                   'Structural Upgrades',
-                  'Blocking',
+                  structuralData?.structural_upgrades,
                   editStructuralInfo
                 )}
                 {renderComponent(
                   'reroofRequired',
                   'Reroof Required',
-                  '---',
+                  structuralData?.reroof_required,
                   editStructuralInfo
                 )}
                 {renderComponent(
                   'gmSupportType',
                   'Gm Support Type',
-                  'Ground Screws',
+                  structuralData?.gm_support_type,
                   editStructuralInfo
                 )}
               </div>
@@ -390,27 +426,27 @@ const StructuralPage: React.FC = () => {
               <div className={styles.endContainerOne}>
                 <div style={{ borderRight: '1px dashed #DADAFF' }}>
                   <p className={styles.selectedContent}>Quantity</p>{' '}
-                  <p className={styles.selectedLabel}>25</p>
+                  <p className={styles.selectedLabel}>{structuralData?.quantity}</p>
                 </div>
                 <div>
                   <p className={styles.selectedContent}>Azim</p>{' '}
-                  <p className={styles.selectedLabel}>345</p>
+                  <p className={styles.selectedLabel}>{structuralData?.azimuth}</p>
                 </div>
                 <div style={{ borderRight: '1px dashed #DADAFF' }}>
-                  <p className={styles.selectedContent}>pitch</p>{' '}
-                  <p className={styles.selectedLabel}>23</p>
+                  <p className={styles.selectedContent}>Pitch</p>{' '}
+                  <p className={styles.selectedLabel}>{structuralData?.pitch}</p>
                 </div>
                 <div>
                   <p className={styles.selectedContent}>TSRF</p>{' '}
-                  <p className={styles.selectedLabel}>124</p>
+                  <p className={styles.selectedLabel}>{structuralData?.tsrf}</p>
                 </div>
                 <div style={{ borderRight: '1px dashed #DADAFF' }}>
                   <p className={styles.selectedContent}>Area (sqft)</p>{' '}
-                  <p className={styles.selectedLabel}>1500sqft</p>
+                  <p className={styles.selectedLabel}>{structuralData?.area_sqft}</p>
                 </div>
                 <div>
                   <p className={styles.selectedContent}>kW DC</p>{' '}
-                  <p className={styles.selectedLabel}>24</p>
+                  <p className={styles.selectedLabel}>{structuralData?.kw_dc}</p>
                 </div>
               </div>
               <div className={styles.endContainertwo}>
@@ -418,11 +454,11 @@ const StructuralPage: React.FC = () => {
                 <div className={styles.endContainerWrapper}>
                   <div>
                     <p className={styles.selectedContent}>P</p>
-                    <p className={styles.selectedLabel}>48</p>
+                    <p className={styles.selectedLabel}>{structuralData?.spacing_p}</p>
                   </div>
                   <div>
                     <p className={styles.selectedContent}>L</p>
-                    <p className={styles.selectedLabel}>--</p>
+                    <p className={styles.selectedLabel}>{structuralData?.spacing_l}</p>
                   </div>
                 </div>
               </div>
@@ -466,28 +502,28 @@ const StructuralPage: React.FC = () => {
                     {renderComponent(
                       'attachmentType',
                       'Type',
-                      '--',
+                      structuralData?.attachment_type,
                       editAttachment,
                       'input'
                     )}
                     {renderComponent(
                       'attachmentPattern',
                       'Pattern',
-                      '---',
+                      structuralData?.attachment_pattern,
                       editAttachment,
                       'input'
                     )}
                     {renderComponent(
                       'attachmentQuantity',
                       'Quantity',
-                      '12',
+                      structuralData?.attachment_quantity,
                       editAttachment,
                       'input'
                     )}
                     {renderComponent(
                       'attachmentSpacing',
                       'Spacing',
-                      'Portrait',
+                      structuralData?.attachment_spacing,
                       editAttachment
                     )}
                   </div>
@@ -526,29 +562,27 @@ const StructuralPage: React.FC = () => {
                     {renderComponent(
                       'rackingType',
                       'Type',
-                      '--',
+                      structuralData?.racking_type,
                       editRacking,
                       'input'
                     )}
                     {renderComponent(
                       'rackingMount',
                       'Mount',
-                      'flush',
+                      structuralData?.racking_mount_type,
                       editRacking
                     )}
-                  </div>
-                  <div className={styles.attachmentSelectDIv}>
                     {renderComponent(
                       'tiltInfo',
                       'Tilt Info',
-                      'module',
+                      structuralData?.racking_title_info,
                       editRacking,
                       'input'
                     )}
                     {renderComponent(
                       'maxRailCantilever',
                       'Max Rail Cantilever',
-                      'Portrait',
+                      structuralData?.racking_max_rail_cantilever,
                       editRacking
                     )}
                   </div>
@@ -591,113 +625,110 @@ const StructuralPage: React.FC = () => {
                     {renderComponent(
                       'roofFramingType',
                       'Framing Type',
-                      '--',
+                      structuralData?.roof_framing_type,
                       editRoofStructure,
                       'input'
                     )}
                     {renderComponent(
                       'roofSize',
                       'Size',
-                      '---',
+                      structuralData?.roof_size,
                       editRoofStructure,
                       'input'
                     )}
-                  </div>
-                  <div className={styles.attachmentSelectDIv}>
                     {renderComponent(
                       'roofSpacing',
                       'Spacing',
-                      '---',
+                      structuralData?.roof_spacing,
                       editRoofStructure,
                       'input'
                     )}
                     {renderComponent(
                       'roofSheathingType',
                       'Sheathing type',
-                      '--',
+                      structuralData?.roof_sheathing_type,
                       editRoofStructure,
                       'input'
                     )}
-                  </div>
-                  <div className={styles.attachmentSelectDIv}>
                     {renderComponent(
                       'roofMaterial',
                       'Roof Material',
-                      '---',
+                      structuralData?.roof_material,
                       editRoofStructure,
                       'input'
                     )}
                     {renderComponent(
                       'structuralUpgrades',
                       'Structural upgrades',
-                      '--',
+                      structuralData?.roof_structural_upgrade,
                       editRoofStructure,
                       'input'
                     )}
                   </div>
                 </div>
               </div>
-              <div className={
-  uploadedImages.length === 3
-    ? styles.uploadImageThree
-    : uploadedImages.length === 2 || uploadedImages.length === 1
-    ? styles.uploadImageTwo
-    : styles.uploadImage
-}>
-  <div className={styles.imagePreviewContainer}>
-    {uploadedImages.map((image, index) => (
-      <div key={index} className={styles.imagePreview}>
-        <button
-          className={styles.removeImageButton}
-          onClick={() => handleImageRemove(index)}
-        >
-          <FaXmark />
-        </button>
-        <img
-          src={image.url}
-          alt="Uploaded preview"
-          className={styles.previewImage}
-        />
-        <p
-          className={styles.imageView}
-          onClick={() => setViewerImage(image.url)}
-        >
-          View
-        </p>
-      </div>
-    ))}
-  </div>
+              <div
+                className={
+                  uploadedImages.length === 3
+                    ? styles.uploadImageThree
+                    : uploadedImages.length === 2 || uploadedImages.length === 1
+                      ? styles.uploadImageTwo
+                      : styles.uploadImage
+                }
+              >
+                <div className={styles.imagePreviewContainer}>
+                  {uploadedImages.map((image, index) => (
+                    <div key={index} className={styles.imagePreview}>
+                      <button
+                        className={styles.removeImageButton}
+                        onClick={() => handleImageRemove(index)}
+                      >
+                        <FaXmark />
+                      </button>
+                      <img
+                        src={image.url}
+                        alt="Uploaded preview"
+                        className={styles.previewImage}
+                      />
+                      <p
+                        className={styles.imageView}
+                        onClick={() => setViewerImage(image.url)}
+                      >
+                        View
+                      </p>
+                    </div>
+                  ))}
+                </div>
 
-  {uploadedImages.length < 3 && (  // Only show upload button if less than 3 images
-    <div>
-      <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
-        <div className={styles.UploadIcon}>
-          <IoMdAdd />
-        </div>
-      </label>
-      <input
-        id="imageUpload"
-        type="file"
-        multiple
-        accept="image/*"
-        style={{ display: 'none' }}
-        onChange={handleImageUpload}
-      />
-    </div>
-  )}
+                {uploadedImages.length < 3 && (
+                  <div>
+                    <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
+                      <div className={styles.UploadIcon}>
+                        <IoMdAdd />
+                      </div>
+                    </label>
+                    <input
+                      id="imageUpload"
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handleImageUpload}
+                    />
+                  </div>
+                )}
 
-  {uploadedImages.length === 0 ? (
-    <div className={styles.UploadIconContent}>
-      <p className={styles.UploadHeading}>Upload Image</p>
-      <p className={styles.UploadParagraph}>
-        You can select up to 3 files
-      </p>
-    </div>
-  ) : (
-    ''
-  )}
-</div>
-
+                {uploadedImages.length === 0 ? (
+                  <div className={styles.UploadIconContent}>
+                    <p className={styles.UploadHeading}>Upload Image</p>
+                    <p className={styles.UploadParagraph}>
+                      You can select up to 3 files
+                    </p>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
             </div>
           </div>
         </div>
