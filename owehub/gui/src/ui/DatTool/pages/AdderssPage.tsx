@@ -40,7 +40,6 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
    const { addersData } = useAppSelector((state) => state.datSlice);
   useEffect(()=>{
     dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
-    console.log('API Response:', addersData);
   },[currentGeneralId]);
   const leftPartObj: Item[] = [
     { text: 'INTERCONNECTION', price: addersData ? addersData?.interconnection_cost : 0 },

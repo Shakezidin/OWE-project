@@ -94,10 +94,6 @@ const StructuralPage: React.FC<StructuralPageProps> = ({ structuralData , curren
   const [activeStructuralState, setActiveStructuralState] =
     useState<string>('MP1');
 
-  useEffect(() => {
-    console.log('Structural:', structuralData);
-  }, [structuralData]);
-
   const toggleEditStructuralInfo = (save: boolean = false) => {
     if (save) {
       setSelectedValues({ ...selectedValues, ...tempSelectedValues });

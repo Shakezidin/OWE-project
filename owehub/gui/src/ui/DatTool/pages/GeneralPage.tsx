@@ -97,10 +97,7 @@ const InputField: React.FC<InputFieldProps> = ({
  
 const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneralId}) => {
   const dispatch = useAppDispatch();
-   useEffect(() => {
-      dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
-      console.log(currentGeneralId,"currentGeneralId");
-    }, [currentGeneralId]);
+   
   // State variables for controlling editing and active tabs
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
@@ -146,7 +143,6 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
     { label: 'Change Order Required', value: generalData?.dat_change_order || "N/A" }, 
   ];
   
-  console.log(isDatEditing,"fffff");
  
   return (
     <div className={styles.genMain}>

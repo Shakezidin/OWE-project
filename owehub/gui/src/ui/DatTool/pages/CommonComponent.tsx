@@ -5,6 +5,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import { MdClose, MdDone } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
+import { current } from '@reduxjs/toolkit';
 interface GeneralData {
   project_name: string;
   project_id: string;
@@ -46,57 +47,62 @@ interface commonComponentProps {
   loading:boolean;
 }
 const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) => {
-      // Handler for setting active tab
+      
   const handleClick = (index: number): void => setActiveIndex(index);
-  // State variables for controlling editing and active tabs
+  
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
  
-  // Handlers for controlling edit/save/cancel actions
+  
   const handleEdit = (): void => setIsEditing(true);
   const handleSave = (): void => setIsEditing(false);
   const handleCancel = (): void => setIsEditing(false);
 
-  // Mock data arrays
+  
   const datTabs: string[] = ['7562', '7001', '7002', '7003'];
   
   const systemSpecs = [
     {
-      title: generalData?.pv_module,
+      title: generalData?.pv_module || "N/A",
       subtitle: 'PV Modules',
     },
-    { title: generalData?.inverters, subtitle: 'Inverters' },
-    { title: generalData?.battery, subtitle: 'Battery' },
+    { title: generalData?.inverters || "N/A", subtitle: 'Inverters' },
+    { title: generalData?.battery || "N/A", subtitle: 'Battery' },
   ];
+  
   const systemMetrics = [
-    { value: generalData?.dc_system_size, label: 'DC System Size' },
-    { value: generalData?.ac_system_size, label: 'AC System Size' },
-    { value: generalData?.battery_capacity, label: 'Battery Capacity' },
+    { value: generalData?.dc_system_size || "N/A", label: 'DC System Size' },
+    { value: generalData?.ac_system_size || "N/A", label: 'AC System Size' },
+    { value: generalData?.battery_capacity || "N/A", label: 'Battery Capacity' },
   ];
+  
   const rightSideInfo = [
-    { label: 'AHJ', value: generalData?.ahj },
-    { label: 'Utility', value: generalData?.utility },  
+    { label: 'AHJ', value: generalData?.ahj || "N/A" },
+    { label: 'Utility', value: generalData?.utility || "N/A" },  
   ];
+  
   const bottomInfo = [
-    { label: 'Branch', value: generalData?.branch },
-    { label: 'Lender', value: generalData?.lender },
+    { label: 'Branch', value: generalData?.branch || "N/A" },
+    { label: 'Lender', value: generalData?.lender || "N/A" },
   ];
+  
   const integrations = [
     { icon: ICONS.DatAurora, name: 'Aurora' },
     { icon: ICONS.DatTape, name: 'Tape' },
     { icon: ICONS.DatCapture, name: 'Site Capture' },
   ];
+  
   return (
     <div> {loading ? <div> </div> :<div className={styles.genOneCont}>
     <div className={styles.genOneLeft}>
       <div className={styles.gOneHeader}>
-        {/* Header displaying*/}
+        {}
         <div className={styles.gOneHeaderTitle}>
           <div className={styles.gOneHeaderTitleTxt}>
             <p>{generalData?.project_name}</p>
             <p>{generalData?.project_id}</p>
           </div>
-          {/* Edit buttons: Cancel and Save */}
+          {}
           <div>
             {isEditing ? (
               <div className={styles.gOneHeaderBtn}>
@@ -155,7 +161,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) 
       </div>
     </div>
 
-    {/* First Right Section - AHJ, Utility, and Integrations */}
+    {}
     <div className={styles.genOneRight}>
       <div className={styles.gOneRightTop}>
         {rightSideInfo.map((info:any, index:any) => (
