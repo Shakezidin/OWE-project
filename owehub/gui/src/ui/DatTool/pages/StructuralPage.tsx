@@ -8,6 +8,8 @@ import { HiMiniXMark } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
 import CustomInput from '../components/Input';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { useAppDispatch } from '../../../redux/hooks';
+import { getStructuralInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
 type Option = {
   value: string | number;
   label: string;
@@ -59,6 +61,7 @@ interface StructuralData {
 
 interface StructuralPageProps {
   structuralData: StructuralData | null;
+  currentGeneralId: string;
 }
 
 const options: Option[] = [
@@ -68,7 +71,11 @@ const options: Option[] = [
   { value: 3, label: 'Option 3' },
 ];
 
-const StructuralPage: React.FC<StructuralPageProps> = ({ structuralData }) => {
+const StructuralPage: React.FC<StructuralPageProps> = ({ structuralData , currentGeneralId}) => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getStructuralInfo({ project_id: currentGeneralId }));
+  }, [currentGeneralId]);
   const [editStructuralInfo, setEditStructuralInfo] = useState(false);
   const [editAttachment, setEditAttachment] = useState(false);
   const [editRacking, setEditRacking] = useState(false);

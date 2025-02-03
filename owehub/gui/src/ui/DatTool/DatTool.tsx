@@ -35,19 +35,14 @@ const DatTool: React.FC = () => {
     dispatch(getDatProjectList({ search: searchPara }));
     
   }, [searchPara]);
-  useEffect(() => {
-    dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
-    console.log(currentGeneralId,"currentGeneralId");
-  }, [currentGeneralId]);
-  useEffect(() => {
-    dispatch(getStructuralInfo({ project_id: currentGeneralId }));
-  }, [currentGeneralId]);
+ 
+  
 
 
   const renderPage = () => {
     switch (selectedPage) {
       case 'Structural':
-        return <StructuralPage structuralData={structuralData} />;
+        return <StructuralPage structuralData={structuralData} currentGeneralId={currentGeneralId}/>;
       case 'Adders':
         return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading}/>;
       case 'Notes':
@@ -55,7 +50,7 @@ const DatTool: React.FC = () => {
       case 'Other':
         return <OtherPage />;
       default:
-        return <GeneralPage  generalData={generalData} loading={loading}/>;
+        return <GeneralPage  currentGeneralId={currentGeneralId} generalData={generalData} loading={loading}/>;
     }
 
   };
@@ -81,7 +76,7 @@ const DatTool: React.FC = () => {
 
         <div className={styles.sidebar}>
 
-          <SideContainer data={data} setSearchPara={setSearchPara} loading={loading} setCurrentGeneralId={setCurrentGeneralId}/>
+          <SideContainer data={data} setSearchPara={setSearchPara} loading={loading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId}/>
         </div>
 
       </div>
