@@ -6,10 +6,13 @@ import { postCaller, reportingCaller } from '../../../infrastructure/web_api/ser
 
 export const getDatProjectList = createAsyncThunk(
   'dataTool/getDatProjectList',
-  async (payload: { search: string; }, { rejectWithValue }) => {
+  async (payload: { search: string;page_number:number;page_size:number;sort:string }, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('get_project_list', {
-        search: payload.search
+        search: payload.search,
+        page_number: payload.page_number,
+        page_size: payload.page_size,
+        sort: payload.sort
       });
       
       return response;

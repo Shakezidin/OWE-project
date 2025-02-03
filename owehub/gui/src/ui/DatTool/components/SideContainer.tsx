@@ -25,9 +25,13 @@ interface SideContainerProps {
   loading:boolean;
   setCurrentGeneralId: any;
   currentGeneralId: string;
+  setPageSize:any;
+  setSort:any;
+  pageSize:any;
+  sort:any;
 }
 
-const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loading,setCurrentGeneralId,currentGeneralId }) => {
+const SideContainer: React.FC<SideContainerProps> = ({sort,setSort,setPageSize, data, setSearchPara,loading,setCurrentGeneralId,currentGeneralId }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
@@ -54,9 +58,20 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
     name: apiItem.project_name.trim() || 'Unnamed Project',
     projectID: apiItem.project_id.trim() || 'No ID Provided',
     address: apiItem.project_address.trim() || 'No Address Provided',
-  }))?.slice(0, 30); // Prevent slicing undefined
+  }))
 
-  // Display a message if data is empty
+  const handleClick = () => {
+    setPageSize((prevPageSize:number) => prevPageSize + 10);
+  };
+
+  const handleSort = () => {
+      if(sort === 'asc'){
+        setSort('desc');
+      }else {
+        setSort('asc');
+      }
+  }
+
   
 
   return (
@@ -64,7 +79,7 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>
           <div className={styles.headingName}>Project List</div>
-          <div onClick={toggleSortOrder} style={{ cursor: 'pointer' }}>
+          <div onClick={handleSort} style={{ cursor: 'pointer' }}>
             <TbArrowsSort size={18} />
           </div>
         </div>
@@ -99,11 +114,11 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
                 <p className={styles.content_three} style={{ color: currentGeneralId === data.projectID ? '#fafafa' : '' }}>{data.address}</p>
               </div>
             ))}
+            <p className={styles.seeMore} onClick={handleClick}>See More</p>
           </div>
         </div>
       )}
     </div>
   );
 };
-
 export default SideContainer;

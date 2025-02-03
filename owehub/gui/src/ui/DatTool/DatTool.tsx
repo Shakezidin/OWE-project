@@ -32,14 +32,7 @@ const DatTool: React.FC = () => {
   const { data,loading,generalData, structuralData,sideLoading } = useAppSelector((state) => state.datSlice);
   const [currentGeneralId, setCurrentGeneralId] = useState<string>('OUR01037');
   
-  useEffect(() => {
-    dispatch(getDatProjectList({ search: searchPara }));
-    if (data?.length > 0) {
-      const projectId = data[0]?.project_id;
-      setCurrentGeneralId(projectId?.startsWith(' ') ? projectId.trim() : projectId);
-    }
-  }, [searchPara]);
-
+ 
   
  
   useEffect(() => {
@@ -65,6 +58,18 @@ const DatTool: React.FC = () => {
 
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
 
+
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [sort, setSort] = useState<string>('asc');
+  const projectId = data[0]?.project_id;
+  useEffect(() => {
+    dispatch(getDatProjectList({ search: searchPara, page_number:1,page_size:pageSize,sort:sort }));
+    if (data?.length > 0) {
+      const projectId = data[0]?.project_id;
+      setCurrentGeneralId(projectId?.startsWith(' ') ? projectId.trim() : projectId);
+    }
+  }, [searchPara, pageSize, sort]);
+ 
   
   return (
     <div className={styles.mainContainer}>
@@ -83,8 +88,7 @@ const DatTool: React.FC = () => {
         </div>
 
         <div className={styles.sidebar}>
-
-          <SideContainer data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId}/>
+          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId}/>
         </div>
 
       </div>

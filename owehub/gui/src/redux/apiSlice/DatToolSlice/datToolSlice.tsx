@@ -134,6 +134,7 @@ const initialState: DatToolState = {
 
 
 
+
 const datSlice = createSlice({
   name: 'datToolSlice',
   initialState,
@@ -144,7 +145,7 @@ const datSlice = createSlice({
     });
     builder.addCase(getDatProjectList.fulfilled, (state, action) => {
       state.sideLoading = false;
-      state.data = action.payload?.data?.project_data;
+      state.data = action.payload?.data;
     });
     builder.addCase(getDatProjectList.rejected, (state, action) => {
       state.sideLoading = false;
