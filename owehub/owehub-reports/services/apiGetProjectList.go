@@ -17,7 +17,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
+	// "strings"
 )
 
 /******************************************************************************
@@ -66,37 +66,28 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 
 	whereClause = "WHERE (c.unique_id IS NOT NULL AND c.unique_id != '' AND project_status != 'DUPLICATE')"
 
-	// Code for search
+	// Search by unique id or customer name
 	if dataReq.Search != "" {
-		// Normalize the search input
-		searchInput := strings.ToUpper(dataReq.Search)
 
-		// Check if the search input is purely numeric
-		if _, err := strconv.Atoi(dataReq.Search); err == nil {
-			// If it's numeric, append "OUR" to the number
-			modifiedSearch := fmt.Sprintf("OUR%s", dataReq.Search)
-			// If it's numeric, modify the whereClause to search for project_id/unique_id equal to that number
-			whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", modifiedSearch))
-			whereClause = fmt.Sprintf(
-				"%s AND c.unique_id::text ILIKE $%d)",
-				whereClause[0:len(whereClause)-1],
-				len(whereEleList),
-			)
+		uidSearch := dataReq.Search
+		nameSearch := dataReq.Search
+
+		// Check if uidSearch is a number; If it's numeric, prepend "OUR"
+		if _, err := strconv.Atoi(uidSearch); err == nil {
+			uidSearch = "OUR" + uidSearch
 		}
 
-		// If the search starts with "OUR", handle project_id/unique_id search
-		if strings.HasPrefix(searchInput, "OUR") {
-			searchIdStr := strings.TrimPrefix(searchInput, "OUR")
-			// Allow empty suffix or numeric suffix after "OUR"
-			if _, atoiErr := strconv.Atoi(searchIdStr); atoiErr == nil || searchIdStr == "" {
-				whereEleList = append(whereEleList, fmt.Sprintf("OUR%s%%", searchIdStr))
-				whereClause = fmt.Sprintf(
-					"%s AND c.unique_id::text ILIKE $%d)",
-					whereClause[0:len(whereClause)-1],
-					len(whereEleList),
-				)
-			}
-		}
+		uidSearch = uidSearch + "%"
+		nameSearch = nameSearch + "%"
+
+		whereEleList = append(whereEleList, uidSearch, nameSearch)
+
+		whereClause = fmt.Sprintf(
+			"%s AND (TRIM(c.unique_id) ILIKE $%d OR TRIM(c.customer_name) ILIKE $%d)",
+			whereClause,
+			len(whereEleList)-1,
+			len(whereEleList),
+		)
 	}
 
 	// query to fetch data
