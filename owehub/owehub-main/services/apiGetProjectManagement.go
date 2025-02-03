@@ -12,8 +12,8 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"OWEApp/shared/types"
-	"math"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -111,7 +111,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	for _, item := range data {
 		var projectData models.ProjectResponse
 		mapRowToStruct(item, &projectData)
-		projectData.Epc = math.Round(projectData.Epc*100) / 100
+		projectData.Epc = extractAndParseCost(projectData.ContractAmount) / (projectData.SystemSize * 1000)
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectData.AddersTotal = projectData.AdderBreakDownAndTotal["Total"]
 		if projectData.AddersTotal == "" {
@@ -474,4 +474,44 @@ func getString(item map[string]string, key string) string {
 		return value
 	}
 	return ""
+}
+
+func extractAndParseCost(totalSystemCost string) float64 {
+	costStr := strings.TrimSpace(totalSystemCost)
+
+	// log.FuncErrorTrace(0, "Unique ID: %s - Original Cost String: '%s'", uniqueID, costStr)
+
+	// Step 1: Remove HTML tags
+	re := regexp.MustCompile(`<.*?>`)
+	costStr = re.ReplaceAllString(costStr, "")
+
+	// Step 2: Remove BOM (\ufeff), non-breaking spaces (\u00a0), and other spaces
+	costStr = strings.ReplaceAll(costStr, "\ufeff", "")
+	costStr = strings.ReplaceAll(costStr, "\u00a0", "")
+	costStr = strings.ReplaceAll(costStr, " ", "") // Remove spaces between numbers
+
+	// Step 3: Remove dollar signs and trim
+	costStr = strings.ReplaceAll(costStr, "$", "")
+	costStr = strings.TrimSpace(costStr)
+
+	// Step 4: Extract the first numeric value
+	reNums := regexp.MustCompile(`\d+(?:,\d{3})*(?:\.\d+)?`)
+	match := reNums.FindString(costStr) // Extract only the first match
+	if match == "" {
+		// log.FuncErrorTrace(0, "Unique ID: %s - No numeric value found, skipping parsing. val %v", uniqueID, totalSystemCost)
+		return 0.0
+	}
+
+	// Step 5: Remove commas for float conversion
+	numericPart := strings.ReplaceAll(match, ",", "")
+	// log.FuncErrorTrace(0, "Unique ID: %s - Numeric Portion Extracted: '%s'", uniqueID, numericPart)
+
+	// Step 6: Parse the numeric string into a float
+	parsedCost, err := strconv.ParseFloat(numericPart, 64)
+	if err == nil {
+		// log.FuncErrorTrace(0, "Unique ID: %s - Parsed Float Value: %f", uniqueID, parsedCost)
+		return parsedCost
+	}
+
+	return 0.0
 }

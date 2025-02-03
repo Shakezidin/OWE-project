@@ -446,6 +446,24 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             handleEdit={handleEdit}
           />
         );
+        case TYPE_OF_USER.PROJECT_MANAGER:
+          return (
+            <UserTable
+              data={userRoleBasedList}
+              onClickEdit={(item: UserRoleBasedListModel) => {
+                onClickEdit(item);
+              }}
+              onClickDelete={(item: UserRoleBasedListModel) => {
+                onClickDelete(item);
+              }}
+              selectedRows={selectedRows}
+              selectAllChecked={selectAllChecked}
+              setSelectedRows={setSelectedRows}
+              setSelectAllChecked={setSelectAllChecked}
+              handlePasswordReset={handlePasswordReset}
+              handleEdit={handleEdit}
+            />
+          ); 
       default:
         return null;
     }

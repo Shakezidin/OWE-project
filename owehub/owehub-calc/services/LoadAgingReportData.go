@@ -124,64 +124,97 @@ func CalculateAgngRp(agngRpData oweconfig.InitialAgngRpStruct) (outData map[stri
 	// outData["how_tier_one"] = agngRpData.How_Tier_One
 	// outData["solar_journey"] = agngRpData.Solar_Journey
 
-	outData["days_pending_ntp"] = calculateDaysPendingNTP()
+	dayspendingNTP := calculateDaysPendingNTP(agngRpData.NTP_Date, agngRpData.Contract_Date, agngRpData.Project_Status)
+	outData["days_pending_ntp"] = dayspendingNTP
 
-	outData["days_pending_permits"] = calculateDaysPendingPermit(agngRpData.Permit_Approved_Date, agngRpData.NTP_Date, agngRpData.Project_Status)
+	dayspendingPermit := calculateDaysPendingPermit(agngRpData.Permit_Approved_Date, agngRpData.NTP_Date, agngRpData.Project_Status, dayspendingNTP)
+	outData["days_pending_permits"] = dayspendingPermit
 
-	outData["days_pending_install"] = calculateDaysPendingInstall(agngRpData.Install_Complete, agngRpData.Permit_Approved_Date, agngRpData.Project_Status)
+	daysPendingInstall := calculateDaysPendingInstall(agngRpData.Install_Complete, agngRpData.Permit_Approved_Date, agngRpData.Project_Status, dayspendingPermit)
+	outData["days_pending_install"] = daysPendingInstall
 
-	outData["days_pending_pto"] = calculateDaysPendingPTO(agngRpData.PTO_Date, agngRpData.PV_Install_Completed_Date, agngRpData.Project_Status)
+	outData["days_pending_pto"] = calculateDaysPendingPTO(agngRpData.PTO_Date, agngRpData.PV_Install_Completed_Date, agngRpData.Project_Status, daysPendingInstall)
 
 	outData["project_age"] = calculateProjectAge(agngRpData.Unique_ID, agngRpData.Contract_Date)
 
 	return outData, err
 }
 
-func calculateDaysPendingNTP() int {
+func calculateDaysPendingNTP(ntpDate, contractDate time.Time, projectStatus string) int {
+	ntpDate = time.Date(ntpDate.Year(), ntpDate.Month(), ntpDate.Day(), 0, 0, 0, 0, ntpDate.Location())
+	contractDate = time.Date(contractDate.Year(), contractDate.Month(), contractDate.Day(), 0, 0, 0, 0, contractDate.Location())
+	today := time.Now()
+	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
 
-	return 0
+	// Calculate days
+	var daysPendingNtp int
+	if !ntpDate.IsZero() && !contractDate.IsZero() {
+		days := int(ntpDate.Sub(contractDate).Abs().Hours() / 24)
+		daysPendingNtp = days
+	} else if projectStatus == "ACTIVE" && !contractDate.IsZero() {
+		days := int(today.Sub(contractDate).Abs().Hours() / 24)
+		daysPendingNtp = days
+	} else {
+		daysPendingNtp = 0 // Represents an empty result
+	}
+
+	return daysPendingNtp
 }
 
-func calculateDaysPendingPermit(permitDate time.Time, ntpDate time.Time, projectStatus string) int {
+func calculateDaysPendingPermit(permitDate time.Time, ntpDate time.Time, projectStatus string, dayspendingNTP int) int {
+	ntpDate = time.Date(ntpDate.Year(), ntpDate.Month(), ntpDate.Day(), 0, 0, 0, 0, ntpDate.Location())
+	permitDate = time.Date(permitDate.Year(), permitDate.Month(), permitDate.Day(), 0, 0, 0, 0, permitDate.Location())
 	today := time.Now()
+	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
 
 	// Calculate days
 	var daysPendingPermit int
 	if !permitDate.IsZero() && !ntpDate.IsZero() {
 		days := int(permitDate.Sub(ntpDate).Abs().Hours() / 24)
 		daysPendingPermit = days
-	} else if projectStatus == "ACTIVE" && !ntpDate.IsZero() {
-		days := int(today.Sub(ntpDate).Abs().Hours() / 24)
-		daysPendingPermit = days
+	} else if !ntpDate.IsZero() {
+		if projectStatus == "ACTIVE" {
+			days := int(today.Sub(ntpDate).Abs().Hours() / 24)
+			daysPendingPermit = days
+		} else {
+			daysPendingPermit = 0
+		}
 	} else {
-		daysPendingPermit = 0 // Represents an empty result
+		daysPendingPermit = dayspendingNTP
 	}
 
 	return daysPendingPermit
 }
 
-func calculateDaysPendingInstall(installDate time.Time, permitDate time.Time, projectStatus string) int {
+func calculateDaysPendingInstall(installDate time.Time, permitDate time.Time, projectStatus string, dayspendingPermit int) int {
+	installDate = time.Date(installDate.Year(), installDate.Month(), installDate.Day(), 0, 0, 0, 0, installDate.Location())
+	permitDate = time.Date(permitDate.Year(), permitDate.Month(), permitDate.Day(), 0, 0, 0, 0, permitDate.Location())
+	today := time.Now()
+	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
 
 	// If installComplete is not empty, calculate the difference between installComplete and permitApprovedDate
 	if !installDate.IsZero() && !permitDate.IsZero() {
 		// Pass the Duration directly to absDuration
 		return int(installDate.Sub(permitDate).Abs().Hours() / 24)
+	} else if !permitDate.IsZero() {
+		// If projectStatus is "ACTIVE", calculate the difference between today and permitApprovedDate
+		if projectStatus == "ACTIVE" {
+			// Pass the Duration directly to absDuration
+			return int(today.Sub(permitDate).Abs().Hours() / 24)
+		} else {
+			return 0
+		}
+	} else {
+		return dayspendingPermit
 	}
-
-	// If projectStatus is "ACTIVE", calculate the difference between today and permitApprovedDate
-	if projectStatus == "ACTIVE" && !permitDate.IsZero() {
-		today := time.Now()
-		// Pass the Duration directly to absDuration
-		return int(today.Sub(permitDate).Abs().Hours() / 24)
-	}
-
-	// If neither condition is met, return 0
-	return 0
 }
 
-func calculateDaysPendingPTO(ptoDate time.Time, pvInstallCompleteDate time.Time, projectStatus string) int {
+func calculateDaysPendingPTO(ptoDate time.Time, pvInstallCompleteDate time.Time, projectStatus string, daysPendingInstall int) int {
 	var daysPendingPto int
+	ptoDate = time.Date(ptoDate.Year(), ptoDate.Month(), ptoDate.Day(), 0, 0, 0, 0, ptoDate.Location())
+	pvInstallCompleteDate = time.Date(pvInstallCompleteDate.Year(), pvInstallCompleteDate.Month(), pvInstallCompleteDate.Day(), 0, 0, 0, 0, pvInstallCompleteDate.Location())
 	today := time.Now()
+	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
 
 	// Check if both ptoDate and pvInstallCompleteDate are not empty
 	if !ptoDate.IsZero() && !pvInstallCompleteDate.IsZero() {
@@ -189,17 +222,17 @@ func calculateDaysPendingPTO(ptoDate time.Time, pvInstallCompleteDate time.Time,
 	} else if projectStatus == "ACTIVE" && !pvInstallCompleteDate.IsZero() {
 		daysPendingPto = int(today.Sub(pvInstallCompleteDate).Abs().Hours() / 24) // Calculate days from today to pvInstallCompleteDate
 	} else {
-		// If neither condition is met, return 0
-		daysPendingPto = 0
+		daysPendingPto = daysPendingInstall
 	}
 
 	return daysPendingPto
 }
 
 func calculateProjectAge(uniqueId string, contractDate time.Time) int {
-
 	var projectAge int
+	contractDate = time.Date(contractDate.Year(), contractDate.Month(), contractDate.Day(), 0, 0, 0, 0, contractDate.Location())
 	today := time.Now()
+	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
 
 	if uniqueId != "" && !contractDate.IsZero() {
 		projectAge = int(today.Sub(contractDate).Abs().Hours() / 24) // Calculate days from today

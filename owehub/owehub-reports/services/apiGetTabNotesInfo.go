@@ -1,8 +1,8 @@
 /**************************************************************************
-* File                  : apiGetTabAddersInfo.go
-* DESCRIPTION           : This file contains functions to get information related to adders tab in DAT Tool
+* File                  : apiGetTabNotesInfo.go
+* DESCRIPTION           : This file contains functions to get information related to Notes tab in DAT Tool
 
-* DATE                  : 31-january-2025
+* DATE                  : 2-january-2025
 **************************************************************************/
 
 package services
@@ -15,31 +15,32 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 /******************************************************************************
-* FUNCTION:		    HandleGetTabAddersInfoRequest
-* DESCRIPTION:      handler for get adders info request
+* FUNCTION:		    HandleGetTabNotesInfoRequest
+* DESCRIPTION:      handler for get Notes info request
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
 
-func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetTabNotesInfoRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err         error
 		dataReq     models.GetTabGeneralInfoRequest
-		apiResponse models.GetTabAddersInfoResponse
+		apiResponse []models.GetTabNotesInfoResponse
 		// data        []map[string]interface{}
 		// query       string
 		// whereClause string
 	)
 
-	log.EnterFn(0, "HandleGetTabAddersInfoRequest")
+	log.EnterFn(0, "HandleGetTabNotesInfoRequest")
 
-	defer func() { log.ExitFn(0, "HandleGetTabAddersInfoRequest", err) }()
+	defer func() { log.ExitFn(0, "HandleGetTabNotesInfoRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get adders info request")
+		err = fmt.Errorf("HTTP Request body is null in get notes info request")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +48,15 @@ func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get adders info request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get notes info request err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get tab adders info request err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get tab adders info Request body", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get tab notes info request err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get tab notes info Request body", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -301,115 +302,61 @@ func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) 
 	// 	log.FuncErrorTrace(0, "Failed to get roof structural upgrade from db : %+v\n", data)
 	// }
 
-	apiResponse = models.GetTabAddersInfoResponse{
-		Categories: []models.Categories{
-			{
-				Title: "INTERCONNECTION",
-				Cost:  12769.8,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
+	apiResponse = []models.GetTabNotesInfoResponse{
+		{
+			Title: "Structural",
+			Description: []string{
+				"Flat Roof (per watt): Additional cost for structural reinforcements required...",
+				"Structural integrity check is mandatory before installation.",
+				"Ensure compliance with local building codes before proceeding.",
 			},
-			{
-				Title: "ELECTRICAL",
-				Cost:  7350.9,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "SITE ADDERS",
-				Cost:  4356.8,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "STRUCTURAL",
-				Cost:  123.54,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "UPGRADES",
-				Cost:  2253.23,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "Trenching (per foot)",
-				Cost:  1234.3,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "BATTERY",
-				Cost:  123.6,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "OTHER",
-				Cost:  12.54,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
+			Timestamp: time.Now(),
 		},
-		TotalCost: 45783.9,
-		Adders:    "Summarized cost for all additional components and customizations.9",
+		{
+			Title: "Electrical",
+			Description: []string{
+				"Electrical configurations are linked to site-specific needs such as load side...",
+				"Verify panel compatibility before upgrading existing electrical systems.",
+				"Conduct an electrical load assessment before proceeding with installation.",
+			},
+			Timestamp: time.Now(),
+		},
+		{
+			Title: "MPU",
+			Description: []string{
+				"Meter panel upgrades are often needed for larger systems...",
+				"Check if additional permits are required for MPU modifications.",
+				"Ensure that the main panel rating meets the new system's power demands.",
+			},
+			Timestamp: time.Now(),
+		},
+		{
+			Title: "Adder Explanation",
+			Description: []string{
+				"Meter panel upgrades are often needed for larger systems.",
+				"Detailed explanation for additional charges based on site specifics...",
+				"Additional wiring and safety features may be required in some cases.",
+			},
+			Timestamp: time.Now(),
+		},
+		{
+			Title: "Reason for production/layout change",
+			Description: []string{
+				"Adjustment made to ensure efficient layout and production compliance.",
+				"Modifications may improve energy efficiency and reduce material waste.",
+				"Ensure proper spacing for ventilation and accessibility.",
+			},
+			Timestamp: time.Now(),
+		},
+		{
+			Title: "Notes for installer",
+			Description: []string{
+				"Important details and guidelines for installers to follow.",
+				"Verify all safety protocols before starting installation.",
+				"Document all changes and provide a final report post-installation.",
+			},
+			Timestamp: time.Now(),
+		},
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Project Data", http.StatusOK, apiResponse, 0)

@@ -50,7 +50,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   tablePermissions,
   setTablePermissions,
   setLogoUrl,
-  roleOption
+  roleOption,
 }) => {
   const dispatch = useAppDispatch();
   const { authData } = useAuth();
@@ -96,7 +96,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   /**handle change for report */
   const handleChangeForRegion = async (newValue: any, fieldName: string) => {
     const { value } = newValue;
-    console.log(fieldName, value, "fieldname,value")
+    console.log(fieldName, value, 'fieldname,value');
     await dispatch(updateUserForm({ field: fieldName, value }));
     if (fieldName !== 'report_to' && fieldName !== 'team_name') {
       onChangeRole('Dealer', value);
@@ -165,7 +165,25 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   useEffect(() => {
     dispatch(getDataTableName({ get_all_table: true }));
   }, []);
-
+  useEffect(() => {
+    console.log("roleOption:", roleOption);
+    console.log("Formatted roleOption:", (Array.isArray(roleOption) ? roleOption : []).map((role) => ({
+      value: role.role_name,
+      label: role.role_name,
+    })));
+    console.log("formData.role_name:", formData.role_name);
+    console.log("Selected Value in Dropdown:", (Array.isArray(roleOption) ? roleOption : []).find(
+      (option) => option.value === formData.role_name
+    ));
+  }, [roleOption, formData.role_name]);
+  
+  
+  console.log(selectedOption, 'selectedOption');
+  const formattedRoles = roleOption.map((role) => ({
+    value: role.role_name,
+    label: role.role_name
+  }));
+  
   /** render ui */
   return (
     <div className="transparent-model">
@@ -252,10 +270,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       Role
                     </label>
                     <SelectOption
-                       options={(Array.isArray(roleOption) ? roleOption : []).map((role) => ({
-                        value: role.role_name,
+                      options={(Array.isArray(roleOption)
+                        ? roleOption
+                        : []
+                      ).map((role) => ({
+                        value: role.role_name, // Ensure value matches what is stored in formData
                         label: role.role_name,
-                      }))} // Convert roleOption to the correct format
+                      }))}
                       menuPosition="fixed"
                       onChange={(newValue) => {
                         handleChange(newValue, 'role_name');
@@ -279,9 +300,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                           setTablePermissions(obj);
                         }
                       }}
-                      value={ALL_USER_ROLE_LIST?.find(
-                        (option) => option?.value === formData.role_name
-                      )}
+                      value={
+                        (Array.isArray(formattedRoles) ? formattedRoles : []).find(
+                          (option) => option.value === formData.role_name
+                        ) 
+                      } // Ensure it selects the current role
                     />
                   </div>
                 </div>
