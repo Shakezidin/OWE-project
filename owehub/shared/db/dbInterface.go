@@ -141,8 +141,8 @@ func InitializeDB(dbConnString string) (err error) {
 	}()
 	log.EnterFn(0, "InitializeDB")
 
-	openConnValue, _ := types.UtilsGetInt("DB_MAX_OPEN_CONN", 2000)
-	idleConnValue, _ := types.UtilsGetInt("DB_MAX_IDLE_CONN", 100)
+	openConnValue, _ := types.UtilsGetInt("DB_MAX_OPEN_CONN", 100)
+	idleConnValue, _ := types.UtilsGetInt("DB_MAX_IDLE_CONN", 10)
 
 	ctxH, err := sql.Open(dbDriverName, dbConnString)
 	if err != nil {

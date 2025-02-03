@@ -377,10 +377,10 @@ const ProjectPerformence = () => {
 
 
   useEscapeKey(() => setOpenFilter(false));
-  const location = useLocation();
-  useEffect(() => {
-    window.scrollTo({ top: 10, behavior: 'smooth' });
-  }, [location.pathname]);
+  // const location = useLocation();
+  // useEffect(() => {
+  //   window.scrollTo({ top: 10, behavior: 'smooth' });
+  // }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import { TbArrowsSort } from 'react-icons/tb';
 import styles from '../styles/SideContainer.module.css'
+import { useOutletContext } from 'react-router-dom';
 
 interface Data {
   name: string;
   projectID: string;
   address: string;
 }
+interface SideContainerProps {
 
-const SideContainer: React.FC = () => {
+  data: any[];
+
+}
+
+const SideContainer: React.FC<SideContainerProps> = ({data}:any) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
+  const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
 
+  console.log(data, "myData");
+  const mappedDataList = data.map((apiItem:any) => ({
+    name: apiItem.project_name.trim() || 'Unnamed Project', // You can provide a default name if it's empty
+    projectID: apiItem.project_id.trim() || 'No ID Provided', // Default ID if empty
+    address: apiItem.project_address.trim() || 'No Address Provided', // Default address if empty
+  }));
+  console.log(mappedDataList, "mappedDataList");
   // Sample data
   const dataList: Data[] = [
     { name: 'KinderLand Learning Academy', projectID: 'OUR 13668', address: '11 Bonnabrook Dr, Hermitage, TN 37076, United States' },
@@ -28,19 +42,7 @@ const SideContainer: React.FC = () => {
     { name: 'Bright Future Academy', projectID: 'OUR 13670', address: '45 Future Blvd, Hermitage, TN 37076, United States' },
   ];
 
-  // Handle search by projectID
-  const filteredData = dataList.filter(item =>
-    item.projectID.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Sort data based on sortAscending state
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sortAscending) {
-      return a.projectID.localeCompare(b.projectID); // Ascending order
-    } else {
-      return b.projectID.localeCompare(a.projectID); // Descending order
-    }
-  });
+ 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -51,7 +53,7 @@ const SideContainer: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
       <div className={styles.headerWrapper}>
       <div className={styles.heading}>
         <div className={styles.headingName}>Project List</div>
@@ -70,7 +72,7 @@ const SideContainer: React.FC = () => {
       </div>
       <div className={styles.wrapperBox}>
       <div className={styles.dataBoxWrapper}>
-      {sortedData.map((data, index) => (
+      {mappedDataList.map((data:any, index:any) => (
         <div key={index} className={styles.dataBox}>
           <p className={styles.content_one}>{data.name}</p>
           <p className={styles.content_two}>{data.projectID}</p>
