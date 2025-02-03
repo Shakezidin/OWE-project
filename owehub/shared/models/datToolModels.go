@@ -149,7 +149,11 @@ type Component struct {
 
 // notes tab structs
 type GetTabNotesInfoResponse struct {
-	Title       string    `json:"title"`       // e.g., "Structural"
-	Description []string  `json:"description"` // e.g., "Flat Roof (per watt)..."
-	Timestamp   time.Time `json:"timestamp"`   // Timestamp of entry
+	Title       string `json:"title"`       // e.g., "Structural"
+	Description []Note `json:"description"` // List of notes with time
+}
+
+type Note struct {
+	Note      string    `json:"note"`       // The note content
+	CreatedAt time.Time `json:"created_at"` // Timestamp when the note was created
 }
