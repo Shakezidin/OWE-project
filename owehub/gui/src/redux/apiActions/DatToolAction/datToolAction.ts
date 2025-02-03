@@ -54,7 +54,6 @@ export const getStructuralInfo = createAsyncThunk(
       const response = await reportingCaller('get_tab_structural_info', {
         project_id: payload.project_id
       });
-      console.log('API Response:', response);
       return response;
     } catch (error) {
       console.error('API Error:', error);
@@ -70,7 +69,6 @@ export const getNotesInfo = createAsyncThunk(
       const response = await reportingCaller('get_tab_notes_info', {
         project_id: payload.project_id
       });
-      console.log('API Response:', response);
       return response;
     } catch (error) {
       console.error('API Error:', error);

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 // Define the interface for the initial state
 interface DatToolState {
   loading: boolean;
+  sideLoading: boolean;
   data: any[]; // Adjust 'any' if you have more specific data structure
   count: number;
   error: string;
@@ -123,6 +124,7 @@ const initialState: DatToolState = {
   addersData:null,
   structuralData: null,
   notesData: null,
+  sideLoading:false
 };
 
 
@@ -133,14 +135,14 @@ const datSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getDatProjectList.pending, (state) => {
-      state.loading = true;
+      state.sideLoading = true;
     });
     builder.addCase(getDatProjectList.fulfilled, (state, action) => {
-      state.loading = false;
+      state.sideLoading = false;
       state.data = action.payload?.data?.project_data;
     });
     builder.addCase(getDatProjectList.rejected, (state, action) => {
-      state.loading = false;
+      state.sideLoading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);
     });

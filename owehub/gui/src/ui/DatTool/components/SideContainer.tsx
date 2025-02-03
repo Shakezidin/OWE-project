@@ -58,7 +58,6 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
 
   // Display a message if data is empty
   
-  console.log(data,"my data .......................");
 
   return (
     <div className={styles.container} style={{height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
@@ -92,11 +91,12 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
                   : isHovered === index 
                   ? '#d5e4ff' 
                   : '', 
-                color: currentGeneralId === data.projectID ? '#fafafa' : '' 
+                  color:isHovered === index ? '#000000' : ''
+               
               }}>
-                <p className={styles.content_one}>{data.name}</p>
-                <p className={styles.content_two}>{data.projectID}</p>
-                <p className={styles.content_three}>{data.address}</p>
+                <p className={styles.content_one} style={{ color: currentGeneralId === data.projectID ? '#fafafa' : '' }}>{data.name}</p>
+                <p className={styles.content_two} style={{ color: currentGeneralId === data.projectID ? '#fafafa' : '' }}>{data.projectID}</p>
+                <p className={styles.content_three} style={{ color: currentGeneralId === data.projectID ? '#fafafa' : '' }}>{data.address}</p>
               </div>
             ))}
           </div>

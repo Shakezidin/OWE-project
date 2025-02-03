@@ -30,8 +30,6 @@ const NotePage = ({ currentGeneralId }: any) => {
   }, [currentGeneralId]);
 
   const { loading, notesData, error } = useAppSelector((state) => state.datSlice);
-  console.log(notesData, "notesData");
-  //////////////////////////
 
   const [selectedCategory, setSelectedCategory] = useState<string>('Structural');
   const [currentTime, setCurrentTime] = useState<string>('');

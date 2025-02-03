@@ -101,10 +101,7 @@
   line-height: 21px;
 }
 
-.dataBox:hover {
-  background-color: #377cf6;
-  color: #ffff;
-}
+
 
 .dataBox:hover .content_one,
 .dataBox:hover .content_two,

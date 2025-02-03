@@ -29,14 +29,22 @@ const DatTool: React.FC = () => {
   
 
   const dispatch = useAppDispatch();
-  const { data,loading,generalData, structuralData } = useAppSelector((state) => state.datSlice);
-  const [currentGeneralId, setCurrentGeneralId] = useState<string>(data?.[0]?.project_id||'OUR01037');
+  const { data,loading,generalData, structuralData,sideLoading } = useAppSelector((state) => state.datSlice);
+  const [currentGeneralId, setCurrentGeneralId] = useState<string>('OUR01037');
+  
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara }));
-    
+    if (data?.length > 0) {
+      const projectId = data[0]?.project_id;
+      setCurrentGeneralId(projectId?.startsWith(' ') ? projectId.trim() : projectId);
+    }
   }, [searchPara]);
- 
+
   
+ 
+  useEffect(() => {
+    dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
+  }, [currentGeneralId]);
 
 
   const renderPage = () => {
@@ -70,13 +78,13 @@ const DatTool: React.FC = () => {
       
       <div className={styles.layoutContainer}>
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
-          <CommonComponent generalData={generalData} loading={loading}/>
+          <CommonComponent generalData={generalData} loading={loading} />
           {renderPage()}
         </div>
 
         <div className={styles.sidebar}>
 
-          <SideContainer data={data} setSearchPara={setSearchPara} loading={loading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId}/>
+          <SideContainer data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId}/>
         </div>
 
       </div>
