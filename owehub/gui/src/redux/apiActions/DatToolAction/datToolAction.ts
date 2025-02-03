@@ -62,3 +62,19 @@ export const getStructuralInfo = createAsyncThunk(
     }
   }
 );
+
+export const getNotesInfo = createAsyncThunk(
+  'dataTool/getNotesInfo',
+  async (payload: { project_id: string; }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('get_tab_notes_info', {
+        project_id: payload.project_id
+      });
+      console.log('API Response:', response);
+      return response;
+    } catch (error) {
+      console.error('API Error:', error);
+      return rejectWithValue('Failed to fetch Notes information');
+    }
+  }
+);

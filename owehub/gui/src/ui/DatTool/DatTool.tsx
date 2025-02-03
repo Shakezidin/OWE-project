@@ -51,7 +51,7 @@ const DatTool: React.FC = () => {
       case 'Adders':
         return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading}/>;
       case 'Notes':
-        return <NotesPage />;
+        return <NotesPage currentGeneralId={currentGeneralId}/>;
       case 'Other':
         return <OtherPage />;
       default:
