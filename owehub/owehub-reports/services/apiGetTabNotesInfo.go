@@ -305,57 +305,105 @@ func HandleGetTabNotesInfoRequest(resp http.ResponseWriter, req *http.Request) {
 	apiResponse = []models.GetTabNotesInfoResponse{
 		{
 			Title: "Structural",
-			Description: []string{
-				"Flat Roof (per watt): Additional cost for structural reinforcements required...",
-				"Structural integrity check is mandatory before installation.",
-				"Ensure compliance with local building codes before proceeding.",
+			Description: []models.Note{
+				{
+					Note:      "Flat Roof (per watt): Additional cost for structural reinforcements required...",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Structural integrity check is mandatory before installation.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Ensure compliance with local building codes before proceeding.",
+					CreatedAt: time.Now(),
+				},
 			},
-			Timestamp: time.Now(),
 		},
 		{
 			Title: "Electrical",
-			Description: []string{
-				"Electrical configurations are linked to site-specific needs such as load side...",
-				"Verify panel compatibility before upgrading existing electrical systems.",
-				"Conduct an electrical load assessment before proceeding with installation.",
+			Description: []models.Note{
+				{
+					Note:      "Electrical configurations are linked to site-specific needs such as load side...",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Verify panel compatibility before upgrading existing electrical systems.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Conduct an electrical load assessment before proceeding with installation.",
+					CreatedAt: time.Now(),
+				},
 			},
-			Timestamp: time.Now(),
 		},
 		{
 			Title: "MPU",
-			Description: []string{
-				"Meter panel upgrades are often needed for larger systems...",
-				"Check if additional permits are required for MPU modifications.",
-				"Ensure that the main panel rating meets the new system's power demands.",
+			Description: []models.Note{
+				{
+					Note:      "Meter panel upgrades are often needed for larger systems...",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Check if additional permits are required for MPU modifications.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Ensure that the main panel rating meets the new system's power demands.",
+					CreatedAt: time.Now(),
+				},
 			},
-			Timestamp: time.Now(),
 		},
 		{
 			Title: "Adder Explanation",
-			Description: []string{
-				"Meter panel upgrades are often needed for larger systems.",
-				"Detailed explanation for additional charges based on site specifics...",
-				"Additional wiring and safety features may be required in some cases.",
+			Description: []models.Note{
+				{
+					Note:      "Meter panel upgrades are often needed for larger systems.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Detailed explanation for additional charges based on site specifics...",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Additional wiring and safety features may be required in some cases.",
+					CreatedAt: time.Now(),
+				},
 			},
-			Timestamp: time.Now(),
 		},
 		{
 			Title: "Reason for production/layout change",
-			Description: []string{
-				"Adjustment made to ensure efficient layout and production compliance.",
-				"Modifications may improve energy efficiency and reduce material waste.",
-				"Ensure proper spacing for ventilation and accessibility.",
+			Description: []models.Note{
+				{
+					Note:      "Adjustment made to ensure efficient layout and production compliance.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Modifications may improve energy efficiency and reduce material waste.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Ensure proper spacing for ventilation and accessibility.",
+					CreatedAt: time.Now(),
+				},
 			},
-			Timestamp: time.Now(),
 		},
 		{
 			Title: "Notes for installer",
-			Description: []string{
-				"Important details and guidelines for installers to follow.",
-				"Verify all safety protocols before starting installation.",
-				"Document all changes and provide a final report post-installation.",
+			Description: []models.Note{
+				{
+					Note:      "Important details and guidelines for installers to follow.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Verify all safety protocols before starting installation.",
+					CreatedAt: time.Now(),
+				},
+				{
+					Note:      "Document all changes and provide a final report post-installation.",
+					CreatedAt: time.Now(),
+				},
 			},
-			Timestamp: time.Now(),
 		},
 	}
 
