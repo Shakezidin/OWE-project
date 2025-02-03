@@ -349,13 +349,15 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 /* Function to join the unique id lists */
 func joinUniqueIdsWithDbResponse(data []map[string]interface{}) (joinedNames string) {
 	if len(data) > 0 {
-		escapedNames := make([]string, len(data))
-		for i, item := range data {
+		var escapedNames []string
+		for _, item := range data {
 			UniqueId, ok := item["customer_unique_id"].(string)
 			if !ok || len(UniqueId) == 0 {
 				UniqueId = ""
+			} else {
+				escapedName := "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
+				escapedNames = append(escapedNames, escapedName)
 			}
-			escapedNames[i] = "'" + strings.Replace(UniqueId, "'", "''", -1) + "'"
 		}
 		joinedNames = strings.Join(escapedNames, ", ")
 	}
@@ -537,39 +539,39 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 			continue
 		}
 
-		exists, existsOk := AgRp[uniqueId]
-		if !existsOk {
-			continue
-		}
+		// exists, existsOk := AgRp[uniqueId]
+		// if !existsOk {
+		// 	continue
+		// }
 
 		resp1 := models.PerfomanceResponse{
 			UniqueId: uniqueId,
 		}
 
-		if exists.SurveyClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Survey = TextAccToInput("0")
-		}
-		if exists.CadClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Cad_Design = TextAccToInput("0")
-		}
-		if exists.PermittingClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
-		}
-		if exists.RoofingClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Roofing = TextAccToInput("0")
-		}
-		if exists.InstallClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
-		}
-		if exists.InspectionClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Inspection = TextAccToInput("0")
-		}
-		if exists.ActivationClr == blue || exists.SurveyClr == grey {
-			resp1.Days_Pending_Activation = TextAccToInput("0")
-		}
-		if exists.NTPClr == "" || exists.SurveyClr == grey {
-			resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
-		}
+		// if exists.SurveyClr == blue || exists.SurveyClr == grey {
+		resp1.Days_Pending_Survey = TextAccToInput("0")
+		// }
+		// if exists.CadClr == blue || exists.CadClr == grey {
+		resp1.Days_Pending_Cad_Design = TextAccToInput("0")
+		// }
+		// if exists.PermittingClr == blue || exists.PermittingClr == grey {
+		resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
+		// }
+		// if exists.RoofingClr == blue || exists.RoofingClr == grey {
+		resp1.Days_Pending_Roofing = TextAccToInput("0")
+		// }
+		// if exists.InstallClr == blue || exists.InstallClr == grey {
+		resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
+		// }
+		// if exists.InspectionClr == blue || exists.InspectionClr == grey {
+		resp1.Days_Pending_Inspection = TextAccToInput("0")
+		// }
+		// if exists.ActivationClr == blue || exists.ActivationClr == grey {
+		resp1.Days_Pending_Activation = TextAccToInput("0")
+		// }
+		// if exists.NTPClr == "" || exists.NTPClr == grey {
+		resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
+		// }
 
 		resp1.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
 

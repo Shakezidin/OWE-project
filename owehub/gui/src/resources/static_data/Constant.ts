@@ -12,6 +12,7 @@ export const TYPE_OF_USER = {
   SALES_REPRESENTATIVE: 'Sale Representative',
   ACCOUNT_MANAGER: 'Account Manager',
   ACCOUNT_EXCUTIVE: 'Account Executive',
+  PROJECT_MANAGER: 'Project Manager',
 };
 
 export const ALL_USER_ROLE_LIST = [
@@ -22,11 +23,13 @@ export const ALL_USER_ROLE_LIST = [
   { value: 'SubDealer Owner', label: 'SubDealer Owner' },
   { value: 'Appointment Setter', label: 'Appointment Setter' },
   { value: 'Dealer Owner', label: 'Dealer Owner' },
+  { value: 'Partner', label: 'Partner' },
   { value: 'Regional Manager', label: 'Regional Manager' },
   { value: 'Sales Manager', label: 'Sales Manager' },
   { value: 'Sale Representative', label: 'Sale Representative' },
   { value: 'Account Manager', label: 'Account Manager' },
   { value: 'Account Executive', label: 'Account Executive' },
+  { value: 'Project Manager', label: 'Project Manager' },
 ];
 
 export const MANAGER_ASSIGN_TO_USER = [

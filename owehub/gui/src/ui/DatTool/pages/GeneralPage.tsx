@@ -109,32 +109,35 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading}) => {
  
   
   const contractInfo = [
-    { label: 'Module QTY', value: generalData?.module_qty.toString() },
+    { label: 'Module QTY', value: generalData?.module_qty?.toString() || "N/A" },
     {
       label: 'Module Type',
-      value: generalData?.module_type.toString(),
+      value: generalData?.module_type?.toString() || "N/A", 
     },
-    { label: 'Inverter Type', value: generalData?.inverter_type },
-    { label: 'Battery Type', value: generalData?.battery_type },
-    { label: 'AC/DC System Size', value: generalData?.ac_dc_system_size },
-    { label: 'Total Production', value: generalData?.total_production.toString() },
+    { label: 'Inverter Type', value: generalData?.inverter_type || "N/A" }, 
+    { label: 'Battery Type', value: generalData?.battery_type || "N/A" }, 
+    { label: 'AC/DC System Size', value: generalData?.ac_dc_system_size || "N/A" }, 
+    { label: 'Total Production', value: generalData?.total_production?.toString() || "0" }, 
   ];
+  
   const datFields = [
-    { label: 'Module QTY', value: generalData?.module_qty, type: 'number' },
+    { label: 'Module QTY', value: generalData?.module_qty || 0, type: 'number' }, 
     {
       label: 'Module Type',
-      value: generalData?.module_type.toString(),
+      value: generalData?.module_type?.toString() || "N/A", 
     },
-    { label: 'Inverter Type', value: generalData?.inverter_type },
-    { label: 'Battery Type', value: generalData?.battery_type },
+    { label: 'Inverter Type', value: generalData?.inverter_type || "N/A" }, 
+    { label: 'Battery Type', value: generalData?.battery_type || "N/A" }, 
   ];
+  
   const datRightFields = [
-    { label: 'Design Version', value: generalData?.dat_design_version, type: 'number' },
-    { label: 'Designer Name', value: generalData?.dat_designer_name },
-    { label: 'Aurora ID.', value: generalData?.dat_aurora_id },
-    { label: 'Site Capture URL', value: generalData?.site_capture_url, type: 'url' },
-    { label: 'Change Order Required', value: generalData?.dat_change_order },
+    { label: 'Design Version', value: generalData?.dat_design_version || 0, type: 'number' }, 
+    { label: 'Designer Name', value: generalData?.dat_designer_name || "N/A" }, 
+    { label: 'Aurora ID.', value: generalData?.dat_aurora_id || "N/A" }, 
+    { label: 'Site Capture URL', value: generalData?.site_capture_url || "N/A", type: 'url' }, 
+    { label: 'Change Order Required', value: generalData?.dat_change_order || "N/A" }, 
   ];
+  
   console.log(isDatEditing,"fffff");
  
   return (

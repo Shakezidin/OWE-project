@@ -262,11 +262,17 @@ import React, {
       }
     }, [editData, dispatch]);
     
-    
+  
    
     
       console.log(editData, "editData")
       console.log(formData, "kfklf")
+
+      const formattedRoles = roleOption?.map((role: any) => ({
+        value: role.role_name,
+        label: role.role_name
+      })) || [];
+      
    
     /** render ui */
   
@@ -357,37 +363,42 @@ import React, {
                         Role
                       </label>
                       <SelectOption
-                            options={(Array.isArray(roleOption) ? roleOption : []).map((role) => ({
-                              value: role.role_name,
-                              label: role.role_name,
-                            }))} // Convert roleOption to the correct format
-                        menuPosition="fixed"
-                        onChange={(newValue) => {
-                          handleChange(newValue, 'role_name');
-                          if (newValue?.value !== TYPE_OF_USER.ADMIN) {
-                            setTablePermissions({});
-                            setSelected(new Set());
-                            setDbAcess(false);
-                          }
-                          if (newValue?.value === TYPE_OF_USER.ADMIN) {
-                            setDbAcess(true);
-                            const set = new Set(
-                              Array.from({ length: tables.length }).map(
-                                (_, i: number) => i
-                              )
-                            );
-                            setSelected(set);
-                            const obj: { [key: string]: string } = {};
-                            tables.forEach((table: { table_name: string }) => {
-                              obj[table.table_name] = 'Full';
-                            });
-                            setTablePermissions(obj);
-                          }
-                        }}
-                        value={ALL_USER_ROLE_LIST?.find(
-                          (option) => option?.value === formData.role_name
-                        )}
-                      />
+                      options={(Array.isArray(roleOption)
+                        ? roleOption
+                        : []
+                      ).map((role) => ({
+                        value: role.role_name, // Ensure value matches what is stored in formData
+                        label: role.role_name,
+                      }))}
+                      menuPosition="fixed"
+                      onChange={(newValue) => {
+                        handleChange(newValue, 'role_name');
+                        if (newValue?.value !== TYPE_OF_USER.ADMIN) {
+                          setTablePermissions({});
+                          setSelected(new Set());
+                          setDbAcess(false);
+                        }
+                        if (newValue?.value === TYPE_OF_USER.ADMIN) {
+                          setDbAcess(true);
+                          const set = new Set(
+                            Array.from({ length: tables.length }).map(
+                              (_, i: number) => i
+                            )
+                          );
+                          setSelected(set);
+                          const obj: { [key: string]: string } = {};
+                          tables.forEach((table: { table_name: string }) => {
+                            obj[table.table_name] = 'Full';
+                          });
+                          setTablePermissions(obj);
+                        }
+                      }}
+                      value={
+                        (Array.isArray(formattedRoles) ? formattedRoles : []).find(
+                          (option) => option.value === formData.role_name
+                        ) 
+                      } // Ensure it selects the current role
+                    />
                     </div>
                   </div>
   

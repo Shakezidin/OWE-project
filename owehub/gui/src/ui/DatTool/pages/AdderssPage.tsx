@@ -8,6 +8,7 @@ import CommonComponent from './CommonComponent';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDatAddersInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import { add } from 'date-fns';
+import MicroLoader from '../../components/loader/MicroLoader';
 interface Item {
   text: string;
   price: number;
@@ -34,7 +35,7 @@ interface AddersData {
 }
 
 
-function AdderssPage({ setOpenPopUp,currentGeneralId }: any) {
+function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   const dispatch = useAppDispatch();
    const { addersData } = useAppSelector((state) => state.datSlice);
   useEffect(()=>{
@@ -42,25 +43,27 @@ function AdderssPage({ setOpenPopUp,currentGeneralId }: any) {
     console.log('API Response:', addersData);
   },[currentGeneralId]);
   const leftPartObj: Item[] = [
-    { text: 'INTERCONNNECTION', price: addersData?.interconnection_cost ?? 0},
-    { text: 'ELECTRICAL', price: addersData?.electrical_cost ?? 0},
-    { text: 'SITE ADDERS', price: addersData?.site_adders_cost ?? 0},
-    { text: 'STRUCTURAL', price:  addersData?.structural_cost ?? 0},
-    { text: 'UPGRADES', price: addersData?.upgrades_cost ?? 0 },
-    { text: 'Trenching (per foot)', price: addersData?.trenching_cost ?? 0 },
-    { text: 'BATTERY', price: addersData?.battery_cost ?? 0 },
-    { text: 'OTHER', price: addersData?.other_cost ?? 0 },
+    { text: 'INTERCONNECTION', price: addersData ? addersData?.interconnection_cost : 0 },
+    { text: 'ELECTRICAL', price: addersData ? addersData?.electrical_cost : 0 },
+    { text: 'SITE ADDERS', price: addersData ? addersData?.site_adders_cost : 0 },
+    { text: 'STRUCTURAL', price: addersData ? addersData?.structural_cost : 0 },
+    { text: 'UPGRADES', price: addersData ? addersData?.upgrades_cost : 0 },
+    { text: 'Trenching (per foot)', price: addersData ? addersData?.trenching_cost : 0 },
+    { text: 'BATTERY', price: addersData ? addersData?.battery_cost : 0 },
+    { text: 'OTHER', price: addersData ? addersData?.other_cost : 0 }
   ];
+  
 
   const rightPartObj: Item[] = [
-    { text: 'Supply/Line Side Tap', price: addersData?.components[0].cost ?? 0 },
-    { text: 'Load Side Tap', price: addersData?.components[1].cost ?? 0 },
-    { text: 'ConnectDER', price: addersData?.components[2].cost ?? 0 },
-    { text: 'Subpanel Add-in', price: addersData?.components[3].cost ?? 0 },
-    { text: 'Derate', price: addersData?.components[4].cost ?? 0 },
-    { text: 'H-Frame (PV)', price: addersData?.components[5].cost ?? 0 },
-    { text: 'Extra Main Breaker', price: addersData?.components[6].cost ?? 0 },
+    { text: 'Supply/Line Side Tap', price: addersData && Array.isArray(addersData.components) && addersData.components[0] ? addersData.components[0].cost : 0 },
+    { text: 'Load Side Tap', price: addersData && Array.isArray(addersData.components) && addersData.components[1] ? addersData.components[1].cost : 0 },
+    { text: 'ConnectDER', price: addersData && Array.isArray(addersData.components) && addersData.components[2] ? addersData.components[2].cost : 0 },
+    { text: 'Subpanel Add-in', price: addersData && Array.isArray(addersData.components) && addersData.components[3] ? addersData.components[3].cost : 0 },
+    { text: 'Derate', price: addersData && Array.isArray(addersData.components) && addersData.components[4] ? addersData.components[4].cost : 0 },
+    { text: 'H-Frame (PV)', price: addersData && Array.isArray(addersData.components) && addersData.components[5] ? addersData.components[5].cost : 0 },
+    { text: 'Extra Main Breaker', price: addersData && Array.isArray(addersData.components) && addersData.components[6] ? addersData.components[6].cost : 0 }
   ];
+  
 
   const rightPartObjElectrical: Item[] = [
     { text: 'Soft Stater', price: 750 },
@@ -232,7 +235,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId }: any) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.wrapper}>
+      {loading ? <div className={styles.loaderContainer}> <MicroLoader/> </div> : <div className={styles.wrapper}>
       
       <div className={styles.adderssPageTopPart}>
         <div className={styles.adderssPageTopPart_leftText}>
@@ -334,7 +337,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId }: any) {
           ))}
         </div>
       </div>
-    </div>
+    </div>}
     </div>
     
   );
