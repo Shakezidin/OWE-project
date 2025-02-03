@@ -24,12 +24,14 @@ interface SideContainerProps {
   setSearchPara: any;
   loading:boolean;
   setCurrentGeneralId: any;
+  currentGeneralId: string;
 }
 
-const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loading,setCurrentGeneralId }) => {
+const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loading,setCurrentGeneralId,currentGeneralId }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
+  const [isHovered, setIsHovered] = useState<number | null>(null);
 
   const debouncedSetSearchPara = useCallback(
     debounce((search: string) => {
@@ -47,15 +49,15 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
   const toggleSortOrder = () => {
     setSortAscending(!sortAscending);
   };
-
-  const mappedDataList =data.length ===0? []: data?.map((apiItem: any) => ({
+  const isDataEmpty = data?.length === 0;
+  const mappedDataList = isDataEmpty ? []: data?.map((apiItem: any) => ({
     name: apiItem.project_name.trim() || 'Unnamed Project',
     projectID: apiItem.project_id.trim() || 'No ID Provided',
     address: apiItem.project_address.trim() || 'No Address Provided',
   }))?.slice(0, 30); // Prevent slicing undefined
 
   // Display a message if data is empty
-  const isDataEmpty = data?.length === 0;
+  
   console.log(data,"my data .......................");
 
   return (
@@ -84,7 +86,14 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
         <div className={styles.wrapperBox}>
           <div className={styles.dataBoxWrapper}>
             {mappedDataList?.map((data: any, index: any) => (
-              <div key={index} className={styles.dataBox} onClick={() => setCurrentGeneralId(data.projectID)}>
+              <div key={index} className={styles.dataBox} onClick={() => setCurrentGeneralId(data.projectID)} onMouseOver={() => setIsHovered(index)} onMouseOut={() => setIsHovered(null)} style={{ 
+                backgroundColor: currentGeneralId === data.projectID 
+                  ? '#377CF6' 
+                  : isHovered === index 
+                  ? '#d5e4ff' 
+                  : '', 
+                color: currentGeneralId === data.projectID ? '#fafafa' : '' 
+              }}>
                 <p className={styles.content_one}>{data.name}</p>
                 <p className={styles.content_two}>{data.projectID}</p>
                 <p className={styles.content_three}>{data.address}</p>

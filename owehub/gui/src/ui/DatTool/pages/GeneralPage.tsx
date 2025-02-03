@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { FiArrowRight } from 'react-icons/fi';
 import { MdClose, MdDone } from 'react-icons/md';
@@ -6,6 +6,8 @@ import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
 import CommonComponent from './CommonComponent';
 import MicroLoader from '../../components/loader/MicroLoader';
+import { useAppDispatch } from '../../../redux/hooks';
+import { getDatGeneralInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
  
 
 
@@ -48,6 +50,7 @@ interface GeneralData {
 interface generalProps {
   generalData:GeneralData| null;
   loading:boolean;
+  currentGeneralId:string;
 }
 // Data Tab Component (for tabs on the right Bottom section)
 interface DatTabProps {
@@ -92,7 +95,12 @@ const InputField: React.FC<InputFieldProps> = ({
   </div>
 );
  
-const GeneralPage: React.FC <generalProps>= ({generalData,loading}) => {
+const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneralId}) => {
+  const dispatch = useAppDispatch();
+   useEffect(() => {
+      dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
+      console.log(currentGeneralId,"currentGeneralId");
+    }, [currentGeneralId]);
   // State variables for controlling editing and active tabs
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
