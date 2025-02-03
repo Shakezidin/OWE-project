@@ -13,6 +13,7 @@ type GetProjectListRequest struct {
 	Search     string `json:"search"`
 	PageNumber int    `json:"page_number"`
 	PageSize   int    `json:"page_size"`
+	Sort       string `json:"sort"`
 }
 type GetProjectListResponse struct {
 	ProjectName    string `json:"project_name"`
