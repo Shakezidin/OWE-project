@@ -10,14 +10,11 @@ import "time"
 
 // models to fetch project details
 type GetProjectListRequest struct {
-	Search string `json:"search"`
+	Search     string `json:"search"`
+	PageNumber int    `json:"page_number"`
+	PageSize   int    `json:"page_size"`
 }
-
 type GetProjectListResponse struct {
-	ProjectData []GetProjectData `json:"project_data"`
-}
-
-type GetProjectData struct {
 	ProjectName    string `json:"project_name"`
 	ProjectId      string `json:"project_id"`
 	ProjectAddress string `json:"project_address"`
@@ -156,4 +153,82 @@ type GetTabNotesInfoResponse struct {
 type Note struct {
 	Note      string    `json:"note"`       // The note content
 	CreatedAt time.Time `json:"created_at"` // Timestamp when the note was created
+}
+
+// Other tab structs
+type GetTabOtherInfoResponse struct {
+	// Electrical qequipment info
+	NewOrExisting     string `json:"new_or_existing"`
+	PanelBrand        string `json:"panel_brand"`
+	BusbarRating      int64  `json:"busbar_rating"`
+	MainBreakerRating int64  `json:"main_breaker_rating"`
+	AvailableBackfeed int64  `json:"available_backfeed"`
+	RequiredBackfeed  string `json:"required_backfeed"`
+
+	// Electrial System info
+	SystemPhase        string `json:"system_phase"`
+	SystemVoltage      string `json:"system_voltage"`
+	ServiceEntrance    string `json:"service_entrance"`
+	ServiceRating      string `json:"service_rating"`
+	MeterEnclosureType string `json:"meter_enclosure_type"`
+
+	// Site info
+	PVConductRun            string `json:"pv_conduct_run"`
+	DrywallCutNeeded        string `json:"drywall_cut_needed"`
+	NumberOfStories         int64  `json:"number_of_stories"`
+	TrenchingRequired       string `json:"trenching_required"`
+	PointsOfInterconnection int64  `json:"points_of_interconnection"`
+
+	// PV Only interconnection
+	Type                  string `json:"type"`
+	SupplyLoadSide        string `json:"supply_load_side"`
+	Location              string `json:"location"`
+	SubLocationTapDetails string `json:"sub_location_tap_details"`
+
+	// Ess interconnection
+	BackupType     string `json:"backup_type"`
+	TransferSwitch string `json:"transfer_switch"`
+	FedBy          string `json:"fed_by"`
+
+	// String Inverter Configuration
+	Inverter string   `json:"onverter"`
+	Max      int64    `json:"max"`
+	Mppt1    MpptInfo `json:"mppt1"`
+	Mppt2    MpptInfo `json:"mppt2"`
+	Mppt3    MpptInfo `json:"mppt3"`
+	Mppt4    MpptInfo `json:"mppt4"`
+	Mppt5    MpptInfo `json:"mppt5"`
+	Mppt6    MpptInfo `json:"mppt6"`
+	Mppt7    MpptInfo `json:"mppt7"`
+	Mppt8    MpptInfo `json:"mppt8"`
+	// Roof coverage Calculator
+	TotalRoofArea      string `json:"total_roof_area"`
+	AreaOfNewModules   string `json:"area_of_new_modules"`
+	AreaOfExstModules  string `json:"area_of_exst_modules"`
+	CoveragePercentage string `json:"coverage_percentage"`
+
+	// Measurement Conversion
+	Length string `json:"length"`
+	Width  string `json:"width"`
+	Height string `json:"height"`
+	Other  string `json:"other"`
+
+	// Existing PV System info
+	ModuleQuantity                       int64        `json:"module_quantity"`
+	ModelNumber                          string       `json:"model_number"`
+	Wattage                              string       `json:"wattage"`
+	ModuleArea                           string       `json:"module_area"`
+	Inverter1                            InverterInfo `json:"inverter1_info"`
+	Inverter2                            InverterInfo `json:"inverter2_info"`
+	ExistingCalculatedBackfeedWithout125 int64        `json:"existing_calculated_backfeed_without_125"`
+}
+type InverterInfo struct {
+	Quantity    int64  `json:"quantity"`
+	ModelNumber string `json:"model_number"`
+	OutputA     string `json:"output_a"`
+}
+
+type MpptInfo struct {
+	S1 string `json:"s1"`
+	S2 string `json:"s2"`
 }
