@@ -174,7 +174,7 @@ const ImportUser: React.FC<createUserProps> = ({
             <p>Failed: <strong style={{ color: '#dc3545' }}>{report?.failed}</strong></p>
           </div>
           {report?.errors && report?.errors.length > 0 && (
-            <div  className="scroll-user"  style={{ marginBottom: '20px' } }>
+            <div  className="scroll-user" >
               <h5 style={{
                 fontSize: '1.2rem',
                 marginBottom: '10px',
@@ -186,7 +186,6 @@ const ImportUser: React.FC<createUserProps> = ({
                 listStyleType: 'disc',
                 paddingLeft: '40px',
                 color: '#555',
-                maxHeight: "200px", // Limit height for scrolling
                 overflowY: "auto",
                  // Scroll if too many errors
               }}>
@@ -201,14 +200,13 @@ const ImportUser: React.FC<createUserProps> = ({
           <div className="um-createUserActionButton" style={{
             display: 'flex',
             justifyContent: 'center',
-            marginTop: '180px',
+         
           }}>
             <ActionButton
               title="Close"
               onClick={handleClose}
               type="button"
               style={{
-                padding: '10px 20px',
                 fontSize: '1rem',
                 borderRadius: '5px',
                 backgroundColor: '#007bff',
@@ -269,13 +267,15 @@ const ImportUser: React.FC<createUserProps> = ({
                   </small>
                 </div>
               </div>
-              <div className="um-createUserActionButton">
+              <div className="um-createUserActionButton" >
                 <ActionButton
+               
                   title="Cancel"
                   onClick={handleClose}
                   type="button"
                 />
                 <ActionButton
+              
                   title="Submit"
                   onClick={processRows}
                   type="button"
