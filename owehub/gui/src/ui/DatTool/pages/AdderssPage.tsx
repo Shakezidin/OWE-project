@@ -9,10 +9,6 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDatAddersInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import { add } from 'date-fns';
 import MicroLoader from '../../components/loader/MicroLoader';
-interface Item {
-  text: string;
-  price: number;
-}
 
 interface Component {
   name: string;
@@ -20,18 +16,21 @@ interface Component {
   cost: number;
 }
 
+interface Item {
+  name: string;
+  quantity: number;
+  cost: number;
+}
+
+interface CategoryItem {
+  text: string;
+  cost: number;
+}
+
+
 interface AddersData {
-  adders: string;
-  interconnection_cost: number;
-  electrical_cost: number;
-  site_adders_cost: number;
-  structural_cost: number;
-  upgrades_cost: number;
-  trenching_cost: number;
-  battery_cost: number;
-  other_cost: number;
+  categories: CategoryItem[];
   total_cost: number;
-  components: Component[];
 }
 
 
@@ -41,100 +40,149 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   useEffect(()=>{
     dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
   },[currentGeneralId]);
-  const leftPartObj: Item[] = [
-    { text: 'INTERCONNECTION', price: addersData ? addersData?.interconnection_cost : 0 },
-    { text: 'ELECTRICAL', price: addersData ? addersData?.electrical_cost : 0 },
-    { text: 'SITE ADDERS', price: addersData ? addersData?.site_adders_cost : 0 },
-    { text: 'STRUCTURAL', price: addersData ? addersData?.structural_cost : 0 },
-    { text: 'UPGRADES', price: addersData ? addersData?.upgrades_cost : 0 },
-    { text: 'Trenching (per foot)', price: addersData ? addersData?.trenching_cost : 0 },
-    { text: 'BATTERY', price: addersData ? addersData?.battery_cost : 0 },
-    { text: 'OTHER', price: addersData ? addersData?.other_cost : 0 }
+  const leftPartObj: CategoryItem[] = [
+    { text: 'INTERCONNECTION', cost: addersData ? addersData.categories[0]?.cost : 0 },
+    { text: 'ELECTRICAL', cost: addersData ? addersData?.categories?.[1].cost : 0 },
+    { text: 'SITE ADDERS', cost: addersData ? addersData?.categories?.[2].cost : 0 },
+    { text: 'STRUCTURAL', cost: addersData ? addersData?.categories?.[3].cost : 0 },
+    { text: 'UPGRADES', cost: addersData ? addersData?.categories?.[4].cost : 0 },
+    { text: 'Trenching (per foot)', cost: addersData ? addersData?.categories?.[5].cost : 0 },
+    { text: 'BATTERY', cost: addersData ? addersData?.categories?.[6].cost : 0 },
+    { text: 'OTHER', cost: addersData ? addersData?.categories?.[7].cost : 0 }
   ];
   
 
   const rightPartObj: Item[] = [
-    { text: 'Supply/Line Side Tap', price: addersData && Array.isArray(addersData.components) && addersData.components[0] ? addersData.components[0].cost : 0 },
-    { text: 'Load Side Tap', price: addersData && Array.isArray(addersData.components) && addersData.components[1] ? addersData.components[1].cost : 0 },
-    { text: 'ConnectDER', price: addersData && Array.isArray(addersData.components) && addersData.components[2] ? addersData.components[2].cost : 0 },
-    { text: 'Subpanel Add-in', price: addersData && Array.isArray(addersData.components) && addersData.components[3] ? addersData.components[3].cost : 0 },
-    { text: 'Derate', price: addersData && Array.isArray(addersData.components) && addersData.components[4] ? addersData.components[4].cost : 0 },
-    { text: 'H-Frame (PV)', price: addersData && Array.isArray(addersData.components) && addersData.components[5] ? addersData.components[5].cost : 0 },
-    { text: 'Extra Main Breaker', price: addersData && Array.isArray(addersData.components) && addersData.components[6] ? addersData.components[6].cost : 0 }
+    {
+      name: 'Supply/Line Side Tap',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[0].cost || 0
+        : 0,
+    },
+    {
+      name: 'Load Side Tap',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[1].cost || 0
+        : 0,
+    },
+    {
+      name: 'ConnectDER',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[2].cost || 0
+        : 0,
+    },
+    {
+      name: 'Subpanel Add-in',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[3].cost || 0
+        : 0,
+    },
+    {
+      name: 'Derate',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[4].cost || 0
+        : 0,
+    },
+    {
+      name: 'H-Frame (PV)',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[5].cost || 0
+        : 0,
+    },
+    {
+      name: 'Extra Main Breaker',
+      quantity: 1, // Assuming a default quantity, adjust as needed
+      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
+        ? addersData.categories[0].items[6].cost || 0
+        : 0,
+    },
   ];
   
+  // const rightPartObj: Item[] = [
+  //   ... (addersData && Array.isArray(addersData.components) ? addersData.components.map((item:any, index:any) => ({
+  //     text: item.name || "N/A", 
+  //     price: item.cost || 0, 
+  //   })) : [])
+  // ];
 
   const rightPartObjElectrical: Item[] = [
-    { text: 'Soft Stater', price: 750 },
-    { text: 'Module Adder (per watt)', price: 250 },
-    { text: 'Sense Energy Monitor', price: 150 },
-    { text: 'Enphase IQ8H Microinverters', price: 750 },
-    { text: 'Enphase IQ8A Microinverters', price: 250 },
-    { text: 'Load Controller', price: 150 },
-    { text: 'CTs', price: 750 },
-    { text: 'EV Charger', price: 250 },
-    { text: 'EV Charger outlet', price: 150 },
+    { name: 'Soft Stater', quantity: 0, cost: 750 },
+    { name: 'Module Adder (per watt)', quantity: 0, cost: 250 },
+    { name: 'Sense Energy Monitor', quantity: 0, cost: 150 },
+    { name: 'Enphase IQ8H Microinverters', quantity: 0, cost: 750 },
+    { name: 'Enphase IQ8A Microinverters', quantity: 0, cost: 250 },
+    { name: 'Load Controller', quantity: 0, cost: 150 },
+    { name: 'CTs', quantity: 0, cost: 750 },
+    { name: 'EV Charger', quantity: 0, cost: 250 },
+    { name: 'EV Charger outlet', quantity: 0, cost: 150 },
   ];
-
+  
   const rightPartObjSiteAdders: Item[] = [
-    { text: 'Site Preparation', price: 2000 },
-    { text: 'Excavation (per foot)', price: 15 },
-    { text: 'Concrete Foundation', price: 1500 },
-    { text: 'Site Survey', price: 1000 },
-    { text: 'Permitting Fees', price: 500 },
-    { text: 'Landscaping', price: 800 },
-    { text: 'Fencing (per foot)', price: 10 },
+    { name: 'Site Preparation', quantity: 0, cost: 2000 },
+    { name: 'Excavation (per foot)', quantity: 0, cost: 15 },
+    { name: 'Concrete Foundation', quantity: 0, cost: 1500 },
+    { name: 'Site Survey', quantity: 0, cost: 1000 },
+    { name: 'Permitting Fees', quantity: 0, cost: 500 },
+    { name: 'Landscaping', quantity: 0, cost: 800 },
+    { name: 'Fencing (per foot)', quantity: 0, cost: 10 },
   ];
-
+  
   const rightPartObjStructural: Item[] = [
-    { text: 'Steel Frame', price: 5000 },
-    { text: 'Concrete Slab', price: 3000 },
-    { text: 'Roof Installation', price: 3500 },
-    { text: 'Wall Framing', price: 2500 },
-    { text: 'Doors & Windows', price: 1500 },
-    { text: 'Ceiling Work', price: 2000 },
-    { text: 'Load-bearing Walls', price: 4000 },
+    { name: 'Steel Frame', quantity: 0, cost: 5000 },
+    { name: 'Concrete Slab', quantity: 0, cost: 3000 },
+    { name: 'Roof Installation', quantity: 0, cost: 3500 },
+    { name: 'Wall Framing', quantity: 0, cost: 2500 },
+    { name: 'Doors & Windows', quantity: 0, cost: 1500 },
+    { name: 'Ceiling Work', quantity: 0, cost: 2000 },
+    { name: 'Load-bearing Walls', quantity: 0, cost: 4000 },
   ];
-
+  
   const rightPartObjUpgrades: Item[] = [
-    { text: 'Upgraded Panels', price: 1000 },
-    { text: 'Advanced Wiring', price: 800 },
-    { text: 'Smart Home Integration', price: 1500 },
-    { text: 'Enhanced Lighting', price: 600 },
-    { text: 'Solar Battery Storage', price: 3000 },
-    { text: 'Panel Monitoring System', price: 700 },
-    { text: 'Energy Efficient Appliances', price: 2500 },
+    { name: 'Upgraded Panels', quantity: 0, cost: 1000 },
+    { name: 'Advanced Wiring', quantity: 0, cost: 800 },
+    { name: 'Smart Home Integration', quantity: 0, cost: 1500 },
+    { name: 'Enhanced Lighting', quantity: 0, cost: 600 },
+    { name: 'Solar Battery Storage', quantity: 0, cost: 3000 },
+    { name: 'Panel Monitoring System', quantity: 0, cost: 700 },
+    { name: 'Energy Efficient Appliances', quantity: 0, cost: 2500 },
   ];
-
+  
   const rightPartObjInterconnection: Item[] = [
-    { text: 'Utility Service Connection', price: 4000 },
-    { text: 'Grid-Tie Inverter', price: 2000 },
-    { text: 'AC Disconnect', price: 600 },
-    { text: 'AC Combiner Box', price: 800 },
-    { text: 'Utility Meter Upgrade', price: 1200 },
-    { text: 'Transformer Installation', price: 3500 },
-    { text: 'Conduit & Wiring', price: 1000 },
+    { name: 'Utility Service Connection', quantity: 0, cost: 4000 },
+    { name: 'Grid-Tie Inverter', quantity: 0, cost: 2000 },
+    { name: 'AC Disconnect', quantity: 0, cost: 600 },
+    { name: 'AC Combiner Box', quantity: 0, cost: 800 },
+    { name: 'Utility Meter Upgrade', quantity: 0, cost: 1200 },
+    { name: 'Transformer Installation', quantity: 0, cost: 3500 },
+    { name: 'Conduit & Wiring', quantity: 0, cost: 1000 },
   ];
-
+  
   const rightPartObjUpgradedElectrical: Item[] = [
-    { text: 'Inverter Upgrade', price: 1200 },
-    { text: 'Battery Backup System', price: 5000 },
-    { text: 'Smart Inverters', price: 1500 },
-    { text: 'Power Optimizers', price: 750 },
-    { text: 'Solar Monitoring System', price: 500 },
-    { text: 'Solar Charge Controller', price: 800 },
-    { text: 'Dedicated Circuit Breakers', price: 300 },
+    { name: 'Inverter Upgrade', quantity: 0, cost: 1200 },
+    { name: 'Battery Backup System', quantity: 0, cost: 5000 },
+    { name: 'Smart Inverters', quantity: 0, cost: 1500 },
+    { name: 'Power Optimizers', quantity: 0, cost: 750 },
+    { name: 'Solar Monitoring System', quantity: 0, cost: 500 },
+    { name: 'Solar Charge Controller', quantity: 0, cost: 800 },
+    { name: 'Dedicated Circuit Breakers', quantity: 0, cost: 300 },
   ];
-
+  
   const rightPartObjOther: Item[] = [
-    { text: 'Miscellaneous Charges', price: 100 },
-    { text: 'Custom Work', price: 500 },
-    { text: 'Special Requests', price: 300 },
-    { text: 'Additional Materials', price: 200 },
-    { text: 'Consultation Fees', price: 150 },
-    { text: 'Additional Equipment', price: 350 },
-    { text: 'Shipping and Handling', price: 50 },
+    { name: 'Miscellaneous Charges', quantity: 0, cost: 100 },
+    { name: 'Custom Work', quantity: 0, cost: 500 },
+    { name: 'Special Requests', quantity: 0, cost: 300 },
+    { name: 'Additional Materials', quantity: 0, cost: 200 },
+    { name: 'Consultation Fees', quantity: 0, cost: 150 },
+    { name: 'Additional Equipment', quantity: 0, cost: 350 },
+    { name: 'Shipping and Handling', quantity: 0, cost: 50 },
   ];
+  
 
   const sectionData = [
     rightPartObj,
@@ -148,14 +196,14 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   ];
 
   const [price, setPrice] = useState<{ [key: number]: number }>({
-    0: leftPartObj[0]?.price || 0,
-    1: leftPartObj[1]?.price || 0,
-    2: leftPartObj[2]?.price || 0,
-    3: leftPartObj[3]?.price || 0,
-    4: leftPartObj[4]?.price || 0,
-    5: leftPartObj[5]?.price || 0,
-    6: leftPartObj[6]?.price || 0,
-    7: leftPartObj[7]?.price || 0,
+    0: leftPartObj[0]?.cost || 0,
+    1: leftPartObj[1]?.cost || 0,
+    2: leftPartObj[2]?.cost || 0,
+    3: leftPartObj[3]?.cost || 0,
+    4: leftPartObj[4]?.cost || 0,
+    5: leftPartObj[5]?.cost || 0,
+    6: leftPartObj[6]?.cost || 0,
+    7: leftPartObj[7]?.cost || 0,
   });
 
   const [values, setValues] = useState<{ [key: number]: number[] }>({
@@ -185,7 +233,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
 
     setPrice((prevPrice) => {
       const newPrice = { ...prevPrice };
-      const itemPrice = currentItems[index].price;
+      const itemPrice = currentItems[index].cost;
       const itemQuantity = values[currentSectionIndex][index] + 1;
       newPrice[currentSectionIndex] =
         (newPrice[currentSectionIndex] || 0) + itemPrice;
@@ -206,7 +254,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
 
     setPrice((prevPrice) => {
       const newPrice = { ...prevPrice };
-      const itemPrice = currentItems[index].price;
+      const itemPrice = currentItems[index].cost;
       const itemQuantity = values[currentSectionIndex][index] - 1;
       if (itemQuantity < 0) return prevPrice;
       newPrice[currentSectionIndex] =
@@ -303,9 +351,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
           ))}
         </div>
 
-        {}
         <div className={styles.adderssPageMainPart_Right}>
-          {}
           {currentItems.map((obj, index) => (
             <div
               className={styles.adderssPageMainPart_rightBarContainer}
@@ -314,7 +360,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
               <p
                 className={styles.adderssPageMainPart_rightBarContainer_heading}
               >
-                {obj.text}
+                {obj.name}
               </p>
               <div className={styles.adderssPageMainPart_rightContainer}>
                 <div className={styles.adderssPageMainPart_expressionContainer}>
@@ -330,7 +376,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
                     onClick={() => handleIncrement(index)}
                   />
                 </div>
-                <p className={styles.adderssPageMainPart_price}>{obj.price}</p>
+                <p className={styles.adderssPageMainPart_price}>$ {obj.cost}</p>
               </div>
             </div>
           ))}
