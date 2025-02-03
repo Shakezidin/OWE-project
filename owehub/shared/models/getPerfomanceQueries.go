@@ -321,7 +321,7 @@ func QcNtpRetrieveQueryFunc() string {
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
             AND system_customers_schema.project_status NOT ILIKE '%DUPLICATE%'
         LEFT JOIN prospects_customers_schema 
-        ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+        ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.prospect_id::text
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid IS NOT NULL
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid <> ''
         AND TRIM(ntp_ntp_schema.prospectid_dealerid_salesrepid) <> ','
@@ -1410,7 +1410,7 @@ func PipelineNTPQuery(uniqueIds []string) string {
         FROM 
             base_query b
         LEFT JOIN 
-            prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
+            prospects_customers_schema ON b.first_value::text = prospects_customers_schema.prospect_id::text;
     `
 	return PipelineNTPQuery
 }
