@@ -171,7 +171,6 @@ const UserManagement: React.FC = () => {
     const data = {
       page_number: page,
       page_size: 25,
-      sales_rep_status: activeSalesRep,
       filters: [
         {
           Column: 'name',
