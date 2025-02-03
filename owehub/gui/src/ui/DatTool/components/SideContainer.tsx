@@ -33,7 +33,7 @@ const SideContainer: React.FC<SideContainerProps> = ({ data, setSearchPara,loadi
 
   const debouncedSetSearchPara = useCallback(
     debounce((search: string) => {
-      setSearchPara(search); // Update the search parameter (API call) after debounce delay
+      setSearchPara(search); 
     }, 800),
     []
   );
