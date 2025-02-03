@@ -31,7 +31,7 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		dataReq      models.GetProjectListRequest
-		apiResponse  models.GetProjectListResponse
+		apiResponse  []models.GetProjectListResponse
 		data         []map[string]interface{}
 		query        string
 		whereEleList []interface{}
@@ -129,7 +129,7 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		apiResponse.ProjectData = append(apiResponse.ProjectData, models.GetProjectData{
+		apiResponse = append(apiResponse, models.GetProjectListResponse{
 			ProjectName:    pName,
 			ProjectId:      pId,
 			ProjectAddress: pAddress,
