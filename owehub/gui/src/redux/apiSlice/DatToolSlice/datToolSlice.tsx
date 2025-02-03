@@ -61,18 +61,23 @@ interface Component {
   cost: number;
 }
 
+
+
+interface Item {
+  name: string;
+  quantity: number;
+  cost: number;
+}
+
+interface Category {
+  title: string;
+  cost: number;
+  items: Item[];
+}
+
 interface AddersData {
-  adders: string;
-  interconnection_cost: number;
-  electrical_cost: number;
-  site_adders_cost: number;
-  structural_cost: number;
-  upgrades_cost: number;
-  trenching_cost: number;
-  battery_cost: number;
-  other_cost: number;
+  categories: Category[];
   total_cost: number;
-  components: Component[];
 }
 
 interface StructuralData {
