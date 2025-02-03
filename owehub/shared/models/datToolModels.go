@@ -6,6 +6,8 @@
 
 package models
 
+import "time"
+
 // models to fetch project details
 type GetProjectListRequest struct {
 	Search string `json:"search"`
@@ -128,20 +130,26 @@ type GetTabStructuralInfoResponse struct {
 
 // Adders tab structs
 type GetTabAddersInfoResponse struct {
-	Adders              string      `json:"adders"`
-	InterconnectionCost float64     `json:"interconnection_cost"`
-	ElectricalCost      float64     `json:"electrical_cost"`
-	SiteAddersCost      float64     `json:"site_adders_cost"`
-	StructuralCost      float64     `json:"structural_cost"`
-	UpgradesCost        float64     `json:"upgrades_cost"`
-	TrenchingCost       float64     `json:"trenching_cost"`
-	BatteryCost         float64     `json:"battery_cost"`
-	OtherCost           float64     `json:"other_cost"`
-	TotalCost           float64     `json:"total_cost"`
-	Components          []Component `json:"components"`
+	Categories []Categories `json:"categories"`
+	TotalCost  float64      `json:"total_cost"`
+	Adders     string       `json:"adders"`
 }
+
+type Categories struct {
+	Title string      `json:"title"` // Example: "INTERCONNECTION", "ELECTRICAL", etc.
+	Cost  float64     `json:"cost"`
+	Items []Component `json:"items"`
+}
+
 type Component struct {
-	Name     string  `json:"name"`
-	Quantity int     `json:"quantity"`
-	Cost     float64 `json:"cost"`
+	Name     string  `json:"name"`     // Example: "Supply/Line Side Tap"
+	Quantity int64   `json:"quantity"` // Selected count (default 0)
+	Cost     float64 `json:"cost"`     // Cost per unit
+}
+
+// notes tab structs
+type GetTabNotesInfoResponse struct {
+	Title       string    `json:"title"`       // e.g., "Structural"
+	Description []string  `json:"description"` // e.g., "Flat Roof (per watt)..."
+	Timestamp   time.Time `json:"timestamp"`   // Timestamp of entry
 }
