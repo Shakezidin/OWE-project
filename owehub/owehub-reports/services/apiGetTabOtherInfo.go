@@ -1,8 +1,8 @@
 /**************************************************************************
-* File                  : apiGetTabAddersInfo.go
-* DESCRIPTION           : This file contains functions to get information related to adders tab in DAT Tool
+* File                  : apiGetTabOtherInfo.go
+* DESCRIPTION           : This file contains functions to get information related to other tab in DAT Tool
 
-* DATE                  : 31-january-2025
+* DATE                  : 3-january-2025
 **************************************************************************/
 
 package services
@@ -18,28 +18,28 @@ import (
 )
 
 /******************************************************************************
-* FUNCTION:		    HandleGetTabAddersInfoRequest
-* DESCRIPTION:      handler for get adders info request
+* FUNCTION:		    HandleGetTabOtherInfoRequest
+* DESCRIPTION:      handler for get other info request
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
 
-func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetTabOtherInfoRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err         error
 		dataReq     models.GetTabGeneralInfoRequest
-		apiResponse models.GetTabAddersInfoResponse
+		apiResponse models.GetTabOtherInfoResponse
 		// data        []map[string]interface{}
 		// query       string
 		// whereClause string
 	)
 
-	log.EnterFn(0, "HandleGetTabAddersInfoRequest")
+	log.EnterFn(0, "HandleGetTabOtherInfoRequest")
 
-	defer func() { log.ExitFn(0, "HandleGetTabAddersInfoRequest", err) }()
+	defer func() { log.ExitFn(0, "HandleGetTabOtherInfoRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get adders info request")
+		err = fmt.Errorf("HTTP Request body is null in get other info request")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get adders info request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get other info request err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get tab adders info request err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get tab adders info Request body", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get tab other info request err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get tab other info Request body", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -301,115 +301,73 @@ func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) 
 	// 	log.FuncErrorTrace(0, "Failed to get roof structural upgrade from db : %+v\n", data)
 	// }
 
-	apiResponse = models.GetTabAddersInfoResponse{
-		Categories: []models.Categories{
-			{
-				Title: "INTERCONNECTION",
-				Cost:  12769.8,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "ELECTRICAL",
-				Cost:  7350.9,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "SITE ADDERS",
-				Cost:  4356.8,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "STRUCTURAL",
-				Cost:  123.54,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "UPGRADES",
-				Cost:  2253.23,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "Trenching (per foot)",
-				Cost:  1234.3,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "BATTERY",
-				Cost:  123.6,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
-			{
-				Title: "OTHER",
-				Cost:  12.54,
-				Items: []models.Component{
-					{Name: "Supply/Line Side Tap", Quantity: 1, Cost: 750},
-					{Name: "Load Side Tap", Quantity: 1, Cost: 250},
-					{Name: "ConnectDER", Quantity: 1, Cost: 150},
-					{Name: "Subpanel Add-in", Quantity: 1, Cost: 750},
-					{Name: "Derate", Quantity: 0, Cost: 250},
-					{Name: "H-Frame (PV)", Quantity: 0, Cost: 150},
-					{Name: "Extra Main Breaker", Quantity: 0, Cost: 750},
-				},
-			},
+	apiResponse = models.GetTabOtherInfoResponse{
+		Equipment: models.EquipmentInfo{
+			NewOrExisting:     "New",
+			PanelBrand:        "Siemens",
+			BusbarRating:      200,
+			MainBreakerRating: 150,
+			AvailableBackfeed: 50,
+			RequiredBackfeed:  "100",
 		},
-		TotalCost: 45783.9,
-		Adders:    "Summarized cost for all additional components and customizations.9",
+		System: models.SystemInfo{
+			SystemPhase:        "Single",
+			SystemVoltage:      "120/240V",
+			ServiceEntrance:    "Underground",
+			ServiceRating:      "200A",
+			MeterEnclosureType: "NEMA 3R",
+		},
+		SiteInfo: models.SiteInfo{
+			PVConductRun:            "25ft",
+			DrywallCutNeeded:        "Yes",
+			NumberOfStories:         2,
+			TrenchingRequired:       "No",
+			PointsOfInterconnection: 1,
+		},
+		PvInterconnection: models.PvInfo{
+			Type:                  "Grid-Tied",
+			SupplyLoadSide:        "Load Side",
+			Location:              "Garage",
+			SubLocationTapDetails: "Main Panel",
+		},
+		EssInterconnection: models.EssInfo{
+			BackupType:     "Whole Home",
+			TransferSwitch: "Automatic",
+			FedBy:          "Main Panel",
+		},
+		InverterConfigParent: models.InverterConfigInfo{
+			Inverter: "Fronius Primo",
+			Max:      5000,
+			Mppt1:    models.MpptInfo{S1: "10A", S2: "15A"},
+			Mppt2:    models.MpptInfo{S1: "12A", S2: "14A"},
+			Mppt3:    models.MpptInfo{S1: "11A", S2: "13A"},
+			Mppt4:    models.MpptInfo{S1: "9A", S2: "12A"},
+			Mppt5:    models.MpptInfo{S1: "10A", S2: "15A"},
+			Mppt6:    models.MpptInfo{S1: "12A", S2: "14A"},
+			Mppt7:    models.MpptInfo{S1: "11A", S2: "13A"},
+			Mppt8:    models.MpptInfo{S1: "9A", S2: "12A"},
+		},
+		RoofCoverage: models.RoofInfo{
+			TotalRoofArea:      "1000 sqft",
+			AreaOfNewModules:   "500 sqft",
+			AreaOfExstModules:  "300 sqft",
+			CoveragePercentage: "80%",
+		},
+		Measurement: models.MeasurementInfo{
+			Length: "10m",
+			Width:  "5m",
+			Height: "3m",
+			Other:  "N/A",
+		},
+		ExistingPV: models.ExistingPvInfo{
+			ModuleQuantity:                       20,
+			ModelNumber:                          "LG400N1C-A5",
+			Wattage:                              "400W",
+			ModuleArea:                           "2 sqm",
+			Inverter1:                            models.InverterInfo{Quantity: 2, ModelNumber: "Sunny Boy 5.0", OutputA: "25A"},
+			Inverter2:                            models.InverterInfo{Quantity: 1, ModelNumber: "Enphase IQ7+", OutputA: "15A"},
+			ExistingCalculatedBackfeedWithout125: 75,
+		},
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Project Data", http.StatusOK, apiResponse, 0)

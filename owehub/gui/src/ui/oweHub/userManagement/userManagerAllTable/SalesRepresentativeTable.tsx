@@ -140,7 +140,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   </td>
                   <td>{el.name}</td>
                   {/* <td>{el.role_name}</td> */}
-                  <td>{el.designation}</td>
+                  {/* <td>{el.designation}</td> */}
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
                   <td>{el.reporting_manager}</td>
