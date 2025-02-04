@@ -537,7 +537,7 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-main-service/v1/getPipelineDealerData",
 		apiHandler.HandleGetPipelineDealerData,
 		false,
-		[]types.UserGroup{types.UserGroup(types.RoleRegionalManager), types.UserGroup(types.RoleDealerOwner),types.UserGroup(types.RoleAdmin)},
+		[]types.UserGroup{types.UserGroup(types.RoleRegionalManager), types.UserGroup(types.RoleDealerOwner), types.UserGroup(types.RoleAdmin)},
 	},
 }
 
