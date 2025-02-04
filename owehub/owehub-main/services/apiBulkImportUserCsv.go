@@ -12,6 +12,7 @@ import (
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	types "OWEApp/shared/types"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -81,6 +82,14 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
+	// map roles to their possible reporting manager roles
+	reportingMngrMapping := map[types.UserRoles][]string{
+		types.RoleRegionalManager: {string(types.RoleDealerOwner)},
+		types.RoleSalesManager:    {string(types.RoleDealerOwner), string(types.RoleRegionalManager)},
+		types.RoleApptSetter:      {string(types.RoleDealerOwner), string(types.RoleRegionalManager), string(types.RoleSalesManager)},
+		types.RoleSalesRep:        {string(types.RoleDealerOwner), string(types.RoleRegionalManager), string(types.RoleSalesManager)},
+	}
+
 	for {
 		record, err := reader.Read()
 		if err == io.EOF {
@@ -110,35 +119,35 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			PasswordChangeReq: true,
 			UserStatus:        "Active",
 			ReportingManager:  "",
-			PartnerName:         getValue(headers, record, "partner_name"),
+			PartnerName:       getValue(headers, record, "partner_name"),
 		}
 
 		/****************************8handling fields****************************/
 
-    /****************** ALL REQUIED FIELDS *****************/
-    if len(CreateBulkUserReq.Name) == 0 || len(CreateBulkUserReq.Name) > 50 {
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Invalid name length for user: %s", CreateBulkUserReq.EmailId))
-      continue
-    }
+		/****************** ALL REQUIED FIELDS *****************/
+		if len(CreateBulkUserReq.Name) == 0 || len(CreateBulkUserReq.Name) > 50 {
+			result.Failed++
+			result.Errors = append(result.Errors, fmt.Sprintf("Invalid name length for user: %s", CreateBulkUserReq.EmailId))
+			continue
+		}
 
-    if _, err := strconv.Atoi(CreateBulkUserReq.Name); err == nil {
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Name cannot be an integer for user: %s", CreateBulkUserReq.EmailId))
-      continue
-    }
+		if _, err := strconv.Atoi(CreateBulkUserReq.Name); err == nil {
+			result.Failed++
+			result.Errors = append(result.Errors, fmt.Sprintf("Name cannot be an integer for user: %s", CreateBulkUserReq.EmailId))
+			continue
+		}
 
-    if len(CreateBulkUserReq.EmailId) == 0 || len(CreateBulkUserReq.EmailId) > 50 {
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Invalid email length for user: %s", CreateBulkUserReq.Name))
-      continue
-    }
+		if len(CreateBulkUserReq.EmailId) == 0 || len(CreateBulkUserReq.EmailId) > 50 {
+			result.Failed++
+			result.Errors = append(result.Errors, fmt.Sprintf("Invalid email length for user: %s", CreateBulkUserReq.Name))
+			continue
+		}
 
-    if !isValidEmail(CreateBulkUserReq.EmailId) {
-      result.Failed++
-      result.Errors = append(result.Errors, fmt.Sprintf("Invalid email format for user: %s", CreateBulkUserReq.EmailId))
-      continue
-    }
+		if !isValidEmail(CreateBulkUserReq.EmailId) {
+			result.Failed++
+			result.Errors = append(result.Errors, fmt.Sprintf("Invalid email format for user: %s", CreateBulkUserReq.EmailId))
+			continue
+		}
 
 		if !isAlphaWithSpace(CreateBulkUserReq.Name) {
 			result.Failed++
@@ -164,15 +173,13 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			continue
 		}
 
-
-/**************************OPTIONAL  ************************************/
+		/**************************OPTIONAL FOR SOME ROLES ************************************/
 
 		if len(CreateBulkUserReq.PartnerName) > 50 {
 			result.Failed++
 			result.Errors = append(result.Errors, fmt.Sprintf("Invalid partner ID length for user: %s", CreateBulkUserReq.EmailId))
 			continue
 		}
-
 
 		// if !isValidUser(CreateBulkUserReq) {
 		//   result.Failed++
@@ -184,7 +191,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
 		reportingManagerEmail := getValue(headers, record, "reporting_manager")
 
-		var reportingManagerRequired bool = !(CreateBulkUserReq.RoleName == "Admin" ||
+		isReportingMngrRequired := !(CreateBulkUserReq.RoleName == "Admin" ||
 			CreateBulkUserReq.RoleName == "Finance Admin" ||
 			CreateBulkUserReq.RoleName == "DB User" ||
 			CreateBulkUserReq.RoleName == "Dealer Owner" ||
@@ -192,149 +199,66 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			CreateBulkUserReq.RoleName == "Account Executive" ||
 			CreateBulkUserReq.RoleName == "Project Manager")
 
-		if !reportingManagerRequired && reportingManagerEmail != "" {
+		if !isReportingMngrRequired && reportingManagerEmail != "" {
 			log.FuncErrorTrace(0, "Role %s cannot have a reporting manager: %s", CreateBulkUserReq.RoleName, reportingManagerEmail)
 			result.Failed++
 			result.Errors = append(result.Errors, fmt.Sprintf("Role %s cannot have a reporting manager", CreateBulkUserReq.RoleName))
 			continue
 		}
 
+		///////////////////////////  REPORTING MANAGER ROLE  ///////////////////////////
 
+		if possibleRgnMngrRoles, ok := reportingMngrMapping[types.UserRoles(CreateBulkUserReq.RoleName)]; ok {
+			if reportingManagerEmail == "" {
+				log.FuncErrorTrace(0, "Role %s requires a reporting manager", CreateBulkUserReq.RoleName)
+				result.Failed++
+				result.Errors = append(result.Errors, fmt.Sprintf("Role %s requires a reporting manager", CreateBulkUserReq.RoleName))
+				continue
+			}
 
-		///////////////////////////  VALIDATION FOR ROLE APPOINTMENT SETTER  ///////////////////////////
-
-		if CreateBulkUserReq.RoleName == "Appointment Setter" && reportingManagerEmail != "" {
 			reportingManagerRole, err := fetchUserRoleByEmail(reportingManagerEmail)
 			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager role for email: %s, error: %v", reportingManagerEmail, err)
+				log.FuncErrorTrace(0, "Error fetching role for %s: %v", reportingManagerEmail, err)
 				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager role for email: %s", reportingManagerEmail))
+				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching role for %s: %v", reportingManagerEmail, err))
 				continue
 			}
 
-			if reportingManagerRole != "Regional Manager" && reportingManagerRole != "Dealer Owner" && reportingManagerRole != "Sales Manager" {
+			if !Contains(possibleRgnMngrRoles, reportingManagerRole) {
 				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Invalid reporting manager role : %s for Appointment Setter", reportingManagerRole))
+				result.Errors = append(result.Errors, fmt.Sprintf("Invalid reporting manager role : %s for %s", reportingManagerRole, CreateBulkUserReq.RoleName))
 				continue
 			}
-		}
-		if reportingManagerEmail != "" {
-			reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
+
+			reportingMngr, err := fetchUserCodeByEmail(reportingManagerEmail)
 			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
+				log.FuncErrorTrace(0, "Error fetching user code for %s: %v", reportingManagerEmail, err)
 				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
+				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching user code for %s: %v", reportingManagerEmail, err))
 				continue
 			}
-			CreateBulkUserReq.ReportingManager = reportingManagerCode
+
+			CreateBulkUserReq.ReportingManager = reportingMngr
 		}
 
-
-		///////////////////////////  VALIDATION FOR ROLE REGIONAL MANAGER  ///////////////////////////
-
-		if CreateBulkUserReq.RoleName == "Regional Manager" && reportingManagerEmail != "" {
-			reportingManagerRole, err := fetchUserRoleByEmail(reportingManagerEmail)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager role for email: %s, error: %v", reportingManagerEmail, err)
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager role for email: %s", reportingManagerEmail))
-				continue
-			}
-
-			if reportingManagerRole != "Dealer Owner" {
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Invalid reporting manager role : %s for Regional Manager", reportingManagerRole))
-				continue
-			}
-		}
-		if reportingManagerEmail != "" {
-			reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-				continue
-			}
-			CreateBulkUserReq.ReportingManager = reportingManagerCode
-		}
-
-
-		///////////////////////////  VALIDATION FOR ROLE SALES MANAGER  ///////////////////////////
-		if CreateBulkUserReq.RoleName == "Sales Manager" && reportingManagerEmail != "" {
-			reportingManagerRole, err := fetchUserRoleByEmail(reportingManagerEmail)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager role for email: %s, error: %v", reportingManagerEmail, err)
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager role for email: %s", reportingManagerEmail))
-				continue
-			}
-
-			if reportingManagerRole != "Regional Manager" && reportingManagerRole != "Dealer Owner" {
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Invalid reporting manager role : %s for Sales Manager", reportingManagerRole))
-				continue
-			}
-		}
-		if reportingManagerEmail != "" {
-			reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-				continue
-			}
-			CreateBulkUserReq.ReportingManager = reportingManagerCode
-		}
-
-
-		///////////////////////////  VALIDATION FOR ROLE Sale Representative  ///////////////////////////
-
-		if CreateBulkUserReq.RoleName == "Sale Representative" && reportingManagerEmail != "" {
-			reportingManagerRole, err := fetchUserRoleByEmail(reportingManagerEmail)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager role for email: %s, error: %v", reportingManagerEmail, err)
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager role for email: %s", reportingManagerEmail))
-				continue
-			}
-
-			if reportingManagerRole != "Regional Manager" && reportingManagerRole != "Dealer Owner" && reportingManagerRole != "Sales Manager" {
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Invalid reporting manager role : %s for Sale Representative", reportingManagerRole))
-				continue
-			}
-		}
-		if reportingManagerEmail != "" {
-			reportingManagerCode, err := fetchUserCodeByEmail(reportingManagerEmail)
-			if err != nil {
-				log.FuncErrorTrace(0, "Error fetching reporting manager code for email: %s, error: %v", reportingManagerEmail, err)
-				result.Failed++
-				result.Errors = append(result.Errors, fmt.Sprintf("Error fetching reporting manager code for email: %s", reportingManagerEmail))
-				continue
-			}
-			CreateBulkUserReq.ReportingManager = reportingManagerCode
-		}
-
-
-
-// handling partner_name conditions , these roles cant have partner_name ....
+		// handling partner_name conditions , these roles cant have partner_name ....
 		partnerName := getValue(headers, record, "partner_name")
 
-		var partnerIdRequired bool = !(CreateBulkUserReq.RoleName == "Admin" ||
+		isPartnerRequired := !(CreateBulkUserReq.RoleName == "Admin" ||
 			CreateBulkUserReq.RoleName == "Finance Admin" ||
 			CreateBulkUserReq.RoleName == "DB User" ||
 			CreateBulkUserReq.RoleName == "Account Manager" ||
 			CreateBulkUserReq.RoleName == "Account Executive" ||
 			CreateBulkUserReq.RoleName == "Project Manager")
 
-		if !partnerIdRequired && partnerName != "" {
+		if !isPartnerRequired && partnerName != "" {
 			log.FuncErrorTrace(0, "Role %s should not have a partner name: %s", CreateBulkUserReq.RoleName, CreateBulkUserReq.PartnerName)
 			result.Failed++
 			result.Errors = append(result.Errors, fmt.Sprintf("Role %s should not have a partner_name", CreateBulkUserReq.RoleName))
 			continue
 		}
 
-		if partnerIdRequired {
+		if isPartnerRequired {
 			salesPartnerName, err := fetchCorrectSalesPartnerName(partnerName)
 			if err != nil {
 				log.FuncErrorTrace(0, "Error fetching sales partner name for : %s, error: %v", partnerName, err)
@@ -406,23 +330,6 @@ func getValue(headers []string, record []string, key string) string {
 	return ""
 }
 
-// func isValidUser(user CreateBulkUserReq) bool {
-//   valid := len(user.Name) > 0 && len(user.Name) <= 50 &&
-//     len(user.EmailId) > 0 &&
-//     len(user.MobileNumber) > 0 &&
-//     len(user.RoleName) > 0
-
-//   if !valid {
-//     log.FuncErrorTrace(0, "invalid user data: Name=%s, Email=%s, Mobile=%s, Role=%s",
-//       user.Name,
-//       user.EmailId,
-//       user.MobileNumber,
-//       user.RoleName)
-//   }
-
-//   return valid
-// }
-
 func isEmptyRow(record []string) bool {
 	for _, value := range record {
 		if value != "" {
@@ -432,8 +339,6 @@ func isEmptyRow(record []string) bool {
 	return true
 }
 
-
-//getting usercode of reporting manager by using email
 func fetchUserCodeByEmail(email string) (string, error) {
 	var userCode string
 	query := "SELECT user_code FROM user_details WHERE LOWER(email_id) = LOWER($1)"
@@ -451,7 +356,7 @@ func fetchUserCodeByEmail(email string) (string, error) {
 	return userCode, nil
 }
 
-// fetch reporting manager role by using email
+// fetching sales_partner_name by using partner_name for check hierarchy of reportingmanager
 func fetchUserRoleByEmail(email string) (string, error) {
 	var userRole string
 	query := `SELECT
@@ -474,23 +379,21 @@ func fetchUserRoleByEmail(email string) (string, error) {
 	return userRole, nil
 }
 
-
-
 func fetchCorrectSalesPartnerName(partnerName string) (string, error) {
-  var salesPartnerName string
-  query := "SELECT sales_partner_name FROM sales_partner_dbhub_schema WHERE LOWER(sales_partner_name) = LOWER($1)"
-  data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{partnerName})
-  if err != nil {
-    return "", fmt.Errorf("sales partner with name %s not found", partnerName)
-  }
-  if len(data) == 0 {
-    return "", fmt.Errorf("no sales partner found for name %s", partnerName)
-  }
-  salesPartnerName, ok := data[0]["sales_partner_name"].(string)
-  if !ok {
-    return "", fmt.Errorf("sales_partner_name is not of type string")
-  }
-  return salesPartnerName, nil
+	var salesPartnerName string
+	query := "SELECT sales_partner_name FROM sales_partner_dbhub_schema WHERE LOWER(sales_partner_name) = LOWER($1)"
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{partnerName})
+	if err != nil {
+		return "", fmt.Errorf("sales partner with name %s not found", partnerName)
+	}
+	if len(data) == 0 {
+		return "", fmt.Errorf("no sales partner found for name %s", partnerName)
+	}
+	salesPartnerName, ok := data[0]["sales_partner_name"].(string)
+	if !ok {
+		return "", fmt.Errorf("sales_partner_name is not of type string")
+	}
+	return salesPartnerName, nil
 }
 
 func isValidEmail(email string) bool {
@@ -498,7 +401,6 @@ func isValidEmail(email string) bool {
 	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return emailRegex.MatchString(email)
 }
-
 
 func isAlphaWithSpace(s string) bool {
 	for i, r := range s {
@@ -508,4 +410,3 @@ func isAlphaWithSpace(s string) bool {
 	}
 	return true
 }
-////
