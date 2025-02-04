@@ -591,7 +591,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               }}
             />
             {!activeSalesRep && <div>{AddBtn}</div>}
-            {userRole === TYPE_OF_USER.ADMIN && environment === 'staging' && (
+            {userRole === TYPE_OF_USER.ADMIN && (
               <div>{ImportBtn}</div>
             )}
             {userRole === TYPE_OF_USER.ADMIN  && (
