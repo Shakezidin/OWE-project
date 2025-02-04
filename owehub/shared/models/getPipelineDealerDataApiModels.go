@@ -4,20 +4,19 @@
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
- package models
+package models
 
  type PipelineDealerDataList struct {
 	PipelineDealerDataList []PipelineDealerData `json:"pipeline_dealer_data_list"`
 }
 
 type PipelineDealerData struct {
-	CustomerName         string `json:"customer_name"`
+	HomeOwner         string `json:"home_owner"`
 	PartnerDealer        string `json:"partner_dealer"`
 	FinanceCompany       string `json:"finance_company"`
 	SourceType           string `json:"source_type"`
 	LoanType             string `json:"loan_type"`
 	UniqueId             string `json:"unique_id"`
-	HomeOwner            string `json:"home_owner"`
 	StreetAddress        string `json:"street_address"`
 	City                 string `json:"city"`
 	State                string `json:"state"`

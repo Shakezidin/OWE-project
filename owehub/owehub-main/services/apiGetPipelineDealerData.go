@@ -27,36 +27,35 @@ import (
 ******************************************************************************/
 
 var columnMap = map[string]ColumnInfo{
-	"customer_name":                {"cust", "string"},
-	"partner_dealer":               {"cust", "string"},
-	"finance_company":              {"cust", "string"},
-	"source_type":                  {"cust", "string"},
-	"loan_type":                    {"cust", "string"},
-	"unique_id":                    {"cust", "string"},
-	"home_owner":                   {"cust", "string"},
-	"street_address":               {"cust", "string"},
-	"city":                         {"cust", "string"},
-	"state":                        {"cust", "string"},
-	"zip_code":                     {"cust", "string"},
-	"email":                        {"cust", "string"},
-	"phone_number":                 {"cust", "string"},
-	"rep_1":                        {"cust", "string"},
-	"rep_2":                        {"cust", "string"},
-	"system_size":                  {"cust", "string"},
-	"total_system_cost":            {"cust", "string"},
-	"created_date":                 {"cust", "date"},
-	"contract_date":                {"cust", "date"},
+	"customer_name":          {"cust", "string"},
+	"dealer":                 {"cust", "string"},
+	"finance_company":        {"cust", "string"},
+	"source_type":            {"cust", "string"},
+	"loan_type":              {"cust", "string"},
+	"unique_id":              {"cust", "string"},
+	"address":                {"cust", "string"},
+	"city":                   {"cust", "string"},
+	"state":                  {"cust", "string"},
+	"zip_code":               {"cust", "string"},
+	"email_address":          {"cust", "string"},
+	"phone_number":           {"cust", "string"},
+	"primary_sales_rep":      {"cust", "string"},
+	"secondary_sales_rep":    {"cust", "string"},
+	"contracted_system_size": {"cust", "string"},
+	"total_system_cost":      {"cust", "string"},
+	"sale_date":              {"cust", "date"},
+	// "sale_date":                {"cust", "date"},
 	"survey_final_completion_date": {"survey", "date"},
 	"ntp_complete_date":            {"ntp", "date"},
-	"permit_submit_date":           {"permit", "date"},
-	"permit_approval_date":         {"permit", "date"},
-	"ic_submit_date":               {"ic", "date"},
-	"ic_approval_date":             {"ic", "date"},
+	"pv_submitted":                 {"permit", "date"},
+	"pv_approved":                  {"permit", "date"},
+	"ic_submitted_date":            {"ic", "date"},
+	"ic_approved_date":             {"ic", "date"},
 	"jeopardy_date":                {"cust", "date"},
 	"cancel_date":                  {"cust", "date"},
-	"pv_install_date":              {"install", "date"},
-	"fin_complete_date":            {"fin", "date"},
-	"pto_date":                     {"pto", "date"},
+	"pv_completion_date":           {"install", "date"},
+	"pv_fin_date":                  {"fin", "date"},
+	"pto_granted":                  {"pto", "date"},
 }
 
 type PipelineByDealerReq struct {
@@ -167,7 +166,6 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		sourceType, _ := item["source_type"].(string)
 		loanType, _ := item["loan_type"].(string)
 		uniqueId, _ := item["unique_id"].(string)
-		homeOwner, _ := item["home_owner"].(string)
 		streetAddress, _ := item["street_address"].(string)
 		city, _ := item["city"].(string)
 		state, _ := item["state"].(string)
@@ -200,13 +198,12 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		ptoDate, _ = item["pto_date"].(time.Time)
 
 		pipelineDealerData := models.PipelineDealerData{
-			CustomerName:         customerName,
+			HomeOwner:            customerName,
 			PartnerDealer:        partnerDealer,
 			FinanceCompany:       financeCompany,
 			SourceType:           sourceType,
 			LoanType:             loanType,
 			UniqueId:             uniqueId,
-			HomeOwner:            homeOwner,
 			StreetAddress:        streetAddress,
 			City:                 city,
 			State:                state,
