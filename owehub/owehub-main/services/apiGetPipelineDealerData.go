@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -70,14 +71,12 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pipelineDealerDataList models.PipelineDealerDataList
 		data                   []map[string]interface{}
 		whereEleList           []interface{}
-		dealerNamesArr         []string
-		dealerNames            string
 		email                  string
 		userRole               string
-		dealerName             string
 		pipelineDealerQuery    string
 		queryFilter            string
 		query                  string
+		roleFilter             string
 		RecordCount            int64
 	)
 
@@ -117,26 +116,20 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if userRole == "Admin" {
-		dealerNamesArr = dataReq.DealerNames
-	} else {
-		_, dealerName, err = fetchDealerNameForUser(email, "")
-		if err != nil {
-			log.FuncErrorTrace(0, "%v", err)
-			appserver.FormAndSendHttpResp(resp, "Something is not right", http.StatusBadRequest, nil)
+	roleFilter, err = HandleDataFilterOnUserRoles(email, userRole, "cust", dataReq.DealerNames)
+	if err != nil {
+		if !strings.Contains(err.Error(), "<not an error>") && !strings.Contains(err.Error(), "<emptyerror>") {
+			log.FuncErrorTrace(0, "error creating user role query %v", err)
+			appserver.FormAndSendHttpResp(resp, "Something is not right!", http.StatusBadRequest, nil)
+			return
+		} else if strings.Contains(err.Error(), "<emptyerror>") || strings.Contains(err.Error(), "<not an error>") {
+			appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, pipelineDealerDataList, RecordCount)
 			return
 		}
-		dealerNamesArr = []string{dealerName}
 	}
 
-	if len(dealerNamesArr) == 0 {
-		appserver.FormAndSendHttpResp(resp, "No dealer found", http.StatusBadRequest, nil)
-		return
-	}
-
-	dealerNames = joinNames(dealerNamesArr)
 	/* Base query */
-	pipelineDealerQuery = models.PipelineDealerDataQuery(dealerNames)
+	pipelineDealerQuery = models.PipelineDealerDataQuery(roleFilter)
 
 	/* Creating Filter */
 	builder := NewFilterBuilder(columnMap)

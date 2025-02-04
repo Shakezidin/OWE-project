@@ -1111,13 +1111,13 @@ func GetBasePipelineQuery(uniqueIds string) string {
 		WHERE cust.unique_id in (%v)`, uniqueIds)
 }
 
-func PipelineDealerDataQuery(dealer string) string {
+func PipelineDealerDataQuery(filterUserQuery string) string {
 	PipelineDealerQuery := fmt.Sprintf(`
     WITH filtered_customers AS (
         SELECT *
-        FROM customers_customers_schema
-        WHERE dealer IN (%v)
-        AND unique_id != ''
+        FROM customers_customers_schema cust
+        WHERE %s
+        AND cust.unique_id != ''
     )
     SELECT
         -- Customer Basic Information
@@ -1188,7 +1188,7 @@ func PipelineDealerDataQuery(dealer string) string {
         LEFT JOIN fin_permits_fin_schema AS fin 
             ON cust.unique_id = fin.customer_unique_id
         LEFT JOIN pto_ic_schema AS pto 
-            ON cust.unique_id = pto.customer_unique_id  `, dealer)
+            ON cust.unique_id = pto.customer_unique_id  `, filterUserQuery)
 	return PipelineDealerQuery
 }
 
