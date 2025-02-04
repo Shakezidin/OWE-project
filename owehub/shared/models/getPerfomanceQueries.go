@@ -1122,14 +1122,11 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         -- DISTINCT (cust.unique_id),
         cust.customer_name AS customer_name,
         cust.dealer AS partner_dealer,
-        cust.customer_name AS finance_company,
-        cust.customer_name AS source_type,
-        cust.customer_name AS loan_type,
+        cust.finance_company AS finance_company,
+        cust.customer_name AS type,
         cust.unique_id,
         cust.address AS street_address,
-        cust.customer_name AS city,
         cust.state,
-        cust.customer_name AS zip_code,
         cust.email_address AS email,
         cust.phone_number,
         cust.primary_sales_rep AS rep_1,
@@ -1148,6 +1145,7 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         
         -- NTP Dates
         ntp.ntp_complete_date,
+        ntp.finance_type AS loan_type,
         
         -- Permit Dates
         permit.pv_submitted AS permit_submit_date,
