@@ -23,15 +23,15 @@ type UserGroup string
 type UserRoles string
 
 const (
-	GroupAdmin                       UserGroup = "GroupAdmin"
-	GroupDealerFinance               UserGroup = "GroupDealerFinance"
-	GroupSalesManagement             UserGroup = "GroupSalesManagement"
-	GroupEveryOne                    UserGroup = "GroupEveryOne"
-	GroupDb                          UserGroup = "GroupDb"
-	GroupAdminDealer                 UserGroup = "GroupAdminDealer"
-	GroupAdminAccounts               UserGroup = "GroupAdminAccounts"
-	GroupAdminDealerAccounts         UserGroup = "GroupAdminDealerAccounts"
-	GroupAdminDealerRegionalAccounts UserGroup = "GroupAdminDealerRegionalAccounts"
+	GroupAdmin               UserGroup = "GroupAdmin"
+	GroupDealerFinance       UserGroup = "GroupDealerFinance"
+	GroupSalesManagement     UserGroup = "GroupSalesManagement"
+	GroupEveryOne            UserGroup = "GroupEveryOne"
+	GroupDb                  UserGroup = "GroupDb"
+	GroupAdminDealer         UserGroup = "GroupAdminDealer"
+	GroupAdminAccounts       UserGroup = "GroupAdminAccounts"
+	GroupAdminDealerAccounts UserGroup = "GroupAdminDealerAccounts"
+	GroupDealerAccounts      UserGroup = "GroupDealerAccounts"
 )
 
 var (
@@ -82,10 +82,11 @@ var (
 			RoleAccountManager,
 			RoleAccountExecutive,
 			RoleProjectManager,
-		}, GroupAdminDealerRegionalAccounts: {
-			RoleAdmin,
+		}, GroupDealerAccounts: {
 			RoleDealerOwner,
 			RoleRegionalManager,
+			RoleSalesManager,
+			RoleSalesRep,
 		},
 	}
 )
