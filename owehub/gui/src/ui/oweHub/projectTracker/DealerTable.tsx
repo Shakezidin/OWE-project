@@ -12,6 +12,13 @@ import { getPipeLineData } from '../../../redux/apiActions/pipelineAction/pipeli
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import Pagination from '../../components/pagination/Pagination'
 
+
+interface ColumnMap {
+    [key: string]: string;
+}
+
+
+
 const DealerTablePipeline = () => {
 
     const [page, setPage] = useState(1);
@@ -20,27 +27,58 @@ const DealerTablePipeline = () => {
     const startIndex = (page - 1) * itemsPerPage + 1;
     const endIndex = page * itemsPerPage;
     const totalPage = Math.ceil(totalCount / itemsPerPage);
-
     const location = useLocation();
     const selectedDealer = location.state?.selectedDealer || [];
-
     const dealerNames = selectedDealer ? selectedDealer.map((dealer: any) => dealer.value) : [];
-
-
-
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     const [sortKey, setSortKey] = useState('');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
-
+    const [searchInp, setSearchInp] = useState('')
+    const [search, setSearch] = useState(false);
     const navigate = useNavigate();
+
+
     const handleClick = () => {
         navigate('/pipeline');
     };
-    const [searchInp, setSearchInp] = useState('')
-    const [search, setSearch] = useState(false);
+    
 
-    const dispatch = useAppDispatch()
+    const columnMap: ColumnMap = {
+        "customer_name": "customer_name",
+        "partner_dealer": "dealer",
+        "finance_company": "finance_company",
+        "source_type": "source_type",
+        "loan_type": "loan_type",
+        "unique_id": "unique_id",
+        "street_address": "address",
+        "city": "city",
+        "state": "state",
+        "zip_code": "zip_code",
+        "email": "email_address",
+        "phone_number": "phone_number",
+        "rep_1": "primary_sales_rep",
+        "rep_2": "secondary_sales_rep",
+        "system_size": "contracted_system_size",
+        "contract_amount": "total_system_cost",
+        "created_date": "sale_date",
+        "contract_date": "sale_date",
+        "survey_final_completion_date": "survey_final_completion_date",
+        "ntp_complete_date": "ntp_complete_date",
+        "permit_submit_date": "pv_submitted",
+        "permit_approval_date": "pv_approved",
+        "ic_submit_date": "ic_submitted_date",
+        "ic_approval_date": "ic_approved_date",
+        "jeopardy_date": "jeopardy_date",
+        "cancel_date": "cancel_date",
+        "pv_install_date": "pv_completion_date",
+        "fin_complete_date": "pv_fin_date",
+        "pto_date": "pto_granted"
+    };
+    const getColumnKey = (sortKey: string): string => {
+        return columnMap[sortKey] || sortKey;
+    };
+    const columnKey = getColumnKey(sortKey);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(getPipeLineData(
@@ -51,23 +89,22 @@ const DealerTablePipeline = () => {
                     "page_size": itemsPerPage,
                     "filters": [
                     ],
-                    "sort_by": "",
-                    "sort_order": ""
+                    "sort_by": columnKey,
+                    "sort_order": sortDirection
                 }
             }
         ))
-    }, [page])
+    }, [page, columnKey, sortDirection])
 
     const { pipelineData } = useAppSelector((state) => state.pipelineSlice);
 
     useEffect(() => {
-        if (pipelineData) {
-            setTotalCount(pipelineData.data.count)
+        if (pipelineData && pipelineData.data && pipelineData.data.count) {
+            setTotalCount(pipelineData.data.count);
         }
-    })
-   
+    }, [pipelineData]);
     const handleSort = (key: any) => {
-        console.log(key, sortKey, "jghgfh")
+
         if (sortKey === key) {
             setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
         } else {
@@ -75,8 +112,6 @@ const DealerTablePipeline = () => {
             setSortDirection('asc');
         }
     };
-    
-
 
 
     return (
@@ -207,7 +242,7 @@ const DealerTablePipeline = () => {
                     </table>
                 )}
             </div>
-            {pipelineData.data.list.data.pipeline_dealer_data_list?.length > 0 ? (
+            {pipelineData && pipelineData.data && pipelineData.data.list.data.pipeline_dealer_data_list?.length > 0 ? (
                 <div className="page-heading-container">
                     <p className="page-heading">
                         {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item

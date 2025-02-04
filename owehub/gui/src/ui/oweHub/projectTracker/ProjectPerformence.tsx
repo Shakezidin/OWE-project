@@ -712,12 +712,19 @@ const ProjectPerformence = () => {
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
           <div className="pipeline-header-btns">
-            {showNewPage &&
-              <div className='skygroup-btn' onClick={handleNewPage}>
+            {(showNewPage && (isStaging === 'staging')) &&
+              <div
+                style={{
+                  pointerEvents: loading || isLoading ? "none" : "auto",
+                  cursor: loading || isLoading ? "default" : "pointer",
+                }}
+                className='skygroup-btn'
+                onClick={handleNewPage}
+              >
                 <img src={ICONS.sky} alt='sky' />
               </div>
             }
-            {(showDropdown && (isStaging === 'staging'))  && (
+            {(showDropdown) && (
               <DropdownCheckbox
                 label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
                 placeholder="Search partners"
