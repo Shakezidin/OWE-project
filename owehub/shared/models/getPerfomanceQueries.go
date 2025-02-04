@@ -1119,7 +1119,7 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
     )
     SELECT
         -- Customer Basic Information
-        -- DISTINCT (cust.unique_id),
+        DISTINCT (cust.unique_id),
         cust.customer_name AS customer_name,
         cust.dealer AS partner_dealer,
         cust.finance_company AS finance_company,
