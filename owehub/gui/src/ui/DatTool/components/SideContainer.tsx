@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { TbArrowsSort } from 'react-icons/tb';
 import styles from '../styles/SideContainer.module.css'
 import MicroLoader from '../../components/loader/MicroLoader';
@@ -22,60 +22,84 @@ interface Data {
 interface SideContainerProps {
   data: any[];
   setSearchPara: any;
-  loading:boolean;
+  loading: boolean;
   setCurrentGeneralId: any;
   currentGeneralId: string;
-  setPageSize:any;
-  setSort:any;
-  pageSize:any;
-  sort:any;
+  setPageSize: any;
+  setSort: any;
+  pageSize: any;
+  sort: any;
 }
 
-const SideContainer: React.FC<SideContainerProps> = ({sort,setSort,setPageSize, data, setSearchPara,loading,setCurrentGeneralId,currentGeneralId }) => {
+const SideContainer: React.FC<SideContainerProps> = ({
+  sort,
+  setSort,
+  setPageSize,
+  data,
+  setSearchPara,
+  loading,
+  setCurrentGeneralId,
+  currentGeneralId
+}) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
   const [isHovered, setIsHovered] = useState<number | null>(null);
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+
+  useEffect(() => {
+    if (data && data.length > 0 && !loading && !initialLoadDone) {
+      const firstItem = data[0];
+      setCurrentGeneralId(firstItem.project_id.trim());
+      setInitialLoadDone(true);
+    }
+  }, [data, loading, setCurrentGeneralId, initialLoadDone]);
 
   const debouncedSetSearchPara = useCallback(
     debounce((search: string) => {
-      setSearchPara(search); 
+      setSearchPara(search);
     }, 800),
     []
   );
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setSearchTerm(value); // Update the input field immediately
-    debouncedSetSearchPara(value); // Only debounce the search parameter update
+    setSearchTerm(value);
+    debouncedSetSearchPara(value);
   };
 
   const toggleSortOrder = () => {
     setSortAscending(!sortAscending);
   };
+
   const isDataEmpty = data?.length === 0;
-  const mappedDataList = isDataEmpty ? []: data?.map((apiItem: any) => ({
+  const mappedDataList = isDataEmpty ? [] : data?.map((apiItem: any) => ({
     name: apiItem.project_name.trim() || 'Unnamed Project',
     projectID: apiItem.project_id.trim() || 'No ID Provided',
     address: apiItem.project_address.trim() || 'No Address Provided',
-  }))
+  }));
 
   const handleClick = () => {
-    setPageSize((prevPageSize:number) => prevPageSize + 10);
+    console.log('Before increasing page size', currentGeneralId);
+    setPageSize((prevPageSize: number) => prevPageSize + 10);
+    console.log('After increasing page size', currentGeneralId);
+
   };
 
   const handleSort = () => {
-      if(sort === 'asc'){
-        setSort('desc');
-      }else {
-        setSort('asc');
-      }
-  }
+    if (sort === 'asc') {
+      setSort('desc');
+    } else {
+      setSort('asc');
+    }
+  };
 
-  
+  const handleDataClick = (projectID: string) => {
+    setCurrentGeneralId(projectID);
+  };
 
   return (
-    <div className={styles.container} style={{height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
+    <div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : "" }}>
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>
           <div className={styles.headingName}>Project List</div>
@@ -84,7 +108,7 @@ const SideContainer: React.FC<SideContainerProps> = ({sort,setSort,setPageSize, 
           </div>
         </div>
         <div className={styles.searchBox}>
-          <input 
+          <input
             placeholder="Search by project ID."
             type="text"
             value={searchTerm}
@@ -93,8 +117,9 @@ const SideContainer: React.FC<SideContainerProps> = ({sort,setSort,setPageSize, 
         </div>
       </div>
 
-      {/* Handle empty data condition */}
-     {loading? <div className={styles.microLoaderContainer}> <MicroLoader/> </div>: isDataEmpty ? (
+      {loading ? (
+        <div className={styles.microLoaderContainer}><MicroLoader /></div>
+      ) : isDataEmpty ? (
         <div className={styles.noDataMessage}></div>
       ) : (
         <div className={styles.wrapperBox}>
@@ -121,4 +146,5 @@ const SideContainer: React.FC<SideContainerProps> = ({sort,setSort,setPageSize, 
     </div>
   );
 };
+
 export default SideContainer;

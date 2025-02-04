@@ -43,7 +43,7 @@ const DatTool: React.FC = () => {
   const renderPage = () => {
     switch (selectedPage) {
       case 'Structural':
-        return <StructuralPage structuralData={structuralData} currentGeneralId={currentGeneralId}/>;
+        return <StructuralPage structuralData={structuralData} currentGeneralId={currentGeneralId} loading={loading}/>;
       case 'Adders':
         return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading}/>;
       case 'Notes':
