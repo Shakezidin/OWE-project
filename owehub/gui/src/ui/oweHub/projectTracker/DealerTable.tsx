@@ -4,13 +4,17 @@ import pipeLineColumn from '../../../resources/static_data/pipeLineColumn'
 import SortableHeader from '../../components/tableHeader/SortableHeader'
 import DataNotFound from '../../components/loader/DataNotFound'
 import MicroLoader from '../../components/loader/MicroLoader'
+import { ICONS } from '../../../resources/icons/Icons'
+import { BiArrowBack } from 'react-icons/bi'
+import { useNavigate } from 'react-router-dom'
+import { IoMdSearch } from 'react-icons/io'
 
 const DealerTablePipeline = () => {
-    
+
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     const [sortKey, setSortKey] = useState('');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-    
+
     const handleSort = (key: any) => {
         if (sortKey === key) {
             setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -39,10 +43,55 @@ const DealerTablePipeline = () => {
             }
         });
     }
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate('/pipeline');
+    };
+    const [searchInp, setSearchInp] = useState('')
+    const [search, setSearch] = useState(false);
     return (
         <div className="dashBoard-container">
+            <div className="newp-heading-container">
+                <div className='newp-heading'>
+                    <BiArrowBack style={{
+                        height: '20px',
+                        width: '20px',
+                        cursor: "pointer"
+                    }}
+                        onClick={handleClick}
+                    />
+                    <h2>All Status</h2>
+                </div>
+                <div className='newp-filInp'>
+                    <div className='inp-cont'>
+                        <div className="search-icon">
+                            <IoMdSearch style={{ color: search ? "#377cf6" : "inherit", height: '20px', width: '20px' }} />
+                        </div>
+                        <input
+                            value={searchInp}
+                            type="text"
+                            placeholder="Search"
+                            className="pipe-searchInput"
+                            onChange={(e) => {
+                                if (e.target.value.length <= 50) {
+                                    e.target.value = e.target.value.replace(
+                                        /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                                        ''
+                                    );
+                                    setSearchInp(e.target.value);
+                                }
+                            }}
+                            onFocus={() => setSearch(true)}
+                            onBlur={() => setSearch(false)}
+                        />
+                    </div>
+
+
+                    <div className='skyfilter'><img src={ICONS.skyfilter} alt='' /></div>
+                </div>
+            </div>
             <div
-                className="TableContainer"
+                className="TableContainer-pipeline"
                 style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
             >
                 {false ? (
@@ -91,10 +140,46 @@ const DealerTablePipeline = () => {
                         <tbody>
 
                             <tr>
-
-                                <td style={{ color: '#101828' }}>
-                                    test
-                                </td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>test</td>
                                 <td>test</td>
                                 <td>test</td>
                                 <td>test</td>
