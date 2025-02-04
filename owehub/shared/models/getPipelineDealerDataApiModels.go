@@ -6,12 +6,12 @@
 
 package models
 
- type PipelineDealerDataList struct {
+type PipelineDealerDataList struct {
 	PipelineDealerDataList []PipelineDealerData `json:"pipeline_dealer_data_list"`
 }
 
 type PipelineDealerData struct {
-	HomeOwner         string `json:"home_owner"`
+	HomeOwner            string `json:"home_owner"`
 	PartnerDealer        string `json:"partner_dealer"`
 	FinanceCompany       string `json:"finance_company"`
 	SourceType           string `json:"source_type"`
