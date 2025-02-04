@@ -191,7 +191,6 @@ type ProjectResponse struct {
 var ColumnToField = map[string]string{
 	"unique_id":                    "UniqueId",
 	"contract_date":                "SalesCompleted",
-	"ntp_working_date":             "NtpPending",
 	"ntp_date":                     "NtpCompleted",
 	"site_survey_scheduled_date":   "SiteSurveyScheduled",
 	"site_survey_rescheduled_date": "SiteSurevyRescheduled",

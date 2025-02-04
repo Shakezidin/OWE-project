@@ -702,6 +702,12 @@ func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceSt
 				prospectId = ""
 			}
 
+			if ntpDate, ok := row["ntp_complete_date"].(time.Time); ok {
+				paginatedData[i].NTPdate = ntpDate.Format("02-01-2006")
+			} else {
+				paginatedData[i].NTPdate = ""
+			}
+
 			var actionRequiredCount int64
 
 			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate, prospectId)
