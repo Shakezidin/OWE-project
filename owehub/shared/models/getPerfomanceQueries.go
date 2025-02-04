@@ -175,9 +175,7 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT customers_customers_schema.unique_id, customers_customers_schema.customer_name AS home_owner
-        FROM customers_customers_schema
-        LEFT JOIN system_customers_schema 
-            ON customers_customers_schema.unique_id = system_customers_schema.customer_id `
+        FROM customers_customers_schema `
 	return SalesMetricsRetrieveQuery
 }
 

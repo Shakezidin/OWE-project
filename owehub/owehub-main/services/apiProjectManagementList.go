@@ -206,9 +206,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 	}
 	// Add the always-included filters
 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
-			AND customers_customers_schema.unique_id <> ''
-			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-			AND system_customers_schema.contracted_system_size_parent > 0`)
+			AND customers_customers_schema.unique_id <> ''`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		if !whereAdded {
@@ -292,9 +290,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 
 	filtersBuilder.WriteString(`
 		customers_customers_schema.unique_id IS NOT NULL
-		AND customers_customers_schema.unique_id <> ''
-		AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-		AND system_customers_schema.contracted_system_size_parent > 0`)
+		AND customers_customers_schema.unique_id <> ''`)
 
 	// Handle the project status filter
 	if len(dataFilter.ProjectStatus) > 0 {
@@ -361,9 +357,7 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 		whereAdded = true
 	}
 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
-			AND customers_customers_schema.unique_id <> ''
-			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-			AND system_customers_schema.contracted_system_size_parent > 0`)
+			AND customers_customers_schema.unique_id <> ''`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		var statusValues []string
