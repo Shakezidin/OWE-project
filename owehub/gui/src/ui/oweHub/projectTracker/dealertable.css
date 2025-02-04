@@ -1,0 +1,138 @@
+.newp-heading {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+}
+
+.newp-heading h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #263747;
+}
+
+.newp-heading-container {
+    padding: 17px 15px 28px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.inp-cont {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.pipe-searchInput {
+    border: 1px solid #CBCBCB;
+    height: 32px;
+    outline: none;
+    width: 100%;
+    color: #292b2e;
+    padding: 1px 10px 2.5px 34px;
+    font-weight: 400;
+    border-radius: 5px;
+    width: 214px;
+}
+
+.pipe-searchInput::placeholder {
+    color: #292929;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+/* .pipe-searchInput:hover::placeholder */
+.pipe-searchInput:focus::placeholder {
+    color: #377cf6;
+    font-weight: 400;
+}
+
+.pipe-searchInput:focus {
+    border: 1px solid #377cf6;
+}
+
+.pipe-searchInput:focus .search-icon,
+.pipe-searchInput:hover .search-icon {
+    color: #377cf6;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 57%;
+    transform: translateY(-50%);
+    color: #292b2e;
+    pointer-events: none;
+}
+
+.skyfilter {
+    background-color: #377CF6;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.skyfilter:hover {
+    transform: scale(1.06);
+}
+
+.newp-filInp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.TableContainer-pipeline {
+    position: relative;
+    height: 71vh;
+    background: var(--white-color);
+    overflow-y: auto;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+  }
+  
+  .TableContainer-pipeline::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .TableContainer-pipeline::-webkit-scrollbar {
+    display: initial;
+  }
+  
+  .TableContainer-pipeline::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+  
+  .TableContainer-pipeline::-webkit-scrollbar-button {
+    display: initial;
+  }
+  
+  .TableContainer-pipeline::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  
+  .TableContainer-pipeline::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+  
+
+@media (max-width: 767px) {
+    .pipe-searchInput {
+        width: 160px;
+    }
+    .TableContainer-pipeline {
+        height: 76vh;
+    }
+}
