@@ -692,13 +692,15 @@ const ProjectPerformence = () => {
   const showNewPage =
     role === TYPE_OF_USER.DEALER_OWNER ||
     role === TYPE_OF_USER.ADMIN ||
+    role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+    role === TYPE_OF_USER.SALE_MANAGER ||
     role === TYPE_OF_USER.REGIONAL_MANGER;
 
 
   const navigate = useNavigate();
   const handleNewPage = () => {
-    navigate('/pipeline/pipeline_data')
-  }
+    navigate('/pipeline/pipeline_data', { state: { selectedDealer } });
+  };
 
   const isStaging = process.env.REACT_APP_ENV;
 
@@ -710,12 +712,19 @@ const ProjectPerformence = () => {
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
           <div className="pipeline-header-btns">
-            {showNewPage &&
-              <div className='skygroup-btn' onClick={handleNewPage}>
+            {(showNewPage && (isStaging === 'staging')) &&
+              <div
+                style={{
+                  pointerEvents: loading || isLoading ? "none" : "auto",
+                  cursor: loading || isLoading ? "default" : "pointer",
+                }}
+                className='skygroup-btn'
+                onClick={handleNewPage}
+              >
                 <img src={ICONS.sky} alt='sky' />
               </div>
             }
-            {(showDropdown && (isStaging === 'staging'))  && (
+            {(showDropdown) && (
               <DropdownCheckbox
                 label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
                 placeholder="Search partners"

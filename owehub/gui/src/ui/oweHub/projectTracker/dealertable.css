@@ -90,10 +90,14 @@
     gap: 10px;
 }
 
+.newp-heading svg:hover{
+    transform: scale(1.08);
+  }
+
 
 .TableContainer-pipeline {
     position: relative;
-    height: 71vh;
+    height: 61vh;
     background: var(--white-color);
     overflow-y: auto;
     overflow-x: auto;
