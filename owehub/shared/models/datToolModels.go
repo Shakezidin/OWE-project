@@ -1,7 +1,7 @@
 /**************************************************************************
 *	Function	: 	datToolModels.go
-*	DESCRIPTION : 	Files contains struct for get project details data models in DAT Tool
-*	DATE        : 	24-Jun-2024
+*	DESCRIPTION : 	Files contains struct for all the feilds of DAT TOOL
+*	DATE        : 	25-january-2025
 **************************************************************************/
 
 package models
@@ -11,8 +11,8 @@ import "time"
 // models to fetch project details
 type GetProjectListRequest struct {
 	Search     string `json:"search"`
-	PageNumber int    `json:"page_number"`
-	PageSize   int    `json:"page_size"`
+	PageNumber int64  `json:"page_number"`
+	PageSize   int64  `json:"page_size"`
 	Sort       string `json:"sort"`
 }
 type GetProjectListResponse struct {
@@ -80,30 +80,30 @@ type GetTabGeneralInfoResponse struct {
 
 // Structural tab structs
 type GetTabStructuralInfoResponse struct {
-	Structure      string `json:"structure"`
-	RoofType       string `json:"roof_type"`
-	SheathingType  string `json:"sheathing_type"`
-	FramingSize    string `json:"framing_size"`
-	FramingType1   string `json:"framing_type_1"`
-	FramingType2   string `json:"framing_type_2"`
-	FramingSpacing int64  `json:"framing_spacing"`
-	////////////////////////////////////
-	Attachment string `json:"attachment"`
-	Racking    string `json:"racking"`
-	Pattern    string `json:"pattern"`
-	Mount      string `json:"mount"`
-	/////////////////////////////
+	//// STRUCTURAL INFO
+	Structure          string `json:"structure"`
+	RoofType           string `json:"roof_type"`
+	SheathingType      string `json:"sheathing_type"`
+	FramingSize        string `json:"framing_size"`
+	FramingType1       string `json:"framing_type_1"`
+	FramingType2       string `json:"framing_type_2"`
+	FramingSpacing     int64  `json:"framing_spacing"`
+	Attachment         string `json:"attachment"`
+	Racking            string `json:"racking"`
+	Pattern            string `json:"pattern"`
+	Mount              string `json:"mount"`
 	StructuralUpgrades string `json:"structural_upgrades"`
 	GmSupportType      string `json:"gm_support_type"`
 	ReroofRequired     string `json:"reroof_required"`
-	Quantity           int64  `json:"quantity"`
-	Pitch              int64  `json:"pitch"`
-	AreaSqft           string `json:"area_sqft"`
-	Azim               int64  `json:"azimuth"`
-	TSRF               int64  `json:"tsrf"`
-	KWDC               int64  `json:"kw_dc"`
-	SpacingP           int64  `json:"spacing_p"`
-	SpacingL           int64  `json:"spacing_l"`
+	////////////////////////////////////////////////
+	Quantity int64  `json:"quantity"`
+	Pitch    int64  `json:"pitch"`
+	AreaSqft string `json:"area_sqft"`
+	Azim     int64  `json:"azimuth"`
+	TSRF     int64  `json:"tsrf"`
+	KWDC     int64  `json:"kw_dc"`
+	SpacingP int64  `json:"spacing_p"`
+	SpacingL int64  `json:"spacing_l"`
 
 	// Attachment Information
 	AttachmentType    string `json:"attachment_type"`
@@ -227,7 +227,7 @@ type EssInfo struct {
 }
 
 type InverterConfigInfo struct {
-	Inverter string   `json:"onverter"`
+	Inverter string   `json:"inverter"`
 	Max      int64    `json:"max"`
 	Mppt1    MpptInfo `json:"mppt1"`
 	Mppt2    MpptInfo `json:"mppt2"`
@@ -261,4 +261,16 @@ type ExistingPvInfo struct {
 	Inverter1                            InverterInfo `json:"inverter1_info"`
 	Inverter2                            InverterInfo `json:"inverter2_info"`
 	ExistingCalculatedBackfeedWithout125 int64        `json:"existing_calculated_backfeed_without_125"`
+}
+
+// Update struct
+/**************************************************************************
+ **************************************************************************/
+type UpdateDatToolInfo struct {
+	//Tab              string                        `json:"tab"`
+	GeneralValues    *GetTabGeneralInfoResponse    `json:"general_values,omitempty"`
+	StructuralValues *GetTabStructuralInfoResponse `json:"structural_values,omitempty"`
+	AdderValues      *GetTabAddersInfoResponse     `json:"adder_values,omitempty"`
+	OtherValues      *GetTabOtherInfoResponse      `json:"other_values,omitempty"`
+	NotesValues      *GetTabNotesInfoResponse      `json:"notes_values,omitempty"`
 }
