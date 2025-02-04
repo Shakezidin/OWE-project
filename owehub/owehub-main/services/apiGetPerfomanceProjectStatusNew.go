@@ -192,7 +192,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}
-	paginateData := PaginateData(data, dataReq)
+	paginateData := PaginatePerfomanceData(data, dataReq)
 	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
 	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
 
@@ -610,7 +610,7 @@ func getFieldText(data map[string]interface{}, field string) string {
 *****************************************************************************
 */
 
-func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
+func PaginatePerfomanceData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
 	paginatedData := []map[string]interface{}{}
 	startIndex := (req.PageNumber - 1) * req.PageSize
 	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data))))
