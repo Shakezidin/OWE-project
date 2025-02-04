@@ -699,6 +699,9 @@ const ProjectPerformence = () => {
     navigate('/pipeline/pipeline_data')
   }
 
+  const isStaging = process.env.REACT_APP_ENV;
+
+
   return (
 
     <div className="project-main-wrp">
@@ -711,7 +714,7 @@ const ProjectPerformence = () => {
                 <img src={ICONS.sky} alt='sky' />
               </div>
             }
-            {showDropdown && (
+            {(showDropdown && (isStaging === 'staging'))  && (
               <DropdownCheckbox
                 label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
                 placeholder="Search partners"
