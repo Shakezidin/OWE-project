@@ -59,14 +59,21 @@ var columnMap = map[string]ColumnInfo{
 	"pto_date":                     {"pto", "date"},
 }
 
+type PipelineByDealerReq struct {
+	DealerNames   []string      `json:"dealer_names"`
+	RequestParams RequestParams `json:"search_filters"`
+}
+
 func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                    error
-		dataReq                RequestParams
+		dataReq                PipelineByDealerReq
 		pipelineDealerDataList models.PipelineDealerDataList
 		data                   []map[string]interface{}
 		whereEleList           []interface{}
+		dealerNames            []string
 		email                  string
+		userRole               string
 		dealerName             string
 		pipelineDealerQuery    string
 		queryFilter            string
@@ -104,19 +111,35 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, dealerName, err = fetchDealerNameForUser(email, "")
-	if err != nil {
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Something is not right", http.StatusBadRequest, nil)
+	userRole = req.Context().Value("rolename").(string)
+	if userRole == "" {
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		return
+	}
+
+	if userRole == "Admin" {
+		dealerNames = dataReq.DealerNames
+	} else {
+		_, dealerName, err = fetchDealerNameForUser(email, "")
+		if err != nil {
+			log.FuncErrorTrace(0, "%v", err)
+			appserver.FormAndSendHttpResp(resp, "Something is not right", http.StatusBadRequest, nil)
+			return
+		}
+		dealerNames = []string{dealerName}
+	}
+
+	if len(dealerNames) == 0 {
+		appserver.FormAndSendHttpResp(resp, "No dealer found", http.StatusBadRequest, nil)
 		return
 	}
 
 	/* Base query */
-	pipelineDealerQuery = models.PipelineDealerDataQuery(dealerName)
+	pipelineDealerQuery = models.PipelineDealerDataQuery(dealerNames)
 
 	/* Creating Filter */
 	builder := NewFilterBuilder(columnMap)
-	queryFilter, whereEleList = builder.BuildFilters(dataReq, false, true)
+	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, false, false)
 
 	/* Querying the final query */
 	query = pipelineDealerQuery + queryFilter
@@ -133,7 +156,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	RecordCount = int64(len(data))
-	paginateData := PaginateData(data, dataReq)
+	paginateData := PaginateData(data, dataReq.RequestParams)
 
 	for _, item := range paginateData {
 		customerName, _ := item["customer_name"].(string)

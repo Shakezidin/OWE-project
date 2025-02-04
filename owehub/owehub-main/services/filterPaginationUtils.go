@@ -1,10 +1,13 @@
-/**************************************************************************
-* File       	   	: filterPaginationUtils.go
-* DESCRIPTION     : This file can be used to paginate or add filter to 
-										apis in general. Please make sure to use only the 
-										structs that are used here.
-* DATE            : 03-Feb-2024
-**************************************************************************/
+/*
+*************************************************************************
+  - File       	   	: filterPaginationUtils.go
+  - DESCRIPTION     : This file can be used to paginate or add filter to
+    apis in general. Please make sure to use only the
+    structs that are used here.
+  - DATE            : 03-Feb-2024
+
+*************************************************************************
+*/
 package services
 
 import (
@@ -81,9 +84,9 @@ var operatorMap = map[FilterOperator]string{
 }
 
 /*
- This is the main function that is to be called to create filter
- But to use this we need to create a FilterBuilder calling funciton NewFilterBuilder
- and passing column map which contains the table alias and data type
+This is the main function that is to be called to create filter
+But to use this we need to create a FilterBuilder calling funciton NewFilterBuilder
+and passing column map which contains the table alias and data type
 */
 func (fb *FilterBuilder) BuildFilters(req RequestParams, includeGroupBy, whereAdded bool) (string, []interface{}) {
 	var builder strings.Builder
@@ -91,7 +94,7 @@ func (fb *FilterBuilder) BuildFilters(req RequestParams, includeGroupBy, whereAd
 
 	if len(req.Filters) > 0 {
 		if whereAdded {
-		builder.WriteString(" AND ")
+			builder.WriteString(" AND ")
 		} else {
 			builder.WriteString(" WHERE ")
 		}
@@ -124,6 +127,11 @@ func (fb *FilterBuilder) BuildFilters(req RequestParams, includeGroupBy, whereAd
 
 	if includeGroupBy {
 		builder.WriteString(fb.buildGroupBy())
+	}
+
+	orderBy := fb.buildOrderBy(req)
+	if orderBy != "" {
+		builder.WriteString(orderBy)
 	}
 
 	return builder.String(), params
@@ -175,7 +183,6 @@ func (fb *FilterBuilder) buildGroupBy() string {
 	return " GROUP BY " + strings.Join(columns, ", ")
 }
 
-
 func PaginateData[T any](data []T, req RequestParams) []T {
 	startIndex := (req.PageNumber - 1) * req.PageSize
 	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data))))
@@ -185,4 +192,28 @@ func PaginateData[T any](data []T, req RequestParams) []T {
 	}
 
 	return data[startIndex:endIndex]
+}
+
+func (fb *FilterBuilder) buildOrderBy(req RequestParams) string {
+	if req.SortBy == "" {
+		return ""
+	}
+
+	columnInfo, exists := fb.ColumnMap[req.SortBy]
+	if !exists {
+		return ""
+	}
+
+	sortOrder := strings.ToUpper(req.SortOrder)
+	if sortOrder != "DESC" {
+		sortOrder = "ASC"
+	}
+
+	fullColumn := fmt.Sprintf("%s.%s", columnInfo.TableAlias, req.SortBy)
+
+	if columnInfo.DataType == TypeString {
+		return fmt.Sprintf(" ORDER BY LOWER(%s) %s", fullColumn, sortOrder)
+	}
+
+	return fmt.Sprintf(" ORDER BY %s %s", fullColumn, sortOrder)
 }
