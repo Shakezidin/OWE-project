@@ -40,148 +40,41 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   useEffect(()=>{
     dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
   },[currentGeneralId]);
-  const leftPartObj: CategoryItem[] = [
-    { text: 'INTERCONNECTION', cost: addersData ? addersData.categories[0]?.cost : 0 },
-    { text: 'ELECTRICAL', cost: addersData ? addersData?.categories?.[1].cost : 0 },
-    { text: 'SITE ADDERS', cost: addersData ? addersData?.categories?.[2].cost : 0 },
-    { text: 'STRUCTURAL', cost: addersData ? addersData?.categories?.[3].cost : 0 },
-    { text: 'UPGRADES', cost: addersData ? addersData?.categories?.[4].cost : 0 },
-    { text: 'Trenching (per foot)', cost: addersData ? addersData?.categories?.[5].cost : 0 },
-    { text: 'BATTERY', cost: addersData ? addersData?.categories?.[6].cost : 0 },
-    { text: 'OTHER', cost: addersData ? addersData?.categories?.[7].cost : 0 }
-  ];
+  const leftPartObj: CategoryItem[] = addersData?.categories?.map((category:any) => ({
+    text: category?.title ?? 'N/A',  
+    cost: category?.cost ?? 0  
+  })) ?? [];
+  
+  
   
 
-  const rightPartObj: Item[] = [
-    {
-      name: 'Supply/Line Side Tap',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[0].cost || 0
-        : 0,
-    },
-    {
-      name: 'Load Side Tap',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[1].cost || 0
-        : 0,
-    },
-    {
-      name: 'ConnectDER',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[2].cost || 0
-        : 0,
-    },
-    {
-      name: 'Subpanel Add-in',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[3].cost || 0
-        : 0,
-    },
-    {
-      name: 'Derate',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[4].cost || 0
-        : 0,
-    },
-    {
-      name: 'H-Frame (PV)',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[5].cost || 0
-        : 0,
-    },
-    {
-      name: 'Extra Main Breaker',
-      quantity: 1, // Assuming a default quantity, adjust as needed
-      cost: addersData && Array.isArray(addersData.categories) && addersData.categories[0]
-        ? addersData.categories[0].items[6].cost || 0
-        : 0,
-    },
+  const itemNames = [
+    'Supply/Line Side Tap',
+    'Load Side Tap',
+    'ConnectDER',
+    'Subpanel Add-in',
+    'Derate',
+    'H-Frame (PV)',
+    'Extra Main Breaker'
   ];
   
-  // const rightPartObj: Item[] = [
-  //   ... (addersData && Array.isArray(addersData.components) ? addersData.components.map((item:any, index:any) => ({
-  //     text: item.name || "N/A", 
-  //     price: item.cost || 0, 
-  //   })) : [])
-  // ];
-
-  const rightPartObjElectrical: Item[] = [
-    { name: 'Soft Stater', quantity: 0, cost: 750 },
-    { name: 'Module Adder (per watt)', quantity: 0, cost: 250 },
-    { name: 'Sense Energy Monitor', quantity: 0, cost: 150 },
-    { name: 'Enphase IQ8H Microinverters', quantity: 0, cost: 750 },
-    { name: 'Enphase IQ8A Microinverters', quantity: 0, cost: 250 },
-    { name: 'Load Controller', quantity: 0, cost: 150 },
-    { name: 'CTs', quantity: 0, cost: 750 },
-    { name: 'EV Charger', quantity: 0, cost: 250 },
-    { name: 'EV Charger outlet', quantity: 0, cost: 150 },
-  ];
+  const getCategoryItems = (categoryIndex: number): Item[] => {
+    return addersData?.categories?.[categoryIndex]?.items?.map((item: any) => ({
+      name: item.name ?? 'N/A',
+      quantity: item.quantity ?? 1,  // Assuming quantity is present in the API, fallback to 1 if not
+      cost: item.cost ?? 0
+    })) ?? [];
+  };
   
-  const rightPartObjSiteAdders: Item[] = [
-    { name: 'Site Preparation', quantity: 0, cost: 2000 },
-    { name: 'Excavation (per foot)', quantity: 0, cost: 15 },
-    { name: 'Concrete Foundation', quantity: 0, cost: 1500 },
-    { name: 'Site Survey', quantity: 0, cost: 1000 },
-    { name: 'Permitting Fees', quantity: 0, cost: 500 },
-    { name: 'Landscaping', quantity: 0, cost: 800 },
-    { name: 'Fencing (per foot)', quantity: 0, cost: 10 },
-  ];
+  const rightPartObj: Item[] = getCategoryItems(0); // Assuming this is for the first category (same as addersData.categories[0].items)
+  const rightPartObjElectrical: Item[] = getCategoryItems(1); // Electrical category (index 1)
+  const rightPartObjSiteAdders: Item[] = getCategoryItems(2); // Site Adders category (index 2)
+  const rightPartObjStructural: Item[] = getCategoryItems(3); // Structural category (index 3)
+  const rightPartObjUpgrades: Item[] = getCategoryItems(4); // Upgrades category (index 4)
+  const rightPartObjInterconnection: Item[] = getCategoryItems(5); // Interconnection category (index 5)
+  const rightPartObjUpgradedElectrical: Item[] = getCategoryItems(6); // Upgraded Electrical category (index 6)
+  const rightPartObjOther: Item[] = getCategoryItems(7); // Other category (index 7)
   
-  const rightPartObjStructural: Item[] = [
-    { name: 'Steel Frame', quantity: 0, cost: 5000 },
-    { name: 'Concrete Slab', quantity: 0, cost: 3000 },
-    { name: 'Roof Installation', quantity: 0, cost: 3500 },
-    { name: 'Wall Framing', quantity: 0, cost: 2500 },
-    { name: 'Doors & Windows', quantity: 0, cost: 1500 },
-    { name: 'Ceiling Work', quantity: 0, cost: 2000 },
-    { name: 'Load-bearing Walls', quantity: 0, cost: 4000 },
-  ];
-  
-  const rightPartObjUpgrades: Item[] = [
-    { name: 'Upgraded Panels', quantity: 0, cost: 1000 },
-    { name: 'Advanced Wiring', quantity: 0, cost: 800 },
-    { name: 'Smart Home Integration', quantity: 0, cost: 1500 },
-    { name: 'Enhanced Lighting', quantity: 0, cost: 600 },
-    { name: 'Solar Battery Storage', quantity: 0, cost: 3000 },
-    { name: 'Panel Monitoring System', quantity: 0, cost: 700 },
-    { name: 'Energy Efficient Appliances', quantity: 0, cost: 2500 },
-  ];
-  
-  const rightPartObjInterconnection: Item[] = [
-    { name: 'Utility Service Connection', quantity: 0, cost: 4000 },
-    { name: 'Grid-Tie Inverter', quantity: 0, cost: 2000 },
-    { name: 'AC Disconnect', quantity: 0, cost: 600 },
-    { name: 'AC Combiner Box', quantity: 0, cost: 800 },
-    { name: 'Utility Meter Upgrade', quantity: 0, cost: 1200 },
-    { name: 'Transformer Installation', quantity: 0, cost: 3500 },
-    { name: 'Conduit & Wiring', quantity: 0, cost: 1000 },
-  ];
-  
-  const rightPartObjUpgradedElectrical: Item[] = [
-    { name: 'Inverter Upgrade', quantity: 0, cost: 1200 },
-    { name: 'Battery Backup System', quantity: 0, cost: 5000 },
-    { name: 'Smart Inverters', quantity: 0, cost: 1500 },
-    { name: 'Power Optimizers', quantity: 0, cost: 750 },
-    { name: 'Solar Monitoring System', quantity: 0, cost: 500 },
-    { name: 'Solar Charge Controller', quantity: 0, cost: 800 },
-    { name: 'Dedicated Circuit Breakers', quantity: 0, cost: 300 },
-  ];
-  
-  const rightPartObjOther: Item[] = [
-    { name: 'Miscellaneous Charges', quantity: 0, cost: 100 },
-    { name: 'Custom Work', quantity: 0, cost: 500 },
-    { name: 'Special Requests', quantity: 0, cost: 300 },
-    { name: 'Additional Materials', quantity: 0, cost: 200 },
-    { name: 'Consultation Fees', quantity: 0, cost: 150 },
-    { name: 'Additional Equipment', quantity: 0, cost: 350 },
-    { name: 'Shipping and Handling', quantity: 0, cost: 50 },
-  ];
   
 
   const sectionData = [
@@ -369,7 +262,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
                     onClick={() => handleDecrement(index)}
                   />
                   <p className={styles.adderssPageMainPart_text}>
-                    {values[currentSectionIndex]?.[index] || 0}
+                    {obj.quantity ||  0}
                   </p>
                   <FiPlus
                     className={styles.adderssPageMainPart_increment}
