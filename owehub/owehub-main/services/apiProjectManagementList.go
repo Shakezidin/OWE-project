@@ -206,28 +206,26 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 	}
 	// Add the always-included filters
 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
-			AND customers_customers_schema.unique_id <> ''
-			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-			AND system_customers_schema.contracted_system_size_parent > 0`)
+			AND customers_customers_schema.unique_id <> ''`)
 
-	if len(dataFilter.ProjectStatus) > 0 {
-		if !whereAdded {
-			filtersBuilder.WriteString(" WHERE ")
-		} else {
-			filtersBuilder.WriteString(" AND ")
-		}
-		whereAdded = true
-		// Prepare the values for the IN clause
-		var statusValues []string
-		for _, val := range dataFilter.ProjectStatus {
-			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-		}
-		// Join the values with commas
-		statusList := strings.Join(statusValues, ", ")
+	// if len(dataFilter.ProjectStatus) > 0 {
+	// 	if !whereAdded {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	}
+	// 	whereAdded = true
+	// 	// Prepare the values for the IN clause
+	// 	var statusValues []string
+	// 	for _, val := range dataFilter.ProjectStatus {
+	// 		statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+	// 	}
+	// 	// Join the values with commas
+	// 	statusList := strings.Join(statusValues, ", ")
 
-		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` customers_customers_schema.project_status IN (%s)`, statusList))
-	}
+	// 	// Append the IN clause to the filters
+	// 	filtersBuilder.WriteString(fmt.Sprintf(` customers_customers_schema.project_status IN (%s)`, statusList))
+	// }
 
 	filters = filtersBuilder.String()
 
@@ -292,29 +290,27 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 
 	filtersBuilder.WriteString(`
 		customers_customers_schema.unique_id IS NOT NULL
-		AND customers_customers_schema.unique_id <> ''
-		AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-		AND system_customers_schema.contracted_system_size_parent > 0`)
+		AND customers_customers_schema.unique_id <> ''`)
 
-	// Handle the project status filter
-	if len(dataFilter.ProjectStatus) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
+	// // Handle the project status filter
+	// if len(dataFilter.ProjectStatus) > 0 {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
 
-		// Prepare the values for the IN clause
-		var statusValues []string
-		for _, val := range dataFilter.ProjectStatus {
-			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-		}
-		// Join the values with commas
-		statusList := strings.Join(statusValues, ", ")
+	// 	// Prepare the values for the IN clause
+	// 	var statusValues []string
+	// 	for _, val := range dataFilter.ProjectStatus {
+	// 		statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+	// 	}
+	// 	// Join the values with commas
+	// 	statusList := strings.Join(statusValues, ", ")
 
-		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.project_status IN (%s)", statusList))
-	}
+	// 	// Append the IN clause to the filters
+	// 	filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.project_status IN (%s)", statusList))
+	// }
 
 	filters = filtersBuilder.String()
 
@@ -361,20 +357,18 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 		whereAdded = true
 	}
 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
-			AND customers_customers_schema.unique_id <> ''
-			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
-			AND system_customers_schema.contracted_system_size_parent > 0`)
+			AND customers_customers_schema.unique_id <> ''`)
 
-	if len(dataFilter.ProjectStatus) > 0 {
-		var statusValues []string
-		for _, val := range dataFilter.ProjectStatus {
-			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-		}
-		statusList := strings.Join(statusValues, ", ")
-		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
-	} else {
-		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
-	}
+	// if len(dataFilter.ProjectStatus) > 0 {
+	// 	var statusValues []string
+	// 	for _, val := range dataFilter.ProjectStatus {
+	// 		statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+	// 	}
+	// 	statusList := strings.Join(statusValues, ", ")
+	// 	filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
+	// } else {
+	// 	filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
+	// }
 
 	filters = filtersBuilder.String()
 	return filters, whereEleList
