@@ -71,6 +71,7 @@ import slackConfigSlice from './apiSlice/configSlice/config_get_slice/slackConfi
 import leadManagmentSlice from './apiSlice/leadManagementSlice/leadsSlice';
 import reportingSlice from './apiSlice/reportingSlice/reportingSlice';
 import datSlice from './apiSlice/DatToolSlice/datToolSlice';
+import pipelineSlice from './apiSlice/pipelineSlice/pipeLineSlice';
 
 export const store = configureStore({
   reducer: {
@@ -148,7 +149,8 @@ export const store = configureStore({
     teamManagmentSlice,
     leadManagmentSlice,
     reportingSlice,
-    datSlice
+    datSlice,
+    pipelineSlice: pipelineSlice,
   },
 });
 
