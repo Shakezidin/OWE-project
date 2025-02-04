@@ -160,16 +160,14 @@ type ProjectResponse struct {
 	SiteSurveyScheduled          string            `json:"site_survey_scheduled"`
 	SiteSurevyRescheduled        string            `json:"site_survey_rescheduled"`
 	SiteSurveyCompleted          string            `json:"site_survey_completed"`
-	RoofingPending               string            `json:"roofing_pending"`
-	RoofingScheduled             string            `json:"roofing_scheduled"`
-	RoofingCompleted             string            `json:"roofing_completed"`
 	PvPermitPending              string            `json:"pv_permit_pending"`
 	PvPermitScheduled            string            `json:"pv_permit_scehduled"`
 	PvPermitCompleted            string            `json:"pv_permit_completed"`
 	IcPermitPending              string            `json:"ic_permit_pending"`
 	IcPermitScheduled            string            `json:"ic_permit_scheduled"`
 	IcPermitCompleted            string            `json:"ic_permit_completed"`
-	InstallReady                 string            `json:"install_ready"`
+	InstallPendinig              string            `json:"install_pending"`
+	PvInstallReadyDate           string            `json:"pv_install_ready_date"`
 	InstallScheduled             string            `json:"install_scheduled"`
 	InstallCompleted             string            `json:"install_completed"`
 	FinalInspectionSubmitted     string            `json:"final_inspection_submitted"`
@@ -184,7 +182,7 @@ type ProjectResponse struct {
 	AHJ                          string            `json:"ajh"`
 	Epc                          float64           `json:"epc"`
 	State                        string            `json:"state"`
-	ContractAmount               float64           `json:"contract_amount"`
+	ContractAmount               string            `json:"contract_amount"`
 	FinancePartner               string            `json:"finance_partner"`
 	NetEPC                       float64           `json:"net_epc"`
 	HomeOwner                    string            `json:"home_owner"`
@@ -194,7 +192,6 @@ type ProjectResponse struct {
 var ColumnToField = map[string]string{
 	"unique_id":                    "UniqueId",
 	"contract_date":                "SalesCompleted",
-	"ntp_working_date":             "NtpPending",
 	"ntp_date":                     "NtpCompleted",
 	"site_survey_scheduled_date":   "SiteSurveyScheduled",
 	"site_survey_rescheduled_date": "SiteSurevyRescheduled",
@@ -205,7 +202,8 @@ var ColumnToField = map[string]string{
 	"ic_created_date":              "IcPermitPending",
 	"ic_submitted_date":            "IcPermitScheduled",
 	"ic_approved_date":             "IcPermitCompleted",
-	"pv_install_created_date":      "InstallReady",
+	"pv_install_created_date":      "InstallPendinig",
+	"pv_install_ready_date":        "PvInstallReadyDate",
 	"pv_install_scheduled_date":    "InstallScheduled",
 	"pv_install_completed_date":    "InstallCompleted",
 	"fin_scheduled_date":           "FinalInspectionSubmitted",
@@ -216,9 +214,8 @@ var ColumnToField = map[string]string{
 	"home_owner":                   "HomeOwner",
 	"system_size":                  "SystemSize",
 	"state":                        "State",
-	"epc":                          "Epc", //check
+	"epc":                          "Epc",
 	"ahj":                          "AHJ",
-	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",
 	"contract_total":               "ContractAmount",
 	"finance_company":              "FinancePartner",

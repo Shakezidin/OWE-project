@@ -13,6 +13,8 @@ import (
 	models "OWEApp/shared/models"
 	"OWEApp/shared/types"
 	"math"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -34,7 +36,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		err         error
 		dataReq     models.ProjectStatusReq
 		data        []map[string]interface{}
-		ntpDate     string
 		RecordCount int64
 		roleFilter  string
 	)
@@ -110,8 +111,13 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	for _, item := range data {
 		var projectData models.ProjectResponse
 		mapRowToStruct(item, &projectData)
-		projectData.Epc = math.Round(projectData.Epc*100) / 100
+		projectData.Epc = CheckFloat(extractAndParseCost(projectData.ContractAmount) / (projectData.SystemSize * 1000))
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
+		projectData.AddersTotal = projectData.AdderBreakDownAndTotal["Total"]
+		if projectData.AddersTotal == "" {
+			adderBreakDown := cleanAdderBreakDownAndTotalTwo(projectData.AdderBreakDownAndTotalString)
+			projectData.AddersTotal = getString(adderBreakDown, "Total")
+		}
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 
@@ -136,6 +142,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 	if len(data) > 0 {
+		var ntpDate string
 		if val, ok := data[0]["current_live_cad"].(string); ok {
 			projectList.CADLink = val
 		} else {
@@ -158,6 +165,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			projectList.CoStatus = val
 		} else {
 			projectList.CoStatus = "" // or a default value
+		}
+
+		if NtpDates, ok := data[0]["ntp_date"].(time.Time); ok {
+			ntpDate = NtpDates.Format("02-01-2006")
+		} else {
+			ntpDate = "" // or a default value
 		}
 
 		prospectId, prospectIdok := data[0]["first_value"].(string)
@@ -423,4 +436,96 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string, pr
 		}
 	}
 	return "", 0
+}
+
+func cleanAdderBreakDownAndTotalTwo(data string) map[string]string {
+	result := make(map[string]string)
+	if len(data) == 0 {
+		return result
+	}
+
+	// Remove '**' and clean the string
+	data = strings.ReplaceAll(data, "**", "")
+
+	// Regular expression to match key-value pairs like "key: value"
+	re := regexp.MustCompile(`([A-Za-z0-9\s\-\(\)]+):\s*([0-9]+)`)
+
+	// Find all matches of key-value pairs
+	matches := re.FindAllStringSubmatch(data, -1)
+
+	// Iterate over all matches and populate the result map
+	for _, match := range matches {
+		if len(match) == 3 {
+			key := strings.TrimSpace(match[1])
+			value := strings.TrimSpace(match[2])
+
+			// If the key is 'Total', we capture the value for 'Total'
+			if key == "Total" {
+				result[key] = value
+				break // Stop further processing once 'Total' is found
+			}
+
+			// Otherwise, just add the key-value pair to the map
+			result[key] = value
+		}
+	}
+
+	// Log the result for debugging
+	// log.FuncErrorTrace(0, "data = %v ", result)
+
+	return result
+}
+
+func getString(item map[string]string, key string) string {
+	if value, ok := item[key]; ok {
+		return value
+	}
+	return ""
+}
+
+func extractAndParseCost(totalSystemCost string) float64 {
+	costStr := strings.TrimSpace(totalSystemCost)
+
+	// log.FuncErrorTrace(0, "Unique ID: %s - Original Cost String: '%s'", uniqueID, costStr)
+
+	// Step 1: Remove HTML tags
+	re := regexp.MustCompile(`<.*?>`)
+	costStr = re.ReplaceAllString(costStr, "")
+
+	// Step 2: Remove BOM (\ufeff), non-breaking spaces (\u00a0), and other spaces
+	costStr = strings.ReplaceAll(costStr, "\ufeff", "")
+	costStr = strings.ReplaceAll(costStr, "\u00a0", "")
+	costStr = strings.ReplaceAll(costStr, " ", "") // Remove spaces between numbers
+
+	// Step 3: Remove dollar signs and trim
+	costStr = strings.ReplaceAll(costStr, "$", "")
+	costStr = strings.TrimSpace(costStr)
+
+	// Step 4: Extract the first numeric value
+	reNums := regexp.MustCompile(`\d+(?:,\d{3})*(?:\.\d+)?`)
+	match := reNums.FindString(costStr) // Extract only the first match
+	if match == "" {
+		// log.FuncErrorTrace(0, "Unique ID: %s - No numeric value found, skipping parsing. val %v", uniqueID, totalSystemCost)
+		return 0.0
+	}
+
+	// Step 5: Remove commas for float conversion
+	numericPart := strings.ReplaceAll(match, ",", "")
+	// log.FuncErrorTrace(0, "Unique ID: %s - Numeric Portion Extracted: '%s'", uniqueID, numericPart)
+
+	// Step 6: Parse the numeric string into a float
+	parsedCost, err := strconv.ParseFloat(numericPart, 64)
+	if err == nil {
+		// log.FuncErrorTrace(0, "Unique ID: %s - Parsed Float Value: %f", uniqueID, parsedCost)
+		return parsedCost
+	}
+
+	return 0.0
+}
+
+func CheckFloat(value float64) float64 {
+	if math.IsInf(value, 1) || math.IsInf(value, -1) || math.IsNaN(value) {
+		return 0
+	}
+	return value
 }

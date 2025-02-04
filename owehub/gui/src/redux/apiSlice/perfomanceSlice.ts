@@ -106,7 +106,12 @@ export const getPerfomanceStatus = createAsyncThunk(
         []) as IProjectStatus[];
       return { list, count: data.dbRecCount, datacount };
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      return {
+        list: [],
+        count: 0,
+        datacount: null,
+        error: rejectWithValue((error as Error).message),
+      };
     }
   }
 );
@@ -165,10 +170,11 @@ const perfomanceSlice = createSlice({
       })
       .addCase(getPerfomanceStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.projectStatus = action.payload.list;
+        state.projectStatus = []; // Clear old data first
+        state.projectStatus = [...action.payload.list]; // Ensure new reference
         state.projectsCount = action.payload.count;
-        state.datacount = action.payload.datacount;
-      })
+        state.datacount = { ...action.payload.datacount };
+      })      
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;

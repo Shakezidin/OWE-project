@@ -24,6 +24,7 @@ import {
   deleteUserDealer,
 } from '../../../redux/apiActions/auth/createUserSliceActions';
 import { createUserObject, validateForm } from '../../../utiles/Validation';
+import {updatevalidateForm} from '../../../utiles/updateValidation';
 import {
   updateUserForm,
   userResetForm,
@@ -40,6 +41,7 @@ import useAuth from '../../../hooks/useAuth';
 import UserUpdate from './userOnboard/UpdateUser';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
+
 interface UserData {
   name?: string;
   email_id?: string;
@@ -53,7 +55,9 @@ const UserManagement: React.FC = () => {
   const [openn, setOpenn] = useState<boolean>(false);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+
   const [searchTerm, setSearchTerm] = useState('');
+  const [roleOption, setRoleOption] = useState<any>([])
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useAppDispatch();
@@ -152,6 +156,7 @@ const UserManagement: React.FC = () => {
 
   const handleClose = () => {
     dispatch(userResetForm());
+
     setOpen(false);
   };
 
@@ -161,7 +166,34 @@ const UserManagement: React.FC = () => {
   };
   const handleClosee = () => {
     dispatch(userResetForm());
+    
     setOpenn(false);
+    const data = {
+      page_number: page,
+      page_size: 25,
+      filters: [
+        {
+          Column: 'name',
+          Operation: 'cont',
+          Data: searchTerm,
+        },
+      ],
+    };
+
+    const fetchList = async () => {
+      if (selectedOption.value !== '') {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
+      await dispatch(fetchUserListBasedOnRole(data));
+    };
+
+    fetchList();
+
+    
   };
   /** fetch onboarding users data*/
   useEffect(() => {
@@ -350,7 +382,7 @@ const UserManagement: React.FC = () => {
         privilege_type: permission,
       })
     );
-    const formErrors = validateForm(formData);
+    const formErrors = updatevalidateForm(formData);
     console.log('formErrors', formErrors);
     if (Object.keys(formErrors).length === 0) {
       updateUserRequest(arrayOfPermissions);
@@ -470,6 +502,25 @@ const UserManagement: React.FC = () => {
     }
   };
   
+  /** Fetch user roles */
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const data = await postCaller("getGetUserRoles", {});
+        if (data.status > 201) {
+          toast.error(data.message);
+          return;
+        }
+        setRoleOption(data);
+       
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+        toast.error("Failed to fetch roles");
+      }
+    };
+
+    fetchRoles();
+  }, []);
   /** render UI */
   return (
     <>
@@ -484,6 +535,7 @@ const UserManagement: React.FC = () => {
           setTablePermissions={setTablePermissions}
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
+          roleOption={roleOption}
           onChangeRole={(role, value) => {
             console.log('formData', formData);
             onChangeRole(role, value);
@@ -502,6 +554,7 @@ const UserManagement: React.FC = () => {
           tablePermissions={tablePermissions}
           setTablePermissions={setTablePermissions}
           userOnboard={null}
+          roleOption={roleOption}
           onSubmitUpdateUser={onSubmitUpdateUser}
           onChangeRole={(role, value) => {
             console.log('formData', formData);
@@ -552,6 +605,7 @@ const UserManagement: React.FC = () => {
           handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
+           
           selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}

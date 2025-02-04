@@ -310,34 +310,37 @@ const PendingQueue = () => {
                               <h3 className={`customer-name`}>
                                 {item.home_owner}
                               </h3>
-                              <p className={`install-update`}>
-                                {item.uninque_id}
-                              </p>
+                              <div style={{ display: 'flex',flexDirection:"row",alignItems:"center", gap: 10, }}>
+                                <p className={`install-update`}>
+                                  {item.uninque_id}
+                                </p>
+                                {((item.ntp.finance_NTP === "Completed") && (item.ntp.powerclerk === "Completed") && (item.ntp.production === "Completed") && (item.ntp.utility_bill === "Completed")) &&
+                                  <>
+                                    <AiFillMinusCircle
+                                      size={22}
+                                      className=""
+                                      // style={{ flexShrink: 0, marginTop: "-4px" }}
+                                      color={'#EBA900'}
+                                      data-tooltip-id={item.uninque_id}
+                                    />
+                                    <Tooltip
+                                      style={{
+                                        zIndex: 999,
+                                        background: "#555",
+                                        color: '#f7f7f7',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                      }}
+                                      offset={8}
+                                      id={item.uninque_id}
+                                      place="right"
+                                      content="Pending"
+                                    />
+                                  </>
+                                }
+                              </div>
                             </div>
-                            {((item.ntp.finance_NTP === "Completed") && (item.ntp.powerclerk === "Completed") && (item.ntp.production === "Completed") && (item.ntp.utility_bill === "Completed")) &&
-                              <>
-                                <AiFillMinusCircle
-                                  size={18}
-                                  className="mr1"
-                                  style={{ flexShrink: 0, marginTop: '0.5rem' }}
-                                  color={'#EBA900'}
-                                  data-tooltip-id={item.uninque_id}
-                                />
-                                <Tooltip
-                                  style={{
-                                    zIndex: 999,
-                                    background: "#555",
-                                    color: '#f7f7f7',
-                                    fontSize: 12,
-                                    paddingBlock: 4,
-                                  }}
-                                  offset={8}
-                                  id={item.uninque_id}
-                                  place="bottom"
-                                  content="Pending"
-                                />
-                              </>
-                            }
+
 
                           </div>
                         </Link>

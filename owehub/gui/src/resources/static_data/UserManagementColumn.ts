@@ -145,12 +145,7 @@ export const UserDealerTableColumn: Column[] = [
 export const UserRegionalTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  {
-    name: 'team_name',
-    displayName: 'Designation',
-    type: 'string',
-    isCheckbox: false,
-  },
+ 
 
   {
     name: 'email_id',
@@ -237,12 +232,7 @@ export const UserSaleMangerTableColumn: Column[] = [
 export const UserSaleRepresentTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
-  {
-    name: 'team_name',
-    displayName: 'Designation',
-    type: 'string',
-    isCheckbox: false,
-  },
+ 
   {
     name: 'email_id',
     displayName: 'Email ID',
