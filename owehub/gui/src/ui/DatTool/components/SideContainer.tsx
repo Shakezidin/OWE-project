@@ -19,12 +19,17 @@ const SideContainer: React.FC<SideContainerProps> = ({data}:any) => {
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
 
-  console.log(data, "myData");
-  const mappedDataList = data.map((apiItem:any) => ({
-    name: apiItem.project_name.trim() || 'Unnamed Project', // You can provide a default name if it's empty
-    projectID: apiItem.project_id.trim() || 'No ID Provided', // Default ID if empty
-    address: apiItem.project_address.trim() || 'No Address Provided', // Default address if empty
-  }));
+   
+  const mappedDataList = Array.isArray(data)
+  ? data.map((apiItem: any) => ({
+      name: apiItem.project_name?.trim() || "Unnamed Project", // Provide default name if empty
+      projectID: apiItem.project_id?.trim() || "No ID Provided", // Default ID if empty
+      address: apiItem.project_address?.trim() || "No Address Provided", // Default address if empty
+    }))
+  : []; // Return an empty array if data is not an array
+
+console.log(mappedDataList);
+
   console.log(mappedDataList, "mappedDataList");
   // Sample data
   const dataList: Data[] = [
@@ -72,7 +77,7 @@ const SideContainer: React.FC<SideContainerProps> = ({data}:any) => {
       </div>
       <div className={styles.wrapperBox}>
       <div className={styles.dataBoxWrapper}>
-      {mappedDataList.map((data:any, index:any) => (
+      {mappedDataList.map((data:any, index:number) => (
         <div key={index} className={styles.dataBox}>
           <p className={styles.content_one}>{data.name}</p>
           <p className={styles.content_two}>{data.projectID}</p>

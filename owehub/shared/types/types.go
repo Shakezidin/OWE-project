@@ -31,6 +31,7 @@ const (
 	GroupAdminDealer         UserGroup = "GroupAdminDealer"
 	GroupAdminAccounts       UserGroup = "GroupAdminAccounts"
 	GroupAdminDealerAccounts UserGroup = "GroupAdminDealerAccounts"
+	GroupDealerAccounts      UserGroup = "GroupDealerAccounts"
 )
 
 var (
@@ -81,6 +82,11 @@ var (
 			RoleAccountManager,
 			RoleAccountExecutive,
 			RoleProjectManager,
+		}, GroupDealerAccounts: {
+			RoleDealerOwner,
+			RoleRegionalManager,
+			RoleSalesManager,
+			RoleSalesRep,
 		},
 	}
 )

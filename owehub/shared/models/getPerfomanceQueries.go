@@ -175,9 +175,7 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT customers_customers_schema.unique_id, customers_customers_schema.customer_name AS home_owner
-        FROM customers_customers_schema
-        LEFT JOIN system_customers_schema 
-            ON customers_customers_schema.unique_id = system_customers_schema.customer_id `
+        FROM customers_customers_schema `
 	return SalesMetricsRetrieveQuery
 }
 
@@ -1111,6 +1109,87 @@ func GetBasePipelineQuery(uniqueIds string) string {
 		WHERE cust.unique_id in (%v)`, uniqueIds)
 }
 
+func PipelineDealerDataQuery(filterUserQuery string) string {
+	PipelineDealerQuery := fmt.Sprintf(`
+    WITH filtered_customers AS (
+        SELECT *
+        FROM customers_customers_schema cust
+        WHERE %s
+        AND cust.unique_id != ''
+    )
+    SELECT
+        -- Customer Basic Information
+        -- DISTINCT (cust.unique_id),
+        cust.customer_name AS customer_name,
+        cust.dealer AS partner_dealer,
+        cust.customer_name AS finance_company,
+        cust.customer_name AS source_type,
+        cust.customer_name AS loan_type,
+        cust.unique_id,
+        cust.address AS street_address,
+        cust.customer_name AS city,
+        cust.state,
+        cust.customer_name AS zip_code,
+        cust.email_address AS email,
+        cust.phone_number,
+        cust.primary_sales_rep AS rep_1,
+        cust.secondary_sales_rep AS rep_2,
+        cust.contracted_system_size AS system_size,
+        cust.total_system_cost AS contract_amount,
+        cust.sale_date AS created_date,
+        cust.sale_date AS contract_date,
+        
+        -- Survey Dates
+        CASE 
+            WHEN (survey.reschedule_needed_on_date IS NOT NULL AND survey.twond_visit_date IS NULL) THEN NULL
+            WHEN survey.twond_visit_date IS NOT NULL THEN survey.twond_completion_date
+            ELSE survey.survey_completion_date
+        END AS survey_final_completion_date,
+        
+        -- NTP Dates
+        ntp.ntp_complete_date,
+        
+        -- Permit Dates
+        permit.pv_submitted AS permit_submit_date,
+        permit.pv_approved AS permit_approval_date,
+        
+        -- Interconnection Dates
+        ic.ic_submitted_date AS ic_submit_date,
+        ic.ic_approved_date AS ic_approval_date,
+        
+        -- Additional Milestone Dates
+        cust.jeopardy_date,
+        cust.cancel_date,
+        
+        -- Installation and Final Dates
+        install.pv_completion_date AS pv_install_date,
+        fin.pv_fin_date AS fin_complete_date,
+        pto.pto_granted AS pto_date
+
+    FROM filtered_customers AS cust
+        LEFT JOIN ntp_ntp_schema AS ntp 
+            ON cust.unique_id = ntp.unique_id
+        LEFT JOIN permit_fin_pv_permits_schema AS permit 
+            ON cust.unique_id = permit.customer_unique_id
+        LEFT JOIN ic_ic_pto_schema AS ic 
+            ON cust.unique_id = ic.customer_unique_id
+        LEFT JOIN survey_survey_schema AS survey 
+            ON cust.unique_id = survey.customer_unique_id 
+        LEFT JOIN pv_install_install_subcontracting_schema AS install 
+            ON cust.unique_id = install.customer_unique_id
+        LEFT JOIN roofing_request_install_subcontracting_schema AS roofing 
+            ON cust.unique_id = roofing.customer_unique_id 
+        LEFT JOIN planset_cad_schema AS cad 
+            ON cust.unique_id = cad.our_number
+        LEFT JOIN batteries_service_electrical_schema AS b 
+            ON cust.unique_id = b.customer_unique_id
+        LEFT JOIN fin_permits_fin_schema AS fin 
+            ON cust.unique_id = fin.customer_unique_id
+        LEFT JOIN pto_ic_schema AS pto 
+            ON cust.unique_id = pto.customer_unique_id  `, filterUserQuery)
+	return PipelineDealerQuery
+}
+
 func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
     WITH queue_customers AS (
@@ -1373,6 +1452,7 @@ func PipelineNTPQuery(uniqueIds []string) string {
                 ntp_ntp_schema.change_order_status,
                 customers_customers_schema.utility_company,
                 customers_customers_schema.state,
+                ntp_ntp_schema.ntp_complete_date,
                 split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
             FROM 
                 customers_customers_schema

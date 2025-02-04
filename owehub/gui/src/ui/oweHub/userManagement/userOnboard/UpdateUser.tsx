@@ -147,6 +147,9 @@ import React, {
     ) => {
       const { value } = newValue;
       await dispatch(updateUserForm({ field: fieldName, value }));
+      if (fieldName === 'assigned_Manager') {
+        await dispatch(updateUserForm({ field: 'report_to', value: '' }));
+      }
       onChangeRole('Manager', value);
     };
     const validateEmail = (email: string) => {

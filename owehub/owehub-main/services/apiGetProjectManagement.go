@@ -12,6 +12,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"OWEApp/shared/types"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -35,7 +36,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		err         error
 		dataReq     models.ProjectStatusReq
 		data        []map[string]interface{}
-		ntpDate     string
 		RecordCount int64
 		roleFilter  string
 	)
@@ -111,7 +111,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	for _, item := range data {
 		var projectData models.ProjectResponse
 		mapRowToStruct(item, &projectData)
-		projectData.Epc = extractAndParseCost(projectData.ContractAmount) / (projectData.SystemSize * 1000)
+		projectData.Epc = CheckFloat(extractAndParseCost(projectData.ContractAmount) / (projectData.SystemSize * 1000))
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectData.AddersTotal = projectData.AdderBreakDownAndTotal["Total"]
 		if projectData.AddersTotal == "" {
@@ -142,6 +142,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 	if len(data) > 0 {
+		var ntpDate string
 		if val, ok := data[0]["current_live_cad"].(string); ok {
 			projectList.CADLink = val
 		} else {
@@ -164,6 +165,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			projectList.CoStatus = val
 		} else {
 			projectList.CoStatus = "" // or a default value
+		}
+
+		if NtpDates, ok := data[0]["ntp_date"].(time.Time); ok {
+			ntpDate = NtpDates.Format("02-01-2006")
+		} else {
+			ntpDate = "" // or a default value
 		}
 
 		prospectId, prospectIdok := data[0]["first_value"].(string)
@@ -514,4 +521,11 @@ func extractAndParseCost(totalSystemCost string) float64 {
 	}
 
 	return 0.0
+}
+
+func CheckFloat(value float64) float64 {
+	if math.IsInf(value, 1) || math.IsInf(value, -1) || math.IsNaN(value) {
+		return 0
+	}
+	return value
 }
