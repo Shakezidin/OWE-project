@@ -1373,6 +1373,7 @@ func PipelineNTPQuery(uniqueIds []string) string {
                 ntp_ntp_schema.change_order_status,
                 customers_customers_schema.utility_company,
                 customers_customers_schema.state,
+                ntp_ntp_schema.ntp_complete_date,
                 split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
             FROM 
                 customers_customers_schema
