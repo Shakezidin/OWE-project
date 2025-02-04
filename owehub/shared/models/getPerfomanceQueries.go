@@ -1188,7 +1188,7 @@ func PipelineDealerDataQuery(dealer string) string {
         LEFT JOIN fin_permits_fin_schema AS fin 
             ON cust.unique_id = fin.customer_unique_id
         LEFT JOIN pto_ic_schema AS pto 
-            ON cust.unique_id = pto.customer_unique_id;  `, dealer)
+            ON cust.unique_id = pto.customer_unique_id  `, dealer)
 	return PipelineDealerQuery
 }
 

@@ -43,7 +43,7 @@ var columnMap = map[string]ColumnInfo{
 	"rep_1":                        {"cust", "string"},
 	"rep_2":                        {"cust", "string"},
 	"system_size":                  {"cust", "string"},
-	"contract_amount":              {"cust", "string"},
+	"total_system_cost":            {"cust", "string"},
 	"created_date":                 {"cust", "date"},
 	"contract_date":                {"cust", "date"},
 	"survey_final_completion_date": {"survey", "date"},
@@ -141,7 +141,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 
 	/* Creating Filter */
 	builder := NewFilterBuilder(columnMap)
-	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, false, false)
+	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "cust.unique_id", false, false)
 
 	/* Querying the final query */
 	query = pipelineDealerQuery + queryFilter

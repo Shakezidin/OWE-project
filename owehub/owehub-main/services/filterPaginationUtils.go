@@ -88,7 +88,7 @@ This is the main function that is to be called to create filter
 But to use this we need to create a FilterBuilder calling funciton NewFilterBuilder
 and passing column map which contains the table alias and data type
 */
-func (fb *FilterBuilder) BuildFilters(req RequestParams, includeGroupBy, whereAdded bool) (string, []interface{}) {
+func (fb *FilterBuilder) BuildFilters(req RequestParams, distincOnColumn string, includeGroupBy, whereAdded bool) (string, []interface{}) {
 	var builder strings.Builder
 	var params []interface{}
 
@@ -129,7 +129,7 @@ func (fb *FilterBuilder) BuildFilters(req RequestParams, includeGroupBy, whereAd
 		builder.WriteString(fb.buildGroupBy())
 	}
 
-	orderBy := fb.buildOrderBy(req)
+	orderBy := fb.buildOrderBy(req, distincOnColumn)
 	if orderBy != "" {
 		builder.WriteString(orderBy)
 	}
@@ -194,7 +194,12 @@ func PaginateData[T any](data []T, req RequestParams) []T {
 	return data[startIndex:endIndex]
 }
 
-func (fb *FilterBuilder) buildOrderBy(req RequestParams) string {
+/*
+some queries use distinct on to filter data, in that case when you
+use order by it it is important to send the distinct column as well
+in the order by clause
+*/
+func (fb *FilterBuilder) buildOrderBy(req RequestParams, distinctOnColumn string) string {
 	if req.SortBy == "" {
 		return ""
 	}
@@ -211,9 +216,15 @@ func (fb *FilterBuilder) buildOrderBy(req RequestParams) string {
 
 	fullColumn := fmt.Sprintf("%s.%s", columnInfo.TableAlias, req.SortBy)
 
-	if columnInfo.DataType == TypeString {
-		return fmt.Sprintf(" ORDER BY LOWER(%s) %s", fullColumn, sortOrder)
+	if distinctOnColumn == "" {
+		if columnInfo.DataType == TypeString {
+			return fmt.Sprintf(" ORDER BY LOWER(%s) %s", fullColumn, sortOrder)
+		}
+		return fmt.Sprintf(" ORDER BY %s %s", fullColumn, sortOrder)
 	}
 
-	return fmt.Sprintf(" ORDER BY %s %s", fullColumn, sortOrder)
+	if columnInfo.DataType == TypeString {
+		return fmt.Sprintf(" ORDER BY %s, LOWER(%s) %s", distinctOnColumn, fullColumn, sortOrder)
+	}
+	return fmt.Sprintf(" ORDER BY %s, %s %s", distinctOnColumn, fullColumn, sortOrder)
 }
