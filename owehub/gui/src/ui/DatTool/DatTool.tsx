@@ -49,7 +49,7 @@ const DatTool: React.FC = () => {
       case 'Notes':
         return <NotesPage currentGeneralId={currentGeneralId}/>;
       case 'Other':
-        return <OtherPage />;
+        return <OtherPage currentGeneralId={currentGeneralId} loading={loading}/>;
       default:
         return <GeneralPage  currentGeneralId={currentGeneralId} generalData={generalData} loading={loading}/>;
     }

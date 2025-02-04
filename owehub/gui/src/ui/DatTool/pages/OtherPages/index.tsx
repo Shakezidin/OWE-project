@@ -4,6 +4,10 @@ import StringInverterConfig from './StringInverterConfig';
 import ExistingPVSystemInfo from './ExistingPVSystemInfo';
 import Select from '../../components/Select';
 import styles from '../../styles/OtherPage.module.css';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { getOtherInfo } from '../../../../redux/apiActions/DatToolAction/datToolAction';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import style2 from '../../styles/AdderssPage.module.css'
 
 interface CardProps {
   title: string;
@@ -81,50 +85,64 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
   );
 };
 
-const OtherInfoPage: React.FC = () => {
-  const [equipment, setEquipment] = useState({
-    'New Or Existing': 'New',
-    'Panel Brand': 'Eaton',
-    'Busbar Rating': '200',
-    'Main Breaker Rating': '200',
-    'Available Backfeed': '40',
-    'Required Backfeed': '---',
-  });
+interface OtherInfoPageProps {
+  currentGeneralId: string;
+  loading:boolean;
+}
+const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId,loading}) => {
+   const dispatch = useAppDispatch();
+     const { othersData } = useAppSelector((state) => state.datSlice);
+    useEffect(()=>{
+      dispatch(getOtherInfo({ project_id: currentGeneralId }));
+      console.log(othersData?.equipment.new_or_existing)
+    },[currentGeneralId]);
+    const [equipment, setEquipment] = useState({
+      'New Or Existing': othersData?.equipment?.new_or_existing ?? 'N/A',  // Default to 'N/A' if not found
+      'Panel Brand': othersData?.equipment?.panel_brand ?? 'N/A',        // Default to 'N/A' if not found
+      'Busbar Rating': othersData?.equipment?.busbar_rating?.toString() ?? 'N/A',      // Default to 'N/A' if not found
+      'Main Breaker Rating': othersData?.equipment?.main_breaker_rating?.toString() ?? 'N/A',  // Default to 'N/A' if not found
+      'Available Backfeed': othersData?.equipment?.available_backfeed?.toString() ?? 'N/A',  // Default to 'N/A' if not found
+      'Required Backfeed': othersData?.equipment?.required_backfeed ?? 'N/A',  // Default to 'N/A' if not found
+    });
+    
 
-  const [system, setSystem] = useState({
-    'System Phase': '---',
-    'System Voltage': 'Single',
-    'Service Entrance': 'Overhead',
-    'Service Rating': 'Three',
-    'Meter Enclosure Type': 'Meter Combo',
-  });
+    const [system, setSystem] = useState({
+      'System Phase': othersData?.system?.system_phase ?? 'N/A',
+      'System Voltage': othersData?.system?.system_voltage ?? 'N/A',
+      'Service Entrance': othersData?.system?.service_entrance ?? 'N/A',
+      'Service Rating': othersData?.system?.service_rating ?? 'N/A',
+      'Meter Enclosure Type': othersData?.system?.meter_enclosure_type ?? 'N/A',
+    });
+    
 
-  const [siteInfo, setSiteInfo] = useState({
-    'PV Conduit Run': 'Exterior',
-    'Drywall Cut Needed': 'Yes',
-    'Number of Stories': '2',
-    'Trenching Required': 'Yes',
-    'Points of Interconnection': '2',
-  });
-
-  const [pvInterconnection, setPvInterconnection] = useState({
-    Type: 'Lug Connection',
-    'Supply/Load Side': 'Supply Side',
-    Location: 'Meter',
-    'Sub - Location Tap Details': '---',
-  });
-
-  const [essInterconnection, setEssInterconnection] = useState({
-    'Backup Type': 'Full Home',
-    'Transfer Switch': 'Tesla Backup Gateway 2',
-    'Fed By': 'Breaker',
-  });
+    const [siteInfo, setSiteInfo] = useState({
+      'PV Conduit Run': othersData?.siteInfo?.pv_conduct_run ?? 'N/A',
+      'Drywall Cut Needed': othersData?.siteInfo?.drywall_cut_needed ?? 'N/A',
+      'Number of Stories': othersData?.siteInfo?.number_of_stories?.toString() ?? 'N/A',
+      'Trenching Required': othersData?.siteInfo?.trenching_required ?? 'N/A',
+      'Points of Interconnection': othersData?.siteInfo?.points_of_interconnection?.toString() ?? 'N/A',
+    });
+    
+    const [pvInterconnection, setPvInterconnection] = useState({
+      Type: othersData?.pvInterconnection?.type ?? 'N/A',
+      'Supply/Load Side': othersData?.pvInterconnection?.supply_load_side ?? 'N/A',
+      Location: othersData?.pvInterconnection?.location ?? 'N/A',
+      'Sub - Location Tap Details': othersData?.pvInterconnection?.sub_location_tap_details ?? 'N/A',
+    });
+    
+    const [essInterconnection, setEssInterconnection] = useState({
+      'Backup Type': othersData?.essInterconnection?.backup_type ?? 'N/A',
+      'Transfer Switch': othersData?.essInterconnection?.transfer_switch ?? 'N/A',
+      'Fed By': othersData?.essInterconnection?.fed_by ?? 'N/A',
+    });
+    
 
   // Right Column States
   const [inverterConfigParent, setInverterConfigParent] = useState({
-    Inverter: 'Tesla Inverter 7.5kW',
-    Max: '---',
+    Inverter: othersData?.inverterConfigParent?.inverter ?? 'N/A',
+    Max: othersData?.inverterConfigParent?.max?.toString() ?? 'N/A',
   });
+  
 
   const [inverterConfig, setInverterConfig] = useState(() => {
     const config: Record<string, string> = {};
@@ -136,36 +154,37 @@ const OtherInfoPage: React.FC = () => {
   });
 
   const [roofCoverage, setRoofCoverage] = useState({
-    'Total Roof Area': '---',
-    'Area of New Modules': '---',
-    'Area of EXST Modules': '---',
-    'Coverage Percentage': '50%',
+    'Total Roof Area': othersData?.roofCoverage?.total_roof_area ?? 'N/A',
+    'Area of New Modules': othersData?.roofCoverage?.area_of_new_modules ?? '---',
+    'Area of EXST Modules': othersData?.roofCoverage?.area_of_exst_modules ?? '---',
+    'Coverage Percentage': othersData?.roofCoverage?.coverage_percentage ?? '50%',  // Default to '50%' if not found
   });
-
+  
   const [measurement, setMeasurement] = useState({
-    Length: '---',
-    Width: '---',
-    Height: '---',
-    Other: '---',
+    Length: othersData?.measurement?.length ?? '---',
+    Width: othersData?.measurement?.width ?? '---',
+    Height: othersData?.measurement?.height ?? '---',
+    Other: othersData?.measurement?.other ?? '---',
   });
-
+  
   const [existingPV, setExistingPV] = useState({
-    'Module Quantity': '40',
-    'Model#': 'LonGi LR5-60HPH-320M',
-    'Wattage': '320 W DC',
-    'Module Area': '18.64 sqft',
-    'Inverter 1 Quantity': '1',
-    'Inverter 1 Model#': 'Solar Edge SE5000H-US',
-    'Inverter 1 Output(A)': '21A AC',
-    'Inverter 2 Quantity': '1',
-    'Inverter 2 Model#': 'Solar Edge SE5000H-US',
-    'Inverter 2 Output(A)': '21A AC',
-    'Backfeed': '1',
+    'Module Quantity': othersData?.existingPV?.module_quantity?.toString() ?? '---',
+    'Model#': othersData?.existingPV?.model_number ?? '---',
+    'Wattage': othersData?.existingPV?.wattage ?? '---',
+    'Module Area': othersData?.existingPV?.module_area ?? '---',
+    'Inverter 1 Quantity': othersData?.existingPV?.inverter1_info.quantity?.toString() ?? '---',
+    'Inverter 1 Model#': othersData?.existingPV?.inverter1_info.model_number ?? '---',
+    'Inverter 1 Output(A)': othersData?.existingPV?.inverter1_info.output_a ?? '---',
+    'Inverter 2 Quantity': othersData?.existingPV?.inverter2_info.quantity?.toString() ?? '---',
+    'Inverter 2 Model#': othersData?.existingPV?.inverter2_info.model_number ?? '---',
+    'Inverter 2 Output(A)': othersData?.existingPV?.inverter2_info.output_a ?? '---',
+    'Backfeed': othersData?.existingPV?.existing_calculated_backfeed_without_125?.toString() ?? '---',
   });
+  
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.container}>
+      {loading? <div className={style2.loaderContainer}><MicroLoader/> </div> :<div className={styles.container}>
       <div className={styles.column}>
         <Card
           title="Electrical Equipment Info"
@@ -240,7 +259,7 @@ const OtherInfoPage: React.FC = () => {
 
         <ExistingPVSystemInfo fields={existingPV} onSave={setExistingPV} />
       </div>
-    </div>
+    </div>}
     </div>
   );
 };

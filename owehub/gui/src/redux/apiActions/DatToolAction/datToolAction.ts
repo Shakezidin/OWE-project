@@ -79,3 +79,17 @@ export const getNotesInfo = createAsyncThunk(
     }
   }
 );
+export const getOtherInfo = createAsyncThunk(
+  'dataTool/getOtherInfo',
+  async (payload: { project_id: string; }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('get_tab_other_info', {
+        project_id: payload.project_id
+      });
+      return response;
+    } catch (error) {
+      console.error('API Error:', error);
+      return rejectWithValue('Failed to fetch DAT other information');
+    }
+  }
+);

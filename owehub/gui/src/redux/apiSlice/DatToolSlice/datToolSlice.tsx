@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getNotesInfo, getStructuralInfo} from '../../apiActions/DatToolAction/datToolAction'
+import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getNotesInfo, getOtherInfo, getStructuralInfo} from '../../apiActions/DatToolAction/datToolAction'
 import { toast } from 'react-toastify';
 
 
@@ -16,6 +16,7 @@ interface DatToolState {
   addersData:AddersData | null;
   structuralData: StructuralData | null;
   notesData: any | null;
+  othersData: OthersData | null;
 }
 
 interface GeneralData {
@@ -53,6 +54,83 @@ interface GeneralData {
   dat_system_size_dc: string;
   dat_changes: string;
   dat_change_order: string;
+}
+
+interface OthersData {
+  equipment: {
+    new_or_existing: string;
+    panel_brand: string;
+    busbar_rating: number;
+    main_breaker_rating: number;
+    available_backfeed: number;
+    required_backfeed: string;
+  };
+  system: {
+    system_phase: string;
+    system_voltage: string;
+    service_entrance: string;
+    service_rating: string;
+    meter_enclosure_type: string;
+  };
+  siteInfo: {
+    pv_conduct_run: string;
+    drywall_cut_needed: string;
+    number_of_stories: number;
+    trenching_required: string;
+    points_of_interconnection: number;
+  };
+  pvInterconnection: {
+    type: string;
+    supply_load_side: string;
+    location: string;
+    sub_location_tap_details: string;
+  };
+  essInterconnection: {
+    backup_type: string;
+    transfer_switch: string;
+    fed_by: string;
+  };
+  inverterConfigParent: {
+    inverter: string;
+    max: number;
+    mppt1: { s1: string; s2: string };
+    mppt2: { s1: string; s2: string };
+    mppt3: { s1: string; s2: string };
+    mppt4: { s1: string; s2: string };
+    mppt5: { s1: string; s2: string };
+    mppt6: { s1: string; s2: string };
+    mppt7: { s1: string; s2: string };
+    mppt8: { s1: string; s2: string };
+  };
+  roofCoverage: {
+    total_roof_area: string;
+    area_of_new_modules: string;
+    area_of_exst_modules: string;
+    coverage_percentage: string;
+  };
+  measurement: {
+    length: string;
+    width: string;
+    height: string;
+    other: string;
+  };
+  existingPV: {
+    module_quantity: number;
+    model_number: string;
+    wattage: string;
+    module_area: string;
+    inverter1_info: {
+      quantity: number;
+      model_number: string;
+      output_a: string;
+    };
+    inverter2_info: {
+      quantity: number;
+      model_number: string;
+      output_a: string;
+    };
+    existing_calculated_backfeed_without_125: number;
+  };
 }
 
 interface Component {
@@ -129,7 +207,8 @@ const initialState: DatToolState = {
   addersData:null,
   structuralData: null,
   notesData: null,
-  sideLoading:false
+  sideLoading:false,
+  othersData: null,
 };
 
 
@@ -206,6 +285,20 @@ const datSlice = createSlice({
       state.notesData = action.payload?.data;
     });
     builder.addCase(getNotesInfo.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+      toast.error(action.payload as string);
+    });
+    
+
+    builder.addCase(getOtherInfo.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getOtherInfo.fulfilled, (state, action) => {
+      state.loading = false;
+      state.othersData = action.payload?.data;
+    });
+    builder.addCase(getOtherInfo.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);
