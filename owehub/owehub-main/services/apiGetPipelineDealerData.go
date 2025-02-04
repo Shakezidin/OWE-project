@@ -133,7 +133,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 
 	/* Creating Filter */
 	builder := NewFilterBuilder(columnMap)
-	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "cust.unique_id", false, false)
+	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false)
 
 	/* Querying the final query */
 	query = pipelineDealerQuery + queryFilter
