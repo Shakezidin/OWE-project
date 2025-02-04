@@ -71,7 +71,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pipelineDealerDataList models.PipelineDealerDataList
 		data                   []map[string]interface{}
 		whereEleList           []interface{}
-		dealerNames            []string
+		dealerNamesArr         []string
+		dealerNames            string
 		email                  string
 		userRole               string
 		dealerName             string
@@ -118,7 +119,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if userRole == "Admin" {
-		dealerNames = dataReq.DealerNames
+		dealerNamesArr = dataReq.DealerNames
 	} else {
 		_, dealerName, err = fetchDealerNameForUser(email, "")
 		if err != nil {
@@ -126,14 +127,15 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 			appserver.FormAndSendHttpResp(resp, "Something is not right", http.StatusBadRequest, nil)
 			return
 		}
-		dealerNames = []string{dealerName}
+		dealerNamesArr = []string{dealerName}
 	}
 
-	if len(dealerNames) == 0 {
+	if len(dealerNamesArr) == 0 {
 		appserver.FormAndSendHttpResp(resp, "No dealer found", http.StatusBadRequest, nil)
 		return
 	}
 
+	dealerNames = joinNames(dealerNamesArr)
 	/* Base query */
 	pipelineDealerQuery = models.PipelineDealerDataQuery(dealerNames)
 

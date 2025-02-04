@@ -1111,7 +1111,7 @@ func GetBasePipelineQuery(uniqueIds string) string {
 		WHERE cust.unique_id in (%v)`, uniqueIds)
 }
 
-func PipelineDealerDataQuery(dealer []string) string {
+func PipelineDealerDataQuery(dealer string) string {
 	PipelineDealerQuery := fmt.Sprintf(`
     WITH filtered_customers AS (
         SELECT *
