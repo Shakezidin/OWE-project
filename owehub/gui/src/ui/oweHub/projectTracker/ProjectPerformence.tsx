@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './projectTracker.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-date-range/dist/styles.css'; // main style file
@@ -253,7 +253,7 @@ const ProjectPerformence = () => {
     let backgroundColor;
     let textColor;
     let boxShadowColor;
-  
+
     if (color) {
       backgroundColor = color;
       textColor = 'white';
@@ -261,16 +261,16 @@ const ProjectPerformence = () => {
       backgroundColor = 'rgb(233, 233, 233)';
       textColor = 'text-dark';
     }
-  
+
     boxShadowColor = 'rgba(0, 141, 218, 0.2)';
-  
+
     return {
       backgroundColor,
       color: textColor,
       boxShadow: `0px 4px 12px ${boxShadowColor}`,
     };
   };
-  
+
   const { projectStatus, projectsCount, isLoading } = useAppSelector((state) => ({
     projectStatus: JSON.parse(JSON.stringify(state.perfomanceSlice.projectStatus)),
     projectsCount: state.perfomanceSlice.projectsCount,
@@ -687,9 +687,17 @@ const ProjectPerformence = () => {
       setPipelineData(projectStatus);
     }
   }, [projectStatus, pipelineData]);
-  
 
-  console.log(projectStatus, 'projectStatus')
+
+  const showNewPage =
+    role === TYPE_OF_USER.DEALER_OWNER ||
+    role === TYPE_OF_USER.REGIONAL_MANGER;
+
+
+  const navigate = useNavigate();
+  const handleNewPage = () => {
+    navigate('/pipeline/pipeline_data')
+  }
 
   return (
 
@@ -698,6 +706,11 @@ const ProjectPerformence = () => {
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
           <div className="pipeline-header-btns">
+            {showNewPage &&
+              <div className='skygroup-btn' onClick={handleNewPage}>
+                <img src={ICONS.sky} alt='sky' />
+              </div>
+            }
             {showDropdown && (
               <DropdownCheckbox
                 label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}

@@ -68,6 +68,7 @@ import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
 import DatTool from './ui/DatTool/DatTool';
+import DealerTablePipeline from './ui/oweHub/projectTracker/DealerTable';
 
 function App() {
   // Add console log suppression at the start of App component
@@ -260,6 +261,7 @@ function App() {
           />
           <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
           <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
+          <Route path={ROUTES.DEALERDATA_PIPELINE} element={<DealerTablePipeline />} />
  
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
