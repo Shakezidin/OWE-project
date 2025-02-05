@@ -128,11 +128,11 @@ type GetTabStructuralInfoResponse struct {
 
 // Adders tab structs
 type GetTabAddersInfoResponse struct {
-	Categories []Categories `json:"categories"`
-	TotalCost  float64      `json:"total_cost"`
-	Adders     string       `json:"adders"`
+	Categories    []Categories `json:"categories"`
+	TotalCost     float64      `json:"total_cost"`
+	Adders        string       `json:"adders"`
+	ViewAllAdders []Component  `json:"view_all_adders"`
 }
-
 type Categories struct {
 	Title string      `json:"title"` // Example: "INTERCONNECTION", "ELECTRICAL", etc.
 	Cost  float64     `json:"cost"`
@@ -267,10 +267,17 @@ type ExistingPvInfo struct {
 /**************************************************************************
  **************************************************************************/
 type UpdateDatToolInfo struct {
-	//Tab              string                        `json:"tab"`
+	ProjectId        string                        `json:"project_id"`
 	GeneralValues    *GetTabGeneralInfoResponse    `json:"general_values,omitempty"`
 	StructuralValues *GetTabStructuralInfoResponse `json:"structural_values,omitempty"`
-	AdderValues      *GetTabAddersInfoResponse     `json:"adder_values,omitempty"`
-	OtherValues      *GetTabOtherInfoResponse      `json:"other_values,omitempty"`
-	NotesValues      *GetTabNotesInfoResponse      `json:"notes_values,omitempty"`
+	//AdderValues      *GetTabAddersInfoResponse     `json:"adder_values,omitempty"`
+	AdderValues *AdderUpdateQuantityRequest `json:"adder_values,omitempty"`
+	OtherValues *GetTabOtherInfoResponse    `json:"other_values,omitempty"`
+	NotesValues *GetTabNotesInfoResponse    `json:"notes_values,omitempty"`
+}
+
+type AdderUpdateQuantityRequest struct {
+	CategoryTitle string `json:"category_title"`
+	ComponentName string `json:"component_name"`
+	NewQuantity   int64  `json:"new_quantity"`
 }
