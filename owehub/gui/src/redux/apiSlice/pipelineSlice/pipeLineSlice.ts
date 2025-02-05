@@ -11,6 +11,7 @@ interface ReportingState {
         data: any,
         loading: boolean,
         error: string | null;
+        list:any[];
     };
     loading: boolean;
     error: string | null;
@@ -24,6 +25,7 @@ const initialState: ReportingState = {
         data: null,
         loading: true,
         error: null,
+        list:[],
     },
     loading: false,
     error: null
@@ -38,7 +40,8 @@ const pipelineSlice = createSlice({
             state.pipelineData = {
                 data: null,
                 loading: false,
-                error: null
+                error: null,
+                list:[]
             };
         }
     },
@@ -52,6 +55,7 @@ const pipelineSlice = createSlice({
               .addCase(getPipeLineData.fulfilled, (state, action) => {
                 state.pipelineData.loading = false;
                 state.pipelineData.data = action.payload;
+                state.pipelineData.list = action.payload?.list.data.pipeline_dealer_data_list
               })
               .addCase(getPipeLineData.rejected, (state, action) => {
                 state.pipelineData.loading = false;

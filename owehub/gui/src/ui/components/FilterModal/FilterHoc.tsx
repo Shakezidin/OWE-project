@@ -6,6 +6,7 @@ import { disableFilter } from '../../../redux/apiSlice/filterSlice/filterSlice';
 import { useLocation } from 'react-router-dom';
 
 interface Column {
+  filter?:string;
   name: string;
   displayName: string;
   type: string;
