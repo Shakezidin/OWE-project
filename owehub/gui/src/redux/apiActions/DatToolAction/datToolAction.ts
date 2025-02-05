@@ -96,19 +96,10 @@ export const getOtherInfo = createAsyncThunk(
 
 export const getDropdownList = createAsyncThunk(
   'dataTool/getDropdownList',
-  async (_, { rejectWithValue }) => {
+  async ({ drop_down_list }: { drop_down_list: string[] }, { rejectWithValue }) => {
     try {
-      const response = await reportingCaller('owe-reports-service/v1/get_drop_down_list', {
-        drop_down_list: [
-          "structure", "roof_type", "sheathing_type", "framing_size", "framing_type_1", 
-          "framing_type_2", "framing_spacing", "attachment", "racking", "pattern", "mount", 
-          "structural_upgrades", "gm_support_type", "reroof_required", "attachment_type", 
-          "attachment_pattern", "attachment_spacing", "racking_mount_type", "racking_max_rail_cantilever", 
-          "new_or_existing", "panel_brand", "busbar_rating", "main_breaker_rating", "system_phase", 
-          "system_voltage", "service_entrance", "service_rating", "meter_enclosure_type", 
-          "pv_conduct_run", "drywall_cut_needed", "number_of_stories", "trenching_required", 
-          "points_of_interconnection", "inverter"
-        ]
+      const response = await reportingCaller('get_drop_down_list', {
+        drop_down_list
       });
       
       return response.data.data;
