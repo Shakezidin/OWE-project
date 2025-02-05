@@ -280,42 +280,43 @@ const DealerTablePipeline = () => {
                             />
                         </div>
 
-
-                        <div className='skyfilter' onClick={open} data-tooltip-id= {isMobile ? "" : "filter"}><img src={ICONS.skyfilter} alt='' /></div>
-                        <Tooltip
-                            style={{
-                                zIndex: 103,
-                                background: '#f7f7f7',
-                                color: '#000',
-                                fontSize: 12,
-                                paddingBlock: 4,
-                                fontWeight: '400',
-                            }}
-                            offset={8}
-                            delayShow={800}
-                            id="filter"
-                            place="bottom"
-                            content="Filter"
-                        />
-                        <div
-                            className="export-button-pipe"
-                            onClick={exportCsv}
-                            data-tooltip-id= {isMobile ? "" :"export"}
-                            style={{
-                                pointerEvents: isExporting ? 'none' : 'auto',
-                                opacity: isExporting ? 0.6 : 1,
-                                cursor: isExporting ? 'not-allowed' : 'pointer',
-                            }}
-                        >
-                            {isExporting ? (
-                                <MdDownloading
-                                    className="downloading-animation"
-                                    size={12}
-                                    color="white"
-                                />
-                            ) : (
-                                <FaUpload size={12} color="white" />
-                            )}
+                        <div className='export-button-container'>
+                            <div className='skyfilter' onClick={open} data-tooltip-id={isMobile ? "" : "filter"}><img src={ICONS.skyfilter} alt='' /></div>
+                            <Tooltip
+                                style={{
+                                    zIndex: 103,
+                                    background: '#f7f7f7',
+                                    color: '#000',
+                                    fontSize: 12,
+                                    paddingBlock: 4,
+                                    fontWeight: '400',
+                                }}
+                                offset={8}
+                                delayShow={800}
+                                id="filter"
+                                place="bottom"
+                                content="Filter"
+                            />
+                            <div
+                                className="export-button-pipe"
+                                onClick={exportCsv}
+                                data-tooltip-id={isMobile ? "" : "export"}
+                                style={{
+                                    pointerEvents: isExporting ? 'none' : 'auto',
+                                    opacity: isExporting ? 0.6 : 1,
+                                    cursor: isExporting ? 'not-allowed' : 'pointer',
+                                }}
+                            >
+                                {isExporting ? (
+                                    <MdDownloading
+                                        className="downloading-animation"
+                                        size={12}
+                                        color="white"
+                                    />
+                                ) : (
+                                    <FaUpload size={12} color="white" />
+                                )}
+                            </div>
                             <Tooltip
                                 style={{
                                     zIndex: 103,
