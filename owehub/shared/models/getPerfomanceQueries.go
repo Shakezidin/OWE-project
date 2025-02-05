@@ -1494,3 +1494,189 @@ func PipelineNTPQuery(uniqueIds []string) string {
     `
 	return PipelineNTPQuery
 }
+
+// LeaderBoardSaleCancelData fetches sale and cancel counts from customers_customers_schema
+func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) string {
+	// Initialize the GROUP BY fields and the SELECT fields
+	var groupByFields string
+	var selectFields string
+
+	// Check if groupBy contains multiple fields (e.g., sales_rep, dealer)
+	if strings.Contains(groupBy, ",") {
+		// Split the string by comma
+		fields := strings.Split(groupBy, ",")
+
+		// Get the first value before the comma
+		firstValue := strings.TrimSpace(fields[0])
+		// Split groupBy into individual fields
+		groupByFields = "cs." + strings.ReplaceAll(groupBy, ",", ", cs.")
+		selectFields = "cs." + firstValue + " AS name, cs.dealer" // Include both fields and alias them correctly
+	} else {
+		// If only a single field is passed
+		groupByFields = "cs." + groupBy
+		selectFields = "cs." + groupBy + " AS name" // Use alias for the single field
+	}
+	var query string
+	if chosen == "count" {
+		query = fmt.Sprintf(`
+		SELECT
+			%v,
+			COUNT(CASE WHEN cs.sale_date BETWEEN %v THEN 1 ELSE NULL END) AS sale,
+			COUNT(CASE WHEN cs.cancel_date BETWEEN %v THEN 1 ELSE NULL END) AS cancel
+		    FROM customers_customers_schema cs
+			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+			AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
+		    AND %v
+		GROUP BY %v;
+	`, selectFields, dateRange, dateRange, "cs."+dealers, groupByFields)
+	} else {
+		query = fmt.Sprintf(`
+		SELECT
+			%v,
+			SUM(CASE WHEN cs.sale_date BETWEEN %v THEN scs.contracted_system_size_parent ELSE 0 END) AS sale,
+			SUM(CASE WHEN cs.cancel_date BETWEEN %v THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel
+		    FROM customers_customers_schema cs
+			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+			AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
+		    AND %v
+		GROUP BY %v;
+	`, selectFields, dateRange, dateRange, "cs."+dealers, groupByFields)
+	}
+
+	return query
+}
+
+// LeaderBoardInstallBatteryData fetches install counts and battery sums from pv_install_install_subcontracting_schema
+func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) string {
+	// Initialize the GROUP BY fields and the SELECT fields
+	var groupByFields string
+	var selectFields string
+
+	// Check if groupBy contains multiple fields (e.g., sales_rep, dealer)
+	if strings.Contains(groupBy, ",") {
+		// Split the string by comma
+		fields := strings.Split(groupBy, ",")
+
+		// Get the first value before the comma
+		firstValue := strings.TrimSpace(fields[0])
+		// Split groupBy into individual fields
+		groupByFields = "pis." + strings.ReplaceAll(groupBy, ",", ", pis.")
+		selectFields = "pis." + firstValue + " AS name, pis.dealer" // Include both fields and alias them correctly
+	} else {
+		// If only a single field is passed
+		groupByFields = "pis." + groupBy
+		selectFields = "pis." + groupBy + " AS name" // Use alias for the single field
+	}
+	var query string
+	if chosen == "count" {
+		query = fmt.Sprintf(`
+		SELECT
+			%v,
+			COUNT(CASE WHEN pis.pv_completion_date BETWEEN %v THEN 1 ELSE NULL END) AS sale,
+			SUM(CASE WHEN pis.pv_completion_date BETWEEN %v THEN pis.battery_count ELSE 0 END) AS battery
+		    FROM customers_customers_schema cs
+			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+			AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
+		    AND %v
+		GROUP BY %v;
+	`, selectFields, dateRange, dateRange, "pis."+dealers, groupByFields)
+	} else {
+		query = fmt.Sprintf(`
+		SELECT
+			%v,
+			SUM(CASE WHEN pis.pv_completion_date BETWEEN %v THEN scs.contracted_system_size_parent ELSE 0 END) AS sale
+		    FROM customers_customers_schema cs
+			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+			AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
+		    AND %v
+		GROUP BY %v;
+	`, selectFields, dateRange, "pis."+dealers, groupByFields)
+	}
+
+	return query
+}
+
+// LeaderBoardNTPData fetches NTP counts from ntp_ntp_schema
+func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) string {
+	// Initialize the GROUP BY fields and the SELECT fields
+	var groupByFields string
+	var selectFields string
+
+	// Check if groupBy contains multiple fields (e.g., sales_rep, dealer)
+	if strings.Contains(groupBy, ",") {
+		// Split the string by comma
+		fields := strings.Split(groupBy, ",")
+
+		// Get the first value before the comma
+		firstValue := strings.TrimSpace(fields[0])
+		// Split groupBy into individual fields
+		groupByFields = "ns." + strings.ReplaceAll(groupBy, ",", ", ns.")
+		selectFields = "ns." + firstValue + " AS name, ns.dealer" // Include both fields and alias them correctly
+	} else {
+		// If only a single field is passed
+		groupByFields = "ns." + groupBy
+		selectFields = "ns." + groupBy + " AS name" // Use alias for the single field
+	}
+	var query string
+	if chosen == "count" {
+		query = fmt.Sprintf(`
+		SELECT
+			%v,
+			COUNT(CASE WHEN ns.ntp_complete_date BETWEEN %v THEN 1 ELSE NULL END) AS ntp
+		    FROM customers_customers_schema cs
+			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+			AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
+		    AND %v
+		GROUP BY %v;
+	`, selectFields, dateRange, "ns."+dealers, groupByFields)
+	} else {
+		query = fmt.Sprintf(`
+		SELECT
+			%v,
+			SUM(CASE WHEN ns.ntp_complete_date BETWEEN %v THEN scs.contracted_system_size_parent ELSE 0 END) AS ntp
+		    FROM customers_customers_schema cs
+			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+			AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
+			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
+			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
+		    AND %v
+		GROUP BY %v;
+	`, selectFields, dateRange, "ns."+dealers, groupByFields)
+	}
+
+	return query
+}
