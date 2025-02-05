@@ -107,7 +107,7 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": itemsPerPage,
-                    "filters": filters ? filters : [
+                    "filters": (filters.length > 0) ? filters : [
                         { "column": "unique_id", "operation": "cont", "data": searchTerm },
                         { "column": "customer_name", "operation": "cont", "data": searchTerm },
                     ],
