@@ -76,6 +76,7 @@ const Banner: React.FC<BannerProps> = ({
       role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
       role === TYPE_OF_USER.ACCOUNT_MANAGER ||
       role === TYPE_OF_USER.DEALER_OWNER ||
+      role === TYPE_OF_USER.PROJECT_MANAGER ||
       isShowDropdown
     ) {
       getNewFormData();
@@ -86,7 +87,8 @@ const Banner: React.FC<BannerProps> = ({
       role !== 'Admin' &&
       role !== TYPE_OF_USER.FINANCE_ADMIN &&
       role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-      role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER && 
+      role !== TYPE_OF_USER.PROJECT_MANAGER &&
       isAuthenticated
     ) {
       (async () => {
@@ -192,7 +194,7 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <div className="relative">
       <div
-        className={`${role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE && role !== TYPE_OF_USER.ACCOUNT_MANAGER ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
+        className={`${role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE && role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
         style={{ background: details.bg_color || undefined }}
       >
         <div
@@ -200,7 +202,8 @@ const Banner: React.FC<BannerProps> = ({
             role !== 'Admin' &&
             role !== TYPE_OF_USER.FINANCE_ADMIN &&
             role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-            role !== TYPE_OF_USER.ACCOUNT_MANAGER
+            role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+            role !== TYPE_OF_USER.PROJECT_MANAGER
               ? 'radiant-anime'
               : 'radiant-anime-2'
           }
@@ -222,6 +225,7 @@ const Banner: React.FC<BannerProps> = ({
               role !== TYPE_OF_USER.ADMIN &&
               role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
               role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+              role !== TYPE_OF_USER.PROJECT_MANAGER &&
               details?.dealer_logo && (
                 <img
                   src={
@@ -239,7 +243,7 @@ const Banner: React.FC<BannerProps> = ({
             {(role === TYPE_OF_USER.FINANCE_ADMIN ||
               role === TYPE_OF_USER.ADMIN ||
               role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-              role === TYPE_OF_USER.ACCOUNT_MANAGER) && (
+              role === TYPE_OF_USER.ACCOUNT_MANAGER || role === TYPE_OF_USER.PROJECT_MANAGER) && (
               <img
                 src={
                   role === 'Admin' ||
@@ -257,7 +261,7 @@ const Banner: React.FC<BannerProps> = ({
               {role !== 'Admin' &&
               role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER && role!== TYPE_OF_USER.PROJECT_MANAGER ? (
                 <h1 className="solar-heading">
                   {details?.daeler_name || 'N/A'}
                 </h1>
@@ -269,7 +273,7 @@ const Banner: React.FC<BannerProps> = ({
               {role !== 'Admin' &&
               role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER && role!== TYPE_OF_USER.PROJECT_MANAGER ? (
                 <div className="flex items-center ">
                   <img src={ICONS.OWEBannerLogo} alt="" />
                   <p className="left-ban-des">
@@ -283,7 +287,7 @@ const Banner: React.FC<BannerProps> = ({
           {role !== 'Admin' &&
           role !== TYPE_OF_USER.FINANCE_ADMIN &&
           role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-          role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+          role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER ? (
             <div className="straight-line"></div>
           ) : null}
           {/* right side  */}
@@ -291,7 +295,7 @@ const Banner: React.FC<BannerProps> = ({
             {role !== 'Admin' &&
             role !== TYPE_OF_USER.FINANCE_ADMIN &&
             role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-            role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+            role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER ? (
               <div className="banner-names flex flex-column">
                 <div>
                   <p className="owner-heading">Owner Name</p>
@@ -312,7 +316,7 @@ const Banner: React.FC<BannerProps> = ({
                 role !== 'Admin' &&
                 role !== TYPE_OF_USER.FINANCE_ADMIN &&
                 role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-                role !== TYPE_OF_USER.ACCOUNT_MANAGER
+                role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER
                   ? 'banner-trophy'
                   : 'user-trophy'
               }
@@ -350,7 +354,7 @@ const Banner: React.FC<BannerProps> = ({
       {(role === 'Admin' ||
         role === TYPE_OF_USER.FINANCE_ADMIN ||
         role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-        role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER || role === TYPE_OF_USER.PROJECT_MANAGER) && (
         (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
         <div
           className="dealer-dropdown-filter"
