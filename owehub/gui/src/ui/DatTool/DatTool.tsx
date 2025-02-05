@@ -45,7 +45,7 @@ const DatTool: React.FC = () => {
       case 'Structural':
         return <StructuralPage structuralData={structuralData} currentGeneralId={currentGeneralId} loading={loading}/>;
       case 'Adders':
-        return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading}/>;
+        return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading} changeInQuantity={changeInQuantity} setChangeInQuantity={setChangeInQuantity}/>;
       case 'Notes':
         return <NotesPage currentGeneralId={currentGeneralId}/>;
       case 'Other':
@@ -70,12 +70,12 @@ const DatTool: React.FC = () => {
     }
   }, [searchPara, pageSize, sort]);
  
-  
+  const[changeInQuantity,setChangeInQuantity] = useState<boolean>(false);
   return (
     <div className={styles.mainContainer}>
 
       {
-        openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp} />
+        openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId}/>
       }
       {
         refreshDat && <RefreshPopUp setOpenRefresh={setRefreshDat} />

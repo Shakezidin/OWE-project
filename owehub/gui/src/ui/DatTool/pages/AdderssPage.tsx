@@ -7,8 +7,11 @@ import { useEffect } from 'react';
 import CommonComponent from './CommonComponent';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDatAddersInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
-import { add } from 'date-fns';
+import { add, set } from 'date-fns';
 import MicroLoader from '../../components/loader/MicroLoader';
+import { MdClose, MdDone } from 'react-icons/md';
+import style2 from '../styles/GeneralPage.module.css';
+import { toast } from 'react-toastify';
 
 interface Component {
   name: string;
@@ -34,7 +37,7 @@ interface AddersData {
 }
 
 
-function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
+function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,setChangeInQuantity}: any) {
   const dispatch = useAppDispatch();
    const { addersData } = useAppSelector((state) => state.datSlice);
   useEffect(()=>{
@@ -48,32 +51,23 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   
   
 
-  const itemNames = [
-    'Supply/Line Side Tap',
-    'Load Side Tap',
-    'ConnectDER',
-    'Subpanel Add-in',
-    'Derate',
-    'H-Frame (PV)',
-    'Extra Main Breaker'
-  ];
-  
+ 
   const getCategoryItems = (categoryIndex: number): Item[] => {
     return addersData?.categories?.[categoryIndex]?.items?.map((item: any) => ({
       name: item.name ?? 'N/A',
-      quantity: item.quantity ?? 1,  // Assuming quantity is present in the API, fallback to 1 if not
+      quantity: item.quantity ?? 1,  
       cost: item.cost ?? 0
     })) ?? [];
   };
   
-  const rightPartObj: Item[] = getCategoryItems(0); // Assuming this is for the first category (same as addersData.categories[0].items)
-  const rightPartObjElectrical: Item[] = getCategoryItems(1); // Electrical category (index 1)
-  const rightPartObjSiteAdders: Item[] = getCategoryItems(2); // Site Adders category (index 2)
-  const rightPartObjStructural: Item[] = getCategoryItems(3); // Structural category (index 3)
-  const rightPartObjUpgrades: Item[] = getCategoryItems(4); // Upgrades category (index 4)
-  const rightPartObjInterconnection: Item[] = getCategoryItems(5); // Interconnection category (index 5)
-  const rightPartObjUpgradedElectrical: Item[] = getCategoryItems(6); // Upgraded Electrical category (index 6)
-  const rightPartObjOther: Item[] = getCategoryItems(7); // Other category (index 7)
+  const rightPartObj: Item[] = getCategoryItems(0); 
+  const rightPartObjElectrical: Item[] = getCategoryItems(1); 
+  const rightPartObjSiteAdders: Item[] = getCategoryItems(2); 
+  const rightPartObjStructural: Item[] = getCategoryItems(3); 
+  const rightPartObjUpgrades: Item[] = getCategoryItems(4); 
+  const rightPartObjInterconnection: Item[] = getCategoryItems(5); 
+  const rightPartObjUpgradedElectrical: Item[] = getCategoryItems(6); 
+  const rightPartObjOther: Item[] = getCategoryItems(7); 
   
   
 
@@ -100,14 +94,14 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   });
 
   const [values, setValues] = useState<{ [key: number]: number[] }>({
-    0: Array(rightPartObj.length).fill(0),
-    1: Array(rightPartObjElectrical.length).fill(0),
-    2: Array(rightPartObjSiteAdders.length).fill(0),
-    3: Array(rightPartObjStructural.length).fill(0),
-    4: Array(rightPartObjUpgrades.length).fill(0),
-    5: Array(rightPartObjInterconnection.length).fill(0),
-    6: Array(rightPartObjUpgradedElectrical.length).fill(0),
-    7: Array(rightPartObjOther.length).fill(0),
+    0: rightPartObj.map(item => item.quantity || 0), 
+    1: rightPartObjElectrical.map(item => item.quantity || 0), 
+    2: rightPartObjSiteAdders.map(item => item.quantity || 0), 
+    3: rightPartObjStructural.map(item => item.quantity || 0), 
+    4: rightPartObjUpgrades.map(item => item.quantity || 0), 
+    5: rightPartObjInterconnection.map(item => item.quantity || 0), 
+    6: rightPartObjUpgradedElectrical.map(item => item.quantity || 0), 
+    7: rightPartObjOther.map(item => item.quantity || 0), 
   });
 
 
@@ -121,6 +115,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
       const newValues = { ...prevValues };
 
       newValues[currentSectionIndex][index] += 1;
+      setChangeInQuantity(true);
       return newValues;
     });
 
@@ -142,6 +137,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
         (newValues[currentSectionIndex][index] || 0) - 1,
         0
       );
+      setChangeInQuantity(true);
       return newValues;
     });
 
@@ -163,7 +159,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
 
 
   useEffect(() => {
-    // Calculate the sum of all prices
+    
     const totalPrice = Object.values(price).reduce(
       (acc, priceValue) => acc + priceValue,
       0
@@ -172,7 +168,35 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
   }, [price]);
 
   useEscapeKey(() => setOpenPopUp(false));
+  const crossAdderHandler = ()=>{
+    setChangeInQuantity(false);
+    setValues({
+      0: rightPartObj.map(item => item.quantity || 0), 
+      1: rightPartObjElectrical.map(item => item.quantity || 0), 
+      2: rightPartObjSiteAdders.map(item => item.quantity || 0), 
+      3: rightPartObjStructural.map(item => item.quantity || 0), 
+      4: rightPartObjUpgrades.map(item => item.quantity || 0), 
+      5: rightPartObjInterconnection.map(item => item.quantity || 0), 
+      6: rightPartObjUpgradedElectrical.map(item => item.quantity || 0), 
+      7: rightPartObjOther.map(item => item.quantity || 0), 
+    });
+    
+    setPrice({
+      0: leftPartObj[0]?.cost || 0,
+      1: leftPartObj[1]?.cost || 0,
+      2: leftPartObj[2]?.cost || 0,
+      3: leftPartObj[3]?.cost || 0,
+      4: leftPartObj[4]?.cost || 0,
+      5: leftPartObj[5]?.cost || 0,
+      6: leftPartObj[6]?.cost || 0,
+      7: leftPartObj[7]?.cost || 0,
+    });
+  }
 
+  const updateAdderHandler = ()=>{
+    setChangeInQuantity(false);
+    toast.success('Adder Updated Successfully');
+  }
   return (
     <div className={styles.container}>
       {loading ? <div className={styles.loaderContainer}> <MicroLoader/> </div> : <div className={styles.wrapper}>
@@ -245,6 +269,18 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
         </div>
 
         <div className={styles.adderssPageMainPart_Right}>
+          {changeInQuantity && <div className={styles.editing}>
+            <p className={styles.editingPara}>Save Changes</p>
+            <div className={style2.gSecHeaderBtn}>
+  <div className={style2.editUser} onClick={crossAdderHandler}>
+    <MdClose color="#434343" />
+  </div>
+  <div className={style2.editUserDone} onClick={updateAdderHandler}>
+    <MdDone color="white" />
+  </div>
+</div>
+
+             </div>}
           {currentItems.map((obj, index) => (
             <div
               className={styles.adderssPageMainPart_rightBarContainer}
@@ -262,7 +298,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading }: any) {
                     onClick={() => handleDecrement(index)}
                   />
                   <p className={styles.adderssPageMainPart_text}>
-                    {obj.quantity ||  0}
+                    { values[currentSectionIndex][index]  }
                   </p>
                   <FiPlus
                     className={styles.adderssPageMainPart_increment}
