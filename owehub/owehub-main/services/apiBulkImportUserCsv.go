@@ -122,9 +122,9 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			PartnerName:       getValue(headers, record, "partner_name"),
 		}
 
-		/****************************8handling fields****************************/
+		/********************************* handling field validation ********************************/
 
-		/****************** ALL REQUIED FIELDS *****************/
+		/************************************ ALL REQUIED FIELDS ************************************/
 		if len(CreateBulkUserReq.Name) == 0 || len(CreateBulkUserReq.Name) > 50 {
 			result.Failed++
 			result.Errors = append(result.Errors, fmt.Sprintf("Invalid name length for user: %s", CreateBulkUserReq.EmailId))
@@ -173,7 +173,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			continue
 		}
 
-		/**************************OPTIONAL FOR SOME ROLES ************************************/
+		/************************************ OPTIONAL validation ************************************/
 
 		if len(CreateBulkUserReq.PartnerName) > 50 {
 			result.Failed++
@@ -187,7 +187,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 		//   continue
 		// }
 
-		/**************************************************/
+		/**************************** if Reporting  Manager is NOT required ****************************/
 
 		reportingManagerEmail := getValue(headers, record, "reporting_manager")
 
@@ -206,7 +206,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			continue
 		}
 
-		///////////////////////////  REPORTING MANAGER ROLE  ///////////////////////////
+			/**************************** if Reporting  Manager is required ****************************/
 
 		if possibleRgnMngrRoles, ok := reportingMngrMapping[types.UserRoles(CreateBulkUserReq.RoleName)]; ok {
 			if reportingManagerEmail == "" {
@@ -241,7 +241,8 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			CreateBulkUserReq.ReportingManager = reportingMngr
 		}
 
-		// handling partner_name conditions , these roles cant have partner_name ....
+		/****************************  roles that cant have partner_name ****************************/
+
 		partnerName := getValue(headers, record, "partner_name")
 
 		isPartnerRequired := !(CreateBulkUserReq.RoleName == "Admin" ||
@@ -318,7 +319,8 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 	appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)
 }
 
-/*************************************helper functions *************************************/
+
+/************************************* Helper functions *************************************/
 
 func getValue(headers []string, record []string, key string) string {
 	for i, h := range headers {
@@ -356,7 +358,7 @@ func fetchUserCodeByEmail(email string) (string, error) {
 	return userCode, nil
 }
 
-// fetching sales_partner_name by using partner_name for check hierarchy of reportingmanager
+// getting role of reporting manager using mail id
 func fetchUserRoleByEmail(email string) (string, error) {
 	var userRole string
 	query := `SELECT
