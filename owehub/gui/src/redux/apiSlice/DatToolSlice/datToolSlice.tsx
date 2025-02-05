@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getNotesInfo, getOtherInfo, getStructuralInfo} from '../../apiActions/DatToolAction/datToolAction'
+import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getDropdownList, getNotesInfo, getOtherInfo, getStructuralInfo} from '../../apiActions/DatToolAction/datToolAction'
 import { toast } from 'react-toastify';
 
 
@@ -17,6 +17,7 @@ interface DatToolState {
   structuralData: StructuralData | null;
   notesData: any | null;
   othersData: OthersData | null;
+  dropdownListData: { [key: string]: string[] } | null;
 }
 
 interface GeneralData {
@@ -209,6 +210,7 @@ const initialState: DatToolState = {
   notesData: null,
   sideLoading:false,
   othersData: null,
+  dropdownListData: null,
 };
 
 
@@ -299,6 +301,20 @@ const datSlice = createSlice({
       state.othersData = action.payload?.data;
     });
     builder.addCase(getOtherInfo.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+      toast.error(action.payload as string);
+    });
+
+
+    builder.addCase(getDropdownList.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getDropdownList.fulfilled, (state, action) => {
+      state.loading = false;
+      state.dropdownListData = action.payload;  // Store dropdown list data
+    });
+    builder.addCase(getDropdownList.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);
