@@ -14,6 +14,13 @@ import Pagination from '../../components/pagination/Pagination'
 import { debounce } from '../../../utiles/debounce'
 import FilterHoc from '../../components/FilterModal/FilterHoc'
 import { FilterModel } from '../../../core/models/data_models/FilterSelectModel'
+import Papa from 'papaparse';
+import { toast } from 'react-toastify'
+import { MdDownloading } from 'react-icons/md'
+import { LuImport } from 'react-icons/lu'
+import { FaUpload } from 'react-icons/fa'
+import { Tooltip } from 'react-tooltip'
+import useMatchMedia from '../../../hooks/useMatchMedia'
 
 
 interface ColumnMap {
@@ -42,6 +49,7 @@ const DealerTablePipeline = () => {
     const [filterModal, setFilterModal] = React.useState<boolean>(false);
     const [filters, setFilters] = useState<FilterModel[]>([]);
     const navigate = useNavigate();
+    const isMobile = useMatchMedia('(max-width: 767px)');
 
 
     const handleClick = () => {
@@ -108,7 +116,7 @@ const DealerTablePipeline = () => {
                 }
             }
         ))
-    }, [page, searchTerm,filters])
+    }, [page, searchTerm, filters])
 
     const { pipelineData } = useAppSelector((state) => state.pipelineSlice);
 
@@ -155,7 +163,7 @@ const DealerTablePipeline = () => {
         });
     }
 
-    
+
     const filterClose = () => {
         setFilterModal(false);
     };
@@ -166,7 +174,64 @@ const DealerTablePipeline = () => {
     const open = () => {
         setFilterModal(true);
     }
-    
+
+    const [isExporting, setIsExporting] = useState(false);
+
+    const exportCsv = async () => {
+        setIsExporting(true);
+        const headers = pipeLineColumn.map((item) => item.displayName);
+        try {
+            const csvData = cuurentPageData?.map?.((item: any) => [
+                item.unique_id || 'N/A',
+                item.home_owner || 'N/A',
+                item.finance_company || 'N/A',
+                item.type || 'N/A',
+                item.loan_type || 'N/A',
+                item.street_address || 'N/A',
+                item.state || 'N/A',
+                item.email || 'N/A',
+                item.phone_number || 'N/A',
+                item.rep_1 || 'N/A',
+                'Not Found',
+                item.system_size || '0',
+                `$${item.contract_amount || '0'}`,
+                item.created_date || 'N/A',
+                item.contract_date || 'N/A',
+                item.survey_final_completion_date || 'N/A',
+                item.ntp_complete_date || 'N/A',
+                item.permit_submit_date || 'N/A',
+                item.permit_approval_date || 'N/A',
+                item.ic_submit_date || 'N/A',
+                item.ic_approval_date || 'N/A',
+                item.rep_2 || 'N/A',
+                item.cancel_date || 'N/A',
+                item.pv_install_date || 'N/A',
+                item.pto_date || 'N/A',
+                'N/A',
+                item.fin_complete_date || 'N/A',
+                item.jeopardy_date ? item.jeopardy_date.toString() : 'N/A',
+            ]);
+
+
+            const csvRows = [headers, ...csvData];
+            const csvString = Papa.unparse(csvRows);
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'report.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error(error);
+            toast.error('No Data Found');
+        } finally {
+            setIsExporting(false);
+        }
+        setIsExporting(false);
+    };
+
     return (
         <>
             <FilterHoc
@@ -216,7 +281,57 @@ const DealerTablePipeline = () => {
                         </div>
 
 
-                        <div className='skyfilter' onClick={open}><img src={ICONS.skyfilter} alt='' /></div>
+                        <div className='skyfilter' onClick={open} data-tooltip-id= {isMobile ? "" : "filter"}><img src={ICONS.skyfilter} alt='' /></div>
+                        <Tooltip
+                            style={{
+                                zIndex: 103,
+                                background: '#f7f7f7',
+                                color: '#000',
+                                fontSize: 12,
+                                paddingBlock: 4,
+                                fontWeight: '400',
+                            }}
+                            offset={8}
+                            delayShow={800}
+                            id="filter"
+                            place="bottom"
+                            content="Filter"
+                        />
+                        <div
+                            className="export-button-pipe"
+                            onClick={exportCsv}
+                            data-tooltip-id= {isMobile ? "" :"export"}
+                            style={{
+                                pointerEvents: isExporting ? 'none' : 'auto',
+                                opacity: isExporting ? 0.6 : 1,
+                                cursor: isExporting ? 'not-allowed' : 'pointer',
+                            }}
+                        >
+                            {isExporting ? (
+                                <MdDownloading
+                                    className="downloading-animation"
+                                    size={12}
+                                    color="white"
+                                />
+                            ) : (
+                                <FaUpload size={12} color="white" />
+                            )}
+                            <Tooltip
+                                style={{
+                                    zIndex: 103,
+                                    background: '#f7f7f7',
+                                    color: '#000',
+                                    fontSize: 12,
+                                    paddingBlock: 4,
+                                    fontWeight: '400',
+                                }}
+                                offset={8}
+                                delayShow={800}
+                                id="export"
+                                place="bottom"
+                                content="Export"
+                            />
+                        </div>
                     </div>
                 </div>
                 <div

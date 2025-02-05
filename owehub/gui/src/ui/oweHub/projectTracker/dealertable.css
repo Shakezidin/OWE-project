@@ -90,9 +90,9 @@
     gap: 10px;
 }
 
-.newp-heading svg:hover{
+.newp-heading svg:hover {
     transform: scale(1.08);
-  }
+}
 
 
 .TableContainer-pipeline {
@@ -102,44 +102,60 @@
     overflow-y: auto;
     overflow-x: auto;
     scroll-behavior: smooth;
-  }
-  
-  .TableContainer-pipeline::-webkit-scrollbar {
+}
+
+.TableContainer-pipeline::-webkit-scrollbar {
     width: 10px;
     height: 10px;
-  }
-  
-  .TableContainer-pipeline::-webkit-scrollbar {
+}
+
+.TableContainer-pipeline::-webkit-scrollbar {
     display: initial;
-  }
-  
-  .TableContainer-pipeline::-webkit-scrollbar-thumb {
+}
+
+.TableContainer-pipeline::-webkit-scrollbar-thumb {
     background-color: rgb(173, 173, 173);
     border-radius: 30px;
-  }
-  
-  .TableContainer-pipeline::-webkit-scrollbar-button {
+}
+
+.TableContainer-pipeline::-webkit-scrollbar-button {
     display: initial;
-  }
-  
-  .TableContainer-pipeline::-webkit-scrollbar {
+}
+
+.TableContainer-pipeline::-webkit-scrollbar {
     -ms-overflow-style: initial;
     scrollbar-width: thin;
-  }
-  
-  .TableContainer-pipeline::-webkit-scrollbar-corner {
+}
+
+.TableContainer-pipeline::-webkit-scrollbar-corner {
     background-color: transparent;
-  }
-  .TableContainer-pipeline table tbody tr:hover {
+}
+
+.TableContainer-pipeline table tbody tr:hover {
     transition: 0.4s all linear;
     background-color: #fff;
 }
-  
+
+.export-button-pipe {
+    background-color: #363636;
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.export-button-pipe:hover {
+    transform: scale(1.06);
+}
 
 @media (max-width: 767px) {
     .pipe-searchInput {
         width: 160px;
     }
+
     .TableContainer-pipeline {
         height: 76vh;
     }
