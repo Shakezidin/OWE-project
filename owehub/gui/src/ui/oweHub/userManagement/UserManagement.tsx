@@ -156,6 +156,7 @@ const UserManagement: React.FC = () => {
 
   const handleClose = () => {
     dispatch(userResetForm());
+
     setOpen(false);
   };
 
@@ -165,7 +166,34 @@ const UserManagement: React.FC = () => {
   };
   const handleClosee = () => {
     dispatch(userResetForm());
+    
     setOpenn(false);
+    const data = {
+      page_number: page,
+      page_size: 25,
+      filters: [
+        {
+          Column: 'name',
+          Operation: 'cont',
+          Data: searchTerm,
+        },
+      ],
+    };
+
+    const fetchList = async () => {
+      if (selectedOption.value !== '') {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
+      await dispatch(fetchUserListBasedOnRole(data));
+    };
+
+    fetchList();
+
+    
   };
   /** fetch onboarding users data*/
   useEffect(() => {

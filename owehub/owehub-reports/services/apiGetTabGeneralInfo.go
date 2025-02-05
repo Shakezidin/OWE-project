@@ -114,7 +114,7 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 	if len(data) <= 0 {
 		err = fmt.Errorf("project info not found")
 		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "project not found", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "project not found", http.StatusOK, nil)
 		return
 	}
 

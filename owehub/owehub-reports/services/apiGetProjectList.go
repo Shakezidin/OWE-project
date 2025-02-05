@@ -29,14 +29,16 @@ import (
 
 func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.GetProjectListRequest
-		apiResponse  models.GetProjectListResponse
-		data         []map[string]interface{}
-		query        string
-		whereEleList []interface{}
-		whereClause  string
-		recordCount  int64
+		err              error
+		dataReq          models.GetProjectListRequest
+		apiResponse      []models.GetProjectListResponse
+		data             []map[string]interface{}
+		query            string
+		whereEleList     []interface{}
+		whereClause      string
+		recordCount      int64
+		paginationClause string
+		sortValue        string
 	)
 
 	log.EnterFn(0, "HandleGetProjectListRequest")
@@ -90,6 +92,21 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 		)
 	}
 
+	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
+		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
+		paginationClause = fmt.Sprintf("LIMIT %d OFFSET %d", dataReq.PageSize, offset)
+	}
+
+	// by default sort value
+	sortValue = "asc"
+
+	if dataReq.Sort == "asc" {
+		sortValue = "asc"
+	}
+	if dataReq.Sort == "desc" {
+		sortValue = "desc"
+	}
+
 	// query to fetch data
 	query = fmt.Sprintf(`
 			SELECT
@@ -98,8 +115,9 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 				c.address
 			FROM customers_customers_schema as c
 			%s
-			ORDER BY c.unique_id;
-		`, whereClause)
+			ORDER BY c.sale_date %s
+			%s;
+		`, whereClause, sortValue, paginationClause)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 
@@ -129,7 +147,7 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		apiResponse.ProjectData = append(apiResponse.ProjectData, models.GetProjectData{
+		apiResponse = append(apiResponse, models.GetProjectListResponse{
 			ProjectName:    pName,
 			ProjectId:      pId,
 			ProjectAddress: pAddress,

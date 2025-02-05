@@ -183,6 +183,9 @@ import DatCapture from '../../resources/assets/dat_capture.svg';
 import DatAurora from '../../resources/assets/dat_aurora.svg';
 import DatTape from '../../resources/assets/dat_tape.svg';
 import Whats_Send from '../../resources/assets/Whats_Send.svg';
+import sky from '../../resources/assets/sky.svg';
+import skyfilter from '../../resources/assets/skyfilter.svg';
+
 
 
 
@@ -383,5 +386,7 @@ export const ICONS = {
   DatCapture: DatCapture,
   DatAurora: DatAurora,
   DatTape: DatTape,
-  Whats_Send:Whats_Send
+  Whats_Send:Whats_Send,
+  sky:sky,
+  skyfilter:skyfilter
 };

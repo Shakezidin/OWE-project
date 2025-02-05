@@ -2616,3 +2616,17 @@
   right: -9px;
   border: 1px solid rgb(255, 255, 255);
 }
+.skygroup-btn{
+  background-color: #377CF6;
+  height: 36px;
+  width: 36px;
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.skygroup-btn:hover{
+  transform: scale(1.06);
+}

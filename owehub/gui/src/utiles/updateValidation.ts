@@ -42,6 +42,12 @@ export const updatevalidateForm = (
     errors.Role = true;
   }
 
+  if (formData.role_name === TYPE_OF_USER.DEALER_OWNER) {
+    if (formData.dealer.length === 0) {
+      errors.Dealer = true;
+    }
+  }
+
   if (formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER) {
     if (formData.report_to.length === 0) {
       errors.Report_Manager = true;
