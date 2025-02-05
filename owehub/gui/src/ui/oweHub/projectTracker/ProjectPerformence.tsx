@@ -692,8 +692,6 @@ const ProjectPerformence = () => {
   const showNewPage =
     role === TYPE_OF_USER.DEALER_OWNER ||
     role === TYPE_OF_USER.ADMIN ||
-    role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
-    role === TYPE_OF_USER.SALE_MANAGER ||
     role === TYPE_OF_USER.REGIONAL_MANGER;
 
 
