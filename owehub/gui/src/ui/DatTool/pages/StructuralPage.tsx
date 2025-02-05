@@ -111,8 +111,25 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     useState<string>('MP1');
   const [isUploading, setIsUploading] = useState(false);
 
+  const getChangedValues = (oldValues: Record<string, string | number>, newValues: Record<string, string | number>) => {
+    const changedValues: Record<string, { old: string | number; new: string | number }> = {};
+    
+    Object.keys(newValues).forEach(key => {
+      if (newValues[key] !== oldValues[key]) {
+        changedValues[key] = {
+          old: oldValues[key],
+          new: newValues[key]
+        };
+      }
+    });
+    
+    return changedValues;
+  };
+
   const toggleEditStructuralInfo = (save: boolean = false) => {
     if (save) {
+      const changedValues = getChangedValues(selectedValues, tempSelectedValues);
+      console.log('Structural Info Changes:', changedValues);
       setSelectedValues({ ...selectedValues, ...tempSelectedValues });
     } else {
       setTempSelectedValues({ ...selectedValues });
@@ -122,14 +139,19 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
 
   const toggleEditAttachment = (save: boolean = false) => {
     if (save) {
+      const changedValues = getChangedValues(selectedValues, tempSelectedValues);
+      console.log('Attachment Changes:', changedValues);
       setSelectedValues({ ...selectedValues, ...tempSelectedValues });
     } else {
       setTempSelectedValues({ ...selectedValues });
     }
     setEditAttachment(!editAttachment);
   };
+
   const toggleEditRacking = (save: boolean = false) => {
     if (save) {
+      const changedValues = getChangedValues(selectedValues, tempSelectedValues);
+      console.log('Racking Changes:', changedValues);
       setSelectedValues({ ...selectedValues, ...tempSelectedValues });
     } else {
       setTempSelectedValues({ ...selectedValues });
@@ -139,6 +161,8 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
 
   const toggleEditRoofStructure = (save: boolean = false) => {
     if (save) {
+      const changedValues = getChangedValues(selectedValues, tempSelectedValues);
+      console.log('Roof Structure Changes:', changedValues);
       setSelectedValues({ ...selectedValues, ...tempSelectedValues });
     } else {
       setTempSelectedValues({ ...selectedValues });
@@ -146,10 +170,11 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     setEditRoofStructure(!editRoofStructure);
   };
 
+  // Update the handleSelectChange to log changes as they happen
   const handleSelectChange = (key: string, value: string | number) => {
+    console.log(`Field "${key}" changed to:`, value);
     setTempSelectedValues({ ...tempSelectedValues, [key]: value });
   };
-
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -174,7 +199,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
             file,
             uniqueFileName
           )) as S3Response;
-          console.log(response, 'trqtqtwe');
+          // console.log(response, 'trqtqtwe');
           newImages.push({
             file,
             url: response.location,
@@ -196,7 +221,6 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     }
   };
 
-  // Handle image removal
   const handleImageRemove = (index: number) => {
     setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
@@ -354,9 +378,9 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                       style={{ cursor: 'pointer' }}
                     >
                       {editStructuralInfo ? (
-                        <IoMdCheckmark />
-                      ) : (
-                        <AiOutlineEdit />
+    <IoMdCheckmark onClick={() => toggleEditStructuralInfo(true)} />
+  ) : (
+    <AiOutlineEdit />
                       )}
                     </div>
 
@@ -568,13 +592,9 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         style={{ cursor: 'pointer' }}
                       >
                         {editAttachment ? (
-                          <IoMdCheckmark
-                            onClick={() =>
-                              setEditStructuralInfo(!editAttachment)
-                            }
-                          />
-                        ) : (
-                          <AiOutlineEdit />
+    <IoMdCheckmark onClick={() => toggleEditAttachment(true)} />
+  ) : (
+    <AiOutlineEdit />
                         )}
                       </div>
                     </div>
@@ -632,11 +652,9 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         style={{ cursor: 'pointer' }}
                       >
                         {editRacking ? (
-                          <IoMdCheckmark
-                            onClick={() => setEditStructuralInfo(!editRacking)}
-                          />
-                        ) : (
-                          <AiOutlineEdit />
+    <IoMdCheckmark onClick={() => toggleEditRacking(true)} />
+  ) : (
+    <AiOutlineEdit />
                         )}
                       </div>
                     </div>
@@ -693,13 +711,9 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         style={{ cursor: 'pointer' }}
                       >
                         {editRoofStructure ? (
-                          <IoMdCheckmark
-                            onClick={() =>
-                              setEditStructuralInfo(!editRoofStructure)
-                            }
-                          />
-                        ) : (
-                          <AiOutlineEdit />
+    <IoMdCheckmark onClick={() => toggleEditRoofStructure(true)} />
+  ) : (
+    <AiOutlineEdit />
                         )}
                       </div>
                     </div>

@@ -93,3 +93,18 @@ export const getOtherInfo = createAsyncThunk(
     }
   }
 );
+
+export const getDropdownList = createAsyncThunk(
+  'dataTool/getDropdownList',
+  async ({ drop_down_list }: { drop_down_list: string[] }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('get_drop_down_list', {
+        drop_down_list
+      });
+      
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch dropdown list');
+    }
+  }
+);
