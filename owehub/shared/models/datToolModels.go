@@ -281,3 +281,11 @@ type AdderUpdateQuantityRequest struct {
 	ComponentName string `json:"component_name"`
 	NewQuantity   int64  `json:"new_quantity"`
 }
+
+// //////// DROP DOWN Request RESPONSE STRUCTURE ///////////////////////////////////////////////
+type DropdownRequest struct {
+	DropDownList []string `json:"drop_down_list"`
+}
+type DropdownResponse struct {
+	Data map[string][]string `json:"data"`
+}
